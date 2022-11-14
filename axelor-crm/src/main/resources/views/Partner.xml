@@ -246,6 +246,119 @@
     </extend>
   </form>
 
+  <grid name="partner-prospect-grid" title="Prospects" model="com.axelor.apps.base.db.Partner"
+    orderBy="name" edit-icon="true">
+    <menubar>
+      <menu name="partnerReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
+        <item name="contactPhoneBookItem" title="Contact PhoneBook"
+          action="action-print-phonebook"/>
+        <item if="__config__.app.isApp('employee')" name="companyPhoneBookItem"
+          title="Company phoneBook" action="action-print-company-phonebook"/>
+      </menu>
+      <menu name="partnerToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+        <item name="checkDuplicateItem" title="Check Duplicate"
+          action="action-general-check-duplicate-records"/>
+        <item name="mergeDuplicatedItem" title="Merge duplicated"
+          action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+      </menu>
+    </menubar>
+    <field name="partnerSeq" width="120"/>
+    <field name="simpleFullName" width="300"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+    <field name="emailAddress.address" title="Email" placeholder="whatever@example.com"/>
+    <field name="partnerCategory" form-view="partner-category-form"
+      grid-view="partner-category-grid"/>
+    <field name="user"/>
+    <field if="__config__.app.getApp('base').getEnableMultiCompany()" name="companyStr"/>
+    <field name="leadScoring" widget="ImageSelect" x-labels="false"/>
+    <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="scheduleEventBtn"
+      title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event"/>
+    <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="sendByEmailBtn"
+      title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+  </grid>
+
+  <grid id="crm-partner-grid" name="partner-grid" title="Partners"
+    model="com.axelor.apps.base.db.Partner" orderBy="name" extension="true">
+    <extend target="//field[@name='companyStr']">
+      <insert position="after">
+        <field name="leadScoring" widget="ImageSelect" x-labels="false"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <cards id="crm-partner-cards" name="partner-cards" model="com.axelor.apps.base.db.Partner"
+    title="Partners" css="rect-image">
+    <toolbar>
+      <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print"
+        onClick="action-print-phonebook"/>
+      <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print"
+        onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+      <button name="checkDuplicateBtn" title="Check Duplicate"
+        onClick="action-general-check-duplicate-records"/>
+      <button name="replaceDuplicateBtn" title="Merge duplicated"
+        onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+      <button name="advancedExportBtn" title="Advanced export"
+        onClick="action-method-advanced-export-wizard-view"/>
+    </toolbar>
+    <field name="fullName"/>
+    <field name="picture"/>
+    <field name="fixedPhone"/>
+    <field name="emailAddress.address" title="Email"/>
+    <field name="partnerCategory"/>
+    <field name="partnerTypeSelect"/>
+    <field name="titleSelect"/>
+    <field name="mainAddress"/>
+    <field name="isProspect"/>
+    <field name="isEmployee"/>
+    <field name="isCustomer"/>
+    <field name="isSupplier"/>
+    <field name="isSubcontractor"/>
+    <field name="isFactor"/>
+    <field name="isCarrier"/>
+    <field name="leadScoring"/>
+    <template><![CDATA[
+			<div>
+				<div class="span12"><strong>{{fullName}}</strong></div>
+		 	</div>
+			<div>
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+                <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
+                <img ng-show="!picture && partnerTypeSelect != 2" src="img/company-default.jpg" />
+                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 1" src="img/partner-m-default.png" />
+                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 2" src="img/partner-w-default.png" />
+                <img ng-show="!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
+			  </div>
+			  <div class="span8">
+			  	<address>
+			  	{{mainAddress.fullName}}
+			  	</address>
+			    <span>
+			    {{fixedPhone}}<br/>
+			    {{emailAddress.address}}<br/>
+			    {{partnerCategory.name}}<br/>
+			    <span ng-show="record.isProspect">
+			    	<span ng-show="!record.leadScoring"><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
+          			<span ng-show="record.leadScoring && leadScoring == 1.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
+          			<span ng-show="record.leadScoring && leadScoring == 2.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
+          			<span ng-show="record.leadScoring && leadScoring == 3.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
+          			<span ng-show="record.leadScoring && leadScoring == 4.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
+          			<span ng-show="record.leadScoring && leadScoring == 5.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i></span>
+      			</span><br/>
+			    <h4 style="text-align: right;">
+					<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
+					<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
+					<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
+					<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
+					<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
+					<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
+					<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
+				</h4>
+			  </div>
+			</div>
+		]]>
+    </template>
+  </cards>
+
   <!-- CREATE CRM OBJECT FROM PARTNER -->
 
   <action-view name="action-partner-view-schedule-event"

@@ -57,11 +57,6 @@
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
-    <field name="fiscalPosition.code" title="Fiscal position"/>
-    <field name="registrationCode"/>
-    <field name="mainAddress"/>
-    <field name="mainAddress.zip"/>
-    <field name="mainAddress.city"/>
     <field name="user"/>
     <field name="companyStr" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
@@ -820,7 +815,6 @@
     <field name="isSubcontractor"/>
     <field name="isFactor"/>
     <field name="isCarrier"/>
-    <field name="leadScoring"/>
     <template><![CDATA[
 			<div>
 				<div class="span12"><strong>{{fullName}}</strong></div>
@@ -841,14 +835,6 @@
 			    {{fixedPhone}}<br/>
 			    {{emailAddress.address}}<br/>
 			    {{partnerCategory.name}}<br/>
-			    <span ng-show="record.isProspect">
-			    	<span ng-show="!record.leadScoring"><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span>
-                	<span ng-show="record.leadScoring && leadScoring == 1.00"><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span>
-                	<span ng-show="record.leadScoring && leadScoring == 2.00"><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span>
-                	<span ng-show="record.leadScoring && leadScoring == 3.00"><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span>
-                	<span ng-show="record.leadScoring && leadScoring == 4.00"><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star-o' style='color:#FF7722;'></i></span>
-                	<span ng-show="record.leadScoring && leadScoring == 5.00"><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i><i class='fa fa-star' style='color:#FF7722;'></i></span>
-                </span><br/>
 			    <h4 style="text-align: right;">
 					<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
 					<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
