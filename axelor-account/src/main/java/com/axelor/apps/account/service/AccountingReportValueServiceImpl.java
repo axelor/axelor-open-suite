@@ -35,6 +35,8 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -87,12 +89,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     this.checkAccountingReportType(accountingReportType);
 
     boolean isAllComputed = false;
-    int timeoutCounter = 0;
+    LocalTime startTime, processTime;
+    startTime = LocalTime.now();
 
     while (!isAllComputed) {
       isAllComputed = this.createReportValues(accountingReport, valuesMapByColumn, valuesMapByLine);
+      processTime = LocalTime.now();
 
-      if (timeoutCounter++ > appBaseService.getProcessTimeout()) {
+      if (startTime.until(processTime, ChronoUnit.SECONDS) > appBaseService.getProcessTimeout()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT,
