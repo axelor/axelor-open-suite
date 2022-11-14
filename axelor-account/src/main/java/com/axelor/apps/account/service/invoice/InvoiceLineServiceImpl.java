@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -56,6 +57,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +76,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
   protected TaxService taxService;
+  protected InternationalService internationalService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -86,7 +89,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
-      TaxService taxService) {
+      TaxService taxService,
+      InternationalService internationalService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
@@ -98,6 +102,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.taxService = taxService;
+    this.internationalService = internationalService;
   }
 
   @Override
@@ -658,5 +663,19 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       invoiceLine.setCompanyInTaxTotal(invoiceLine.getInTaxTotal());
     }
     return invoiceLineList;
+  }
+
+  @Override
+  public Map<String, String> getProductDescriptionAndNameTranslation(
+      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException {
+
+    Product product = invoiceLine.getProduct();
+
+    if (product == null) {
+      return Collections.emptyMap();
+    }
+
+    return internationalService.getProductDescriptionAndNameTranslation(
+        product, invoice.getPartner(), userLanguage);
   }
 }
