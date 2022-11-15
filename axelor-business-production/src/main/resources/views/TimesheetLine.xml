@@ -83,7 +83,7 @@
       <label name="durationLabel" colSpan="1"/>
       <field name="hoursDuration" hidden="true"/>
       <field name="toInvoice"/>
-      <field name="enableEditor"/>
+      <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
       <field name="comments"/>
       <field name="user" form-view="user-form" grid-view="user-grid" hidden="true"
         canEdit="false" canView="false"/>

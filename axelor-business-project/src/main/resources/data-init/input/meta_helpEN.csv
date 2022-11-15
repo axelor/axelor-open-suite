@@ -20,3 +20,4 @@
 "axelor-business-project";"AppBusinessProject";"app-business-project-config-form";"showSaleInvoiceLineRelatedToProject";"By enabling this option, you will display the sale invoice lines attached to a business project, in the ""Related elements"" tab of a business project."
 "axelor-business-project";"AppBusinessProject";"app-business-project-config-form";"enableToInvoiceTimesheet";"This option allows invoicing of timesheets in business projects."
 "axelor-business-project";"AppBusinessProject";"app-business-project-config-form";"enableToInvoiceExpense";"This option allows invoicing of expenses in business projects."
+"axelor-business-project";"TimesheetLine";"timesheet-line-timesheet-project-task-form";"enableEditor";"If 'Enable editor' is TRUE, when editing that logtime line (on this same specific date) on editor it will update duration of that logtime line. If 'Enable editor' is FALSE, when editing that line on editor it will create a new logtime line."
