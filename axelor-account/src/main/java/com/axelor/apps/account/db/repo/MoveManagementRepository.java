@@ -128,8 +128,6 @@ public class MoveManagementRepository extends MoveRepository {
   public void resetInvoiceTerm(InvoiceTerm invoiceTerm, InvoiceTermService invoiceTermService)
       throws AxelorException {
     invoiceTerm.setIsPaid(false);
-    invoiceTerm.setApplyFinancialDiscount(false);
-    invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
     invoiceTerm.setIsSelectedOnPaymentSession(false);
     invoiceTerm.setDebtRecoveryBlockingOk(false);
     invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
@@ -137,9 +135,6 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
     invoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
     invoiceTerm.setAmountPaid(BigDecimal.ZERO);
-    invoiceTerm.setFinancialDiscountAmount(BigDecimal.ZERO);
-    invoiceTerm.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
-    invoiceTerm.setAmountRemainingAfterFinDiscount(BigDecimal.ZERO);
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING);
     invoiceTerm.setImportId(null);
     invoiceTerm.setPaymentSession(null);
@@ -147,7 +142,6 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setReasonOfRefusalToPay(null);
     invoiceTerm.setReasonOfRefusalToPayStr(null);
     invoiceTerm.setPfpValidatorUser(null);
-    invoiceTerm.setFinancialDiscount(null);
     invoiceTerm.setDecisionPfpTakenDate(null);
     invoiceTerm.setInvoice(null);
 
