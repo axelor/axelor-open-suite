@@ -68,7 +68,6 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -173,25 +172,16 @@ public class MoveLineController {
 
   public void accountingReconcile(ActionRequest request, ActionResponse response) {
 
-    List<MoveLine> moveLineList = new ArrayList<>();
-
-    @SuppressWarnings("unchecked")
-    List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-
     try {
-      if (idList != null) {
-        for (Integer it : idList) {
-          MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
-          if (Beans.get(MoveLineControlService.class).canReconcile(moveLine)) {
-            moveLineList.add(moveLine);
-          }
-        }
-      }
+      @SuppressWarnings("unchecked")
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 
-      if (!moveLineList.isEmpty()) {
-        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
-        response.setReload(true);
-      }
+      MoveLineService moveLineService = Beans.get(MoveLineService.class);
+
+      moveLineService.reconcileMoveLinesWithCacheManagement(
+          moveLineService.getReconcilableMoveLines(idList));
+
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
