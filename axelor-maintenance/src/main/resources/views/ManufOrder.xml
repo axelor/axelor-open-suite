@@ -103,6 +103,19 @@
 
   </form>
 
+  <form model="com.axelor.apps.production.db.ManufOrder" title="Maintenance order"
+    name="maintenance-specific-manuf-order-form"
+    onLoad="action-maintenance-specific-manuf-order-attrs-set-attributes"
+    onNew="action-maintenance-specific-manuf-order-attrs-set-attributes">
+    <panel-include view="manuf-order-form"/>
+  </form>
+
+  <action-attrs name="action-maintenance-specific-manuf-order-attrs-set-attributes">
+    <attribute name="hidden" for="product.economicManufOrderQty" expr="true"/>
+    <attribute name="hidden" for="saleOrderSet" expr="true"/>
+    <attribute name="hidden" for="clientPartner" expr="true"/>
+  </action-attrs>
+
   <action-group name="action-maintenance-manuf-order-group-onnew">
     <action name="action-manuf-order-group-onnew"/>
     <action name="action-maintenance-manuf-order-attrs-set-default"/>

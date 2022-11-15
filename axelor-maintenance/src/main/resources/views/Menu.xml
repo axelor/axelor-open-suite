@@ -71,7 +71,7 @@
   <action-view name="maintenance.manufacturing.root.manuf.order"
     title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder">
     <view type="grid" name="maintenance-manuf-order-grid"/>
-    <view type="form" name="manuf-order-form"/>
+    <view type="form" name="maintenance-specific-manuf-order-form"/>
     <view-param name="search-filters" value="manuf-order-filters"/>
     <domain>self.typeSelect = 3</domain>
     <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
