@@ -54,6 +54,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -97,6 +98,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected InvoiceTermService invoiceTermService;
   protected CommonInvoiceService commonInvoiceService;
+  protected InvoiceLineOrderService invoiceLineOrderService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -109,7 +111,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       StockMoveRepository stockMoveRepository,
       InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
-      CommonInvoiceService commonInvoiceService) {
+      CommonInvoiceService commonInvoiceService,
+      InvoiceLineOrderService invoiceLineOrderService) {
 
     this.appBaseService = appBaseService;
     this.appSupplychainService = appSupplychainService;
@@ -121,6 +124,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceTermService = invoiceTermService;
     this.saleOrderWorkflowService = saleOrderWorkflowService;
     this.commonInvoiceService = commonInvoiceService;
+    this.invoiceLineOrderService = invoiceLineOrderService;
   }
 
   @Override
@@ -345,41 +349,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                 .multiply(saleOrderLineTax.getExTaxBase())
                 .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
         TaxLine taxLine = saleOrderLineTax.getTaxLine();
-        BigDecimal lineAmountToInvoiceInclTax =
-            (taxLine != null)
-                ? lineAmountToInvoice.add(
-                    lineAmountToInvoice.multiply(taxLine.getValue().divide(new BigDecimal(100))))
-                : lineAmountToInvoice;
-
         InvoiceLineGenerator invoiceLineGenerator =
-            new InvoiceLineGenerator(
-                invoice,
-                invoicingProduct,
-                invoicingProduct.getName(),
-                lineAmountToInvoice,
-                lineAmountToInvoiceInclTax,
-                invoice.getInAti() ? lineAmountToInvoiceInclTax : lineAmountToInvoice,
-                invoicingProduct.getDescription(),
-                BigDecimal.ONE,
-                invoicingProduct.getUnit(),
-                taxLine,
-                InvoiceLineGenerator.DEFAULT_SEQUENCE,
-                BigDecimal.ZERO,
-                PriceListLineRepository.AMOUNT_TYPE_NONE,
-                lineAmountToInvoice,
-                null,
-                false) {
-              @Override
-              public List<InvoiceLine> creates() throws AxelorException {
-
-                InvoiceLine invoiceLine = this.createInvoiceLine();
-
-                List<InvoiceLine> invoiceLines = new ArrayList<>();
-                invoiceLines.add(invoiceLine);
-
-                return invoiceLines;
-              }
-            };
+            invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
+                invoice, invoicingProduct, lineAmountToInvoice, taxLine);
 
         List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
         // link to the created invoice line the first line of the sale order.
