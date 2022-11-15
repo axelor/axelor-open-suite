@@ -13,8 +13,5 @@
 "axelor-crm";"Opportunity";"opportunity-form";"amount";"Montant estimé du chiffre d'affaire potentiel de l'opportunité. "
 "axelor-crm";"Opportunity";"opportunity-form";"bestCase";"Montant maximal estimé de chiffre d'affaire potentiel de l'opportunité. "
 "axelor-crm";"Opportunity";"opportunity-form";"worstCase";"Montant minimal estimé de chiffre d'affaire potentiel de l'opportunité. "
-"axelor-crm";"TargetConfiguration";"target-configuration-form";"user";"Permet de sélectionner un utilisateur à qui l'objectif est assigné. "
-"axelor-crm";"TargetConfiguration";"target-configuration-form";"team";"Permet de sélectionner une équipe à qui l'objectif est assigné. "
-"axelor-crm";"TargetConfiguration";"target-configuration-form";"periodTypeSelect";"Permet de sélectionner une période d'activité pour un objectif. Ainsi, si l'on créé un objectif sur une période hebdomadaire mais se déroulant sur 6 mois, on disposera chaque semaine automatiquement d'un nouvel objectif reprenant les variables configurées."
 "axelor-crm";"AppCrm";"app-crm-config-form";"isManageRecurrent";"Quand elle est activée, cette configuration permet d’afficher sur les opportunités un onglet 'Récurrent' qui permet d’indiquer qu’un montant de revenu récurrent est prévu pour cette opportunité, ainsi que la date prévue de démarrage du récurrent et la durée. "
 "axelor-crm";"AppCrm";"app-crm-config-form";"defaultRecurringDuration";"Ce champ permet de définir une valeur par défaut en mois pour la durée prévue du revenu récurrent sur les opportunités. "

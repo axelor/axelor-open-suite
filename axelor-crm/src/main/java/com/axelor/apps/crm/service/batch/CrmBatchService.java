@@ -53,10 +53,6 @@ public class CrmBatchService extends AbstractBatchService {
         batch = eventReminder(crmBatch);
         break;
 
-      case CrmBatchRepository.ACTION_BATCH_TARGET:
-        batch = target(crmBatch);
-        break;
-
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -71,10 +67,5 @@ public class CrmBatchService extends AbstractBatchService {
   public Batch eventReminder(CrmBatch crmBatch) {
 
     return Beans.get(BatchEventReminder.class).run(crmBatch);
-  }
-
-  public Batch target(CrmBatch crmBatch) {
-
-    return Beans.get(BatchTarget.class).run(crmBatch);
   }
 }

@@ -76,7 +76,6 @@
 
   <selection name="icrm.batch.action.select">
     <option value="21">Event reminder</option>
-    <option value='22'>Target</option>
   </selection>
 
   <selection name="crm.target.configuration.period.type.select">

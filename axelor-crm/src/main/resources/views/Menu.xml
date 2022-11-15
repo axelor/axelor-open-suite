@@ -136,9 +136,6 @@
     <call class="com.axelor.apps.crm.web.CalendarController" method="showMyEvents"/>
   </action-method>
 
-  <menuitem name="crm-conf-target" parent="crm-root" order="30" title="Objectives"
-    action="crm.conf.target"/>
-
   <menuitem name="crm-root-report" parent="crm-root" title="Reportings" order="45"
     icon="fa-bar-chart"/>
 
@@ -161,23 +158,6 @@
     model="com.axelor.apps.crm.db.EventCategory">
     <view type="grid" name="event-category-conf-grid"/>
     <view type="form" name="event-category-form"/>
-  </action-view>
-
-  <menuitem name="crm-conf-target-configuration" parent="crm-conf"
-    title="Objectives configurations" action="crm.conf.target.configuration"/>
-
-  <action-view name="crm.conf.target.configuration" title="Objectives Configurations"
-    model="com.axelor.apps.crm.db.TargetConfiguration">
-    <view type="grid" name="target-configuration-grid"/>
-    <view type="form" name="target-configuration-form"/>
-    <view-param name="search-filters" value="target-configuration-filters"/>
-  </action-view>
-
-  <action-view name="crm.conf.target" title="Objectives"
-    model="com.axelor.apps.crm.db.Target">
-    <view type="grid" name="target-grid"/>
-    <view type="form" name="target-form"/>
-    <view-param name="search-filters" value="target-filters"/>
   </action-view>
 
   <menuitem name="crm-conf-lost-reason" parent="crm-conf" title="Lost reasons"
@@ -370,28 +350,6 @@
   <action-view name="crm.lead.dashboard.salesman.view" title="Leads monitoring">
     <view type="dashboard" name="crm.lead.salesman"/>
   </action-view>
-
-  <menuitem name="menu-target-dashboard" parent="crm-root-report" title="Objectives"/>
-
-  <menuitem name="menu-target-user-dashboard" parent="menu-target-dashboard"
-    title="Salesman" action="crm.target.user.dashboard.view"/>
-
-  <action-view name="crm.target.user.dashboard.view" title="Objectives monitoring">
-    <view type="dashboard" name="crm.target.user.dashboard"/>
-    <context name="date" expr="eval: __config__.date"/>
-    <context name="user" expr="eval:__user__"/>
-  </action-view>
-
-  <menuitem name="menu-target-team-dashboard" parent="menu-target-dashboard"
-    title="Manager" action="crm.target.team.dashboard.view" order="-1"/>
-
-  <action-view name="crm.target.team.dashboard.view" title="Objectives monitoring">
-    <view type="dashboard" name="crm.target.team.dashboard"/>
-    <context name="team"
-      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
-    <context name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
-  </action-view>
-
 
   <menuitem name="menu-opportunities-dashboard" parent="crm-root-report"
     title="Opportunities" order="-20"/>
