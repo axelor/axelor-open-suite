@@ -33,6 +33,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -445,6 +447,27 @@ public class InvoiceTermController {
       response.setValue("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void addLinkedFiles(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      if (invoiceTerm.getMoveLine() != null
+          && invoiceTerm.getMoveLine().getMove() != null
+          && invoiceTerm.getMoveLine().getMove().getId() != null) {
+        List<DMSFile> dmsFileList =
+            Beans.get(DMSFileRepository.class)
+                .all()
+                .filter(
+                    "self.isDirectory = false AND self.relatedId = "
+                        + invoiceTerm.getMoveLine().getMove().getId()
+                        + " AND self.relatedModel = 'com.axelor.apps.account.db.Move'")
+                .fetch();
+        response.setValue("$invoiceTermMoveFile", dmsFileList);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
