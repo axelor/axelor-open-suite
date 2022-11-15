@@ -1,0 +1,3 @@
+---
+title: "Sale Order: Fixed stack overflow error when partner has a parent partner"
+type: fix
