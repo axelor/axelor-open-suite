@@ -15,29 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.service;
+package com.axelor.apps.contract.service;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.businessproject.db.InvoicingProject;
-import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
-import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
-public class WorkflowCancelServiceProjectImpl extends WorkflowCancelServiceContractImpl {
-
-  @Inject InvoicingProjectRepository invoicingProjectRepo;
+public class WorkflowCancelServiceContractImpl extends WorkflowCancelServiceSupplychainImpl {
 
   protected ConsumptionLineRepository consumptionLineRepo;
 
   @Inject
-  public WorkflowCancelServiceProjectImpl(
+  public WorkflowCancelServiceContractImpl(
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
@@ -47,21 +43,31 @@ public class WorkflowCancelServiceProjectImpl extends WorkflowCancelServiceContr
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
         saleOrderRepository,
-        purchaseOrderRepository,
-        consumptionLineRepo);
+        purchaseOrderRepository);
+    this.consumptionLineRepo = consumptionLineRepo;
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void afterCancel(Invoice invoice) throws AxelorException {
     super.afterCancel(invoice);
+    invoice.getInvoiceLineList().stream()
+        .filter(invoiceLine -> invoiceLine.getContractLine() != null)
+        .forEach(
+            invoiceLine -> {
+              invoiceLine.getContractLine().setIsInvoiced(false);
+              invoiceLine.setContractLine(null);
+            });
 
-    InvoicingProject invoicingProject =
-        invoicingProjectRepo.all().filter("self.invoice = ?", invoice.getId()).fetchOne();
-
-    if (invoicingProject != null) {
-      invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_CANCELED);
-      invoicingProjectRepo.save(invoicingProject);
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      consumptionLineRepo
+          .all()
+          .filter("self.invoiceLine = ?", invoiceLine)
+          .fetch()
+          .forEach(
+              consumptionLine -> {
+                consumptionLine.setIsInvoiced(false);
+                consumptionLine.setInvoiceLine(null);
+              });
     }
   }
 }
