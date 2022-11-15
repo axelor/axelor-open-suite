@@ -157,7 +157,8 @@ public class LeaveController {
               .add("form", "leave-request-form")
               .param("search-filters", "leave-request-filters");
 
-      actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
+      actionView.domain(
+          "(self.statusSelect = 1 OR self.statusSelect = 3 OR self.statusSelect = 4)");
 
       if (employee == null || !employee.getHrManager()) {
         actionView
