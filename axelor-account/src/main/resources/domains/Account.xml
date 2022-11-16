@@ -59,8 +59,6 @@
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.select" default="0"/>
 
-    <unique-constraint columns="code,company"/>
-
     <extra-code><![CDATA[
 
       	// COMMON POSITION

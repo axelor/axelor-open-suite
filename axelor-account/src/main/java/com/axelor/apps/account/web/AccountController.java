@@ -29,9 +29,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.tool.MassUpdateTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -73,30 +71,9 @@ public class AccountController {
       ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      Long accountId = account.getId();
-      if (accountId == null) {
-        accountId = 0L;
-      }
-      List<Account> sameAccountList =
-          Beans.get(AccountRepository.class)
-              .all()
-              .filter(
-                  "self.company = ?1 AND self.code = ?2 AND self.id != ?3",
-                  account.getCompany(),
-                  account.getCode(),
-                  accountId)
-              .fetch();
-      if (!ObjectUtils.isEmpty(sameAccountList)) {
-
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY),
-            account.getCode(),
-            account.getCompany().getName());
-      }
-
+      Beans.get(AccountService.class).checkIfCodeAccountAlreadyExistForCompany(account);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
