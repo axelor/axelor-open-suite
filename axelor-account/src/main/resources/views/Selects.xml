@@ -109,7 +109,6 @@
     <option value="1">Title</option>
     <option value="2">Detail</option>
     <option value="3">Separator</option>
-    <option value="4">Group</option>
   </selection>
 
   <selection name='accounting.report.type.report.export.type.select'>
@@ -120,8 +119,7 @@
   <selection name='accounting.report.config.line.rule.type.select'>
     <option value="1">No value</option>
     <option value="2">Sum of accounts</option>
-    <option value="4" order="3">Percentage</option>
-    <option value="3" order="4">Custom rule</option>
+    <option value="3">Custom rule</option>
   </selection>
 
   <selection name='accounting.report.config.line.sum.of.account.select'>
@@ -409,7 +407,6 @@
     <option value="1">No comparison</option>
     <option value="2">Previous year</option>
     <option value="3">Same period on previous year</option>
-    <option value="4">Other period</option>
   </selection>
 
   <selection name="accounting.report.type.no.of.periods.select">

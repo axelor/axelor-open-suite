@@ -21,7 +21,6 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
-import com.axelor.apps.account.service.AccountingReportValueService;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -32,10 +31,8 @@ public class AccountingReportPrintServiceBankPaymentImpl extends AccountingRepor
 
   @Inject
   public AccountingReportPrintServiceBankPaymentImpl(
-      AppBaseService appBaseService,
-      AccountingReportValueService accountingReportValueService,
-      AccountingReportRepository accountingReportRepository) {
-    super(appBaseService, accountingReportValueService, accountingReportRepository);
+      AppBaseService appBaseService, AccountingReportRepository accountingReportRepository) {
+    super(appBaseService, accountingReportRepository);
   }
 
   @Override

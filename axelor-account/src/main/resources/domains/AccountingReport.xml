@@ -10,8 +10,6 @@
     <string name="ref" title="Ref." namecolumn="true"/>
     <date name="dateFrom" title="From"/>
     <date name="dateTo" title="To"/>
-    <date name="otherDateFrom" title="From"/>
-    <date name="otherDateTo" title="To"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>

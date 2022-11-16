@@ -34,16 +34,12 @@ import org.slf4j.LoggerFactory;
 public class AccountingReportPrintServiceImpl implements AccountingReportPrintService {
 
   protected AppBaseService appBaseService;
-  protected AccountingReportValueService accountingReportValueService;
   protected AccountingReportRepository accountingReportRepository;
 
   @Inject
   public AccountingReportPrintServiceImpl(
-      AppBaseService appBaseService,
-      AccountingReportValueService accountingReportValueService,
-      AccountingReportRepository accountingReportRepository) {
+      AppBaseService appBaseService, AccountingReportRepository accountingReportRepository) {
     this.appBaseService = appBaseService;
-    this.accountingReportValueService = accountingReportValueService;
     this.accountingReportRepository = accountingReportRepository;
   }
 
@@ -105,16 +101,5 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
         .toAttach(accountingReport)
         .generate()
         .getFileLink();
-  }
-
-  @Override
-  public String printCustomReport(AccountingReport accountingReport) throws AxelorException {
-    accountingReportValueService.computeReportValues(accountingReport);
-
-    String fileLink = this.print(accountingReport);
-
-    accountingReportValueService.clearReportValues(accountingReport);
-
-    return fileLink;
   }
 }

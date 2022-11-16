@@ -24,6 +24,4 @@ public interface AccountingReportPrintService {
   String print(AccountingReport accountingReport) throws AxelorException;
 
   String computeName(AccountingReport accountingReport);
-
-  String printCustomReport(AccountingReport accountingReport) throws AxelorException;
 }
