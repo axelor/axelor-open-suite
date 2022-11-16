@@ -160,8 +160,7 @@
 
     <panel-tabs name="mainPanelTab">
       <panel name="contactPanel" title="Contact" colSpan="12">
-        <field name="jobTitleFunction" colSpan="6" placeholder="Function" showTitle="false"
-          canNew="true"/>
+        <field name="jobTitleFunction" colSpan="6" placeholder="Function" canNew="true"/>
         <field name="companyDepartment" grid-view="company-department-grid"
           form-view="company-department-form"/>
         <panel name="contactDetailPanel" title="Contact details" colSpan="12">
