@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -344,14 +343,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     List<InvoiceLine> createdInvoiceLineList = new ArrayList<>();
     if (taxLineList != null) {
       for (SaleOrderLineTax saleOrderLineTax : taxLineList) {
-        BigDecimal lineAmountToInvoice =
-            percentToInvoice
-                .multiply(saleOrderLineTax.getExTaxBase())
-                .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-        TaxLine taxLine = saleOrderLineTax.getTaxLine();
         InvoiceLineGenerator invoiceLineGenerator =
             invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-                invoice, invoicingProduct, lineAmountToInvoice, taxLine);
+                invoice, invoicingProduct, percentToInvoice, saleOrderLineTax);
 
         List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
         // link to the created invoice line the first line of the sale order.

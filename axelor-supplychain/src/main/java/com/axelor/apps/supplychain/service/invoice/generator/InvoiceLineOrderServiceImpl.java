@@ -6,27 +6,47 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
+
+  protected TaxService taxService;
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public InvoiceLineOrderServiceImpl(TaxService taxService, AppBaseService appBaseService) {
+    this.taxService = taxService;
+    this.appBaseService = appBaseService;
+  }
+
   public InvoiceLineGenerator getInvoiceLineGeneratorWithComputedTaxPrice(
-      Invoice invoice, Product invoicingProduct, BigDecimal lineAmountToInvoice, TaxLine taxLine) {
+      Invoice invoice,
+      Product invoicingProduct,
+      BigDecimal percentToInvoice,
+      OrderLineTax orderLineTax) {
+
+    TaxLine taxLine = orderLineTax.getTaxLine();
+    int scale = appBaseService.getNbDecimalDigitForUnitPrice();
+
+    BigDecimal price =
+        percentToInvoice
+            .multiply(orderLineTax.getExTaxBase())
+            .divide(
+                new BigDecimal("100"), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+
+    BigDecimal lineAmountToInvoice = price.setScale(scale, RoundingMode.HALF_UP);
+
     BigDecimal lineAmountToInvoiceInclTax =
-        (taxLine != null)
-            ? lineAmountToInvoice.add(
-                lineAmountToInvoice.multiply(
-                    taxLine
-                        .getValue()
-                        .divide(
-                            new BigDecimal(100),
-                            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                            RoundingMode.HALF_UP)))
-            : lineAmountToInvoice;
+        taxService.convertUnitPrice(
+            invoicingProduct.getInAti(), orderLineTax.getTaxLine(), price, scale);
 
     return new InvoiceLineGenerator(
         invoice,
