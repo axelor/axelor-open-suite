@@ -764,8 +764,8 @@ public class MoveLineController {
         Beans.get(MoveLineInvoiceTermService.class)
             .generateDefaultInvoiceTerm(moveLine, dueDate, false);
       }
-
       response.setValues(moveLine);
+      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
