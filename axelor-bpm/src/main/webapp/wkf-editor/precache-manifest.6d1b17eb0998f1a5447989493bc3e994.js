@@ -1,23 +1,6 @@
-/*
- * Axelor Business Solutions
- *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
- *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "81b7e5eee0627da54412f704c1be1449",
+    "revision": "b1ab0f6c868b54867c2f56f5ea0d725c",
     "url": "./index.html"
   },
   {
@@ -29,7 +12,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "./static/css/3.24a5c644.chunk.css"
   },
   {
-    "revision": "350db8a47f0039892f3c",
+    "revision": "3cd994b6bd9c892293c4",
     "url": "./static/css/main.4e427609.chunk.css"
   },
   {
@@ -45,8 +28,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "./static/js/3.ef50a943.chunk.js"
   },
   {
-    "revision": "350db8a47f0039892f3c",
-    "url": "./static/js/main.c89a6776.chunk.js"
+    "revision": "3cd994b6bd9c892293c4",
+    "url": "./static/js/main.88d06482.chunk.js"
   },
   {
     "revision": "f9b12699d006eb3e0095",
