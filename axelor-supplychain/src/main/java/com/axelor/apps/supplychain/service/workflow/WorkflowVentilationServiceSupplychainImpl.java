@@ -318,8 +318,18 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
         boolean invoiceIsRefund =
             stockMoveInvoiceService.isInvoiceRefundingStockMove(
                 stockMoveLine.getStockMove(), invoice);
-        stockMoveLine.setQtyInvoiced(
-            invoiceIsRefund ? BigDecimal.ZERO : stockMoveLine.getRealQty());
+
+        // This case happens if you mix into a single invoice refund and non-refund stock moves.
+        if (invoiceLine.getQty().compareTo(BigDecimal.ZERO) < 0) {
+          stockMoveLine.setQtyInvoiced(
+              invoiceIsRefund ? stockMoveLine.getRealQty() : BigDecimal.ZERO);
+        }
+        // This is the most general case
+        else {
+          stockMoveLine.setQtyInvoiced(
+              invoiceIsRefund ? BigDecimal.ZERO : stockMoveLine.getRealQty());
+        }
+
         // search in sale/purchase order lines to set split stock move lines to invoiced.
         if (stockMoveLine.getSaleOrderLine() != null) {
           stockMoveLineRepository
