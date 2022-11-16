@@ -190,6 +190,8 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 
@@ -300,5 +302,6 @@ public class SupplychainModule extends AxelorModule {
     bind(BatchAccountingCutOff.class).to(BatchAccountingCutOffSupplyChain.class);
     bind(AccountingBatchBankPaymentService.class).to(AccountingBatchSupplyChainService.class);
     bind(StockProductRestServiceImpl.class).to(StockProductRestServiceSupplychainImpl.class);
+    bind(InvoiceLineOrderService.class).to(InvoiceLineOrderServiceImpl.class);
   }
 }
