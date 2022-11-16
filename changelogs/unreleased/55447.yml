@@ -1,0 +1,3 @@
+---
+title: "Fixed asset : fix wrong disposal depreciation value computation in fixed asset line list"
+type: fix
