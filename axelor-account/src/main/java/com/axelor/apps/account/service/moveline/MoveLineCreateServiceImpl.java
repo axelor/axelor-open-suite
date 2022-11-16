@@ -221,7 +221,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       String description)
       throws AxelorException {
 
-    amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+    if (amountInSpecificMoveCurrency != null) {
+      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+    }
 
     log.debug(
         "Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",
@@ -258,7 +260,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (currencyRate == null) {
-      if (amountInSpecificMoveCurrency.compareTo(BigDecimal.ZERO) == 0) {
+      if (amountInSpecificMoveCurrency == null
+          || amountInSpecificMoveCurrency.compareTo(BigDecimal.ZERO) == 0) {
         currencyRate = BigDecimal.ONE;
       } else {
         currencyRate =

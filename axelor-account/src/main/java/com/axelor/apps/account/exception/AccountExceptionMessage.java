@@ -29,7 +29,14 @@ public final class AccountExceptionMessage {
       /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
 
   public static final String IMMO_FIXED_ASSET_GROSS_VALUE_GREATER_ORIGINAL =
-      /*$$(*/ "The input gross value neither can't be greater or equal to the asset gross value nor equal to 0." /*)*/;
+      /*$$(*/ "The input gross value can't be greater than the asset gross value." /*)*/;
+  public static final String IMMO_FIXED_ASSET_GROSS_VALUE_LOWER_ORIGINAL =
+      /*$$(*/ "The input gross value can't be lower than the asset gross value." /*)*/;
+  public static final String IMMO_FIXED_ASSET_GROSS_VALUE_EQUAL_ORIGINAL =
+      /*$$(*/ "The input gross value can't be equal to the asset gross value." /*)*/;
+  public static final String IMMO_FIXED_ASSET_GROSS_VALUE_ZERO =
+      /*$$(*/ "The input gross value can't be equal to 0." /*)*/;
+
   public static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX =
       /*$$(*/ "Disposal quantity can not be equal to the fixed asset max quantity (%s)" /*)*/;
   public static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0 =
@@ -48,8 +55,6 @@ public final class AccountExceptionMessage {
       /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
   public static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
       /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
-  public static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
-      /*$$(*/ "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
   public static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
       /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
   public static final String
