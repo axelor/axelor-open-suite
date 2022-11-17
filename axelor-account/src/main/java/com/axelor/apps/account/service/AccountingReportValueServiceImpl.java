@@ -126,16 +126,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     this.checkAccountingReportType(accountingReportType);
 
     boolean isAllComputed = false;
-    LocalTime startTime, processTime;
-    startTime = LocalTime.now();
+    LocalTime startTime = LocalTime.now();
 
     while (!isAllComputed) {
       isAllComputed =
           this.createReportValues(
               accountingReport, valuesMapByColumn, valuesMapByLine, startDate, endDate);
-      processTime = LocalTime.now();
 
-      if (startTime.until(processTime, ChronoUnit.SECONDS) > appBaseService.getProcessTimeout()) {
+      if (startTime.until(LocalTime.now(), ChronoUnit.SECONDS) > appBaseService.getProcessTimeout()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT,
