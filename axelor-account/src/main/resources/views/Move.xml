@@ -1091,7 +1091,7 @@
     <attribute for="companyBankDetails" name="hidden"
       expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <attribute for="companyBankDetails" name="required"
-      expr="eval: __config__.app.getApp('base')?.getManageMultiBanks() &amp;&amp; [1,2].contains(journal.journalType.technicalTypeSelect)"/>
+      expr="eval: __config__.app.getApp('base')?.getManageMultiBanks() &amp;&amp; [1,2].contains(journal?.journalType?.technicalTypeSelect)"/>
   </action-attrs>
 
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
