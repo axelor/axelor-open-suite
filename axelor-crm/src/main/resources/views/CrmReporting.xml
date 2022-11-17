@@ -7,13 +7,20 @@
     model="com.axelor.apps.crm.db.CrmReporting">
     <field name="typeSelect"/>
     <field name="companySet" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="agencySet" if="__config__.app.getApp('base').getAgenciesManagement()"/>
+    <field name="agencySet" if="__config__.app.getApp('crm').getAgenciesManagement()"/>
     <field name="teamSet" if="__config__.app.getApp('base').getTeamManagement()"/>
     <field name="countrySet"/>
     <field name="industrySectorSet"/>
     <field name="categorySet"/>
     <field name="fromDate"/>
     <field name="toDate"/>
+    <button name="openResultButton" help="Open the list of results"
+      onClick="action-crm-reporting-method-show-results" icon="fa-list"/>
+    <button name="showOpportunitiesButton" help="Show the opportunities"
+      onClick="action-crm-reporting-method-show-opportunities"
+      hideIf="typeSelect == 'com.axelor.apps.crm.db.Lead'" icon="fa-list"/>
+    <button name="showEventsButton" help="Show the events"
+      onClick="action-crm-reporting-method-show-events" icon="fa-list"/>
   </grid>
 
   <form name="crm-reporting-form" title="Crm reporting"
@@ -23,7 +30,7 @@
       <field name="companySet" widget="TagSelect"
         if="__config__.app.getApp('base').getEnableMultiCompany()"/>
       <field name="agencySet" widget="TagSelect"
-        if="__config__.app.getApp('base').getAgenciesManagement()"/>
+        if="__config__.app.getApp('crm').getAgenciesManagement()"/>
       <field name="teamSet" widget="TagSelect"
         if="__config__.app.getApp('base').getTeamManagement()"/>
       <field name="countrySet" widget="TagSelect"/>

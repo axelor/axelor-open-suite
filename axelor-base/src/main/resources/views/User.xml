@@ -107,14 +107,14 @@
           onSelect="action-user-attrs-domain-active-team"/>
         <field name="activeAgency" canEdit="false"
           onSelect="action-user-attrs-domain-active-agency" form-view="agency-form"
-          grid-view="agency-grid" if="__config__.app.getApp('base').getAgenciesManagement()"/>
+          grid-view="agency-grid" if="__config__.app.getApp('crm').getAgenciesManagement()"/>
         <panel-related name="companySetPanel" title="Internal companies"
           field="companySet" showTitle="false" canNew="false"
           showIf="[2,5].indexOf(stepStatusSelect) > -1" colSpan="12"/>
         <field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid"
           colSpan="12"/>
         <field name="agencySet" colSpan="12" canEdit="false" form-view="agency-form"
-          grid-view="agency-grid" if="__config__.app.getApp('base').getAgenciesManagement()"/>
+          grid-view="agency-grid" if="__config__.app.getApp('crm').getAgenciesManagement()"/>
       </panel>
       <panel name="stepMainPanel" showIf="stepStatusSelect == 3" colSpan="12">
         <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
@@ -258,7 +258,7 @@
         <field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid"
           colSpan="12"/>
       </panel>
-      <panel if="__config__.app.getApp('base').getAgenciesManagement()" name="agencyPanel"
+      <panel if="__config__.app.getApp('crm').getAgenciesManagement()" name="agencyPanel"
         title="Agencies" showIf="[2,5].indexOf(stepStatusSelect) > -1">
         <field name="activeAgency" canEdit="false"
           onSelect="action-user-attrs-domain-active-agency" form-view="agency-form"
