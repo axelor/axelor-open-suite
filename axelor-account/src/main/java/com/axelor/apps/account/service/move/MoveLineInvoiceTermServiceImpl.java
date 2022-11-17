@@ -85,7 +85,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         move.getPaymentCondition().getPaymentConditionLineList().stream()
             .anyMatch(PaymentConditionLine::getIsHoldback);
     Account holdbackAccount = containsHoldback ? this.getHoldbackAccount(moveLine, move) : null;
-    boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
+    boolean isHoldback =
+        moveLine.getAccount() != null && moveLine.getAccount().equals(holdbackAccount);
     BigDecimal total =
         invoiceTermService.getTotalInvoiceTermsAmount(moveLine, holdbackAccount, containsHoldback);
     MoveLine holdbackMoveLine = null;

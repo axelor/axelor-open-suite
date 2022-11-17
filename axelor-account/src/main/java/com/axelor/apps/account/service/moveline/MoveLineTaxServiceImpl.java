@@ -271,10 +271,12 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         partner,
         move.getCompany(),
         moveline.getAccount(),
-        (move.getJournal().getJournalType().getTechnicalTypeSelect()
-            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE),
-        (move.getJournal().getJournalType().getTechnicalTypeSelect()
-            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE));
+        (move.getJournal().getJournalType() != null
+            && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE),
+        (move.getJournal().getJournalType() != null
+            && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE));
   }
 
   @Override

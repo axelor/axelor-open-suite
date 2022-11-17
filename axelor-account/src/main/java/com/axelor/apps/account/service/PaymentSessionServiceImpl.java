@@ -163,8 +163,9 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         .map(AccountManagement::getJournal)
         .filter(
             it ->
-                it.getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
+                it.getJournalType() != null
+                    && it.getJournalType().getTechnicalTypeSelect()
+                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
         .collect(Collectors.toList());
   }
 

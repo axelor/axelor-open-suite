@@ -610,6 +610,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public void exceptionOnGenerateCounterpart(Move move) throws AxelorException {
     if (move.getPaymentMode() == null
+        && move.getJournal().getJournalType() != null
         && (move.getJournal()
                 .getJournalType()
                 .getTechnicalTypeSelect()

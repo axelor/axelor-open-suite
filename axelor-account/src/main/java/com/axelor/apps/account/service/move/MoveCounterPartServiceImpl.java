@@ -85,12 +85,14 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   @Override
   public MoveLine createCounterpartMoveLine(Move move) throws AxelorException {
     Account accountingAccount = getAccountingAccountFromJournal(move);
-    boolean isDebit;
+    if (accountingAccount == null) {
+      return null;
+    }
     BigDecimal amount = getCounterpartAmount(move);
     if (amount.signum() == 0) {
       return null;
     }
-    isDebit = amount.compareTo(BigDecimal.ZERO) > 0;
+    boolean isDebit = amount.compareTo(BigDecimal.ZERO) > 0;
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             move,
@@ -125,6 +127,9 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected Account getAccountingAccountFromJournal(Move move) throws AxelorException {
     Account accountingAccount = null;
+    if (move.getJournal().getJournalType() == null) {
+      return null;
+    }
     int technicalTypeSelect = move.getJournal().getJournalType().getTechnicalTypeSelect();
     if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
       accountingAccount =

@@ -975,7 +975,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected boolean isPurchase(InvoiceTerm invoiceTerm) throws AxelorException {
     if (invoiceTerm.getInvoice() != null) {
       return InvoiceToolService.isPurchase(invoiceTerm.getInvoice());
-    } else {
+    } else if (invoiceTerm.getMoveLine() != null
+        && invoiceTerm.getMoveLine().getMove() != null
+        && invoiceTerm.getMoveLine().getMove().getJournal().getJournalType() != null) {
       return invoiceTerm
               .getMoveLine()
               .getMove()
@@ -984,6 +986,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .getTechnicalTypeSelect()
           == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE;
     }
+    return false;
   }
 
   @Override
@@ -1110,11 +1113,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       company = move.getCompany();
       isSupplierPurchase =
-          move.getJournal().getJournalType().getTechnicalTypeSelect()
-              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE;
+          move.getJournal().getJournalType() != null
+              && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE;
       isSupplierRefund =
-          move.getJournal().getJournalType().getTechnicalTypeSelect()
-              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE;
+          move.getJournal().getJournalType() != null
+              && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE;
     }
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
