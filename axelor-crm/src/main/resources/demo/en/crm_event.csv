@@ -38,15 +38,15 @@
 222;2;"Commercial seminar";1;"NOW[+7d09H00m]";"NOW[+8d18H00m]";54000;;;;;;13;3;;;;1;;;;;
 223;2;"Commercial seminar";1;"NOW[+7d09H00m]";"NOW[+8d18H00m]";54000;;;;;;9;1;;;;1;;;;;
 224;2;"Commercial seminar";1;"NOW[+7d09H00m]";"NOW[+8d18H00m]";54000;;;;;;10;1;;;;1;;;;;
-300;3;"Prepare sale leaflet";13;"NOW[10H00m]";"NOW[11H00m]";3600;;2;;;;9;1;;;;;;;;;
-301;3;"Prepare progress report";11;"NOW[14H00m]";"NOW[15H00m]";3600;;4;;;;9;1;;;;;;;;;
-302;3;"Write product sale description";11;"NOW[14H00m]";"NOW[15H30m]";5400;;3;"com.axelor.apps.base.db.Product";3;;8;3;;;;;;;;;
-303;3;"Prepare phone call";11;"NOW[15H00m]";"NOW[18H30m]";12600;;4;"com.axelor.apps.base.db.Product";3;;13;3;;;;;;;;;
-304;3;"Prepare phone call";11;"NOW[15H00m]";"NOW[18H30m]";12600;;4;"com.axelor.apps.base.db.Product";3;;10;1;;;;;;;;;
-305;3;"Prepare progress report";11;"NOW[09H00m]";"NOW[10H00m]";3600;;4;;;;13;3;;;;;;;;;
-500;3;"Where to download the ERP source code";23;"NOW[-2d14H00m]";"NOW[-2d16H00m]";300;1;1;;;;8;3;77;78;;;;100;8;;
-501;3;"How to access the technical documentation";23;"NOW[-1d09H00m]";"NOW[-1d12H00m]";300;1;1;;;;8;3;70;71;;;;100;8;;
-502;3;"Unable to log in with Admin user";23;"NOW[-1d10H00m]";"NOW[09H30m]";1800;1;3;;;;17;4;88;90;;;;100;17;3;10
-503;3;"How to attach a file";22;"NOW[-1d14H00m]";"NOW[-1d13H00m]";3600;2;2;;;;9;1;88;90;;;;10;9;3;10
-504;3;"How to perform an advanced search";21;"NOW[09H00m]";"NOW[10H00m]";3600;2;3;;;;9;1;88;90;;;;0;9;3;10
-505;3;"How to mass update records";21;"NOW[09H30m]";"NOW[10H30m]";3600;2;4;;;;8;3;88;90;;;;0;8;3;10
+300;3;"Prepare sale leaflet";1;"NOW[10H00m]";"NOW[11H00m]";3600;;2;;;;9;1;;;;;;;;;
+301;3;"Prepare progress report";1;"NOW[14H00m]";"NOW[15H00m]";3600;;4;;;;9;1;;;;;;;;;
+302;3;"Write product sale description";1;"NOW[14H00m]";"NOW[15H30m]";5400;;3;"com.axelor.apps.base.db.Product";3;;8;3;;;;;;;;;
+303;3;"Prepare phone call";1;"NOW[15H00m]";"NOW[18H30m]";12600;;4;"com.axelor.apps.base.db.Product";3;;13;3;;;;;;;;;
+304;3;"Prepare phone call";1;"NOW[15H00m]";"NOW[18H30m]";12600;;4;"com.axelor.apps.base.db.Product";3;;10;1;;;;;;;;;
+305;3;"Prepare progress report";1;"NOW[09H00m]";"NOW[10H00m]";3600;;4;;;;13;3;;;;;;;;;
+500;3;"Where to download the ERP source code";1;"NOW[-2d14H00m]";"NOW[-2d16H00m]";300;1;1;;;;8;3;77;78;;;;100;8;;
+501;3;"How to access the technical documentation";1;"NOW[-1d09H00m]";"NOW[-1d12H00m]";300;1;1;;;;8;3;70;71;;;;100;8;;
+502;3;"Unable to log in with Admin user";1;"NOW[-1d10H00m]";"NOW[09H30m]";1800;1;3;;;;17;4;88;90;;;;100;17;3;10
+503;3;"How to attach a file";1;"NOW[-1d14H00m]";"NOW[-1d13H00m]";3600;2;2;;;;9;1;88;90;;;;10;9;3;10
+504;3;"How to perform an advanced search";1;"NOW[09H00m]";"NOW[10H00m]";3600;2;3;;;;9;1;88;90;;;;0;9;3;10
+505;3;"How to mass update records";1;"NOW[09H30m]";"NOW[10H30m]";3600;2;4;;;;8;3;88;90;;;;0;8;3;10

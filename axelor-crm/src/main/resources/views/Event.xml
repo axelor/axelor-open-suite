@@ -104,12 +104,6 @@
         onClick="save,action-method-crm-event-assign-tome"/>
       <button name="viewOnMapBtn" icon="fa-map-marker"
         onClick="com.axelor.apps.crm.web.EventController:viewMap" showIf="typeSelect == 2"/>
-      <button name="startBtn" readonlyIf="statusSelect == 12 || statusSelect == 14"
-        icon="fa-play" showIf="typeSelect == 3" onClick="action-set-task-status-select-2,save"/>
-      <button name="pauseBtn" readonlyIf="statusSelect == 14 || statusSelect == 13"
-        icon="fa-pause" showIf="typeSelect == 3" onClick="action-set-task-status-select-3,save"/>
-      <button name="acceptBtn" readonlyIf="statusSelect == 14" icon="fa-power-off"
-        showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
     </toolbar>
     <menubar>
       <menu name="eventToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -150,23 +144,12 @@
         </viewer>
       </field>
       <field name="statusSelect" showTitle="false" colSpan="3" selection-in="[1, 2, 3]"
-        showIf="typeSelect == 1 || typeSelect == 2">
+        showIf="typeSelect == 1 || typeSelect == 2 || typeSelect == 3">
         <viewer depends="statusSelect"><![CDATA[
 	           		<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 1" x-translate>Planned</span>
 	          		<span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 2" x-translate>Realized</span>
 	          		<span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
 	       		 ]]>
-        </viewer>
-      </field>
-      <field name="statusSelect" showTitle="false" colSpan="3"
-        selection-in="[11, 12, 13, 14, 15]" showIf="typeSelect == 3">
-        <viewer depends="statusSelect"><![CDATA[
-					<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 11" x-translate>Not started</span>
-					<span class="label label-warning" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 12" x-translate>On going</span>
-					<span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 13" x-translate>Pending</span>
-					<span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 14" x-translate>Finished</span>
-					<span class="label label-default" style="background-color: #AB274F; margin: 0px 0 !important; display: inline-table; line-height: initial;" ng-show="record.statusSelect == 15" x-translate>Reported</span>
-				]]>
         </viewer>
       </field>
       <field name="subject" showTitle="false" colSpan="12">
@@ -305,19 +288,14 @@
                     <span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 1 &amp;&amp; record.typeSelect != 5" x-translate>Planned</span>
                     <span class="label label-success" ng-show="record.statusSelect == 2" x-translate>Realized</span>
                     <span class="label label-important" ng-show="record.statusSelect == 3" x-translate>Canceled</span>
-                    <span class="label label-default" style="background-color: #0285D8;" ng-show="record.statusSelect == 11 &amp;&amp; record.typeSelect != 5" x-translate>Not started</span>
-                    <span class="label label-warning" ng-show="record.statusSelect == 12 &amp;&amp; record.typeSelect != 5" x-translate>On going</span>
-                    <span class="label label-important" ng-show="record.statusSelect == 13 &amp;&amp; record.typeSelect != 5" x-translate>Pending</span>
-                    <span class="label label-success" ng-show="record.statusSelect == 14 &amp;&amp; record.typeSelect != 5" x-translate>Finished</span>
-                    <span class="label label-default" style="background-color: #AB274F;" ng-show="record.statusSelect == 15 &amp;&amp; record.typeSelect != 5" x-translate>Reported</span>
                 </div>
                   <div style="float: left;">
                     <strong>{{subject}}</strong><br/>
                     {{$fmt('startDateTime')}}
                 </div>
                 <div style="float: right;margin-right:20px;">
-                    <button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.statusSelect != 14 &amp;&amp; record.typeSelect != 5" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent" x-translate>Done</button>
-                    <button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.statusSelect != 15 &amp;&amp; record.typeSelect != 5" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent" x-translate>Cancel</button>
+                    <button type="button" ng-show="record.statusSelect != 2 &amp;&amp; record.typeSelect != 5" class="btn btn-success" ui-action-click="com.axelor.apps.crm.web.EventController:realizeEvent" x-translate>Done</button>
+                    <button type="button" ng-show="record.statusSelect != 3 &amp;&amp; record.typeSelect != 5" class="btn btn-danger" ui-action-click="com.axelor.apps.crm.web.EventController:cancelEvent" x-translate>Cancel</button>
                 </div>
 	        </div>
 			<br/></br/>
@@ -401,18 +379,6 @@
       expr="eval: (__user__ != user &amp;&amp; !internalGuestSet?.contains(__user__)) &amp;&amp; visibilitySelect == 2"/>
   </action-attrs>
 
-  <action-group name="action-group-crm-task-start-click">
-    <action name="action-set-task-status-select-2"/>
-  </action-group>
-
-  <action-group name="action-group-crm-task-pause-click">
-    <action name="action-set-task-status-select-3"/>
-  </action-group>
-
-  <action-group name="action-group-crm-task-accept-click">
-    <action name="action-set-task-status-select-4"/>
-  </action-group>
-
   <action-group name="action-event-group-on-save">
     <action name="action-event-record-compute-attendee-list"/>
     <action name="action-event-record-subjectTeam"/>
@@ -485,7 +451,6 @@
   </action-group>
 
   <action-group name="action-event-type-select-onchange-group">
-    <action name="action-event-record-reset-status-select"/>
     <action name="action-event-record-reset-category"/>
     <action name="action-event-attrs-title-start-date-time"/>
   </action-group>
@@ -548,7 +513,6 @@
 
   <action-record name="action-event-record-task-status-select"
     model="com.axelor.apps.crm.db.Event">
-    <field name="statusSelect" expr="11"/>
     <field name="progressSelect" expr="0"/>
     <field name="prioritySelect" expr="2"/>
   </action-record>
@@ -643,21 +607,6 @@
       expr="eval:attendees.collect{it?.name}.join(', ')"/>
   </action-record>
 
-  <!-- ACTIONS TO SET SELECTS -->
-
-  <action-record name="action-set-task-status-select-2"
-    model="com.axelor.apps.crm.db.Event">
-    <field name="statusSelect" expr="eval:12"/>
-  </action-record>
-  <action-record name="action-set-task-status-select-3"
-    model="com.axelor.apps.crm.db.Event">
-    <field name="statusSelect" expr="eval:13"/>
-  </action-record>
-  <action-record name="action-set-task-status-select-4"
-    model="com.axelor.apps.crm.db.Event">
-    <field name="statusSelect" expr="eval:14"/>
-  </action-record>
-
   <action-record name="action-event-new-leave" model="com.axelor.apps.crm.db.Event">
     <field name="typeSelect" expr="4"/>
     <field name="user" expr="eval: __user__"/>
@@ -671,14 +620,6 @@
       if="visibilitySelect == 2 &amp;&amp; disponibilitySelect == 1"/>
     <field name="subjectTeam" expr="eval: com.axelor.i18n.I18n.get('Available')"
       if="visibilitySelect == 2 &amp;&amp; disponibilitySelect == 2"/>
-  </action-record>
-
-  <action-record name="action-event-record-reset-status-select"
-    model="com.axelor.apps.crm.db.Event">
-    <field name="statusSelect" expr="eval: 1"
-      if="typeSelect != 3 &amp;&amp; typeSelect != 5 &amp;&amp; statusSelect &gt; 9"/>
-    <field name="statusSelect" expr="eval: 11"
-      if="(typeSelect == 3 || typeSelect == 5) &amp;&amp; statusSelect &lt;= 9"/>
   </action-record>
 
   <action-record name="action-event-record-reset-category"
@@ -736,7 +677,8 @@
     </filter>
     <filter title="My Upcoming Tasks">
       <domain>self.user = :__user__ and self.startDateTime &lt; :_newDate and (self.statusSelect =
-        11 or self.statusSelect = 12)</domain>
+        1
+        or self.statusSelect = 2)</domain>
     </filter>
     <filter title="My Project Tasks">
       <domain>self.team = :_myActiveTeam</domain>
