@@ -21,7 +21,6 @@ import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.crm.db.CrmReporting;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
@@ -30,7 +29,6 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.common.base.Strings;
@@ -111,9 +109,9 @@ public class CrmReportingServiceImpl implements CrmReportingService {
     } else {
       leadQuery(crmReporting, model);
     }
-    AppCrm appCrm = (AppCrm) Beans.get(AppService.class).getApp("crm");
 
-    if (!crmReporting.getAgencySet().isEmpty() && appCrm.getAgenciesManagement())
+    if (!crmReporting.getAgencySet().isEmpty()
+        && ((AppCrm) appBaseService.getApp("crm")).getAgenciesManagement())
       this.addParams(
           "self."
               + model

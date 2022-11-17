@@ -578,15 +578,6 @@
       expr="eval:__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </action-view>
 
-  <menuitem title="Agencies" name="admin-root-user-agency" parent="admin-root-user"
-    action="admin.root.user.agency" order="3"
-    if="__config__.app.isApp('crm') &amp;&amp; __config__.app.getApp('crm').getAgenciesManagement()"/>
-  <action-view name="admin.root.user.agency" title="Agencies"
-    model="com.axelor.apps.base.db.Agency">
-    <view type="grid" name="agency-grid"/>
-    <view type="form" name="agency-form"/>
-  </action-view>
-
   <menuitem name="admin-root-user-configuration" parent="admin-root-user"
     title="Configuration" icon="fa-cog" order="4"/>
 
