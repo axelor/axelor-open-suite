@@ -17,14 +17,21 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +39,17 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
 
   protected final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected AppSaleService appSaleService;
+  protected CurrencyService currencyService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
-  public SaleOrderMarginServiceImpl(AppSaleService appSaleService) {
+  public SaleOrderMarginServiceImpl(
+      AppSaleService appSaleService,
+      CurrencyService currencyService,
+      ProductCompanyService productCompanyService) {
     this.appSaleService = appSaleService;
+    this.currencyService = currencyService;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -46,7 +60,6 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
 
     if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-
         if (saleOrderLine.getProduct() == null
             || (saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0
                 && !appSaleService.getAppSale().getConsiderZeroCost())) {
@@ -67,7 +80,51 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
         computeRate(totalCostPrice, totalGrossMargin));
   }
 
-  public BigDecimal computeRate(BigDecimal saleCostPrice, BigDecimal totalGrossMargin) {
+  @Override
+  public void computeSubMargin(SaleOrderLine saleOrderLine) throws AxelorException {
+
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    Company company = saleOrder.getCompany();
+    Product product = saleOrderLine.getProduct();
+
+    BigDecimal exTaxTotal = saleOrderLine.getExTaxTotal();
+    BigDecimal subTotalCostPrice = saleOrderLine.getSubTotalCostPrice();
+    BigDecimal subTotalGrossMargin = BigDecimal.ZERO;
+    BigDecimal subMarginRate = BigDecimal.ZERO;
+    BigDecimal totalWT =
+        currencyService.getAmountCurrencyConvertedAtDate(
+            saleOrder.getCurrency(), company.getCurrency(), exTaxTotal, null);
+
+    if (product != null
+        && exTaxTotal.compareTo(BigDecimal.ZERO) != 0
+        && subTotalCostPrice.compareTo(BigDecimal.ZERO) != 0) {
+      subTotalGrossMargin = totalWT.subtract(subTotalCostPrice);
+      subMarginRate = computeRate(totalWT, subTotalGrossMargin);
+    }
+
+    if (appSaleService.getAppSale().getConsiderZeroCost()
+        && (exTaxTotal.compareTo(BigDecimal.ZERO) == 0
+            || subTotalCostPrice.compareTo(BigDecimal.ZERO) == 0)) {
+      subTotalGrossMargin = exTaxTotal.subtract(subTotalCostPrice);
+      subMarginRate = computeRate(exTaxTotal, subTotalGrossMargin);
+    }
+
+    BigDecimal subMarkup = computeRate(subTotalCostPrice, subTotalGrossMargin);
+    setSaleOrderLineMarginInfo(saleOrderLine, subTotalGrossMargin, subMarginRate, subMarkup);
+  }
+
+  @Override
+  public Map<String, BigDecimal> getSaleOrderLineComputedMarginInfo(SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    HashMap<String, BigDecimal> map = new HashMap<>();
+    computeSubMargin(saleOrderLine);
+    map.put("subTotalGrossMargin", saleOrderLine.getSubTotalGrossMargin());
+    map.put("subMarginRate", saleOrderLine.getSubMarginRate());
+    map.put("subTotalMarkup", saleOrderLine.getSubTotalMarkup());
+    return map;
+  }
+
+  protected BigDecimal computeRate(BigDecimal saleCostPrice, BigDecimal totalGrossMargin) {
     BigDecimal rate = BigDecimal.ZERO;
     if (saleCostPrice.compareTo(BigDecimal.ZERO) != 0) {
       rate =
@@ -77,6 +134,16 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
                   saleCostPrice, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     }
     return rate;
+  }
+
+  protected void setSaleOrderLineMarginInfo(
+      SaleOrderLine saleOrderLine,
+      BigDecimal subTotalGrossMargin,
+      BigDecimal subMarginRate,
+      BigDecimal subTotalMarkup) {
+    saleOrderLine.setSubTotalGrossMargin(subTotalGrossMargin);
+    saleOrderLine.setSubMarginRate(subMarginRate);
+    saleOrderLine.setSubTotalMarkup(subTotalMarkup);
   }
 
   protected void setSaleOrderMarginInfo(

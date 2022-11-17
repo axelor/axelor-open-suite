@@ -34,6 +34,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
@@ -72,11 +73,9 @@ public class SaleOrderLineController {
 
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
-    SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
-
-    saleOrderLine.setSaleOrder(saleOrder);
-    Map<String, BigDecimal> map = saleOrderLineService.computeSubMargin(saleOrder, saleOrderLine);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
+    Map<String, BigDecimal> map =
+        Beans.get(SaleOrderMarginService.class).getSaleOrderLineComputedMarginInfo(saleOrderLine);
 
     response.setValues(map);
   }
