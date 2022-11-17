@@ -125,7 +125,7 @@
     </menubar>
     <panel name="mainPanel" readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0">
       <field name="opportunityStatus" colSpan="12" widget="NavSelect" x-order="sequence"
-        showTitle="false"/>
+        showTitle="false" onChange="action-opportunity-group-status-onchange"/>
       <field name="opportunitySeq" showTitle="false" colSpan="2">
         <viewer depends="opportunitySeq"><![CDATA[
                  	<h3>
@@ -184,16 +184,6 @@
     </panel-tabs>
 
     <panel name="otherDetailsPanel" sidebar="true">
-      <button name="previous-stageBtn" title="Previous step" icon="fa-chevron-circle-left"
-        onClick="save,action-opportunity-set-previous-stage,save"/>
-      <button name="next-stageBtn" title="Next step" icon="fa-chevron-circle-right"
-        onClick="save,action-opportunity-set-next-stage,save"/>
-      <button name="closed-wonBtn" title="Win"
-        hideIf="$get('opportunityStatus.typeSelect') != 0" icon="fa-check-circle"
-        onClick="save,action-method-opportunity-set-stage-closed-won,save"/>
-      <button name="closed-lostBtn" title="Lose" css="btn-danger"
-        hideIf="$get('opportunityStatus.typeSelect') != 0" icon="fa-times"
-        onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
       <field name="opportunityStatus.typeSelect" hidden="true"/>
       <panel name="followUpPanel" title="Follow-up"
         readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0" canCollapse="true">
@@ -510,5 +500,14 @@
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
   </action-view>
+
+  <action-group name="action-opportunity-group-status-onchange">
+    <action name="save"/>
+    <action name="action-method-opportunity-set-stage-closed-won"
+      if="opportunityStatus.typeSelect == __repo__(OpportunityStatus).STATUS_TYPE_CLOSED_WON"/>
+    <action name="action-opportunity-view-opportunity-lost-popup-view"
+      if="opportunityStatus.typeSelect == __repo__(OpportunityStatus).STATUS_TYPE_CLOSED_LOST"/>
+    <action name="save"/>
+  </action-group>
 
 </object-views>
