@@ -41,9 +41,7 @@ public class OpportunityStatusController {
       isLostPresent = true;
     }
 
-    if (isWonPresent && isLostPresent) {
-      response.setAttr("typeSelect", "hidden", true);
-    } else if (isWonPresent) {
+    if (isWonPresent) {
       response.setAttr(
           "typeSelect", "selection-in", OpportunityStatusRepository.STATUS_TYPE_CLOSED_LOST);
     } else if (isLostPresent) {
