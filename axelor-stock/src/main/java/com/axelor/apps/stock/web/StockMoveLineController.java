@@ -223,9 +223,13 @@ public class StockMoveLineController {
         context.getParent() != null
             ? context.getParent().asType(StockMove.class)
             : stockMoveLine.getStockMove();
-    String domain =
-        Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
-    response.setAttr("product", "domain", domain);
+    try {
+      String domain =
+          Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
+      response.setAttr("product", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
