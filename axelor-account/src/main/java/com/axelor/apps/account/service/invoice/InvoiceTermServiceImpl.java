@@ -262,7 +262,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     MoveLine moveLine = invoiceTerm.getMoveLine();
     Invoice invoice = invoiceTerm.getInvoice();
 
-    if (invoiceTermAmount.signum() != 0) {
+    if (invoiceTermAmount.signum() != 0 && this.isMultiCurrency(invoiceTerm)) {
       BigDecimal companyTotal =
           invoice != null
               ? invoice.getCompanyInTaxTotal()
