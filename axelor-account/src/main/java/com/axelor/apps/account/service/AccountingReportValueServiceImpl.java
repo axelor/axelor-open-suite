@@ -1011,8 +1011,13 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     String columnCode = this.getColumnCode(column.getCode(), parentTitle);
 
-    valuesMapByColumn.get(columnCode).put(lineCode, accountingReportValue);
-    valuesMapByLine.get(lineCode).put(columnCode, accountingReportValue);
+    if (valuesMapByColumn.containsKey(columnCode)) {
+      valuesMapByColumn.get(columnCode).put(lineCode, accountingReportValue);
+    }
+
+    if (valuesMapByLine.containsKey(lineCode)) {
+      valuesMapByLine.get(lineCode).put(columnCode, accountingReportValue);
+    }
   }
 
   protected String getColumnCode(String columnCode, String parentTitle) {
