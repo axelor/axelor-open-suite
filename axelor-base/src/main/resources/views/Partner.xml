@@ -449,7 +449,7 @@
               hideIf="isEmployee"/>
             <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
               form-view="company-form" grid-view="company-grid"/>
-            <field name="agency" if="__config__.app.getApp('base').getAgenciesManagement()"/>
+            <field name="agency" if="__config__.app.getApp('crm').getAgenciesManagement()"/>
           </panel>
         </panel>
         <panel name="notesPanel" title="Notes" colSpan="12">

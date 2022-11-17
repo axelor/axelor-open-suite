@@ -145,7 +145,7 @@
               grid-view="team-grid"/>
             <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
               form-view="company-form" grid-view="company-grid"/>
-            <field if="__config__.app.getApp('base').getAgenciesManagement()" name="agency"/>
+            <field if="__config__.app.getApp('crm').getAgenciesManagement()" name="agency"/>
           </panel>
         </panel>
       </insert>
