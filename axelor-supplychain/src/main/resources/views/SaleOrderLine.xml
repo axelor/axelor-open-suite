@@ -6,14 +6,40 @@
   <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
     <extend target="/">
-      <attribute name="onNew"
-        value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-group-manage-attrs"/>
-      <attribute name="onLoad"
-        value="action-group-sale-saleorderline-onload, action-sale-order-line-attrs-hidden-fields-for-client, action-sale-order-line-group-manage-attrs"/>
+      <attribute name="onNew" value="action-group-sale-saleorderline-supplychain-onnew"/>
+      <attribute name="onLoad" value="action-group-sale-saleorderline-supplychain-onload"/>
     </extend>
     <extend target="//panel[@name='statusPanel']">
       <insert position="inside">
         <field name="$_xFillProductAvailableQty" hidden="true" type="boolean" readonly="true"/>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='analyticDistributionTemplate']">
+
+      <attribute name="onChange"
+        value="action-saleorder-line-group-analytic-template-onchange"/>
+      <insert position="after">
+        <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          onSelect="action-saleorder-line-method-set-axis-domain"
+          onChange="action-saleorder-line-method-axis-create-analytic-line"/>
+        <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          onSelect="action-saleorder-line-method-set-axis-domain"
+          onChange="action-saleorder-line-method-axis-create-analytic-line"/>
+        <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          onSelect="action-saleorder-line-method-set-axis-domain"
+          onChange="action-saleorder-line-method-axis-create-analytic-line"/>
+        <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          onSelect="action-saleorder-line-method-set-axis-domain"
+          onChange="action-saleorder-line-method-axis-create-analytic-line"/>
+        <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          onSelect="action-saleorder-line-method-set-axis-domain"
+          onChange="action-saleorder-line-method-axis-create-analytic-line"/>
       </insert>
     </extend>
   </form>
@@ -189,5 +215,45 @@
     <action name="action-sale-order-line-attrs-hide-panel"/>
     <action name="action-sale-order-line-attrs-fill-ctx"/>
   </action-group>
+
+  <action-group name="action-saleorder-line-group-analytic-template-onchange">
+    <action name="action-sale-order-line-method-create-distribution"/>
+    <action name="action-saleorder-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-group-sale-saleorderline-supplychain-onnew">
+    <action name="action-group-sale-saleorderline-onnew"/>
+    <action name="action-record-sale-order-line-fill-request-qty"/>
+    <action name="action-sale-order-line-group-manage-attrs"/>
+    <action name="action-saleorder-line-method-hide-axis-analytic-account"/>
+    <action name="action-saleorder-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-group-sale-saleorderline-supplychain-onload">
+    <action name="action-group-sale-saleorderline-onload"/>
+    <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
+    <action name="action-sale-order-line-group-manage-attrs"/>
+    <action name="action-saleorder-line-method-hide-axis-analytic-account"/>
+    <action name="action-saleorder-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-method name="action-saleorder-line-method-set-axis-domain">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
+      method="setAxisDomains"/>
+  </action-method>
+
+  <action-method name="action-saleorder-line-method-axis-create-analytic-line">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
+      method="createAnalyticAccountLines"/>
+  </action-method>
+
+  <action-method name="action-saleorder-line-method-hide-axis-analytic-account">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="manageAxis"/>
+  </action-method>
+
+  <action-method name="action-saleorder-line-method-print-analytic-account">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
+      method="printAnalyticAccounts"/>
+  </action-method>
 
 </object-views>

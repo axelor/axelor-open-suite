@@ -18,12 +18,13 @@
 package com.axelor.apps.contract.service;
 
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
@@ -39,6 +40,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -50,7 +52,9 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected AccountManagementService accountManagementService;
   protected CurrencyService currencyService;
   protected ProductCompanyService productCompanyService;
-  protected AnalyticMoveLineServiceImpl analyticMoveLineService;
+  protected AnalyticMoveLineService analyticMoveLineService;
+  protected AccountConfigService accountConfigService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -58,12 +62,16 @@ public class ContractLineServiceImpl implements ContractLineService {
       AccountManagementService accountManagementService,
       CurrencyService currencyService,
       ProductCompanyService productCompanyService,
-      AnalyticMoveLineServiceImpl analyticMoveLineService) {
+      AnalyticMoveLineService analyticMoveLineService2,
+      AccountConfigService accountConfigService,
+      AppAccountService appAccountService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
-    this.analyticMoveLineService = analyticMoveLineService;
+    this.analyticMoveLineService = analyticMoveLineService2;
+    this.accountConfigService = accountConfigService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -174,7 +182,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   public ContractLine createAnalyticDistributionWithTemplate(
       ContractLine contractLine, Contract contract) {
 
-    AppAccountService appAccountService = Beans.get(AppAccountService.class);
+    clearAnalyticInLine(contractLine);
 
     List<AnalyticMoveLine> analyticMoveLineList =
         Beans.get(AnalyticMoveLineService.class)
@@ -245,9 +253,66 @@ public class ContractLineServiceImpl implements ContractLineService {
     AnalyticMoveLine analyticMoveLine =
         analyticMoveLineService.computeAnalytic(company, analyticAccount);
 
-    analyticMoveLine.setDate(contract.getStartDate());
+    analyticMoveLine.setDate(appAccountService.getTodayDate(contract.getCompany()));
     analyticMoveLine.setAmount(contractLine.getExTaxTotal());
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT);
 
     return analyticMoveLine;
+  }
+
+  @Override
+  public ContractLine printAnalyticAccount(ContractLine line, Company company)
+      throws AxelorException {
+    if (line.getAnalyticMoveLineList() != null
+        && !line.getAnalyticMoveLineList().isEmpty()
+        && company != null) {
+      List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
+      for (AnalyticAxisByCompany analyticAxisByCompany :
+          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
+        for (AnalyticMoveLine analyticMoveLine : line.getAnalyticMoveLineList()) {
+          if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
+            analyticMoveLineList.add(analyticMoveLine);
+          }
+        }
+
+        if (!analyticMoveLineList.isEmpty()) {
+
+          AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
+          if (analyticMoveLineList.size() == 1
+              && analyticMoveLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
+            AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
+            switch (analyticAxisByCompany.getSequence()) {
+              case 0:
+                line.setAxis1AnalyticAccount(analyticAccount);
+                break;
+              case 1:
+                line.setAxis2AnalyticAccount(analyticAccount);
+                break;
+              case 2:
+                line.setAxis3AnalyticAccount(analyticAccount);
+                break;
+              case 3:
+                line.setAxis4AnalyticAccount(analyticAccount);
+                break;
+              case 4:
+                line.setAxis5AnalyticAccount(analyticAccount);
+                break;
+              default:
+                break;
+            }
+          }
+        }
+        analyticMoveLineList.clear();
+      }
+    }
+    return line;
+  }
+
+  public void clearAnalyticInLine(ContractLine contractLine) {
+    contractLine.setAxis1AnalyticAccount(null);
+    contractLine.setAxis2AnalyticAccount(null);
+    contractLine.setAxis3AnalyticAccount(null);
+    contractLine.setAxis4AnalyticAccount(null);
+    contractLine.setAxis5AnalyticAccount(null);
   }
 }

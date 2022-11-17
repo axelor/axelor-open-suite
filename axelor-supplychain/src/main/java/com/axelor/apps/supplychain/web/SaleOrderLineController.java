@@ -17,7 +17,15 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -33,6 +41,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -44,11 +53,15 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Singleton
 public class SaleOrderLineController {
+
+  private final int startAxisPosition = 1;
+  private final int endAxisPosition = 5;
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
@@ -368,6 +381,155 @@ public class SaleOrderLineController {
       Beans.get(SaleOrderLineServiceSupplyChain.class)
           .updateStockMoveReservationDateTime(saleOrderLine);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAxisDomains(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = null;
+      if (request.getContext().getParent() != null
+          && (SaleOrder.class).equals(request.getContext().getParent().getContextClass())) {
+        saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      }
+
+      AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
+
+      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+        List<Long> analyticAccountList = new ArrayList<>();
+        if (saleOrder != null
+            && analyticToolService.isPositionUnderAnalyticAxisSelect(saleOrder.getCompany(), i)) {
+
+          AnalyticAxis analyticAxis = new AnalyticAxis();
+
+          for (AnalyticAxisByCompany axis :
+              Beans.get(AccountConfigService.class)
+                  .getAccountConfig(saleOrder.getCompany())
+                  .getAnalyticAxisByCompanyList()) {
+            if (axis.getSequence() + 1 == i) {
+              analyticAxis = axis.getAnalyticAxis();
+            }
+          }
+
+          for (AnalyticAccount analyticAccount :
+              Beans.get(AnalyticAccountRepository.class).findByAnalyticAxis(analyticAxis).fetch()) {
+            analyticAccountList.add(analyticAccount.getId());
+          }
+
+          if (ObjectUtils.isEmpty(analyticAccountList)) {
+            response.setAttr(
+                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+                "domain",
+                "self.id IN (0)");
+          } else {
+            if (saleOrder.getCompany() != null) {
+              String idList =
+                  analyticAccountList.stream()
+                      .map(Object::toString)
+                      .collect(Collectors.joining(","));
+
+              response.setAttr(
+                  "axis" + i + "AnalyticAccount",
+                  "domain",
+                  "self.id IN ("
+                      + idList
+                      + ") AND self.statusSelect = "
+                      + AnalyticAccountRepository.STATUS_ACTIVE
+                      + " AND (self.company is null OR self.company.id = "
+                      + saleOrder.getCompany().getId()
+                      + ")");
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().getParent() != null
+          && (SaleOrder.class).equals(request.getContext().getParent().getContextClass())) {
+
+        SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+        SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+        if (saleOrder != null
+            && Beans.get(MoveLineComputeAnalyticService.class)
+                .checkManageAnalytic(saleOrder.getCompany())) {
+          saleOrderLine =
+              Beans.get(SaleOrderLineServiceSupplyChain.class)
+                  .analyzeSaleOrderLine(saleOrderLine, saleOrder, saleOrder.getCompany());
+          response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageAxis(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = null;
+
+      if (request.getContext().getParent() != null
+          && (SaleOrder.class).equals(request.getContext().getParent().getContextClass())) {
+        saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      }
+
+      if (saleOrder != null && saleOrder.getCompany() != null) {
+        AccountConfig accountConfig =
+            Beans.get(AccountConfigService.class).getAccountConfig(saleOrder.getCompany());
+        if (Beans.get(MoveLineComputeAnalyticService.class)
+            .checkManageAnalytic(saleOrder.getCompany())) {
+          AnalyticAxis analyticAxis = null;
+          for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+            response.setAttr(
+                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+                "hidden",
+                !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
+            for (AnalyticAxisByCompany analyticAxisByCompany :
+                accountConfig.getAnalyticAxisByCompanyList()) {
+              if (analyticAxisByCompany.getSequence() + 1 == i) {
+                analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+              }
+            }
+            if (analyticAxis != null) {
+              response.setAttr(
+                  "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+                  "title",
+                  analyticAxis.getName());
+              analyticAxis = null;
+            }
+          }
+        } else {
+          response.setAttr("analyticDistributionTemplate", "hidden", true);
+          response.setAttr("analyticMoveLineList", "hidden", true);
+          for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+            response.setAttr(
+                "axis".concat(Integer.toString(i)).concat("AnalyticAccount"), "hidden", true);
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = null;
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      if (request.getContext().getParent() != null
+          && (SaleOrder.class).equals(request.getContext().getParent().getContextClass())) {
+        saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      }
+      if (saleOrderLine != null && saleOrder != null) {
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
+            .printAnalyticAccount(saleOrderLine, saleOrder.getCompany());
+        response.setValues(saleOrderLine);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

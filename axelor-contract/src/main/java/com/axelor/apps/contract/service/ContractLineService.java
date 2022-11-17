@@ -92,4 +92,6 @@ public interface ContractLineService {
       Company company,
       AnalyticAccount analyticAccount)
       throws AxelorException;
+
+  ContractLine printAnalyticAccount(ContractLine line, Company company) throws AxelorException;
 }

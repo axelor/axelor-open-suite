@@ -241,6 +241,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     return analyticMoveLine;
   }
 
+  @Override
   public AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
       throws AxelorException {
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();

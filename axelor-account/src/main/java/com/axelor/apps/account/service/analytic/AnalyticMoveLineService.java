@@ -71,4 +71,7 @@ public interface AnalyticMoveLineService {
 
   AnalyticMoveLine generateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+
+  AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
+      throws AxelorException;
 }

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="purchase-order-line-form" title="PO line"
+    id="purchase-order-line-supplychain-form" model="com.axelor.apps.purchase.db.PurchaseOrderLine"
+    extension="true">
+
+    <extend target="//field[@name='analyticDistributionTemplate']">
+      <attribute name="onChange"
+        value="action-purchaseorder-line-group-analytic-template-onchange"/>
+
+      <insert position="after">
+        <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          onSelect="action-purchaseorder-line-method-set-axis-domain"
+          onChange="action-purchaseorder-line-method-axis-create-analytic-line"/>
+        <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          onSelect="action-purchaseorder-line-method-set-axis-domain"
+          onChange="action-purchaseorder-line-method-axis-create-analytic-line"/>
+        <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          onSelect="action-purchaseorder-line-method-set-axis-domain"
+          onChange="action-purchaseorder-line-method-axis-create-analytic-line"/>
+        <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          onSelect="action-purchaseorder-line-method-set-axis-domain"
+          onChange="action-purchaseorder-line-method-axis-create-analytic-line"/>
+        <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          onSelect="action-purchaseorder-line-method-set-axis-domain"
+          onChange="action-purchaseorder-line-method-axis-create-analytic-line"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-group-purchase-purchase-orderline-onload"
+    id="action-group-purchase-purchase-orderline-supplychain-onload">
+    <action name="action-purchase-order-line-attrs-readonly-form"/>
+    <action name="action-purchase-order-line-method-check-qty"/>
+    <action name="action-purchase-order-line-attrs-title-project"/>
+    <action name="action-purchase-order-line-attrs-scale-and-precision"/>
+    <action name="action-purchase-order-attrs-hide-ati"/>
+    <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
+    <action name="action-purchase-order-line-attrs-delivery-panel"/>
+    <action name="action-budget-distribution-attrs-budget-amount-available"
+      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
+    <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
+    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
+    <action name="action-purchaseorder-line-method-hide-axis-analytic-account"/>
+    <action name="action-purchaseorder-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-group-purchase-purchase-orderline-onnew"
+    id="action-group-purchase-purchase-orderline-supplychain-onnew">
+    <action name="action-purchase-order-line-attrs-title-project"/>
+    <action name="action-purchase-order-line-attrs-scale-and-precision"/>
+    <action name="action-purchase-order-line-record-new"/>
+    <action name="action-purchase-order-line-record-project"/>
+    <action name="action-purchase-order-attrs-hide-ati"/>
+    <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
+    <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
+    <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
+    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
+    <action name="action-purchaseorder-line-method-hide-axis-analytic-account"/>
+    <action name="action-purchaseorder-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-purchaseorder-line-group-analytic-template-onchange">
+    <action name="action-purchase-order-line-method-create-distribution"/>
+    <action name="action-purchaseorder-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-method name="action-purchaseorder-line-method-set-axis-domain">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="setAxisDomains"/>
+  </action-method>
+
+  <action-method name="action-purchaseorder-line-method-axis-create-analytic-line">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="createAnalyticAccountLines"/>
+  </action-method>
+
+  <action-method name="action-purchaseorder-line-method-hide-axis-analytic-account">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="manageAxis"/>
+  </action-method>
+
+  <action-method name="action-purchaseorder-line-method-print-analytic-account">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="printAnalyticAccounts"/>
+  </action-method>
+
+</object-views>

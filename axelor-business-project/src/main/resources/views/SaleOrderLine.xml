@@ -9,6 +9,26 @@
       <attribute name="onChange"
         value="action-sale-order-line-record-progress,action-sale-order-line-method-update-distribution"/>
     </extend>
+    <extend target="//field[@name='axis1AnalyticAccount']">
+      <attribute name="onChange"
+        value="action-saleorder-line-method-axis-create-analytic-line,action-sale-order-line-method-update-distribution"/>
+    </extend>
+    <extend target="//field[@name='axis2AnalyticAccount']">
+      <attribute name="onChange"
+        value="action-saleorder-line-method-axis-create-analytic-line,action-sale-order-line-method-update-distribution"/>
+    </extend>
+    <extend target="//field[@name='axis3AnalyticAccount']">
+      <attribute name="onChange"
+        value="action-saleorder-line-method-axis-create-analytic-line,action-sale-order-line-method-update-distribution"/>
+    </extend>
+    <extend target="//field[@name='axis4AnalyticAccount']">
+      <attribute name="onChange"
+        value="action-saleorder-line-method-axis-create-analytic-line,action-sale-order-line-method-update-distribution"/>
+    </extend>
+    <extend target="//field[@name='axis5AnalyticAccount']">
+      <attribute name="onChange"
+        value="action-saleorder-line-method-axis-create-analytic-line,action-sale-order-line-method-update-distribution"/>
+    </extend>
   </form>
 
   <form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line"

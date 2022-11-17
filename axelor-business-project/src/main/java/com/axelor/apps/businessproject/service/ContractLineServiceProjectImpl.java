@@ -17,8 +17,12 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -27,6 +31,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.project.db.Project;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -38,13 +43,17 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       AccountManagementService accountManagementService,
       CurrencyService currencyService,
       ProductCompanyService productCompanyService,
-      AnalyticMoveLineServiceImpl analyticMoveLineService) {
+      AnalyticMoveLineService analyticMoveLineService,
+      AccountConfigService accountConfigService,
+      AppAccountService appAccountService) {
     super(
         appBaseService,
         accountManagementService,
         currencyService,
         productCompanyService,
-        analyticMoveLineService);
+        analyticMoveLineService,
+        accountConfigService,
+        appAccountService);
   }
 
   @Override
@@ -61,5 +70,23 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
     return contractLine;
+  }
+
+  @Override
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      ContractLine contractLine,
+      Contract contract,
+      Company company,
+      AnalyticAccount analyticAccount)
+      throws AxelorException {
+
+    AnalyticMoveLine analyticMoveLine =
+        super.computeAnalyticMoveLine(contractLine, contract, company, analyticAccount);
+    Project project = contract.getProject();
+
+    if (project != null) {
+      analyticMoveLine.setProject(project);
+    }
+    return analyticMoveLine;
   }
 }

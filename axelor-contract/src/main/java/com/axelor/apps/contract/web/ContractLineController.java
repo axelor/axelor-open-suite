@@ -38,7 +38,6 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ContractLineController {
@@ -79,7 +78,12 @@ public class ContractLineController {
 
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
-      Contract contract = request.getContext().getParent().asType(Contract.class);
+      Contract contract = null;
+      if (request.getContext().getParent() != null
+          && (Contract.class)
+              .equals(request.getContext().getParent().getParent().getContextClass())) {
+        contract = request.getContext().getParent().getParent().asType(Contract.class);
+      }
 
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
 
@@ -138,10 +142,11 @@ public class ContractLineController {
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext().getParent() != null
-          && (Contract.class).equals(request.getContext().getParent().getContextClass())) {
+          && (Contract.class)
+              .equals(request.getContext().getParent().getParent().getContextClass())) {
 
         ContractLine contractLine = request.getContext().asType(ContractLine.class);
-        Contract contract = request.getContext().getParent().asType(Contract.class);
+        Contract contract = request.getContext().getParent().getParent().asType(Contract.class);
         if (contract != null
             && Beans.get(MoveLineComputeAnalyticService.class)
                 .checkManageAnalytic(contract.getCompany())) {
@@ -161,8 +166,9 @@ public class ContractLineController {
       Contract contract = null;
 
       if (request.getContext().getParent() != null
-          && (Contract.class).equals(request.getContext().getParent().getContextClass())) {
-        contract = request.getContext().getParent().asType(Contract.class);
+          && (Contract.class)
+              .equals(request.getContext().getParent().getParent().getContextClass())) {
+        contract = request.getContext().getParent().getParent().asType(Contract.class);
       }
 
       if (contract != null && contract.getCompany() != null) {
@@ -204,25 +210,19 @@ public class ContractLineController {
     }
   }
 
-  public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
+  public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
     try {
-      ContractLine contractLine = request.getContext().asType(ContractLine.class);
       Contract contract = null;
+      ContractLine contractLine = request.getContext().asType(ContractLine.class);
       if (request.getContext().getParent() != null
-          && (Contract.class).equals(request.getContext().getParent().getContextClass())) {
-        contract = request.getContext().getParent().asType(Contract.class);
+          && (Contract.class)
+              .equals(request.getContext().getParent().getParent().getContextClass())) {
+        contract = request.getContext().getParent().getParent().asType(Contract.class);
       }
-      Integer nbrAxis =
-          Beans.get(AccountConfigService.class)
-              .getAccountConfig(contract != null ? contract.getCompany() : null)
-              .getNbrOfAnalyticAxisSelect();
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-        response.setAttr(
-            "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-            "required",
-            contractLine.getAnalyticDistributionTemplate() == null
-                && CollectionUtils.isEmpty(contractLine.getAnalyticMoveLineList())
-                && (i <= nbrAxis));
+      if (contractLine != null && contract != null) {
+        Beans.get(ContractLineService.class)
+            .printAnalyticAccount(contractLine, contract.getCompany());
+        response.setValues(contractLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

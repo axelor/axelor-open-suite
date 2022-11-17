@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
@@ -25,6 +27,7 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -37,10 +40,12 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -156,6 +161,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
   public PurchaseOrderLine createAnalyticDistributionWithTemplate(
       PurchaseOrderLine purchaseOrderLine) {
 
+    clearAnalyticInLine(purchaseOrderLine);
+
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             purchaseOrderLine.getAnalyticDistributionTemplate(),
@@ -201,5 +208,147 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
       }
     }
     purchaseOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
+  }
+
+  @Override
+  public PurchaseOrderLine analyzePurchaseOrderLine(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, Company company)
+      throws AxelorException {
+    if (purchaseOrderLine != null) {
+
+      if (purchaseOrderLine.getAnalyticMoveLineList() == null) {
+        purchaseOrderLine.setAnalyticMoveLineList(new ArrayList<>());
+      } else {
+        purchaseOrderLine.getAnalyticMoveLineList().clear();
+      }
+
+      AnalyticMoveLine analyticMoveLine = null;
+
+      if (purchaseOrderLine.getAxis1AnalyticAccount() != null) {
+        analyticMoveLine =
+            this.computeAnalyticMoveLine(
+                purchaseOrderLine,
+                purchaseOrder,
+                company,
+                purchaseOrderLine.getAxis1AnalyticAccount());
+        purchaseOrderLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (purchaseOrderLine.getAxis2AnalyticAccount() != null) {
+        analyticMoveLine =
+            this.computeAnalyticMoveLine(
+                purchaseOrderLine,
+                purchaseOrder,
+                company,
+                purchaseOrderLine.getAxis2AnalyticAccount());
+        purchaseOrderLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (purchaseOrderLine.getAxis3AnalyticAccount() != null) {
+        analyticMoveLine =
+            this.computeAnalyticMoveLine(
+                purchaseOrderLine,
+                purchaseOrder,
+                company,
+                purchaseOrderLine.getAxis3AnalyticAccount());
+        purchaseOrderLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (purchaseOrderLine.getAxis4AnalyticAccount() != null) {
+        analyticMoveLine =
+            this.computeAnalyticMoveLine(
+                purchaseOrderLine,
+                purchaseOrder,
+                company,
+                purchaseOrderLine.getAxis4AnalyticAccount());
+        purchaseOrderLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+      if (purchaseOrderLine.getAxis5AnalyticAccount() != null) {
+        analyticMoveLine =
+            this.computeAnalyticMoveLine(
+                purchaseOrderLine,
+                purchaseOrder,
+                company,
+                purchaseOrderLine.getAxis5AnalyticAccount());
+        purchaseOrderLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+    }
+    return purchaseOrderLine;
+  }
+
+  @Override
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      PurchaseOrderLine purchaseOrderLine,
+      PurchaseOrder purchaseOrder,
+      Company company,
+      AnalyticAccount analyticAccount)
+      throws AxelorException {
+    AnalyticMoveLine analyticMoveLine =
+        analyticMoveLineService.computeAnalytic(company, analyticAccount);
+
+    analyticMoveLine.setDate(
+        appBaseService.getTodayDate(
+            purchaseOrderLine.getPurchaseOrder() != null
+                ? purchaseOrderLine.getPurchaseOrder().getCompany()
+                : Optional.ofNullable(AuthUtils.getUser())
+                    .map(User::getActiveCompany)
+                    .orElse(null)));
+    analyticMoveLine.setAmount(purchaseOrderLine.getExTaxTotal());
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
+
+    return analyticMoveLine;
+  }
+
+  @Override
+  public PurchaseOrderLine printAnalyticAccount(PurchaseOrderLine line, Company company)
+      throws AxelorException {
+    if (line.getAnalyticMoveLineList() != null
+        && !line.getAnalyticMoveLineList().isEmpty()
+        && company != null) {
+      List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
+      for (AnalyticAxisByCompany analyticAxisByCompany :
+          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
+        for (AnalyticMoveLine analyticMoveLine : line.getAnalyticMoveLineList()) {
+          if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
+            analyticMoveLineList.add(analyticMoveLine);
+          }
+        }
+
+        if (!analyticMoveLineList.isEmpty()) {
+
+          AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
+          if (analyticMoveLineList.size() == 1
+              && analyticMoveLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
+            AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
+            switch (analyticAxisByCompany.getSequence()) {
+              case 0:
+                line.setAxis1AnalyticAccount(analyticAccount);
+                break;
+              case 1:
+                line.setAxis2AnalyticAccount(analyticAccount);
+                break;
+              case 2:
+                line.setAxis3AnalyticAccount(analyticAccount);
+                break;
+              case 3:
+                line.setAxis4AnalyticAccount(analyticAccount);
+                break;
+              case 4:
+                line.setAxis5AnalyticAccount(analyticAccount);
+                break;
+              default:
+                break;
+            }
+          }
+        }
+        analyticMoveLineList.clear();
+      }
+    }
+    return line;
+  }
+
+  public void clearAnalyticInLine(PurchaseOrderLine purchaseOrderLine) {
+    purchaseOrderLine.setAxis1AnalyticAccount(null);
+    purchaseOrderLine.setAxis2AnalyticAccount(null);
+    purchaseOrderLine.setAxis3AnalyticAccount(null);
+    purchaseOrderLine.setAxis4AnalyticAccount(null);
+    purchaseOrderLine.setAxis5AnalyticAccount(null);
   }
 }

@@ -9,6 +9,27 @@
       <attribute name="onChange"
         value="action-purchase-order-line-method-update-distribution"/>
     </extend>
+
+    <extend target="//field[@name='axis1AnalyticAccount']">
+      <attribute name="onChange"
+        value="action-purchaseorder-line-method-axis-create-analytic-line,action-purchase-order-line-method-update-distribution"/>
+    </extend>
+    <extend target="//field[@name='axis2AnalyticAccount']">
+      <attribute name="onChange"
+        value="action-purchaseorder-line-method-axis-create-analytic-line,action-purchase-order-line-method-update-distribution"/>
+    </extend>
+    <extend target="//field[@name='axis3AnalyticAccount']">
+      <attribute name="onChange"
+        value="action-purchaseorder-line-method-axis-create-analytic-line,action-purchase-order-line-method-update-distribution"/>
+    </extend>
+    <extend target="//field[@name='axis4AnalyticAccount']">
+      <attribute name="onChange"
+        value="action-purchaseorder-line-method-axis-create-analytic-line,action-purchase-order-line-method-update-distribution"/>
+    </extend>
+    <extend target="//field[@name='axis5AnalyticAccount']">
+      <attribute name="onChange"
+        value="action-purchaseorder-line-method-axis-create-analytic-line,action-purchase-order-line-method-update-distribution"/>
+    </extend>
   </form>
 
   <grid name="purchase-order-line-project-grid" title="Purchase order lines"

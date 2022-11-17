@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
@@ -89,4 +93,17 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
 
   public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine);
+
+  public SaleOrderLine analyzeSaleOrderLine(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Company company) throws AxelorException;
+
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      SaleOrderLine saleOrderLine,
+      SaleOrder saleOrder,
+      Company company,
+      AnalyticAccount analyticAccount)
+      throws AxelorException;
+
+  public SaleOrderLine printAnalyticAccount(SaleOrderLine line, Company company)
+      throws AxelorException;
 }
