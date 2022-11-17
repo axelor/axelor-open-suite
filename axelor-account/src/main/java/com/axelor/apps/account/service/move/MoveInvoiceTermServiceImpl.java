@@ -117,6 +117,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   @Override
   public boolean displayDueDate(Move move) {
     return move.getJournal() != null
+        && move.getJournal().getJournalType() != null
         && move.getJournal().getJournalType().getTechnicalTypeSelect()
             != JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
         && this.isSingleTerm(move);
