@@ -38,13 +38,6 @@
     <option value="1">Planned</option>
     <option value="2">Realized</option>
     <option value="3">Canceled</option>
-
-    <!-- For tasks only -->
-    <option value="11">Not started</option>
-    <option value="12">On going</option>
-    <option value="13">Pending</option>
-    <option value="14">Finished</option>
-    <option value="15">Reported</option>
   </selection>
 
   <selection name="crm.event.attendee.status.select">

@@ -19,7 +19,6 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.PartnerService;
@@ -663,11 +662,7 @@ public class EventServiceImpl implements EventService {
 
   @Override
   public void realizeEvent(Event event) {
-    event.setStatusSelect(
-        event.getTypeSelect() != ICalendarEventRepository.TYPE_TASK
-                && event.getTypeSelect() != EventRepository.TYPE_NOTE
-            ? EventRepository.STATUS_REALIZED
-            : EventRepository.STATUS_FINISHED);
+    event.setStatusSelect(EventRepository.STATUS_REALIZED);
 
     saveEvent(event);
 
@@ -683,11 +678,7 @@ public class EventServiceImpl implements EventService {
 
   @Override
   public void cancelEvent(Event event) {
-    event.setStatusSelect(
-        event.getTypeSelect() != ICalendarEventRepository.TYPE_TASK
-                && event.getTypeSelect() != EventRepository.TYPE_NOTE
-            ? EventRepository.STATUS_CANCELED
-            : EventRepository.STATUS_REPORTED);
+    event.setStatusSelect(EventRepository.STATUS_CANCELED);
 
     saveEvent(event);
 

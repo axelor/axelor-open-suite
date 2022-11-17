@@ -62,11 +62,6 @@
 	  		public static final int STATUS_PLANNED = 1;
 	  		public static final int STATUS_REALIZED = 2;
 	  		public static final int STATUS_CANCELED = 3;
-	  		public static final int STATUS_NOT_STARTED = 11;
-	  		public static final int STATUS_ON_GOING = 12;
-	  		public static final int STATUS_PENDING = 13;
-	  		public static final int STATUS_FINISHED = 14;
-	  		public static final int STATUS_REPORTED = 15;
 	  ]]>
     </extra-code>
 

@@ -40,16 +40,9 @@ public class EventManagementRepository extends EventRepository {
 
   @Override
   public Event copy(Event entity, boolean deep) {
-    int eventType = entity.getTypeSelect();
-    switch (eventType) {
-      case 1: // call
-      case 2: // metting
-        break;
-      case 3: // task s
-        entity.setStatusSelect(EventRepository.STATUS_NOT_STARTED);
-        break;
-    }
-    return super.copy(entity, deep);
+    Event event = super.copy(entity, deep);
+    event.setStatusSelect(EventRepository.STATUS_PLANNED);
+    return event;
   }
 
   @Override
