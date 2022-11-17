@@ -1591,12 +1591,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected Currency getCurrency(InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getInvoice() != null) {
       return Optional.of(invoiceTerm.getInvoice()).map(Invoice::getCurrency).orElse(null);
-    } else {
+    } else if (invoiceTerm.getMoveLine() != null) {
       return Optional.of(invoiceTerm.getMoveLine())
           .map(MoveLine::getMove)
           .map(Move::getCurrency)
           .orElse(null);
     }
+    return null;
   }
 
   protected Currency getCompanyCurrency(InvoiceTerm invoiceTerm) {
@@ -1605,13 +1606,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           .map(Invoice::getCompany)
           .map(Company::getCurrency)
           .orElse(null);
-    } else {
+    } else if (invoiceTerm.getMoveLine() != null) {
       return Optional.of(invoiceTerm.getMoveLine())
           .map(MoveLine::getMove)
           .map(Move::getCompany)
           .map(Company::getCurrency)
           .orElse(null);
     }
+    return null;
   }
 
   @Override
