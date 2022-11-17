@@ -133,7 +133,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           this.createReportValues(
               accountingReport, valuesMapByColumn, valuesMapByLine, startDate, endDate);
 
-      if (startTime.until(LocalTime.now(), ChronoUnit.SECONDS) > appBaseService.getProcessTimeout()) {
+      if (startTime.until(LocalTime.now(), ChronoUnit.SECONDS)
+          > appBaseService.getProcessTimeout()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT,
@@ -422,6 +423,15 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         this.getResultFromCustomRule(
             column, line, valuesMap, valuesMapByColumn, valuesMapByLine, parentTitle);
 
+    String lineTitle = line.getLabel();
+    if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+      lineTitle =
+          valuesMap.values().stream()
+              .map(AccountingReportValue::getLineTitle)
+              .findAny()
+              .orElse(line.getLabel());
+    }
+
     this.createReportValue(
         accountingReport,
         column,
@@ -429,10 +439,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         startDate,
         endDate,
         parentTitle,
-        valuesMap.values().stream()
-            .map(AccountingReportValue::getLineTitle)
-            .findAny()
-            .orElse(line.getLabel()),
+        lineTitle,
         result,
         valuesMapByColumn,
         valuesMapByLine,
@@ -454,7 +461,9 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     for (String code : valuesMap.keySet()) {
       if (valuesMap.get(code) != null) {
-        if (!Strings.isNullOrEmpty(parentTitle)) {
+        if (!Strings.isNullOrEmpty(parentTitle)
+            && column.getRuleTypeSelect()
+                == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
           String[] tokens = code.split("__");
 
           if (tokens.length > 1 && tokens[1].equals(parentTitle)) {
