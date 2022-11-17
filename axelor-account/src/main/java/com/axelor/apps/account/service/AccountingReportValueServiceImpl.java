@@ -490,7 +490,17 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       LocalDate startDate,
       LocalDate endDate)
       throws AxelorException {
-    if (!Objects.equals(column.getResultSelect(), line.getResultSelect())) {
+    if (column.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_LINE
+        && line.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_COLUMN) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.REPORT_TYPE_NO_RESULT_SELECT,
+          accountingReport.getReportType().getName(),
+          column.getCode(),
+          line.getCode());
+    } else if (column.getResultSelect() != AccountingReportConfigLineRepository.RESULT_SAME_AS_LINE
+        && line.getResultSelect() != AccountingReportConfigLineRepository.RESULT_SAME_AS_COLUMN
+        && !Objects.equals(column.getResultSelect(), line.getResultSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT,
@@ -641,7 +651,15 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
                 startDate,
                 endDate)
             .fetch();
-    BigDecimal result = this.getResultFromMoveLine(moveLineList, column.getResultSelect());
+
+    int resultSelect;
+    if (column.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_LINE) {
+      resultSelect = line.getResultSelect();
+    } else {
+      resultSelect = column.getResultSelect();
+    }
+
+    BigDecimal result = this.getResultFromMoveLine(moveLineList, resultSelect);
 
     this.createReportValue(
         accountingReport,

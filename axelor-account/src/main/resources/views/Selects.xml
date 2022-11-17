@@ -127,6 +127,8 @@
   <selection name='accounting.report.config.line.sum.of.account.select'>
     <option value="1">Debit - Credit</option>
     <option value="2">Credit - Debit</option>
+    <option value="3">Same as column</option>
+    <option value="4">Same as line</option>
   </selection>
 
   <selection name='iaccount.move.status.select'>

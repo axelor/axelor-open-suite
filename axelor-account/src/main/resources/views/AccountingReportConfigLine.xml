@@ -67,7 +67,12 @@
         requiredIf="[1,2].includes(typeSelect)"/>
       <field name="code" showIf="[1,2].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"
         requiredIf="[1,2].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"/>
-      <field name="resultSelect" showIf="ruleTypeSelect == 2" requiredIf="ruleTypeSelect == 2"/>
+      <panel name="resultPanel" stacked="true" showIf="ruleTypeSelect == 2">
+        <field name="resultSelect" showIf="reportTypeColumn != null"
+          requiredIf="ruleTypeSelect == 2" selection-in="[1,2,4]"/>
+        <field name="resultSelect" showIf="reportType != null"
+          requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3]"/>
+      </panel>
       <panel name="percentagePanel" stacked="true" showIf="[2,3,4].includes(ruleTypeSelect)">
         <field name="percentageTotalLine" showIf="reportType != null"/>
         <field name="percentageBaseColumn"
