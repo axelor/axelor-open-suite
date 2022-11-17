@@ -10,8 +10,8 @@
       <field name="groupsAssignable" showIf="assignableUsers == 1" widget="TagSelect"
         requiredIf="assignableUsers == 1"/>
       <field name="displayCustomerDescriptionInOpportunity" widget="boolean-switch"/>
-      <field name="isManageRecurrent" widget="boolean-switch"/>
-      <field name="defaultRecurringDuration" showIf="isManageRecurrent"/>
+      <field name="isManageRecurrent" widget="boolean-switch" colSpan="3"/>
+      <field name="defaultRecurringDuration" showIf="isManageRecurrent" colSpan="3"/>
       <field name="isManageCatalogs" widget="boolean-switch"
         help="This configuration enables catalog management. It allows you to add sales catalogs in pdf format that can be consulted from the application."/>
       <field name="agenciesManagement" widget="boolean-switch"/>
