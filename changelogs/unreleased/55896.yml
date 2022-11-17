@@ -1,0 +1,12 @@
+---
+title: "Studio : UI improvement and changes"
+type: change
+description:
+  Support of icon and color for selection builder
+  Set required field in red
+  Ergonomy view
+  Add pattern on name in custom objects
+  Fix panel bugs
+  Use color for fields icon
+  Deletion popup next to the field
+  Graphical offset when select a spacer

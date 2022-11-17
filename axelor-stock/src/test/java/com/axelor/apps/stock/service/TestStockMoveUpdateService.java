@@ -26,6 +26,7 @@ public class TestStockMoveUpdateService {
     } catch (AxelorException e) {
       errorMessage = e.getMessage();
     }
-    Assert.assertEquals("Cannot update stock move from status 5 to 6", errorMessage);
+    Assert.assertEquals(
+        "Workflow to update status to value 6 is not supported for stock move.", errorMessage);
   }
 }

@@ -77,6 +77,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -86,6 +87,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -777,7 +779,7 @@ public class BankReconciliationService {
 
   public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
-        "self.move.statusSelect != :statusSelect"
+        "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
             + " AND self.account.accountType.technicalTypeSelect = :accountType";
 
@@ -815,7 +817,8 @@ public class BankReconciliationService {
     BankPaymentConfig bankPaymentConfig =
         bankPaymentConfigService.getBankPaymentConfig(bankReconciliation.getCompany());
 
-    params.put("statusSelect", MoveRepository.STATUS_CANCELED);
+    params.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+    params.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
     params.put("company", bankReconciliation.getCompany());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
     if (!bankReconciliation.getIncludeOtherBankStatements()) {
@@ -885,6 +888,7 @@ public class BankReconciliationService {
                 bankReconciliation.getStatusSelect()
                     == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
             if (isUnderCorrection) {
+              bankReconciliationLine.setIsPosted(true);
               bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
             }
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
@@ -954,6 +958,8 @@ public class BankReconciliationService {
             bankStatementLine.getAmountRemainToReconcile().add(moveLine.getBankReconciledAmount()));
       }
       moveLine.setBankReconciledAmount(BigDecimal.ZERO);
+      moveLineRepository.save(moveLine);
+      bankReconciliationLine.setIsPosted(false);
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
@@ -1035,6 +1041,10 @@ public class BankReconciliationService {
                       .getInvoiceWatermark())
               .toString();
     }
+    BankPaymentConfig bankPaymentConfig =
+        Beans.get(BankPaymentConfigService.class)
+            .getBankPaymentConfig(bankReconciliation.getCompany());
+    int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
     fileLink =
         ReportFactory.createReport(
                 IReport.BANK_RECONCILIATION2, I18n.get("Bank Reconciliation") + "-${date}")
@@ -1045,6 +1055,12 @@ public class BankReconciliationService {
                 bankReconciliation.getCompany() != null
                     ? bankReconciliation.getCompany().getTimezone()
                     : null)
+            .addParam(
+                "BankReconciliationFromDate",
+                Date.valueOf(bankReconciliation.getFromDate().minusDays(dateMargin)))
+            .addParam(
+                "BankReconciliationToDate",
+                Date.valueOf(bankReconciliation.getToDate().plusDays(dateMargin)))
             .addParam("HeaderHeight", printingSettings.getPdfHeaderHeight())
             .addParam("Watermark", watermark)
             .addParam("FooterHeight", printingSettings.getPdfFooterHeight())
@@ -1216,6 +1232,7 @@ public class BankReconciliationService {
         bankReconciliation.getStatusSelect()
             == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
     if (isUnderCorrection) {
+      bankReconciliationLine.setIsPosted(true);
       bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
     }
     return bankReconciliation;

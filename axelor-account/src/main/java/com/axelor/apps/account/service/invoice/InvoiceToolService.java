@@ -66,10 +66,12 @@ public class InvoiceToolService {
     return invoice.getInvoiceTermList().stream()
         .filter(
             invoiceTerm ->
-                (invoiceTerm.getDueDate().isEqual(LocalDate.now())
+                invoiceTerm.getDueDate() != null
+                    && (invoiceTerm.getDueDate().isEqual(LocalDate.now())
                         || invoiceTerm.getDueDate().isAfter(LocalDate.now()))
                     && !invoiceTerm.getIsPaid())
         .map(invoiceTerm -> invoiceTerm.getDueDate())
+        .filter(Objects::nonNull)
         .min(Comparator.comparing(LocalDate::toEpochDay))
         .orElse(invoice.getNextDueDate());
   }
@@ -318,6 +320,7 @@ public class InvoiceToolService {
     copy.setBillOfExchangeBlockingByUser(null);
     copy.setNextDueDate(getNextDueDate(copy));
     setPfpStatus(copy);
+    copy.setHasPendingPayments(false);
   }
 
   /**
