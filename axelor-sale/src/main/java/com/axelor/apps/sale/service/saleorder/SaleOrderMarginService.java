@@ -18,8 +18,11 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.sale.db.SaleOrder;
+import java.math.BigDecimal;
 
 public interface SaleOrderMarginService {
 
-  public void computeMarginSaleOrder(SaleOrder saleOrder);
+  void computeMarginSaleOrder(SaleOrder saleOrder);
+
+  BigDecimal computeRate(BigDecimal saleCostPrice, BigDecimal totalGrossMargin);
 }
