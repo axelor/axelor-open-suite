@@ -294,4 +294,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
       "Please select a counterpart account in the bank statement rule %s" /*)*/;
+
+  public static final String VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL = /*$$(*/
+      "Failed to create a move for the invoice payment." /*)*/;
 }
