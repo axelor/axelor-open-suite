@@ -227,4 +227,7 @@ public interface IExceptionMessage {
 
   static final String INVOICE_PAYMENT_MODE_MISSING = /*$$(*/
       "Payment mode is missing on the invoice %s" /*)*/;
+
+  static final String VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL = /*$$(*/
+      "Failed to create a move for the invoice payment." /*)*/;
 }
