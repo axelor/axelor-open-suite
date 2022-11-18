@@ -433,6 +433,7 @@
 "Expense","Note de frais",,
 "Export","Export",,
 "F - Receiver label","F - Libellé complémentaire",,
+"Failed to create a move for the invoice payment.","Échec lors de la création d'écriture pour le paiement sur facture.",,
 "Failed to create bank order from invoice payment","Échec lors de la création de l'ordre bancaire provenant du paiement de facture",,
 "Fax","Fax",,
 "Fees imputation","Mode d'imputation des frais",,

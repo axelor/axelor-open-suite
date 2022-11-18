@@ -128,6 +128,11 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
       invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
+      if (invoicePayment == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL));
+      }
     } else {
       Beans.get(AccountingSituationService.class)
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
