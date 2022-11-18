@@ -638,7 +638,7 @@
   <action-record name="action-move-account-record-set-journal-technical-type-select"
     model="com.axelor.apps.account.db.Move">
     <field name="$journalTechnicalTypeSelect"
-      expr="eval: journal?.journalType?.technicalTypeSelect"/>
+      expr="eval: journal?.journalType.technicalTypeSelect"/>
   </action-record>
 
 
