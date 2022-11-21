@@ -34,13 +34,17 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ContractLineServiceImpl implements ContractLineService {
@@ -48,17 +52,20 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected AccountManagementService accountManagementService;
   protected CurrencyService currencyService;
   protected ProductCompanyService productCompanyService;
+  protected ContractVersionRepository contractVersionRepo;
 
   @Inject
   public ContractLineServiceImpl(
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
       CurrencyService currencyService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      ContractVersionRepository contractVersionRepo) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
+    this.contractVersionRepo = contractVersionRepo;
   }
 
   @Override
@@ -95,6 +102,12 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     contractLine.setDescription(
         (String) productCompanyService.get(product, "description", company));
+    return contractLine;
+  }
+
+  @Override
+  public ContractLine fillDefault(ContractLine contractLine, ContractVersion contractVersion) {
+    contractLine.setFromDate(contractVersion.getSupposedActivationDate());
     return contractLine;
   }
 
@@ -181,5 +194,35 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     return contractLine;
+  }
+
+  @Override
+  @Transactional
+  public void checkFromDateOnGoing(Contract contract) {
+    ContractVersion contractVersion = contract.getCurrentContractVersion();
+    LocalDate today = Beans.get(AppBaseService.class).getTodayDate(contract.getCompany());
+    for (ContractLine line : contractVersion.getContractLineList()) {
+      if (line.getFromDate() == null) {
+        line.setFromDate(
+            contractVersion.getSupposedActivationDate() != null
+                    && contractVersion.getSupposedActivationDate().isAfter(today)
+                ? contractVersion.getSupposedActivationDate()
+                : today);
+      } else if (line.getFromDate().isBefore(today)) {
+        line.setFromDate(today);
+      }
+    }
+    contractVersionRepo.save(contractVersion);
+  }
+
+  @Override
+  @Transactional
+  public void updateContractLinesFromContractVersion(ContractVersion contractVersion) {
+    for (ContractLine line : contractVersion.getContractLineList()) {
+      if (line.getFromDate() == null) {
+        line.setFromDate(contractVersion.getSupposedActivationDate());
+      }
+    }
+    contractVersionRepo.save(contractVersion);
   }
 }
