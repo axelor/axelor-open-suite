@@ -182,7 +182,7 @@ public interface InvoiceTermService {
    * @param invoice
    * @return
    */
-  public void updateFinancialDiscount(Invoice invoice);
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 
   /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list

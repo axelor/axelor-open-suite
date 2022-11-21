@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -347,8 +348,8 @@ public class InvoiceController {
         return;
       }
 
-      invoiceTermService.updateFinancialDiscount(invoice);
-      response.setReload(true);
+      List<InvoiceTerm> invoiceTermList = invoiceTermService.updateFinancialDiscount(invoice);
+      response.setValue("invoiceTermList", invoiceTermList);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
