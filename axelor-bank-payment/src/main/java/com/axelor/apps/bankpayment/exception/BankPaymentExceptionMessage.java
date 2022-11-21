@@ -307,4 +307,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String MOVES_LINKED_TO_VALIDATED_BANK_RECONCILIATION = /*$$(*/
       "The moves %s couldn't be reversed because these are linked to a bank reconciliation with status validated" /*)*/;
+
+  public static final String VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL = /*$$(*/
+      "Failed to create a move for the invoice payment." /*)*/;
 }
