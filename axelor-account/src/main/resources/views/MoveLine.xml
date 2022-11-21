@@ -1104,7 +1104,7 @@
 
   <action-record name="action-move-line-record-set-partner"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="partner" expr="eval: __parent__?.partner"/>
+    <field name="partner" expr="eval: __parent__?.partner" if="__parent__?.partner != null"/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
