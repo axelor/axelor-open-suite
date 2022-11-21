@@ -419,26 +419,31 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                 version.getEndDate())) {
           continue;
         }
-        LocalDate start =
-            version.getActivationDate().isBefore(contract.getInvoicePeriodStartDate())
-                ? contract.getInvoicePeriodStartDate()
-                : version.getActivationDate();
-        LocalDate end =
-            version.getEndDate() == null
-                    || (version.getEndDate() != null
-                        && contract.getInvoicePeriodEndDate().isBefore(version.getEndDate()))
-                ? contract.getInvoicePeriodEndDate()
-                : version.getEndDate();
-        ratio =
-            durationService.computeRatio(
-                start, end, contract.getCurrentContractVersion().getInvoicingDuration());
       }
       List<ContractLine> lines =
           version.getContractLineList().stream()
               .filter(contractLine -> !contractLine.getIsConsumptionLine())
               .collect(Collectors.toList());
+      LocalDate end =
+          version.getEndDate() == null
+                  || (version.getEndDate() != null
+                      && contract.getInvoicePeriodEndDate().isBefore(version.getEndDate()))
+              ? contract.getInvoicePeriodEndDate()
+              : version.getEndDate();
 
       for (ContractLine line : lines) {
+        LocalDate start =
+            line.getFromDate() != null && line.getFromDate().isBefore(end)
+                ? line.getFromDate()
+                : version.getActivationDate().isBefore(contract.getInvoicePeriodStartDate())
+                    ? contract.getInvoicePeriodStartDate()
+                    : version.getActivationDate();
+        ratio =
+            contract.getCurrentContractVersion().getIsTimeProratedInvoice()
+                ? durationService.computeRatio(
+                    start, end, contract.getCurrentContractVersion().getInvoicingDuration())
+                : BigDecimal.ONE;
+
         ContractLine tmp = contractLineRepo.copy(line, false);
         tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
         tmp.setQty(

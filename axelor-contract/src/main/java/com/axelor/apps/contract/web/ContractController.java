@@ -63,6 +63,7 @@ public class ContractController {
         Beans.get(ContractRepository.class)
             .find(request.getContext().asType(Contract.class).getId());
     try {
+      Beans.get(ContractLineService.class).checkFromDateOnGoing(contract);
       Invoice invoice =
           Beans.get(ContractService.class)
               .ongoingCurrentVersion(contract, getTodayDate(contract.getCompany()));

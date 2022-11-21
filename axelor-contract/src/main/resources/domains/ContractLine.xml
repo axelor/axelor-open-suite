@@ -50,6 +50,8 @@
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
+    <date name="fromDate"/>
+
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
 					   isConsumptionLine"/>

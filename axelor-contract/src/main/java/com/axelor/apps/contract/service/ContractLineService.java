@@ -20,6 +20,7 @@ package com.axelor.apps.contract.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.exception.AxelorException;
 
 public interface ContractLineService {
@@ -39,6 +40,12 @@ public interface ContractLineService {
    * @return ContractLine filled with Product information.
    */
   ContractLine fill(ContractLine contractLine, Product product) throws AxelorException;
+
+  ContractLine fillDefault(ContractLine contractLine, ContractVersion contractVersion);
+
+  void updateContractLinesFromContractVersion(ContractVersion contractVersion);
+
+  void checkFromDateOnGoing(Contract contract);
 
   /**
    * Compute price and tax of Product to ContractLine.

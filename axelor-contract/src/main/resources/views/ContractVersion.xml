@@ -186,6 +186,11 @@
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="active"/>
   </action-method>
 
+  <action-method name="action-method-contract-version-update-contract-lines">
+    <call class="com.axelor.apps.contract.web.ContractVersionController"
+      method="updateContractLines"/>
+  </action-method>
+
   <action-method name="action-contract-version-method-waiting">
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="waiting"/>
   </action-method>
@@ -193,5 +198,11 @@
   <action-method name="action-method-contract-version-change-product">
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="changeProduct"/>
   </action-method>
+
+  <action-method name="action-method-contract-version-check-supposed-activation-date">
+    <call class="com.axelor.apps.contract.web.ContractVersionController"
+      method="checkSupposedActivationDate"/>
+  </action-method>
+
 
 </object-views>

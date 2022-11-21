@@ -17,7 +17,7 @@
 
   <form name="contract-line-form" title="Contract line"
     model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-hide-consumption-line"
+    onNew="action-contract-line-attrs-hide-consumption-line,action-method-contract-line-fill-default"
     onLoad="action-contract-line-attrs-hide-consumption-line">
 
     <panel-tabs name="mainPanelTab">
@@ -52,6 +52,10 @@
           form-view="analytic-move-line-distribution-form" colSpan="12"
           onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      </panel>
+      <panel name="datePanel" title="Date">
+        <field name="fromDate" onChange="action-method-contract-line-check-from-date"/>
+        <field name="contractVersion.supposedActivationDate" readonly="true"/>
       </panel>
     </panel-tabs>
   </form>
@@ -180,5 +184,12 @@
       <field name="description" colSpan="12" widget="html"/>
     </panel>
   </form>
+
+  <action-method name="action-method-contract-line-fill-default">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="fillDefault"/>
+  </action-method>
+  <action-method name="action-method-contract-line-check-from-date">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="checkFromDate"/>
+  </action-method>
 
 </object-views>
