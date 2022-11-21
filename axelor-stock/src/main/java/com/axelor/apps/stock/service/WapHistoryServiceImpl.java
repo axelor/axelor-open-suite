@@ -52,6 +52,13 @@ public class WapHistoryServiceImpl implements WapHistoryService {
 
   @Override
   @Transactional
+  public WapHistory saveWapHistory(
+      StockLocationLine stockLocationLine, LocalDate date, String origin) {
+    return wapHistoryRepository.save(createWapHistory(stockLocationLine, date, origin));
+  }
+
+  @Override
+  @Transactional
   public WapHistory saveWapHistory(StockLocationLine stockLocationLine) {
     return wapHistoryRepository.save(createWapHistory(stockLocationLine));
   }
@@ -69,12 +76,19 @@ public class WapHistoryServiceImpl implements WapHistoryService {
             .map(StockMoveLine::getStockMove)
             .map(StockMove::getStockMoveSeq)
             .orElse("");
-    return createWapHistory(stockLocationLine, stockMoveLine, origin);
+    return createWapHistory(stockLocationLine, origin);
+  }
+
+  protected WapHistory createWapHistory(
+      StockLocationLine stockLocationLine, LocalDate date, String origin) {
+    WapHistory wapHistory = createWapHistory(stockLocationLine, origin);
+    wapHistory.setDate(date);
+
+    return wapHistory;
   }
 
   /** Use current value of stock location line to create a wap history. */
-  protected WapHistory createWapHistory(
-      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine, String origin) {
+  protected WapHistory createWapHistory(StockLocationLine stockLocationLine, String origin) {
     LocalDate today =
         appBaseService.getTodayDate(
             stockLocationLine.getStockLocation() != null
@@ -88,7 +102,6 @@ public class WapHistoryServiceImpl implements WapHistoryService {
         stockLocationLine.getAvgPrice(),
         stockLocationLine.getCurrentQty(),
         stockLocationLine.getUnit(),
-        origin,
-        stockMoveLine);
+        origin);
   }
 }

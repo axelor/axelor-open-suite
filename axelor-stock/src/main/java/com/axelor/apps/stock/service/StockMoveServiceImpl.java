@@ -385,7 +385,8 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param initialStatus the initial status of the stock move.
    * @throws AxelorException
    */
-  protected void updateLocations(
+  @Override
+  public void updateLocations(
       StockMove stockMove,
       StockLocation fromStockLocation,
       StockLocation toStockLocation,

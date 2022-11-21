@@ -46,6 +46,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
@@ -228,7 +229,13 @@ public class InvoiceLineController {
       TaxLine taxLine = invoiceLine.getTaxLine();
 
       response.setValue(
-          "price", Beans.get(TaxService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          "price",
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  true,
+                  taxLine,
+                  inTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -250,7 +257,13 @@ public class InvoiceLineController {
       TaxLine taxLine = invoiceLine.getTaxLine();
 
       response.setValue(
-          "inTaxPrice", Beans.get(TaxService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          "inTaxPrice",
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  false,
+                  taxLine,
+                  exTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

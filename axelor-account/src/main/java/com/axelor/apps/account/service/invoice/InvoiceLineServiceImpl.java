@@ -163,7 +163,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           taxService.convertUnitPrice(
               (Boolean) productCompanyService.get(product, "inAti", invoice.getCompany()),
               taxLine,
-              price);
+              price,
+              AppBaseService.COMPUTATION_SCALING);
     }
 
     return currencyService
@@ -235,7 +236,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             taxService.convertUnitPrice(
                 invoiceLine.getProduct().getInAti(),
                 invoiceLine.getTaxLine(),
-                (BigDecimal) rawDiscounts.get("discountAmount")));
+                (BigDecimal) rawDiscounts.get("discountAmount"),
+                appBaseService.getNbDecimalDigitForUnitPrice()));
       } else {
         processedDiscounts.put("discountAmount", rawDiscounts.get("discountAmount"));
       }
@@ -250,11 +252,21 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       if (invoiceLine.getProduct().getInAti()) {
         processedDiscounts.put("inTaxPrice", price);
         processedDiscounts.put(
-            "price", taxService.convertUnitPrice(true, invoiceLine.getTaxLine(), price));
+            "price",
+            taxService.convertUnitPrice(
+                true,
+                invoiceLine.getTaxLine(),
+                price,
+                appBaseService.getNbDecimalDigitForUnitPrice()));
       } else {
         processedDiscounts.put("price", price);
         processedDiscounts.put(
-            "inTaxPrice", taxService.convertUnitPrice(false, invoiceLine.getTaxLine(), price));
+            "inTaxPrice",
+            taxService.convertUnitPrice(
+                false,
+                invoiceLine.getTaxLine(),
+                price,
+                appAccountService.getNbDecimalDigitForUnitPrice()));
       }
     }
 
@@ -377,8 +389,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Product product = invoiceLine.getProduct();
 
     Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
-    productInformation.put("productName", product.getName());
-    productInformation.put("productCode", product.getCode());
+    if (productInformation.get("productName") == null
+        && productInformation.get("productCode") == null) {
+      productInformation.put("productName", product.getName());
+      productInformation.put("productCode", product.getCode());
+    }
     productInformation.put("unit", this.getUnit(product, isPurchase));
 
     AppInvoice appInvoice = appAccountService.getAppInvoice();
@@ -434,9 +449,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     productInformation.putAll(
         this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
-
-    productInformation.put("productName", invoiceLine.getProduct().getName());
-
     return productInformation;
   }
 

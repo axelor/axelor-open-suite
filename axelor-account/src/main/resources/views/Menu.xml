@@ -868,6 +868,14 @@
   <action-view name="accounting.dashboard.view" title="Accounting Details">
     <view type="dashboard" name="accounting.dashboard.sample"/>
   </action-view>
+
+  <menuitem name="menu-accounting-dashboard-2" parent="account-root-report"
+    title="Accounting with invoice terms" action="accounting.dashboard.invoice.terms.view"/>
+
+  <action-view name="accounting.dashboard.invoice.terms.view"
+    title="Accounting Details with invoice terms">
+    <view type="dashboard" name="accounting.dashboard.invoice.terms.sample"/>
+  </action-view>
   <!-- Move template -->
 
   <menuitem name="move-template-wizard" title="Move From Template"

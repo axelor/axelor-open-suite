@@ -26,7 +26,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
 import java.util.List;
@@ -81,9 +80,6 @@ public interface PurchaseOrderLineService {
       Unit unit)
       throws AxelorException;
 
-  public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
-      throws AxelorException;
-
   public SupplierCatalog getSupplierCatalog(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
@@ -97,23 +93,6 @@ public interface PurchaseOrderLineService {
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BigDecimal price);
 
   public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine);
-
-  /**
-   * Get minimum quantity from supplier catalog if available, else return one.
-   *
-   * @param purchaseOrder
-   * @param purchaseOrderLine
-   * @return
-   */
-  public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
-      throws AxelorException;
-
-  public void checkMinQty(
-      PurchaseOrder purchaseOrder,
-      PurchaseOrderLine purchaseOrderLine,
-      ActionRequest request,
-      ActionResponse response)
-      throws AxelorException;
 
   public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response);
 
