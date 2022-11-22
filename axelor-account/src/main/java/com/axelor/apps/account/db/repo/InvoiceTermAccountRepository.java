@@ -39,22 +39,23 @@ public class InvoiceTermAccountRepository extends InvoiceTermRepository {
       }
 
       json.put("$amountRemaining", amountRemaining);
-      if (!((boolean) json.get("isPaid"))) {
-        LocalDate today = Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getCompany());
-        if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getNextDueDate() != null) {
-          if (invoiceTerm.getInvoice().getNextDueDate().isBefore(today)) {
-            json.put(
-                "$originBasedPaymentDelay",
-                Duration.between(
-                        today.atStartOfDay(),
-                        invoiceTerm.getInvoice().getNextDueDate().atStartOfDay())
-                    .toDays());
-          } else {
-            json.put("$originBasedPaymentDelay", 0);
-          }
-        } else {
-          json.put("$originBasedPaymentDelay", invoiceTerm.getPaymentDelay());
+    }
+
+    long id = (long) json.get("id");
+    InvoiceTerm invoiceTerm = this.find(id);
+    json.put("$originBasedPaymentDelay", 0);
+    if (json.containsKey("amountRemaining")
+        && ((BigDecimal) json.get("amountRemaining")).signum() > 0) {
+      LocalDate today = Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getCompany());
+      if (invoiceTerm.getDueDate() != null) {
+        if (invoiceTerm.getDueDate().isBefore(today)) {
+          json.put(
+              "$originBasedPaymentDelay",
+              Duration.between(invoiceTerm.getDueDate().atStartOfDay(), today.atStartOfDay())
+                  .toDays());
         }
+      } else {
+        json.put("$originBasedPaymentDelay", invoiceTerm.getPaymentDelay());
       }
     }
 
