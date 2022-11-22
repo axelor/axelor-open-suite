@@ -1496,4 +1496,7 @@ public final class AccountExceptionMessage {
 
   public static final String REPORT_TYPE_INTERSECT_CUSTOM_RULE = /*$$(*/
       "Report type %s has intersecting column %s and line %s with custom rules." /*)*/;
+
+  public static final String REPORT_TYPE_MULTIPLE_GROUPS = /*$$(*/
+      "Report type %s has group columns of different types." /*)*/;
 }
