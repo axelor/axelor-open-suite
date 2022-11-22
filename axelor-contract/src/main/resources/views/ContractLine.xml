@@ -64,7 +64,6 @@
       </panel>
       <panel name="datePanel" title="Date">
         <field name="fromDate" onChange="action-method-contract-line-check-from-date"/>
-        <field name="contractVersion.supposedActivationDate" readonly="true"/>
       </panel>
     </panel-tabs>
   </form>

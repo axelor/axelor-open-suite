@@ -450,6 +450,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             tmp.getQty()
                 .multiply(ratio)
                 .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
+        tmp.setFromDate(start);
         tmp = this.contractLineService.computeTotal(tmp);
         InvoiceLine invLine = generate(invoice, tmp);
         invLine.setContractLine(line);
@@ -537,6 +538,22 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getTaxLine(),
             line.getPrice(),
             appBaseService.getNbDecimalDigitForUnitPrice());
+    String description =
+        line.getFromDate() != null
+                && line.getContractVersion() != null
+                && line.getContractVersion().getContract() != null
+                && line.getFromDate()
+                    .isAfter(line.getContractVersion().getContract().getInvoicePeriodStartDate())
+            ? line.getDescription()
+                + "<br>"
+                + I18n.get("From")
+                + " "
+                + line.getFromDate()
+                + " "
+                + I18n.get("to")
+                + " "
+                + line.getContractVersion().getContract().getInvoicePeriodEndDate()
+            : line.getDescription();
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
@@ -545,7 +562,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getPrice(),
             inTaxPriceComputed,
             line.getPriceDiscounted(),
-            line.getDescription(),
+            description,
             line.getQty(),
             line.getUnit(),
             line.getTaxLine(),
