@@ -53,10 +53,13 @@
       public static final int TYPE_DETAIL = 2;
       public static final int TYPE_SEPARATOR = 3;
       public static final int TYPE_GROUP = 4;
+      public static final int TYPE_GROUP_BY_ACCOUNT = 5;
 
       // RESULT SELECT
       public static final int RESULT_DEBIT_MINUS_CREDIT = 1;
       public static final int RESULT_CREDIT_MINUS_DEBIT = 2;
+      public static final int RESULT_SAME_AS_COLUMN = 3;
+      public static final int RESULT_SAME_AS_LINE = 4;
 
 	  ]]></extra-code>
 

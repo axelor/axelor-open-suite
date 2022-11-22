@@ -9,10 +9,9 @@
     <integer name="columnNumber" initParam="true"/>
     <integer name="lineNumber" initParam="true"/>
     <decimal name="result" initParam="true"/>
-    <decimal name="resultn1" initParam="true"/>
-    <decimal name="resultn2" initParam="true"/>
     <string name="lineTitle" initParam="true"/>
     <string name="parentTitle" initParam="true"/>
+    <string name="period" initParam="true"/>
     <many-to-one name="accountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" initParam="true"/>
     <many-to-one name="accountingReportConfigLine"

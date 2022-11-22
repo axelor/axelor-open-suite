@@ -722,18 +722,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">result</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">resultn1</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">resultn1</text-property>
-                    <text-property name="heading">resultn1</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">resultn2</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">resultn2</text-property>
-                    <text-property name="heading">resultn2</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">column</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">column</text-property>
@@ -752,10 +740,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">group</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">period</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">period</text-property>
+                    <text-property name="heading">period</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">columnName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">columnName</text-property>
                     <text-property name="heading">columnName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">columnNb</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">columnNb</text-property>
+                    <text-property name="heading">columnNb</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">columnRuleType</property>
@@ -786,6 +786,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">lineName</text-property>
                     <text-property name="heading">lineName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">lineNb</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">lineNb</text-property>
+                    <text-property name="heading">lineNb</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">lineHidden</property>
@@ -828,33 +834,33 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">resultn1</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">resultn2</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
                         <property name="name">column</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">3</property>
                         <property name="name">line</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">4</property>
                         <property name="name">group</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">5</property>
+                        <property name="name">period</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
                         <property name="name">columnName</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">columnNb</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">8</property>
@@ -883,16 +889,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">13</property>
-                        <property name="name">lineHidden</property>
+                        <property name="name">lineNb</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">14</property>
-                        <property name="name">lineNotCompute</property>
+                        <property name="name">lineHidden</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">15</property>
+                        <property name="name">lineNotCompute</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
                         <property name="name">lineRuleType</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -909,45 +920,45 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">resultn1</property>
-                    <property name="nativeName">resultn1</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">resultn2</property>
-                    <property name="nativeName">resultn2</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
                     <property name="name">column</property>
                     <property name="nativeName">column</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">3</property>
                     <property name="name">line</property>
                     <property name="nativeName">line</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">4</property>
                     <property name="name">group</property>
                     <property name="nativeName">group</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">5</property>
+                    <property name="name">period</property>
+                    <property name="nativeName">period</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
                     <property name="name">columnName</property>
                     <property name="nativeName">columnName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">columnNb</property>
+                    <property name="nativeName">columnNb</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
@@ -986,20 +997,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">13</property>
+                    <property name="name">lineNb</property>
+                    <property name="nativeName">lineNb</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
                     <property name="name">lineHidden</property>
                     <property name="nativeName">lineHidden</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">15</property>
                     <property name="name">lineNotCompute</property>
                     <property name="nativeName">lineNotCompute</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">16</property>
                     <property name="name">lineRuleType</property>
                     <property name="nativeName">lineRuleType</property>
                     <property name="dataType">integer</property>
@@ -1008,21 +1026,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
 	ReportValue.result,
-	ReportValue.resultn1,
-	ReportValue.resultn2,
 	ReportValue.accounting_report_config_line_column AS "column",
 	ReportValue.accounting_report_config_line AS "line",
 	ReportValue.parent_title AS "group",
+	ReportValue.period,
 	ConfigColumn.label AS "columnName",
+	ReportValue.column_number AS "columnNb",
 	ConfigColumn.rule_type_select AS "columnRuleType",
 	ConfigColumn.hidden AS "columnHidden",
 	ConfigColumn.not_computed_if_intersect AS "columnNotCompute",
 	ConfigColumn.compute_previous_year AS "previousYear",
 	ReportValue.line_title AS "lineName",
+	ReportValue.line_number AS "lineNb",
 	ConfigLine.hidden AS "lineHidden",
 	ConfigLine.not_computed_if_intersect AS "lineNotCompute",
 	ConfigLine.rule_type_select AS "lineRuleType"
-	
+
 FROM account_accounting_report AS AccountingReport
 
 JOIN account_accounting_report_value AS ReportValue
@@ -1057,6 +1076,12 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                                 <tabular-level name="line" id="5643">
                                     <property name="dataType">string</property>
                                     <property name="levelType">dynamic</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">lineNb</property>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                    </list-property>
                                     <property name="columnName">lineName</property>
                                     <expression name="displayColumnName" type="javascript">dataSetRow["lineName"]</expression>
                                 </tabular-level>
@@ -1072,6 +1097,12 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                                 <tabular-level name="column" id="5818">
                                     <property name="dataType">string</property>
                                     <property name="levelType">dynamic</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">columnNb</property>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                    </list-property>
                                     <property name="columnName">columnName</property>
                                     <expression name="displayColumnName" type="javascript">dataSetRow["columnName"]</expression>
                                 </tabular-level>
@@ -1086,7 +1117,27 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                             <property name="levels">
                                 <tabular-level name="group" id="5978">
                                     <property name="dataType">string</property>
+                                    <property name="levelType">dynamic</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">columnNb</property>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                    </list-property>
                                     <property name="columnName">group</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="Period" id="5985">
+                    <property name="defaultHierarchy">NewTabularHierarchy3</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy3" id="5986">
+                            <property name="levels">
+                                <tabular-level name="period" id="5987">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">period</property>
                                 </tabular-level>
                             </property>
                         </tabular-hierarchy>
@@ -1098,14 +1149,6 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                     <property name="measures">
                         <tabular-measure name="result" id="5815">
                             <expression name="measureExpression" type="javascript">dataSetRow["result"]</expression>
-                            <property name="dataType">decimal</property>
-                        </tabular-measure>
-                        <tabular-measure name="resultn1" id="5951">
-                            <expression name="measureExpression" type="javascript">dataSetRow["resultn1"]</expression>
-                            <property name="dataType">decimal</property>
-                        </tabular-measure>
-                        <tabular-measure name="resultn2" id="5952">
-                            <expression name="measureExpression" type="javascript">dataSetRow["resultn2"]</expression>
                             <property name="dataType">decimal</property>
                         </tabular-measure>
                         <tabular-measure name="lineNotCompute" id="5969">
@@ -2166,70 +2209,7 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                                 </property>
                                 <property name="header">
                                     <extended-item extensionName="CrosstabCell" id="5854">
-                                        <property name="content">
-                                            <text id="5966">
-                                                <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>row._outer["reportyear"]</VALUE-OF>]]></text-property>
-                                            </text>
-                                        </property>
-                                    </extended-item>
-                                </property>
-                            </extended-item>
-                            <extended-item extensionName="ComputedMeasureView" name="resultn1" id="5953">
-                                <property name="detail">
-                                    <extended-item extensionName="AggregationCell" id="5954">
-                                        <property name="aggregationOnRow">Line/line</property>
-                                        <property name="aggregationOnColumn">Column/column</property>
-                                        <property name="content">
-                                            <data name="resultn11" id="5957">
-                                                <list-property name="visibility">
-                                                    <structure>
-                                                        <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(data["columnNotCompute"] &amp;&amp; data["lineNotCompute"]) || data["columnRuleType"] == 1 || data["lineRuleType"] == 1</expression>
-                                                    </structure>
-                                                </list-property>
-                                                <property name="resultSetColumn">resultn1</property>
-                                            </data>
-                                        </property>
-                                    </extended-item>
-                                </property>
-                                <property name="header">
-                                    <extended-item extensionName="CrosstabCell" id="5955">
-                                        <property name="content">
-                                            <text id="5973">
-                                                <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>row._outer["reportn1year"]</VALUE-OF>]]></text-property>
-                                            </text>
-                                        </property>
-                                    </extended-item>
-                                </property>
-                            </extended-item>
-                            <extended-item extensionName="ComputedMeasureView" name="resultn2" id="5958">
-                                <property name="detail">
-                                    <extended-item extensionName="AggregationCell" id="5959">
-                                        <property name="aggregationOnRow">Line/line</property>
-                                        <property name="aggregationOnColumn">Column/column</property>
-                                        <property name="content">
-                                            <data name="resultn21" id="5962">
-                                                <list-property name="visibility">
-                                                    <structure>
-                                                        <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">(data["columnNotCompute"] &amp;&amp; data["lineNotCompute"]) || data["columnRuleType"] == 1 || data["lineRuleType"] == 1</expression>
-                                                    </structure>
-                                                </list-property>
-                                                <property name="resultSetColumn">resultn2</property>
-                                            </data>
-                                        </property>
-                                    </extended-item>
-                                </property>
-                                <property name="header">
-                                    <extended-item extensionName="CrosstabCell" id="5960">
-                                        <property name="content">
-                                            <text id="5974">
-                                                <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>row._outer["reportn2year"]</VALUE-OF>]]></text-property>
-                                            </text>
-                                        </property>
+                                        <property name="height">0in</property>
                                     </extended-item>
                                 </property>
                             </extended-item>
@@ -2242,6 +2222,13 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                                         <property name="levels">
                                             <extended-item extensionName="LevelView" name="NewLevel View" id="5842">
                                                 <property name="level">Line/line</property>
+                                                <property name="sort">
+                                                    <sort-element>
+                                                        <expression name="key" type="javascript">dimension["Line"]["line"]["lineNb"]</expression>
+                                                        <property name="direction">asc</property>
+                                                        <property name="strength">-1</property>
+                                                    </sort-element>
+                                                </property>
                                                 <property name="member">
                                                     <extended-item extensionName="CrosstabCell" id="5843">
                                                         <property name="content">
@@ -2260,11 +2247,47 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                         <property name="columns">
                             <extended-item extensionName="CrosstabView" id="5846">
                                 <property name="views">
+                                    <extended-item extensionName="DimensionView" id="5988">
+                                        <property name="dimension">Period</property>
+                                        <property name="levels">
+                                            <extended-item extensionName="LevelView" name="NewLevel View3" id="5989">
+                                                <property name="level">Period/period</property>
+                                                <property name="member">
+                                                    <extended-item extensionName="CrosstabCell" id="5990">
+                                                        <property name="content">
+                                                            <data name="period" id="5992">
+                                                                <property name="resultSetColumn">period</property>
+                                                            </data>
+                                                        </property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                        </property>
+                                    </extended-item>
                                     <extended-item extensionName="DimensionView" id="5979">
                                         <property name="dimension">Group</property>
                                         <property name="levels">
                                             <extended-item extensionName="LevelView" name="NewLevel View2" id="5980">
                                                 <property name="level">Group/group</property>
+                                                <property name="sort">
+                                                    <sort-element>
+                                                        <expression name="key" type="javascript">dimension["Group"]["group"]["columnNb"]</expression>
+                                                        <property name="direction">desc</property>
+                                                        <property name="strength">-1</property>
+                                                        <property name="member">
+                                                            <member-value>
+                                                                <property name="value"></property>
+                                                                <property name="level">Line/line</property>
+                                                                <property name="memberValues">
+                                                                    <member-value>
+                                                                        <property name="value"></property>
+                                                                        <property name="level">Column/column</property>
+                                                                    </member-value>
+                                                                </property>
+                                                            </member-value>
+                                                        </property>
+                                                    </sort-element>
+                                                </property>
                                                 <property name="member">
                                                     <extended-item extensionName="CrosstabCell" id="5981">
                                                         <property name="content">
@@ -2282,6 +2305,13 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                                         <property name="levels">
                                             <extended-item extensionName="LevelView" name="NewLevel View1" id="5848">
                                                 <property name="level">Column/column</property>
+                                                <property name="sort">
+                                                    <sort-element>
+                                                        <expression name="key" type="javascript">dimension["Column"]["column"]["columnNb"]</expression>
+                                                        <property name="direction">asc</property>
+                                                        <property name="strength">-1</property>
+                                                    </sort-element>
+                                                </property>
                                                 <property name="member">
                                                     <extended-item extensionName="CrosstabCell" id="5849">
                                                         <property name="content">
@@ -2298,6 +2328,7 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                             </extended-item>
                         </property>
                         <property name="header">
+                            <extended-item extensionName="CrosstabCell" id="5991"/>
                             <extended-item extensionName="CrosstabCell" id="5982"/>
                             <extended-item extensionName="CrosstabCell" id="5856"/>
                             <extended-item extensionName="CrosstabCell" id="5839"/>
@@ -2322,16 +2353,6 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                                     <value>Column/column</value>
                                 </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
-                            </structure>
-                            <structure>
-                                <property name="name">resultn1</property>
-                                <expression name="expression" type="javascript">measure["resultn1"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">resultn2</property>
-                                <expression name="expression" type="javascript">measure["resultn2"]</expression>
-                                <property name="dataType">decimal</property>
                             </structure>
                             <structure>
                                 <property name="name">columnNotCompute</property>
@@ -2361,6 +2382,11 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                             <structure>
                                 <property name="name">group</property>
                                 <expression name="expression">dimension["Group"]["group"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">period</property>
+                                <expression name="expression">dimension["Period"]["period"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>

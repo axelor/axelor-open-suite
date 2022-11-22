@@ -22,8 +22,7 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <integer name="comparison" title="Comparison"
       selection="accounting.report.type.comparison.select"/>
-    <integer name="noOfPeriods" title="Number of periods" default="1"
-      selection="accounting.report.type.no.of.periods.select"/>
+    <integer name="noOfPeriods" title="Number of periods" default="1" min="1"/>
     <many-to-one name="modelAccountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Model Accounting Report"/>
 
