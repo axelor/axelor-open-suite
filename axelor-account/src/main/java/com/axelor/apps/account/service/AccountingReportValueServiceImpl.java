@@ -89,19 +89,18 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     switch (reportType.getComparison()) {
       case AccountingReportTypeRepository.COMPARISON_PREVIOUS_YEAR:
-        this.computeReportValues(
-            accountingReport,
-            startDate.minusYears(1).with(TemporalAdjusters.firstDayOfYear()),
-            endDate.minusYears(1).with(TemporalAdjusters.lastDayOfYear()));
-
-        this.computeReportValues(
-            accountingReport,
-            startDate.minusYears(2).with(TemporalAdjusters.firstDayOfYear()),
-            endDate.minusYears(2).with(TemporalAdjusters.lastDayOfYear()));
+        for (int i = 1; i < accountingReport.getReportType().getNoOfPeriods() + 1; i++) {
+          this.computeReportValues(
+              accountingReport,
+              startDate.minusYears(i).with(TemporalAdjusters.firstDayOfYear()),
+              endDate.minusYears(i).with(TemporalAdjusters.lastDayOfYear()));
+        }
         break;
       case AccountingReportTypeRepository.COMPARISON_SAME_PERIOD_ON_PREVIOUS_YEAR:
-        this.computeReportValues(accountingReport, startDate.minusYears(1), endDate.minusYears(1));
-        this.computeReportValues(accountingReport, startDate.minusYears(2), endDate.minusYears(2));
+        for (int i = 1; i < accountingReport.getReportType().getNoOfPeriods() + 1; i++) {
+          this.computeReportValues(
+              accountingReport, startDate.minusYears(i), endDate.minusYears(i));
+        }
         break;
       case AccountingReportTypeRepository.COMPARISON_OTHER_PERIOD:
         this.computeReportValues(

@@ -415,11 +415,6 @@
     <option value="4">Other period</option>
   </selection>
 
-  <selection name="accounting.report.type.no.of.periods.select">
-    <option value="1">1</option>
-    <option value="2">2</option>
-  </selection>
-
   <selection name="account.fixed.type.category.computation.method.select">
     <option value="linear">Linear</option>
     <option value="degressive">Degressive</option>
