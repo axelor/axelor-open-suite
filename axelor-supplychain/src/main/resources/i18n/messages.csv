@@ -521,6 +521,7 @@
 "Shipment mode",,,
 "Shipping cost",,,
 "Show Total",,,
+"Some sum's amount of the budget distributions of the purchase order lines does not match their own total amount, do you want to proceed ?",,,
 "Specific package",,,
 "Standard",,,
 "Standard delay (days)",,,

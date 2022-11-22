@@ -36,6 +36,7 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.translation.ITranslation;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -458,6 +459,20 @@ public class PurchaseOrderController {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       Beans.get(PurchaseOrderSupplychainService.class)
           .updateBudgetDistributionAmountAvailable(purchaseOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void confirmBudgetDistributionList(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+
+      if (!Beans.get(PurchaseOrderSupplychainService.class)
+          .isGoodAmountBudgetDistribution(purchaseOrder)) {
+        response.setAlert(I18n.get(ITranslation.PURCHASE_ORDER_BUDGET_DISTRIBUTIONS_SUM_NOT_EQUAL));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
