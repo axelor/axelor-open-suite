@@ -1017,10 +1017,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       String lineCode) {
     DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     String period = String.format("%s - %s", startDate.format(format), endDate.format(format));
-    int columnNumber =
-        accountingReport.getReportType().getAccountingReportConfigLineColumnList().indexOf(column);
-    int lineNumber =
-        accountingReport.getReportType().getAccountingReportConfigLineList().indexOf(line);
+    int columnNumber = column.getSequence();
+    int lineNumber = line.getSequence();
 
     AccountingReportValue accountingReportValue =
         new AccountingReportValue(
