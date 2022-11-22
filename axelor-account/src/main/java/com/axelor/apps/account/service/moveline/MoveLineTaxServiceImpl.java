@@ -279,7 +279,9 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
   @Override
   public void checkTaxMoveLines(Move move) throws AxelorException {
-    if (CollectionUtils.isEmpty(move.getMoveLineList()) || move.getMoveLineList().size() < 2) {
+    if (move.getImportId() != null
+        || CollectionUtils.isEmpty(move.getMoveLineList())
+        || move.getMoveLineList().size() < 2) {
       return;
     }
     for (MoveLine moveline : move.getMoveLineList()) {
