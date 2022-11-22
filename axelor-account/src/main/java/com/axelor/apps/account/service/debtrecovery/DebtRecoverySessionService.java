@@ -130,30 +130,38 @@ public class DebtRecoverySessionService {
       DebtRecoveryMethodLine debtRecoveryMethodLine =
           this.getDebtRecoveryMethodLine(debtRecovery, theoricalDebtRecoveryLevel);
 
-      if ((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline()))
-              .isAfter(appAccountService.getTodayDate(debtRecovery.getCompany())))
-          && balanceDueDebtRecovery.compareTo(debtRecoveryMethodLine.getMinThreshold()) > 0) {
-        log.debug("Si le seuil du solde exigible relançable est respecté et le délai est respecté");
-
-        if (!debtRecoveryMethodLine.getManualValidationOk()) {
-          log.debug("Si le niveau ne necessite pas de validation manuelle");
-          debtRecovery.setDebtRecoveryMethodLine(
-              debtRecoveryMethodLine); // Afin d'afficher la ligne de niveau sur le tiers
-          debtRecovery.setWaitDebtRecoveryMethodLine(null);
-          // et lancer les autres actions du niveau
-        } else {
-          log.debug("Si le niveau necessite une validation manuelle");
-          debtRecovery.setWaitDebtRecoveryMethodLine(
-              debtRecoveryMethodLine); // Si le passage est manuel
-        }
-      }
+      setDebtRecoveryMethodLine(debtRecovery, debtRecoveryMethodLine);
 
     } else {
-      log.debug("Sinon on lance une réinitialisation");
+      log.debug("We reset");
       this.debtRecoveryInitialization(debtRecovery);
     }
     log.debug("End debtRecoverySession service");
     return debtRecovery;
+  }
+
+  protected void setDebtRecoveryMethodLine(
+      DebtRecovery debtRecovery, DebtRecoveryMethodLine debtRecoveryMethodLine) {
+
+    BigDecimal balanceDueDebtRecovery = debtRecovery.getBalanceDueDebtRecovery();
+    LocalDate referenceDate = debtRecovery.getReferenceDate();
+    if ((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline()))
+            .isAfter(appAccountService.getTodayDate(debtRecovery.getCompany())))
+        && balanceDueDebtRecovery.compareTo(debtRecoveryMethodLine.getMinThreshold()) > 0) {
+      log.debug("Si le seuil du solde exigible relançable est respecté et le délai est respecté");
+
+      if (!debtRecoveryMethodLine.getManualValidationOk()) {
+        log.debug("Si le niveau ne necessite pas de validation manuelle");
+        debtRecovery.setDebtRecoveryMethodLine(
+            debtRecoveryMethodLine); // Afin d'afficher la ligne de niveau sur le tiers
+        debtRecovery.setWaitDebtRecoveryMethodLine(null);
+        // et lancer les autres actions du niveau
+      } else {
+        log.debug("Si le niveau necessite une validation manuelle");
+        debtRecovery.setWaitDebtRecoveryMethodLine(
+            debtRecoveryMethodLine); // Si le passage est manuel
+      }
+    }
   }
 
   public int getMaxLevel(DebtRecovery debtRecovery) {
@@ -251,5 +259,18 @@ public class DebtRecoverySessionService {
         I18n.get(
             com.axelor.apps.account.exception.IExceptionMessage
                 .DEBT_RECOVERY_DEBT_RECOVERY_LEVEL_NOT_FOUND));
+  }
+
+  /**
+   * Reset to the min level the debtRecovery.
+   *
+   * @throws AxelorException
+   */
+  public void reset(DebtRecovery debtRecovery) throws AxelorException {
+
+    log.debug("Reset of debtRecovery {}", debtRecovery);
+
+    debtRecovery.setDebtRecoveryMethodLine(null);
+    debtRecovery.setWaitDebtRecoveryMethodLine(null);
   }
 }
