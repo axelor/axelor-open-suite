@@ -85,6 +85,18 @@ public class PaymentVoucherController {
     }
   }
 
+  public void clearElementToPayList(ActionRequest request, ActionResponse response) {
+    PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+
+    try {
+      if (paymentVoucher.getPayVoucherElementToPayList() != null) {
+        paymentVoucher.getPayVoucherElementToPayList().clear();
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   // Filling lines to pay (2nd O2M)
   public void loadSelectedLines(ActionRequest request, ActionResponse response) {
 
@@ -115,6 +127,19 @@ public class PaymentVoucherController {
       response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updatePaidAmountElementToPayList(ActionRequest request, ActionResponse response) {
+
+    PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+
+    try {
+      response.setValue(
+          "payVoucherElementToPayList",
+          Beans.get(PaymentVoucherLoadService.class).updateElementToPay(paymentVoucher));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

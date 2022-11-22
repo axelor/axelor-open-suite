@@ -144,10 +144,6 @@ public class PaymentVoucherLoadService {
   public List<PayVoucherDueElement> searchDueElements(PaymentVoucher paymentVoucher)
       throws AxelorException {
 
-    if (paymentVoucher.getPayVoucherElementToPayList() != null) {
-      paymentVoucher.getPayVoucherElementToPayList().clear();
-    }
-
     if (paymentVoucher.getPayVoucherDueElementList() != null) {
       paymentVoucher.getPayVoucherDueElementList().clear();
     }
@@ -156,13 +152,26 @@ public class PaymentVoucherLoadService {
     for (InvoiceTerm invoiceTerm : this.getInvoiceTerms(paymentVoucher)) {
       PayVoucherDueElement payVoucherDueElement =
           this.createPayVoucherDueElement(paymentVoucher, invoiceTerm);
-      if (payVoucherDueElement != null) {
+      if (payVoucherDueElement != null
+          && !containsPayVoucherWithInvoiceTerm(
+              paymentVoucher.getPayVoucherElementToPayList(), invoiceTerm)) {
         payVoucherDueElement.setSequence(sequence++);
         paymentVoucher.addPayVoucherDueElementListItem(payVoucherDueElement);
       }
     }
 
     return paymentVoucher.getPayVoucherDueElementList();
+  }
+
+  protected boolean containsPayVoucherWithInvoiceTerm(
+      List<PayVoucherElementToPay> elementToPayList, InvoiceTerm invoiceTerm) {
+
+    if (elementToPayList != null) {
+      return elementToPayList.stream()
+          .map(PayVoucherElementToPay::getInvoiceTerm)
+          .anyMatch(it -> it.equals(invoiceTerm));
+    }
+    return false;
   }
 
   public PayVoucherDueElement createPayVoucherDueElement(
@@ -289,6 +298,20 @@ public class PaymentVoucherLoadService {
     payVoucherElementToPay.setRemainingAmount(payVoucherDueElement.getAmountRemaining());
     payVoucherElementToPay.setCurrency(payVoucherDueElement.getCurrency());
 
+    updateAmountRemaining(paymentVoucher, payVoucherElementToPay, paymentDate, amountRemaining);
+
+    payVoucherElementToPayService.updateElementToPayWithFinancialDiscount(
+        payVoucherElementToPay, payVoucherDueElement, paymentVoucher);
+
+    return payVoucherElementToPay;
+  }
+
+  protected void updateAmountRemaining(
+      PaymentVoucher paymentVoucher,
+      PayVoucherElementToPay payVoucherElementToPay,
+      LocalDate paymentDate,
+      BigDecimal amountRemaining)
+      throws AxelorException {
     BigDecimal amountRemainingInElementCurrency =
         currencyService
             .getAmountCurrencyConvertedAtDate(
@@ -314,11 +337,6 @@ public class PaymentVoucherLoadService {
     payVoucherElementToPay.setAmountToPayCurrency(amountImputedInPayVouchCurrency);
     payVoucherElementToPay.setRemainingAmountAfterPayment(
         payVoucherElementToPay.getRemainingAmount().subtract(amountImputedInElementCurrency));
-
-    payVoucherElementToPayService.updateElementToPayWithFinancialDiscount(
-        payVoucherElementToPay, payVoucherDueElement, paymentVoucher);
-
-    return payVoucherElementToPay;
   }
 
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
@@ -490,5 +508,49 @@ public class PaymentVoucherLoadService {
             t.getInvoiceTerm().getInvoice() != null
                 ? t.getInvoiceTerm().getInvoice().getInvoiceDate()
                 : t.getInvoiceTerm().getMoveLine().getMove().getDate());
+  }
+
+  /**
+   * Returns a updated list of element to pay.
+   *
+   * @param paymentVoucher
+   * @throws AxelorException
+   */
+  public List<PayVoucherElementToPay> updateElementToPay(PaymentVoucher paymentVoucher)
+      throws AxelorException {
+
+    List<PayVoucherElementToPay> toUpdatePayVoucherElementToPayList =
+        paymentVoucher.getPayVoucherElementToPayList().stream()
+            .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
+            .collect(Collectors.toList());
+
+    // It should not be a problem to reset the amount (Since it will be recomputed), but it is
+    // necessary as getRemaingAmount depends of these values.
+    resetAmountToPay(toUpdatePayVoucherElementToPayList);
+
+    for (PayVoucherElementToPay payVoucherElementToPay : toUpdatePayVoucherElementToPayList) {
+      this.updateAmountRemaining(
+          paymentVoucher,
+          payVoucherElementToPay,
+          paymentVoucher.getPaymentDate(),
+          paymentVoucher.getRemainingAmount());
+      payVoucherElementToPayService.updateFinancialDiscount(payVoucherElementToPay);
+      paymentVoucher.setRemainingAmount(
+          paymentVoucher.getRemainingAmount().subtract(payVoucherElementToPay.getAmountToPay()));
+    }
+
+    // We dont keep the lines that have 0 amount to pay
+    return toUpdatePayVoucherElementToPayList.stream()
+        .filter(
+            payVoucherElementToPay -> payVoucherElementToPay.getAmountToPayCurrency().signum() > 0)
+        .collect(Collectors.toList());
+  }
+
+  protected void resetAmountToPay(List<PayVoucherElementToPay> updatedPayVoucherElementToPayList) {
+
+    for (PayVoucherElementToPay payVoucherElementToPay : updatedPayVoucherElementToPayList) {
+      payVoucherElementToPay.setAmountToPay(BigDecimal.ZERO);
+      payVoucherElementToPay.setAmountToPayCurrency(BigDecimal.ZERO);
+    }
   }
 }

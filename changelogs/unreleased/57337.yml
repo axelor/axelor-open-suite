@@ -1,0 +1,4 @@
+---
+title: "Payment voucher: changing the paid amount will not reset the element to pay list and instead will update the amounts."
+type: fix
+

@@ -108,7 +108,7 @@
     <panel name="paymentInfoPanel" readonlyIf="statusSelect == 2 || statusSelect == 3"
       colSpan="12">
       <field name="paidAmount" colSpan="4"
-        onChange="action-group-payment-voucher-reset-imputation,save"/>
+        onChange="action-group-payment-voucher-update-element-to-pay,save"/>
       <field name="currency" canEdit="false" colSpan="4" form-view="currency-form"
         grid-view="currency-grid" onChange="action-group-payment-voucher-reset-imputation"/>
       <field name="remainingAmount" readonly="true" colSpan="4"/>
@@ -130,13 +130,14 @@
           readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherDueElementList.length == 0"
           colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
-          onClick="com.axelor.apps.account.web.PaymentVoucherController:resetImputation"
+          onClick="action-group-payment-voucher-reset-imputation"
           readonlyIf="(paidAmount == 0 &amp;&amp; moveLine == null) || payVoucherElementToPayList.length == 0"
           colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
         field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-form"
-        grid-view="pay-voucher-element-to-pay-grid" orderBy="sequence" canNew="false"/>
+        grid-view="pay-voucher-element-to-pay-grid" orderBy="sequence" canNew="false"
+        onChange="action-payment-voucher-method-reset-imputation"/>
     </panel-stack>
 
   </form>
@@ -364,8 +365,21 @@
 
   <action-group name="action-group-payment-voucher-reset-imputation"
     model="com.axelor.apps.account.db.PaymentVoucher">
+    <action name="action-payment-voucher-clear-element-to-pay-list"/>
     <action name="action-payment-voucher-reset-imputation" if="payVoucherElementToPayList"/>
   </action-group>
+
+
+  <action-group name="action-group-payment-voucher-update-element-to-pay"
+    model="com.axelor.apps.account.db.PaymentVoucher">
+    <action name="action-payment-voucher-update-paid-amount-element-to-pay-list"/>
+    <action name="action-payment-voucher-method-reset-imputation"/>
+  </action-group>
+
+  <action-method name="action-payment-voucher-update-paid-amount-element-to-pay-list">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController"
+      method="updatePaidAmountElementToPayList"/>
+  </action-method>
 
   <action-method name="action-payment-voucher-reset-imputation">
     <call class="com.axelor.apps.account.web.PaymentVoucherController" method="resetImputation"/>
@@ -407,9 +421,15 @@
   </action-method>
 
   <action-group name="action-payment-voucher-group-search-elements-to-pay">
+    <action name="action-payment-voucher-clear-element-to-pay-list"/>
     <action name="action-payment-voucher-method-load-lines"/>
     <action name="action-payment-voucher-method-reset-imputation"/>
   </action-group>
+
+  <action-method name="action-payment-voucher-clear-element-to-pay-list">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController"
+      method="clearElementToPayList"/>
+  </action-method>
 
   <action-attrs name="action-attrs-payment-voucher-hide-trading-name"
     model="com.axelor.apps.account.db.PaymentVoucher">
