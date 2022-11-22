@@ -52,6 +52,11 @@
 
     <date name="fromDate"/>
 
+    <decimal name="discountAmount" title="Discount amount"/>
+    <integer name="discountTypeSelect" title="Discount type"
+      selection="base.price.list.line.amount.type.select" default="0"/>
+    <decimal name="priceDiscounted" title="Unit price discounted"/>
+
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
 					   isConsumptionLine"/>

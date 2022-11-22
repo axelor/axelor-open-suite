@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -167,9 +168,14 @@ public class ContractLineServiceImpl implements ContractLineService {
     if (contractLine.getTaxLine() != null) {
       taxRate = contractLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
-
-    BigDecimal exTaxTotal =
-        contractLine.getQty().multiply(contractLine.getPrice()).setScale(2, RoundingMode.HALF_UP);
+    BigDecimal price =
+        Beans.get(PriceListService.class)
+            .computeDiscount(
+                contractLine.getPrice(),
+                contractLine.getDiscountTypeSelect(),
+                contractLine.getDiscountAmount());
+    contractLine.setPriceDiscounted(price);
+    BigDecimal exTaxTotal = contractLine.getQty().multiply(price).setScale(2, RoundingMode.HALF_UP);
     contractLine.setExTaxTotal(exTaxTotal);
     BigDecimal inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
     contractLine.setInTaxTotal(inTaxTotal);

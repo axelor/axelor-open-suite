@@ -32,7 +32,6 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -433,7 +432,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
       for (ContractLine line : lines) {
         LocalDate start =
-            line.getFromDate() != null && line.getFromDate().isBefore(end)
+            line.getFromDate() != null
+                    && line.getFromDate().isAfter(contract.getInvoicePeriodStartDate())
                 ? line.getFromDate()
                 : version.getActivationDate().isBefore(contract.getInvoicePeriodStartDate())
                     ? contract.getInvoicePeriodStartDate()
@@ -544,14 +544,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getProductName(),
             line.getPrice(),
             inTaxPriceComputed,
-            invoice.getInAti() ? inTaxPriceComputed : line.getPrice(),
+            line.getPriceDiscounted(),
             line.getDescription(),
             line.getQty(),
             line.getUnit(),
             line.getTaxLine(),
             line.getSequence(),
-            BigDecimal.ZERO,
-            PriceListLineRepository.AMOUNT_TYPE_NONE,
+            line.getDiscountAmount(),
+            line.getDiscountTypeSelect(),
             line.getExTaxTotal(),
             line.getInTaxTotal(),
             false) {

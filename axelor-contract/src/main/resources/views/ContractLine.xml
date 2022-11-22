@@ -29,11 +29,20 @@
         <field name="qty" readonlyIf="isConsumptionLine"
           onChange="action-method-contract-line-compute-total"/>
         <field name="price" onChange="action-method-contract-line-compute-total"/>
+        <panel name="discountPanel" colSpan="12">
+          <field name="discountTypeSelect" colSpan="3"
+            onChange="action-method-contract-line-compute-total"/>
+          <field name="discountAmount" hideIf="discountTypeSelect == 0" colSpan="3"
+            onChange="action-method-contract-line-compute-total"/>
+          <field name="priceDiscounted" hideIf="discountTypeSelect == 0" readonly="true"
+            colSpan="3" showIf="priceDiscounted != 0"/>
+        </panel>
         <field name="taxLine" canEdit="false"
           onChange="action-method-contract-line-compute-total"/>
         <field name="unit" canEdit="false"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
+
         <field name="isConsumptionLine" hidden="true"
           onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
         <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
@@ -191,5 +200,6 @@
   <action-method name="action-method-contract-line-check-from-date">
     <call class="com.axelor.apps.contract.web.ContractLineController" method="checkFromDate"/>
   </action-method>
+
 
 </object-views>
