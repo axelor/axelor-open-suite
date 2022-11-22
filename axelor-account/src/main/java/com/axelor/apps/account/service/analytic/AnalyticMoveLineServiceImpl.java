@@ -36,6 +36,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -47,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
@@ -231,8 +234,19 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       InvoiceLine invoiceLine, Invoice invoice, Company company, AnalyticAccount analyticAccount)
       throws AxelorException {
     AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
-
-    analyticMoveLine.setDate(invoice.getOriginDate());
+    LocalDate date =
+        invoice.getOriginDate() != null
+            ? invoice.getOriginDate()
+            : invoice.getDueDate() != null ? invoice.getDueDate() : invoice.getInvoiceDate();
+    analyticMoveLine.setDate(
+        date != null
+            ? date
+            : appBaseService.getTodayDate(
+                invoice.getCompany() != null
+                    ? invoice.getCompany()
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)));
     if (invoiceLine.getAccount() != null) {
       analyticMoveLine.setAccount(invoiceLine.getAccount());
       analyticMoveLine.setAccountType(invoiceLine.getAccount().getAccountType());

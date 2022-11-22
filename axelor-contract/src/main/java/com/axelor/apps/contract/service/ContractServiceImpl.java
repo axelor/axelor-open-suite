@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -585,8 +586,13 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoiceLine.setTaxLine(taxLine);
     invoiceLine.setAccount(replacedAccount);
 
-    if (line.getAnalyticDistributionTemplate() != null) {
+    if (!CollectionUtils.isEmpty(line.getAnalyticMoveLineList())) {
       invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
+      invoiceLine.setAxis1AnalyticAccount(line.getAxis1AnalyticAccount());
+      invoiceLine.setAxis2AnalyticAccount(line.getAxis2AnalyticAccount());
+      invoiceLine.setAxis3AnalyticAccount(line.getAxis3AnalyticAccount());
+      invoiceLine.setAxis4AnalyticAccount(line.getAxis4AnalyticAccount());
+      invoiceLine.setAxis5AnalyticAccount(line.getAxis5AnalyticAccount());
       this.copyAnalyticMoveLines(line.getAnalyticMoveLineList(), invoiceLine);
     }
 
@@ -597,7 +603,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   public void copyAnalyticMoveLines(
       List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine) {
-    if (originalAnalyticMoveLineList == null) {
+    if (CollectionUtils.isEmpty(originalAnalyticMoveLineList)) {
       return;
     }
 
