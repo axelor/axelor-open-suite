@@ -318,7 +318,6 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
     }
   }
 
-  @SuppressWarnings("unchecked")
   private void computeAvgTimePerUser(
       Query query, Model record, String userPath, Map<Long, List<BigDecimal>> userTimeMap) {
 
@@ -327,7 +326,9 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
     User user = wkfUserActionService.getUser(userPath, wkfContext);
     BigDecimal time = BigDecimal.ZERO;
     if (!query.getResultList().isEmpty()) {
-      time = new BigDecimal(query.getResultList().stream().mapToDouble(t -> (double) t).sum());
+      for (Object t : query.getResultList()) {
+        time = time.add((BigDecimal) t);
+      }
     }
 
     List<BigDecimal> timeList = null;
