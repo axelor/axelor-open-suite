@@ -1,3 +1,3 @@
 ---
-title : "DebtRecovery: The debt recovery will not be reset if all the concerned invoices are considered as new for the recovery"
+title : "Debt recovery: The debt recovery process will now be reset to the first step if all the concerned invoices are considered as new for the recovery."
 type: fix
