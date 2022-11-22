@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
@@ -560,14 +559,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getProductName(),
             line.getPrice(),
             inTaxPriceComputed,
-            invoice.getInAti() ? inTaxPriceComputed : line.getPrice(),
+            line.getPriceDiscounted(),
             line.getDescription(),
             line.getQty(),
             line.getUnit(),
             line.getTaxLine(),
             line.getSequence(),
-            BigDecimal.ZERO,
-            PriceListLineRepository.AMOUNT_TYPE_NONE,
+            line.getDiscountAmount(),
+            line.getDiscountTypeSelect(),
             line.getExTaxTotal(),
             line.getInTaxTotal(),
             false) {
