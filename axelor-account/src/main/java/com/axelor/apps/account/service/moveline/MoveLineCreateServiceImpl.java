@@ -733,7 +733,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
-    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
+    Integer vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
     if (taxLineRC != null) {
       newAccountRC =
           this.getTaxAccount(taxLineRC, company, accountType, move.getJournal(), partner, moveLine);
@@ -741,7 +742,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newSourceTaxLineRCKey = newAccountRC.getCode() + taxLineRC.getId();
       }
     }
-    Integer vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
     MoveLine newOrUpdatedMoveLine = new MoveLine();
     MoveLine newOrUpdatedMoveLineRC = null;
 
