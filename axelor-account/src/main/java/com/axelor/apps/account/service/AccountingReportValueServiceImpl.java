@@ -26,7 +26,6 @@ import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -101,11 +100,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             endDate.minusYears(2).with(TemporalAdjusters.lastDayOfYear()));
         break;
       case AccountingReportTypeRepository.COMPARISON_SAME_PERIOD_ON_PREVIOUS_YEAR:
-        this.computeReportValues(
-            accountingReport, startDate.minusYears(1), endDate.minusYears(1));
-
-        this.computeReportValues(
-            accountingReport, startDate.minusYears(2), endDate.minusYears(2));
+        this.computeReportValues(accountingReport, startDate.minusYears(1), endDate.minusYears(1));
+        this.computeReportValues(accountingReport, startDate.minusYears(2), endDate.minusYears(2));
         break;
       case AccountingReportTypeRepository.COMPARISON_OTHER_PERIOD:
         this.computeReportValues(
@@ -192,24 +188,53 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             .sorted(Comparator.comparing(AccountingReportConfigLine::getSequence))
             .collect(Collectors.toList());
 
-    AccountingReportConfigLine groupColumn =
+    List<AccountingReportConfigLine> groupColumnList =
         columnList.stream()
             .filter(it -> it.getTypeSelect() == AccountingReportConfigLineRepository.TYPE_GROUP)
+            .collect(Collectors.toList());
+    AccountingReportConfigLine groupByAccountColumn =
+        columnList.stream()
+            .filter(
+                it ->
+                    it.getTypeSelect()
+                        == AccountingReportConfigLineRepository.TYPE_GROUP_BY_ACCOUNT)
             .findAny()
             .orElse(null);
 
-    if (groupColumn != null) {
-      columnList.remove(groupColumn);
-      List<Account> accountList = this.getColumnGroupAccounts(groupColumn);
+    if (CollectionUtils.isNotEmpty(groupColumnList) && groupByAccountColumn != null) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, "");
+    }
 
-      for (Account account : accountList) {
+    if (groupByAccountColumn != null) {
+      columnList.remove(groupByAccountColumn);
+      Set<Account> accountSet = this.getColumnGroupAccounts(groupByAccountColumn);
+
+      for (Account account : accountSet) {
         this.createReportValues(
             accountingReport,
             valuesMapByColumn,
             valuesMapByLine,
             columnList,
             lineList,
-            account,
+            accountSet,
+            account.getLabel(),
+            startDate,
+            endDate);
+      }
+    } else if (CollectionUtils.isNotEmpty(groupColumnList)) {
+      columnList.removeAll(groupColumnList);
+
+      for (AccountingReportConfigLine groupColumn : groupColumnList) {
+        Set<Account> accountSet = this.getColumnGroupAccounts(groupColumn);
+
+        this.createReportValues(
+            accountingReport,
+            valuesMapByColumn,
+            valuesMapByLine,
+            columnList,
+            lineList,
+            accountSet,
+            groupColumn.getLabel(),
             startDate,
             endDate);
       }
@@ -221,6 +246,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           columnList,
           lineList,
           null,
+          null,
           startDate,
           endDate);
     }
@@ -228,14 +254,15 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     return this.areAllValuesComputed(valuesMapByColumn);
   }
 
-  protected List<Account> getColumnGroupAccounts(AccountingReportConfigLine groupColumn) {
-    return accountRepo
-        .all()
-        .filter(this.getAccountQuery(groupColumn))
-        .bind("accountSet", groupColumn.getAccountSet())
-        .bind("columnAccountFilter", groupColumn.getAccountCode())
-        .bind("accountTypeSet", groupColumn.getAccountTypeSet())
-        .fetch();
+  protected Set<Account> getColumnGroupAccounts(AccountingReportConfigLine groupColumn) {
+    return new HashSet<>(
+        accountRepo
+            .all()
+            .filter(this.getAccountQuery(groupColumn))
+            .bind("accountSet", groupColumn.getAccountSet())
+            .bind("columnAccountFilter", groupColumn.getAccountCode())
+            .bind("accountTypeSet", groupColumn.getAccountTypeSet())
+            .fetch());
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -245,14 +272,13 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       List<AccountingReportConfigLine> columnList,
       List<AccountingReportConfigLine> lineList,
-      Account groupAccount,
+      Set<Account> groupAccountSet,
+      String parentTitle,
       LocalDate startDate,
       LocalDate endDate)
       throws AxelorException {
     for (AccountingReportConfigLine column : columnList) {
-      String groupAccountLabel =
-          Optional.ofNullable(groupAccount).map(Account::getLabel).orElse(null);
-      String columnCode = this.getColumnCode(column.getCode(), groupAccountLabel);
+      String columnCode = this.getColumnCode(column.getCode(), parentTitle);
 
       if (!valuesMapByColumn.containsKey(columnCode)) {
         valuesMapByColumn.put(columnCode, new HashMap<>());
@@ -271,7 +297,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
               line,
               valuesMapByColumn,
               valuesMapByLine,
-              groupAccount,
+              groupAccountSet,
+              parentTitle,
               startDate,
               endDate);
         }
@@ -286,12 +313,11 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine line,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Account groupAccount,
+      Set<Account> groupAccountSet,
+      String parentTitle,
       LocalDate startDate,
       LocalDate endDate)
       throws AxelorException {
-    String parentTitle = groupAccount == null ? null : groupAccount.getLabel();
-
     if ((column.getNotComputedIfIntersect() && line.getNotComputedIfIntersect())
         || column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
         || line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE) {
@@ -377,7 +403,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           line,
           valuesMapByColumn,
           valuesMapByLine,
-          groupAccount,
+          groupAccountSet,
+          parentTitle,
           startDate,
           endDate);
     }
@@ -493,7 +520,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine line,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Account groupAccount,
+      Set<Account> groupAccountSet,
+      String parentTitle,
       LocalDate startDate,
       LocalDate endDate)
       throws AxelorException {
@@ -519,16 +547,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     Set<Account> accountSet;
     Set<AccountType> accountTypeSet = null;
     Set<AnalyticAccount> analyticAccountSet = null;
-    String parentTitle = null;
 
-    if (groupAccount == null) {
+    if (groupAccountSet == null) {
       accountSet = this.mergeSets(column.getAccountSet(), line.getAccountSet());
       accountTypeSet = this.mergeSets(column.getAccountTypeSet(), line.getAccountTypeSet());
       analyticAccountSet =
           this.mergeSets(column.getAnalyticAccountSet(), line.getAnalyticAccountSet());
     } else {
-      accountSet = this.mergeSets(Sets.newHashSet(groupAccount), line.getAccountSet());
-      parentTitle = groupAccount.getLabel();
+      accountSet = this.mergeSets(groupAccountSet, line.getAccountSet());
     }
 
     if (line.getDetailByAccount()) {
