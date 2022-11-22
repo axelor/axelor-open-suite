@@ -30,6 +30,8 @@ import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
+import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.ResponseMessageType;
@@ -247,6 +249,21 @@ public class ContractController {
       Beans.get(ContractService.class).isValid(contract);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Contract contract = request.getContext().asType(Contract.class);
+      String strFilter =
+          Beans.get(PartnerSupplychainLinkService.class)
+              .computePartnerFilter(
+                  contract.getPartner(),
+                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+
+      response.setAttr("invoicedPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

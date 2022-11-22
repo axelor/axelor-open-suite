@@ -86,6 +86,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected BigDecimal exTaxTotal;
   protected BigDecimal inTaxTotal;
   protected Integer typeSelect = 0;
+  protected LocalDate cutOffStartDate;
+  protected LocalDate cutOffEndDate;
 
   public static final int DEFAULT_SEQUENCE = 0;
 
@@ -155,6 +157,46 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.inTaxTotal = inTaxTotal;
   }
 
+  protected InvoiceLineGenerator(
+      Invoice invoice,
+      Product product,
+      String productName,
+      BigDecimal price,
+      BigDecimal inTaxPrice,
+      BigDecimal priceDiscounted,
+      String description,
+      BigDecimal qty,
+      Unit unit,
+      TaxLine taxLine,
+      int sequence,
+      BigDecimal discountAmount,
+      int discountTypeSelect,
+      BigDecimal exTaxTotal,
+      BigDecimal inTaxTotal,
+      boolean isTaxInvoice,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate) {
+    this(
+        invoice,
+        product,
+        productName,
+        price,
+        inTaxPrice,
+        priceDiscounted,
+        description,
+        qty,
+        unit,
+        taxLine,
+        sequence,
+        discountAmount,
+        discountTypeSelect,
+        exTaxTotal,
+        inTaxTotal,
+        isTaxInvoice);
+    this.cutOffStartDate = cutOffStartDate;
+    this.cutOffEndDate = cutOffEndDate;
+  }
+
   public Invoice getInvoice() {
     return invoice;
   }
@@ -203,6 +245,13 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setUnit(unit);
 
     invoiceLine.setTypeSelect(typeSelect);
+
+    if (appAccountService.getAppAccount().getManageCutOffPeriod()
+        && invoiceLine.getAccount() != null
+        && invoiceLine.getAccount().getManageCutOffPeriod()) {
+      invoiceLine.setCutOffStartDate(cutOffStartDate);
+      invoiceLine.setCutOffEndDate(cutOffEndDate);
+    }
 
     if (taxLine == null) {
       this.determineTaxLine();

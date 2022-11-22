@@ -46,11 +46,14 @@
           showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-contract-attrs-partner-payment-config" required="true"
           form-view="partner-form"/>
-        <field if="__config__.app.getApp('contract')?.getIsInvoicingManagement()" colSpan="4"
-          name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
+        <field name="invoicedPartner" showIf="targetTypeSelect == 1 &amp;&amp; partner"
+          canEdit="false" form-view="partner-form" readonlyIf="statusSelect >= 2" required="true"
+          colSpan="4" onSelect="action-contract-method-set-invoiced-partner-domain"/>
         <field name="name" colSpan="12" css="highlight"
           hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
         <field name="project" colSpan="8" domain="self.clientPartner=:partner"/>
+        <field if="__config__.app.getApp('contract')?.getIsInvoicingManagement()" colSpan="4"
+          name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
         <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id"
           colSpan="12">
           <field name="createdOn" colSpan="3"/>
@@ -242,7 +245,8 @@
             colSpan="12">
             <field name="isAdditionaBenefitManagement"
               if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
-              widget="boolean-switch" colSpan="12"/>
+              widget="boolean-switch" colSpan="3"/>
+            <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="9"/>
             <field name="isConsumptionManagement"
               if="__config__.app.getApp('contract')?.isConsumptionManagement"
               onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
@@ -504,6 +508,11 @@
 
   <action-method name="action-contract-method-invoicing">
     <call class="com.axelor.apps.contract.web.ContractController" method="invoicing"/>
+  </action-method>
+
+  <action-method name="action-contract-method-set-invoiced-partner-domain">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="setInvoicedPartnerDomain"/>
   </action-method>
 
   <action-method name="action-contract-method-is-valid">

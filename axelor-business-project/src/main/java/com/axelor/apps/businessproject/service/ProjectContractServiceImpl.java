@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -43,7 +44,8 @@ public class ProjectContractServiceImpl extends ContractServiceImpl {
       ContractLineRepository contractLineRepo,
       ConsumptionLineRepository consumptionLineRepo,
       ContractRepository contractRepository,
-      TaxService taxService) {
+      TaxService taxService,
+      InvoiceRepository invoiceRepo) {
     super(
         appBaseService,
         versionService,
@@ -52,7 +54,8 @@ public class ProjectContractServiceImpl extends ContractServiceImpl {
         contractLineRepo,
         consumptionLineRepo,
         contractRepository,
-        taxService);
+        taxService,
+        invoiceRepo);
   }
 
   @Override

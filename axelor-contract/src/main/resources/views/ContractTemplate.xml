@@ -43,14 +43,15 @@
         name="configPanel">
         <panel if="__config__.app.getApp('contract')?.isInvoicingManagement" title="Invoicing"
           readonlyIf="statusSelect > 1" colSpan="12" name="subConfigPanel">
-          <field name="isInvoicingManagement" colSpan="6" widget="boolean-switch"
+          <field name="isInvoicingManagement" colSpan="3" widget="boolean-switch"
             onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"/>
           <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement"
-            colSpan="6">
+            colSpan="9">
             <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement"
-              name="isAdditionaBenefitManagement" colSpan="6" widget="boolean-switch"/>
+              name="isAdditionaBenefitManagement" colSpan="4" widget="boolean-switch"/>
+            <field name="isGroupedInvoicing" colSpan="4" widget="boolean-switch"/>
             <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
-              name="isConsumptionManagement" colSpan="6" widget="boolean-switch"/>
+              name="isConsumptionManagement" colSpan="4" widget="boolean-switch"/>
           </panel>
           <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
             name="currentContractVersion" showTitle="false" hidden="true"

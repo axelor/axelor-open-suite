@@ -31,7 +31,6 @@
     <boolean name="isConsumptionBeforeEndDate"
       title="Only invoice consumption before Invoice period end Date"/>
     <boolean name="isConsumptionManagement" title="Consumption management" default="false"/>
-
     <date name="supposedActivationDate" title="Supposed activation date" copy="false"/>
     <date name="activationDate" title="Activation date" copy="false"/>
     <date name="supposedEndDate" title="Supposed end date" copy="false"/>

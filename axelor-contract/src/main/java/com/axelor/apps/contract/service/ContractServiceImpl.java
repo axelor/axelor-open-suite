@@ -62,6 +62,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -85,6 +86,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected ConsumptionLineRepository consumptionLineRepo;
   protected ContractRepository contractRepository;
   protected TaxService taxService;
+  protected InvoiceRepository invoiceRepo;
 
   @Inject
   public ContractServiceImpl(
@@ -95,7 +97,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractLineRepository contractLineRepo,
       ConsumptionLineRepository consumptionLineRepo,
       ContractRepository contractRepository,
-      TaxService taxService) {
+      TaxService taxService,
+      InvoiceRepository invoiceRepo) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -104,6 +107,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.consumptionLineRepo = consumptionLineRepo;
     this.contractRepository = contractRepository;
     this.taxService = taxService;
+    this.invoiceRepo = invoiceRepo;
   }
 
   @Override
@@ -387,12 +391,47 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     save(contract);
   }
 
+  protected boolean alreadyExistInvoice(Invoice invoice) {
+    return invoiceRepo
+            .all()
+            .filter(
+                "self.partner = :partner AND self.operationSubTypeSelect = :subTypeSelect "
+                    + "AND self.subscriptionFromDate = :fromDate AND self.subscriptionToDate = :toDate AND self.invoiceDate = :invoiceDate "
+                    + "AND self.contract.isGroupedInvoicing = true AND (self.archived IS NULL OR self.archived = false)")
+            .bind("partner", invoice.getPartner())
+            .bind("subTypeSelect", invoice.getOperationSubTypeSelect())
+            .bind("fromDate", invoice.getSubscriptionFromDate())
+            .bind("toDate", invoice.getSubscriptionToDate())
+            .bind("invoiceDate", invoice.getInvoiceDate())
+            .fetchOne()
+        != null;
+  }
+
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice invoicingContract(Contract contract) throws AxelorException {
     Invoice invoice = generateInvoice(contract);
-    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
-    invoiceRepository.save(invoice);
+    if (invoice != null
+        && contract.getTargetTypeSelect() == ContractRepository.CUSTOMER_CONTRACT
+        && alreadyExistInvoice(invoice)) {
+      invoice =
+          invoiceRepo
+              .all()
+              .filter(
+                  "self.partner = :partner AND self.operationSubTypeSelect = :subTypeSelect "
+                      + "AND self.subscriptionFromDate = :fromDate AND self.subscriptionToDate = :toDate AND self.invoiceDate = :invoiceDate "
+                      + "AND self.contract.isGroupedInvoicing = true AND (self.archived IS NULL OR self.archived = false)")
+              .bind("partner", invoice.getPartner())
+              .bind("subTypeSelect", invoice.getOperationSubTypeSelect())
+              .bind("fromDate", invoice.getSubscriptionFromDate())
+              .bind("toDate", invoice.getSubscriptionToDate())
+              .bind("invoiceDate", invoice.getInvoiceDate())
+              .fetchOne();
+      invoice.addContract(contract);
+      invoice.setInternalReference(
+          invoice.getInternalReference() + ", " + contract.getContractId());
+    }
+    invoice = invoiceRepo.save(invoice);
 
     // Compute all additional lines
     List<ContractLine> additionalLines =
@@ -478,7 +517,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     // Increase invoice period date
     increaseInvoiceDates(contract);
 
-    return invoiceRepository.save(invoice);
+    return invoiceRepo.save(invoice);
   }
 
   public Invoice generateInvoice(Contract contract) throws AxelorException {
@@ -538,22 +577,41 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getTaxLine(),
             line.getPrice(),
             appBaseService.getNbDecimalDigitForUnitPrice());
-    String description =
-        line.getFromDate() != null
-                && line.getContractVersion() != null
-                && line.getContractVersion().getContract() != null
-                && line.getFromDate()
-                    .isAfter(line.getContractVersion().getContract().getInvoicePeriodStartDate())
-            ? line.getDescription()
-                + "<br>"
-                + I18n.get("From")
-                + " "
-                + line.getFromDate()
-                + " "
-                + I18n.get("to")
-                + " "
-                + line.getContractVersion().getContract().getInvoicePeriodEndDate()
-            : line.getDescription();
+    LocalDate startDate = null, endDate = null;
+    String description = line.getDescription();
+    if (line.getContractVersion() != null
+        && line.getContractVersion().getContract() != null
+        && line.getContractVersion().getIsTimeProratedInvoice()) {
+      endDate =
+          line.getContractVersion().getEndDate() == null
+                  || (line.getContractVersion().getEndDate() != null
+                      && line.getContractVersion()
+                          .getContract()
+                          .getInvoicePeriodEndDate()
+                          .isBefore(line.getContractVersion().getEndDate()))
+              ? line.getContractVersion().getContract().getInvoicePeriodEndDate()
+              : line.getContractVersion().getEndDate();
+      startDate =
+          line.getFromDate() != null
+                  && line.getFromDate()
+                      .isAfter(line.getContractVersion().getContract().getInvoicePeriodStartDate())
+              ? line.getFromDate()
+              : line.getContractVersion()
+                      .getActivationDate()
+                      .isBefore(line.getContractVersion().getContract().getInvoicePeriodStartDate())
+                  ? line.getContractVersion().getContract().getInvoicePeriodStartDate()
+                  : line.getContractVersion().getActivationDate();
+      description =
+          line.getDescription()
+              + "<br>"
+              + I18n.get("From")
+              + " "
+              + startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+              + " "
+              + I18n.get("to")
+              + " "
+              + endDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
@@ -571,7 +629,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getDiscountTypeSelect(),
             line.getExTaxTotal(),
             line.getInTaxTotal(),
-            false) {
+            false,
+            startDate,
+            endDate) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
             InvoiceLine invoiceLine = this.createInvoiceLine();
@@ -711,6 +771,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     contract.setIsAdditionaBenefitManagement(template.getIsAdditionaBenefitManagement());
     contract.setIsConsumptionManagement(template.getIsConsumptionManagement());
     contract.setIsInvoicingManagement(template.getIsInvoicingManagement());
+    contract.setIsGroupedInvoicing(template.getIsGroupedInvoicing());
     contract.setName(template.getName());
     contract.setNote(template.getNote());
 

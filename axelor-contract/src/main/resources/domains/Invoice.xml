@@ -7,7 +7,7 @@
 
   <entity name="Invoice" lang="java" cacheable="true">
 
-    <many-to-one name="contract" title="Contract"
+    <many-to-many name="contract" title="Contract"
       ref="com.axelor.apps.contract.db.Contract"/>
 
     <extra-code><![CDATA[
