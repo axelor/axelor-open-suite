@@ -539,4 +539,24 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       }
     }
   }
+
+  @Override
+  public boolean isGoodAmountBudgetDistribution(PurchaseOrder purchaseOrder) {
+    if (purchaseOrder.getPurchaseOrderLineList() != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        if (purchaseOrderLine.getBudgetDistributionList() != null
+            && !purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
+          BigDecimal budgetDistributionTotalAmount =
+              purchaseOrderLine.getBudgetDistributionList().stream()
+                  .map(BudgetDistribution::getAmount)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+          if (budgetDistributionTotalAmount.compareTo(purchaseOrderLine.getCompanyExTaxTotal())
+              != 0) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
 }

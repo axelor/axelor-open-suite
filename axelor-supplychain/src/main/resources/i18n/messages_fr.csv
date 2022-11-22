@@ -542,6 +542,7 @@
 "Shipment mode","Mode d’expédition",,
 "Shipping cost","Frais de port",,
 "Show Total",,,
+"Some sum's amount of the budget distributions of the purchase order lines does not match their own total amount, do you want to proceed ?","Le montant de certaines sommes des répartitions budgétaires des lignes de commande fournisseur ne correspond pas à leur propre montant total, voulez-vous continuer ?",,
 "Specific package",,,
 "Standard",,,
 "Standard delay (days)","Délai d'appro. (jours)",,
