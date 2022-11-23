@@ -32,4 +32,9 @@ public interface OpportunityService {
   public String computeAndGetName(Opportunity opportunity);
 
   public OpportunityStatus getDefaultOpportunityStatus();
+
+  public void setStatusByTypeSelect(Opportunity opportunity, Integer typeSelect)
+      throws AxelorException;
+
+  public void setOpportunityStatusNextStage(Opportunity opportunity);
 }
