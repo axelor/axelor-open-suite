@@ -248,7 +248,7 @@
 "Account missing on the tax line : %s (company : %s)","Compte comptable absent de la ligne de taxe : %s (société : %s)",,
 "Account move","Écriture comptable",,
 "Account move %s has a total debit different than total credit : %s <> %s","L'écriture comptable %s comporte un total débit différent du total crédit : %s <> %s",,
-"Account moves","Écritures comptable",,
+"Account moves","Écritures comptables",,
 "Account moves to validate","Ecritures à valider",,
 "Account name","Nom compte comptable",,
 "Account of financial discount is missing for company: %s (tax: %s)","Compte de l'escompte manquant pour la société: %s (taxe: %s)",,
