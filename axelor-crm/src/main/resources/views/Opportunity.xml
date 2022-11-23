@@ -31,7 +31,7 @@
       onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"
       hideIf="user.id == _internalUserId"/>
     <button name="next-stage-gridBtn" icon="fa-chevron-circle-right" help="Next stage"
-      onClick="action-group-crm-opportunity-nextstage-click"
+      onClick="action-method-opportunity-set-next-stage"
       hideIf="$get('opportunityStatus.typeSelect') != 0"/>
     <button name=" closed-wonBtn " icon="fa-check-circle" help="Closed won"
       onClick="action-group-crm-opportunity-closedwon-click"
@@ -60,7 +60,7 @@
     <field name="probability" aggregate="avg" widget="Progress"/>
     <field name="expectedCloseDate"/>
     <button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage"
-      onClick="action-group-crm-opportunity-nextstage-click"
+      onClick="action-method-opportunity-set-next-stage"
       hideIf="$get('opportunityStatus.typeSelect') != 0"/>
     <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won"
       onClick="action-group-crm-opportunity-closedwon-click"
@@ -489,6 +489,10 @@
 
   <action-method name="action-method-opportunity-set-stage-closed-lost">
     <call method="setStageClosedLost" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+  
+  <action-method name="action-method-opportunity-set-next-stage">
+    <call method="setNextStage" class="com.axelor.apps.crm.web.OpportunityController"/>
   </action-method>
 
   <action-method name="action-method-opportunity-fill-end-date">

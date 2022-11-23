@@ -27,10 +27,12 @@ import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaStore;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -87,5 +89,30 @@ public class OpportunityServiceImpl implements OpportunityService {
   @Override
   public OpportunityStatus getDefaultOpportunityStatus() {
     return opportunityStatusRepo.getDefaultStatus();
+  }
+
+  @Override
+  public void setStatusByTypeSelect(Opportunity opportunity, Integer typeSelect)
+      throws AxelorException {
+    OpportunityStatus status =
+        Beans.get(OpportunityStatusRepository.class).findByTypeSelect(typeSelect);
+    final String selectionName = "crm.opportunity.status.type.select";
+    if (status == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.OPPORTUNITY_STATUS_NOT_FOUND),
+          MetaStore.getSelectionItem(selectionName, Integer.toString(typeSelect))
+              .getLocalizedTitle());
+    }
+    opportunity.setOpportunityStatus(status);
+    saveOpportunity(opportunity);
+  }
+
+  @Override
+  public void setOpportunityStatusNextStage(Opportunity opportunity) {
+    OpportunityStatus status = opportunity.getOpportunityStatus();
+    status = Beans.get(OpportunityStatusRepository.class).findByNextSequence(status.getSequence());
+    opportunity.setOpportunityStatus(status);
+    saveOpportunity(opportunity);
   }
 }
