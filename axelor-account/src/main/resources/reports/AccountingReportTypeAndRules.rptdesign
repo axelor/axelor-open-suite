@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202111181832</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -1022,7 +1022,7 @@ where ReportConfigLine.id=?]]></xml-property>
                                         <text id="4736">
                                             <property name="fontSize">9pt</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy,hh:mm a">BirtDateTime.now()</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy,HH:mm">BirtDateTime.now()</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                 </row>

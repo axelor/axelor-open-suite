@@ -30,7 +30,7 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
@@ -79,7 +79,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     if (prodProcessLine.getWorkCenter() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
           prodProcessLine.getProdProcess() != null
               ? prodProcessLine.getProdProcess().getCode()
               : "null",
@@ -108,7 +108,9 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       throws AxelorException {
 
     logger.debug(
-        "Création d'une opération {} pour l'OF {}", priority, manufOrder.getManufOrderSeq());
+        "Creation of an operation {} for the manufacturing order {}",
+        priority,
+        manufOrder.getManufOrderSeq());
 
     String operationName = prodProcessLine.getName();
 
@@ -214,7 +216,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     if (Duration.between(fromDateTime, toDateTime).toDays() > 20) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
+          I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
     }
 
     List<OperationOrder> operationOrderListTemp =
@@ -309,7 +311,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     if (Duration.between(fromDateTime, toDateTime).toDays() > 500) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
+          I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
     }
 
     List<OperationOrder> operationOrderListTemp =

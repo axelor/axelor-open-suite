@@ -17,6 +17,8 @@
  */
 package com.axelor.studio.service;
 
+import com.axelor.common.Inflector;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.studio.service.builder.SelectionBuilderService;
 import com.google.common.base.Strings;
@@ -37,18 +39,18 @@ public class JsonFieldService {
     String name = getSelectionName(metaJsonField);
 
     if (Strings.isNullOrEmpty(selectionText)) {
-      selectionBuilderService.removeSelection(name, null);
+      selectionBuilderService.removeSelectionBuilder(name);
 
       if (metaJsonField.getSelection() != null && metaJsonField.getSelection().equals(name)) {
         metaJsonField.setSelection(null);
       }
-
       return;
     }
 
     metaJsonField.setSelection(
-        selectionBuilderService.updateMetaSelectFromText(
-            selectionText, name, metaJsonField.getAppBuilder(), null));
+        selectionBuilderService
+            .createSelectionBuilder(selectionText, name, metaJsonField.getAppBuilder())
+            .getName());
   }
 
   @Transactional
@@ -57,8 +59,15 @@ public class JsonFieldService {
     String name = getSelectionName(metaJsonField);
 
     if (metaJsonField.getSelection() != null && metaJsonField.getSelection().equals(name)) {
-      selectionBuilderService.removeSelection(name, null);
+      selectionBuilderService.removeSelectionBuilder(name);
     }
+  }
+
+  @CallMethod
+  public String checkName(String name, boolean isFieldName) {
+    if (name == null) return "";
+    name = name.replaceAll("[^a-zA-Z0-9 ]", "");
+    return Inflector.getInstance().camelize(name, isFieldName);
   }
 
   public String getSelectionName(MetaJsonField metaJsonField) {

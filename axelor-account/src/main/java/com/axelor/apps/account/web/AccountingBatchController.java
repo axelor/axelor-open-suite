@@ -244,7 +244,9 @@ public class AccountingBatchController {
           }
         } else {
           if (Beans.get(AccountingReportToolService.class)
-              .isThereAlreadyDraftReportInPeriod(accountingReport)) {
+                  .isThereAlreadyDraftReportInPeriod(accountingReport)
+              && accountingReport.getReportType().getTypeSelect()
+                  == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
             response.setError(
                 I18n.get(
                     "There is already an ongoing accounting report of this type in draft status for this same period."));
@@ -258,5 +260,9 @@ public class AccountingBatchController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void actionAccountingCutOff(ActionRequest request, ActionResponse response) {
+    runBatch(AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF, request, response);
   }
 }

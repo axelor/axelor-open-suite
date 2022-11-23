@@ -48,6 +48,14 @@ public interface ReconcileService {
 
   public List<Partner> getPartners(Reconcile reconcile);
 
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments,
+      InvoicePayment invoicePayment)
+      throws AxelorException;
+
   public Reconcile reconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
@@ -95,4 +103,12 @@ public interface ReconcileService {
       throws AxelorException;
 
   void checkReconcile(Reconcile reconcile) throws AxelorException;
+
+  String getStringAllowedCreditMoveLines(Reconcile reconcile);
+
+  String getStringAllowedDebitMoveLines(Reconcile reconcile);
+
+  List<Long> getAllowedCreditMoveLines(Reconcile reconcile);
+
+  List<Long> getAllowedDebitMoveLines(Reconcile reconcile);
 }

@@ -23,9 +23,8 @@
     <extend target="//panel[@name='paymentProcessesSettingsPanel']">
       <insert position="after">
         <panel name="bankOrderPanel" title="Bank order config." hidden="true"
-          hideIf="typeSelect != 2 &amp;&amp; typeSelect != 9 &amp;&amp; typeSelect != 10">
+          showIf="(typeSelect == 2 &amp;&amp; inOutSelect == 1) || (typeSelect == 9 &amp;&amp; inOutSelect == 2) || (typeSelect == 10 &amp;&amp; inOutSelect == 1)">
           <field name="generateBankOrder"
-            showIf="typeSelect == 2 || typeSelect == 9 || typeSelect == 10"
             onChange="action-payment-mode-record-generate-bank-order-onchange"/>
           <field name="autoConfirmBankOrder" showIf="generateBankOrder"/>
           <panel name="generateBankOrderPanel" showIf="generateBankOrder" colSpan="12">
@@ -45,8 +44,8 @@
             </panel>
             <field name="bankOrderExportFolderPath" requiredIf="generateBankOrder"/>
             <field name="bankOrderFileFormat"
-              domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'"
-              canEdit="false" requiredIf="generateBankOrder" form-view="bank-order-file-format-form"
+              onSelect="action-payment-mode-attrs-set-bank-order-file-format-domain" canEdit="false"
+              requiredIf="generateBankOrder" form-view="bank-order-file-format-form"
               grid-view="bank-order-file-format-grid"/>
           </panel>
         </panel>
@@ -64,11 +63,20 @@
 
   <action-record name="action-payment-mode-record-generate-bank-order-onchange"
     model="com.axelor.apps.account.db.PaymentMode">
-    <field name="accountingTriggerSelect" expr="eval: 2" if="accountingTriggerSelect > 2"/>
+    <field name="accountingTriggerSelect" expr="eval: 1"
+      if="accountingTriggerSelect > 1 &amp;&amp; !generateBankOrder"/>
   </action-record>
 
   <action-attrs name="action-payment-mode-attrs-on-order-type-change">
     <attribute name="value" for="bankOrderFileFormat" expr=""/>
+  </action-attrs>
+
+  <action-attrs name="action-payment-mode-attrs-set-bank-order-file-format-domain">
+    <attribute name="domain" for="bankOrderFileFormat"
+      expr="eval: &quot; self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true' &quot;"/>
+    <attribute name="domain" for="bankOrderFileFormat"
+      expr="eval: &quot; self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true' AND self.isMultiDate = 'true' &quot;"
+      if="moveAccountingDateSelect == 2 &amp;&amp; accountingTriggerSelect == 1"/>
   </action-attrs>
 
 </object-views>

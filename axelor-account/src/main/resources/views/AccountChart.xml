@@ -16,7 +16,6 @@
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="countryCode"/>
-      <field name="accountCodeMinNbrCharSelect"/>
       <field name="metaFile" widget="binary-link" form-view="meta-files-form"
         grid-view="meta-files-grid"/>
     </panel>

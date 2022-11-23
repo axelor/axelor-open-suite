@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -50,10 +51,10 @@ public class BankStatementController {
       BankStatementService bankStatementService = Beans.get(BankStatementService.class);
       bankStatement = bankStatementRepo.find(bankStatement.getId());
       bankStatementService.runImport(bankStatement, true);
-      bankStatementService.checkImport(bankStatement);
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(
+          response, e, ExceptionOriginRepository.BANK_STATEMENT, ResponseMessageType.ERROR);
     }
     response.setReload(true);
   }
@@ -67,7 +68,7 @@ public class BankStatementController {
       response.setView(ActionView.define(name).add("html", fileLink).map());
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ExceptionOriginRepository.BANK_STATEMENT);
     }
 
     response.setReload(true);
@@ -100,7 +101,7 @@ public class BankStatementController {
                 .map());
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ExceptionOriginRepository.BANK_STATEMENT);
     }
     response.setReload(true);
   }
@@ -134,7 +135,8 @@ public class BankStatementController {
       } else response.setFlash(I18n.get(IExceptionMessage.NO_STATEMENT_TO_REMOVE));
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      TraceBackService.trace(
+          response, e, ExceptionOriginRepository.BANK_STATEMENT, ResponseMessageType.ERROR);
     }
   }
 
@@ -155,7 +157,8 @@ public class BankStatementController {
       response.setCanClose(true);
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      TraceBackService.trace(
+          response, e, ExceptionOriginRepository.BANK_STATEMENT, ResponseMessageType.ERROR);
     }
   }
 }

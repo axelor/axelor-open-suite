@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -44,6 +44,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -56,6 +57,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService {
 
   protected InvoiceRepository invoiceRepo;
@@ -239,15 +241,20 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         && invoicePayment.getInvoice().getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
+          I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
           invoicePayment.getInvoice().getInvoiceId());
     }
   }
 
   @Override
-  public BigDecimal getPayableAmount(List<InvoiceTerm> invoiceTermList, LocalDate date) {
+  public BigDecimal getPayableAmount(
+      List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange) {
     return invoiceTermList.stream()
-        .map(it -> invoiceTermService.getAmountRemaining(it, date))
+        .map(
+            it ->
+                manualChange
+                    ? invoiceTermService.getAmountRemaining(it, date)
+                    : it.getAmountRemaining())
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
   }
@@ -273,7 +280,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoiceTermPaymentList.forEach(
         it ->
             invoiceTermPaymentService.manageInvoiceTermFinancialDiscount(
-                it, it.getInvoiceTerm(), it.getInvoiceTerm().getApplyFinancialDiscount()));
+                it, it.getInvoiceTerm(), invoicePayment.getApplyFinancialDiscount()));
 
     invoicePayment.setApplyFinancialDiscount(true);
     invoicePayment.setFinancialDiscount(
@@ -304,15 +311,21 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected BigDecimal getFinancialDiscountTaxAmount(
       List<InvoiceTermPayment> invoiceTermPaymentList) {
     return invoiceTermPaymentList.stream()
+        .filter(it -> it.getInvoiceTerm().getAmountRemainingAfterFinDiscount().signum() > 0)
         .map(
-            it ->
-                invoiceTermService
+            it -> {
+              try {
+                return invoiceTermService
                     .getFinancialDiscountTaxAmount(it.getInvoiceTerm())
                     .multiply(it.getPaidAmount())
                     .divide(
                         it.getInvoiceTerm().getAmountRemainingAfterFinDiscount(),
                         10,
-                        RoundingMode.HALF_UP))
+                        RoundingMode.HALF_UP);
+              } catch (Exception e) {
+                throw new RuntimeException(e);
+              }
+            })
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
         .setScale(2, RoundingMode.HALF_UP);
@@ -368,5 +381,47 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         && appAccountService.getAppAccount().getManageFinancialDiscount()
         && deadLineDate != null
         && deadLineDate.compareTo(invoicePayment.getPaymentDate()) >= 0);
+  }
+
+  public void computeFromInvoiceTermPayments(InvoicePayment invoicePayment) {
+    BigDecimal newAmount = invoicePayment.getAmount();
+    BigDecimal taxRate =
+        invoicePayment.getFinancialDiscountTotalAmount().signum() == 0
+            ? BigDecimal.ZERO
+            : invoicePayment
+                .getFinancialDiscountTaxAmount()
+                .divide(invoicePayment.getFinancialDiscountTotalAmount(), 10, RoundingMode.HALF_UP);
+
+    invoicePayment.setAmount(BigDecimal.ZERO);
+    invoicePayment.setFinancialDiscountAmount(BigDecimal.ZERO);
+    invoicePayment.setFinancialDiscountTaxAmount(BigDecimal.ZERO);
+    invoicePayment.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
+
+    for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
+      invoicePayment.setAmount(invoicePayment.getAmount().add(invoiceTermPayment.getPaidAmount()));
+      invoicePayment.setFinancialDiscountTotalAmount(
+          invoicePayment
+              .getFinancialDiscountTotalAmount()
+              .add(invoiceTermPayment.getFinancialDiscountAmount()));
+    }
+
+    invoicePayment.setFinancialDiscountTotalAmount(
+        invoicePayment
+            .getFinancialDiscountTotalAmount()
+            .multiply(newAmount)
+            .divide(
+                invoicePayment.getAmount(),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP));
+    invoicePayment.setAmount(newAmount);
+    invoicePayment.setFinancialDiscountTaxAmount(
+        invoicePayment
+            .getFinancialDiscountTotalAmount()
+            .multiply(taxRate.divide(new BigDecimal(100)))
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+    invoicePayment.setFinancialDiscountAmount(
+        invoicePayment
+            .getFinancialDiscountTotalAmount()
+            .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
   }
 }

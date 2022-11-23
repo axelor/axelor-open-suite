@@ -14,8 +14,9 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="inChargeUser" ref="com.axelor.auth.db.User"
       title="Person in charge"/>
-    <decimal name="totalAmountExpected" title="Expected total amount" precision="20"
-      scale="2"/>
+    <decimal name="totalAmountExpected" title="Expected amount"
+      help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."
+      precision="20" scale="2"/>
     <decimal name="totalAmountRealized" title="Realized total amount" precision="20"
       scale="2"/>
     <one-to-many name="budgetLineList" ref="com.axelor.apps.account.db.BudgetLine"

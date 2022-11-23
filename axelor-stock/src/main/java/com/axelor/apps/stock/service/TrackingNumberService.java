@@ -26,7 +26,7 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.TrackingNumberConfigurationRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -94,7 +94,7 @@ public class TrackingNumberService {
       throw new AxelorException(
           product,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TRACK_NUMBER_DATE_MISSING),
+          I18n.get(StockExceptionMessage.TRACK_NUMBER_DATE_MISSING),
           product.getFullName(),
           origin);
     }
@@ -119,7 +119,7 @@ public class TrackingNumberService {
       throw new AxelorException(
           product,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TRACKING_NUMBER_1),
+          I18n.get(StockExceptionMessage.TRACKING_NUMBER_1),
           company.getName(),
           product.getCode());
     }
@@ -127,7 +127,7 @@ public class TrackingNumberService {
     Sequence sequence = trackingNumberConfiguration.getSequence();
     String seq;
     while (true) {
-      seq = sequenceService.getSequenceNumber(sequence);
+      seq = sequenceService.getSequenceNumber(sequence, TrackingNumber.class, "trackingNumberSeq");
       if (trackingNumberRepo
               .all()
               .filter("self.product = ?1 AND self.trackingNumberSeq = ?2", product, seq)
@@ -151,6 +151,18 @@ public class TrackingNumberService {
       }
     }
 
+    return trackingNumber;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public TrackingNumber generateTrackingNumber(
+      Product product, Company company, LocalDate date, String origin, String notes)
+      throws AxelorException {
+
+    TrackingNumber trackingNumber = this.createTrackingNumber(product, company, date, origin);
+    trackingNumber.setOrigin(origin);
+    trackingNumber.setNote(notes);
+    trackingNumberRepo.save(trackingNumber);
     return trackingNumber;
   }
 }

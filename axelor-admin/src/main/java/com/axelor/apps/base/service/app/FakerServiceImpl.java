@@ -18,7 +18,7 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.FakerApiField;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
+import com.axelor.apps.base.exceptions.AdminExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -41,13 +41,13 @@ public class FakerServiceImpl implements FakerService {
     } catch (NoSuchMethodException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessages.FAKER_CLASS_DOES_NOT_EXIST),
+          I18n.get(AdminExceptionMessage.FAKER_CLASS_DOES_NOT_EXIST),
           fakerApiField.getClassName());
 
     } catch (IllegalAccessException | InvocationTargetException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessages.FAKER_METHOD_ERROR),
+          I18n.get(AdminExceptionMessage.FAKER_METHOD_ERROR),
           fakerApiField.getClassName());
     }
     try {
@@ -58,13 +58,13 @@ public class FakerServiceImpl implements FakerService {
     } catch (NoSuchMethodException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessages.FAKER_METHOD_DOES_NOT_EXIST),
+          I18n.get(AdminExceptionMessage.FAKER_METHOD_DOES_NOT_EXIST),
           fakerApiField.getMethodName());
 
     } catch (IllegalAccessException | InvocationTargetException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessages.FAKER_METHOD_ERROR),
+          I18n.get(AdminExceptionMessage.FAKER_METHOD_ERROR),
           fakerApiField.getMethodName());
     }
   }

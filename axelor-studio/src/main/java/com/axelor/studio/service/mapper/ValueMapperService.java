@@ -17,13 +17,18 @@
  */
 package com.axelor.studio.service.mapper;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.apps.tool.context.FullContextHelper;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.studio.db.ValueMapper;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import javax.script.Bindings;
 import javax.script.SimpleBindings;
 
@@ -41,6 +46,15 @@ public class ValueMapperService {
     bindings.put("$ctx", FullContextHelper.class);
     bindings.put(modelName, new FullContext(model));
     bindings.put(modelName + "Id", model.getId());
+    bindings.put("__date__", LocalDate.now());
+    bindings.put("__time__", LocalDateTime.now());
+    bindings.put("__datetime__", ZonedDateTime.now());
+    bindings.put("__user__", AuthUtils.getUser());
+    bindings.put("__this__", new FullContext(model));
+    bindings.put("__self__", model);
+    bindings.put("__parent__", new FullContext(model).getParent());
+    bindings.put("__id__", model.getId());
+    bindings.put("__config__", AppSettings.get());
 
     Object result = new GroovyScriptHelper(bindings).eval(mapper.getScript());
 

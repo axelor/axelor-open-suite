@@ -3,6 +3,18 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
+  <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch"
+    id="account-batch-grid" extension="true" orderBy="-id" canEdit="false" canDelete="false"
+    canNew="false" canSave="false">
+    <extend target="//field[@name='anomaly']">
+      <insert position="after">
+        <field name="moveDate" hidden="true" showIf="moveDate"/>
+        <field name="accountingCutOffTypeSelect" hidden="true"
+          showIf="accountingCutOffTypeSelect"/>
+      </insert>
+    </extend>
+  </grid>
+
   <form name="batch-form" id="account-batch-form" title="Batch"
     model="com.axelor.apps.base.db.Batch" onNew="action-batch-attrs" onLoad="action-batch-attrs"
     canEdit="false" canDelete="false" canNew="false" canCopy="false" canSave="false" width="large"
@@ -14,6 +26,14 @@
     <extend target="//button[@name='showAccountMoveBtn']">
       <attribute name="onClick" value="action-batch-account-move-btn-group"/>
     </extend>
+
+    <extend target="//field[@name='anomaly']">
+      <insert position="after">
+        <field name="moveDate"/>
+        <field name="accountingCutOffTypeSelect"/>
+      </insert>
+    </extend>
+
   </form>
 
   <action-group name="action-batch-traceback-btn-group">

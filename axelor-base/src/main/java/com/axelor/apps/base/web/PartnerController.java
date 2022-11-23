@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
@@ -79,12 +79,14 @@ public class PartnerController {
     Partner partner = request.getContext().asType(Partner.class);
     partner = Beans.get(PartnerRepository.class).find(partner.getId());
     if (partner.getPartnerSeq() == null) {
-      String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
+      String seq =
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
       if (seq == null)
         throw new AxelorException(
             partner,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PARTNER_1));
+            I18n.get(BaseExceptionMessage.PARTNER_1));
       else response.setValue("partnerSeq", seq);
     }
   }
@@ -316,7 +318,7 @@ public class PartnerController {
 
       response.setAlert(
           String.format(
-              IExceptionMessage.BANK_DETAILS_2,
+              BaseExceptionMessage.BANK_DETAILS_2,
               "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
     }
   }
@@ -326,7 +328,8 @@ public class PartnerController {
     Partner partner = request.getContext().asType(Partner.class);
     if (partner.getId() == null) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_3));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.PARTNER_3));
     }
     partner = Beans.get(PartnerRepository.class).find(partner.getId());
     Beans.get(PartnerService.class).convertToIndividualPartner(partner);
@@ -386,15 +389,16 @@ public class PartnerController {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       PartnerService partnerService = Beans.get(PartnerService.class);
-      if (!partnerService.isRegistrationCodeValid(partner)) {
-        response.setError(I18n.get(IExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+      if (partnerService.isRegistrationCodeValid(partner)) {
+        String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
+        String nic = partnerService.getNicFromRegistrationCode(partner);
+        String siren = partnerService.getSirenFromRegistrationCode(partner);
+
+        response.setValue("taxNbr", taxNbr);
+        response.setValue("nic", nic);
+        response.setValue("siren", siren);
       }
-      String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
-      String nic = partnerService.getNicFromRegistrationCode(partner);
-      String siren = partnerService.getSirenFromRegistrationCode(partner);
-      response.setValue("taxNbr", taxNbr);
-      response.setValue("nic", nic);
-      response.setValue("siren", siren);
+
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
@@ -404,7 +408,7 @@ public class PartnerController {
     Partner partner = request.getContext().asType(Partner.class);
     PartnerService partnerService = Beans.get(PartnerService.class);
     if (!partnerService.isRegistrationCodeValid(partner)) {
-      response.setError(I18n.get(IExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+      response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }
 }

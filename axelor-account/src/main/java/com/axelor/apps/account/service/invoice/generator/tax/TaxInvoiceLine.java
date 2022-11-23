@@ -67,7 +67,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de factures.");
+      LOG.debug("Creation of lines with taxes for the invoices lines");
 
       for (InvoiceLine invoiceLine : invoiceLines) {
         // map is updated with created invoice line taxes
@@ -144,7 +144,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       int vatSystem,
       Map<TaxLineByVatSystem, InvoiceLineTax> map)
       throws AxelorException {
-    LOG.debug("TVA {}", taxLine);
+    LOG.debug("ax {}", taxLine);
 
     TaxLineByVatSystem taxLineByVatSystem = new TaxLineByVatSystem(taxLine, vatSystem);
     InvoiceLineTax invoiceLineTax = map.get(taxLineByVatSystem);
@@ -239,7 +239,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
     for (InvoiceLineTax invoiceLineTax : map.values()) {
 
-      BigDecimal taxValue = invoiceLineTax.getTaxLine().getValue();
+      BigDecimal taxValue = invoiceLineTax.getTaxLine().getValue().divide(new BigDecimal(100));
       // Dans la devise de la facture
       BigDecimal exTaxBase =
           (invoiceLineTax.getReverseCharged())
@@ -286,7 +286,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       invoiceLineTaxList.add(invoiceLineTax);
 
       LOG.debug(
-          "Ligne de TVA : Total TVA => {}, Total HT => {}",
+          "Tax line : Tax total => {}, Total W.T. => {}",
           invoiceLineTax.getTaxTotal(),
           invoiceLineTax.getInTaxTotal());
     }

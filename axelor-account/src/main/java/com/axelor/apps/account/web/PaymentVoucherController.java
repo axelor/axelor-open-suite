@@ -18,10 +18,14 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.PayVoucherDueElement;
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
@@ -94,7 +98,7 @@ public class PaymentVoucherController {
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
 
       if (!generateAll) {
-        response.setFlash(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
+        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -233,6 +237,19 @@ public class PaymentVoucherController {
             .reloadElementToPayList(paymentVoucher, contextPaymentVoucher);
       }
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setReceiptDisplay(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+      boolean displayReceipt =
+          Beans.get(PaymentVoucherControlService.class).isReceiptDisplayed(paymentVoucher);
+
+      response.setAttr("receiptNo", "hidden", !displayReceipt);
+      response.setAttr("printPaymentVoucherBtn", "hidden", !displayReceipt);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

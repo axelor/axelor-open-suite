@@ -52,12 +52,11 @@
       title="Currency"/>
     <decimal name="paidAmountInCurrency" title="Amount paid in currency"/>
 
-    <!-- <integer name="operationTypeSelect" title="Type de saisie paiement" required="true" selection="ipayment.operation.type.select"/> -->
     <integer name="operationTypeSelect" title="Payment type" required="true"
       selection="iinvoice.operation.type.select"/>
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="TradingName"/>
+      title="Trading name"/>
 
     <decimal name="remainingAmount" title="Amount remaining to allocate">
 			<![CDATA[
@@ -95,6 +94,7 @@
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_CONFIRMED = 2;
+		public static final int STATUS_CANCELED = 3;
 
 	   	// OPERATION TYPE SELECT
 		public static final int OPERATION_TYPE_SUPPLIER_PURCHASE = 1;

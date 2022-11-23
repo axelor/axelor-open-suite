@@ -71,7 +71,12 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             .subtract(expense.getWithdrawnCash())
             .subtract(expense.getPersonalExpenseAmount());
     Currency currency = company.getCurrency();
-    LocalDate paymentDate = Beans.get(AppBaseService.class).getTodayDate(company);
+    LocalDate paymentDate =
+        expense.getPaymentDate() != null
+            ? expense.getPaymentDate()
+            : Beans.get(AppBaseService.class)
+                .getTodayDate(
+                    company); // Take into consideration today's date if paymentDate is null
 
     BankOrder bankOrder =
         super.createBankOrder(

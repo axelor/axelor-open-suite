@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -81,10 +81,13 @@ public class AccountingBatchService extends AbstractBatchService {
       case AccountingBatchRepository.ACTION_MOVES_CONSISTENCY_CONTROL:
         batch = controlMovesConsistency(accountingBatch);
         break;
+      case AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF:
+        batch = accountingCutOff(accountingBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
             accountingBatch.getActionSelect(),
             accountingBatch.getCode());
     }
@@ -180,6 +183,10 @@ public class AccountingBatchService extends AbstractBatchService {
 
   public Batch controlMovesConsistency(AccountingBatch accountingBatch) {
     return Beans.get(BatchControlMovesConsistency.class).run(accountingBatch);
+  }
+
+  public Batch accountingCutOff(AccountingBatch accountingBatch) {
+    return Beans.get(BatchAccountingCutOff.class).run(accountingBatch);
   }
 
   @Transactional

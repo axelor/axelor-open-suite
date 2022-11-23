@@ -21,15 +21,14 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.db.JPA;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Inject;
 import javax.persistence.Query;
 
 public class JournalService {
-
   protected JournalRepository journalRepository;
 
   @Inject

@@ -29,7 +29,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -48,7 +48,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -70,6 +69,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   protected MoveLineRepository moveLineRepository;
   protected AccountConfigService accountConfigService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveRepository moveRepository;
 
   @Inject
   public MoveToolServiceImpl(
@@ -77,12 +77,14 @@ public class MoveToolServiceImpl implements MoveToolService {
       MoveLineRepository moveLineRepository,
       AccountCustomerService accountCustomerService,
       AccountConfigService accountConfigService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      MoveRepository moveRepository) {
 
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveRepository = moveRepository;
   }
 
   @Override
@@ -125,7 +127,7 @@ public class MoveToolServiceImpl implements MoveToolService {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MOVE_1),
+            I18n.get(AccountExceptionMessage.MOVE_1),
             invoice.getInvoiceId());
     }
 
@@ -163,12 +165,12 @@ public class MoveToolServiceImpl implements MoveToolService {
    * @throws AxelorException
    */
   @Override
-  public List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment)
-      throws AxelorException {
-    List<MoveLine> moveLines = Lists.newArrayList();
+  public List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment) {
+    List<MoveLine> moveLines = new ArrayList<>();
     if (!CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
       for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
-        if (!moveLines.contains(invoiceTermPayment.getInvoiceTerm().getMoveLine())) {
+        if (invoiceTermPayment.getInvoiceTerm().getMoveLine() != null
+            && !moveLines.contains(invoiceTermPayment.getInvoiceTerm().getMoveLine())) {
           moveLines.add(invoiceTermPayment.getInvoiceTerm().getMoveLine());
         }
       }
@@ -617,7 +619,25 @@ public class MoveToolServiceImpl implements MoveToolService {
                 .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
+          I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
     }
+  }
+
+  @Override
+  public List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException {
+    List<Move> moveList = null;
+    if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
+      moveList =
+          moveRepository
+              .all()
+              .filter(
+                  "(?1 is null OR self.id != ?1) AND self.origin = ?2 AND self.period.year = ?3  AND (?4 is null OR self.partner = ?4)",
+                  move.getId(),
+                  move.getOrigin(),
+                  move.getPeriod().getYear(),
+                  move.getPartner())
+              .fetch();
+    }
+    return moveList;
   }
 }

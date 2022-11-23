@@ -69,4 +69,36 @@ public class ReconcileController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void setCreditMoveLineDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Reconcile reconcile = request.getContext().asType(Reconcile.class);
+
+      String moveLineIds =
+          Beans.get(ReconcileService.class).getStringAllowedCreditMoveLines(reconcile);
+
+      response.setAttr(
+          "creditMoveLine",
+          "domain",
+          String.format("self.id IN (%s)", moveLineIds.isEmpty() ? "0" : moveLineIds));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDebitMoveLineDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Reconcile reconcile = request.getContext().asType(Reconcile.class);
+
+      String moveLineIds =
+          Beans.get(ReconcileService.class).getStringAllowedDebitMoveLines(reconcile);
+
+      response.setAttr(
+          "debitMoveLine",
+          "domain",
+          String.format("self.id IN (%s)", moveLineIds.isEmpty() ? "0" : moveLineIds));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

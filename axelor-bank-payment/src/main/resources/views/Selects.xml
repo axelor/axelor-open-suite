@@ -19,6 +19,7 @@
   <selection name="bankpayment.bank.reconciliation.status.select">
     <option value="1">Draft</option>
     <option value="2">Validated</option>
+    <option value="3">Under correction</option>
   </selection>
 
   <selection name="bankpayment.bank.statement.status.select">
@@ -239,11 +240,16 @@
   </selection>
 
   <selection name="bank.payment.bank.order.line.origin.related.to.select">
-    <option value="com.axelor.apps.account.db.Invoice">Invoice</option>
-    <option value="com.axelor.apps.account.db.PaymentScheduleLine">Payment schedule line</option>
-    <option value="com.axelor.apps.account.db.Reimbursement">Reimbursement</option>
-    <option value="com.axelor.apps.account.db.InvoiceTerm">Invoice term</option>
-    <option value="com.axelor.apps.hr.db.Expense">Expense</option>
+    <option value="com.axelor.apps.account.db.Invoice" data-grid="invoice-grid"
+      data-form="invoice-form">Invoice</option>
+    <option value="com.axelor.apps.account.db.PaymentScheduleLine"
+      data-grid="payment-schedule-line-grid" data-form="payment-schedule-line-form">Payment schedule line</option>
+    <option value="com.axelor.apps.account.db.Reimbursement" data-grid="reimbursement-grid"
+      data-form="reimbursement-form">Reimbursement</option>
+    <option value="com.axelor.apps.account.db.InvoiceTerm"
+      data-grid="invoice-term-move-line-grid" data-form="invoice-term-move-line-form">Invoice term</option>
+    <option value="com.axelor.apps.hr.db.Expense" data-grid="expense-grid"
+      data-form="expense-form">Expense</option>
   </selection>
 
   <selection name="sequence.generic.code.select"
@@ -295,9 +301,9 @@
 
   <selection name="bankpayment.bank.order.daily.code.select">
     <option value="0">No indication</option>
-    <option value="1">Deposit to be processed assignment of receivables by law Dailly</option>
-    <option value="2">Deposit to be processed agreement pledging of receivables</option>
-    <option value="3">Deposit to be processed in</option>
+    <option value="1">Discounted transfer under a Dailly agreement</option>
+    <option value="2">Pledge of receivables under a Dailly agreement</option>
+    <option value="3">Assignment or pledge outside Dailly agreement</option>
   </selection>
 
   <selection name="bankpayment.bank.order.accept.per.line.code.select">
@@ -321,7 +327,7 @@
 
   <selection name="bank.order.accounting.trigger.select">
     <option value="0">None</option>
-    <option value="1">External origin</option>
+    <option value="1">Already accounted</option>
     <option value="2">Bank order confirmation</option>
     <option value="3">Bank order validation</option>
     <option value="4">Bank order realization</option>

@@ -26,13 +26,14 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -109,32 +110,40 @@ public class InvoiceTermController {
       return invoice.getInTaxTotal();
     } else if (parentContext.get("_model").equals(MoveLine.class.getName())) {
       MoveLine moveLine = parentContext.asType(MoveLine.class);
-      return moveLine.getDebit().max(moveLine.getCredit());
+      return Beans.get(InvoiceTermService.class).getTotalInvoiceTermsAmount(moveLine);
     } else {
       return BigDecimal.ZERO;
     }
   }
 
-  public void initInvoiceTermFromInvoice(ActionRequest request, ActionResponse response) {
+  public void initInvoiceTerm(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      Invoice invoice = null;
+      MoveLine moveLine = null;
+
       if (request.getContext().getParent() != null) {
-        Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+        invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
         if (invoice != null) {
           invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
           response.setValues(invoiceTerm);
         } else {
-          MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+          moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
 
           if (moveLine != null) {
             Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
             invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
-            response.setValues(invoiceTerm);
+
+            if (move != null) {
+              moveLine.setMove(move);
+            }
           }
         }
       }
 
+      invoiceTermService.setParentFields(invoiceTerm, moveLine, invoice);
+      response.setValues(invoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -148,10 +157,8 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       if (ObjectUtils.notEmpty(invoiceTermId) && ObjectUtils.isEmpty(invoiceTermIds)) {
 
-        if (invoiceTerm.getInvoice() != null
-            && invoiceTerm.getInvoice().getCompany() != null
-            && invoiceTerm.getReasonOfRefusalToPay() != null) {
-          Beans.get(InvoiceTermService.class)
+        if (invoiceTerm.getCompany() != null && invoiceTerm.getReasonOfRefusalToPay() != null) {
+          Beans.get(InvoiceTermPfpService.class)
               .refusalToPay(
                   Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId()),
                   invoiceTerm.getReasonOfRefusalToPay(),
@@ -161,19 +168,20 @@ public class InvoiceTermController {
         }
       } else if (ObjectUtils.isEmpty(invoiceTermId)) {
         if (ObjectUtils.isEmpty(invoiceTermIds)) {
-          response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD));
+          response.setError(
+              I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD));
           return;
         }
         Integer recordsSelected = invoiceTermIds.size();
         Integer recordsRefused =
-            Beans.get(InvoiceTermService.class)
+            Beans.get(InvoiceTermPfpService.class)
                 .massRefusePfp(
                     invoiceTermIds,
                     invoiceTerm.getReasonOfRefusalToPay(),
                     invoiceTerm.getReasonOfRefusalToPayStr());
         response.setFlash(
             String.format(
-                I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL),
+                I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL),
                 recordsRefused,
                 recordsSelected));
         response.setCanClose(true);
@@ -190,7 +198,8 @@ public class InvoiceTermController {
       response.setAttr(
           "pfpValidatorUser",
           "domain",
-          Beans.get(InvoiceService.class).getPfpValidatorUserDomain(invoiceTerm.getInvoice()));
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUserDomain(invoiceTerm.getPartner(), invoiceTerm.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -207,7 +216,8 @@ public class InvoiceTermController {
             invoiceTerm
                 .getPfpValidatorUser()
                 .equals(
-                    Beans.get(InvoiceService.class).getPfpValidatorUser(invoiceTerm.getInvoice())));
+                    Beans.get(InvoiceTermService.class)
+                        .getPfpValidatorUser(invoiceTerm.getPartner(), invoiceTerm.getCompany())));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -230,7 +240,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceterm =
           Beans.get(InvoiceTermRepository.class)
               .find(request.getContext().asType(InvoiceTerm.class).getId());
-      Beans.get(InvoiceTermService.class).validatePfp(invoiceterm, AuthUtils.getUser());
+      Beans.get(InvoiceTermPfpService.class).validatePfp(invoiceterm, AuthUtils.getUser());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -242,14 +252,16 @@ public class InvoiceTermController {
     try {
       List<Long> invoiceTermIds = (List<Long>) request.getContext().get("_ids");
       if (ObjectUtils.isEmpty(invoiceTermIds)) {
-        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD));
+        response.setError(
+            I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD));
         return;
       }
       Integer recordsSelected = invoiceTermIds.size();
-      Integer recordsUpdated = Beans.get(InvoiceTermService.class).massValidatePfp(invoiceTermIds);
+      Integer recordsUpdated =
+          Beans.get(InvoiceTermPfpService.class).massValidatePfp(invoiceTermIds);
       response.setFlash(
           String.format(
-              I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL),
+              I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL),
               recordsUpdated,
               recordsSelected));
       response.setReload(true);
@@ -261,33 +273,39 @@ public class InvoiceTermController {
   public void pfpPartialReasonConfirm(ActionRequest request, ActionResponse response) {
     try {
       if (ObjectUtils.isEmpty(request.getContext().get("_id"))) {
-        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_NOT_SAVED));
+        response.setError(I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_NOT_SAVED));
         return;
       }
+
       InvoiceTerm originalInvoiceTerm =
           Beans.get(InvoiceTermRepository.class)
               .find(Long.valueOf((Integer) request.getContext().get("_id")));
-      BigDecimal pfpGrantedAmount = (BigDecimal) request.getContext().get("pfpGrantedAmount");
-      if (pfpGrantedAmount.compareTo(BigDecimal.ZERO) == 0) {
-        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO));
+
+      BigDecimal grantedAmount = new BigDecimal((String) request.getContext().get("grantedAmount"));
+      if (grantedAmount.signum() == 0) {
+        response.setError(
+            I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO));
         return;
       }
 
       BigDecimal invoiceAmount = originalInvoiceTerm.getAmount();
+      if (grantedAmount.compareTo(invoiceAmount) >= 0) {
+        response.setValue("$grantedAmount", originalInvoiceTerm.getAmountRemaining());
+        response.setFlash(
+            I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
+        return;
+      }
+
       PfpPartialReason partialReason =
           (PfpPartialReason) request.getContext().get("pfpPartialReason");
-
-      if (pfpGrantedAmount.compareTo(invoiceAmount) >= 0) {
-        response.setValue("pfpGrantedAmount", 0);
-        response.setFlash(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT));
-        return;
-      }
       if (ObjectUtils.isEmpty(partialReason)) {
-        response.setError(I18n.get(IExceptionMessage.INVOICE_INVOICE_TERM_PARTIAL_REASON_EMPTY));
+        response.setError(
+            I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_PARTIAL_REASON_EMPTY));
         return;
       }
-      Beans.get(InvoiceTermService.class)
-          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, pfpGrantedAmount, partialReason);
+
+      Beans.get(InvoiceTermPfpService.class)
+          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, grantedAmount, partialReason);
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -374,6 +392,59 @@ public class InvoiceTermController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      MoveLine moveLine = invoiceTerm.getMoveLine();
+      if (moveLine == null) {
+        moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+        if (moveLine == null) {
+          return;
+        }
+      }
+
+      Beans.get(InvoiceTermService.class)
+          .computeFinancialDiscount(
+              invoiceTerm,
+              moveLine.getCredit().max(moveLine.getDebit()),
+              moveLine.getFinancialDiscount(),
+              moveLine.getFinancialDiscountTotalAmount(),
+              moveLine.getRemainingAmountAfterFinDiscount());
+
+      response.setValues(invoiceTerm);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPfpStatus(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+      if (invoiceTerm.getInvoice() == null) {
+        Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+        invoiceTerm.setInvoice(invoice);
+      }
+
+      if (invoiceTerm.getMoveLine() == null) {
+        MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+        if (moveLine != null && moveLine.getMove() == null) {
+          Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+          moveLine.setMove(move);
+        }
+
+        invoiceTerm.setMoveLine(moveLine);
+      }
+
+      Beans.get(InvoiceTermService.class).setPfpStatus(invoiceTerm);
+      response.setValue("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

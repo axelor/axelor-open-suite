@@ -98,10 +98,10 @@
           <editor x-show-titles="false">
             <field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false"
               colSpan="5" css="label-bold bold large" placeholder="Code" readonly="true"
-              if="__config__.app.getApp('base').getGenerateProductSequence()"/>
+              if="__config__.app.getApp('base')?.getGenerateProductSequence()"/>
             <field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false"
               colSpan="5" css="label-bold bold large" placeholder="Code"
-              if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
+              if="!__config__.app.getApp('base')?.getGenerateProductSequence()" required="true"/>
             <field name="name" required="true" showTitle="false" colSpan="7"
               css="label-bold bold large" placeholder="Name" width="800"/>
           </editor>
@@ -149,7 +149,7 @@
           </viewer>
         </field>
         <field name="barCode" showTitle="false" colSpan="12" widget="Image"
-          if="__config__.app.getApp('base').getActivateBarCodeGeneration()"/>
+          if="__config__.app.getApp('base')?.getActivateBarCodeGeneration()"/>
       </panel>
       <panel name="productInfoPanel" colSpan="10">
 
@@ -166,7 +166,6 @@
             showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct"
             if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
           <field name="procurementMethodSelect" colSpan="6"
-            requiredIf="productTypeSelect == 'storable' &amp;&amp; __config__.app.getApp('base').getCompanySpecificProductFieldsSet().isEmpty()"
             onChange="action-product-record-tick-checkbox-purchasable"
             hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
           <field name="standardDelay" colSpan="12"
@@ -186,11 +185,11 @@
           <field name="expense" hidden="true" if-module="axelor-human-resource"/>
         </panel>
         <panel name="BarcodePanel" readonlyIf="barCode != null"
-          if="__config__.app.getApp('base').getActivateBarCodeGeneration()" title="Barcode"
+          if="__config__.app.getApp('base')?.getActivateBarCodeGeneration()" title="Barcode"
           colSpan="12">
           <field name="serialNumber"/>
           <field name="barcodeTypeConfig"
-            if="__config__.app.getApp('base').getEditProductBarcodeType()"/>
+            if="__config__.app.getApp('base')?.getEditProductBarcodeType()"/>
         </panel>
         <panel-related name="productCompanyListPanel" field="productCompanyList"
           grid-view="product-company-grid" form-view="product-company-form" colSpan="12"
@@ -255,7 +254,7 @@
           <panel-related name="customerCatalogListPanel" field="customerCatalogList"
             form-view="customer-catalog-form" grid-view="customer-catalog-grid"
             title="Customer catalog" showIf="sellable" colSpan="12" if-module="axelor-sale"
-            if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()"/>
+            if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getEnableCustomerCatalogMgt()"/>
         </panel>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html"/>
@@ -300,12 +299,12 @@
           <field name="defShipCoefByPartner"
             onChange="action-product-method-supplier-catalog-coeff" hideIf="!purchasable"
             if-module="axelor-purchase"
-            if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
+            if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
         </panel>
         <panel-related name="supplierCatalogListPanel" field="supplierCatalogList"
           form-view="supplier-catalog-form" grid-view="supplier-catalog-grid"
           title="Supplier catalog" showIf="purchasable" colSpan="12" if-module="axelor-purchase"
-          if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
+          if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
       </panel>
       <panel name="accountingPanel" title="Accounting">
         <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account"
@@ -362,7 +361,7 @@
         onTabSelect="action-product-attrs-readonly-create-production-order"
         if-module="axelor-production" if="__config__.app.isApp('production')">
         <field name="costSheetGroup" showIf="productSubTypeSelect == 3"
-          if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
+          if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
         <field name="economicManufOrderQty"
           showIf="productSubTypeSelect == 3 || (productSubTypeSelect == 2 &amp;&amp; procurementMethodSelect == 'buy')"/>
         <panel name="productionPanel" colSpan="12"
@@ -395,7 +394,7 @@
         </panel>
       </panel>
       <panel name="variantsPanel" title="Variants" showTitle="false"
-        if="__config__.app.getApp('base').getManageProductVariants()">
+        if="__config__.app.getApp('base')?.getManageProductVariants()">
         <panel name="parentVariantPanel" showIf="!parentProduct" colSpan="12">
           <field name="productVariantConfig" colSpan="12" canSelect="false" canNew="true">
             <editor x-show-titles="false">
@@ -441,6 +440,7 @@
           <field name="manageVariantPrice"/>
           <panel-dashlet name="productVariantPanel" colSpan="12"
             action="action-product-view-product-variant" showIf="id"/>
+          <field name="$_xFillProductAvailableQty" readonly="true" hidden="true"/>
         </panel>
         <panel name="childVariantPanel" showIf="parentProduct" colSpan="12">
           <field name="productVariant" showTitle="false" canSelect="false">
@@ -611,6 +611,7 @@
     <action name="action-product-attrs-enable-product-company-list"/>
     <action name="action-product-record-service-stock-managed"/>
     <action name="action-product-attrs-set-cost-type-select"/>
+    <action name="action-product-attrs-set-required-procurement-method-select"/>
   </action-group>
 
   <action-group name="action-group-base-product-producttype-onchange">
@@ -618,13 +619,14 @@
     <action name="action-product-validate-sale-supply-select"/>
     <action name="action-product-record-product-sub-type-select"/>
     <action name="action-product-record-service-stock-managed"/>
+    <action name="action-product-attrs-set-required-procurement-method-select"/>
   </action-group>
 
   <action-record name="action-product-record-set-barcode-type-config"
     model="com.axelor.apps.base.db.Product">
     <field name="barcodeTypeConfig"
-      expr="eval: __config__.app.getApp('base').getBarcodeTypeConfig()"
-      if="__config__.app.getApp('base').getActivateBarCodeGeneration()"/>
+      expr="eval: __config__.app.getApp('base')?.getBarcodeTypeConfig()"
+      if="__config__.app.getApp('base')?.getActivateBarCodeGeneration()"/>
   </action-record>
 
   <action-record name="action-product-record-product-sub-type-select"
@@ -650,6 +652,7 @@
     <action name="action-product-attrs-set-required-productCategory"/>
     <action name="action-product-attrs-enable-product-company-list"/>
     <action name="action-product-attrs-set-cost-type-select"/>
+    <action name="action-product-attrs-set-required-procurement-method-select"/>
   </action-group>
 
   <action-group name="action-product-group-cost-type-select-onchange">
@@ -666,7 +669,7 @@
   <action-record name="action-product-record-in-ati"
     model="com.axelor.apps.base.db.Product">
     <field name="inAti"
-      expr="eval:__config__.app.getApp('base').getProductInAtiSelect() == 2 || __config__.app.getApp('base').getProductInAtiSelect() == 4"/>
+      expr="eval:__config__.app.getApp('base')?.getProductInAtiSelect() == 2 || __config__.app.getApp('base')?.getProductInAtiSelect() == 4"/>
   </action-record>
 
   <action-record name="action-product-record-set-control-on-receipt"
@@ -676,11 +679,11 @@
 
   <action-attrs name="action-product-attrs-in-ati">
     <attribute name="hidden" for="inAti"
-      expr=" eval: __config__.app.getApp('base').getProductInAtiSelect() == 1 || __config__.app.getApp('base').getProductInAtiSelect() == 2"/>
+      expr=" eval: __config__.app.getApp('base')?.getProductInAtiSelect() == 1 || __config__.app.getApp('base')?.getProductInAtiSelect() == 2"/>
     <attribute
-      if=" __config__.app.getApp('base').getProductInAtiSelect() == 1 || __config__.app.getApp('base').getProductInAtiSelect() == 2"
+      if=" __config__.app.getApp('base')?.getProductInAtiSelect() == 1 || __config__.app.getApp('base')?.getProductInAtiSelect() == 2"
       name="value" for="inAti"
-      expr="eval: __config__.app.getApp('base').getProductInAtiSelect() == 2"/>
+      expr="eval: __config__.app.getApp('base')?.getProductInAtiSelect() == 2"/>
   </action-attrs>
 
   <action-attrs name="action-product-attrs-change-title-based-on-inAti">
@@ -741,7 +744,7 @@
 
   <action-attrs name="action-product-attrs-enable-product-company-list">
     <attribute name="hidden" for="productCompanyList"
-      expr="eval: __config__.app.getApp('base').getCompanySpecificProductFieldsSet().isEmpty()"/>
+      expr="eval: __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet().isEmpty()"/>
   </action-attrs>
 
   <action-group name="action-product-group-default-new">
@@ -753,8 +756,7 @@
     model="com.axelor.apps.base.db.Product">
     <field name="productTypeSelect" expr="eval: _productTypeSelect"/>
     <field name="procurementMethodSelect" expr="buy"/>
-    <field name="startDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="startDate == null"/>
+    <field name="startDate" expr="eval:__config__.date" if="startDate == null"/>
     <field name="salePrice" expr="0"/>
     <field name="purchasePrice" expr="0"/>
     <field name="lastPurchasePrice" expr="0"/>
@@ -829,13 +831,12 @@
 
   <action-validate name="action-product-validate-end-date">
     <alert message="The product pulled-off date must be greater than the launch date."
-      if="endDate &lt; startDate"/>
+      if="startDate != null &amp;&amp; endDate != null &amp;&amp; endDate &lt; startDate"/>
   </action-validate>
 
   <action-record name="action-product-record-reset-end-date"
     model="com.axelor.apps.base.db.Product">
-    <field name="endDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="endDate &lt; startDate"/>
+    <field name="endDate" expr="eval:__config__.date" if="endDate &lt; startDate"/>
   </action-record>
 
   <action-view name="action-product-view-product-variant" title="Products variants"
@@ -843,6 +844,7 @@
     <view type="grid" name="product-product-variant-grid"/>
     <view type="form" name="product-form"/>
     <domain>self.parentProduct.id = :id</domain>
+    <context name="_xFillProductAvailableQty" expr="eval: true"/>
   </action-view>
 
   <action-view name="action-product-view-other-product-variant" title="Other variants"
@@ -851,6 +853,7 @@
     <view type="form" name="product-form"/>
     <domain>self.parentProduct.id = :parentId</domain>
     <context name="parentId" expr="eval: parentProduct?.id"/>
+    <context name="_xFillProductAvailableQty" expr="eval: true"/>
   </action-view>
 
   <action-view name="action-product-view-total-variants" title="${fullName} variants"
@@ -858,6 +861,7 @@
     <view type="grid" name="product-product-variant-grid"/>
     <view type="form" name="product-form"/>
     <domain>self.parentProduct.id = :_id</domain>
+    <context name="_xFillProductAvailableQty" expr="eval: true"/>
   </action-view>
 
   <action-attrs name="action-product-attrs-title-unit" if-module="axelor-stock">
@@ -884,9 +888,9 @@
     <field name="saleProductMultipleQtyList" title="Multiple quantities of sale" hidden="true"
       if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getManageMultipleSaleQuantity())"/>
     <field name="serialNumber" hidden="true"
-      if="!__config__.app.getApp('base').getActivateBarCodeGeneration()"/>
+      if="!__config__.app.getApp('base')?.getActivateBarCodeGeneration()"/>
     <field name="barcodeTypeConfig" hidden="true"
-      if="!(__config__.app.getApp('base').getActivateBarCodeGeneration() &amp;&amp; __config__.app.getApp('base').getEditProductBarcodeType())"/>
+      if="!(__config__.app.getApp('base')?.getActivateBarCodeGeneration() &amp;&amp; __config__.app.getApp('base')?.getEditProductBarcodeType())"/>
     <field name="salesUnit" hidden="true"
       if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getManageSalesUnits())"/>
     <field name="purchasesUnit" hidden="true"
@@ -896,15 +900,15 @@
     <field name="allowToForceSaleQty" hidden="true"
       if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getManageMultipleSaleQuantity())"/>
     <field name="costSheetGroup" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageCostSheetGroup())"/>
+      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageCostSheetGroup())"/>
     <field name="customerCatalogList" hidden="true"
-      if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt())"/>
+      if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getEnableCustomerCatalogMgt())"/>
     <field name="supplierCatalogList" hidden="true"
-      if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog())"/>
+      if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog())"/>
     <field name="productVariantConfig" hidden="true"
-      if="!__config__.app.getApp('base').getManageProductVariants()"/>
+      if="!__config__.app.getApp('base')?.getManageProductVariants()"/>
     <field name="manageVariantPrice" hidden="true"
-      if="!__config__.app.getApp('base').getManageProductVariants()"/>
+      if="!__config__.app.getApp('base')?.getManageProductVariants()"/>
     <field name="taskTemplateSet" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct)"/>
     <field name="productSubTypeSelect" hidden="true" if="!__config__.app.isApp('production')"/>
@@ -974,7 +978,7 @@
 
   <action-attrs name="action-product-attrs-set-required-productCategory">
     <attribute name="required" for="productCategory"
-      expr="eval: __config__.app.getApp('base').getGenerateProductSequence() &amp;&amp; __config__.app.getApp('base').getProductSequenceTypeSelect() == 'Per product category'"/>
+      expr="eval: __config__.app.getApp('base')?.getGenerateProductSequence() &amp;&amp; __config__.app.getApp('base')?.getProductSequenceTypeSelect() == 'Per product category'"/>
   </action-attrs>
 
   <action-group name="action-group-product-onsave">
@@ -989,5 +993,10 @@
   <action-method name="action-product-method-set-anomaly">
     <call class="com.axelor.apps.base.web.ProductController" method="setPriceListLineAnomaly"/>
   </action-method>
+
+  <action-attrs name="action-product-attrs-set-required-procurement-method-select">
+    <attribute name="required" for="procurementMethodSelect"
+      expr="eval: productTypeSelect == 'storable' &amp;&amp; (!__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet() || __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.isEmpty())"/>
+  </action-attrs>
 
 </object-views>

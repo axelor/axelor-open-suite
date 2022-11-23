@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.base.db.BankDetails;
@@ -69,7 +69,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
       throw new AxelorException(
           depositSlip,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO));
+          I18n.get(
+              AccountExceptionMessage.DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO));
     }
 
     Set<BankDetails> bankDetailsCollection =
@@ -137,7 +138,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         throw new AxelorException(
             depositSlip,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            IExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
+            AccountExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
     }
   }
 
@@ -221,7 +222,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
       throw new AxelorException(
           depositSlip,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.DEPOSIT_SLIP_NOT_PUBLISHED));
+          I18n.get(AccountExceptionMessage.DEPOSIT_SLIP_NOT_PUBLISHED));
     }
 
     PaymentVoucherConfirmService paymentVoucherConfirmService =

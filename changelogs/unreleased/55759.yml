@@ -1,0 +1,3 @@
+---
+title: "Move Line : fix an issue preventing the currency amount computation when setting a debit or a credit"
+type: fix

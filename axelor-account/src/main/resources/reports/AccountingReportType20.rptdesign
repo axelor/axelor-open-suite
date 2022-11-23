@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202112301813</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -43,6 +43,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor-open-suite</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -55,6 +58,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -125,7 +131,8 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
+            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -595,56 +602,56 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">partner</property>
                     <property name="nativeName">partner</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">journal_code</property>
                     <property name="nativeName">journal_code</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">move_reference</property>
                     <property name="nativeName">move_reference</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">date_val</property>
                     <property name="nativeName">date_val</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">description</property>
                     <property name="nativeName">description</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">account_code</property>
                     <property name="nativeName">account_code</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
@@ -657,26 +664,35 @@ MoveLine.debit,
 MoveLine.credit,
 Account.code as account_code
 FROM account_move_line MoveLine
-LEFT JOIN account_service_type ServiceType ON (MoveLine.service_type = ServiceType.id)
-LEFT JOIN account_move Move ON (MoveLine.Move = Move.id)
 LEFT JOIN account_account Account ON (MoveLine.account = Account.id)
+LEFT JOIN account_move Move ON (MoveLine.Move = Move.id)
+LEFT JOIN account_journal Journal ON (Move.journal = Journal.id)
+LEFT JOIN base_partner Partner ON (Partner.id = MoveLine.partner)
+WHERE move.id IN (
+SELECT Move.id
+FROM account_move_line MoveLine
+LEFT JOIN account_account Account ON (MoveLine.account = Account.id)
+LEFT JOIN account_service_type ServiceType ON (Account.service_type = ServiceType.id)
+LEFT JOIN account_move Move ON (MoveLine.Move = Move.id)
 LEFT JOIN account_journal Journal ON (Move.journal = Journal.id)
 LEFT JOIN account_journal_type JournalType ON (Journal.journal_type = JournalType.id)
 LEFT JOIN account_accounting_report AccountingReport on (AccountingReport.id = ?)
 LEFT JOIN base_partner Partner ON (Partner.id = MoveLine.partner)
+LEFT JOIN account_account_config config ON (config.company = AccountingReport.company)
 WHERE (AccountingReport.currency = Move.company_currency)
 AND (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from)
 AND (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to)
 AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company
 AND (
-  ((MoveLine.service_type IS NULL OR ServiceType.code = 'NDAS') AND MoveLine.das2activity IS NOT NULL)
-  OR (MoveLine.das2activity IS NULL AND MoveLine.service_type IS NOT NULL AND ServiceType.code != 'NDAS')
+  (Account.service_type IS NULL AND Partner.das2activity IS NOT NULL)
+  OR (Partner.das2activity IS NULL AND Account.service_type IS NOT NULL AND ServiceType.is_das2declarable is true)
 )
 AND Move.status_select = 3
-AND JournalType.code = 'ACH'
-order by MoveLine.partner_full_name, MoveLine.date_val, MoveLine.name;
-]]></xml-property>
+AND JournalType.id = config.das_report_journal_type
+AND MoveLine.amount_remaining < MoveLine.debit + MoveLine.credit
+)
+order by MoveLine.partner_full_name, MoveLine.date_val, MoveLine.name]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

@@ -370,7 +370,7 @@
 369;397200;397000;"Marchandises (ou groupe) B";"currentAsset";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 370;400;"CL4";"Fournisseurs et comptes rattachés";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
 371;400000;400;"Fournisseurs et comptes rattachés ";"payable";"true";1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
-372;401;400;"Fournisseurs";"payable";"true";1;;"true";;;2;"NDAS";;"true";1;"false";"false";"false";"false";0
+372;401;400;"Fournisseurs";"view";;1;;;;;2;"NDAS";;"true";1;"false";"true";"false";"false";0
 373;401100;401;"Fournisseurs - Achats de biens et prestations de services";"payable";"true";1;"411100|411700|416000";"true";;;1;"DAS2";;"true";1;"false";"false";"true";"true";0
 374;401700;401;"Fournisseurs - Retenues de garantie";"payable";"true";1;"411100|411700|416000";"true";;;2;"NDAS";;"true";1;"false";"false";"true";"true";0
 375;403000;400;"Fournisseurs - Effets à payer";"payable";"true";1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
@@ -382,7 +382,7 @@
 381;408100;408000;"Fournisseurs";"payable";"true";1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 382;408400;408000;"Fournisseurs d'immobilisations ";"payable";"true";1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 383;408800;408000;"Fournisseurs - Intérêts courus";"payable";"true";1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
-384;409;400;"Fournisseurs débiteurs";"payable";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
+384;409;400;"Fournisseurs débiteurs";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
 385;409100;409;"Fournisseurs - Avances et acomptes versés sur commandes";"payable";"true";1;;"true";;;2;"NDAS";;;1;"false";"false";"false";"false";0
 386;409600;409;"Fournisseurs - Créances pour emballages et matériel à rendre";"currentAsset";"true";1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 387;409700;409;"Fournisseurs - Autres avoirs";"currentAsset";"true";1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
@@ -391,7 +391,7 @@
 390;409800;409;"Rabais, remises, ristournes à obtenir et autres avoirs non encore reçus";"currentAsset";"true";1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 391;410;"CL4";"Clients et comptes rattachés";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
 392;410000;410;"Clients et comptes rattachés ";"receivable";"true";1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
-393;411;410;"Clients";"receivable";"true";1;;"true";;;2;"NDAS";;"true";1;"false";"false";"false";"false";0
+393;411;410;"Clients";"view";;1;;;;;2;"NDAS";;"true";1;"false";"true";"false";"false";0
 394;411100;411;"Clients - Ventes de biens ou de prestations de services";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;"true";1;"false";"false";"true";"true";0
 395;411700;411;"Clients - Retenues de garantie";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;"true""";1;"false";"false";"true";"true";0
 396;413000;410;"Clients - Effets à recevoir";"receivable";"true";1;;"true";;;2;"NDAS";;;1;"false";"false";"false";"false";0
@@ -502,7 +502,7 @@
 501;462000;460;"Créances sur cessions d'immobilisations";"receivable";;1;;;;;0;"NDAS";;;1;"false";"false";"false";"false";0
 502;464000;460;"Dettes sur acquisitions de valeurs mobilières de placement";"debt";;1;;;;;0;"NDAS";;;1;"false";"false";"false";"false";0
 503;465000;460;"Créances sur cessions de valeurs mobilières de placement";"receivable";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
-504;467000;460;"Autres comptes débiteurs ou créditeurs";"view";"true";1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
+504;467;460;"Autres comptes débiteurs ou créditeurs";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
 505;468000;460;"Divers - Charges à payer et produits à recevoir";"receivable";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 506;468600;468000;"Charges à payer";"debt";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 507;468700;468000;"Produits à recevoir";"receivable";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
@@ -520,15 +520,15 @@
 519;477100;477000;"Augmentation des créances";"debt";;1;;;;;1;"NDAS";;;1;"false";"false";"false";"false";0
 520;477200;477000;"Diminution des dettes";"debt";;1;;;;;1;"NDAS";;;1;"false";"false";"false";"false";0
 521;477800;477000;"Différences compensées par couverture de change";"debt";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
-522;478000;470;"Autres comptes transitoires";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
+522;478;470;"Autres comptes transitoires";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
 523;480;"CL4";"Comptes de régularisation";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
 524;481000;480;"Charges à répartir sur plusieurs exercices ";"receivable";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 525;481600;481000;"Frais d'émission des emprunts";"receivable";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 526;486000;480;"Charges constatées d'avance";"receivable";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 527;487000;480;"Produits constatés d'avance";"debt";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
-528;488000;480;"Comptes de répartition périodique des charges et des produits";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
-529;488600;488000;"Charges";"debt";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
-530;488700;488000;"Produits";"receivable";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
+528;488;480;"Comptes de répartition périodique des charges et des produits";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
+529;488600;488;"Charges";"debt";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
+530;488700;488;"Produits";"receivable";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 531;489000;480;"Quotas d'émission alloués par l'État";"receivable";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 532;490;"CL4";"Dépréciations des comptes de tiers";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
 533;491000;490;"Dépréciation des comptes de clients";"debt";;1;;;;;1;"NDAS";;;1;"false";"false";"false";"false";0
@@ -564,7 +564,7 @@
 563;511300;511000;"Effets à l'encaissement";"cash";;1;;;;;0;"NDAS";;;1;"false";"false";"false";"false";0
 564;511400;511000;"Effets à l'escompte";"cash";;1;;;;;0;"NDAS";;;1;"false";"false";"false";"false";0
 565;511500;511000;"CB encaissées";"cash";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
-566;512;510;"Banques";"cash";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
+566;512;510;"Banques";"view";;1;;;;;2;"NDAS";;;1;"false";"true";"false";"false";0
 567;512100;512;"Comptes en monnaie nationale";"cash";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 568;512400;512;"Comptes en devises";"cash";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
 569;514000;510;"Chèques postaux";"cash";;1;;;;;2;"NDAS";;;1;"false";"false";"false";"false";0
@@ -749,13 +749,13 @@
 748;641400;641000;"Indemnités et avantages divers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
 749;641500;641000;"Supplément familial";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
 750;644000;640;"Rémunération du travail de l'exploitant";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
-751;645;640;"Charges de Sécurité sociale et de prévoyance";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
+751;645;640;"Charges de Sécurité sociale et de prévoyance";"view";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"true";"false";"false";0
 752;645100;645;"Cotisations à l'URSSAF";"charge";;1;;;"true";"true";0;"NDAS";"N_D";;1;"true";"false";"false";"false";0
 753;645200;645;"Cotisations aux mutuelles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
 754;645300;645;"Cotisations aux caisses de retraites";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
 755;645400;645;"Cotisations aux ASSEDIC";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
 756;645800;645;"Cotisations aux autres organismes sociaux";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
-757;646;640;"Cotisations sociales personnelles de l'exploitant";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
+757;646;640;"Cotisations sociales personnelles de l'exploitant";"view";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
 758;647000;640;"Autres charges sociales";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
 759;647100;647000;"Prestations directes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0
 760;647200;647000;"Versements aux comités d'entreprise et d'établissement";"charge";;1;;;"true";"true";2;"NDAS";"N_D";;1;"true";"false";"false";"false";0

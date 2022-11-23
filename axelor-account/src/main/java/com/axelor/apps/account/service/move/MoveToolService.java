@@ -64,9 +64,8 @@ public interface MoveToolService {
    *
    * @param invoicePayment Invoice payment
    * @return
-   * @throws AxelorException
    */
-  List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment) throws AxelorException;
+  List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment);
 
   /**
    * Method that returns all the move lines of an invoice that are not completely lettered
@@ -190,6 +189,8 @@ public interface MoveToolService {
   boolean getEditAuthorization(Move move) throws AxelorException;
 
   boolean checkMoveLinesCutOffDates(Move move);
+
+  List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException;
 
   List<Move> findDaybookByYear(Set<Year> yearList);
 

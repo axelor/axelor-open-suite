@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,16 +87,6 @@ public interface FixedAssetLineService {
       List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
 
   /**
-   * This method group and sort {@link FixedAsset#getFixedAssetLineList()} and {@link
-   * FixedAsset#getFiscalFixedAssetLineList()} by {@link FixedAssetLine#getDepreciationDate()}.
-   * Because it sorted, the method will explicitly return a {@link LinkedHashMap}.
-   *
-   * @param fixedAsset
-   * @return generated {@link LinkedHashMap}
-   */
-  LinkedHashMap<LocalDate, List<FixedAssetLine>> groupAndSortByDateFixedAssetLine(
-      FixedAsset fixedAsset);
-  /**
    * This method will remove every fixedAssetLine from database, then use {@link List#clear()}
    *
    * @param fixedAssetLineList
@@ -130,17 +119,6 @@ public interface FixedAssetLineService {
    */
   FixedAssetLine computeCessionLine(FixedAsset fixedAsset, LocalDate disposalDate)
       throws AxelorException;
-
-  /**
-   * This method will return any line that have the same year as disposalDate.
-   *
-   * @param fixedAsset
-   * @param disposalDate
-   * @param lineStatus
-   * @return {@link FixedAssetLine} or null if there is no line with same year.
-   */
-  FixedAssetLine getExistingLineWithSameYear(
-      FixedAsset fixedAsset, LocalDate disposalDate, int lineStatus);
 
   /**
    * Get Fixed asset of fixedAssetLine.

@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -43,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Query;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +51,6 @@ public class PaymentServiceImpl implements PaymentService {
 
   protected ReconcileService reconcileService;
   protected MoveLineCreateService moveLineCreateService;
-  protected InvoiceTermService invoiceTermService;
 
   protected AppAccountService appAccountService;
   protected AppBaseService appBaseService;
@@ -63,12 +60,10 @@ public class PaymentServiceImpl implements PaymentService {
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       ReconcileService reconcileService,
-      MoveLineCreateService moveLineCreateService,
-      InvoiceTermService invoiceTermService) {
+      MoveLineCreateService moveLineCreateService) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
-    this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
   }
@@ -122,40 +117,36 @@ public class PaymentServiceImpl implements PaymentService {
     if (debitMoveLines != null && creditMoveLines != null) {
 
       log.debug(
-          "Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
+          "Overpayment usage (debit move lines : {}, credit move lines : {})",
           new Object[] {debitMoveLines.size(), creditMoveLines.size()});
 
       BigDecimal debitTotalRemaining = BigDecimal.ZERO;
       BigDecimal creditTotalRemaining = BigDecimal.ZERO;
       for (MoveLine creditMoveLine : creditMoveLines) {
 
-        log.debug("Emploie du trop perçu : ligne en crédit : {})", creditMoveLine);
+        log.debug("Overpayment usage : credit move line : {})", creditMoveLine);
 
         log.debug(
-            "Emploie du trop perçu : ligne en crédit (restant à payer): {})",
-            this.getAmountRemainingForPayment(creditMoveLine));
-        creditTotalRemaining =
-            creditTotalRemaining.add(this.getAmountRemainingForPayment(creditMoveLine));
+            "Overpayment usage : credit move line (remaining to pay): {})",
+            creditMoveLine.getAmountRemaining());
+        creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining());
       }
       for (MoveLine debitMoveLine : debitMoveLines) {
 
-        log.debug(
-            "Emploie du trop perçu : ligne en débit : {})",
-            this.getAmountRemainingForPayment(debitMoveLine));
+        log.debug("Overpayment usage : debit move line : {})", debitMoveLine);
 
         log.debug(
-            "Emploie du trop perçu : ligne en débit (restant à payer): {})",
+            "Overpayment usage : debit move line (remaining to pay): {})",
             debitMoveLine.getAmountRemaining());
-        debitTotalRemaining =
-            debitTotalRemaining.add(this.getAmountRemainingForPayment(debitMoveLine));
+        debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
       }
 
       for (MoveLine creditMoveLine : creditMoveLines) {
 
-        if (this.getAmountRemainingForPayment(creditMoveLine).compareTo(BigDecimal.ZERO) > 0) {
+        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
 
           for (MoveLine debitMoveLine : debitMoveLines) {
-            if (this.getAmountRemainingForPayment(debitMoveLine).compareTo(BigDecimal.ZERO) > 0) {
+            if (debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
               try {
                 createReconcile(
                     debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
@@ -171,20 +162,6 @@ public class PaymentServiceImpl implements PaymentService {
           }
         }
       }
-    }
-  }
-
-  protected BigDecimal getAmountRemainingForPayment(MoveLine moveLine) {
-    LocalDate date = appBaseService.getTodayDate(moveLine.getMove().getCompany());
-
-    if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-      return moveLine.getAmountRemaining();
-    } else {
-      return invoiceTermService.filterNotAwaitingPayment(moveLine.getInvoiceTermList()).stream()
-          .filter(it -> !it.getIsPaid())
-          .map(it -> invoiceTermService.getAmountRemaining(it, date))
-          .reduce(BigDecimal::add)
-          .orElse(moveLine.getAmountRemaining());
     }
   }
 
@@ -212,9 +189,7 @@ public class PaymentServiceImpl implements PaymentService {
       amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
       debitMoveLine.setMaxAmountToReconcile(null);
     } else {
-      amount =
-          this.getAmountRemainingForPayment(creditMoveLine)
-              .min(this.getAmountRemainingForPayment(debitMoveLine));
+      amount = creditMoveLine.getAmountRemaining().min(debitMoveLine.getAmountRemaining());
     }
     log.debug("amount : {}", amount);
     log.debug("debitTotalRemaining : {}", debitTotalRemaining);
@@ -237,7 +212,7 @@ public class PaymentServiceImpl implements PaymentService {
       debitTotalRemaining = debitTotalRemaining.subtract(amount);
       creditTotalRemaining = creditTotalRemaining.subtract(amount);
 
-      log.debug("Réconciliation : {}", reconcile);
+      log.debug("Reconcile : {}", reconcile);
     }
   }
 

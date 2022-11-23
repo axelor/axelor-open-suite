@@ -20,10 +20,15 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.db.Model;
+import java.util.Map;
 
 public interface BankOrderLineOriginService {
 
   public BankOrderLineOrigin createBankOrderLineOrigin(Model model);
 
   public boolean existBankOrderLineOrigin(BankOrder bankOrder, Model model);
+
+  public Map<String, Object> getRelatedDataMap(BankOrderLineOrigin bankOrderLineOrigin);
+
+  boolean dmsFilePresent(BankOrderLineOrigin bankOrderLineOrigin);
 }

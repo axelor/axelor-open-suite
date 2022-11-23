@@ -26,9 +26,9 @@
     <domain>self.actionSelect != :disabledActionSelect</domain>
     <context name="disabledActionSelect"
       expr="eval: __repo__(SupplychainBatch).ACTION_INVOICE_OUTGOING_STOCK_MOVES"
-      if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+      if="!__config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
     <context name="disabledActionSelect" expr="eval: 0"
-      if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+      if="__config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
   </action-view>
 
   <!-- MRP -->
@@ -53,8 +53,7 @@
     model="com.axelor.apps.supplychain.db.MrpForecast">
     <view type="grid" name="mrp-forecast-grid"/>
     <view type="form" name="mrp-forecast-form"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
 
@@ -80,12 +79,12 @@
     <domain>self.operationSubTypeSelect = 6 and self.statusSelect = 1</domain>
     <context name="_operationTypeSelect" expr="eval:3"/>
     <context name="_operationSubTypeSelect" expr="eval:6"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem title="Declarations of exchanges" name="supplychain-declarations-of-exchanges"
-    parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges"/>
+    parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges"
+    order="8"/>
 
   <action-view name="supplychain.declarations.of.exchanges"
     title="Declarations of exchanges" model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
@@ -130,7 +129,7 @@
   <menuitem name="purchase-root-purchase-orders-without-stock.move"
     title="Purchase order without stock move" parent="sc-root-purchase"
     action="purchase.root.purchase.orders.without.stock.move" order="25"
-    if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').isPurchaseOrderWithoutIncomingStockMove"/>
+    if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.isPurchaseOrderWithoutIncomingStockMove"/>
 
   <action-view name="purchase.root.purchase.orders.without.stock.move"
     title="Purchase order without stock move" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -147,7 +146,7 @@
   <menuitem name="sale-root-sale-orders-without-stock-move"
     title="Sale order without stock move" parent="sc-root-sale"
     action="sale.root.sale.orders.without.stock.move" order="25"
-    if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').isSaleOrderWithoutOutgoingStockMove"/>
+    if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.isSaleOrderWithoutOutgoingStockMove"/>
 
   <action-view name="sale.root.sale.orders.without.stock.move"
     title="Sale order without stock move" model="com.axelor.apps.sale.db.SaleOrder">
@@ -190,7 +189,7 @@
 
   <menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="27"
     title="Availability requests" action="stock.root.availabilityreq"
-    if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations"/>
+    if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
 
   <action-view name="stock.root.availabilityreq" title="Availability requests"
     model="com.axelor.apps.stock.db.StockMove">

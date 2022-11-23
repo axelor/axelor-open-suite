@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -33,7 +34,6 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
@@ -319,15 +319,8 @@ public interface InvoiceService {
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
-  public User getPfpValidatorUser(Invoice invoice);
-
-  public String getPfpValidatorUserDomain(Invoice invoice);
-
   @CallMethod
-  public List<Long> getInvoiceLineIds(Invoice invoice);
-
-  @CallMethod
-  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
+  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice, FinancialDiscount financialDiscount);
 
   boolean checkInvoiceLinesCutOffDates(Invoice invoice);
 
@@ -347,5 +340,7 @@ public interface InvoiceService {
    * @param invoice
    * @return true if there would be at least one invoice term in the invoice payment
    */
-  boolean checkInvoiceTerms(Invoice invoice);
+  boolean checkInvoiceTerms(Invoice invoice) throws AxelorException;
+
+  void updateInvoiceTermsParentFields(Invoice invoice);
 }

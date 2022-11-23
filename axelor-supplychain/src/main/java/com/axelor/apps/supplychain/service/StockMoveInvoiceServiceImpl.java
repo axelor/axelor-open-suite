@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Budget;
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -38,7 +40,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
@@ -53,28 +55,31 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
-  private SaleOrderInvoiceService saleOrderInvoiceService;
-  private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
-  private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
-  private InvoiceRepository invoiceRepository;
-  private SaleOrderRepository saleOrderRepo;
-  private PurchaseOrderRepository purchaseOrderRepo;
-  private StockMoveLineRepository stockMoveLineRepository;
-  private InvoiceLineRepository invoiceLineRepository;
-  private SupplyChainConfigService supplyChainConfigService;
-  private AppSupplychainService appSupplychainService;
+  protected SaleOrderInvoiceService saleOrderInvoiceService;
+  protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+  protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
+  protected InvoiceRepository invoiceRepository;
+  protected SaleOrderRepository saleOrderRepo;
+  protected PurchaseOrderRepository purchaseOrderRepo;
+  protected StockMoveLineRepository stockMoveLineRepository;
+  protected InvoiceLineRepository invoiceLineRepository;
+  protected SupplyChainConfigService supplyChainConfigService;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -155,7 +160,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         && computeNonCanceledInvoiceQty(stockMove).signum() > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR),
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR),
           stockMove.getStockMoveSeq());
     }
 
@@ -229,7 +234,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             > 1) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.BLOCK_SPLIT_OUTGOING_STOCK_MOVE_LINES));
+              I18n.get(SupplychainExceptionMessage.BLOCK_SPLIT_OUTGOING_STOCK_MOVE_LINES));
         }
       }
     }
@@ -247,7 +252,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         && computeNonCanceledInvoiceQty(stockMove).signum() > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR));
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR));
     }
 
     InvoiceGenerator invoiceGenerator =
@@ -410,6 +415,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoiceLineList.add(invoiceLineCreated);
       }
     }
+
+    setComputedBudgetLinesAmount(invoiceLineList);
+
     return invoiceLineList;
   }
 
@@ -441,7 +449,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     if (product == null && !isTitleLine) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1),
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_1),
           stockMoveLine.getStockMove().getStockMoveSeq());
     }
 
@@ -532,7 +540,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
    * @return
    * @throws AxelorException
    */
-  private List<StockMoveLine> getConsolidatedStockMoveLineList(
+  protected List<StockMoveLine> getConsolidatedStockMoveLineList(
       List<StockMoveLine> stockMoveLineList) throws AxelorException {
 
     Map<SaleOrderLine, List<StockMoveLine>> stockMoveLineSaleMap = new LinkedHashMap<>();
@@ -670,5 +678,50 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     boolean isRefundInvoice = InvoiceToolService.isRefund(invoice);
     boolean isReversionStockMove = stockMove.getIsReversion();
     return isRefundInvoice != isReversionStockMove;
+  }
+
+  protected void setComputedBudgetLinesAmount(List<InvoiceLine> invoiceLineList) {
+    invoiceLineList.forEach(invoiceLine -> computeBudgetLineAmount(invoiceLineList, invoiceLine));
+  }
+
+  protected void computeBudgetLineAmount(
+      List<InvoiceLine> invoiceLineList, InvoiceLine invoiceLine) {
+
+    Product product = invoiceLine.getProduct();
+    Optional.ofNullable(invoiceLine.getBudgetDistributionList())
+        .orElse(Collections.emptyList())
+        .forEach(
+            budgetDistribution ->
+                budgetDistribution.setAmount(
+                    divideBudgetDistributionAmount(budgetDistribution, product, invoiceLineList)));
+  }
+
+  protected BigDecimal divideBudgetDistributionAmount(
+      BudgetDistribution budgetDistribution, Product product, List<InvoiceLine> invoiceLineList) {
+    return budgetDistribution
+        .getAmount()
+        .divide(
+            new BigDecimal(
+                countInvoiceLineWithSameProductAndBudget(
+                    product, invoiceLineList, budgetDistribution.getBudget())),
+            RoundingMode.HALF_UP);
+  }
+
+  protected long countInvoiceLineWithSameProductAndBudget(
+      Product product, List<InvoiceLine> invoiceLineList, Budget budget) {
+    return invoiceLineList.stream()
+        .filter(
+            invoiceLine ->
+                product.equals(invoiceLine.getProduct()) && useSameBudget(budget, invoiceLine))
+        .count();
+  }
+
+  protected boolean useSameBudget(Budget budget, InvoiceLine invoiceLine) {
+    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
+    if (budgetDistributionList == null) {
+      return false;
+    }
+    return budgetDistributionList.stream()
+        .anyMatch(budgetDistribution -> budget.equals(budgetDistribution.getBudget()));
   }
 }

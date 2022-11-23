@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -40,10 +41,12 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+@RequestScoped
 public class InvoicePaymentValidateProjectServiceImpl
     extends InvoicePaymentValidateServiceBankPayImpl {
 
@@ -62,6 +65,7 @@ public class InvoicePaymentValidateProjectServiceImpl
       InvoicePaymentToolService invoicePaymentToolService,
       InvoiceTermService invoiceTermService,
       AppAccountService appAccountService,
+      AccountManagementAccountService accountManagementAccountService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
       InvoicingProjectRepository invoicingProjectRepo) {
@@ -77,6 +81,7 @@ public class InvoicePaymentValidateProjectServiceImpl
         invoicePaymentToolService,
         invoiceTermService,
         appAccountService,
+        accountManagementAccountService,
         bankOrderCreateService,
         bankOrderService);
     this.invoicingProjectRepo = invoicingProjectRepo;

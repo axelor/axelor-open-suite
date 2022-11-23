@@ -11,20 +11,29 @@
     <integer name="sequence" title="Sequence"/>
     <date name="dueDate" title="Due date"/>
     <date name="estimatedPaymentDate" title="Estimated payment date"/>
+    <date name="originDate" title="Origin date"/>
     <decimal name="amount" title="Amount"/>
+    <decimal name="companyAmount" title="Amount (company currency)"/>
     <decimal name="amountRemaining" title="Amount remaining"/>
-    <decimal name="pfpRejectedAmount" title="Rejected amount" scale="2" precision="20"
-      help="In the case of partial PFP, this amount represents the initial amount submitted to approval but for which only part of it has been accepted to be paid."/>
-    <decimal name="pfpGrantedAmount" title="Granted amount" scale="2" precision="20"
-      help="Field to be used only in the case of partial pass for payment, else the invoiceTerm amount will be used"/>
+    <decimal name="companyAmountRemaining" title="Amount remaining (company currency)"/>
+    <decimal name="remainingPfpAmount" title="Remaining amount" scale="2" precision="20"
+      help="This amount corresponds, in the event of a partial pass for payment, to the remaining amount which didn't get the consent to be paid. This amount corresponds to the amount of the invoice term which has been newly generated during the partial pass for payment process and which is linked to this term."/>
+    <decimal name="initialPfpAmount" title="Initial amount" scale="2" precision="20"
+      help="This amount corresponds, in the event of a partial pass for payment, to the initial amount of the term."/>
     <boolean name="isPaid" title="Paid" default="false"/>
     <boolean name="isHoldBack" title="Holdback" default="false"/>
+    <string name="origin" title="Origin"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment mode"/>
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
     <many-to-one name="pfpPartialReason"
       ref="com.axelor.apps.account.db.PfpPartialReason" title="PFP Partial Reason"/>
+    <many-to-one name="originInvoiceTerm" title="Origin invoice term"
+      ref="com.axelor.apps.account.db.InvoiceTerm"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="currency" title="Currency" ref="com.axelor.apps.base.db.Currency"/>
     <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
     <decimal name="remainingAmountAfterFinDiscount"
       title="Remaining total amount after Fin. discount"/>
@@ -46,7 +55,7 @@
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
     <integer name="pfpValidateStatusSelect" title="PFP Status"
-      selection="invoiceterm.pfp.validate.status.select" readonly="true" default="1"/>
+      selection="invoiceterm.pfp.validate.status.select" readonly="true" default="0"/>
     <many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay"
       ref="com.axelor.apps.base.db.CancelReason"/>
     <string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
@@ -83,9 +92,20 @@
 	    ]]>
     </string>
 
+    <integer name="paymentDelay" title="Payment delay (days)" formula="true">
+      <![CDATA[
+	      SELECT CASE WHEN
+	      ((DATE(NOW())::DATE - inv_term.due_date::DATE) > 0 AND inv_term.amount_remaining != 0) THEN
+	      (DATE(NOW())::DATE - inv_term.due_date::DATE) ELSE 0 END from account_invoice_term inv_term WHERE inv_term.id =
+	      id]]>
+    </integer>
+
+    <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
+
     <extra-code><![CDATA[
 
 	    // PFP VALIDATE STATUS SELECT
+	    public static final int PFP_STATUS_NO_PFP = 0;
 	    public static final int PFP_STATUS_AWAITING = 1;
 	    public static final int PFP_STATUS_VALIDATED = 2;
 	    public static final int PFP_STATUS_LITIGATION = 3;
@@ -110,6 +130,7 @@
       <field name="decisionPfpTakenDate"/>
       <field name="paymentSession"/>
       <field name="pfpValidateStatusSelect"/>
+      <field name="pfpValidatorUser"/>
     </track>
 
   </entity>

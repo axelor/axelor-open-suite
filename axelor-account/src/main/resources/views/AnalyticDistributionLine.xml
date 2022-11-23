@@ -25,7 +25,7 @@
       hidden="true"/>
     <field name="percentage"/>
     <field name="analyticJournal" grid-view="analytic-journal-grid"
-      form-view="analytic-journal-form"/>
+      form-view="analytic-journal-form" onSelect="action-attrs-domain-journal-distribution-line"/>
   </grid>
 
   <grid name="analytic-distribution-line-personalized-grid" title="Analytic distribution lines"
@@ -37,7 +37,7 @@
       onChange="action-analytic-distribution-account-on-change"/>
     <field name="percentage"/>
     <field name="analyticJournal" grid-view="analytic-journal-grid"
-      form-view="analytic-journal-form"/>
+      form-view="analytic-journal-form" onSelect="action-attrs-domain-journal-distribution-line"/>
   </grid>
 
   <form name="analytic-distribution-line-form" title="Analytic distribution line"
@@ -52,7 +52,8 @@
         onChange="action-axis-change-remove-account" required="true"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
-        form-view="analytic-journal-form" required="true"/>
+        form-view="analytic-journal-form" required="true"
+        onSelect="action-attrs-domain-journal-distribution-line"/>
     </panel>
   </form>
 
@@ -65,6 +66,7 @@
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
         required="true" onSelect="action-attrs-domain-account-distribution-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onSelect="action-attrs-domain-axis-distribution-line"
         onChange="action-axis-change-remove-account" required="true" readonly="true"/>
       <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
@@ -89,8 +91,8 @@
 
   <action-attrs name="action-attrs-domain-axis-distribution-line">
     <attribute name="domain" for="analyticAxis"
-      expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id} &quot;"
-      if="__parent__ &amp;&amp; __parent__.company"/>
+      expr="eval: &quot; self.id in (${__repo__(AccountConfig).findByCompany(__parent__.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
+      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList"/>
     <attribute name="domain" for="analyticAxis" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
   </action-attrs>
@@ -100,7 +102,8 @@
       expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id}) AND self.analyticAxis.id = ${__this__?.analyticAxis.id}&quot;"
       if="__parent__ &amp;&amp; __parent__.company &amp;&amp; analyticAxis"/>
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id}&quot;"
+      expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id})
+      	AND self.analyticAxis.id in (${__repo__(AccountConfig).findByCompany(__parent__.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
       if="__parent__ &amp;&amp; __parent__.company &amp;&amp; !analyticAxis"/>
     <attribute name="domain" for="analyticAccount" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
@@ -108,7 +111,8 @@
       expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id}) AND self.analyticAxis.id = ${__this__?.analyticAxis.id}&quot;"
       if="__parent__ &amp;&amp; __parent__.company &amp;&amp; analyticAxis"/>
     <attribute name="domain" for="analyticAccountSet"
-      expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id}&quot;"
+      expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id})
+      	AND self.analyticAxis.id in (${__repo__(AccountConfig).findByCompany(__parent__.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
       if="__parent__ &amp;&amp; __parent__.company &amp;&amp; !analyticAxis"/>
     <attribute name="domain" for="analyticAccountSet" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>

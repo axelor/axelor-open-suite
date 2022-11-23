@@ -6,11 +6,10 @@
   <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false"
     canNew="false">
-
-    <hilite if="debit > 0" color="red"/>
-    <hilite if="credit > 0" color="green"/>
-    <hilite if="isSelectedBankReconciliation" background="grey"/>
-    <hilite if="!isSelectedBankReconciliation" background="white"/>
+    <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
+      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
+    <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
+      title="Select / Unselect" icon="fa-minus-circle" showIf="isSelectedBankReconciliation"/>
     <field name="postedNbr"/>
     <field name="confidenceIndex" readonly="true">
       <hilite if="confidenceIndex == 1" color="green"/>
@@ -21,8 +20,12 @@
     <field name="effectDate"/>
     <field name="name"/>
     <field name="reference"/>
-    <field name="debit" aggregate="sum"/>
-    <field name="credit" aggregate="sum"/>
+    <field name="debit" aggregate="sum">
+      <hilite if="debit > 0" color="green"/>
+    </field>
+    <field name="credit" aggregate="sum">
+      <hilite if="credit > 0" color="red"/>
+    </field>
     <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"/>
     <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
     <field name="account" canEdit="false"
@@ -38,8 +41,6 @@
       grid-view="move-line-grid"/>
     <field name="isPosted" readonly="true"/>
     <field name="isSelectedBankReconciliation" hidden="true"/>
-    <button onClick="action-bank-reconciliation-line-method-set-selected" name="select"
-      title="Select / Unselect" icon="fa-check-circle"/>
   </grid>
 
   <form name="bank-reconciliation-line-form" title="Bank reconciliation Line"

@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService {
 
   protected CurrencyService currencyService;
@@ -124,12 +126,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       invoiceTermToPay =
           this.getInvoiceTermToPay(
               invoicePayment, invoiceTermsToPay, availableAmount, i++, invoiceTermCount);
-      BigDecimal invoiceTermAmount =
-          invoiceTermService.getAmountRemaining(
-              invoiceTermToPay,
-              invoicePayment != null
-                  ? invoicePayment.getPaymentDate()
-                  : appAccountService.getTodayDate(null));
+      BigDecimal invoiceTermAmount = invoiceTermToPay.getAmountRemaining();
 
       if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
         invoiceTermPayment =
@@ -146,13 +143,12 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       if (invoicePayment != null) {
         invoicePayment.addInvoiceTermPaymentListItem(invoiceTermPayment);
 
-        if (invoicePayment.getApplyFinancialDiscount()
-            && !invoicePayment.getManualChange()
-            && availableAmount.signum() > 0) {
+        if (invoicePayment.getApplyFinancialDiscount() && !invoicePayment.getManualChange()) {
           BigDecimal previousAmount =
               invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount());
           invoicePaymentToolService.computeFinancialDiscount(invoicePayment);
-          availableAmount = baseAvailableAmount.subtract(invoicePayment.getAmount());
+          availableAmount =
+              baseAvailableAmount.subtract(this.getCurrentInvoicePaymentAmount(invoicePayment));
           invoicePayment.setAmount(
               previousAmount.subtract(invoicePayment.getFinancialDiscountTotalAmount()));
           invoicePayment.setTotalAmountWithFinancialDiscount(
@@ -162,6 +158,13 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     }
 
     return invoiceTermPaymentList;
+  }
+
+  protected BigDecimal getCurrentInvoicePaymentAmount(InvoicePayment invoicePayment) {
+    return invoicePayment.getInvoiceTermPaymentList().stream()
+        .map(it -> it.getPaidAmount().add(it.getFinancialDiscountAmount()))
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
   }
 
   protected InvoiceTerm getInvoiceTermToPay(
@@ -221,6 +224,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     invoiceTermPayment.setInvoicePayment(invoicePayment);
     invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
     invoiceTermPayment.setPaidAmount(paidAmount);
+    invoiceTermPayment.setCompanyPaidAmount(
+        this.computeCompanyPaidAmount(invoiceTermToPay, paidAmount));
 
     manageInvoiceTermFinancialDiscount(
         invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
@@ -228,25 +233,39 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     return invoiceTermPayment;
   }
 
+  protected BigDecimal computeCompanyPaidAmount(InvoiceTerm invoiceTerm, BigDecimal paidAmount) {
+    BigDecimal ratio = paidAmount.divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+
+    return invoiceTerm
+        .getCompanyAmount()
+        .multiply(ratio)
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+  }
+
   @Override
   public void manageInvoiceTermFinancialDiscount(
       InvoiceTermPayment invoiceTermPayment,
       InvoiceTerm invoiceTerm,
       boolean applyFinancialDiscount) {
-    if (applyFinancialDiscount) {
-      BigDecimal remainingTotalFinancialDiscountAmount =
-          invoiceTerm
-              .getAmountRemaining()
-              .subtract(invoiceTerm.getAmountRemainingAfterFinDiscount());
+    if (applyFinancialDiscount && invoiceTerm.getAmountRemainingAfterFinDiscount().signum() > 0) {
+      invoiceTermPayment.setPaidAmount(
+          invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount()));
+
       BigDecimal ratioPaid =
           invoiceTermPayment
               .getPaidAmount()
-              .divide(invoiceTerm.getAmountRemainingAfterFinDiscount(), 10, RoundingMode.HALF_UP);
+              .divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
 
       invoiceTermPayment.setFinancialDiscountAmount(
-          remainingTotalFinancialDiscountAmount
+          invoiceTerm
+              .getFinancialDiscountAmount()
               .multiply(ratioPaid)
               .setScale(2, RoundingMode.HALF_UP));
+
+      invoiceTermPayment.setPaidAmount(
+          invoiceTermPayment
+              .getPaidAmount()
+              .subtract(invoiceTermPayment.getFinancialDiscountAmount()));
     }
   }
 

@@ -16,7 +16,7 @@
     <field name="reconcileOk"/>
     <field name="parentAccount" form-view="account-form" grid-view="account-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="defaultTax" hidden="true"/>
     <field name="statusSelect"/>
   </grid>
@@ -61,11 +61,12 @@
     </panel>
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8"
-        readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount">
+        readonlyIf="$isReadOnly || (accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount)">
         <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"
-          onChange="action-method-account-fill-account-code"/>
+          onChange="action-group-code-on-change"/>
         <field name="name" colSpan="9" css="bold"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
+        <field name="$isReadOnly" hidden="true" readonly="true"/>
       </panel>
       <panel name="balancePanel" colSpan="4" showIf="id">
         <button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
@@ -86,12 +87,12 @@
         <field name="accountType" required="true" form-view="account-type-form"
           grid-view="account-type-grid" colSpan="3"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
-          onChange="action-method-account-fill-account-code"/>
+          onChange="action-group-account-type-on-change"/>
         <field name="isRegulatoryAccount" colSpan="3"/>
         <field name="commonPosition"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
         <field name="company" required="true" canEdit="false" widget="SuggestBox"
-          onChange="action-account-validate"
+          onChange="action-account-group-company-onChange"
           readonlyIf="parentAccount != null &amp;&amp; accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
           form-view="company-form" grid-view="company-grid"/>
         <field name="parentAccount" onChange="action-account-validate"
@@ -100,14 +101,15 @@
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"
-          hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
+          hideIf="accountType.technicalTypeSelect == 'view'"
+          readonlyIf="$isReadOnly || isRegulatoryAccount"/>
         <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
           showIf="useForPartnerBalance &amp;&amp; ['payable', 'receivable'].indexOf(accountType.technicalTypeSelect) != -1"
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
-        <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
         <field name="compatibleAccountSet" widget="TagSelect"
-          showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"/>
+          showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"
+          domain="self.company = :company"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
           hideIf="accountType.technicalTypeSelect == 'view'">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
@@ -119,9 +121,10 @@
             showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
-          hideIf="accountType.technicalTypeSelect == 'view'">
+          hideIf="!accountType || accountType.technicalTypeSelect == 'view'">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
-            onChange="action-account-group-on-change-analytic-distribution-authorized"/>
+            onChange="action-account-group-on-change-analytic-distribution-authorized"
+            readonlyIf="$isReadOnly"/>
           <field name="analyticDistributionRequiredOnInvoiceLines"
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines"
@@ -247,6 +250,16 @@
       if="__this__.analyticDistributionTemplate != null"/>
   </action-group>
 
+  <action-group name="action-group-code-on-change">
+    <action name="action-method-account-fill-account-code"
+      if="company?.accountConfig?.hasAccountCodeFixedNbrChar"/>
+  </action-group>
+
+  <action-group name="action-group-account-type-on-change">
+    <action name="action-method-account-fill-account-code"
+      if="company?.accountConfig?.hasAccountCodeFixedNbrChar"/>
+  </action-group>
+
   <action-view name="action-mass-update-status-wizard" title="Mass update status"
     model="com.axelor.apps.base.db.Wizard">
     <view type="form" name="mass-update-status-wizard-form"/>
@@ -290,6 +303,11 @@
     <action name="action-record-account-tax-system-value"/>
   </action-group>
 
+  <action-group name="action-account-group-company-onChange">
+    <action name="action-account-record-clean-analytic"/>
+    <action name="action-account-validate"/>
+  </action-group>
+
   <action-record name="action-account-record-new"
     model="com.axelor.apps.account.db.Account">
     <field name="company" expr="eval:__user__.activeCompany"
@@ -297,7 +315,7 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="serviceType"
-      expr="eval:__config__.app.getApp('account').defaultServiceTypeTypology"/>
+      expr="eval:__config__.app.getApp('account')?.defaultServiceTypeTypology"/>
   </action-record>
 
   <action-validate name="action-account-validate">
@@ -355,6 +373,11 @@
     <field name="isTaxRequiredOnMoveLine" expr="eval: false" if="!isTaxAuthorizedOnMoveLine"/>
   </action-record>
 
+  <action-record name="action-account-record-clean-analytic"
+    model="com.axelor.apps.account.db.Account">
+    <field name="analyticDistributionTemplate" expr="eval:null"/>
+  </action-record>
+
   <action-record name="action-record-account-tax-system-value"
     model="com.axelor.apps.account.db.Account">
     <field name="vatSystemSelect" expr="eval: 0" if="!isTaxAuthorizedOnMoveLine"/>
@@ -384,7 +407,7 @@
   <search-filters name="account-filters" model="com.axelor.apps.account.db.Account"
     title="Account filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
   <action-method name="action-on-change-distribution-template-account">
@@ -423,7 +446,7 @@
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
-    <attribute name="readonly" for="name,code,reconcileOk,analyticDistributionAuthorized"
+    <attribute name="value" for="$isReadOnly"
       expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
   </action-attrs>
 

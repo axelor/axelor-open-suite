@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -45,8 +46,8 @@ import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOff;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -193,7 +194,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         TraceBackService.trace(
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
-                IExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
+                SupplychainExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
       } else {
@@ -208,7 +209,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         TraceBackService.trace(
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
-                IExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
+                SupplychainExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
       } else {
@@ -556,10 +557,11 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   @Override
   public Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) {
-    BatchAccountingCutOff batchAccountingCutOff = Beans.get(BatchAccountingCutOff.class);
+    BatchAccountingCutOffSupplyChain batchAccountingCutOff =
+        Beans.get(BatchAccountingCutOffSupplyChain.class);
 
     batchAccountingCutOff.recordIdList = recordIdList;
-    batchAccountingCutOff.run(supplychainBatchRepo.find(batchId));
+    batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
 
     return batchAccountingCutOff.getBatch();
   }

@@ -17,12 +17,15 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.exception.AxelorException;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
@@ -40,4 +43,46 @@ public interface SupplierCatalogService {
 
   public SupplierCatalog getSupplierCatalog(
       Product product, Partner supplierPartner, Company company) throws AxelorException;
+
+  Map<String, String> getProductSupplierInfos(Partner partner, Company company, Product product)
+      throws AxelorException;
+
+  BigDecimal getQty(Product product, Partner supplierPartner, Company company)
+      throws AxelorException;
+
+  /**
+   * A function used to get the unit price of a purchase order line or invoice line either in ati or
+   * wt
+   *
+   * @param product
+   * @param supplierPartner
+   * @param company
+   * @param currency
+   * @param localDate
+   * @param taxLine
+   * @param resultInAti
+   * @return
+   * @throws AxelorException
+   */
+  BigDecimal getUnitPrice(
+      Product product,
+      Partner supplierPartner,
+      Company company,
+      Currency currency,
+      LocalDate localDate,
+      TaxLine taxLine,
+      boolean resultInAti)
+      throws AxelorException;
+
+  BigDecimal getMinQty(Product product, Partner supplierPartner, Company company)
+      throws AxelorException;
+
+  void checkMinQty(
+      Product product,
+      Partner supplierPartner,
+      Company company,
+      BigDecimal qty,
+      ActionRequest request,
+      ActionResponse response)
+      throws AxelorException;
 }

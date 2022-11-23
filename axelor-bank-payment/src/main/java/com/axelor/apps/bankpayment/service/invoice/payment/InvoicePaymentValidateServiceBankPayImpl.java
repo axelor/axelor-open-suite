@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -35,7 +36,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Company;
@@ -45,14 +46,17 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+@RequestScoped
 public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentValidateServiceImpl {
 
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderService bankOrderService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
@@ -67,6 +71,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       InvoicePaymentToolService invoicePaymentToolService,
       InvoiceTermService invoiceTermService,
       AppAccountService appAccountService,
+      AccountManagementAccountService accountManagementAccountService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService) {
     super(
@@ -78,11 +83,12 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         accountConfigService,
         invoicePaymentRepository,
         reconcileService,
-        invoicePaymentToolService,
-        invoiceTermService,
-        appAccountService);
+        appAccountService,
+        accountManagementAccountService,
+        invoicePaymentToolService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -92,7 +98,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     if (paymentMode == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_PAYMENT_MODE_MISSING),
+          I18n.get(BankPaymentExceptionMessage.INVOICE_PAYMENT_MODE_MISSING),
           invoice.getInvoiceId());
     }
 
@@ -141,6 +147,11 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
       invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
+      if (invoicePayment == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BankPaymentExceptionMessage.VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL));
+      }
     } else {
       Beans.get(AccountingSituationService.class)
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());

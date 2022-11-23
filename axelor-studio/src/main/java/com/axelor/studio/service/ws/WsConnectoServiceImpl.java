@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.ws;
 
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -52,6 +53,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,7 +209,9 @@ public class WsConnectoServiceImpl implements WsConnectorService {
         String value = wsKeyValue.getWsValue();
         if (!Strings.isNullOrEmpty(value)) {
           value = templates.fromText(wsKeyValue.getWsValue()).make(ctx).render();
-          if (wsKeyValue.getWsKey().equals("Authorization")) {
+          if (!StringUtils.isBlank(value)
+              && value.startsWith("Basic")
+              && wsKeyValue.getWsKey().equals("Authorization")) {
             headers.add(
                 wsKeyValue.getWsKey(),
                 "Basic " + new String(Base64.encodeBase64(value.getBytes())));
@@ -402,6 +406,8 @@ public class WsConnectoServiceImpl implements WsConnectorService {
         if (val.startsWith("[") && val.endsWith("]")) {
           String[] strArray = val.substring(1, val.length() - 1).trim().split("\\s*,\\s*");
           jsonVal = strArray;
+        } else if (NumberUtils.isCreatable(val)) {
+          jsonVal = NumberUtils.createNumber(val);
         }
       }
     }
