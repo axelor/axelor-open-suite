@@ -41,8 +41,7 @@
       title="Use signature for sales quotations"/>
     <boolean name="useSignatureForPurchaseQuotations"
       title="Use signature for purchase quotations"/>
-    <many-to-one name="group" ref="com.axelor.auth.db.Group" column="group_id"
-      massUpdate="true"/>
+    <many-to-one name="group" ref="Group" column="group_id" massUpdate="true"/>
     <string name="language" selection="select.language" massUpdate="true"/>
     <boolean name="singleTab" help="Whether to use tabbed ui." massUpdate="true"/>
     <boolean name="noHelp" help="Whether to show help messages." massUpdate="true"/>
