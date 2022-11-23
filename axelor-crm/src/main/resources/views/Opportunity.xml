@@ -168,7 +168,7 @@
       </panel>
       <panel name="recurrentPanel" title="Recurrent"
         if="__config__.app.getApp('crm')?.isManageRecurrent" colSpan="12"
-        readonlyIf="$get('opportunityStatus.typeSelect') != 0">
+        readonlyIf="opportunityStatus.typeSelect != null &amp;&amp; opportunityStatus.typeSelect != 0">
         <field name="recurrentAmount"/>
         <field name="expectedDurationOfRecurringRevenue"/>
         <field name="startDate" onChange="action-method-opportunity-fill-end-date"/>
@@ -210,12 +210,12 @@
       </panel>
       <panel name="referencePanel" title="Reference" canCollapse="true">
         <field name="partner" canEdit="false" requiredIf="contact == null"
-          readonlyIf="$get('opportunityStatus.typeSelect') != 0"
+          readonlyIf="opportunityStatus.typeSelect != null &amp;&amp; opportunityStatus.typeSelect != 0"
           domain="self.isContact = false AND :company member of self.companySet"
           form-view="partner-form" grid-view="partner-grid"
           onChange="action-opportunity-record-set-name"/>
         <field name="contact" canEdit="false" requiredIf="partner == null"
-          readonlyIf="$get('opportunityStatus.typeSelect') != 0"
+          readonlyIf="opportunityStatus.typeSelect != null &amp;&amp; opportunityStatus.typeSelect != 0"
           domain="self.isContact = true AND :company member of self.companySet"
           form-view="partner-contact-form" grid-view="partner-contact-grid"
           onChange="action-opportunity-record-set-name"/>
@@ -503,11 +503,8 @@
 
   <action-group name="action-opportunity-group-status-onchange">
     <action name="save"/>
-    <action name="action-method-opportunity-set-stage-closed-won"
-      if="opportunityStatus.typeSelect == __repo__(OpportunityStatus).STATUS_TYPE_CLOSED_WON"/>
     <action name="action-opportunity-view-opportunity-lost-popup-view"
       if="opportunityStatus.typeSelect == __repo__(OpportunityStatus).STATUS_TYPE_CLOSED_LOST"/>
-    <action name="save"/>
   </action-group>
 
 </object-views>
