@@ -654,7 +654,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                           .getCompany()
                           .getName()
                           .equals(fixedAsset.getCompany().getName()))
-              .map(accountManagement -> accountManagement.getPurchFixedAssetsAccount())
+              .map(accountManagement -> accountManagement.getSaleAccount())
               .collect(Collectors.toList());
       Account creditAccountTwo =
           !CollectionUtils.isEmpty(creditAccountTwoList) ? creditAccountTwoList.get(0) : null;
