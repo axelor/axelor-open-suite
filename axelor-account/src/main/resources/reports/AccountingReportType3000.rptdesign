@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.11.0.v202007221505</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">ReportValues.ValuesDS.x</property>
@@ -2163,23 +2163,14 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
             <row id="5426">
                 <property name="height">1cm</property>
                 <cell id="5453">
+                    <property name="colSpan">6</property>
+                    <property name="rowSpan">1</property>
                     <property name="fontSize">18pt</property>
                     <property name="textAlign">left</property>
+                    <label id="5993">
+                        <text-property name="text">  </text-property>
+                    </label>
                 </cell>
-                <cell id="5459">
-                    <property name="fontSize">18pt</property>
-                    <property name="textAlign">left</property>
-                </cell>
-                <cell id="5427">
-                    <property name="fontSize">18pt</property>
-                    <property name="textAlign">left</property>
-                </cell>
-                <cell id="5496">
-                    <property name="fontSize">18pt</property>
-                    <property name="textAlign">left</property>
-                </cell>
-                <cell id="5428"/>
-                <cell id="5429"/>
             </row>
             <row id="5402">
                 <cell id="5454">
