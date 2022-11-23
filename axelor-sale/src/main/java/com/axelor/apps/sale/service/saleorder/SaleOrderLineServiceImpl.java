@@ -208,7 +208,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       inTaxPrice = fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(
-            taxService.convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
+            taxService.convertUnitPrice(
+                true,
+                saleOrderLine.getTaxLine(),
+                inTaxPrice,
+                appBaseService.getNbDecimalDigitForUnitPrice()));
         saleOrderLine.setInTaxPrice(inTaxPrice);
       }
     } else {
@@ -217,7 +221,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
-            taxService.convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
+            taxService.convertUnitPrice(
+                false,
+                saleOrderLine.getTaxLine(),
+                exTaxPrice,
+                appBaseService.getNbDecimalDigitForUnitPrice()));
       }
     }
   }
@@ -262,7 +270,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             taxService.convertUnitPrice(
                 saleOrderLine.getProduct().getInAti(),
                 saleOrderLine.getTaxLine(),
-                (BigDecimal) discounts.get("discountAmount")));
+                (BigDecimal) discounts.get("discountAmount"),
+                appBaseService.getNbDecimalDigitForUnitPrice()));
       } else {
         saleOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
       }
@@ -464,7 +473,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal price =
         (productInAti == resultInAti)
             ? productSalePrice
-            : taxService.convertUnitPrice(productInAti, taxLine, productSalePrice);
+            : taxService.convertUnitPrice(
+                productInAti, taxLine, productSalePrice, AppBaseService.COMPUTATION_SCALING);
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
@@ -907,7 +917,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       inTaxPrice = fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(
-            taxService.convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
+            taxService.convertUnitPrice(
+                true,
+                saleOrderLine.getTaxLine(),
+                inTaxPrice,
+                appBaseService.getNbDecimalDigitForUnitPrice()));
         saleOrderLine.setInTaxPrice(inTaxPrice);
       }
     } else {
@@ -917,7 +931,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
-            taxService.convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
+            taxService.convertUnitPrice(
+                false,
+                saleOrderLine.getTaxLine(),
+                exTaxPrice,
+                appBaseService.getNbDecimalDigitForUnitPrice()));
       }
     }
   }
@@ -957,7 +975,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal price =
         (productInAti == resultInAti)
             ? productSalePrice
-            : taxService.convertUnitPrice(productInAti, taxLine, productSalePrice);
+            : taxService.convertUnitPrice(
+                productInAti, taxLine, productSalePrice, AppBaseService.COMPUTATION_SCALING);
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(

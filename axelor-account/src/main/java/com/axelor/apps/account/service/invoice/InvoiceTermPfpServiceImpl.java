@@ -175,14 +175,15 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     BigDecimal amount = invoiceAmount.subtract(grantedAmount);
     Invoice invoice = originalInvoiceTerm.getInvoice();
     originalInvoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
-    this.createPfpInvoiceTerm(originalInvoiceTerm, invoice, amount);
-    this.updateOriginalTerm(originalInvoiceTerm, grantedAmount, partialReason, amount, invoice);
+    InvoiceTerm newInvoiceTerm = this.createPfpInvoiceTerm(originalInvoiceTerm, invoice, amount);
+    this.updateOriginalTerm(
+        originalInvoiceTerm, newInvoiceTerm, grantedAmount, partialReason, amount, invoice);
 
     invoiceTermService.initInvoiceTermsSequence(invoice);
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void createPfpInvoiceTerm(
+  protected InvoiceTerm createPfpInvoiceTerm(
       InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) throws AxelorException {
     BigDecimal total;
     int sequence;
@@ -218,11 +219,13 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
     invoiceTerm.setIsCustomized(true);
     invoiceTermRepo.save(invoiceTerm);
+    return invoiceTerm;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void updateOriginalTerm(
       InvoiceTerm originalInvoiceTerm,
+      InvoiceTerm newInvoiceTerm,
       BigDecimal grantedAmount,
       PfpPartialReason partialReason,
       BigDecimal amount,
@@ -246,6 +249,12 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setRemainingPfpAmount(amount);
     originalInvoiceTerm.setDecisionPfpTakenDate(LocalDate.now());
     originalInvoiceTerm.setPfpPartialReason(partialReason);
+    originalInvoiceTerm.setCompanyAmount(
+        originalInvoiceTerm.getCompanyAmount().subtract(newInvoiceTerm.getCompanyAmount()));
+    originalInvoiceTerm.setCompanyAmount(
+        originalInvoiceTerm
+            .getCompanyAmountRemaining()
+            .subtract(newInvoiceTerm.getCompanyAmountRemaining()));
   }
 
   @Transactional(rollbackOn = {Exception.class})

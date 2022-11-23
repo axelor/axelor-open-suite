@@ -104,5 +104,11 @@ public interface ReconcileService {
 
   void checkReconcile(Reconcile reconcile) throws AxelorException;
 
-  List<Long> getAllowedMoveLines(Reconcile reconcile, boolean isDebit);
+  String getStringAllowedCreditMoveLines(Reconcile reconcile);
+
+  String getStringAllowedDebitMoveLines(Reconcile reconcile);
+
+  List<Long> getAllowedCreditMoveLines(Reconcile reconcile);
+
+  List<Long> getAllowedDebitMoveLines(Reconcile reconcile);
 }

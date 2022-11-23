@@ -5,7 +5,8 @@
 
   <grid name="chart-builder-grid" title="Chart builder"
     model="com.axelor.studio.db.ChartBuilder">
-    <field name="name"/>
+    <field name="name"
+      onChange="action-studio-meta-json-model-name-onchange-record,action-studio-menu-builder-attrs-check-generate-name"/>
     <field name="title"/>
     <field name="model"/>
     <field name="chartType"/>
@@ -20,7 +21,8 @@
         if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
       <spacer name="appBuilderSpacer"
         if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
-      <field name="name"/>
+      <field name="name"
+        onChange="action-studio-meta-json-model-name-onchange-record,action-studio-menu-builder-attrs-check-generate-name"/>
       <field name="title"/>
       <field name="chartType" required="true"/>
       <field name="isJson"

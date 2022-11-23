@@ -4,10 +4,11 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
               http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
-  <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
+  <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract"
+    orderBy="-contractId">
+    <hilite if="statusSelect == 1" color="info"/>
     <field name="contractId" width="120"/>
     <field name="name"/>
-    <field name="targetTypeSelect"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="partner"/>
     <field name="startDate"/>

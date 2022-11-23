@@ -77,7 +77,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -340,7 +339,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(BankOrder bankOrder)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
-    checkMultiDate(bankOrder);
     checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
 
     if (bankOrder.getGeneratedMetaFile() == null) {
@@ -585,26 +583,6 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
 
     return candidateBankDetails;
-  }
-
-  @Override
-  public void checkMultiDate(BankOrder bankOrder) throws AxelorException {
-    if (!bankOrder.getIsMultiDate() && Objects.isNull(bankOrder.getBankOrderDate())) {
-      throw new AxelorException(
-          bankOrder,
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_NO_BANK_ORDER_DATE_NO_MULTI_DATE),
-          bankOrder.getBankOrderSeq());
-
-    } else if (bankOrder.getIsMultiDate()
-        && bankOrder.getBankOrderLineList().stream()
-            .anyMatch(bankOrderLine -> Objects.isNull(bankOrderLine.getBankOrderDate()))) {
-      throw new AxelorException(
-          bankOrder,
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_NO_BANK_ORDER_DATE_MULTI_DATE),
-          bankOrder.getBankOrderSeq());
-    }
   }
 
   @Override

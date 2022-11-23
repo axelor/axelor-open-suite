@@ -53,6 +53,32 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="BankReconciliationFromDate" id="11">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="BankReconciliationToDate" id="12">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
         <scalar-parameter name="Locale" id="5">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -229,8 +255,8 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
-from meta_translation as LangTranslate 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation"
+from meta_translation as LangTranslate
 where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -495,14 +521,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
+            <xml-property name="queryText"><![CDATA[SELECT
 company.name AS company,
 company.height as logo_height,
 company.width as logo_width,
 bankReconciliation.created_on AS report_date ,
-currency.code AS currency ,  
-journal.name AS journal , 
-concat( account.code  ,' - ' , account.name) AS cash_account , 
+currency.code AS currency ,
+journal.name AS journal ,
+concat( account.code  ,' - ' , account.name) AS cash_account ,
 metaFile.file_path AS logo_path ,
 bankDetails.full_name AS account,
 bankReconciliation.corrected_date_time as corrected_date_time,
@@ -848,27 +874,27 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
-bankStatement.name AS code , 
-bankReconciliation.to_date AS to_date , 
-bankReconciliationLine.reference AS reference , 
-bankReconciliationLine.name AS name , 
-bankReconciliationLine.type_select  AS type , 
-bankReconciliationLine.debit AS debit , 
-bankReconciliationLine.credit AS credit , 
-(bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount , 
+            <xml-property name="queryText"><![CDATA[SELECT
+bankStatement.name AS code ,
+bankReconciliation.to_date AS to_date ,
+bankReconciliationLine.reference AS reference ,
+bankReconciliationLine.name AS name ,
+bankReconciliationLine.type_select  AS type ,
+bankReconciliationLine.debit AS debit ,
+bankReconciliationLine.credit AS credit ,
+(bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount ,
 (SUM(bankStatementLine.credit) - SUM(bankStatementLine.debit)) AS account_balance
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
 LEFT JOIN public.bankpayment_bank_statement_line AS bankStatementLine ON bankStatementLine.bank_statement = bankReconciliation.bank_statement
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation
 LEFT JOIN public.bankpayment_bank_statement AS bankStatement ON bankReconciliation.bank_statement = bankStatement.id
 WHERE bankReconciliation.id = ?
-GROUP BY bankStatement.name , 
-bankReconciliation.to_date , 
-bankReconciliationLine.reference , 
-bankReconciliationLine.name , 
-bankReconciliationLine.type_select , 
-bankReconciliationLine.debit , 
+GROUP BY bankStatement.name ,
+bankReconciliation.to_date ,
+bankReconciliationLine.reference ,
+bankReconciliationLine.name ,
+bankReconciliationLine.type_select ,
+bankReconciliationLine.debit ,
 bankReconciliationLine.credit ;]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineDS" id="5284">
@@ -936,6 +962,46 @@ bankReconciliationLine.credit ;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">BankReconciliationFromDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">BankReconciliationFromDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">3</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_4</property>
+                    <property name="paramName">BankReconciliationToDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">4</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                 <structure>
+                    <property name="name">param_5</property>
+                    <property name="paramName">BankReconciliationToDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">5</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1055,21 +1121,30 @@ bankReconciliationLine.credit ;]]></xml-property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
-bankReconciliation.account_balance AS account_balance , 
-moveLine.name AS code , 
-bankReconciliation.to_date AS to_date , 
-bankReconciliationLine.reference AS reference , 
-bankReconciliationLine.name AS name , 
-bankReconciliationLine.type_select  AS type , 
-moveLine.debit AS debit , 
+            <xml-property name="queryText"><![CDATA[SELECT
+bankReconciliation.account_balance AS account_balance ,
+moveLine.name AS code ,
+bankReconciliation.to_date AS to_date ,
+bankReconciliationLine.reference AS reference ,
+moveLine.description AS name ,
+bankReconciliationLine.type_select  AS type ,
+moveLine.debit AS debit ,
 moveLine.credit AS credit ,
 (moveLine.credit - moveLine.debit) AS amount
 FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
-LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON move.journal=bankReconciliation.journal AND moveLine.account=bankReconciliation.cash_account
+LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON (bankReconciliation.journal IS null OR move.journal=bankReconciliation.journal) AND (bankReconciliation.cash_account IS null OR moveLine.account=bankReconciliation.cash_account) AND move.company=bankReconciliation.company
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation AND bankReconciliationLine.move_line=moveLine.id
-WHERE bankReconciliation.id = ? AND move.status_select != 4 AND ((moveLine.debit > 0 AND moveLine.bank_reconciled_amount < moveLine.debit) OR (moveLine.credit > 0 AND moveLine.bank_reconciled_amount < moveLine.credit))
+LEFT JOIN public.base_company AS company ON bankReconciliation.company = company.id
+LEFT JOIN public.account_account AS account ON moveLine.account = account.id
+LEFT JOIN public.account_account_type AS accountType ON account.account_type = accountType.id
+WHERE bankReconciliation.id = ?
+AND accountType.technical_type_select = 'cash'
+AND (move.status_select = 2 OR move.status_select = 3)
+AND (company.currency = bankReconciliation.currency AND ((moveLine.debit > 0 AND moveLine.bank_reconciled_amount < moveLine.debit) OR (moveLine.credit > 0 AND moveLine.bank_reconciled_amount < moveLine.credit)) OR (company.currency != bankReconciliation.currency AND moveLine.currency_amount > 0 AND moveLine.bank_reconciled_amount < moveLine.currency_amount))
+AND (bankReconciliation.include_other_bank_statements IS true
+OR ((moveLine.date_val >= ? OR moveLine.due_date >= ?)
+AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">

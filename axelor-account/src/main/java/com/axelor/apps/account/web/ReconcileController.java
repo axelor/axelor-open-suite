@@ -26,8 +26,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Singleton
 public class ReconcileController {
@@ -72,18 +70,15 @@ public class ReconcileController {
     }
   }
 
-  public void setMoveLineDomain(ActionRequest request, ActionResponse response, boolean isDebit) {
+  public void setCreditMoveLineDomain(ActionRequest request, ActionResponse response) {
     try {
       Reconcile reconcile = request.getContext().asType(Reconcile.class);
 
       String moveLineIds =
-          Beans.get(ReconcileService.class).getAllowedMoveLines(reconcile, isDebit).stream()
-              .map(Objects::toString)
-              .collect(Collectors.joining(","));
+          Beans.get(ReconcileService.class).getStringAllowedCreditMoveLines(reconcile);
 
-      String moveLinePrefix = isDebit ? "debit" : "credit";
       response.setAttr(
-          String.format("%sMoveLine", moveLinePrefix),
+          "creditMoveLine",
           "domain",
           String.format("self.id IN (%s)", moveLineIds.isEmpty() ? "0" : moveLineIds));
     } catch (Exception e) {
@@ -92,10 +87,18 @@ public class ReconcileController {
   }
 
   public void setDebitMoveLineDomain(ActionRequest request, ActionResponse response) {
-    this.setMoveLineDomain(request, response, true);
-  }
+    try {
+      Reconcile reconcile = request.getContext().asType(Reconcile.class);
 
-  public void setCreditMoveLineDomain(ActionRequest request, ActionResponse response) {
-    this.setMoveLineDomain(request, response, false);
+      String moveLineIds =
+          Beans.get(ReconcileService.class).getStringAllowedDebitMoveLines(reconcile);
+
+      response.setAttr(
+          "debitMoveLine",
+          "domain",
+          String.format("self.id IN (%s)", moveLineIds.isEmpty() ? "0" : moveLineIds));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
