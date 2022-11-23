@@ -284,7 +284,6 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderSupplychainService.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(StockMoveServiceSupplychain.class).to(StockMoveServiceSupplychainImpl.class);
     bind(PartnerSupplychainLinkService.class).to(PartnerSupplychainLinkServiceImpl.class);
-    bind(InvoiceManagementRepository.class).to(InvoiceSupplychainRepository.class);
     bind(StockMoveReservedQtyService.class).to(StockMoveReservedQtyServiceImpl.class);
     bind(PurchaseOrderLineServiceSupplyChain.class)
         .to(PurchaseOrderLineServiceSupplychainImpl.class);

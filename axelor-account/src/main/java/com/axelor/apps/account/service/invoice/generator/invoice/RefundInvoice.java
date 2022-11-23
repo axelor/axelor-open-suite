@@ -20,14 +20,15 @@ package com.axelor.apps.account.service.invoice.generator.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +52,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 
     LOG.debug("Creating a refund for invoice {}", invoice.getInvoiceId());
 
-    Invoice refund = JPA.copy(invoice, true);
-    InvoiceToolService.resetInvoiceStatusOnCopy(refund);
+    Invoice refund = Beans.get(InvoiceRepository.class).copy(invoice, true);
 
     refund.setOperationTypeSelect(this.inverseOperationType(refund.getOperationTypeSelect()));
 

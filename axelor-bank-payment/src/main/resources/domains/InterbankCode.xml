@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="account" package="com.axelor.apps.account.db"/>
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
   <entity name="InterbankCode" cacheable="true">
 
@@ -11,9 +11,11 @@
     <string name="name" title="Name" required="true"/>
     <date name="endDate" title="Expiration date (only for reference)"/>
     <string name="description" multiline="true" title="Description"/>
-    <integer name="typeSelect" title="Type" selection="account.interbankcode.type.select"/>
-    <one-to-many name="interbankCodeLineList" ref="InterbankCodeLine"
-      mappedBy="interbankCode" title="Rejects/Return Reason Code List"/>
+    <integer name="typeSelect" title="Type"
+      selection="bankpayment.interbankcode.type.select"/>
+    <one-to-many name="interbankCodeLineList"
+      ref="com.axelor.apps.bankpayment.db.InterbankCodeLine" mappedBy="interbankCode"
+      title="Rejects/Return Reason Code List"/>
 
     <extra-code><![CDATA[
 

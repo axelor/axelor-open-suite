@@ -354,4 +354,13 @@
     <domain>self.typeSelect = 3</domain>
   </action-view>
 
+  <menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
+    title="Interbank codes" action="account.conf.reporting.interbank.code"/>
+
+  <action-view name="account.conf.reporting.interbank.code" title="Interbank codes"
+    model="com.axelor.apps.bankpayment.db.InterbankCode">
+    <view type="grid" name="interbank-code-grid"/>
+    <view type="form" name="interbank-code-form"/>
+  </action-view>
+
 </object-views>

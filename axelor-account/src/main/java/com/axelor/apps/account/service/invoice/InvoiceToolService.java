@@ -262,69 +262,6 @@ public class InvoiceToolService {
   }
 
   /**
-   * Method to call after copying an invoice to reset the status. Can be used after JPA.copy to
-   * reset invoice status without losing references to other objets.<br>
-   * <b>Most of the time you do not want to use this method directly but call {@link
-   * InvoiceRepository#save(Invoice)} instead.</b>
-   *
-   * @param copy a copy of an invoice
-   */
-  public static void resetInvoiceStatusOnCopy(Invoice copy) throws AxelorException {
-    copy.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
-    copy.setInvoiceId(null);
-    copy.setInvoiceDate(null);
-    copy.setDueDate(null);
-    copy.setValidatedByUser(null);
-    copy.setMove(null);
-    copy.setOriginalInvoice(null);
-    copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
-    copy.setAmountPaid(BigDecimal.ZERO);
-    copy.setAmountRemaining(copy.getInTaxTotal());
-    copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
-    copy.setAmountRejected(BigDecimal.ZERO);
-    copy.setPaymentProgress(0);
-    copy.clearBatchSet();
-    copy.setDebitNumber(null);
-    copy.setDoubtfulCustomerOk(false);
-    copy.setMove(null);
-    copy.setInterbankCodeLine(null);
-    copy.setPaymentMove(null);
-    copy.clearRefundInvoiceList();
-    copy.setRejectDateTime(null);
-    copy.setOriginalInvoice(null);
-    copy.setUsherPassageOk(false);
-    copy.setAlreadyPrintedOk(false);
-    copy.setCanceledPaymentSchedule(null);
-    copy.setDirectDebitAmount(BigDecimal.ZERO);
-    copy.setImportId(null);
-    copy.setPartnerAccount(null);
-    copy.setJournal(null);
-    copy.clearInvoicePaymentList();
-    copy.setPrintedPDF(null);
-    copy.setValidatedDateTime(null);
-    copy.setVentilatedByUser(null);
-    copy.setVentilatedDateTime(null);
-    copy.setDecisionPfpTakenDateTime(null);
-    copy.setInternalReference(null);
-    copy.setExternalReference(null);
-    copy.setLcrAccounted(false);
-    copy.clearInvoiceTermList();
-    copy.setFinancialDiscount(null);
-    copy.setFinancialDiscountDeadlineDate(copy.getDueDate());
-    copy.setFinancialDiscountRate(BigDecimal.ZERO);
-    copy.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
-    copy.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
-    copy.setOldMove(null);
-    copy.setBillOfExchangeBlockingOk(false);
-    copy.setBillOfExchangeBlockingReason(null);
-    copy.setBillOfExchangeBlockingToDate(null);
-    copy.setBillOfExchangeBlockingByUser(null);
-    copy.setNextDueDate(getNextDueDate(copy));
-    setPfpStatus(copy);
-    copy.setHasPendingPayments(false);
-  }
-
-  /**
    * Returns the functional origin of the invoice
    *
    * @param invoice

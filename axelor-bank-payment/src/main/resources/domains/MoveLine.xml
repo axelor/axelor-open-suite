@@ -8,7 +8,12 @@
   <entity name="MoveLine">
 
     <decimal name="bankReconciledAmount" title="Bank reconciled amount"/>
+    <string name="postedNbr" title="moveLine.postedNbr"/>
+    <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
+    <many-to-one name="interbankCodeLine"
+      ref="com.axelor.apps.bankpayment.db.InterbankCodeLine" title="Rejection reason"/>
 
+    <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>
   </entity>
 
 </domain-models>

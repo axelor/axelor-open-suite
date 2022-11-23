@@ -134,12 +134,15 @@ public class PayerQualityService {
   public BigDecimal getPayerQualityNote(
       MoveLine moveLine, List<PayerQualityConfigLine> payerQualityConfigLineList) {
     for (PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList) {
-      if (payerQualityConfigLine.getIncidentTypeSelect() == 1
-          && !moveLine.getInterbankCodeLine().getTechnicalRejectOk()) {
+      if (payerQualityConfigLine.getIncidentTypeSelect() == 1 && checkTechnicalRejectOk(moveLine)) {
         return payerQualityConfigLine.getBurden();
       }
     }
     return BigDecimal.ZERO;
+  }
+
+  protected boolean checkTechnicalRejectOk(MoveLine moveLine) {
+    return true;
   }
 
   public Integer getDebtRecoveryLevel(DebtRecoveryHistory debtRecoveryHistory) {

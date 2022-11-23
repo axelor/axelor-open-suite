@@ -38,7 +38,7 @@
     <boolean name="isRejected" title="Rejected"/>
     <date name="rejectDate" title="Rejection date"/>
     <many-to-one name="interbankCodeLine"
-      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Reject Reason"/>
+      ref="com.axelor.apps.bankpayment.db.InterbankCodeLine" title="Reject Reason"/>
     <decimal name="rejectAmount" title="Amount Rejected"/>
     <many-to-one name="rejectMove" ref="com.axelor.apps.account.db.Move"
       title="Reject Move" readonly="true"/>

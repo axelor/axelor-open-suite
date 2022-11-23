@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="app-account-config-form" title="App account"
+    model="com.axelor.studio.db.AppAccount" id="bank-payment-app-account-config-form"
+    extension="true">
+    <extend target="//panel[@name='trackingNumberBarCodePanel']">
+      <insert position="before">
+        <panel name="rejectsReasonsAndCodesListPanel" title="Rejects reasons and codes list"
+          colSpan="12">
+          <field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid"
+            form-view="interbank-code-form"/>
+          <field name="chequeInterbankCode" grid-view="interbank-code-grid"
+            form-view="interbank-code-form"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

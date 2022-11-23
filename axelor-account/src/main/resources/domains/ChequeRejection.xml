@@ -15,8 +15,6 @@
       title="Payment voucher" required="true"/>
     <decimal name="amountRejected" title="Rejected amount" readonly="true"/>
     <date name="rejectionDate" title="Rejection date" required="true"/>
-    <many-to-one name="interbankCodeLine"
-      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason" required="true"/>
     <integer name="statusSelect" title="Status"
       selection="iaccount.cheque.rejection.status.select" readonly="true" default="1"/>
     <many-to-one name="move" ref="com.axelor.apps.account.db.Move"

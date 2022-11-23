@@ -96,7 +96,6 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("taxLine", moveLine.getTaxLine());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-    valuesMap.put("interbankCodeLine", moveLine.getInterbankCodeLine());
     valuesMap.put("exportedDirectDebitOk", moveLine.getExportedDirectDebitOk());
     valuesMap.put("isOtherCurrency", moveLine.getIsOtherCurrency());
     valuesMap.put("currencyRate", moveLine.getCurrencyRate());

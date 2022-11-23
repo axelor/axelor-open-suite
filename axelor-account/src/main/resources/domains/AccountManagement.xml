@@ -30,9 +30,6 @@
     <many-to-one name="fixedAssetCategory"
       ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"/>
 
-    <many-to-one name="interbankCodeLine"
-      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Interbank code"/>
-
     <many-to-one name="globalAccountingCashAccount"
       ref="com.axelor.apps.account.db.Account" title="Global Accounting account"/>
 
@@ -88,12 +85,10 @@
       String name = "";
         if (company != null) name += (name.isEmpty()?"":"-") +company.getName();
         if (paymentMode != null) name += (name.isEmpty()?"":"-") + paymentMode.getName();
-        if (interbankCodeLine != null) name += (name.isEmpty()?"":"-") + interbankCodeLine.getName();
       return name;
       ]]>
     </string>
 
-    <unique-constraint columns="interbankCodeLine,bankDetails,paymentMode"/>
     <unique-constraint columns="paymentMode,bankDetails,company"/>
 
     <finder-method name="find" using="paymentMode,bankDetails,company"

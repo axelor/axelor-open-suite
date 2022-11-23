@@ -24,8 +24,6 @@
 
     <boolean name="rejectedOk" title="Rejected reimbursement" default="false"
       readonly="true"/>
-    <many-to-one name="interbankCodeLine"
-      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason" readonly="true"/>
     <date name="rejectDate" title="Rejection date" readonly="true"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Rejection move line" readonly="true"/>

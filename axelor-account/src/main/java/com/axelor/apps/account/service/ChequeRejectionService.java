@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.ChequeRejection;
-import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -120,8 +119,6 @@ public class ChequeRejectionService {
 
     Move paymentMove = paymentVoucher.getGeneratedMove();
 
-    InterbankCodeLine interbankCodeLine = chequeRejection.getInterbankCodeLine();
-
     String description = chequeRejection.getDescription();
 
     LocalDate rejectionDate = chequeRejection.getRejectionDate();
@@ -133,9 +130,7 @@ public class ChequeRejectionService {
     move.setDescription(description);
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-      moveLine.setOrigin(chequeRejection.getName());
-      moveLine.setDescription(description);
-      moveLine.setInterbankCodeLine(interbankCodeLine);
+      fillMoveLineFields(chequeRejection, moveLine);
     }
 
     move.setRejectOk(true);
@@ -145,6 +140,11 @@ public class ChequeRejectionService {
     moveValidateService.accounting(move);
 
     return move;
+  }
+
+  protected void fillMoveLineFields(ChequeRejection chequeRejection, MoveLine moveLine) {
+    moveLine.setOrigin(chequeRejection.getName());
+    moveLine.setDescription(chequeRejection.getDescription());
   }
 
   /**

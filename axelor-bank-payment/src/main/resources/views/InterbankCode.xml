@@ -4,22 +4,14 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="interbank-code-grid" title="Blocking reason/reject codes lists"
-    model="com.axelor.apps.account.db.InterbankCode">
+    model="com.axelor.apps.bankpayment.db.InterbankCode">
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="description"/>
-  </grid>
-
-  <grid name="interbank-code-line-custom-grid" title="Interbank codes lists"
-    model="com.axelor.apps.account.db.InterbankCodeLine">
-    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    <field name="name"/>
-    <field name="description"/>
-    <field name="technicalRejectOk"/>
   </grid>
 
   <form name="interbank-code-form" title="Interbank codes lists"
-    model="com.axelor.apps.account.db.InterbankCode" width="large">
+    model="com.axelor.apps.bankpayment.db.InterbankCode" width="large">
     <panel name="mainPanel">
       <field name="typeSelect"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>

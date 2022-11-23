@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceResetService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
@@ -40,7 +41,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
   public Invoice copy(Invoice entity, boolean deep) {
     try {
       Invoice copy = super.copy(entity, deep);
-      InvoiceToolService.resetInvoiceStatusOnCopy(copy);
+      Beans.get(InvoiceResetService.class).resetInvoiceStatusOnCopy(copy);
       return copy;
     } catch (Exception e) {
       throw new PersistenceException(e);

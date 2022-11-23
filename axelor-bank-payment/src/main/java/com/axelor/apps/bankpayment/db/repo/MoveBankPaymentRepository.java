@@ -21,7 +21,10 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class MoveBankPaymentRepository extends MoveManagementRepository {
@@ -37,5 +40,13 @@ public class MoveBankPaymentRepository extends MoveManagementRepository {
     }
 
     return copy;
+  }
+
+  @Override
+  public void resetMoveLine(
+      MoveLine moveLine, LocalDate date, InvoiceTermService invoiceTermService, Move move)
+      throws AxelorException {
+    moveLine.setPostedNbr(null);
+    super.resetMoveLine(moveLine, date, invoiceTermService, move);
   }
 }

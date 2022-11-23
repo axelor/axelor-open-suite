@@ -19,7 +19,7 @@
 package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -44,7 +44,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      Beans.get(MoveLineService.class).setIsSelectedBankReconciliation(moveLine);
+      Beans.get(MoveLineBankPaymentService.class).setIsSelectedBankReconciliation(moveLine);
 
       response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
     } catch (Exception e) {

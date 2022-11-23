@@ -10,11 +10,6 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <!-- Comptabilité -->
-    <many-to-one name="transferAndDirectDebitInterbankCode"
-      ref="com.axelor.apps.account.db.InterbankCode"
-      title="Code list for rejects/return of Direct debit, Wire Transfers and IPO"/>
-    <many-to-one name="chequeInterbankCode"
-      ref="com.axelor.apps.account.db.InterbankCode" title="Code list for rejects/return of Cheques"/>
     <one-to-many name="payerQualityConfigLineList"
       ref="com.axelor.apps.account.db.PayerQualityConfigLine" title="Weight table (Payer quality)"/>
 
@@ -58,8 +53,6 @@
 		]]></extra-code>
 
     <track>
-      <field name="transferAndDirectDebitInterbankCode" on="UPDATE"/>
-      <field name="chequeInterbankCode" on="UPDATE"/>
       <field name="manageCustomerCredit" on="UPDATE"/>
       <field name="manageAnalyticAccounting" on="UPDATE"/>
       <field name="manageFactors" on="UPDATE"/>

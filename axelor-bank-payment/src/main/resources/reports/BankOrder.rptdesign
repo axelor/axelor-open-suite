@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1022,7 +1022,7 @@ currency.code AS currency,
 Bank.bank_name AS bank
 
 FROM bankpayment_bank_order_line bankOrderLine
-LEFT JOIN account_interbank_code_line interbank ON interbank.id = bankOrderLine.interbank_code_line
+LEFT JOIN bankpayment_interbank_code_line interbank ON interbank.id = bankOrderLine.interbank_code_line
 LEFT JOIN base_company company ON company.id = bankOrderLine.receiver_company
 LEFT JOIN base_partner partner ON partner.id = bankOrderLine.partner
 LEFT JOIN base_bank_details bankDetails ON bankDetails.id = bankOrderLine.receiver_bank_details

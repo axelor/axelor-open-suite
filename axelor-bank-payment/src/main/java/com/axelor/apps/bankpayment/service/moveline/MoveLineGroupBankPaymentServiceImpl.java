@@ -97,4 +97,12 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
 
     return valuesMap;
   }
+
+  @Override
+  public Map<String, Object> getOnNewValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = super.getOnNewValuesMap(moveLine, move);
+    valuesMap.put("interbankCodeLine", moveLine.getInterbankCodeLine());
+    return valuesMap;
+  }
 }

@@ -34,6 +34,24 @@
       <attribute name="onChange"
         value="action-move-line-method-bank-reconciled-amount-onchange"/>
     </extend>
+    <extend target="//field[@name='usherPassageOk']">
+      <insert position="after">
+        <field name="interbankCodeLine" showIf="interbankCodeLine"
+          form-view="interbank-code-line-form" grid-view="interbank-code-line-grid" canEdit="false"
+          colSpan="12"/>
+      </insert>
+    </extend>
+  </form>
+
+  <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
+    id="bank-payment-move-line-form" extension="true">
+    <extend target="//field[@name='usherPassageOk']">
+      <insert position="after">
+        <field name="interbankCodeLine" showIf="interbankCodeLine"
+          form-view="interbank-code-line-form" grid-view="interbank-code-line-grid" canEdit="false"
+          colSpan="12"/>
+      </insert>
+    </extend>
   </form>
 
   <action-method name="action-move-line-method-bank-reconciled-amount-onchange">
@@ -42,7 +60,7 @@
   </action-method>
 
   <action-method name="action-move-line-method-set-selected">
-    <call class="com.axelor.apps.account.web.MoveLineController"
+    <call class="com.axelor.apps.bankpayment.web.MoveLineController"
       method="setSelectedBankReconciliation"/>
   </action-method>
 

@@ -54,7 +54,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -289,26 +288,6 @@ public class MoveLineServiceImpl implements MoveLineService {
       List<MoveLine> moveLineList = isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();
       moveLineList.add(moveLine);
     }
-  }
-
-  @Override
-  public void setIsSelectedBankReconciliation(MoveLine moveLine) {
-    if (moveLine.getIsSelectedBankReconciliation() != null) {
-      moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
-    } else {
-      moveLine.setIsSelectedBankReconciliation(true);
-    }
-  }
-
-  @Override
-  @Transactional
-  public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
-    String posted = moveLine.getPostedNbr();
-    List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));
-    postedNbrs.remove(postedNbr);
-    posted = String.join(",", postedNbrs);
-    moveLine.setPostedNbr(posted);
-    return moveLine;
   }
 
   @Override

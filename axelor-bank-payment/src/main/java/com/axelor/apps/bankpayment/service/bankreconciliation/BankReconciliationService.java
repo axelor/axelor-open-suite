@@ -42,7 +42,6 @@ import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
@@ -66,6 +65,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconcili
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineBankPaymentServiceImpl;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -123,7 +123,7 @@ public class BankReconciliationService {
   protected BankStatementRuleRepository bankStatementRuleRepository;
   protected MoveValidateService moveValidateService;
   protected BankReconciliationLineService bankReconciliationLineService;
-  protected MoveLineService moveLineService;
+  protected MoveLineBankPaymentServiceImpl moveLineService;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
@@ -154,7 +154,7 @@ public class BankReconciliationService {
       BankStatementRuleRepository bankStatementRuleRepository,
       MoveValidateService moveValidateService,
       BankReconciliationLineService bankReconciliationLineService,
-      MoveLineService moveLineService,
+      MoveLineBankPaymentServiceImpl moveLineService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
