@@ -2689,6 +2689,14 @@ InvoiceSet.length > 0))"
     <context name="_invoiceId" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-invoice-view-show-related-invoice-terms-by-reason"
+    title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-move-line-invoice-grid"/>
+    <view type="form" name="invoice-term-invoice-form"/>
+    <domain>self.invoice.reasonOfRefusalToPayStr = :reasonOfRefusalToPayName</domain>
+    <context name="reasonOfRefusalToPayName" expr="eval: reasonOfRefusalToPayName"/>
+  </action-view>
+
   <action-method name="action-customer-invoice-line-menu">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="showCustomerInvoiceLines"/>

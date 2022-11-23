@@ -213,7 +213,7 @@ from InvoiceTerm as self
     <series key="amountRemaining" type="pie" title="Amount"/>
     <config name="colors" value="#f63,#28a745,#007bff,#ffc107,#6c757d,#6f42c1,#17a2b8"/>
     <config name="percent" value="true"/>
-    <config name="onClick" value="account.root.payments.suppl.invoices.to.pay.from.chart"/>
+    <config name="onClick" value="action-invoice-view-show-related-invoice-terms-by-reason"/>
   </chart>
 
   <chart name="chart.purchases.invoice.terms.per.month.pie"
