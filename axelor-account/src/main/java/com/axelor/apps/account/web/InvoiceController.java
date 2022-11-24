@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -1179,6 +1180,28 @@ public class InvoiceController {
                 I18n.get(AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER),
                 partnerType.toLowerCase()));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
+      Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoice);
+
+      response.setValue("financialDiscount", invoice.getFinancialDiscount());
+      response.setValue("legalNotice", invoice.getLegalNotice());
+      response.setValue("financialDiscountRate", invoice.getFinancialDiscountRate());
+      response.setValue("financialDiscountTotalAmount", invoice.getFinancialDiscountTotalAmount());
+      response.setValue(
+          "remainingAmountAfterFinDiscount", invoice.getRemainingAmountAfterFinDiscount());
+      response.setValue(
+          "financialDiscountDeadLineDate", invoice.getFinancialDiscountDeadlineDate());
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

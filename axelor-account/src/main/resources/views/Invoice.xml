@@ -1597,7 +1597,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-ventilate"/>
-    <action name="action-invoice-group-financial-discount"/>
     <action name="save"/>
   </action-group>
 
@@ -1621,8 +1620,6 @@ InvoiceSet.length > 0))"
       if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-group-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 
@@ -1637,8 +1634,6 @@ InvoiceSet.length > 0))"
     <action name="save"/>
     <action name="action-invoice-method-validate"/>
     <action name="action-record-invoice-set-discount-values"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-invoice-group-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
@@ -1671,7 +1666,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-ventilate"/>
-    <action name="action-invoice-group-financial-discount"/>
     <action name="save"/>
   </action-group>
 
@@ -1691,11 +1685,13 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-group-financial-discount">
-    <action name="action-record-invoice-set-financial-discount-informations"/>
-    <action name="save"/>
-    <action name="action-method-invoice-financial-discount-update-invoice-terms"/>
-    <action name="save"/>
+    <action name="action-invoice-method-update-final-discount"/>
   </action-group>
+
+  <action-method name="action-invoice-method-update-final-discount">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateFinancialDiscount"/>
+  </action-method>
 
   <action-group name="action-invoice-group-partner-onchange">
     <action name="action-group-account-invoice-partner-onchange"/>
