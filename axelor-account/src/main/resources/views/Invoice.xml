@@ -2690,7 +2690,7 @@ InvoiceSet.length > 0))"
   </action-view>
 
   <action-view name="action-invoice-view-show-related-invoice-terms-by-reason"
-    title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
+    title="Invoice term in dispute" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-invoice-grid"/>
     <view type="form" name="invoice-term-invoice-form"/>
     <domain>self.invoice.reasonOfRefusalToPayStr = :reasonOfRefusalToPayName</domain>
