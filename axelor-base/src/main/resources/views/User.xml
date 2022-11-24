@@ -404,7 +404,7 @@
   </action-attrs>
 
   <action-attrs name="action-user-attrs">
-    <attribute name="hidden" for="email" expr="partner"/>
+    <attribute name="hidden" for="email" expr="partner == null"/>
     <attribute name="hidden" for="passwordPanel" expr="false"/>
     <attribute name="required" for="partner.emailAddress"
       expr="sendEmailUponPasswordChange"/>
