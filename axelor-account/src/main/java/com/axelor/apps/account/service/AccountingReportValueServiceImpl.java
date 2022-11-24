@@ -723,10 +723,30 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       endDate = endDate.minusYears(1);
     }
 
+    return this.buildMoveLineQuery(
+        accountingReport,
+        accountSet,
+        accountTypeSet,
+        analyticAccountSet,
+        column,
+        line,
+        startDate,
+        endDate);
+  }
+
+  protected Query<MoveLine> buildMoveLineQuery(
+      AccountingReport accountingReport,
+      Set<Account> accountSet,
+      Set<AccountType> accountTypeSet,
+      Set<AnalyticAccount> analyticAccountSet,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      LocalDate startDate,
+      LocalDate endDate) {
     return moveLineRepo
         .all()
         .filter(
-            this.buildQuery(
+            this.getMoveLineQuery(
                 accountingReport, accountSet, accountTypeSet, analyticAccountSet, column, line))
         .bind("dateFrom", startDate)
         .bind("dateTo", endDate)
@@ -744,7 +764,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         .bind("analyticAccountSet", analyticAccountSet);
   }
 
-  protected String buildQuery(
+  protected String getMoveLineQuery(
       AccountingReport accountingReport,
       Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
