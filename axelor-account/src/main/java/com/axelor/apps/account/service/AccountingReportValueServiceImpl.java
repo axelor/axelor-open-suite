@@ -723,18 +723,31 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       endDate = endDate.minusYears(1);
     }
 
+    return this.buildMoveLineQuery(
+        accountingReport,
+        accountSet,
+        accountTypeSet,
+        analyticAccountSet,
+        column,
+        line,
+        startDate,
+        endDate);
+  }
+
+  protected Query<MoveLine> buildMoveLineQuery(
+      AccountingReport accountingReport,
+      Set<Account> accountSet,
+      Set<AccountType> accountTypeSet,
+      Set<AnalyticAccount> analyticAccountSet,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      LocalDate startDate,
+      LocalDate endDate) {
     return moveLineRepo
         .all()
         .filter(
-            this.buildQuery(
-                accountingReport,
-                accountSet,
-                accountTypeSet,
-                analyticAccountSet,
-                column.getAccountCode(),
-                line.getAccountCode(),
-                column.getAnalyticAccountCode(),
-                line.getAnalyticAccountCode()))
+            this.getMoveLineQuery(
+                accountingReport, accountSet, accountTypeSet, analyticAccountSet, column, line))
         .bind("dateFrom", startDate)
         .bind("dateTo", endDate)
         .bind("journal", accountingReport.getJournal())
@@ -751,15 +764,13 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         .bind("analyticAccountSet", analyticAccountSet);
   }
 
-  protected String buildQuery(
+  protected String getMoveLineQuery(
       AccountingReport accountingReport,
       Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
       Set<AnalyticAccount> analyticAccountSet,
-      String columnAccountFilter,
-      String lineAccountFilter,
-      String columnAnalyticAccountFilter,
-      String lineAnalyticAccountFilter) {
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line) {
     List<String> queryList =
         new ArrayList<>(Collections.singletonList("self.move.statusSelect IN :statusList"));
 
@@ -789,19 +800,19 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     queryList.addAll(
         this.getAccountFilters(
-            accountSet, accountTypeSet, columnAccountFilter, lineAccountFilter, true));
+            accountSet, accountTypeSet, column.getAccountCode(), line.getAccountCode(), true));
 
     if (CollectionUtils.isNotEmpty(analyticAccountSet)) {
       queryList.add(
           "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount IN :analyticAccountSet AND aml.moveLine = self)");
     }
 
-    if (!Strings.isNullOrEmpty(columnAnalyticAccountFilter)) {
+    if (!Strings.isNullOrEmpty(column.getAnalyticAccountCode())) {
       queryList.add(
           "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount.code LIKE :columnAnalyticAccountFilter AND aml.moveLine = self)");
     }
 
-    if (!Strings.isNullOrEmpty(lineAnalyticAccountFilter)) {
+    if (!Strings.isNullOrEmpty(line.getAnalyticAccountCode())) {
       queryList.add(
           "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount.code LIKE :lineAnalyticAccountFilter AND aml.moveLine = self)");
     }
