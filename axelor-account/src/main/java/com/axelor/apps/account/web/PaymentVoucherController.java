@@ -137,7 +137,7 @@ public class PaymentVoucherController {
         if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {
           response.setError(
               I18n.get(
-                  "Some move amounts have been changed since the impuration. Please remake the imputation."));
+                  "Some move amounts have been changed since the imputation. Please remake the imputation."));
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);

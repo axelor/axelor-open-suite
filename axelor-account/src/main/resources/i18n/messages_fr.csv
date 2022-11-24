@@ -2830,7 +2830,7 @@
 "Skip ventilation","Sauter la ventilation",,
 "So many accounting operations are used on this move, so move can't be canceled","Trop d'opérations comptables ont été réalisées sur cette écriture, elle ne peut donc être annulée",,
 "Some due elements could not be loaded there was no amount left to pay.","Certains éléments n’ont pas pu être chargés du fait qu’aucun montant n’était en attente de paiement.",,
-"Some move amounts have been changed since the impuration. Please remake the imputation.","Certains montants d’écritures ont été modifiés depuis l’imputation. Veuillez procéder à une nouvelle imputation.",,
+"Some move amounts have been changed since the imputation. Please remake the imputation.","Certains montants d’écritures ont été modifiés depuis l’imputation. Veuillez procéder à une nouvelle imputation.",,
 "Source Tax","Taxe à la source",,
 "Special","Spéciaux",,
 "Specific","Personnalisé",,
