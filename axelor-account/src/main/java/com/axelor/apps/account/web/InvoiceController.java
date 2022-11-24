@@ -1190,7 +1190,11 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
 
       Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
-      Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoice);
+
+      if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
+        Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoice);
+        response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+      }
 
       response.setValue("financialDiscount", invoice.getFinancialDiscount());
       response.setValue("legalNotice", invoice.getLegalNotice());
@@ -1200,7 +1204,6 @@ public class InvoiceController {
           "remainingAmountAfterFinDiscount", invoice.getRemainingAmountAfterFinDiscount());
       response.setValue(
           "financialDiscountDeadLineDate", invoice.getFinancialDiscountDeadlineDate());
-      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

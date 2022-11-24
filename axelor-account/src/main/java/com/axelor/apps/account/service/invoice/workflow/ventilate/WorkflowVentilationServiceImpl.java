@@ -82,7 +82,9 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
 
     if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
       invoiceFinancialDiscountService.setFinancialDiscountInformations(invoice);
-      invoiceTermService.updateFinancialDiscount(invoice);
+      if (!invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        invoiceTermService.updateFinancialDiscount(invoice);
+      }
     }
 
     // send message

@@ -2640,31 +2640,6 @@ InvoiceSet.length > 0))"
     <field name="legalNotice" expr="eval: null" if="!partner || !partner.financialDiscount"/>
   </action-record>
 
-  <action-record name="action-record-invoice-set-financial-discount-informations"
-    model="com.axelor.apps.account.db.Invoice">
-    <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
-    <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
-    <field name="financialDiscountTotalAmount"
-      expr="eval: financialDiscount.discountRate * inTaxTotal / 100"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
-    <field name="remainingAmountAfterFinDiscount"
-      expr="eval: inTaxTotal - (financialDiscount.discountRate * inTaxTotal / 100)"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
-    <field name="legalNotice" expr="eval: null"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
-    <field name="financialDiscountRate" expr="eval: BigDecimal.ZERO"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
-    <field name="financialDiscountTotalAmount" expr="eval: BigDecimal.ZERO"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
-    <field name="remainingAmountAfterFinDiscount" expr="eval: BigDecimal.ZERO"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
-    <field name="financialDiscountDeadlineDate"
-      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__, financialDiscount)"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; dueDate &amp;&amp; financialDiscount"/>
-  </action-record>
-
   <action-method
     name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden">
     <call class="com.axelor.apps.account.web.InvoiceController" method="checkDuplicateInvoice"/>
