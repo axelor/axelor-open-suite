@@ -85,9 +85,9 @@
         <panel name="otherPeriodPanel" title="Compare with period" colSpan="12"
           showIf="reportType != null &amp;&amp; reportType.comparison == 4">
           <field name="otherDateFrom" requiredIf="reportType.comparison == 4"
-            validIf="otherDateFrom &lt; otherDateTo &amp;&amp; otherDateFrom &lt; dateFrom"/>
+            validIf="reportType.comparison != 4 || (otherDateFrom &lt; otherDateTo &amp;&amp; otherDateFrom &lt; dateFrom)"/>
           <field name="otherDateTo" requiredIf="reportType.comparison == 4"
-            validIf="otherDateTo > otherDateFrom &amp;&amp; otherDateTo &lt; dateFrom"/>
+            validIf="reportType.comparison != 4 || (otherDateTo > otherDateFrom &amp;&amp; otherDateTo &lt; dateFrom)"/>
         </panel>
         <field name="isComparativeBalance" widget="boolean-switch" colSpan="12"
           showIf="reportType.typeSelect == 2"/>
