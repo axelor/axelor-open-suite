@@ -26,6 +26,7 @@ import com.axelor.apps.bpm.service.execution.WkfInstanceService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaJsonRecord;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -192,8 +193,10 @@ public class BpmManagerDashboardTaskServiceImpl implements BpmManagerDashboardTa
                 + "AND DATE(task.end_time_) = :toDate";
 
         Query query = JPA.em().createNativeQuery(qry);
+        query.setParameter(
+            "processInstanceId",
+            !Strings.isNullOrEmpty(config.getProcessId()) ? config.getProcessId() : "");
         query.setParameter("status", config.getDescription());
-        query.setParameter("processInstanceId", config.getProcessId());
         query.setParameter("toDate", date);
         query.setParameter("instanceId", validatedTaskInstanceIds);
         validatedTaskCnt += ((BigInteger) query.getSingleResult()).intValue();
