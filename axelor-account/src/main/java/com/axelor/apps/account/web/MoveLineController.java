@@ -65,14 +65,14 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.servlet.RequestScoped;
+import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-@RequestScoped
+@Singleton
 public class MoveLineController {
 
   private final int startAxisPosition = 1;
@@ -171,6 +171,7 @@ public class MoveLineController {
   }
 
   public void accountingReconcile(ActionRequest request, ActionResponse response) {
+    long start = System.currentTimeMillis();
 
     try {
       @SuppressWarnings("unchecked")
@@ -184,6 +185,9 @@ public class MoveLineController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    } finally {
+      long end = System.currentTimeMillis();
+      System.out.println("Elapsed Time in milli seconds: " + (end - start));
     }
   }
 
