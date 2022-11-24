@@ -1001,6 +1001,9 @@ public final class AccountExceptionMessage {
       INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
 
+  public static final String INVOICE_WRONG_ANALYTIC_DISTRIBUTION = /*$$(*/
+      "Some invoice lines analytic distributions are not correct, please correct them." /*)*/;
+
   public static final String INVOICE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management" /*)*/;
 

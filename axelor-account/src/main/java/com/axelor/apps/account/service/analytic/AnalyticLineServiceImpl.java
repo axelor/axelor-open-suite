@@ -140,6 +140,8 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
             analyticAccountListByAxis =
                 listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
           }
+        } else {
+          analyticAccountListByAxis = new ArrayList<>();
         }
       }
     }

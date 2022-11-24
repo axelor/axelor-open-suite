@@ -38,4 +38,6 @@ public interface InvoiceLineAnalyticService {
   List<AnalyticMoveLine> computeAnalyticDistribution(InvoiceLine invoiceLine);
 
   List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine);
+
+  boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList);
 }
