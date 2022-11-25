@@ -689,13 +689,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateFinancialDiscount(Invoice invoice) {
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice) {
     invoice.getInvoiceTermList().stream()
         .filter(it -> it.getAmountRemaining().compareTo(it.getAmount()) == 0)
         .forEach(it -> this.computeFinancialDiscount(it, invoice));
 
-    invoiceRepo.save(invoice);
+    return invoice.getInvoiceTermList();
   }
 
   @Override
