@@ -26,13 +26,13 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
       invoice.setLegalNotice(financialDiscount.getLegalNotice());
       invoice.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       invoice.setFinancialDiscountTotalAmount(
-        computeFinancialDiscountTotalAmount(invoice, financialDiscount));
+          computeFinancialDiscountTotalAmount(invoice, financialDiscount));
       invoice.setRemainingAmountAfterFinDiscount(
-        invoice.getInTaxTotal().subtract(invoice.getFinancialDiscountTotalAmount()));
+          invoice.getInTaxTotal().subtract(invoice.getFinancialDiscountTotalAmount()));
 
       if (invoice.getDueDate() != null) {
         invoice.setFinancialDiscountDeadlineDate(
-          invoiceService.getFinancialDiscountDeadlineDate(invoice, financialDiscount));
+            invoiceService.getFinancialDiscountDeadlineDate(invoice, financialDiscount));
       }
     } else {
       resetFinancialDiscountInformations(invoice);
@@ -40,18 +40,15 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
   }
 
   protected BigDecimal computeFinancialDiscountTotalAmount(
-    Invoice invoice, FinancialDiscount financialDiscount) {
+      Invoice invoice, FinancialDiscount financialDiscount) {
 
-    //the scale is the default scale for a decimal field, so 2.
+    // the scale is the default scale for a decimal field, so 2.
     int financialDiscountTotalAmountScale = 2;
 
     return financialDiscount
-      .getDiscountRate()
-      .multiply(invoice.getInTaxTotal())
-      .divide(
-        new BigDecimal(100),
-        financialDiscountTotalAmountScale,
-        RoundingMode.HALF_UP);
+        .getDiscountRate()
+        .multiply(invoice.getInTaxTotal())
+        .divide(new BigDecimal(100), financialDiscountTotalAmountScale, RoundingMode.HALF_UP);
   }
 
   @Override
