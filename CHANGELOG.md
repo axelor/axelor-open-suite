@@ -1,3 +1,34 @@
+## [6.2.13] (2022-11-25)
+
+#### Fixed
+
+* Move line: fixed an issue preventing the currency amount computation when setting a debit or a credit.
+* Bank reconciliation: show move records with status daybook or accounted only.
+* Bank reconciliation: fix reconciliation of manually added bank reconciliation line.
+* Invoice Line: choosing a product from a supplier catalog in an invoice line now has the same behavior as a purchase order line:
+
+Choosing a product from a supplier catalog takes the product name from the supplier catalog.
+If there is a minimum quantity, the user is alerted that the quantity is inferior than the minimum quantity.
+Choosing a quantity inferior than the minimum quantity does not remove the product name anymore.
+
+* Partner: fixed error preventing "group products on printings" configuration from being displayed correctly.
+* Inventory: fixed an issue where base quantities were not updated when starting the inventory, causing inconsistencies.
+* Invoice: fixed an error that could happen when creating a invoice with no active company for the user.
+* Invoice: fixed an error preventing any payment on a duplicated invoice.
+* Purchase order: fixed purchase order printing so it is not showing negative lines as discount.
+* Purchase order: added a check on budget distributions on validation of the purchase order to warn the user if the price is not fully imputed on existing budget lines.
+* Product: procurement method is not required anymore.
+* Bank order: created a more explicit error when creating a move for invoice payment if it fails on realization of bank order.
+* Debt recovery: The debt recovery process will now be reset to the first step if all the concerned invoices are considered as new for the recovery.
+* Invoicing project: fixed blocking error (JNPE) when timesheet line product is not filled.
+* Payment move line distribution: these elements are now only generated when the purchase move has a partner.
+* Accounting report config line: fix in demo data to correctly import result in configuration lines for accounting report.
+* Year: fixed demo data for periods generated from fiscal year, now the periods generated from demo data last one month instead of one year.
+
+#### Removed
+
+* Global tracking: remove read feature selection in views.
+
 ## [6.2.12] (2022-10-28)
 
 #### Fixed
@@ -689,6 +720,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.13]: https://github.com/axelor/axelor-open-suite/compare/v6.2.12...v6.2.13
 [6.2.12]: https://github.com/axelor/axelor-open-suite/compare/v6.2.11...v6.2.12
 [6.2.11]: https://github.com/axelor/axelor-open-suite/compare/v6.2.10...v6.2.11
 [6.2.10]: https://github.com/axelor/axelor-open-suite/compare/v6.2.9...v6.2.10
