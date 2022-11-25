@@ -48,7 +48,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -166,12 +165,12 @@ public class MoveToolServiceImpl implements MoveToolService {
    * @throws AxelorException
    */
   @Override
-  public List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment)
-      throws AxelorException {
-    List<MoveLine> moveLines = Lists.newArrayList();
+  public List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment) {
+    List<MoveLine> moveLines = new ArrayList<>();
     if (!CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
       for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
-        if (!moveLines.contains(invoiceTermPayment.getInvoiceTerm().getMoveLine())) {
+        if (invoiceTermPayment.getInvoiceTerm().getMoveLine() != null
+            && !moveLines.contains(invoiceTermPayment.getInvoiceTerm().getMoveLine())) {
           moveLines.add(invoiceTermPayment.getInvoiceTerm().getMoveLine());
         }
       }

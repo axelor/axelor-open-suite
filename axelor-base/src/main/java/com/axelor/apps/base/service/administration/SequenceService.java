@@ -191,7 +191,9 @@ public class SequenceService {
     SequenceVersion sequenceVersion = getVersion(seq, refDate);
     String nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
 
-    if (appBaseService.getAppBase().getCheckExistingSequenceOnGeneration()) {
+    if (appBaseService.getAppBase().getCheckExistingSequenceOnGeneration()
+        && objectClass != null
+        && !Strings.isNullOrEmpty(fieldName)) {
       this.isSequenceAlreadyExisting(objectClass, fieldName, nextSeq, seq);
     }
 
