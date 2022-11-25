@@ -747,6 +747,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         accountSet,
         accountTypeSet,
         analyticAccountSet,
+        groupColumn,
         column,
         line,
         startDate,
@@ -758,6 +759,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
       Set<AnalyticAccount> analyticAccountSet,
+      AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       LocalDate startDate,
@@ -766,7 +768,13 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         .all()
         .filter(
             this.getMoveLineQuery(
-                accountingReport, accountSet, accountTypeSet, analyticAccountSet, column, line))
+                accountingReport,
+                accountSet,
+                accountTypeSet,
+                analyticAccountSet,
+                groupColumn,
+                column,
+                line))
         .bind("dateFrom", startDate)
         .bind("dateTo", endDate)
         .bind("journal", accountingReport.getJournal())
@@ -788,6 +796,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
       Set<AnalyticAccount> analyticAccountSet,
+      AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line) {
     List<String> queryList =
