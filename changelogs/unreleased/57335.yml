@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed double reload on ventilate or validate and on change of invoice line list."
+type: fix

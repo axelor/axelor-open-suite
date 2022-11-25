@@ -531,35 +531,37 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
       throws AxelorException {
-    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-      if (move != null
-          && move.getPaymentVoucher() != null
-          && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
-        return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
-            .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
-            .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
-            .map(PayVoucherElementToPay::getInvoiceTerm)
+    if (move != null
+        && move.getPaymentVoucher() != null
+        && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
+      return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+          .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
+          .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
+          .map(PayVoucherElementToPay::getInvoiceTerm)
+          .collect(Collectors.toList());
+    } else {
+      List<InvoiceTerm> invoiceTermsToPay = null;
+      if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+        invoiceTermsToPay = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+
+      } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+        invoiceTermsToPay = this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
+
+      } else {
+        return null;
+      }
+      if (CollectionUtils.isNotEmpty(invoiceTermsToPay)
+          && move != null
+          && move.getPaymentSession() != null) {
+        return invoiceTermsToPay.stream()
+            .filter(
+                it ->
+                    it.getPaymentSession() != null
+                        && it.getPaymentSession().equals(move.getPaymentSession()))
             .collect(Collectors.toList());
       } else {
-        List<InvoiceTerm> invoiceTermsToPay =
-            invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
-
-        if (move != null && move.getPaymentSession() != null) {
-          invoiceTermsToPay =
-              invoiceTermsToPay.stream()
-                  .filter(
-                      it ->
-                          it.getPaymentSession() != null
-                              && it.getPaymentSession().equals(move.getPaymentSession()))
-                  .collect(Collectors.toList());
-        }
-
         return invoiceTermsToPay;
       }
-    } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
-    } else {
-      return null;
     }
   }
 

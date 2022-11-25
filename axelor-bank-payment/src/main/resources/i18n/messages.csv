@@ -566,6 +566,7 @@
 "F3 - Sender bank siren number",,,
 "F3 - Sender company siren number",,,
 "F3-4 - SIREN number",,,
+"Failed to create a move for the invoice payment.",,,
 "Failed to create bank order from invoice payment",,,
 "Fax",,,
 "Fees imputation",,,

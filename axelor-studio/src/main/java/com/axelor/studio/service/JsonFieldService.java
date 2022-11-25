@@ -39,18 +39,18 @@ public class JsonFieldService {
     String name = getSelectionName(metaJsonField);
 
     if (Strings.isNullOrEmpty(selectionText)) {
-      selectionBuilderService.removeSelection(name, null);
+      selectionBuilderService.removeSelectionBuilder(name);
 
       if (metaJsonField.getSelection() != null && metaJsonField.getSelection().equals(name)) {
         metaJsonField.setSelection(null);
       }
-
       return;
     }
 
     metaJsonField.setSelection(
-        selectionBuilderService.updateMetaSelectFromText(
-            selectionText, name, metaJsonField.getAppBuilder(), null));
+        selectionBuilderService
+            .createSelectionBuilder(selectionText, name, metaJsonField.getAppBuilder())
+            .getName());
   }
 
   @Transactional
@@ -59,7 +59,7 @@ public class JsonFieldService {
     String name = getSelectionName(metaJsonField);
 
     if (metaJsonField.getSelection() != null && metaJsonField.getSelection().equals(name)) {
-      selectionBuilderService.removeSelection(name, null);
+      selectionBuilderService.removeSelectionBuilder(name);
     }
   }
 
