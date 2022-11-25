@@ -23,10 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
-import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.db.repo.*;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -443,6 +440,10 @@ public class InvoiceTermController {
         if (moveLine != null && moveLine.getMove() == null) {
           Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
           moveLine.setMove(move);
+        } else {
+          moveLine =
+              Beans.get(MoveLineRepository.class)
+                  .find(Long.valueOf((Integer) request.getContext().get("_moveLineId")));
         }
 
         invoiceTerm.setMoveLine(moveLine);
