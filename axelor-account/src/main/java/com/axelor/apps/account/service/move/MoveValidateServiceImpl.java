@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
 @RequestScoped
 public class MoveValidateServiceImpl implements MoveValidateService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  protected final int jpaLimit = 20;
+  protected int jpaLimit = 20;
   protected MoveLineControlService moveLineControlService;
   protected MoveLineToolService moveLineToolService;
   protected AccountConfigService accountConfigService;
