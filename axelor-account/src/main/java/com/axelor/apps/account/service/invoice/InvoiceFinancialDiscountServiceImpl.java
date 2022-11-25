@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDiscountService {
@@ -40,10 +41,14 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
 
   protected BigDecimal computeFinancialDiscountTotalAmount(
       Invoice invoice, FinancialDiscount financialDiscount) {
+
     return financialDiscount
         .getDiscountRate()
         .multiply(invoice.getInTaxTotal())
-        .divide(new BigDecimal(100));
+        .divide(
+            new BigDecimal(100),
+            invoice.getFinancialDiscountTotalAmount().scale(),
+            RoundingMode.HALF_UP);
   }
 
   @Override
