@@ -1,3 +1,19 @@
+## [5.4.29] (2022-11-25)
+
+#### Fixed
+
+* Invoice: fixed an error that could happen when creating a invoice with no active company for the user.
+* Invoice: fixed an error preventing any payment on a duplicated invoice.
+* Purchase order: fixed purchase order printing so it is not showing negative lines as discount.
+* Product: procurement method is not required anymore.
+* Bank order: created a more explicit error when creating a move for invoice payment if it fails on realization of bank order.
+* Invoicing project: fixed blocking error (JNPE) when timesheet line product is not filled.
+* Year: fixed demo data for periods generated from fiscal year, now the periods generated from demo data last one month instead of one year.
+
+#### Removed
+
+* Global tracking: remove read feature selection in views.
+
 ## [5.4.28] (2022-10-28)
 
 #### Fixed
@@ -730,6 +746,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.29]: https://github.com/axelor/axelor-open-suite/compare/v5.4.28...v5.4.29
 [5.4.28]: https://github.com/axelor/axelor-open-suite/compare/v5.4.27...v5.4.28
 [5.4.27]: https://github.com/axelor/axelor-open-suite/compare/v5.4.26...v5.4.27
 [5.4.26]: https://github.com/axelor/axelor-open-suite/compare/v5.4.25...v5.4.26
