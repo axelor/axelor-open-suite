@@ -91,10 +91,7 @@ public class BankOrderCreateService {
     bankOrder.setOrderTypeSelect(paymentMode.getOrderTypeSelect());
     bankOrder.setPaymentMode(paymentMode);
     bankOrder.setPartnerTypeSelect(partnerType);
-
-    if (!bankOrderFileFormat.getIsMultiDate()) {
-      bankOrder.setBankOrderDate(bankOrderDate);
-    }
+    bankOrder.setBankOrderDate(bankOrderDate);
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
     bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_NOT_REJECTED);
