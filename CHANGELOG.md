@@ -1,3 +1,28 @@
+## [6.1.25] (2022-11-25)
+
+#### Fixed
+
+* Invoice Line: choosing a product from a supplier catalog in an invoice line now has the same behavior as a purchase order line:
+
+Choosing a product from a supplier catalog takes the product name from the supplier catalog.
+If there is a minimum quantity, the user is alerted that the quantity is inferior than the minimum quantity.
+Choosing a quantity inferior than the minimum quantity does not remove the product name anymore.
+
+* Partner: fixed error preventing "group products on printings" configuration from being displayed correctly.
+* Invoice: fixed an error that could happen when creating a invoice with no active company for the user.
+* Invoice: fixed an error preventing any payment on a duplicated invoice.
+* Purchase order: fixed purchase order printing so it is not showing negative lines as discount.
+* Purchase order: added a check on budget distributions on validation of the purchase order to warn the user if the price is not fully imputed on existing budget lines.
+* Product: procurement method is not required anymore.
+* Bank order: created a more explicit error when creating a move for invoice payment if it fails on realization of bank order.
+* Invoicing project: fixed blocking error (JNPE) when timesheet line product is not filled.
+* Accounting report config line: fix in demo data to correctly import result in configuration lines for accounting report.
+* Year: fixed demo data for periods generated from fiscal year, now the periods generated from demo data last one month instead of one year.
+
+#### Removed
+
+* Global tracking: remove read feature selection in views.
+
 ## [6.1.24] (2022-10-28)
 
 #### Fixed
@@ -820,6 +845,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.25]: https://github.com/axelor/axelor-open-suite/compare/v6.1.24...v6.1.25
 [6.1.24]: https://github.com/axelor/axelor-open-suite/compare/v6.1.23...v6.1.24
 [6.1.23]: https://github.com/axelor/axelor-open-suite/compare/v6.1.22...v6.1.23
 [6.1.22]: https://github.com/axelor/axelor-open-suite/compare/v6.1.21...v6.1.22
