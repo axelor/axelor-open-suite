@@ -721,6 +721,9 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     if (column.getComputePreviousYear()) {
       startDate = startDate.minusYears(1);
       endDate = endDate.minusYears(1);
+    } else if (column.getComputeOtherPeriod()) {
+      startDate = accountingReport.getOtherDateFrom();
+      endDate = accountingReport.getOtherDateTo();
     }
 
     return this.buildMoveLineQuery(

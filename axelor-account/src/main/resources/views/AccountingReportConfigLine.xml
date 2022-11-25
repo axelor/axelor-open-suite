@@ -79,12 +79,14 @@
         <field name="percentageBaseColumn"
           showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 4"/>
       </panel>
-      <panel name="configPanel" colSpan="12" itemSpan="4"
-        showIf="[2,3,4].includes(ruleTypeSelect)">
+      <panel name="configPanel" colSpan="12" showIf="[2,3,4].includes(ruleTypeSelect)">
         <field name="hidden"/>
         <field name="notComputedIfIntersect"/>
-        <field name="computePreviousYear"
-          showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2"/>
+        <panel name="columnConfigPanel" colSpan="12"
+          showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2">
+          <field name="computePreviousYear"/>
+          <field name="computeOtherPeriod"/>
+        </panel>
       </panel>
       <panel name="splitConfigPanel" colSpan="12" itemSpan="4"
         showIf="ruleTypeSelect == 2 &amp;&amp; reportType != null">

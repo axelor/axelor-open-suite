@@ -83,11 +83,11 @@
           hideIf="reportType.typeSelect == 18"
           requiredIf="reportType.typeSelect == 12 || reportType.typeSelect == 15 || reportType.typeSelect == 19 || reportType.typeSelect == 20 || reportType.typeSelect == 21 || reportType.typeSelect == 22"/>
         <panel name="otherPeriodPanel" title="Compare with period" colSpan="12"
-          showIf="reportType != null &amp;&amp; reportType.comparison == 4">
+          showIf="reportType.typeSelect == 3000">
           <field name="otherDateFrom" requiredIf="reportType.comparison == 4"
-            validIf="reportType.comparison != 4 || (otherDateFrom &lt; otherDateTo &amp;&amp; otherDateFrom &lt; dateFrom)"/>
+            validIf="otherDateFrom == null || (otherDateFrom &lt; otherDateTo &amp;&amp; otherDateFrom &lt; dateFrom)"/>
           <field name="otherDateTo" requiredIf="reportType.comparison == 4"
-            validIf="reportType.comparison != 4 || (otherDateTo > otherDateFrom &amp;&amp; otherDateTo &lt; dateFrom)"/>
+            validIf="otherDateTo == null || (otherDateTo > otherDateFrom &amp;&amp; otherDateTo &lt; dateFrom)"/>
         </panel>
         <field name="isComparativeBalance" widget="boolean-switch" colSpan="12"
           showIf="reportType.typeSelect == 2"/>
