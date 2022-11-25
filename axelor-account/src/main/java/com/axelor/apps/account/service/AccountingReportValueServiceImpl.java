@@ -215,6 +215,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             accountingReport,
             valuesMapByColumn,
             valuesMapByLine,
+            null,
             columnList,
             lineList,
             accountSet,
@@ -232,6 +233,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             accountingReport,
             valuesMapByColumn,
             valuesMapByLine,
+            groupColumn,
             columnList,
             lineList,
             accountSet,
@@ -244,6 +246,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           accountingReport,
           valuesMapByColumn,
           valuesMapByLine,
+          null,
           columnList,
           lineList,
           null,
@@ -271,6 +274,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReport accountingReport,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      AccountingReportConfigLine groupColumn,
       List<AccountingReportConfigLine> columnList,
       List<AccountingReportConfigLine> lineList,
       Set<Account> groupAccountSet,
@@ -294,6 +298,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             || valuesMapByColumn.get(columnCode).get(line.getCode()) == null) {
           this.createValue(
               accountingReport,
+              groupColumn,
               column,
               line,
               valuesMapByColumn,
@@ -310,6 +315,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   @Transactional(rollbackOn = {Exception.class})
   protected void createValue(
       AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
@@ -400,6 +406,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     } else {
       this.createValueFromMoveLines(
           accountingReport,
+          groupColumn,
           column,
           line,
           valuesMapByColumn,
@@ -517,6 +524,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   @Transactional(rollbackOn = {Exception.class})
   protected void createValueFromMoveLines(
       AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
@@ -567,6 +575,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
         this.createValueFromMoveLine(
             accountingReport,
+            groupColumn,
             column,
             line,
             valuesMapByColumn,
@@ -590,6 +599,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
         this.createValueFromMoveLine(
             accountingReport,
+            groupColumn,
             column,
             line,
             valuesMapByColumn,
@@ -614,6 +624,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
         this.createValueFromMoveLine(
             accountingReport,
+            groupColumn,
             column,
             line,
             valuesMapByColumn,
@@ -632,6 +643,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     } else {
       this.createValueFromMoveLine(
           accountingReport,
+          groupColumn,
           column,
           line,
           valuesMapByColumn,
@@ -662,6 +674,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   @Transactional(rollbackOn = {Exception.class})
   protected void createValueFromMoveLine(
       AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
@@ -677,6 +690,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     List<MoveLine> moveLineList =
         this.getMoveLineQuery(
                 accountingReport,
+                groupColumn,
                 column,
                 line,
                 accountSet,
@@ -711,6 +725,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
   protected Query<MoveLine> getMoveLineQuery(
       AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       Set<Account> accountSet,
@@ -721,6 +736,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     if (column.getComputePreviousYear()) {
       startDate = startDate.minusYears(1);
       endDate = endDate.minusYears(1);
+    } else if (column.getComputeOtherPeriod()
+        || (groupColumn != null && groupColumn.getComputeOtherPeriod())) {
+      startDate = accountingReport.getOtherDateFrom();
+      endDate = accountingReport.getOtherDateTo();
     }
 
     return this.buildMoveLineQuery(
