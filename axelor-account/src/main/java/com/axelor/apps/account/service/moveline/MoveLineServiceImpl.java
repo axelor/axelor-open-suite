@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final int jpaLimit = 20;
+  protected final int jpaLimit = 20;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
