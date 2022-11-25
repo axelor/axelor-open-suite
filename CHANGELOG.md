@@ -1,3 +1,44 @@
+## [6.3.5] (2022-11-25)
+
+#### Fixed
+
+* Move line: fixed an issue preventing the currency amount computation when setting a debit or a credit.
+* Bank reconciliation: show move records with status daybook or accounted only.
+* Bank reconciliation: fix reconciliation of manually added bank reconciliation line.
+* Fixed asset cession: fixed accounting account and amounts on generated sale move.
+* Invoice Line: choosing a product from a supplier catalog in an invoice line now has the same behavior as a purchase order line:
+
+Choosing a product from a supplier catalog takes the product name from the supplier catalog.
+If there is a minimum quantity, the user is alerted that the quantity is inferior than the minimum quantity.
+Choosing a quantity inferior than the minimum quantity does not remove the product name anymore.
+
+* Partner: fixed error preventing "group products on printings" configuration from being displayed correctly.
+* Leave Request: fixed issue preventing the user to submit a leave request.
+* Inventory: fixed an issue where base quantities were not updated when starting the inventory, causing inconsistencies.
+* Move: partner and currency fields are now in readonly when there is a move line to prevent inconsistencies.
+* Invoice: fixed an error that could happen when creating a invoice with no active company for the user.
+* Invoice: fixed an error preventing any payment on a duplicated invoice.
+* Timesheet line: fixed an issue were employee was not correctly set on timesheet line creation.
+* Accounting batch annual closure: set the closure/opening moves' status to Daybook when daybook mode is activated and allow to create these moves on a closed period.
+* Stock correction: changing stock location correctly update base quantity in form view.
+* Purchase order: fixed purchase order printing so it is not showing negative lines as discount.
+* Purchase order: added a check on budget distributions on validation of the purchase order to warn the user if the price is not fully imputed on existing budget lines.
+* Product: procurement method is not required anymore.
+* Bank order: created a more explicit error when creating a move for invoice payment if it fails on realization of bank order.
+* Debt recovery: The debt recovery process will now be reset to the first step if all the concerned invoices are considered as new for the recovery.
+* Invoicing project: fixed blocking error (JNPE) when timesheet line product is not filled.
+* Payment move line distribution: these elements are now only generated when the purchase move has a partner.
+* WS Connector: fix numeric value handling on ws connector.
+* Fixed Asset: remove useless checks on failover date that were triggering by mistake.
+* Partner: fixed a regression were some default fields were not filled on creation.
+* Accounting report config line: fix in demo data to correctly import result in configuration lines for accounting report.
+* Year: fixed demo data for periods generated from fiscal year, now the periods generated from demo data last one month instead of one year.
+* Webapp: updated AOP correction version in open-suite-webapp.
+
+#### Removed
+
+* Global Tracking : remove read feature
+
 ## [6.3.4] (2022-10-28)
 
 #### Fixed
@@ -227,6 +268,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.5]: https://github.com/axelor/axelor-open-suite/compare/v6.3.4...v6.3.5
 [6.3.4]: https://github.com/axelor/axelor-open-suite/compare/v6.3.3...v6.3.4
 [6.3.3]: https://github.com/axelor/axelor-open-suite/compare/v6.3.2...v6.3.3
 [6.3.2]: https://github.com/axelor/axelor-open-suite/compare/v6.3.1...v6.3.2
