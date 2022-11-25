@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
@@ -125,10 +126,7 @@ public class InvoiceTermController {
 
       if (request.getContext().getParent() != null) {
         invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
-        if (invoice != null) {
-          invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
-          response.setValues(invoiceTerm);
-        } else {
+        if (invoice == null) {
           moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
 
           if (moveLine != null) {
@@ -140,6 +138,15 @@ public class InvoiceTermController {
             }
           }
         }
+      } else if (request.getContext().get("_invoiceId") != null) {
+        invoice =
+            Beans.get(InvoiceRepository.class)
+                .find(Long.valueOf((Integer) request.getContext().get("_invoiceId")));
+      }
+
+      if (invoice != null) {
+        invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
+        response.setValues(invoiceTerm);
       }
 
       invoiceTermService.setParentFields(invoiceTerm, moveLine, invoice);
