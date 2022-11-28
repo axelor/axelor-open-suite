@@ -1,6 +1,0 @@
----
-title: "FTP Management: Added a generic connector for file transfert (only support SFTP for now)"
-type: feature
-description: |
-  Can be accessed in General data menu, with this new object, new java services have been added
-  in order to upload/download files with a connector.

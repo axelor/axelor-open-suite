@@ -1,3 +1,0 @@
----
-title: "PaymentMoveLineDistribution : only generate these elements when the purchase move has a partner"
-type: fix

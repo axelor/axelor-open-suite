@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.rest.dto;
+package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.tool.api.ResponseStructure;
+import com.axelor.apps.account.db.Invoice;
 
-public class WastedProductResponse extends ResponseStructure {
+public interface InvoiceFinancialDiscountService {
 
-  private Long prodProductId;
+  /**
+   * Set the financial discount informations of the invoice.
+   *
+   * @param invoice
+   */
+  void setFinancialDiscountInformations(Invoice invoice);
 
-  public WastedProductResponse(ProdProduct prodProduct) {
-    super(prodProduct.getVersion());
-    this.prodProductId = prodProduct.getId();
-  }
-
-  public Long getProdProductId() {
-    return prodProductId;
-  }
+  /**
+   * reset the financial discount informations of the invoice
+   *
+   * @param invoice
+   */
+  void resetFinancialDiscountInformations(Invoice invoice);
 }

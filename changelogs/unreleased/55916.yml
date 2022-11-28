@@ -1,8 +1,0 @@
----
-title: "BPM : UI improvement and changes"
-type: change
-description:
-  Migrate BPM query builder with generic builder
-  Migrate mapper changes with bpm mapper
-  Support item as buttons on user task
-  Support item as buttons in View Attributes of task
