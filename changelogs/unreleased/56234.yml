@@ -1,0 +1,3 @@
+---
+title: "Sale order : Fixed the automatic filling when partner change for the field 'Hide discount on prints' according to it value in the price list."
+type: fix
