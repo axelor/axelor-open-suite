@@ -633,7 +633,10 @@ public class DebtRecoveryService {
           levelDebtRecovery = debtRecovery.getDebtRecoveryMethodLine().getSequence();
         }
 
+        LocalDate oldReferenceDate = debtRecovery.getReferenceDate();
         LocalDate referenceDate = this.getReferenceDate(debtRecovery);
+
+        boolean isReset = this.isInvoiceSetNew(debtRecovery, oldReferenceDate);
 
         if (referenceDate != null) {
           log.debug("reference date : {} ", referenceDate);
@@ -656,35 +659,19 @@ public class DebtRecoveryService {
               company.getName());
         }
         if (debtRecovery.getDebtRecoveryMethod() == null) {
-          DebtRecoveryMethod debtRecoveryMethod =
-              debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery);
-          if (debtRecoveryMethod != null) {
-            debtRecovery.setDebtRecoveryMethod(debtRecoveryMethod);
-            debtRecoverySessionService.debtRecoverySession(debtRecovery);
-          } else {
-            throw new AxelorException(
-                debtRecovery,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                "%s :\n"
-                            + I18n.get("Partner")
-                            + " %s, "
-                            + I18n.get("Company")
-                            + " %s : "
-                            + tradingName
-                        != null
-                    ? I18n.get("Trading name") + " %s : "
-                    : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
-                I18n.get(BaseExceptionMessage.EXCEPTION),
-                partner.getName(),
-                company.getName());
-          }
-        } else {
-          debtRecoverySessionService.debtRecoverySession(debtRecovery);
+          fetchDebtRecoveryMethod(partner, company, tradingName, debtRecovery);
         }
+        if (isReset) {
+          debtRecoverySessionService.reset(debtRecovery);
+        }
+        debtRecoverySessionService.debtRecoverySession(debtRecovery);
         if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
           // Si le niveau de relance a évolué
           if (debtRecovery.getDebtRecoveryMethodLine() != null
-              && debtRecovery.getDebtRecoveryMethodLine().getSequence() > levelDebtRecovery) {
+              && !debtRecovery
+                  .getDebtRecoveryMethodLine()
+                  .getSequence()
+                  .equals(levelDebtRecovery)) {
             debtRecoveryActionService.runAction(debtRecovery);
 
             DebtRecoveryHistory debtRecoveryHistory =
@@ -728,6 +715,36 @@ public class DebtRecoveryService {
       debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
     }
     return remindedOk;
+  }
+
+  protected void fetchDebtRecoveryMethod(
+      Partner partner, Company company, TradingName tradingName, DebtRecovery debtRecovery)
+      throws AxelorException {
+    DebtRecoveryMethod debtRecoveryMethod =
+        debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery);
+    if (debtRecoveryMethod != null) {
+      debtRecovery.setDebtRecoveryMethod(debtRecoveryMethod);
+    } else {
+      throw new AxelorException(
+          debtRecovery,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          "%s :\n" + I18n.get("Partner") + " %s, " + I18n.get("Company") + " %s : " + tradingName
+                  != null
+              ? I18n.get("Trading name") + " %s : "
+              : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          partner.getName(),
+          company.getName());
+    }
+  }
+
+  protected boolean isInvoiceSetNew(DebtRecovery debtRecovery, LocalDate oldReferenceDate) {
+
+    if (debtRecovery.getInvoiceDebtRecoverySet() != null && oldReferenceDate != null) {
+      return debtRecovery.getInvoiceDebtRecoverySet().stream()
+          .allMatch(invoice -> invoice.getDueDate().isAfter(oldReferenceDate));
+    }
+    return false;
   }
 
   public void updateInvoiceDebtRecovery(DebtRecovery debtRecovery, List<Invoice> invoiceList) {

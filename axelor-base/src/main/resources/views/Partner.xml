@@ -1459,8 +1459,8 @@
     model="com.axelor.apps.base.db.Partner">
     <field name="$balance"
       expr="#{accountingSituationList.stream().map(
-                    __config__.app.getApp('account')?.partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
-                    : __config__.app.getApp('account')?.partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
+                    __config__.app.getApp('account').partnerBalConfigSelect == 3 ? (x -> x.balanceDueDebtRecoveryCustAccount)
+                    : __config__.app.getApp('account').partnerBalConfigSelect == 2 ? (x -> x.balanceDueCustAccount)
                     : (x -> x.balanceCustAccount)
                 ).sum()}"/>
   </action-record>
@@ -1507,7 +1507,7 @@
     <field name="user" expr="#{__user__}"/>
     <field name="team" expr="#{__user__.activeTeam}"/>
     <field name="language"
-      expr="#{__config__.app.getApp('base')?.getDefaultPartnerLanguage()}"/>
+      expr="eval: __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
     <field name="isCustomer" expr="true"
       if="_isCustomer || (__user__?.activeCompany?.defaultPartnerCategorySelect == 1 &amp;&amp; !_isSupplier &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
     <field name="isSupplier" expr="true"
@@ -1524,7 +1524,7 @@
     <field name="isContact" expr="#{true}"/>
     <field name="companySet" expr="#{__parent__.companySet}"/>
     <field name="language"
-      expr="#{__parent__ != null ? __parent__.language : __config__.app.getApp('base')?.getDefaultPartnerLanguage()}"/>
+      expr="eval: __parent__ != null ? __parent__.language : __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
     <field name="user" expr="#{__parent__.user}"
       if="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"
@@ -1546,7 +1546,7 @@
     <field name="isEmployee" expr="#{true}"/>
     <field name="companySet" expr="#{__parent__.companySet}"/>
     <field name="language"
-      expr="#{__parent__ != null ? __parent__.language : __config__.app.getApp('base')?.getDefaultPartnerLanguage()}"/>
+      expr="eval: __parent__ != null ? __parent__.language : __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
     <field name="user" expr="#{__parent__.user}"
       if="#{__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"

@@ -36,6 +36,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class BankReconciliationLineService {
 
@@ -177,7 +178,9 @@ public class BankReconciliationLineService {
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
     bankReconciliationLine.setMoveLine(moveLine);
     BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
-    bankStatementLine.setMoveLine(bankReconciliationLine.getMoveLine());
+    if (!Objects.isNull(bankStatementLine)) {
+      bankStatementLine.setMoveLine(bankReconciliationLine.getMoveLine());
+    }
     return bankReconciliationLine;
   }
 
@@ -213,8 +216,6 @@ public class BankReconciliationLineService {
   }
 
   public void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine) {
-
-    bankReconciliationLine.setIsPosted(true);
 
     BigDecimal bankReconciledAmount =
         bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit());

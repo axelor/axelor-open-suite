@@ -15,7 +15,7 @@
       required="true" title="To stock location"/>
 
     <date name="estimatedDate" title="Estimated date"/>
-    <date name="realDate" title="Move date" readonly="true"/>
+    <date name="realDate" title="stockMove.realDate" readonly="true"/>
 
     <date name="supplierShipmentDate" title="Supplier Shipment Date"/>
     <string name="supplierShipmentRef" title="Supplier Shipment Ref"/>

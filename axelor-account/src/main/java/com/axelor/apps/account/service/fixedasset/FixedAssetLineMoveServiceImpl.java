@@ -547,7 +547,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               : fixedAsset.getAccountingValue();
       BigDecimal cumulativeDepreciationAmount =
           fixedAssetLine != null ? fixedAssetLine.getCumulativeDepreciation() : null;
-      if (chargeAmount.signum() > 0) {
+      if (chargeAmount.signum() != 0) {
         Account chargeAccount;
         if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION
             || transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
@@ -681,10 +681,6 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
       Account creditAccountOne =
           fixedAsset.getFixedAssetCategory().getRealisedAssetsIncomeAccount();
-      BigDecimal denominator = BigDecimal.ONE.add(taxLine.getValue().divide(new BigDecimal(100)));
-      BigDecimal creditAmountOne =
-          disposalAmount.divide(
-              denominator, FixedAssetServiceImpl.CALCULATION_SCALE, RoundingMode.HALF_UP);
       List<Account> creditAccountTwoList =
           taxLine.getTax().getAccountManagementList().stream()
               .filter(
@@ -698,15 +694,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       Account creditAccountTwo =
           !CollectionUtils.isEmpty(creditAccountTwoList) ? creditAccountTwoList.get(0) : null;
       BigDecimal creditAmountTwo =
-          creditAmountOne
+          disposalAmount
               .multiply(taxLine.getValue().divide(new BigDecimal(100)))
               .setScale(FixedAssetServiceImpl.CALCULATION_SCALE, RoundingMode.HALF_UP);
-      creditAmountOne =
-          creditAmountOne.setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
       creditAmountTwo =
           creditAmountTwo.setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
       Account debitAccount = fixedAsset.getFixedAssetCategory().getDebtReceivableAccount();
-      BigDecimal debitAmount = disposalAmount;
+      BigDecimal debitAmount = disposalAmount.add(creditAmountTwo);
 
       if (creditAccountOne == null || creditAccountTwo == null || debitAccount == null) {
         throw new AxelorException(
@@ -726,7 +720,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               move,
               partner,
               creditAccountOne,
-              creditAmountOne,
+              disposalAmount,
               false,
               disposalDate,
               1,

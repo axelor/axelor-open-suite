@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
+import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
@@ -123,9 +124,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (accountingReport.getReportType().getTypeSelect()
         == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
       fileLink = accountingReportDas2Service.printPreparatoryProcessDeclaration(accountingReport);
+    } else if (accountingReport.getReportType().getTypeSelect()
+        == AccountingReportRepository.REPORT_CUSTOM_STATE) {
+      fileLink = accountingReportPrintService.printCustomReport(accountingReport);
     } else {
       fileLink = accountingReportPrintService.print(accountingReport);
     }
+
     setStatus(accountingReport);
     return fileLink;
   }
@@ -235,6 +240,18 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect()
             != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
+    } else if (accountingReport.getReportType() != null
+        && accountingReport.getReportType().getTypeSelect()
+            == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+      this.addParams(
+          "((self.move.partner.das2Activity is null AND self.account.serviceType IS NOT NULL AND self.account.serviceType.isDas2Declarable is true) "
+              + " OR (self.account.serviceType is null AND self.move.partner.das2Activity IS NOT NULL ))");
+      this.addParams("self.amountRemaining < self.debit + self.credit");
+      JournalType journalType =
+          accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
+      if (journalType != null) {
+        this.addParams("self.move.journal.journalType = ?%d", journalType);
+      }
     }
 
     if (accountingReport.getPaymentMode() != null) {
@@ -297,7 +314,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
     List<Integer> statusSelects = new ArrayList<>();
-    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
+    if (accountingReport.getReportType() != null
+        && accountingReport.getReportType().getTypeSelect()
+            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+      statusSelects.add(MoveRepository.STATUS_DAYBOOK);
+    }
     statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
     if (accountConfigService
             .getAccountConfig(accountingReport.getCompany())
@@ -391,7 +412,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               SequenceRepository.ACCOUNTING_REPORT,
               accountingReport.getCompany(),
               AccountingReport.class,
-              "sequence");
+              "ref");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -406,7 +427,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               SequenceRepository.MOVE_LINE_EXPORT,
               accountingReport.getCompany(),
               AccountingReport.class,
-              "sequence");
+              "ref");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -421,7 +442,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               SequenceRepository.ANALYTIC_REPORT,
               accountingReport.getCompany(),
               AccountingReport.class,
-              "sequence");
+              "ref");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

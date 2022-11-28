@@ -693,8 +693,7 @@
     <field name="orderTypeSelect" expr="eval: _orderTypeSelect" if="_orderTypeSelect != null"/>
     <field name="partnerTypeSelect" expr="eval: _partnerTypeSelect"
       if="_partnerTypeSelect != null"/>
-    <field name="bankOrderDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="bankOrderDate" expr="eval:__config__.date"/>
     <field name="senderCompany" expr="eval:__user__.activeCompany"/>
   </action-record>
 

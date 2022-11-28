@@ -33,7 +33,7 @@
     </panel>
     <panel name="stockCorrectionDetailsPanel" readonlyIf="statusSelect == 2">
       <field name="stockLocation" canEdit="false" grid-view="stock-location-grid"
-        form-view="stock-location-form"/>
+        form-view="stock-location-form" onChange="action-stock-correction-method-set-deault-qtys"/>
       <field name="product" canEdit="false"
         onSelect="action-stock-correction-on-select-product"
         onChange="action-stock-correction-method-set-deault-qtys" grid-view="product-grid"

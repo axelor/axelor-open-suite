@@ -148,7 +148,12 @@ public interface StockMoveLineService {
       throws AxelorException;
 
   public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus)
+      StockLocation stockLocation,
+      StockMoveLine stockMoveLine,
+      int fromStatus,
+      int toStatus,
+      LocalDate date,
+      String origin)
       throws AxelorException;
 
   /**
@@ -281,5 +286,32 @@ public interface StockMoveLineService {
 
   /** To update realQty and conformity of a stock move line (API AOS) */
   void updateStockMoveLine(StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity)
+      throws AxelorException;
+
+  /**
+   * Same as {@link #updateLocations(StockLocation, StockLocation, int, int, List, LocalDate,
+   * boolean)} But instead of creating wap history at with today date,they will be created at date
+   * specified and the origin specified. If origin is null, the behavior will be the same.
+   *
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @param fromStatus
+   * @param toStatus
+   * @param stockMoveLineList
+   * @param lastFutureStockMoveDate
+   * @param realQty
+   * @param date
+   * @throws AxelorException
+   */
+  void updateLocations(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      int fromStatus,
+      int toStatus,
+      List<StockMoveLine> stockMoveLineList,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin)
       throws AxelorException;
 }

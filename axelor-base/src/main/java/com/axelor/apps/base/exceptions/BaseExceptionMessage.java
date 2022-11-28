@@ -158,7 +158,7 @@ public final class BaseExceptionMessage {
       "There is no configured product sequence in the app base config";
 
   public static final String SEQUENCE_ALREADY_EXISTS =
-      "The generated sequence %s already exists. Please fix the configuration of sequence %s.";
+      /*$$(*/ "The generated sequence %s already exists. Please fix the configuration of sequence %s." /*)*/;
 
   /** Importer */
   public static final String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;

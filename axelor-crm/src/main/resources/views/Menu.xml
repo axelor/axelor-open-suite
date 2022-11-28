@@ -16,8 +16,7 @@
     <domain>self.leadStatus.isOpen = true</domain>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
   </action-view>
 
@@ -110,8 +109,7 @@
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem title="Leads historical" name="crm-root-leadHistorical" parent="crm-root"
@@ -281,8 +279,7 @@
     <view-param name="search-filters" value="lead-filters"/>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
   </action-view>
 
@@ -298,8 +295,7 @@
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <!-- CRM Dashboard Entry for CRM.... -->

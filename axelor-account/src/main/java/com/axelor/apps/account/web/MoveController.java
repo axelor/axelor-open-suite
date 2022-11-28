@@ -144,7 +144,7 @@ public class MoveController {
       Move newMove = Beans.get(MoveReverseService.class).generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
-            ActionView.define(I18n.get("Account move"))
+            ActionView.define(I18n.get("Account moves"))
                 .model("com.axelor.apps.account.db.Move")
                 .add("grid", "move-grid")
                 .add("form", "move-form")
@@ -185,7 +185,7 @@ public class MoveController {
                   .collect(Collectors.joining(","));
 
           response.setView(
-              ActionView.define(I18n.get("Account move"))
+              ActionView.define(I18n.get("Account moves"))
                   .model("com.axelor.apps.account.db.Move")
                   .add("grid", "move-grid")
                   .add("form", "move-form")
@@ -248,7 +248,7 @@ public class MoveController {
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
+            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, user)) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
@@ -702,8 +702,7 @@ public class MoveController {
       User user = AuthUtils.getUser();
       response.setValue(
           "$validatePeriod",
-          !Beans.get(PeriodServiceAccount.class)
-              .isAuthorizedToAccountOnPeriod(move.getPeriod(), user));
+          !Beans.get(PeriodServiceAccount.class).isAuthorizedToAccountOnPeriod(move, user));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

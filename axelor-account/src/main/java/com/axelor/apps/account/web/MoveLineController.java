@@ -68,7 +68,6 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -173,25 +172,16 @@ public class MoveLineController {
 
   public void accountingReconcile(ActionRequest request, ActionResponse response) {
 
-    List<MoveLine> moveLineList = new ArrayList<>();
-
-    @SuppressWarnings("unchecked")
-    List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-
     try {
-      if (idList != null) {
-        for (Integer it : idList) {
-          MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
-          if (Beans.get(MoveLineControlService.class).canReconcile(moveLine)) {
-            moveLineList.add(moveLine);
-          }
-        }
-      }
+      @SuppressWarnings("unchecked")
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 
-      if (!moveLineList.isEmpty()) {
-        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
-        response.setReload(true);
-      }
+      MoveLineService moveLineService = Beans.get(MoveLineService.class);
+
+      moveLineService.reconcileMoveLinesWithCacheManagement(
+          moveLineService.getReconcilableMoveLines(idList));
+
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -376,17 +366,19 @@ public class MoveLineController {
                 .getTaxLine(move, moveLine, accountingAccount);
         TaxEquiv taxEquiv = null;
         FiscalPosition fiscalPosition = move.getFiscalPosition();
-        if (fiscalPosition != null) {
-          taxEquiv =
-              Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
-        }
+        if (taxLine != null) {
+          if (fiscalPosition != null) {
+            taxEquiv =
+                Beans.get(FiscalPositionService.class)
+                    .getTaxEquiv(fiscalPosition, taxLine.getTax());
+          }
 
-        response.setValue("taxLine", taxLine);
-        if (taxEquiv != null) {
-          response.setValue("taxEquiv", taxEquiv);
+          response.setValue("taxLine", taxLine);
+          if (taxEquiv != null) {
+            response.setValue("taxEquiv", taxEquiv);
+          }
         }
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -486,7 +478,12 @@ public class MoveLineController {
   public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+
+      Move move = moveLine.getMove();
+      if (move == null) {
+        move = request.getContext().getParent().asType(Move.class);
+      }
+
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
         response.setAttr(
@@ -742,6 +739,10 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
+      if (moveLine.getCredit().add(moveLine.getDebit()).compareTo(BigDecimal.ZERO) == 0) {
+        return;
+      }
+
       if (moveLine.getAccount() != null && moveLine.getAccount().getHasInvoiceTerm()) {
 
         if (moveLine.getMove() == null) {
@@ -753,8 +754,8 @@ public class MoveLineController {
         Beans.get(MoveLineInvoiceTermService.class)
             .generateDefaultInvoiceTerm(moveLine, dueDate, false);
       }
-
       response.setValues(moveLine);
+      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -798,7 +799,7 @@ public class MoveLineController {
         TaxLine taxLine = moveLine.getTaxLine();
         TaxEquiv taxEquiv = null;
         FiscalPosition fiscalPosition = move.getFiscalPosition();
-        if (fiscalPosition != null) {
+        if (fiscalPosition != null && taxLine != null) {
           taxEquiv =
               Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
 

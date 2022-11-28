@@ -53,10 +53,8 @@
   <!-- ACTION RECORD -->
   <action-record name="action-base-batch-record-on-new"
     model="com.axelor.apps.base.db.BaseBatch">
-    <field name="createdOn" expr="eval:__config__.app.getTodayDateTime(null)"/>
     <field name="createdOn"
-      expr="eval:__config__.app.getTodayDateTime(__user__.activeCompany)"
-      if="__user__.activeCompany != null"/>
+      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"/>
     <field name="createdOn"
       expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
