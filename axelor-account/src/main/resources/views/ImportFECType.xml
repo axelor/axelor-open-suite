@@ -6,6 +6,7 @@
   <grid name="import-fec-type-grid" title="Import FEC types"
     model="com.axelor.apps.account.db.ImportFECType">
     <field name="name"/>
+    <field name="isDefaultForValidGeneratedMove"/>
   </grid>
 
 
@@ -15,6 +16,7 @@
       <field name="name"/>
       <field name="bindMetaFile" widget="binary-link"/>
       <field name="functionalOriginSelect"/>
+      <field name="isDefaultForValidGeneratedMove"/>
     </panel>
   </form>
 

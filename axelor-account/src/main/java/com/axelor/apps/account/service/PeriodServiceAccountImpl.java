@@ -21,12 +21,14 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -41,6 +43,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
   protected AccountConfigService accountConfigService;
+  protected MoveRemoveService moveRemoveService;
 
   @Inject
   public PeriodServiceAccountImpl(
@@ -48,31 +51,34 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       AdjustHistoryService adjustHistoryService,
       MoveValidateService moveValidateService,
       MoveRepository moveRepository,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      MoveRemoveService moveRemoveService) {
     super(periodRepo, adjustHistoryService);
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
+    this.moveRemoveService = moveRemoveService;
   }
 
   public void close(Period period) throws AxelorException {
-
     if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
-      moveValidateService.accountingMultiple(getMoveListToValidateQuery(period));
+      moveValidateService.accountingMultiple(
+          getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_DAYBOOK));
       period = periodRepo.find(period.getId());
     }
+    moveRemoveService.deleteMultiple(
+        getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
+
     super.close(period);
   }
 
-  public Query<Move> getMoveListToValidateQuery(Period period) {
+  public Query<Move> getMoveListByPeriodAndStatusQuery(Period period, int status) {
     return moveRepository
         .all()
         .filter(
-            "self.period.id = ?1 AND (self.statusSelect NOT IN (?2,?3, ?4) OR (self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)))",
+            "self.period.id = ?1 AND self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)))",
             period.getId(),
-            MoveRepository.STATUS_NEW,
-            MoveRepository.STATUS_ACCOUNTED,
-            MoveRepository.STATUS_CANCELED)
+            status)
         .order("date")
         .order("id");
   }
@@ -111,7 +117,10 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
 
   @Override
   public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException {
-    if (period != null && period.getYear().getCompany() != null && user.getGroup() != null) {
+    if (period != null
+        && period.getYear().getCompany() != null
+        && user != null
+        && user.getGroup() != null) {
       if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
         return false;
       }
@@ -137,5 +146,12 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       return true;
     }
     return isAuthorizedToAccountOnPeriod(move.getPeriod(), user);
+  }
+
+  @Override
+  public boolean isClosedPeriod(Period period) throws AxelorException {
+    User user = AuthUtils.getUser();
+
+    return super.isClosedPeriod(period) && !this.isAuthorizedToAccountOnPeriod(period, user);
   }
 }

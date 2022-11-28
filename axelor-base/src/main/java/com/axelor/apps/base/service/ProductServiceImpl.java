@@ -94,7 +94,9 @@ public class ProductServiceImpl implements ProductService {
         .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT_CATEGORY)) {
       ProductCategory productCategory = product.getProductCategory();
       if (productCategory.getSequence() != null) {
-        seq = sequenceService.getSequenceNumber(productCategory.getSequence());
+        seq =
+            sequenceService.getSequenceNumber(
+                productCategory.getSequence(), ProductCategory.class, "sequence");
       }
       if (seq == null) {
         throw new AxelorException(
@@ -107,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
         .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT)) {
       Sequence productSequence = appBaseService.getAppBase().getProductSequence();
       if (productSequence != null) {
-        seq = sequenceService.getSequenceNumber(productSequence);
+        seq = sequenceService.getSequenceNumber(productSequence, Product.class, "code");
       }
       if (seq == null) {
         throw new AxelorException(

@@ -36,6 +36,10 @@
     <many-to-one name="validatedByUser" title="Validated By"
       ref="com.axelor.auth.db.User" readonly="true"/>
     <date name="validatedDate" title="Validated On" readonly="true"/>
+    <boolean name="hasBeenCorrected" title="Corrected" default="false"/>
+    <datetime name="correctedDateTime" readonly="true"/>
+    <many-to-one name="correctedUser" ref="com.axelor.auth.db.User" readonly="true"/>
+    <string name="comments" title="Comment" large="true"/>
 
     <!-- Balances -->
 
@@ -63,6 +67,7 @@
 	   	// Status select
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_VALIDATED = 2;
+		public static final int STATUS_UNDER_CORRECTION = 3;
 
 	]]></extra-code>
 

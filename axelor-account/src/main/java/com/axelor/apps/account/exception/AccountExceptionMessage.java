@@ -27,6 +27,9 @@ public final class AccountExceptionMessage {
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
   public static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
       /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
+
+  public static final String IMMO_FIXED_ASSET_GROSS_VALUE_GREATER_ORIGINAL =
+      /*$$(*/ "The input gross value neither can't be greater or equal to the asset gross value nor equal to 0." /*)*/;
   public static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX =
       /*$$(*/ "Disposal quantity can not be equal to the fixed asset max quantity (%s)" /*)*/;
   public static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0 =
@@ -73,6 +76,9 @@ public final class AccountExceptionMessage {
   public static final String NO_NEW_MOVES_SELECTED = /*$$(*/
       "Only the records in status Draft and on a journal allowing simulated entries are shifted to Simulated status" /*)*/;
 
+  public static final String NO_MOVES_SELECTED_MASS_REVERSE = /*$$(*/
+      "Please select moves that are not simulated." /*)*/;
+
   public static final String MOVE_ACCOUNTING_NOT_OK = /*$$(*/
       "Error or anomaly detected making it impossible to proceed for the following move accounting operation : %s . Please check the logs." /*)*/;
   public static final String MOVE_ACCOUNTING_OK = /*$$(*/
@@ -91,10 +97,16 @@ public final class AccountExceptionMessage {
       "Error in move deleting or archiving, please check the log" /*)*/;
   public static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
       "This move %s can not be archived because it is linked to another piece named %s." /*)*/;
+  public static final String MOVE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
+      "This move %s can not be removed because it is linked to another piece named %s." /*)*/;
   public static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
       "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
+  public static final String MOVE_LINE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
+      "This move line %s can not be removed because it is linked to another piece named %s." /*)*/;
   public static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
       "The move lines %s are reconciled and should not have been removed." /*)*/;
+  public static final String MOVE_LINE_RECONCILE_LINE_NO_SELECTED = /*$$(*/
+      "No move lines to reconcile." /*)*/;
   public static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
       "The move line %s is missing description in order to create fixed asset" /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
@@ -287,7 +299,53 @@ public final class AccountExceptionMessage {
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
   public static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
+
+  public static final String MOVE_LINE_INVOICE_TERM_SUM_AMOUNT = /*$$(*/
+      "The sum of all invoice terms is not equal to the move line amount" /*)*/;
+
+  public static final String MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT = /*$$(*/
+      "The sum of all invoice terms in company currency is not equal to the move line amount" /*)*/;
+
+  public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK = /*$$(*/
+      "The move payment condition is defining at least one holdback and there is no corresponding move line. Please manage invoice terms there manually." /*)*/;
+
+  public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK_2 = /*$$(*/
+      "There is at least a holdback move line but move payment condition is not defining any. Please manage invoice terms there manually." /*)*/;
+
+  /* Invoice payment controller */
+  public static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
+      "You must select at least one invoice term line to pay" /*)*/;
+
+  /* Invoice term controller */
+  public static final String INVOICE_INVOICE_TERM_INVALID_GRANTED_AMOUNT = /*$$(*/
+      "The input grantedAmount can't be greater or equal than the term amount." /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_PARTIAL_REASON_EMPTY = /*$$(*/
+      "The PFP partial reason is required to partially pass-for-payment a term." /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_PFP_GRANTED_AMOUNT_ZERO = /*$$(*/
+      "The PFP granted amount can't be equal to zero in order to partially pass-for-payment a term." /*)*/;
+  public static final String INVOICE_INVOICE_TERM_NOT_SAVED = /*$$(*/
+      "Please save this invoice term first." /*)*/;
+  public static final String INVOICE_INVOICE_TERM_MASS_UPDATE_NO_RECORD = /*$$(*/
+      "Please select at least a record within the list to proceed to such action." /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_MASS_VALIDATION_SUCCESSFUL = /*$$(*/
+      "%s records(s) updated on %s record(s) selected(s)." /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_MASS_REFUSAL_SUCCESSFUL = /*$$(*/
+      "%s records(s) refused on %s record(s) selected(s)." /*)*/;
+
+  public static final String MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE = /*$$(*/
+      "At least an invoice term is either implicated in a PFP process, or involved in a payment process, or paid partially or completely. Thus, please proceed as far as possible to the creation/update/deletion of the invoice terms manually." /*)*/;
   public static final String MOVE_LINE_MISSING_DATE = /*$$(*/ "Missing date on move line" /*)*/;
+
+  public static final String MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE = /*$$(*/
+      "The sum of all invoice terms percentages is not equal to 100." /*)*/;
+
+  public static final String MOVE_LINE_MISSING_ACCOUNT_ON_TAX_AND_FISCAL_POSITION = /*$$(*/
+      "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
+
   public static final String MOVE_LINE_8 = /*$$(*/
       "Account missing on the tax line %s nor on fiscal position %s (company : %s)" /*)*/;
 
@@ -315,10 +373,15 @@ public final class AccountExceptionMessage {
       "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
   public static final String MOVE_12 = /*$$(*/
       "The currency is missing on the account move %s" /*)*/;
+  public static final String MOVE_13 = /*$$(*/
+      "The journal %s is in the 'journals to close' of the period %s, please remove it." /*)*/;
   public static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
   public static final String MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL = /*$$(*/
       "The partner which was already selected is not compatible with the selected journal. Please reselect a compatible partner or modify the journal settings accordingly." /*)*/;
+
+  public static final String MOVE_DAYBOOK_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be daybooked because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   public static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -355,6 +418,9 @@ public final class AccountExceptionMessage {
       "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/;
   public static final String RECONCILE_CAN_NOT_BE_REMOVE = /*$$(*/
       "The reconcile %s cannot be removed, please select draft reconcile(s)" /*)*/;
+
+  public static final String RECONCILE_WRONG_CURRENCY = /*$$(*/
+      "Reconcile involves two different currencies and neither of them is the company currency" /*)*/;
 
   /** Reimbursement service and controller */
   public static final String REIMBURSEMENT_1 = /*$$(*/
@@ -645,6 +711,11 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_CONFIG_50 = /*$$(*/
       "%s : You must configure a sale financial discount account for the company %s" /*)*/;
 
+  public static final String ACCOUNT_CONFIG_MISSING_HOLDBACK_CUSTOMER = /*$$(*/
+      "%s : You must configure a holdback customer account for the company %s" /*)*/;
+  public static final String ACCOUNT_CONFIG_MISSING_HOLDBACK_SUPPLIER = /*$$(*/
+      "%s : You must configure a holdback supplier account for the company %s" /*)*/;
+
   public static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_SEQUENCE_2 = /*$$(*/
@@ -751,6 +822,15 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
       "Their is at least one invoice selected that it is not validated to pay" /*)*/;
 
+  public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PURCHASE = /*$$(*/
+      "This invoice/refund indicates that the supplier offers the possibility to obtain a financial discount but the system does not support at the moment financial discount on invoices in a currency different from the company currency. Please remove the invoice financial discount settings on the invoice to proceed." /*)*/;
+
+  public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_SALE = /*$$(*/
+      "This invoice/refund indicates that the customer is eligible to a financial discount but the system does not support at the moment financial discount on invoices in a currency different from the company currency. Please remove the invoice financial discount settings on the invoice to proceed." /*)*/;
+
+  public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER = /*$$(*/
+      "Please be aware that the selected %s offers financial discounts but the system does not support at the moment financial discount on invoices/refunds in a currency different from the company currency." /*)*/;
+
   /** Invoice line generator */
   public static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
       "You must select a currency for partner %s (%s)" /*)*/;
@@ -804,6 +884,12 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_PAYMENT_NO_AMOUNT_REMAINING = /*$$(*/
       "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0." /*)*/;
 
+  public static final String INVOICE_PAYMENT_AMOUNT_TOO_HIGH = /*$$(*/
+      "Paid amount is superior to remaining amount(s) on selected invoice term(s)." /*)*/;
+
+  public static final String INVOICE_PAYMENT_CANNOT_RECONCILE = /*$$(*/
+      "Invoice move line %s with account %s couldn't be reconciled with customer move line %s with account %s." /*)*/;
+
   /** Ventilate state */
   public static final String VENTILATE_STATE_1 = /*$$(*/
       "Invoice's or credit note's date can't be previous last invoice ventilated's date : %s" /*)*/;
@@ -849,6 +935,10 @@ public final class AccountExceptionMessage {
 
   public static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
       "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
+
+  public static final String PAYMENT_MODE_CASH_ACCOUNT = /*$$(*/
+      "You must configure a %scash account for the company %s and the payment mode %s" /*)*/;
+
   /** Payment voucher control service */
   public static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
       "%s : Payment voucher n° %s, the paid amount should be positive" /*)*/;
@@ -875,6 +965,9 @@ public final class AccountExceptionMessage {
   /** Payment voucher controller */
   public static final String PAYMENT_VOUCHER_REMOVE_NOT_OK = /*$$(*/
       "You can't remove this payment voucher as it is already used in a move." /*)*/;
+
+  public static final String PAYMENT_VOUCHER_NOT_GENERATE_ALL = /*$$(*/
+      "Some due elements could not be loaded there was no amount left to pay." /*)*/;
 
   /** Payment schedule line service */
   public static final String PAYMENT_SCHEDULE_LINE_NO_DIRECT_DEBIT_PAYMENT_MODE = /*$$(*/
@@ -905,8 +998,38 @@ public final class AccountExceptionMessage {
   public static final String
       INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
+
+  public static final String INVOICE_MISSING_CUT_OFF_DATE = /*$$(*/
+      "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management" /*)*/;
+
+  public static final String NO_CUT_OFF_TO_APPLY = /*$$(*/
+      "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line." /*)*/;
+
   public static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_AMOUNT_MISMATCH = /*$$(*/
+      "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/refund" /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_PERCENTAGE_MISMATCH = /*$$(*/
+      "The sum of invoice payment term lines must be equal to 100%" /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_CREATION_PROHIBITED = /*$$(*/
+      "The invoice had already been paid, therefore invoice term creation is not possible." /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_DELETION_PROHIBITED = /*$$(*/
+      "The invoice had already been paid partially or totally, therefore invoice term deletion is not possible." /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
+      "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_ACCOUNT = /*$$(*/
+      "The invoice's partner account doesn't have invoice terms activated. Ventilating an invoice is not possible with an account without invoice terms." /*)*/;
+
+  public static final String RECONCILE_NO_AVAILABLE_INVOICE_TERM = /*$$(*/
+      "Payment can't be processed at the moment on invoice as there is no invoice term available to pay. Please check current unpaid invoice term record(s) if they are already awaiting a payment or maybe, if activated, they didn't pass the PFP process." /*)*/;
+  public static final String RECONCILE_NOT_ENOUGH_AMOUNT = /*$$(*/
+      "The remaining amount of the available invoice term(s) for payment is lower than the amount to reconcile. The reconciliation process couldn't succeed." /*)*/;
 
   /** Move template controller */
   public static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
@@ -914,6 +1037,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_TEMPLATE_2 = /*$$(*/ "Error in move generation" /*)*/;
   public static final String MOVE_TEMPLATE_3 = /*$$(*/ "Generated moves" /*)*/;
   public static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
+
+  public static final String MOVE_MISSING_CUT_OFF_DATE = /*$$(*/
+      "Please enter a Cut off start and end date for the move lines that have an account Cut off management" /*)*/;
 
   /** Budget service */
   public static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
@@ -930,6 +1056,11 @@ public final class AccountExceptionMessage {
       "You cannot delete this deposit slip." /*)*/;
   public static final String DEPOSIT_SLIP_ALREADY_PUBLISHED = /*$$(*/
       "The deposit slip has already been published." /*)*/;
+  public static final String DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO = /*$$(*/
+      "The deposit slip contains payment voucher with missing infos (cheque number, cheque bank, cheque owner, deposit date)." /*)*/;
+
+  public static final String DEPOSIT_SLIP_NOT_PUBLISHED = /*$$(*/
+      "The deposit slip is not published." /*)*/;
   public static final String DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE = /*$$(*/
       "Unsupported payment mode type" /*)*/;
 
@@ -1018,6 +1149,18 @@ public final class AccountExceptionMessage {
   public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_2 = /*$$(*/
       "%s : Error : You must configure a year for the batch configurator %s" /*)*/;
 
+  public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_3 = /*$$(*/
+      "%s : Error : You must configure a reported balance journal in the account configuration for the batch configurator %s" /*)*/;
+
+  public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_4 = /*$$(*/
+      "In order to generate moves in simulated status, the configured reported balance journal must support simulated moves. To proceed, please disable option \"Simulate generated moves\" in the closure batch or update the configuration of journal %s." /*)*/;
+
+  public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_5 = /*$$(*/
+      "%s : Error : You must configure a result profit account and a year opening account in the account configuration" /*)*/;
+
+  public static final String BATCH_CLOSE_ANNUAL_ACCOUNT_6 = /*$$(*/
+      "%s : Error : You must configure a result loss account and a year opening account in the account configuration" /*)*/;
+
   public static final String BATCH_DOES_NOT_EXIST = /*$$(*/ "The batch does not exist." /*)*/;
 
   public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING = /*$$(*/
@@ -1090,11 +1233,82 @@ public final class AccountExceptionMessage {
   // Split message
   public static final String SPLIT_MESSAGE_COMMENT = /*$$(*/ "Split of %.2f realized on %s" /*)*/;
 
+  public static final String SPLIT_MESSAGE_COMMENT_AMOUNT = /*$$(*/
+      "Split of %.2f %s realized on %s" /*)*/;
+
   public static final String BATCH_BILL_OF_EXCHANGE_ACCOUNT_MISSING = /*$$(*/
       "Account '%s' is missing in account config" /*)*/;
 
   public static final String NOTE_BILLS_CONFIG_SEQUENCE = /*$$(*/
       "%s : Please, configure a sequence for the note bills and the company %s" /*)*/;
+
+  public static final String ACCOUNT_REGULATORY_REMOVE = /*$$(*/
+      "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator." /*)*/;
+
+  public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED = /*$$(*/
+      "The distribution is wrong, some axes percentage values are not equal to 100%" /*)*/;
+
+  public static final String ACCOUNT_CODE_CHAR_EXCEEDED = /*$$(*/
+      "The input code length %s is higher than the defined parameter %s in the company to which belong this account. Code will be corrected to fit this requirement" /*)*/;
+
+  public static final String ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT = /*$$(*/
+      "Line N° %s with code %s has not been imported as code length is overtaking the limit parameter for accounts" /*)*/;
+
+  public static final String ANALYTIC_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
+      "This analytic account is the parent of at least an existing analytic account assigned to another company. The association to this company will be possible once all analytic accounts which have as parent this account will be either shared or assigned to this specific company" /*)*/;
+
+  public static final String ANALYTIC_AXIS_ACCOUNT_ERROR_ON_COMPANY = /*$$(*/
+      "Can't proceed, at least one analytic account of this axis is associated to another company." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG = /*$$(*/
+      "At least a record is linked to this analytic configuration, are you sure you want to proceed ?" /*)*/;
+
+  public static final String ACCOUNTING_SITUATION_VAT_SYSTEM_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
+
+  public static final String COMPANY_PARTNER_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing value in partner field on the company %s configuration." /*)*/;
+
+  public static final String COMPANY_PARTNER_ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
+
+  public static final String COMPANY_PARTNER_VAT_SYSTEM_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
+
+  public static final String ACCOUNT_VAT_SYSTEM_NOT_FOUND = /*$$(*/
+      "Tax lines can't be computed due to missing value in the field vat system configuration for the account %s." /*)*/;
+
+  public static final String TAX_MOVELINE_VAT_SYSTEM_DEFAULT = /*$$(*/
+      "At least one tax accounting move line associated to the move %s is not correctly set in terms of vat system settings. In order to avoid troubles in the tax declaration, we advise you to use the button generate tax while entering manually a move to avoid such misconfiguration. The vat system value can be changed on the tax move line in the tab 'Others'" /*)*/;
+
+  public static final String SAME_TAX_MOVE_LINES = /*$$(*/
+      "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly." /*)*/;
+
+  public static final String NO_VALUES_IN_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
+      "Error in the analytic distribution template. Please for each line give a value to analytic axis, analytic account and analytic journal." /*)*/;
+
+  public static final String ACCOUNT_CLOSURE_ASSISTANT_ALREADY_EXISTS_FOR_SAME_YEAR = /*$$(*/
+      "There is already a closure assistant for the fiscal year %s and company %s." /*)*/;
+
+  public static final String PAYMENT_SESSION_NO_SEQ = /*$$(*/
+      "There is no sequence set for the payment session for the company %s" /*)*/;
+
+  public static final String PAYMENT_SESSION_NO_EMAIL_SENT = /*$$(*/
+      "No email have been sent." /*)*/;
+
+  public static final String PAYMENT_SESSION_EMAIL_SENT = /*$$(*/ "%d emails have been sent." /*)*/;
+
+  public static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
+      "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;
+
+  public static final String PAYMENT_SESSION_GENERATED_MOVES = /*$$(*/
+      "%d accounting move(s) successfully generated." /*)*/;
+
+  public static final String PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE = /*$$(*/
+      "The balance of the retrieved invoice terms for the partner %s and this bank details is negative while it shouldn't be in regards to the payment mode used %s. This/These invoice(s) term(s) must be unselected to obtain a positive balance before proceeding to the validation of the session." /*)*/;
+
+  public static final String SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
+      "Specific Analytic Distribution Template" /*)*/;
 
   public static final String FIXED_ASSET_GROSS_VALUE_0 = /*$$(*/
       "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
@@ -1136,11 +1350,109 @@ public final class AccountExceptionMessage {
   public static final String CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
 
+  public static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
+      "No partner account was found for company %s." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_ACCOUNT = /*$$(*/
+      "Please select a purchase financial discount account in account config for company %s." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_ACCOUNT = /*$$(*/
+      "Please select a sale financial discount account in account config for company %s." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_TAX = /*$$(*/
+      "Please select a purchase financial discount tax in account config for company %s." /*)*/;
+
+  public static final String ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_TAX = /*$$(*/
+      "Please select a sale financial discount tax in account config for company %s." /*)*/;
+
   public static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
 
+  public static final String PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND = /*$$(*/
+      "Holdback invoice term cannot be reconciled with refund invoice term, please unselect refund invoice terms in order to continue." /*)*/;
+
   public static final String MOVE_14 = /*$$(*/
       "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
+
+  /** Accounting cut off service */
+  public static final String ACCOUNTING_CUT_OFF_GENERATION_REPORT = /*$$(*/
+      "Accounting cut off generation report :" /*)*/;
+
+  public static final String ACCOUNTING_CUT_OFF_MOVE_PROCESSED = /*$$(*/ "Move(s) processed" /*)*/;
+
+  public static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
+      "You must select at least one line to validate" /*)*/;
+
+  public static final String ACCOUNT_TAX_CONFIG_MISSING = /*$$(*/
+      "Accounting configuration is missing for Tax: %s (company: %s)" /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_PURCH_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a VAT Regularization account on purchase for Tax: %s (company: %s)" /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_SALE_VAT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a VAT Regularization account on sale for Tax: %s (company: %s)" /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "No account found for Tax: %s (company: %s)" /*)*/;
+
+  public static final String
+      ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select an allowed financial discount account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
+  public static final String
+      ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select an allowed financial discount account on payments for Tax: %s (company: %s)" /*)*/;
+  public static final String
+      ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select an obtained financial discount account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
+  public static final String
+      ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select an obtained financial discount account on payments for Tax: %s (company: %s)" /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a sale account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
+  public static final String ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a sale account on payments for Tax: %s (company: %s)" /*)*/;
+  public static final String
+      ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select a purchase account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
+  public static final String
+      ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select a purchase account on payments for Tax: %s (company: %s)" /*)*/;
+
+  public static final String
+      ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select a purchase fixed assets account on payments for Tax: %s (company: %s)" /*)*/;
+
+  public static final String
+      ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
+          "Please select a purchase fixed assets account on payments for Tax: %s (company: %s)" /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_FINANCIAL_DISCOUNT_ACCOUNT_MISSING_TAX = /*$$(*/
+      "Please select a financial discount account for Tax: %s (company: %s)" /*)*/;
+
+  public static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION = /*$$(*/
+      "The bank statement cannot be removed because of bank reconciliation, please remove those references %s" /*)*/;
+  public static final String
+      BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION_LINE = /*$$(*/
+          "The bank statement cannot be removed because of bank reconciliation line, please remove those references %s" /*)*/;
+
+  public static final String PAYMENT_SESSION_MULTIPLE_DELETION = /*$$(*/
+      "Only the payment sessions at the status 'Cancelled' have been deleted." /*)*/;
+
+  public static final String FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE = /*$$(*/
+      "Please pay attention to the fact that Fiscal and Economic depreciation plan are not identical, we advise you to add a derogatory depreciation plan." /*)*/;
+
+  public static final String MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE = /*$$(*/
+      "Watch out, a record with same reference/accounting voucher (%s) already exists for the partner %s and the fiscal year %s." /*)*/;
+
+  public static final String MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE = /*$$(*/
+      "Watch out, a record with same accounting voucher/reference (%s) already exists for the partner %s and the fiscal year %s. Please correct or provide a more specific accounting voucher/reference." /*)*/;
+
+  public static final String MOVE_INVOICE_TERM_CANNOT_UPDATE = /*$$(*/
+      "Please pay attention that invoice terms will be updated except the terms already reconciled." /*)*/;
+
+  public static final String PAYMENT_SESSION_INVOICE_TERM_WITH_IN_ACTIVE_BANK_DETAILS = /*$$(*/
+      "The payment session comprises at least one term associated to bank details which is inactive. Please unselect this/those term(s) from the session or change bankdetails on this/those term(s) or set the following bankdetails record(s) as active to proceed : %s" /*)*/;
 
   public static final String MOVE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY = /*$$(*/
       "Inconsistency detected as the company defined on the move %s is different from the company associated to the journal %s." /*)*/;
@@ -1152,6 +1464,18 @@ public final class AccountExceptionMessage {
       MOVE_LINE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY_ACCOUNT_COMPANY = /*$$(*/
           "Inconsistency detected as the company defined on the journal %s is different from the company associated to the accounts on the move line(s)." /*)*/;
 
+  public static final String MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER = /*$$(*/
+      "One of the move line has the partner %s whereas the partner in the header is %s." /*)*/;
+
   public static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
       "You must configure an account for cashier regulation." /*)*/;
+
+  public static final String MOVE_INVOICE_TERM_IN_PAYMENT_VOUCHER_CHANGE = /*$$(*/
+      "At least one of the invoice term is selected in at least one payment voucher process %s. Thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms (only)." /*)*/;
+
+  public static final String MOVE_INVOICE_TERM_IN_PAYMENT_SESSION_CHANGE = /*$$(*/
+      "At least one of the invoice term is selected in at least one payment session process %s. Thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms (only)." /*)*/;
+
+  public static final String MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE = /*$$(*/
+      "At least one of the invoice term is paid or partially paid, thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms." /*)*/;
 }

@@ -381,13 +381,16 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
           fixedAsset.getCompany().getName());
     }
     String seq =
-        sequenceService.getSequenceNumber(SequenceRepository.FIXED_ASSET, fixedAsset.getCompany());
+        sequenceService.getSequenceNumber(
+            SequenceRepository.FIXED_ASSET,
+            fixedAsset.getCompany(),
+            FixedAsset.class,
+            "fixedAssetSeq");
     return seq;
   }
 
   @Override
-  public FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty)
-      throws AxelorException {
+  public FixedAsset copyFixedAsset(FixedAsset fixedAsset) throws AxelorException {
     FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
     // Adding this copy because copy does not copy list
     fixedAssetLineService.copyFixedAssetLineList(fixedAsset, newFixedAsset);

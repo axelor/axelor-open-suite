@@ -68,4 +68,6 @@ public interface MoveValidateService {
   void freezeAccountAndPartnerFieldsOnMoveLines(Move move);
 
   void accountingMultiple(Query<Move> moveListQuery) throws AxelorException;
+
+  void checkMoveLinesPartner(Move move) throws AxelorException;
 }

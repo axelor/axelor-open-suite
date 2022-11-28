@@ -1,3 +1,0 @@
----
-title : "Invoice: Fixed a error that could happen when creating a invoice with no active company for the user"
-type: fix 

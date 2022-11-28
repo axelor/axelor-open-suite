@@ -73,6 +73,7 @@
       <field name="accountNbr" colSpan="3"/>
       <field name="bbanKey" colSpan="3"/>
       <field name="bank.country.alpha2Code" hidden="true"/>
+      <field name="fullName" hidden="true"/>
     </panel>
     <panel name="specificNotesPanel" title="Specific notes" colSpan="12"
       if-module="axelor-account">

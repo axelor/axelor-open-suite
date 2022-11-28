@@ -95,7 +95,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -128,6 +128,53 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="Locale" id="3925">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">fr</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4735">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -148,7 +195,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -418,24 +465,41 @@ Case when AccountType.technical_type_select = 'tax' then
 		end
 	end
 end as creditTaxAmount
-
-
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_account as Account on (MoveLine.account = Account.id)
 left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
+left outer join public.base_partner as MoveLinePartner on MoveLine.partner = MoveLinePartner.id
+left outer join public.account_accounting_situation as MoveLinePartnerAccountingSituation on MoveLinePartner.id = MoveLinePartnerAccountingSituation.partner
+
+left outer join public.base_company as Company on Move.company = Company.id
+left outer join public.base_partner as CompanyPartner on Company.partner = CompanyPartner.id
+left outer join public.account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
+
 left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
-where 
-(AccountingReport.currency = Move.company_currency) 
+where (AccountingReport.currency = Move.company_currency) 
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND MoveLine.tax_line is not null
-AND Tax.type_select = 2
+AND (((AccountType.technical_type_select not like 'tax' 
+		and ((Move.functional_origin_select = 3 
+				and (CompanyAccountingSituation.vat_system_select = 2 
+						or (CompanyAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1)))
+			or  (Move.functional_origin_select = 4 
+				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
+						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1) ))))) 
+	or ((AccountType.technical_type_select like 'tax' 
+		and ((Move.functional_origin_select = 3 
+				and (CompanyAccountingSituation.vat_system_select = 2 
+						or (CompanyAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1))))
+			or  (Move.functional_origin_select = 4 
+				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
+						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1)))))) 
+AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -443,7 +507,9 @@ AND (AccountingReport.display_opening_accounting_moves is true
 	OR(AccountingReport.display_opening_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND  Move.ignore_in_accounting_ok = false
-order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
+AND (CompanyAccountingSituation.company = Company.id)
+AND (MoveLinePartnerAccountingSituation.company = Company.id)
+order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
@@ -763,39 +829,40 @@ Tax.name as taxName,
 FiscalPosition.code as fiscalPositionCode,
 TaxLine.value as taxLineValue, 
 sum(Case  when AccountType.technical_type_select != 'tax' then 
-	Case when Move.functional_origin_select = 3 then 0 else 
+	Case when Move.functional_origin_select = 3 then null else 
 		Case when Move.functional_origin_select = 4 then MoveLine.debit - MoveLine.credit else MoveLine.debit
 		end
 	end
-else 0
 end) as debit,
 sum(Case when AccountType.technical_type_select = 'tax' then 
-	Case when Move.functional_origin_select = 3 then 0 else 
+	Case when Move.functional_origin_select = 3 then null else 
 		Case when Move.functional_origin_select = 4 then MoveLine.debit - MoveLine.credit else MoveLine.debit
 		end
 	end
-else 0
 end) as debitTaxAmount,
-sum(Case  when AccountType.technical_type_select != 'tax' then
+sum(Case  when AccountType.technical_type_select != 'tax' then 
 	Case when Move.functional_origin_select = 3 then MoveLine.credit - MoveLine.debit else 
-		Case when Move.functional_origin_select = 4 then 0 else MoveLine.credit
+		Case when Move.functional_origin_select = 4 then null else MoveLine.credit
 		end
 	end
-else 0
 end) as credit,
 sum(Case when AccountType.technical_type_select = 'tax' then 
 	Case when Move.functional_origin_select = 3 then MoveLine.credit - MoveLine.debit else 
-		Case when Move.functional_origin_select = 4 then 0 else MoveLine.credit
+		Case when Move.functional_origin_select = 4 then null else MoveLine.credit
 		end
 	end
-else 0
 end) as creditTaxAmount
-
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_account as Account on (MoveLine.account = Account.id)
+left outer join public.base_partner as MoveLinePartner on MoveLine.partner = MoveLinePartner.id
+left outer join public.account_accounting_situation as MoveLinePartnerAccountingSituation on MoveLinePartner.id = MoveLinePartnerAccountingSituation.partner
+
 left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
+left outer join public.base_company as Company on Move.company = Company.id
+left outer join public.base_partner as CompanyPartner on Company.partner = CompanyPartner.id
+left outer join public.account_accounting_situation as CompanyAccountingSituation on CompanyPartner.id = CompanyAccountingSituation.partner
 left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
@@ -804,9 +871,22 @@ where
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
-AND (Move.status_select = 3 OR Move.status_select = 2) 
+AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move)) 
 AND MoveLine.tax_line is not null
-AND Tax.type_select = 2
+AND (((AccountType.technical_type_select not like 'tax' 
+		and ((Move.functional_origin_select = 3 
+				and (CompanyAccountingSituation.vat_system_select = 2 
+						or (CompanyAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1)))
+			or  (Move.functional_origin_select = 4 
+				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
+						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1) ))))) 
+	or ((AccountType.technical_type_select like 'tax' 
+		and ((Move.functional_origin_select = 3 
+				and (CompanyAccountingSituation.vat_system_select = 2 
+						or (CompanyAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1))))
+			or  (Move.functional_origin_select = 4 
+				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
+						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1)))))) 
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -814,8 +894,61 @@ AND (AccountingReport.display_opening_accounting_moves is true
 	OR(AccountingReport.display_opening_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND  Move.ignore_in_accounting_ok = false
+AND (CompanyAccountingSituation.company = Company.id)
+AND (MoveLinePartnerAccountingSituation.company = Company.id)
 group by Tax.id, TaxLine.value, FiscalPosition.code
 order by Tax.code ASC]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="4197">
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="dataType">string</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">Locale</property>
+                    <property name="dataType">string</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">message_key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">message_key</property>
+                    <property name="nativeName">message_key</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
+from meta_translation as LangTranslate 
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
         </oda-data-set>
     </data-sets>
     <cubes>
@@ -1033,12 +1166,29 @@ order by Tax.code ASC]]></xml-property>
                     </column>
                     <row id="3993">
                         <cell id="3994">
-                            <label id="3995">
+                            <text id="4906">
                                 <property name="fontWeight">bold</property>
-                                <property name="textAlign">right</property>
                                 <property name="display">inline</property>
-                                <text-property name="text">Société : </text-property>
-                            </label>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType12.company'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                            </text>
                             <text id="3996">
                                 <property name="fontWeight">normal</property>
                                 <property name="display">inline</property>
@@ -1047,12 +1197,29 @@ order by Tax.code ASC]]></xml-property>
                             </text>
                         </cell>
                         <cell id="3997">
-                            <label id="3998">
+                            <text id="4907">
                                 <property name="fontWeight">bold</property>
-                                <property name="textAlign">right</property>
                                 <property name="display">inline</property>
-                                <text-property name="text">Exercice : </text-property>
-                            </label>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType12.year'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                            </text>
                             <text id="3999">
                                 <property name="fontWeight">normal</property>
                                 <property name="display">inline</property>
@@ -1061,12 +1228,29 @@ order by Tax.code ASC]]></xml-property>
                             </text>
                         </cell>
                         <cell id="4000">
-                            <label id="4001">
+                            <text id="4909">
                                 <property name="fontWeight">bold</property>
-                                <property name="textAlign">right</property>
                                 <property name="display">inline</property>
-                                <text-property name="text">Devise : </text-property>
-                            </label>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType12.currency'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                            </text>
                             <text id="4002">
                                 <property name="fontWeight">normal</property>
                                 <property name="display">inline</property>
@@ -1078,12 +1262,30 @@ order by Tax.code ASC]]></xml-property>
                     <row id="4003">
                         <cell id="4004"/>
                         <cell id="4005">
-                            <label id="4006">
+                            <text id="4908">
                                 <property name="fontWeight">bold</property>
-                                <property name="textAlign">right</property>
+                                <property name="textAlign">left</property>
                                 <property name="display">inline</property>
-                                <text-property name="text">Du : </text-property>
-                            </label>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType12.from'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                            </text>
                             <data id="4178">
                                 <structure name="dateTimeFormat">
                                     <property name="category">Short Date</property>
@@ -1094,12 +1296,30 @@ order by Tax.code ASC]]></xml-property>
                             </data>
                         </cell>
                         <cell id="4008">
-                            <label id="4009">
+                            <text id="4910">
                                 <property name="fontWeight">bold</property>
-                                <property name="textAlign">right</property>
+                                <property name="textAlign">left</property>
                                 <property name="display">inline</property>
-                                <text-property name="text">Au : </text-property>
-                            </label>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType12.to'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                            </text>
                             <data id="4179">
                                 <structure name="dateTimeFormat">
                                     <property name="category">Short Date</property>
@@ -1121,65 +1341,123 @@ order by Tax.code ASC]]></xml-property>
                 </grid>
             </page-header>
             <page-footer>
-                <grid id="3931">
-                    <column id="4021"/>
-                    <column id="3943">
-                        <property name="width">10%</property>
+                <grid id="3098">
+                    <property name="width">11.033333333333333in</property>
+                    <property name="dataSet">AccountingReportDS</property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">ReportDateEdition</property>
+                            <text-property name="displayName">ReportDateEdition</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["ReportDateEdition"]</expression>
+                            <property name="dataType">date-time</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                    </list-property>
+                    <column id="4257">
+                        <property name="width">15%</property>
                     </column>
-                    <column id="3932">
+                    <column id="3099"/>
+                    <column id="4249">
+                        <property name="width">15%</property>
+                    </column>
+                    <column id="4251">
                         <property name="width">6%</property>
                     </column>
-                    <column id="3933">
+                    <column id="4253">
                         <property name="width">3%</property>
                     </column>
-                    <column id="3934">
+                    <column id="3100">
                         <property name="width">6%</property>
                     </column>
-                    <row id="3935">
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <cell id="4020">
-                            <text id="4022">
-                                <property name="fontWeight">bold</property>
-                                <property name="textAlign">center</property>
-                                <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[ETAT D'AIDE A LA DECLARATION DE TVA]]></text-property>
-                            </text>
-                        </cell>
-                        <cell id="3942">
-                            <text id="3128">
-                                <property name="fontSize">9pt</property>
-                                <property name="display">inline</property>
+                    <row id="3101">
+                        <cell id="4256">
+                            <image id="4733">
+                                <property name="height">44px</property>
+                                <property name="width">107px</property>
                                 <property name="dataSet">AccountingReportDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                    </structure>
+                                </list-property>
                                 <list-property name="boundDataColumns">
                                     <structure>
-                                        <property name="name">ReportDateEdition</property>
-                                        <text-property name="displayName">ReportDateEdition</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["ReportDateEdition"]</expression>
-                                        <property name="dataType">date-time</property>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="source">file</property>
+                                <property name="proportionalScale">true</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
+                        </cell>
+                        <cell id="3102">
+                            <text id="4255">
+                                <property name="fontSize">10pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="textAlign">center</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType12.title'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["ReportDateEdition"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="3936">
-                            <auto-text id="3937">
-                                <property name="textAlign">right</property>
+                        <cell id="4248">
+                            <data id="4743">
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Unformatted</property>
+                                </structure>
+                                <property name="resultSetColumn">ReportDateEdition</property>
+                            </data>
+                        </cell>
+                        <cell id="4250">
+                            <property name="textAlign">right</property>
+                            <auto-text id="3110">
+                                <property name="fontSize">9pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
                                 <property name="type">page-number</property>
                             </auto-text>
                         </cell>
-                        <cell id="3938">
-                            <text id="3939">
+                        <cell id="4252">
+                            <text id="3112">
+                                <property name="fontSize">9pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
                                 <property name="textAlign">center</property>
                                 <property name="contentType">plain</property>
                                 <text-property name="content"><![CDATA[/]]></text-property>
                             </text>
                         </cell>
-                        <cell id="3940">
-                            <auto-text id="3941">
-                                <property name="textAlign">left</property>
+                        <cell id="3103">
+                            <auto-text id="3114">
+                                <property name="fontSize">9pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
                                 <property name="type">total-page</property>
                             </auto-text>
                         </cell>
@@ -1242,12 +1520,29 @@ order by Tax.code ASC]]></xml-property>
                 <cell id="3567">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
-                    <text id="3558">
-                        <property name="fontSize">15pt</property>
+                    <text id="4736">
+                        <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">center</property>
-                        <property name="contentType">auto</property>
-                        <text-property name="content"><![CDATA[ETAT D'AIDE A LA DECLARATION DE TVA]]></text-property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReportType12.title'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1259,12 +1554,29 @@ order by Tax.code ASC]]></xml-property>
             </row>
             <row id="3578">
                 <cell id="3579">
-                    <label id="526">
+                    <text id="3926">
                         <property name="fontWeight">bold</property>
-                        <property name="textAlign">right</property>
                         <property name="display">inline</property>
-                        <text-property name="text">Société : </text-property>
-                    </label>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReportType12.company'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
                     <text id="554">
                         <property name="display">inline</property>
                         <property name="contentType">html</property>
@@ -1272,12 +1584,29 @@ order by Tax.code ASC]]></xml-property>
                     </text>
                 </cell>
                 <cell id="3582">
-                    <label id="527">
+                    <text id="3929">
                         <property name="fontWeight">bold</property>
-                        <property name="textAlign">right</property>
                         <property name="display">inline</property>
-                        <text-property name="text">Exercice : </text-property>
-                    </label>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReportType12.year'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
                     <text id="555">
                         <property name="display">inline</property>
                         <property name="contentType">html</property>
@@ -1285,12 +1614,29 @@ order by Tax.code ASC]]></xml-property>
                     </text>
                 </cell>
                 <cell id="3583">
-                    <label id="3929">
+                    <text id="3955">
                         <property name="fontWeight">bold</property>
-                        <property name="textAlign">right</property>
                         <property name="display">inline</property>
-                        <text-property name="text">Devise : </text-property>
-                    </label>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReportType12.currency'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
                     <text id="3930">
                         <property name="display">inline</property>
                         <property name="contentType">html</property>
@@ -1300,12 +1646,30 @@ order by Tax.code ASC]]></xml-property>
             </row>
             <row id="3584">
                 <cell id="3585">
-                    <label id="4173">
+                    <text id="4221">
                         <property name="fontWeight">bold</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
                         <property name="display">inline</property>
-                        <text-property name="text">Date d'édition : </text-property>
-                    </label>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReportType12.reportDateEdition'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
                     <data id="4177">
                         <structure name="dateTimeFormat">
                             <property name="category">Short Date</property>
@@ -1316,12 +1680,30 @@ order by Tax.code ASC]]></xml-property>
                     </data>
                 </cell>
                 <cell id="3588">
-                    <label id="528">
+                    <text id="4737">
                         <property name="fontWeight">bold</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
                         <property name="display">inline</property>
-                        <text-property name="text">Du : </text-property>
-                    </label>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReportType12.from'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
                     <data id="4175">
                         <structure name="dateTimeFormat">
                             <property name="category">Short Date</property>
@@ -1332,12 +1714,30 @@ order by Tax.code ASC]]></xml-property>
                     </data>
                 </cell>
                 <cell id="3589">
-                    <label id="529">
+                    <text id="4738">
                         <property name="fontWeight">bold</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
                         <property name="display">inline</property>
-                        <text-property name="text">Au : </text-property>
-                    </label>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReportType12.to'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                    </text>
                     <data id="4176">
                         <structure name="dateTimeFormat">
                             <property name="category">Short Date</property>
@@ -1503,10 +1903,35 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4160">
+                        <text id="4214">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">TVA à payer</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.payableVAT'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4158">
                         <property name="colSpan">2</property>
@@ -1515,10 +1940,35 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4161">
+                        <text id="4215">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">TVA à déduire</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.deductibleVAT'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
                 <row id="4083">
@@ -1535,80 +1985,280 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4085">
+                        <text id="4739">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Code TVA</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.taxCode'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4086">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4087">
+                        <text id="4115">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Nom</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.name'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4181">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4186">
+                        <text id="4750">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Code Position Fiscale</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.fiscalPositionCode'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4135">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4140">
+                        <text id="4751">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Taux</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.taxRate'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4088">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4093">
+                        <text id="4216">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Base</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.base'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4090">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4095">
+                        <text id="4217">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Montant</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.amount'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4092">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4089">
+                        <text id="4218">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Base</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.base'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4094">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4091">
+                        <text id="4219">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Montant</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.amount'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </header>
@@ -1654,7 +2304,7 @@ balance
                             <property name="fontSize">9pt</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00 %</property>
+                                <property name="pattern">###,##0.00' %'</property>
                             </structure>
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">taxlinevalue</property>
@@ -1760,11 +2410,36 @@ balance
                     <cell id="4183">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <label id="4162">
+                        <text id="4212">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
-                            <text-property name="text">Totaux</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.total'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4112">
                         <property name="colSpan">2</property>
@@ -1814,11 +2489,37 @@ balance
                     <cell id="4184">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <label id="4163">
+                        <text id="4213">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
+                            <property name="color">black</property>
                             <property name="textAlign">center</property>
-                            <text-property name="text">Solde</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.balance'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4125">
                         <property name="colSpan">2</property>
@@ -1973,11 +2674,35 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4164">
+                        <text id="4210">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
-                            <text-property name="text">TVA sur débits</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.vatOnDebit'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4148">
                         <property name="colSpan">2</property>
@@ -1986,10 +2711,35 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4165">
+                        <text id="4209">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">TVA à payer</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.payableVAT'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4150">
                         <property name="colSpan">2</property>
@@ -1998,10 +2748,35 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4166">
+                        <text id="4208">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">TVA à déduire</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.deductibleVAT'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
                 <row id="4024">
@@ -2014,100 +2789,350 @@ balance
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4026">
+                        <text id="4752">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">N° de pièce</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.moveLine'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4027">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4028">
+                        <text id="4753">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Date</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.date'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4029">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4030">
+                        <text id="4754">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Compte</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.moveLineAccount'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4031">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4032">
+                        <text id="4901">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Libellé</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.accountName'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4033">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4167">
+                        <text id="4904">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Taxe</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.taxCode'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4191">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4195">
+                        <text id="4757">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Code Position Fiscale</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.fiscalPositionCode'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4057">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4168">
+                        <text id="4204">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Base</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.base'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4061">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4169">
+                        <text id="4205">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Montant</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.amount'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4065">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4171">
+                        <text id="4206">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Base</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.base'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4069">
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <label id="4170">
+                        <text id="4207">
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">Montant</text-property>
-                        </label>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AccountingReportType12.amount'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </header>

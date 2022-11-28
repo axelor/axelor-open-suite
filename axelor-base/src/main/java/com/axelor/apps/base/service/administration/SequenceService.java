@@ -48,6 +48,7 @@ import java.util.List;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,12 +140,14 @@ public class SequenceService {
     return sequenceRepo.find(code, company);
   }
 
-  public String getSequenceNumber(String code) {
+  public String getSequenceNumber(String code, Class objectClass, String fieldName)
+      throws AxelorException {
 
-    return this.getSequenceNumber(code, null);
+    return this.getSequenceNumber(code, null, objectClass, fieldName);
   }
 
-  public String getSequenceNumber(String code, Company company) {
+  public String getSequenceNumber(String code, Company company, Class objectClass, String fieldName)
+      throws AxelorException {
 
     Sequence sequence = getSequence(code, company);
 
@@ -152,7 +155,8 @@ public class SequenceService {
       return null;
     }
 
-    return this.getSequenceNumber(sequence, appBaseService.getTodayDate(company));
+    return this.getSequenceNumber(
+        sequence, appBaseService.getTodayDate(company), objectClass, fieldName);
   }
 
   public boolean hasSequence(String code, Company company) {
@@ -160,8 +164,10 @@ public class SequenceService {
     return getSequence(code, company) != null;
   }
 
-  public String getSequenceNumber(Sequence sequence) {
-    return getSequenceNumber(sequence, appBaseService.getTodayDate(sequence.getCompany()));
+  public String getSequenceNumber(Sequence sequence, Class objectClass, String fieldName)
+      throws AxelorException {
+    return getSequenceNumber(
+        sequence, appBaseService.getTodayDate(sequence.getCompany()), objectClass, fieldName);
   }
 
   /**
@@ -172,7 +178,9 @@ public class SequenceService {
    * @return
    */
   @Transactional
-  public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
+  public String getSequenceNumber(
+      Sequence sequence, LocalDate refDate, Class objectClass, String fieldName)
+      throws AxelorException {
     Sequence seq =
         JPA.em()
             .createQuery("SELECT self FROM Sequence self WHERE id = :id", Sequence.class)
@@ -182,11 +190,40 @@ public class SequenceService {
             .getSingleResult();
     SequenceVersion sequenceVersion = getVersion(seq, refDate);
     String nextSeq = computeNextSeq(sequenceVersion, seq, refDate);
+
+    if (appBaseService.getAppBase().getCheckExistingSequenceOnGeneration()
+        && objectClass != null
+        && !Strings.isNullOrEmpty(fieldName)) {
+      this.isSequenceAlreadyExisting(objectClass, fieldName, nextSeq, seq);
+    }
+
     sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
     if (sequenceVersion.getId() == null) {
       sequenceVersionRepository.save(sequenceVersion);
     }
     return nextSeq;
+  }
+
+  protected void isSequenceAlreadyExisting(
+      Class objectClass, String fieldName, String nextSeq, Sequence seq) throws AxelorException {
+    String table = objectClass.getSimpleName();
+    boolean isSequenceAlreadyExisting =
+        CollectionUtils.isNotEmpty(
+            JPA.em()
+                .createQuery(
+                    "SELECT self FROM " + table + " self WHERE " + fieldName + " = :nextSeq",
+                    objectClass)
+                .setParameter("nextSeq", nextSeq)
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                .setFlushMode(FlushModeType.COMMIT)
+                .getResultList());
+    if (isSequenceAlreadyExisting) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.SEQUENCE_ALREADY_EXISTS),
+          nextSeq,
+          seq.getFullName());
+    }
   }
 
   protected String computeNextSeq(

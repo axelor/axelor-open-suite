@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -34,6 +35,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,6 +50,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
   protected MoveLineCreateService moveLineCreateService;
+  protected ExtractContextMoveService extractContextMoveService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -55,12 +58,14 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       ReconcileService reconcileService,
       MoveValidateService moveValidateService,
       MoveRepository moveRepository,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      ExtractContextMoveService extractContextMoveService) {
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.moveLineCreateService = moveLineCreateService;
+    this.extractContextMoveService = extractContextMoveService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -72,6 +77,12 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       boolean isUnreconcileOriginalMove,
       LocalDate dateOfReversion)
       throws AxelorException {
+
+    String origin = move.getOrigin();
+    if (move.getJournal().getHasDuplicateDetectionOnOrigin()
+        && move.getJournal().getPrefixOrigin() != null) {
+      origin = move.getJournal().getPrefixOrigin() + origin;
+    }
 
     Move newMove =
         moveCreateService.createMove(
@@ -87,10 +98,11 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             move.getIgnoreInDebtRecoveryOk(),
             move.getIgnoreInAccountingOk(),
             move.getAutoYearClosureMove(),
-            move.getOrigin(),
+            origin,
             move.getDescription(),
             null,
-            null);
+            null,
+            move.getCompanyBankDetails());
 
     boolean validatedMove =
         move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
@@ -179,7 +191,41 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             dateOfReversion,
             originMoveLine.getCounter(),
             originMoveLine.getName(),
-            null);
+            null,
+            originMoveLine.getCutOffStartDate(),
+            originMoveLine.getCutOffEndDate());
+    reverseMoveLine.setVatSystemSelect(originMoveLine.getVatSystemSelect());
+
     return reverseMoveLine;
+  }
+
+  public List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
+      throws AxelorException {
+    boolean isAutomaticReconcile = (boolean) assistantMap.get("isAutomaticReconcile");
+    boolean isAutomaticAccounting = (boolean) assistantMap.get("isAutomaticAccounting");
+    boolean isUnreconcileOriginalMove = (boolean) assistantMap.get("isUnreconcileOriginalMove");
+    int dateOfReversionSelect = (int) assistantMap.get("dateOfReversionSelect");
+
+    boolean isChooseDate = dateOfReversionSelect == MoveRepository.DATE_OF_REVERSION_CHOOSE_DATE;
+    LocalDate dateOfReversion =
+        isChooseDate ? (LocalDate) assistantMap.get("dateOfReversion") : null;
+    List<Move> reverseMoveList = new ArrayList<>();
+
+    for (Move move : moveList) {
+      if (!isChooseDate) {
+        dateOfReversion =
+            extractContextMoveService.getDateOfReversion(null, move, dateOfReversionSelect);
+      }
+
+      reverseMoveList.add(
+          this.generateReverse(
+              move,
+              isAutomaticReconcile,
+              isAutomaticAccounting,
+              isUnreconcileOriginalMove,
+              dateOfReversion));
+    }
+
+    return reverseMoveList;
   }
 }

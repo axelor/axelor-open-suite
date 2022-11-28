@@ -31,6 +31,8 @@ public interface AppBaseService extends AppService {
 
   public static final int DEFAULT_TRACKING_MONTHS_PERSISTENCE = 1;
 
+  public static final int COMPUTATION_SCALING = 20;
+
   public AppBase getAppBase();
 
   // Date du jour

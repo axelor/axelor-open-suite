@@ -63,8 +63,7 @@ public class InvoicePaymentBankPayController extends InvoicePaymentController {
                     invoicePayment.getCompanyBankDetails(),
                     invoicePayment.getPaymentDate(),
                     invoicePayment.getBankDepositDate(),
-                    invoicePayment.getChequeNumber(),
-                    invoicePayment.getApplyFinancialDiscount());
+                    invoicePayment.getChequeNumber());
 
         if (!invoicePaymentList.isEmpty() && invoicePaymentList.get(0).getBankOrder() != null) {
           response.setView(

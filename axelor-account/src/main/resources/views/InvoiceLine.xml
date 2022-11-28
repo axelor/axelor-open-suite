@@ -132,8 +132,7 @@
       </panel>
       <panel name="accountingPanel" title="Accounting">
         <field name="account" colSpan="9" onSelect="action-invoice-line-method-filter-account"
-          canEdit="false"
-          onChange="action-attrs-account-invoice-line-account-onchange,action-method-account-invoice-line-account-onchange"/>
+          canEdit="false" onChange="action-invoice-line-group-account-onchange"/>
         <panel name="assetsPanel" colSpan="3" itemSpan="12">
           <field name="fixedAssets" showTitle="false" showIf="$readonly()">
             <viewer depends="fixedAssets">
@@ -151,6 +150,16 @@
           <field name="fixedAssetCategory" canEdit="false" domain="self.company = :_company"
             form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"
             showIf="fixedAssets &amp;&amp; $contains([1,2], $_operationTypeSelect)"/>
+        </panel>
+        <field name="account.manageCutOffPeriod" hidden="true"/>
+        <panel name="cutOffPanel" title="Cut off period" colSpan="12"
+          showIf="account.manageCutOffPeriod" readonlyIf="invoice.statusSelect == 3"
+          if="__config__.app.getApp('account').manageCutOffPeriod">
+          <field name="cutOffStartDate"
+            validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"/>
+          <field name="cutOffEndDate"
+            validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"/>
+          <field name="invoice.statusSelect" hidden="true"/>
         </panel>
       </panel>
 
@@ -185,18 +194,50 @@
           action="action-invoice-line-view-project-tasks" colSpan="12"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
-          readonlyIf="!account.analyticDistributionAuthorized"
+          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           grid-view="analytic-distribution-template-grid"
-          form-view="analytic-distribution-template-form" canEdit="false"
-          onChange="action-invoice-line-method-create-distribution"
-          onSelect="action-invoice-line-attrs-set-domain-analytic-distribution-template"/>
-        <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
-          grid-view="analytic-move-line-distribution-grid"
-          form-view="analytic-move-line-distribution-form" colSpan="12"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange,action-attrs-account-invoice-line-onnew-onload"/>
+          form-view="analytic-distribution-template-form"
+          onSelect="action-invoice-line-attrs-set-domain-analytic-distribution-template"
+          onChange="action-invoice-line-group-analytic-distribution-template-onchange"
+          readonlyIf="!account || !account.analyticDistributionAuthorized"
+          requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines"/>
+        <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form"
+          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          onSelect="action-invoice-line-method-set-axis-domain"
+          onChange="action-invoice-line-method-axis-create-analytic-line"/>
+        <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form"
+          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          onSelect="action-invoice-line-method-set-axis-domain"
+          onChange="action-invoice-line-method-axis-create-analytic-line"/>
+        <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form"
+          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          onSelect="action-invoice-line-method-set-axis-domain"
+          onChange="action-invoice-line-method-axis-create-analytic-line"/>
+        <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form"
+          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          onSelect="action-invoice-line-method-set-axis-domain"
+          onChange="action-invoice-line-method-axis-create-analytic-line"/>
+        <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+          form-view="analytic-account-form"
+          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          onSelect="action-invoice-line-method-set-axis-domain"
+          onChange="action-invoice-line-method-axis-create-analytic-line"/>
+        <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
+          form-view="analytic-move-line-move-line-form" colSpan="12"
+          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+          onChange="action-invoice-line-group-analytic-move-line-onchange"/>
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
@@ -223,7 +264,7 @@
   <form name="invoice-line-client-form" title="Invoice line"
     model="com.axelor.apps.account.db.InvoiceLine" width="large"
     onNew="action-account-invoice-line-onnew-group"
-    onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-form">
+    onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-form,action-attrs-account-invoice-line-cut-off-dates-required">
     <panel name="titlePanel">
       <field name="typeSelect" onChange="action-invoice-line-method-empty-line"/>
       <field name="productName" showIf="typeSelect == 1" title="Title"
@@ -389,6 +430,8 @@
     <action name="action-budget-distribution-attrs-budget-amount-available"
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
     <action name="action-invoice-line-attrs-display-different-language-message"/>
+    <action name="action-invoice-line-method-manage-invoice-line-axis"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -399,10 +442,14 @@
       if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
     <action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-invoice-line-attrs-display-different-language-message"/>
+    <action name="action-invoice-line-method-manage-invoice-line-axis"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
     <action name="action-invoice-line-method-get-product-information"/>
+    <action name="action-invoice-line-record-account-onchange"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-invoice-line-method-compute"/>
     <action name="action-invoice-line-method-get-and-compute-analytic-distribution"/>
     <action name="action-budget-validate-exceed-line-amount"/>
@@ -410,6 +457,7 @@
       if="__config__.app.isApp('account')"/>
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-invoice-line-method-translate-product-description-and-name"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -419,11 +467,38 @@
     <action name="action-budget-validate-exceed-line-amount"/>
     <action name="action-invoice-line-method-check-qty"/>
   </action-group>
+
   <action-group name="action-group-invoice-line-menu-form-onload">
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-invoice-line-attrs-readonly-menu-form"/>
     <action name="action-invoice-line-attrs-hidden-menu-form"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
   </action-group>
+
+  <action-group name="action-invoice-line-group-account-onchange">
+    <action name="action-attrs-account-invoice-line-account-onchange"/>
+    <action name="action-invoice-line-record-account-onchange"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <action name="action-account-invoice-line-method-account-onchange"/>
+    <action name="action-invoice-line-method-manage-invoice-line-axis"/>
+    <action name="action-invoice-line-method-axis-create-analytic-line"/>
+    <action name="action-invoice-line-group-analytic-distribution-template-onchange"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+  </action-group>
+
+  <action-group
+    name="action-invoice-line-group-analytic-distribution-template-onchange">
+    <action name="action-invoice-line-method-clear-analytic-invoice-line"/>
+    <action name="action-invoice-line-method-check-analytic-on-invoice-line"/>
+    <action name="action-invoice-line-method-create-distribution"/>
+    <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
+  </action-group>
+
+  <action-group name="action-invoice-line-group-analytic-move-line-onchange">
+    <action name="action-invoice-line-method-check-analytic-account-on-invoice-line"/>
+    <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
+  </action-group>
+
   <!-- ACTION RECORDS -->
 
   <action-record name="action-invoice-line-record-new"
@@ -442,6 +517,14 @@
   <action-record name="action-invoice-line-record-reset-is-hide-unit-amounts"
     model="com.axelor.apps.account.db.InvoiceLine">
     <field name="isHideUnitAmounts" expr="eval: false"/>
+  </action-record>
+
+  <action-record name="action-invoice-line-record-account-onchange"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="cutOffStartDate"
+      expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
+    <field name="cutOffEndDate"
+      expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -501,6 +584,41 @@
       method="computeBudgetDistributionSumAmount"/>
   </action-method>
 
+  <action-method name="action-invoice-line-method-set-axis-domain">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="setAxisDomains"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-axis-create-analytic-line">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="createAnalyticAccountLines"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-manage-invoice-line-axis">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="manageInvoiceLineAxis"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-clear-analytic-invoice-line">
+    <call class="com.axelor.apps.account.web.InvoiceLineController" method="clearAnalytic"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-check-analytic-on-invoice-line">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="checkAnalyticByTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-line-method-print-analytic-account-on-invoice-line">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="printAnalyticAccounts"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-line-method-check-analytic-account-on-invoice-line">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="checkAnalyticMoveLineForAxis"/>
+  </action-method>
+
   <!-- ACTION ATTRS -->
   <action-attrs name="action-attrs-account-invoice-line-onnew-onload">
     <!-- Show Elements -->
@@ -551,7 +669,7 @@
 
     <attribute name="required" for="analyticDistributionTemplate"
       expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
     <attribute name="hidden" for="customerInvoicePanel"
       expr="eval: invoice != null ? invoice.operationTypeSelect &lt; 3 : __parent__?.operationTypeSelect &lt; 3"/>
     <attribute name="hidden" for="supplierInvoicePanel"
@@ -561,10 +679,17 @@
       expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
   </action-attrs>
 
+  <action-attrs name="action-attrs-account-invoice-line-cut-off-dates-required">
+    <attribute name="required" for="cutOffStartDate"
+      expr="eval: account != null &amp;&amp; account.manageCutOffPeriod &amp;&amp; __parent__?.operationSubTypeSelect != 2"/>
+    <attribute name="required" for="cutOffEndDate"
+      expr="eval: account != null &amp;&amp; account.manageCutOffPeriod &amp;&amp; __parent__?.operationSubTypeSelect != 2"/>
+  </action-attrs>
+
   <action-attrs name="action-attrs-account-invoice-line-account-onchange">
     <attribute name="required" for="analyticDistributionTemplate"
       expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-line-attrs-discountamount-title">
@@ -615,7 +740,7 @@
     <field name="purchaseOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
   </search-filters>
 
-  <action-method name="action-method-account-invoice-line-account-onchange">
+  <action-method name="action-account-invoice-line-method-account-onchange">
     <call class="com.axelor.apps.account.web.InvoiceLineController"
       method="selectDefaultDistributionTemplate"/>
   </action-method>

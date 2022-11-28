@@ -19,8 +19,11 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.base.db.Company;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 import javax.inject.Inject;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticAccountServiceImpl implements AnalyticAccountService {
 
@@ -52,5 +55,33 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
   protected AnalyticAccount desactivate(AnalyticAccount analyticAccount) {
     analyticAccount.setStatusSelect(AnalyticAccountRepository.STATUS_INACTIVE);
     return analyticAccount;
+  }
+
+  @Override
+  public boolean checkChildrenAccount(Company company, List<AnalyticAccount> childrenList) {
+    return !CollectionUtils.isEmpty(childrenList)
+        && childrenList.stream()
+            .anyMatch(it -> it.getCompany() != null && !it.getCompany().equals(company));
+  }
+
+  @Override
+  public String getParentDomain(AnalyticAccount analyticAccount) {
+    if (analyticAccount != null
+        && analyticAccount.getAnalyticAxis() != null
+        && analyticAccount.getAnalyticLevel() != null) {
+      Integer level = analyticAccount.getAnalyticLevel().getNbr() + 1;
+      String domain =
+          "self.analyticLevel.nbr = "
+              + level
+              + " AND self.analyticAxis.id = "
+              + analyticAccount.getAnalyticAxis().getId();
+      if (analyticAccount.getCompany() != null) {
+        domain = domain.concat(" AND self.company.id = " + analyticAccount.getCompany().getId());
+      } else {
+        domain = domain.concat(" AND self.company IS NULL");
+      }
+      return domain;
+    }
+    return null;
   }
 }

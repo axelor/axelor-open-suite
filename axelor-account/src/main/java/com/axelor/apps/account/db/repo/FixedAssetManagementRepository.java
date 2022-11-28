@@ -51,7 +51,11 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
   public FixedAsset save(FixedAsset fixedAsset) {
     try {
       computeReference(fixedAsset);
-      // barcode generation
+      // Default value if null or empty
+      if (fixedAsset.getDepreciationPlanSelect() == null
+          || fixedAsset.getDepreciationPlanSelect().isEmpty()) {
+        fixedAsset.setDepreciationPlanSelect(DEPRECIATION_PLAN_NONE);
+      }
       if (!ObjectUtils.isEmpty(fixedAsset.getSerialNumber())
           && fixedAsset.getBarcode() == null
           && appAcccountService.getAppAccount().getActivateFixedAssetBarCodeGeneration()) {
@@ -60,6 +64,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
               TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
               "This serial number is already used for this company.");
         }
+        // barcode generation
         generateBarcode(fixedAsset);
       }
       return super.save(fixedAsset);

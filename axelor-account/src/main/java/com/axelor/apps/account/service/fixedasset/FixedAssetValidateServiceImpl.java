@@ -105,9 +105,10 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
 
         if (fixedAsset.getIsEqualToFiscalDepreciation()) {
           fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
-        } else if (fixedAsset
-            .getDepreciationPlanSelect()
-            .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+        } else if (fixedAsset.getDepreciationPlanSelect().isEmpty()
+            || fixedAsset
+                .getDepreciationPlanSelect()
+                .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
           fixedAsset.setAccountingValue(BigDecimal.ZERO);
         } else {
           fixedAsset.setAccountingValue(

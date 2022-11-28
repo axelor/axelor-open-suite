@@ -5919,7 +5919,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="###0.00%{RoundingMode=HALF_UP}">row["tax_line"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">row["tax_line"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4565">
@@ -6545,7 +6545,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00%{RoundingMode=HALF_UP}">row["value"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">row["value"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="3500">

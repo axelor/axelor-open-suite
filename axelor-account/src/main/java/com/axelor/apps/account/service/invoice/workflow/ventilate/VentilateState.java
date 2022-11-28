@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
@@ -71,6 +72,8 @@ public class VentilateState extends WorkflowInvoice {
 
   protected FixedAssetGenerationService fixedAssetGenerationService;
 
+  protected InvoiceTermService invoiceTermService;
+
   @Inject
   public VentilateState(
       SequenceService sequenceService,
@@ -80,7 +83,8 @@ public class VentilateState extends WorkflowInvoice {
       InvoiceRepository invoiceRepo,
       WorkflowVentilationService workflowService,
       UserService userService,
-      FixedAssetGenerationService fixedAssetGenerationService) {
+      FixedAssetGenerationService fixedAssetGenerationService,
+      InvoiceTermService invoiceTermService) {
     this.sequenceService = sequenceService;
     this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
@@ -89,6 +93,7 @@ public class VentilateState extends WorkflowInvoice {
     this.workflowService = workflowService;
     this.userService = userService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -129,7 +134,7 @@ public class VentilateState extends WorkflowInvoice {
   protected void setPartnerAccount() throws AxelorException {
     // Partner account is actually set upon validation but we keep this for backward compatibility
     if (invoice.getPartnerAccount() == null) {
-      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice);
+      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, false);
 
       if (account == null) {
         throw new AxelorException(
@@ -143,7 +148,9 @@ public class VentilateState extends WorkflowInvoice {
       }
       invoice.setPartnerAccount(account);
     }
+
     Account partnerAccount = invoice.getPartnerAccount();
+
     if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -183,11 +190,12 @@ public class VentilateState extends WorkflowInvoice {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
     }
-
+    this.setInvoiceTermDueDates();
     if ((invoice.getPaymentCondition() != null && !invoice.getPaymentCondition().getIsFree())
         || invoice.getDueDate() == null) {
-      invoice.setDueDate(this.getDueDate());
+      invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
     }
+    invoice.setNextDueDate(InvoiceToolService.getNextDueDate(invoice));
   }
 
   /**
@@ -244,14 +252,15 @@ public class VentilateState extends WorkflowInvoice {
     }
   }
 
-  protected LocalDate getDueDate() throws AxelorException {
+  protected void setInvoiceTermDueDates() throws AxelorException {
 
     if (InvoiceToolService.isPurchase(invoice)) {
 
-      return InvoiceToolService.getDueDate(invoice.getPaymentCondition(), invoice.getOriginDate());
-    }
+      invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
+    } else {
 
-    return InvoiceToolService.getDueDate(invoice.getPaymentCondition(), invoice.getInvoiceDate());
+      invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+    }
   }
 
   protected void setMove() throws AxelorException {
@@ -306,7 +315,9 @@ public class VentilateState extends WorkflowInvoice {
       this.checkInvoiceDate(sequence);
     }
 
-    invoice.setInvoiceId(sequenceService.getSequenceNumber(sequence, invoice.getInvoiceDate()));
+    invoice.setInvoiceId(
+        sequenceService.getSequenceNumber(
+            sequence, invoice.getInvoiceDate(), Invoice.class, "invoiceId"));
 
     if (invoice.getInvoiceId() != null) {
       return;

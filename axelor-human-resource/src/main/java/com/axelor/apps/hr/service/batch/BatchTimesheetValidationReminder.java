@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -228,5 +229,9 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
 
     super.stop();
     addComment(comment);
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_HR_BATCH);
   }
 }
