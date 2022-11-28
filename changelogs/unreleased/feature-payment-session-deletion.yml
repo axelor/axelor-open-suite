@@ -1,3 +1,0 @@
----
-title: "PaymentSession : Forbid deleting a paymentSession in a status different from 'Cancelled'"
-type: feature
