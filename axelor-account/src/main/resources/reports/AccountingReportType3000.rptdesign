@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.11.0.v202007221505</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">ReportValues.ValuesDS.x</property>
@@ -1081,9 +1081,13 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                                             <property name="name">lineNb</property>
                                             <property name="dataType">integer</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">lineName</property>
+                                            <property name="dataType">string</property>
+                                        </structure>
                                     </list-property>
-                                    <property name="columnName">lineName</property>
-                                    <expression name="displayColumnName" type="javascript">dataSetRow["lineName"]</expression>
+                                    <property name="columnName">line</property>
+                                    <expression name="displayColumnName" type="javascript">dataSetRow["line"]</expression>
                                 </tabular-level>
                             </property>
                         </tabular-hierarchy>
@@ -1095,16 +1099,20 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                         <tabular-hierarchy name="NewTabularHierarchy1" id="5817">
                             <property name="levels">
                                 <tabular-level name="column" id="5818">
-                                    <property name="dataType">string</property>
+                                    <property name="dataType">integer</property>
                                     <property name="levelType">dynamic</property>
                                     <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">columnName</property>
+                                            <property name="dataType">string</property>
+                                        </structure>
                                         <structure>
                                             <property name="name">columnNb</property>
                                             <property name="dataType">integer</property>
                                         </structure>
                                     </list-property>
-                                    <property name="columnName">columnName</property>
-                                    <expression name="displayColumnName" type="javascript">dataSetRow["columnName"]</expression>
+                                    <property name="columnName">column</property>
+                                    <expression name="displayColumnName" type="javascript">dataSetRow["column"]</expression>
                                 </tabular-level>
                             </property>
                         </tabular-hierarchy>
@@ -2327,12 +2335,12 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">line</property>
-                                <expression name="expression" type="javascript">dimension["Line"]["line"]</expression>
+                                <expression name="expression" type="javascript">dimension["Line"]["line"]["lineName"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
                                 <property name="name">column</property>
-                                <expression name="expression" type="javascript">dimension["Column"]["column"]</expression>
+                                <expression name="expression" type="javascript">dimension["Column"]["column"]["columnName"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
