@@ -2693,8 +2693,10 @@ InvoiceSet.length > 0))"
     title="Invoice term in dispute" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-invoice-grid"/>
     <view type="form" name="invoice-term-invoice-form"/>
-    <domain>self.invoice.reasonOfRefusalToPayStr = :reasonOfRefusalToPayName</domain>
-    <context name="reasonOfRefusalToPayName" expr="eval: reasonOfRefusalToPayName"/>
+    <domain>self.reasonOfRefusalToPayStr = :_reasonOfRefusalToPayName AND (:_company is null OR
+      self.company = :_company)</domain>
+    <context name="_reasonOfRefusalToPayName" expr="eval: reasonOfRefusalToPayName"/>
+    <context name="_company" expr="eval: _company"/>
   </action-view>
 
   <action-method name="action-customer-invoice-line-menu">
