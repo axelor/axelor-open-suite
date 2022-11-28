@@ -171,7 +171,6 @@ public class MoveLineController {
   }
 
   public void accountingReconcile(ActionRequest request, ActionResponse response) {
-    long start = System.currentTimeMillis();
 
     try {
       @SuppressWarnings("unchecked")
@@ -185,9 +184,6 @@ public class MoveLineController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    } finally {
-      long end = System.currentTimeMillis();
-      System.out.println("Elapsed Time in milli seconds: " + (end - start));
     }
   }
 
