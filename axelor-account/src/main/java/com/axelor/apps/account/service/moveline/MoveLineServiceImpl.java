@@ -65,6 +65,7 @@ import org.slf4j.LoggerFactory;
 public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected int jpaLimit = 20;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
@@ -173,7 +174,7 @@ public class MoveLineServiceImpl implements MoveLineService {
         log.debug(e.getMessage());
       } finally {
         i++;
-        if (i % 20 == 0) {
+        if (i % jpaLimit == 0) {
           JPA.clear();
         }
       }
