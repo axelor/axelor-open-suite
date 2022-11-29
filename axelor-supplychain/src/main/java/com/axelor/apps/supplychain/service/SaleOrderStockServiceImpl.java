@@ -92,7 +92,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SupplyChainConfigService supplyChainConfigService,
       ProductCompanyService productCompanyService,
       PartnerStockSettingsService partnerStockSettingsService) {
-
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -269,7 +268,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (toStockLocation == null) {
       toStockLocation =
           partnerStockSettingsService.getDefaultExternalStockLocation(
-              saleOrder.getClientPartner(), company);
+              saleOrder.getClientPartner(), company, null);
     }
     if (toStockLocation == null) {
       toStockLocation =

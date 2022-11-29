@@ -34,7 +34,6 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.auth.AuthUtils;
@@ -187,8 +186,8 @@ public class PurchaseOrderSupplierService {
             null,
             parentPurchaseOrder.getPurchaseOrderSeq(),
             parentPurchaseOrder.getExternalReference(),
-            Beans.get(StockLocationService.class)
-                .getDefaultReceiptStockLocation(parentPurchaseOrder.getCompany()),
+            Beans.get(PurchaseOrderSupplychainService.class)
+                .getStockLocation(supplierPartner, parentPurchaseOrder.getCompany()),
             Beans.get(AppBaseService.class).getTodayDate(parentPurchaseOrder.getCompany()),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),

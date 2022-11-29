@@ -93,4 +93,9 @@ public interface PurchaseOrderSupplychainService {
    * @param purchaseOrder
    */
   boolean isGoodAmountBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  StockLocation getStockLocation(Partner supplierPartner, Company company) throws AxelorException;
+
+  StockLocation getFromStockLocation(Partner supplierPartner, Company company)
+      throws AxelorException;
 }

@@ -36,7 +36,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
@@ -158,16 +157,14 @@ public class SaleOrderController {
   public void getStockLocation(ActionRequest request, ActionResponse response) {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-    if (saleOrder != null && saleOrder.getCompany() != null) {
-
+    try {
+      Company company = saleOrder.getCompany();
       StockLocation stockLocation =
-          Beans.get(StockLocationService.class)
-              .getPickupDefaultStockLocation(saleOrder.getCompany());
-
-      if (stockLocation != null) {
-        response.setValue("stockLocation", stockLocation);
-      }
+          Beans.get(SaleOrderSupplychainService.class)
+              .getStockLocation(saleOrder.getClientPartner(), company);
+      response.setValue("stockLocation", stockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -1034,6 +1031,19 @@ public class SaleOrderController {
       Beans.get(SaleOrderSupplychainService.class)
           .setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
       response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getToStockLocation(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      Company company = saleOrder.getCompany();
+      StockLocation toStockLocation =
+          Beans.get(SaleOrderSupplychainService.class)
+              .getToStockLocation(saleOrder.getClientPartner(), company);
+      response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

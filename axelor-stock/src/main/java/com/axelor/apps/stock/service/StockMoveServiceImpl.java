@@ -51,6 +51,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -86,6 +87,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected ProductRepository productRepository;
   protected StockMoveToolService stockMoveToolService;
   protected StockMoveLineRepository stockMoveLineRepo;
+  protected PartnerStockSettingsService partnerStockSettingsService;
+  protected StockConfigService stockConfigService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -95,7 +98,9 @@ public class StockMoveServiceImpl implements StockMoveService {
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
       PartnerProductQualityRatingService partnerProductQualityRatingService,
-      ProductRepository productRepository) {
+      ProductRepository productRepository,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -103,6 +108,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.stockMoveRepo = stockMoveRepository;
     this.partnerProductQualityRatingService = partnerProductQualityRatingService;
     this.productRepository = productRepository;
+    this.partnerStockSettingsService = partnerStockSettingsService;
+    this.stockConfigService = stockConfigService;
   }
 
   /**
@@ -1344,5 +1351,63 @@ public class StockMoveServiceImpl implements StockMoveService {
         }
       }
     }
+  }
+
+  @Override
+  public StockLocation getFromStockLocation(StockMove stockMove) throws AxelorException {
+    StockLocation fromStockLocation = null;
+    Company company = stockMove.getCompany();
+    if (stockMove == null || company == null) {
+      return null;
+    }
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      fromStockLocation =
+          partnerStockSettingsService.getDefaultExternalStockLocation(
+              stockMove.getPartner(), company, null);
+
+      if (fromStockLocation == null) {
+        fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+      }
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      fromStockLocation =
+          partnerStockSettingsService.getDefaultStockLocation(
+              stockMove.getPartner(), company, null);
+
+      if (fromStockLocation == null) {
+        fromStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+      }
+    }
+    return fromStockLocation;
+  }
+
+  @Override
+  public StockLocation getToStockLocation(StockMove stockMove) throws AxelorException {
+    StockLocation toStockLocation = null;
+    Company company = stockMove.getCompany();
+    if (stockMove == null || company == null) {
+      return null;
+    }
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      toStockLocation =
+          partnerStockSettingsService.getDefaultStockLocation(
+              stockMove.getPartner(), company, null);
+
+      if (toStockLocation == null) {
+        toStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+      }
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      toStockLocation =
+          partnerStockSettingsService.getDefaultExternalStockLocation(
+              stockMove.getPartner(), company, null);
+
+      if (toStockLocation == null) {
+        toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+      }
+    }
+    return toStockLocation;
   }
 }

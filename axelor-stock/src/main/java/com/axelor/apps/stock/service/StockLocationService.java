@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
@@ -26,24 +25,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface StockLocationService {
-
-  /**
-   * Get default receipt location for the given company.
-   *
-   * @param company
-   * @return the default stock location if found, null if there was an exception or if the default
-   *     location is empty
-   */
-  StockLocation getDefaultReceiptStockLocation(Company company);
-
-  /**
-   * Get default pickup location for the given company.
-   *
-   * @param company
-   * @return the default stock location if found, null if there was an exception or if the default
-   *     location is empty
-   */
-  StockLocation getPickupDefaultStockLocation(Company company);
 
   public BigDecimal getQty(Long productId, Long locationId, Long companyId, String qtyType)
       throws AxelorException;

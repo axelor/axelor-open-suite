@@ -34,11 +34,9 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -55,6 +53,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
   protected AccountConfigService accountConfigService;
   protected SaleOrderRepository saleOrderRepository;
   protected AppBaseService appBaseService;
+  protected SaleOrderSupplychainService saleOrderSupplychainService;
 
   @Inject
   public SaleOrderCreateServiceSupplychainImpl(
@@ -65,13 +64,15 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
       AccountConfigService accountConfigService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      SaleOrderSupplychainService saleOrderSupplychainService) {
 
     super(partnerService, saleOrderRepo, appSaleService, saleOrderService, saleOrderComputeService);
 
     this.accountConfigService = accountConfigService;
     this.saleOrderRepository = saleOrderRepository;
     this.appBaseService = appBaseService;
+    this.saleOrderSupplychainService = saleOrderSupplychainService;
   }
 
   @Override
@@ -164,7 +165,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             tradingName);
 
     if (stockLocation == null) {
-      stockLocation = Beans.get(StockLocationService.class).getPickupDefaultStockLocation(company);
+      stockLocation = saleOrderSupplychainService.getStockLocation(clientPartner, company);
     }
 
     saleOrder.setStockLocation(stockLocation);

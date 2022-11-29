@@ -555,6 +555,8 @@
     <action name="action-purchase-order-record-company-configuration"/>
     <action name="action-purchase-order-method-get-stock-location"
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-record-in-ati"/>
     <action name="action-purchase-order-attrs-in-ati"/>
     <action name="action-purchase-order-record-display-price"/>
@@ -589,6 +591,8 @@
     <action name="action-purchase-order-method-fill-company-bank-details"/>
     <action name="action-purchase-order-method-get-stock-location"
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-record-update-info-company"/>
     <action name="action-purchase-order-record-display-price"/>
   </action-group>
@@ -613,6 +617,8 @@
     <action name="action-purchase-order-record-partner"/>
     <action name="action-purchase-order-method-get-stock-location"
       if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.receiptDefaultStockLocation == null || stockLocation == null)"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-attrs-hide-contact-partner"/>
     <action name="action-purchase-order-method-fill-company-bank-details"/>
     <action name="action-purchase-order-method-fill-price-list"/>
@@ -726,12 +732,6 @@
     <field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     <field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
     <field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
-    <field name="stockLocation"
-      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(supplierPartner, company)"
-      if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.receiptDefaultStockLocation == null || stockLocation == null)"/>
-    <field name="fromStockLocation"
-      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultExternalStockLocation(supplierPartner, company)"
-      if="__config__.app.isApp('supplychain')"/>
   </action-record>
 
   <action-record name="action-purchase-order-record-set-group-product-on-printing"

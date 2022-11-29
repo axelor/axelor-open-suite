@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.CallMethod;
+import java.util.function.Predicate;
 
 public interface PartnerStockSettingsService {
 
@@ -49,8 +49,8 @@ public interface PartnerStockSettingsService {
    * @param partner
    * @param company
    */
-  @CallMethod
-  public StockLocation getDefaultStockLocation(Partner partner, Company company);
+  StockLocation getDefaultStockLocation(
+      Partner partner, Company company, Predicate<? super StockLocation> predicate);
 
   /**
    * Search for partner stock settings and returns default external default location for given
@@ -60,6 +60,6 @@ public interface PartnerStockSettingsService {
    * @param company
    * @return null if the config is empty, else the found stock location.
    */
-  @CallMethod
-  StockLocation getDefaultExternalStockLocation(Partner partner, Company company);
+  StockLocation getDefaultExternalStockLocation(
+      Partner partner, Company company, Predicate<? super StockLocation> predicate);
 }

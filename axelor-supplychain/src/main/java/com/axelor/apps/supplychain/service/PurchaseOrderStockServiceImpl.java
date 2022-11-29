@@ -291,7 +291,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     if (startLocation == null) {
       startLocation =
           partnerStockSettingsService.getDefaultExternalStockLocation(
-              purchaseOrder.getSupplierPartner(), company);
+              purchaseOrder.getSupplierPartner(), company, null);
     }
 
     if (startLocation == null) {
