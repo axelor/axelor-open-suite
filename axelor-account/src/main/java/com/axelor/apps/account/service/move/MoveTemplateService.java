@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -67,6 +68,7 @@ public class MoveTemplateService {
   protected TaxService taxService;
   protected BankDetailsService bankDetailsService;
   protected MoveTemplateRepository moveTemplateRepo;
+  protected MoveLineTaxService moveLineTaxService;
 
   protected List<String> exceptionsList;
 
@@ -81,7 +83,8 @@ public class MoveTemplateService {
       TaxService taxService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       BankDetailsService bankDetailsService,
-      MoveTemplateRepository moveTemplateRepo) {
+      MoveTemplateRepository moveTemplateRepo,
+      MoveLineTaxService moveLineTaxService) {
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
@@ -92,6 +95,7 @@ public class MoveTemplateService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.bankDetailsService = bankDetailsService;
     this.moveTemplateRepo = moveTemplateRepo;
+    this.moveLineTaxService = moveLineTaxService;
     this.exceptionsList = Lists.newArrayList();
   }
 
@@ -236,6 +240,7 @@ public class MoveTemplateService {
               moveLine.setTaxLine(taxLine);
               moveLine.setTaxRate(taxLine.getValue());
               moveLine.setTaxCode(tax.getCode());
+              moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
             }
           }
 
@@ -332,6 +337,7 @@ public class MoveTemplateService {
               moveLine.setTaxLine(taxLine);
               moveLine.setTaxRate(taxLine.getValue());
               moveLine.setTaxCode(tax.getCode());
+              moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
             }
           }
 
