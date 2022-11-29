@@ -50,7 +50,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   @Override
   protected void process() {
-    String query = "self.statusSelect = :statusSelect";
+    String query = "self.statusSelect = :statusSelect AND self.fixedAsset.company.id = :companyId";
     LocalDate startDate = batch.getAccountingBatch().getStartDate();
     LocalDate endDate = batch.getAccountingBatch().getEndDate();
     if (!batch.getAccountingBatch().getUpdateAllRealizedFixedAssetLines()
@@ -68,6 +68,11 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
             .bind("statusSelect", FixedAssetLineRepository.STATUS_PLANNED)
             .bind("startDate", startDate)
             .bind("endDate", endDate)
+            .bind(
+                "companyId",
+                batch.getAccountingBatch().getCompany() != null
+                    ? batch.getAccountingBatch().getCompany().getId()
+                    : Long.valueOf(0))
             .bind(
                 "dateNow",
                 appBaseService.getTodayDate(
