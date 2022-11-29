@@ -121,29 +121,20 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       Invoice invoice = null;
-      MoveLine moveLine = null;
+      MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
 
       if (request.getContext().getParent() != null) {
         invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
-        if (invoice == null) {
-          moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
-
-          if (moveLine != null) {
-            Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
-            invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
-
-            if (move != null) {
-              moveLine.setMove(move);
-            }
-          }
-        }
       } else if (request.getContext().get("_invoiceId") != null) {
         invoice =
             Beans.get(InvoiceRepository.class)
                 .find(Long.valueOf((Integer) request.getContext().get("_invoiceId")));
       }
 
-      if (invoice != null) {
+      if (invoice == null && moveLine != null) {
+        Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+        invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
+      } else if (invoice != null) {
         invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
         response.setValues(invoiceTerm);
       }
