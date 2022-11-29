@@ -1,0 +1,5 @@
+---
+title: "Reconcile : Reduce execution time on all processes"
+type: feature
+description: |
+  Adding @RequestScoped annotation in Services

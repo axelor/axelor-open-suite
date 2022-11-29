@@ -1,0 +1,3 @@
+---
+title : "Move : when we reverse a Move, the analytic move lines must be kept on the reversed move"
+type: fix

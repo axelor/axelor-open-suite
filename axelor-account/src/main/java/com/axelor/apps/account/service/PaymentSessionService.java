@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,4 +44,6 @@ public interface PaymentSessionService {
   public void selectAll(PaymentSession paymentSession) throws AxelorException;
 
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException;
+
+  public void retrieveEligibleTerms(PaymentSession paymentSession);
 }

@@ -1,3 +1,0 @@
----
-title: "Bank Order: created a more explicit error when creating a move for invoice payment fails on realization of bank order "
-type: fix
