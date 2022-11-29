@@ -167,15 +167,17 @@
           onChange="action-manuf-order-group-onchange"
           domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)"
           grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3"
-          canEdit="false"/>
+          canEdit="false" edit-window="blank"/>
         <field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange"
           onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1"
-          grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
+          grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"
+          edit-window="blank"/>
         <field name="outsourcing" colSpan="3"
           onChange="action-production-attrs-hide-purchaseOrder"/>
         <field name="product" canEdit="false" required="true"
           readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form"
-          grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
+          grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"
+          edit-window="blank"/>
         <field name="qty" readonlyIf="statusSelect &gt; 1 || typeSelect == 2"
           validIf="typeSelect == 2 || qty > 0" colSpan="3"/>
         <field name="product.economicManufOrderQty" colSpan="3"/>
