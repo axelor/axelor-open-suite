@@ -1,6 +1,3 @@
 ---
-title: "Fix NPE when consulting invoice term"
+title: "Fix creation of new invoice term from move and invoice"
 type: fix
-description: |
-  Adding verification on the creation of invoiceTerm without invoiceId
-  Adding verification on the creation of invoiceTerm without moveId
