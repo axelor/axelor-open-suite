@@ -1,0 +1,6 @@
+---
+title: "FIXED ASSET : Fix of tax lines management in cession sale move generation"
+type: fix
+description: |
+  Check on missing tax account only when the tax line value is positive
+  Initialize of taxline in movelines for credit move line and tax move line

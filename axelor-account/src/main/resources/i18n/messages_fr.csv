@@ -1624,7 +1624,6 @@
 "Fixed asset: fixed asset category is missing one of these accounts : %s","Immobilisation : un de ces comptes est manquant dans la catégorie d'immo: %s",,
 "Fixed asset: fixed asset category is missing one of theses account %s",,,
 "Fixed asset: sale move could not be generated because fixed category is missing one of these accounts : %s","Immobilisation : l'écriture de vente n'a pas pu être créée, un de ces comptes est manquant dans la catégorie d'immo : %s",,
-"Fixed asset: sale move could not be generated because fixed category is missing one of theses account %s",,,
 "Fixed assets","Immobilisations",,
 "Follow-up","Suivi",,
 "Forecast (invoice)","Prévisionnel (facture)",,
