@@ -699,7 +699,18 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public void addPayment(Expense expense) throws AxelorException {
-    addPayment(expense, expense.getBankDetails());
+    BankDetails bankDetails = expense.getBankDetails();
+    if (ObjectUtils.isEmpty(bankDetails)) {
+      bankDetails = expense.getCompany().getDefaultBankDetails();
+    }
+
+    if (ObjectUtils.isEmpty(bankDetails)) {
+      throw new AxelorException(
+          expense,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.EXPENSE_NO_COMPANY_BANK_DETAILS));
+    }
+    addPayment(expense, bankDetails);
   }
 
   @Override

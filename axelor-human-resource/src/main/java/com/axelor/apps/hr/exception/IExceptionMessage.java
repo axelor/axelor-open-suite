@@ -65,6 +65,8 @@ public interface IExceptionMessage {
   static final String HR_CONFIG_FORMULA_VARIABLE_MISSING = /*$$(*/
       "Please configure Formula Variables for human resource for the company %s" /*)*/;
 
+  public static final String EXPENSE_NO_COMPANY_BANK_DETAILS = /*$$(*/
+      "Default bank details are not filled for your company." /*)*/;
   static final String TIMESHEET_FROM_DATE = /*$$(*/ "Please add a start date for generation" /*)*/;
   static final String TIMESHEET_TO_DATE = /*$$(*/ "Please add an end date for generation" /*)*/;
   static final String TIMESHEET_PRODUCT = /*$$(*/ "Please add a product" /*)*/;
