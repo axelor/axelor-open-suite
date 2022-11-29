@@ -93,7 +93,7 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
       return true;
     }
     if (partner.getParentPartner() != null) {
-      return isBlockedPartnerOrParent(partner);
+      return isBlockedPartnerOrParent(partner.getParentPartner());
     }
     return false;
   }
