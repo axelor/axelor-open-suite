@@ -12,10 +12,24 @@
     <field name="hidden"/>
   </grid>
 
+  <grid title="Config lines" name="accounting-report-config-line-account-grid"
+    model="com.axelor.apps.account.db.AccountingReportConfigLine" orderBy="sequence">
+    <field name="reportType"/>
+    <field name="code"/>
+    <field name="label"/>
+    <field name="typeSelect"/>
+    <field name="ruleTypeSelect"/>
+    <field name="hidden"/>
+    <button name="editConfigLineBtn" title="Edit config line" icon="fa-external-link"
+      onClick="action-move-line-view-open-report-config-line"/>
+  </grid>
+
   <form title="Config line" name="accounting-report-config-line-form"
     model="com.axelor.apps.account.db.AccountingReportConfigLine"
     onNew="action-accounting-report-config-line-record-default-on-new">
     <panel name="accountingReportConfigLineMainPanel">
+      <field name="reportType" colSpan="12" form-view="accounting-report-type-form"
+        grid-view="accounting-report-type-grid" readonlyIf="$popup()"/>
       <field name="typeSelect" validIf="typeSelect > 0"
         onChange="action-accounting-report-config-line-record-type-select-onchange"/>
       <field name="ruleTypeSelect" validIf="ruleTypeSelect > 0" readonlyIf="typeSelect == 3"
@@ -41,7 +55,8 @@
 					]]>
         </viewer>
       </field>
-      <field name="accountCode" showTitle="false" showIf="ruleTypeSelect == 2" colSpan="12"/>
+      <field name="accountCode" showIf="ruleTypeSelect == 2" colSpan="12"/>
+      <field name="analyticAccountCode" showIf="ruleTypeSelect == 2" colSpan="12"/>
       <field name="$helpRule" title="Rule" readonly="true" showIf="ruleTypeSelect == 3"
         colSpan="12">
         <viewer depends="ruleTypeSelect">
@@ -63,6 +78,10 @@
     <panel-related name="accountingReportConfigLineAccountSetPanel" field="accountSet"
       colSpan="12" form-view="account-form" grid-view="account-grid" showIf="ruleTypeSelect == 2"
       onSelect="action-accounting-report-config-line-attrs-account-set-domain"/>
+    <panel-related name="accountingReportConfigLineAnalyticAccountSetPanel"
+      field="analyticAccountSet" colSpan="12" form-view="account-form" grid-view="account-grid"
+      showIf="ruleTypeSelect == 2"/>
+
   </form>
 
   <action-record name="action-accounting-report-config-line-record-default-on-new"
@@ -90,5 +109,13 @@
     <attribute for="accountSet" name="domain"
       expr="eval: &quot; self.company = ${reportType?.company?.id} &quot;"/>
   </action-attrs>
+
+  <action-view name="action-move-line-view-open-report-config-line" title="Config lines"
+    model="com.axelor.apps.account.db.AccountingReportConfigLine">
+    <view type="grid" name="accounting-report-config-line-grid"/>
+    <view type="form" name="accounting-report-config-line-form"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
 </object-views>

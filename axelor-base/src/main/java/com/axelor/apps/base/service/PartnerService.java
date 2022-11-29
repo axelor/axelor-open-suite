@@ -157,5 +157,5 @@ public interface PartnerService {
 
   String getSirenFromRegistrationCode(Partner partner);
 
-  List<Long> getPartnerIdsByType(String type);
+  boolean isRegistrationCodeValid(Partner partner);
 }

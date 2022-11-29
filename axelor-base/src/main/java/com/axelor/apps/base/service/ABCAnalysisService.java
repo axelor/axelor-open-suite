@@ -29,7 +29,7 @@ public interface ABCAnalysisService {
 
   List<ABCAnalysisClass> initABCClasses();
 
-  void setSequence(ABCAnalysis abcAnalysis);
+  void setSequence(ABCAnalysis abcAnalysis) throws AxelorException;
 
   String printReport(ABCAnalysis abcAnalysis, String reportType) throws AxelorException;
 

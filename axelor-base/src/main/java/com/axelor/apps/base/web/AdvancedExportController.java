@@ -20,7 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.common.Inflector;
 import com.axelor.db.Model;
@@ -210,7 +210,7 @@ public class AdvancedExportController {
       File file = advancedExportService.export(advancedExport, recordIds, fileType);
 
       if (advancedExportService.getIsReachMaxExportLimit()) {
-        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_EXPORT_3));
+        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_EXPORT_3));
       }
 
       FileInputStream inStream = new FileInputStream(file);
@@ -221,7 +221,7 @@ public class AdvancedExportController {
 
       downloadExportFile(response, exportFile);
     } else {
-      response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_1));
+      response.setError(I18n.get(BaseExceptionMessage.ADVANCED_EXPORT_1));
     }
   }
 
@@ -275,7 +275,7 @@ public class AdvancedExportController {
     }
 
     if (Strings.isNullOrEmpty(criteria))
-      response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_2));
+      response.setError(I18n.get(BaseExceptionMessage.ADVANCED_EXPORT_2));
     else {
 
       String metaModelName = request.getModel();
@@ -311,7 +311,7 @@ public class AdvancedExportController {
     try {
       if (request.getContext().get("_xAdvancedExport") == null
           || request.getContext().get("exportFormatSelect") == null) {
-        response.setError(I18n.get(IExceptionMessage.ADVANCED_EXPORT_4));
+        response.setError(I18n.get(BaseExceptionMessage.ADVANCED_EXPORT_4));
         return;
       }
       AdvancedExport advancedExport =
@@ -356,7 +356,8 @@ public class AdvancedExportController {
       Mapper mapper = Mapper.of(klass);
 
       for (MetaField field : metaFields) {
-        if (!mapper.getProperty(field.getName()).isTransient()) {
+        if (mapper.getProperty(field.getName()) != null
+            && !mapper.getProperty(field.getName()).isTransient()) {
           metaFieldList.add(field.getId());
         }
       }

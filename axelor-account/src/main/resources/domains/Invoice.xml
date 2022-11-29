@@ -49,7 +49,8 @@
 
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date"/>
-    <date name="dueDate" title="Due Date"/>
+    <date name="dueDate" title="Due date"/>
+    <date name="nextDueDate" title="Next due date" readonly="true"/>
     <date name="originDate" title="Origin date"/>
     <date name="paymentDate" title="Payment date"/>
 
@@ -202,7 +203,7 @@
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
     <integer name="pfpValidateStatusSelect" title="Status"
-      selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
+      selection="invoice.pfp.validate.status.select" readonly="true" default="0"/>
     <many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay"
       ref="com.axelor.apps.base.db.CancelReason"/>
     <string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
@@ -240,6 +241,11 @@
 	      id]]>
     </integer>
 
+
+    <!-- Invoice terms -->
+    <integer name="paymentProgress" title="Payment progress" default="0"/>
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
+      mappedBy="invoice" title="Invoice terms"/>
 
     <unique-constraint columns="invoiceId,company"/>
 
@@ -279,6 +285,7 @@
 
 
 	    // PFP VALIDATE STATUS SELECT
+	    public static final int PFP_NONE = 0;
 	    public static final int PFP_STATUS_AWAITING = 1;
 	    public static final int PFP_STATUS_VALIDATED = 2;
 	    public static final int PFP_STATUS_LITIGATION = 3;

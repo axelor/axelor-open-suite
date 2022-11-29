@@ -20,6 +20,8 @@ package com.axelor.apps.quality.db.repo;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.quality.db.QualityControl;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -35,9 +37,15 @@ public class QualityControlManagementRepository extends QualityControlRepository
   @Override
   public QualityControl save(QualityControl qualityControl) {
 
-    if (Strings.isNullOrEmpty(qualityControl.getReference()))
-      qualityControl.setReference(
-          sequenceService.getSequenceNumber(SequenceRepository.QUALITY_CONTROL, null));
+    if (Strings.isNullOrEmpty(qualityControl.getReference())) {
+      try {
+        qualityControl.setReference(
+            sequenceService.getSequenceNumber(
+                SequenceRepository.QUALITY_CONTROL, null, QualityControl.class, "reference"));
+      } catch (AxelorException e) {
+        TraceBackService.traceExceptionFromSaveMethod(e);
+      }
+    }
     return super.save(qualityControl);
   }
 }

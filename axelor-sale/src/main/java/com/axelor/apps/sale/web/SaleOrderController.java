@@ -39,7 +39,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -183,7 +183,7 @@ public class SaleOrderController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.SALE_ORDER_PRINT));
+            I18n.get(SaleExceptionMessage.SALE_ORDER_PRINT));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -396,7 +396,7 @@ public class SaleOrderController {
           Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
       response.setReload(true);
       if (checkAvailabiltyRequest) {
-        response.setNotify(I18n.get(IExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
+        response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -594,7 +594,7 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
-  public void seperateInNewQuotation(ActionRequest request, ActionResponse response)
+  public void separateInNewQuotation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
@@ -613,7 +613,7 @@ public class SaleOrderController {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
-        Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, SOLines);
+        Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, SOLines);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
@@ -667,14 +667,10 @@ public class SaleOrderController {
   public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      SaleOrderLineService saleOrderLineServiceSupplyChain = Beans.get(SaleOrderLineService.class);
       if (saleOrder.getSaleOrderLineList() != null) {
-        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineServiceSupplyChain.computeProductInformation(saleOrderLine, saleOrder);
-          saleOrderLineServiceSupplyChain.computeValues(saleOrder, saleOrderLine);
-        }
-        response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+        Beans.get(SaleOrderLineService.class).updateLinesAfterFiscalPositionChange(saleOrder);
       }
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

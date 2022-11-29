@@ -19,7 +19,7 @@ package com.axelor.apps.suppliermanagement.web;
 
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.suppliermanagement.exceptions.IExceptionMessage;
+import com.axelor.apps.suppliermanagement.exceptions.SupplierManagementExceptionMessage;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -39,7 +39,7 @@ public class PurchaseOrderController {
       Beans.get(PurchaseOrderSupplierService.class)
           .generateSuppliersPurchaseOrder(
               Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
-      response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_1));
+      response.setFlash(I18n.get(SupplierManagementExceptionMessage.PURCHASE_ORDER_1));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -54,7 +54,7 @@ public class PurchaseOrderController {
       Beans.get(PurchaseOrderSupplierService.class)
           .generateAllSuppliersRequests(
               Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
-      response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_2));
+      response.setFlash(I18n.get(SupplierManagementExceptionMessage.PURCHASE_ORDER_2));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -18,10 +18,12 @@
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
@@ -34,6 +36,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class BankReconciliationLineService {
 
@@ -111,15 +114,35 @@ public class BankReconciliationLineService {
 
     BigDecimal bankDebit = bankReconciliationLine.getDebit();
     BigDecimal bankCredit = bankReconciliationLine.getCredit();
-    BigDecimal moveLineDebit = moveLine.getDebit();
-    BigDecimal moveLineCredit = moveLine.getCredit();
+    boolean isDebit = bankDebit.compareTo(bankCredit) > 0;
+
+    BigDecimal moveLineDebit;
+    BigDecimal moveLineCredit;
+
+    if (isDebit) {
+      if (BankReconciliationToolService.isForeignCurrency(
+          bankReconciliationLine.getBankReconciliation())) {
+        moveLineCredit = moveLine.getCurrencyAmount();
+      } else {
+        moveLineCredit = moveLine.getCredit();
+      }
+      moveLineDebit = moveLine.getDebit();
+    } else {
+      if (BankReconciliationToolService.isForeignCurrency(
+          bankReconciliationLine.getBankReconciliation())) {
+        moveLineDebit = moveLine.getCurrencyAmount();
+      } else {
+        moveLineDebit = moveLine.getDebit();
+      }
+      moveLineCredit = moveLine.getCredit();
+    }
 
     if (bankDebit.add(bankCredit).compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           bankReconciliationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.BANK_STATEMENT_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankReconciliationLine.getReference() != null
               ? bankReconciliationLine.getReference()
               : "");
@@ -136,8 +159,8 @@ public class BankReconciliationLineService {
       throw new AxelorException(
           bankReconciliationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BANK_STATEMENT_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.BANK_STATEMENT_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankReconciliationLine.getReference() != null
               ? bankReconciliationLine.getReference()
               : "");
@@ -154,6 +177,10 @@ public class BankReconciliationLineService {
     moveLine.setIsSelectedBankReconciliation(false);
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
     bankReconciliationLine.setMoveLine(moveLine);
+    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+    if (!Objects.isNull(bankStatementLine)) {
+      bankStatementLine.setMoveLine(bankReconciliationLine.getMoveLine());
+    }
     return bankReconciliationLine;
   }
 
@@ -176,19 +203,31 @@ public class BankReconciliationLineService {
           throw new AxelorException(
               bankReconciliationLine,
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(
-                  com.axelor.apps.bankpayment.exception.IExceptionMessage
-                      .BANK_RECONCILIATION_MISSING_JOURNAL));
+              I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MISSING_JOURNAL));
         }
         if (bankReconciliationLine.getBankReconciliation().getCashAccount() == null) {
           throw new AxelorException(
               bankReconciliationLine,
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(
-                  com.axelor.apps.bankpayment.exception.IExceptionMessage
-                      .BANK_RECONCILIATION_MISSING_CASH_ACCOUNT));
+              I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MISSING_CASH_ACCOUNT));
         }
       }
     }
+  }
+
+  public void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine) {
+
+    BigDecimal bankReconciledAmount =
+        bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit());
+
+    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+    if (bankStatementLine != null) {
+      bankStatementLine.setAmountRemainToReconcile(
+          bankStatementLine.getAmountRemainToReconcile().subtract(bankReconciledAmount));
+    }
+
+    MoveLine moveLine = bankReconciliationLine.getMoveLine();
+
+    moveLine.setBankReconciledAmount(bankReconciledAmount);
   }
 }

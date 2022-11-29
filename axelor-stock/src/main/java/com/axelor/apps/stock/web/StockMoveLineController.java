@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -27,9 +29,10 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -106,7 +109,9 @@ public class StockMoveLineController {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
       Map<String, Object> newStockMoveLine = Mapper.toMap(new StockMoveLine());
+      newStockMoveLine.put("productName", stockMoveLine.getProductName());
       newStockMoveLine.put("qty", BigDecimal.ZERO);
+      newStockMoveLine.put("realQty", BigDecimal.ZERO);
       newStockMoveLine.put("id", stockMoveLine.getId());
       newStockMoveLine.put("version", stockMoveLine.getVersion());
       newStockMoveLine.put("lineTypeSelect", stockMoveLine.getLineTypeSelect());
@@ -118,7 +123,7 @@ public class StockMoveLineController {
     Context context = request.getContext();
 
     if (context.get("trackingNumbers") == null) {
-      response.setAlert(I18n.get(IExceptionMessage.TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR));
+      response.setAlert(I18n.get(StockExceptionMessage.TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR));
     } else {
       @SuppressWarnings("unchecked")
       LinkedHashMap<String, Object> stockMoveLineMap =
@@ -160,7 +165,7 @@ public class StockMoveLineController {
       }
     }
     response.setView(
-        ActionView.define(I18n.get(IExceptionMessage.TRACK_NUMBER_WIZARD_TITLE))
+        ActionView.define(I18n.get(StockExceptionMessage.TRACK_NUMBER_WIZARD_TITLE))
             .model(Wizard.class.getName())
             .add("form", "stock-move-line-track-number-wizard-form")
             .param("popup", "reload")
@@ -287,5 +292,39 @@ public class StockMoveLineController {
       trackingNumbers.add(map);
     }
     response.setValue("$trackingNumbers", trackingNumbers);
+  }
+
+  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InternationalService internationalService = Beans.get(InternationalService.class);
+      StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
+      Context parentContext = context.getParent();
+      if (parentContext != null && parentContext.getContextClass().equals(StockMove.class)) {
+        StockMove stockMove = parentContext.asType(StockMove.class);
+        Partner partner = stockMove.getPartner();
+        String userLanguage = AuthUtils.getUser().getLanguage();
+        Product product = stockMoveLine.getProduct();
+
+        if (product != null) {
+          Map<String, String> translation =
+              internationalService.getProductDescriptionAndNameTranslation(
+                  product, partner, userLanguage);
+
+          String description = translation.get("description");
+          String productName = translation.get("productName");
+
+          if (description != null
+              && !description.isEmpty()
+              && productName != null
+              && !productName.isEmpty()) {
+            response.setValue("description", description);
+            response.setValue("productName", productName);
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

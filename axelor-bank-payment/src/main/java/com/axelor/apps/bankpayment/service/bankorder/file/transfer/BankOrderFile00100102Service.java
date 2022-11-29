@@ -147,7 +147,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService {
 
       // Amount
       instdAmt = factory.createCurrencyAndAmount();
-      instdAmt.setCcy(bankOrderCurrency.getCode());
+      instdAmt.setCcy(bankOrderCurrency.getCodeISO());
       instdAmt.setValue(bankOrderLine.getBankOrderAmount());
 
       amt = factory.createAmountType2Choice();

@@ -33,7 +33,7 @@
     </panel>
     <panel name="stockCorrectionDetailsPanel" readonlyIf="statusSelect == 2">
       <field name="stockLocation" canEdit="false" grid-view="stock-location-grid"
-        form-view="stock-location-form"/>
+        form-view="stock-location-form" onChange="action-stock-correction-method-set-deault-qtys"/>
       <field name="product" canEdit="false"
         onSelect="action-stock-correction-on-select-product"
         onChange="action-stock-correction-method-set-deault-qtys" grid-view="product-grid"
@@ -74,7 +74,7 @@
       expr="eval: &quot; self.id IN (0) AND self.dtype = 'Product'&quot;"
       if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
     <attribute name="domain" for="product"
-      expr="eval: &quot; self IN (SELECT p FROM StockLocation s JOIN s.stockLocationLineList sl JOIN sl.product p WHERE s = :stockLocation) AND self.dtype = 'Product'&quot;"
+      expr="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"
       if="stockLocation != null"/>
   </action-attrs>
 

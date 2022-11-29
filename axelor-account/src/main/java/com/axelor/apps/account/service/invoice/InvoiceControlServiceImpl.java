@@ -1,7 +1,25 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,14 +37,14 @@ public class InvoiceControlServiceImpl implements InvoiceControlService {
   @Override
   public Boolean isDuplicate(Invoice invoice) {
     Objects.requireNonNull(invoice);
-    StringBuilder query =
-        new StringBuilder(
-            "self.supplierInvoiceNb = :supplierInvoiceNb AND self.partner = :partnerId AND YEAR(self.originDate) = :yearOriginDate AND self.statusSelect != :statusSelect");
-    Map<String, Object> params = new HashMap<String, Object>();
-
     if (invoice.getOriginDate() != null
-        && invoice.getSupplierInvoiceNb() != null
+        && !Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())
         && invoice.getPartner() != null) {
+
+      StringBuilder query =
+          new StringBuilder(
+              "self.supplierInvoiceNb = :supplierInvoiceNb AND self.partner = :partnerId AND YEAR(self.originDate) = :yearOriginDate AND self.statusSelect != :statusSelect");
+      Map<String, Object> params = new HashMap<String, Object>();
 
       params.put("supplierInvoiceNb", invoice.getSupplierInvoiceNb());
       params.put("partnerId", invoice.getPartner().getId());

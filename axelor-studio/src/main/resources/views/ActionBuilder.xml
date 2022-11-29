@@ -5,11 +5,12 @@
 
   <grid name="action-builder-grid" title="Action builder"
     model="com.axelor.studio.db.ActionBuilder">
-    <field name="name"/>
+    <field name="name"
+      onChange="action-studio-meta-json-model-name-onchange-record,action-studio-menu-builder-attrs-check-generate-name"/>
     <field name="model"/>
     <field name="typeSelect"/>
     <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-      if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
   </grid>
 
   <form name="action-builder-form" title="Action builder"
@@ -19,11 +20,15 @@
         onChange="action-action-builder-method-set-views,action-action-builder-type-select-change"
         colSpan="2"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-        if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+        if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
       <spacer name="appBuilderSpacer"
-        if="!__config__.app.getApp('bpm').getEnableAppBuilder()"/>
-      <field name="name" required="true"/>
-      <field name="xmlId" colSpan="3" required="true"/>
+        if="!__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
+      <field name="name"
+        onChange="action-studio-meta-json-model-name-onchange-record,action-studio-menu-builder-attrs-check-generate-name"
+        required="true"/>
+      <field name="xmlId"
+        onChange="action-studio-menu-builder-attrs-xml-id-onchange,action-studio-menu-builder-attrs-check-generate-id"
+        colSpan="3" required="true"/>
       <field name="typeSelect" onChange="action-action-builder-type-select-change" colSpan="3"/>
       <panel name="modelPanel" colSpan="6" itemSpan="12">
         <field name="model" widget="ref-text" x-target-name="name"
@@ -124,6 +129,5 @@
   <action-method name="action-mapper-method-create-script-from-json">
     <call class="com.axelor.studio.web.ActionBuilderController" method="createMapperScript"/>
   </action-method>
-
 
 </object-views>

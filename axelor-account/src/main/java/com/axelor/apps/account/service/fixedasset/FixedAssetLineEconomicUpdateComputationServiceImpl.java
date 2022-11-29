@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
@@ -92,7 +109,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
-        fixedAsset,
+        fixedAsset.getPeriodicityTypeSelect(),
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
@@ -108,8 +125,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNumberOfDepreciation() - this.listSizeAfterClear;
+  protected BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation())
+        .subtract(BigDecimal.valueOf(this.listSizeAfterClear));
   }
 
   @Override
@@ -125,7 +143,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
-        fixedAsset,
+        fixedAsset.getPeriodicityTypeSelect(),
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
@@ -133,7 +151,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
-        fixedAsset,
+        fixedAsset.getPeriodicityTypeSelect(),
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
@@ -149,10 +167,11 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   @Override
-  protected int numberOfDepreciationDone(FixedAsset fixedAsset) {
-    return getFixedAssetLineList(fixedAsset).size()
-        - listSizeAfterClear
-        + fixedAsset.getNbrOfPastDepreciations();
+  protected BigDecimal numberOfDepreciationDone(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(
+        getFixedAssetLineList(fixedAsset).size()
+            - listSizeAfterClear
+            + fixedAsset.getNbrOfPastDepreciations());
   }
 
   @Override
@@ -245,8 +264,8 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNbrOfPastDepreciations();
+  protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNbrOfPastDepreciations());
   }
 
   @Override
@@ -263,5 +282,11 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
     return fixedAsset.getFailOverDepreciationEndDate();
+  }
+
+  @Override
+  protected int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset) {
+
+    return fixedAsset.getFirstDepreciationDateInitSelect();
   }
 }

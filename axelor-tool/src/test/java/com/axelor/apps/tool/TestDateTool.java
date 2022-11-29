@@ -218,4 +218,22 @@ public class TestDateTool {
         LocalDate.of(2011, 7, 31),
         DateTool.lastOccurency(LocalDate.of(2007, 4, 30), LocalDate.of(2011, 8, 6), 1));
   }
+
+  @Test
+  public void testCompareMonthDifferentMonth() {
+    Assert.assertFalse(
+        DateTool.isInTheSameMonth(LocalDate.of(2022, 2, 28), LocalDate.of(2022, 3, 3)));
+  }
+
+  @Test
+  public void testCompareMonthSameMonthDifferentYear() {
+    Assert.assertFalse(
+        DateTool.isInTheSameMonth(LocalDate.of(2022, 3, 13), LocalDate.of(2023, 3, 3)));
+  }
+
+  @Test
+  public void testCompareMonthSameMonthSameYear() {
+    Assert.assertTrue(
+        DateTool.isInTheSameMonth(LocalDate.of(2022, 3, 13), LocalDate.of(2022, 3, 3)));
+  }
 }

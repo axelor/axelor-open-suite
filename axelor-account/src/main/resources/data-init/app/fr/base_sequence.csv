@@ -69,4 +69,5 @@
 180;"move";"Ecriture de note de frais";"NUMBERS";"UPPERCASE";1;4;"ENF%YY%FM";;1;1
 181;"move";"Ecriture des à nouveaux";"NUMBERS";"UPPERCASE";1;4;"EANOUV%YY%FM";;1;1
 182;"fixedAsset";"N° Immobilisations";"NUMBERS";"UPPERCASE";1;3;"IMMO%YYYY";;1;1
+183;"paymentSession";"N° Session paiement";"NUMBERS";"UPPERCASE";1;3;"PMTS%YYYY";;1;1
 210;"noteBills";"Relevé de factures";"NUMBERS";"UPPERCASE";1;3;"NB%YYYY";;1;1

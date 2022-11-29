@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -27,6 +27,10 @@
     <method name="initialize"><![CDATA[var rules = {};
 var rulesn1 = {};
 var rulesn2 = {};
+var deltan1 = {};
+var deltan2 = {};
+var deltaPercentagen1 = {};
+var deltaPercentagen2 = {};
 var temp = {};]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -157,72 +161,6 @@ var temp = {};]]></method>
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="RulesDS" id="9">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">type</property>
-                    <property name="alias">type</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">type</text-property>
-                    <text-property name="heading">type</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule_label</property>
-                    <property name="alias">rule_label</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">rule_label</text-property>
-                    <text-property name="heading">rule_label</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule_code</property>
-                    <property name="alias">rule_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">rule_code</text-property>
-                    <text-property name="heading">rule_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule_type</property>
-                    <property name="alias">rule_type</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">rule_type</text-property>
-                    <text-property name="heading">rule_type</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">result</property>
-                    <property name="alias">result</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">result</text-property>
-                    <text-property name="heading">result</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">hidden</property>
-                    <property name="alias">hidden</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">hidden</text-property>
-                    <text-property name="heading">hidden</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">rule</property>
-                    <property name="alias">rule</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">rule</text-property>
-                    <text-property name="heading">rule</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">account_diff</property>
-                    <property name="alias">account_diff</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">account_diff</text-property>
-                    <text-property name="heading">account_diff</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">account_diffn1</property>
-                    <property name="analysis">measure</property>
-                </structure>
-                <structure>
-                    <property name="columnName">account_diffn2</property>
-                    <property name="analysis">measure</property>
-                </structure>
-            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">ReportId</property>
@@ -236,60 +174,7 @@ var temp = {};]]></method>
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">type</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">rule_label</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">rule_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">rule_type</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">result</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">hidden</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">rule</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">account_diff</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">account_diffn1</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">account_diffn2</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>               
             <method name="onFetch"><![CDATA[var value;
 var valuen1;
 var valuen2;
@@ -316,86 +201,51 @@ if (row["rule_type"] == 2) {
 		valuen2 = 0;
 	}
 
+
 	rules[row["rule_code"]] = value;
 	rulesn1[row["rule_code"]] = valuen1;
 	rulesn2[row["rule_code"]] = valuen2;
+	
+	
 } else if (row["rule_type"] == 3)  {
 	rules[row["rule_code"]] = eval(row["rule"]);
-}]]></method>
+	rulesn1[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn1')); 
+	rulesn2[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn2'));
+	
+}
+
+deltan1[row["rule_code"]] = rules[row["rule_code"]] - rulesn1[row["rule_code"]];
+deltan2[row["rule_code"]] = rules[row["rule_code"]] - rulesn2[row["rule_code"]];
+
+if (rules[row["rule_code"]] == 0) {
+	
+	if (rulesn1[row["rule_code"]] == 0) {
+		deltaPercentagen1[row["rule_code"]] = 0;
+	}
+	else {
+		deltaPercentagen1[row["rule_code"]] = 100;
+	}
+		
+	if (rulesn2[row["rule_code"]] == 0) {
+		deltaPercentagen2[row["rule_code"]] = 0;
+	}
+	else {
+		deltaPercentagen2[row["rule_code"]] = 100;
+	}
+}
+else {
+	deltaPercentagen1[row["rule_code"]] = (rules[row["rule_code"]] - rulesn1[row["rule_code"]])/rules[row["rule_code"]] * 100;
+	deltaPercentagen2[row["rule_code"]] = (rules[row["rule_code"]] - rulesn2[row["rule_code"]])/rules[row["rule_code"]] * 100;
+}
+if(dataSetRow["showProvisionTitle"])
+{
+	vars["showProvisionTitle"] = dataSetRow["showProvisionTitle"];
+}
+]]></method>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">type</property>
-                    <property name="nativeName">type</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">rule_label</property>
-                    <property name="nativeName">rule_label</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">rule_code</property>
-                    <property name="nativeName">rule_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">rule_type</property>
-                    <property name="nativeName">rule_type</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">result</property>
-                    <property name="nativeName">result</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">hidden</property>
-                    <property name="nativeName">hidden</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">rule</property>
-                    <property name="nativeName">rule</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">account_diff</property>
-                    <property name="nativeName">account_diff</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">account_diffn1</property>
-                    <property name="nativeName">account_diffn1</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
-                    <property name="name">account_diffn2</property>
-                    <property name="nativeName">account_diffn2</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-            </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT
+            <list-property name="resultSet"/>
+            <xml-property name="queryText"><![CDATA[WITH MoveLineQuery as (SELECT DISTINCT
+	ConfigLine.sequence,
 	ConfigLine.type_select 				  as type,
 	ConfigLine.label 					  as rule_label,
 	ConfigLine.code 					  as rule_code,
@@ -403,11 +253,13 @@ if (row["rule_type"] == 2) {
 	ConfigLine.result_select 			  as result,
 	ConfigLine.hidden 					  as hidden,
 	ConfigLine.rule	 					  as rule,
-	SUM(MoveLine.debit - MoveLine.credit) FILTER (WHERE MoveLine.date_val BETWEEN Report.date_from AND Report.date_to) as account_diff,
-
-	SUM(MoveLine.debit - MoveLine.credit) FILTER (WHERE MoveLine.date_val BETWEEN Report.date_from - interval '1 year' AND Report.date_to - interval '1 year') as account_diffn1,
-
-	SUM(MoveLine.debit - MoveLine.credit) FILTER (WHERE MoveLine.date_val BETWEEN Report.date_from - interval '2 year' AND Report.date_to - interval '2 year') as account_diffn2
+	MoveLine.date_val,
+	Report.date_from,
+	Report.date_to,
+	MoveLine.debit as debit,
+	MoveLine.credit as credit,
+	MoveLine.id,
+	CASE WHEN (COUNT(CASE WHEN Move.status_select IN (2,3,5) THEN 1 ELSE 0 END)) > 0 THEN TRUE ELSE FALSE END as "show_provision_title"
 FROM account_accounting_report as Report
 
 JOIN account_accounting_report_type as ReportType
@@ -419,6 +271,9 @@ ON ReportType.id = ConfigLine.report_type
 LEFT JOIN account_accounting_report_config_line_account_type_set as AccountTypeSet
 ON AccountTypeSet.account_accounting_report_config_line = ConfigLine.id
 
+LEFT JOIN account_accounting_report_config_line_analytic_account_set as AnalyticAccountSet
+ON AnalyticAccountSet.account_accounting_report_config_line =  ConfigLine.id
+
 LEFT JOIN account_account_type as AccountType
 ON AccountType.id = AccountTypeSet.account_type_set
 
@@ -428,13 +283,20 @@ ON AccountSet.account_accounting_report_config_line = ConfigLine.id
 LEFT JOIN account_account as Account
 ON Account.id = AccountSet.account_set 
 OR Account.account_type = AccountType.id
-OR Account.code LIKE ConfigLine.account_code
+OR Account.code SIMILAR TO ConfigLine.account_code
 
 LEFT JOIN account_move_line as MoveLine
 ON MoveLine.account = Account.id 
 
 LEFT JOIN account_move as Move
 ON MoveLine.move = Move.id
+
+LEFT JOIN account_analytic_account as AnalyticAccount
+ON AnalyticAccount.id = AnalyticAccountSet.analytic_account_set
+OR AnalyticAccount.code LIKE ConfigLine.analytic_account_code
+
+LEFT JOIN account_analytic_move_line as AnalyticMoveLine 
+ON (AnalyticMoveLine.move_line = MoveLine.id)
 
 LEFT JOIN base_period as Period
 ON Move.period = Period.id
@@ -457,10 +319,35 @@ WHERE Report.id = ?
 		AND Move.ignore_in_accounting_ok IN ('false', null) 
 		AND (Move.status_select IN (2, 3) OR (Move.status_select = 5 AND Report.display_simulated_move))
 	))
-	
-GROUP BY ConfigLine.id
+	AND (AnalyticAccountSet.analytic_account_set is NULL
+	 OR AnalyticAccountSet.analytic_account_set = AnalyticMoveLine.analytic_account)
 
-ORDER BY ConfigLine.sequence]]></xml-property>
+GROUP BY ConfigLine.sequence, ConfigLine.type_select, ConfigLine.label, ConfigLine.code, ConfigLine.rule_type_select, ConfigLine.result_select, ConfigLine.hidden,ConfigLine.rule,MoveLine.date_val,Report.date_from,Report.date_to,MoveLine.debit,MoveLine.credit,MoveLine.id
+
+ORDER BY ConfigLine.sequence)
+
+Select MoveLineQuery.sequence,
+	MoveLineQuery.type,
+	MoveLineQuery.rule_label,
+	MoveLineQuery.rule_code,
+	MoveLineQuery.rule_type,
+	MoveLineQuery.result,
+	MoveLineQuery.hidden,
+	MoveLineQuery.rule,
+	MoveLineQuery.show_provision_title as "showProvisionTitle",
+	SUM(MoveLineQuery.debit - MoveLineQuery.credit) FILTER (WHERE MoveLineQuery.date_val BETWEEN MoveLineQuery.date_from AND MoveLineQuery.date_to) as account_diff,
+
+	SUM(MoveLineQuery.debit - MoveLineQuery.credit) FILTER (WHERE MoveLineQuery.date_val BETWEEN MoveLineQuery.date_from - interval '1 year' AND MoveLineQuery.date_to - interval '1 year') as account_diffn1,
+
+	SUM(MoveLineQuery.debit - MoveLineQuery.credit) FILTER (WHERE MoveLineQuery.date_val BETWEEN MoveLineQuery.date_from - interval '2 year' AND MoveLineQuery.date_to - interval '2 year') as account_diffn2
+FROM MoveLineQuery
+GROUP BY MoveLineQuery.sequence, MoveLineQuery.type, MoveLineQuery.rule_label, MoveLineQuery.rule_code, MoveLineQuery.rule_type,MoveLineQuery.result,MoveLineQuery.hidden,MoveLineQuery.rule,MoveLineQuery.show_provision_title
+
+Order by MoveLineQuery.sequence
+	
+	
+	
+	]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ReportDS" id="5439">
             <list-property name="columnHints">
@@ -507,6 +394,14 @@ ORDER BY ConfigLine.sequence]]></xml-property>
                     <text-property name="heading">report_title</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">comparison</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">no_of_periods</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
                     <property name="columnName">company_name</property>
                     <property name="alias">company_name</property>
                     <property name="analysis">dimension</property>
@@ -547,6 +442,18 @@ ORDER BY ConfigLine.sequence]]></xml-property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
                     <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">display_delta_year</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_delta_year</text-property>
+                    <text-property name="heading">display_delta_year</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">display_delta_year_percentage</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_delta_year_percentage</text-property>
+                    <text-property name="heading">display_delta_year_percentage</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -633,6 +540,16 @@ ORDER BY ConfigLine.sequence]]></xml-property>
                         <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">display_delta_year</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">display_delta_year_percentage</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -642,84 +559,112 @@ ORDER BY ConfigLine.sequence]]></xml-property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">display_simulated_move</property>
                     <property name="nativeName">display_simulated_move</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">report_title</property>
                     <property name="nativeName">report_title</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">comparison</property>
                     <property name="nativeName">comparison</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">no_of_periods</property>
                     <property name="nativeName">no_of_periods</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">journal</property>
                     <property name="nativeName">journal</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">period</property>
                     <property name="nativeName">period</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">display_delta_year</property>
+                    <property name="nativeName">display_delta_year</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">display_delta_year_percentage</property>
+                    <property name="nativeName">display_delta_year_percentage</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
@@ -736,7 +681,9 @@ ORDER BY ConfigLine.sequence]]></xml-property>
 	Journal.name as journal,
 	PaymentMode.name as payment_mode,
 	Period.name as period,
-	MetaFile.file_path as logo_path
+	MetaFile.file_path as logo_path,
+	Report.display_delta_year,
+	Report.display_delta_year_percentage
 	
 FROM account_accounting_report as Report
 
@@ -1022,6 +969,33 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
         </simple-master-page>
     </page-setup>
     <body>
+        <table id="5587">
+            <property name="dataSet">RulesDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">true</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">showProvisionTitle</property>
+                    <text-property name="displayName">showProvisionTitle</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["showProvisionTitle"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
+            <column id="5590"/>
+            <column id="5591"/>
+            <column id="5592"/>
+            <detail>
+                <row id="5537">
+                    <cell id="5588"/>
+                    <cell id="5539"/>
+                    <cell id="5589"/>
+                </row>
+            </detail>
+        </table>
         <grid id="5390">
             <property name="dataSet">ReportDS</property>
             <list-property name="boundDataColumns">
@@ -1116,6 +1090,20 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <expression name="expression" type="javascript">dataSetRow["no_of_periods"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">display_delta_year</property>
+                    <text-property name="displayName">display_delta_year</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_delta_year"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">display_delta_year_percentage</property>
+                    <text-property name="displayName">display_delta_year_percentage</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_delta_year_percentage"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="5455"/>
             <column id="5461"/>
@@ -1207,7 +1195,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["report_title"] + " " + row["ref"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["report_title"] + " " + row["ref"]</VALUE-OF> &amp;nbsp;]]></text-property>
                     </text>
                     <text id="5531">
                         <property name="display">inline</property>
@@ -1215,7 +1203,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">!row._outer["display_simulated_move"]</expression>
+                                <expression name="valueExpr" type="javascript">!vars["showProvisionTitle"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -1842,6 +1830,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="marginTop">auto</property>
+                        <property name="width">7.875in</property>
                         <property name="dataSet">RulesDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -1896,9 +1885,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <structure name="toc"/>
                         <property name="pageBreakInterval">0</property>
                         <column id="79">
-                            <property name="width">70%</property>
+                            <property name="suppressDuplicates">false</property>
+                            <property name="width">3.458in</property>
                         </column>
-                        <column id="80"/>
+                        <column id="80">
+                            <property name="width">0.6in</property>
+                        </column>
                         <column id="5540">
                             <property name="repeat">1</property>
                             <list-property name="visibility">
@@ -1907,6 +1899,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1</expression>
                                 </structure>
                             </list-property>
+                            <property name="width">0.6in</property>
+                        </column>
+                        <column id="5563">
+                            <property name="repeat">1</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || !row._outer["display_delta_year"]</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">0.6in</property>
+                        </column>
+                        <column id="5577">
+                            <property name="repeat">1</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || !row._outer["display_delta_year_percentage"]</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">0.6in</property>
                         </column>
                         <column id="5545">
                             <property name="repeat">1</property>
@@ -1916,6 +1929,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || row._outer["no_of_periods"] == 1</expression>
                                 </structure>
                             </list-property>
+                            <property name="width">0.6in</property>
+                        </column>
+                        <column id="5568">
+                            <property name="repeat">1</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || row._outer["no_of_periods"] == 1 || !row._outer["display_delta_year"]</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">0.6in</property>
+                        </column>
+                        <column id="5582">
+                            <property name="repeat">1</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || row._outer["no_of_periods"] == 1 || !row._outer["display_delta_year_percentage"]</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">0.6in</property>
                         </column>
                         <header>
                             <row id="70">
@@ -1946,6 +1980,28 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_from"], -1)</VALUE-OF> - <VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_to"], -1)</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
+                                <cell id="5560">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <text id="5571">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>   - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -1)</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5574">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <text id="5585">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>   - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -1)</VALUE-OF> (%)]]></text-property>
+                                    </text>
+                                </cell>
                                 <cell id="5546">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -1955,6 +2011,28 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="fontSize">9pt</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_from"], -2)</VALUE-OF> - <VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_to"], -2)</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5565">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <text id="5572">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[DELTA  <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>  - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -2)</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5579">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <text id="5586">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>  - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -2)</VALUE-OF> (%)]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -2034,9 +2112,73 @@ if (row["type"] != 3) {
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
-if (row["type"] != 3)
-	rulesn1[row["rule_code"]]
+if (row["type"] != 3) {
+    if (isNaN(rulesn1[row["rule_code"]])) {
+    	0
+    }
+    else {
+		rulesn1[row["rule_code"]]
+	}
+}	
 </VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5561">
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <text id="5564">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="textAlign">right</property>
+                                        <list-property name="highlightRules">
+                                            <structure>
+                                                <property name="operator">eq</property>
+                                                <property name="fontWeight">bold</property>
+                                                <expression name="testExpr" type="javascript">row["type"]</expression>
+                                                <simple-property-list name="value1">
+                                                    <value type="javascript">1</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
+if (row["type"] != 3) {
+    if (isNaN(deltan1[row["rule_code"]])) {
+    	0
+    }
+    else {
+		deltan1[row["rule_code"]]
+	}
+}	
+</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5575">
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <text id="5573">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="textAlign">right</property>
+                                        <list-property name="highlightRules">
+                                            <structure>
+                                                <property name="operator">eq</property>
+                                                <property name="fontWeight">bold</property>
+                                                <expression name="testExpr" type="javascript">row["type"]</expression>
+                                                <simple-property-list name="value1">
+                                                    <value type="javascript">1</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00'%'{RoundingMode=HALF_UP}">
+if (row["type"] != 3) {
+ if (isNaN(deltaPercentagen1[row["rule_code"]])) {
+ 	0
+ } else {
+ 	deltaPercentagen1[row["rule_code"]]
+ }
+}
+</VALUE-OF>
+	]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5547">
@@ -2057,9 +2199,73 @@ if (row["type"] != 3)
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
-if (row["type"] != 3)
-	rulesn2[row["rule_code"]]
+if (row["type"] != 3) {
+    if (isNaN(rulesn2[row["rule_code"]])) {
+    	0
+    }
+    else {
+		rulesn2[row["rule_code"]]
+	}
+}	
 </VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5566">
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <text id="5569">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="textAlign">right</property>
+                                        <list-property name="highlightRules">
+                                            <structure>
+                                                <property name="operator">eq</property>
+                                                <property name="fontWeight">bold</property>
+                                                <expression name="testExpr" type="javascript">row["type"]</expression>
+                                                <simple-property-list name="value1">
+                                                    <value type="javascript">1</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
+if (row["type"] != 3) {
+    if (isNaN(deltan2[row["rule_code"]])) {
+    	0
+    }
+    else {
+		deltan2[row["rule_code"]]
+	}
+}	
+</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5580">
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <text id="5584">
+                                        <property name="fontSize">10pt</property>
+                                        <property name="textAlign">right</property>
+                                        <list-property name="highlightRules">
+                                            <structure>
+                                                <property name="operator">eq</property>
+                                                <property name="fontWeight">bold</property>
+                                                <expression name="testExpr" type="javascript">row["type"]</expression>
+                                                <simple-property-list name="value1">
+                                                    <value type="javascript">1</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00'%'{RoundingMode=HALF_UP}">
+if (row["type"] != 3) {
+ if (isNaN(deltaPercentagen2[row["rule_code"]])) {
+ 	0
+ } else {
+ 	deltaPercentagen2[row["rule_code"]]
+ }
+}
+</VALUE-OF>
+	]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -2075,7 +2281,23 @@ if (row["type"] != 3)
                                     <property name="borderLeftStyle">solid</property>
                                     <property name="borderLeftWidth">thin</property>
                                 </cell>
+                                <cell id="5562">
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                </cell>
+                                <cell id="5576">
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                </cell>
                                 <cell id="5549">
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                </cell>
+                                <cell id="5567">
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                </cell>
+                                <cell id="5581">
                                     <property name="borderLeftStyle">solid</property>
                                     <property name="borderLeftWidth">thin</property>
                                 </cell>
@@ -2086,4 +2308,10 @@ if (row["type"] != 3)
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="showProvisionTitle">
+            <expression name="value" type="javascript">false</expression>
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

@@ -25,7 +25,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
@@ -70,12 +70,14 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
   public String getProductionOrderSeq() throws AxelorException {
 
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PRODUCTION_ORDER);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PRODUCTION_ORDER, ProductionOrder.class, "productionOrderSeq");
 
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_ORDER_SEQ));
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_SEQ));
     }
 
     return seq;

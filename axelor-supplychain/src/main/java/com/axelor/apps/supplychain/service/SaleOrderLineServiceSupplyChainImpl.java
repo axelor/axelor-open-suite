@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -33,6 +34,7 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.PackLine;
@@ -98,7 +100,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
-      PricingService pricingService) {
+      PricingService pricingService,
+      TaxService taxService) {
     super(
         currencyService,
         priceListService,
@@ -108,7 +111,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         accountManagementService,
         saleOrderLineRepo,
         saleOrderService,
-        pricingService);
+        pricingService,
+        taxService);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
@@ -131,16 +135,20 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   public SaleOrderLine getAndComputeAnalyticDistribution(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
-    if (accountConfigService
-            .getAccountConfig(saleOrder.getCompany())
-            .getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(saleOrder.getCompany());
+
+    if (!accountConfig.getManageAnalyticAccounting()
+        || accountConfig.getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return saleOrderLine;
     }
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
-            saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany());
+            saleOrder.getClientPartner(),
+            saleOrderLine.getProduct(),
+            saleOrder.getCompany(),
+            false);
 
     saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

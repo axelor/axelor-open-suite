@@ -20,7 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -30,6 +30,7 @@ import com.axelor.apps.tool.MassUpdateTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -89,7 +90,7 @@ public class AccountController {
 
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY),
+            I18n.get(AccountExceptionMessage.ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY),
             account.getCode(),
             account.getCompany().getName());
       }
@@ -104,14 +105,15 @@ public class AccountController {
       Account account = request.getContext().asType(Account.class);
       Beans.get(AccountService.class).checkAnalyticAxis(account);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
   public void manageAnalytic(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      if (!Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+      if (account.getCompany() == null
+          || !Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
           || !Beans.get(AccountConfigService.class)
               .getAccountConfig(account.getCompany())
               .getManageAnalyticAccounting()) {
@@ -125,13 +127,29 @@ public class AccountController {
   public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      if (account.getAnalyticDistributionTemplate() == null
-          && account.getAnalyticDistributionAuthorized()) {
-        AnalyticDistributionTemplate analyticDistributionTemplate =
+      AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
+          Beans.get(AnalyticDistributionTemplateService.class)
+              .createSpecificDistributionTemplate(account.getCompany(), account.getName());
+
+      if (specificAnalyticDistributionTemplate != null) {
+        response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void personalizeAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      if (account.getAnalyticDistributionTemplate() != null) {
+        AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
             Beans.get(AnalyticDistributionTemplateService.class)
-                .createDistributionTemplateFromAccount(account);
-        if (analyticDistributionTemplate != null) {
-          response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+                .personalizeAnalyticDistributionTemplate(
+                    account.getAnalyticDistributionTemplate(),
+                    account.getAnalyticDistributionTemplate().getCompany());
+        if (specificAnalyticDistributionTemplate != null) {
+          response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
         }
       }
     } catch (Exception e) {
@@ -161,13 +179,13 @@ public class AccountController {
       Object statusObj = request.getContext().get(fieldName);
 
       if (ObjectUtils.isEmpty(statusObj)) {
-        response.setError(I18n.get(IExceptionMessage.MASS_UPDATE_NO_STATUS));
+        response.setError(I18n.get(AccountExceptionMessage.MASS_UPDATE_NO_STATUS));
         return;
       }
 
       Object selectedIdObj = request.getContext().get("_selectedIds");
       if (ObjectUtils.isEmpty(selectedIdObj)) {
-        response.setError(I18n.get(IExceptionMessage.MASS_UPDATE_NO_RECORD_SELECTED));
+        response.setError(I18n.get(AccountExceptionMessage.MASS_UPDATE_NO_RECORD_SELECTED));
         return;
       }
 
@@ -179,9 +197,10 @@ public class AccountController {
           MassUpdateTool.update(modelClass, fieldName, statusSelect, selectedIds);
       String message = null;
       if (recordsUpdated > 0) {
-        message = String.format(I18n.get(IExceptionMessage.MASS_UPDATE_SUCCESSFUL), recordsUpdated);
+        message =
+            String.format(I18n.get(AccountExceptionMessage.MASS_UPDATE_SUCCESSFUL), recordsUpdated);
       } else {
-        message = I18n.get(IExceptionMessage.MASS_UPDATE_SELECTED_NO_RECORD);
+        message = I18n.get(AccountExceptionMessage.MASS_UPDATE_SELECTED_NO_RECORD);
       }
       response.setFlash(message);
       response.setCanClose(true);
@@ -198,7 +217,7 @@ public class AccountController {
       Object statusObj = request.getContext().get(fieldName);
 
       if (ObjectUtils.isEmpty(statusObj)) {
-        response.setError(I18n.get(IExceptionMessage.MASS_UPDATE_NO_STATUS));
+        response.setError(I18n.get(AccountExceptionMessage.MASS_UPDATE_NO_STATUS));
         return;
       }
 
@@ -208,9 +227,10 @@ public class AccountController {
       Integer recordsUpdated = MassUpdateTool.update(modelClass, fieldName, statusSelect, null);
       String message = null;
       if (recordsUpdated > 0) {
-        message = String.format(I18n.get(IExceptionMessage.MASS_UPDATE_SUCCESSFUL), recordsUpdated);
+        message =
+            String.format(I18n.get(AccountExceptionMessage.MASS_UPDATE_SUCCESSFUL), recordsUpdated);
       } else {
-        message = I18n.get(IExceptionMessage.MASS_UPDATE_ALL_NO_RECORD);
+        message = I18n.get(AccountExceptionMessage.MASS_UPDATE_ALL_NO_RECORD);
       }
 
       response.setFlash(message);
@@ -218,6 +238,31 @@ public class AccountController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fillAccountCode(ActionRequest request, ActionResponse response) {
+    Account account = request.getContext().asType(Account.class);
+    try {
+      account = Beans.get(AccountService.class).fillAccountCode(account);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setValue("code", account.getCode());
+    }
+  }
+
+  public void verifyTemplateValues(ActionRequest request, ActionResponse response) {
+    Account account = request.getContext().asType(Account.class);
+    try {
+      AnalyticDistributionTemplateService analyticDistributionTemplateService =
+          Beans.get(AnalyticDistributionTemplateService.class);
+      analyticDistributionTemplateService.verifyTemplateValues(
+          account.getAnalyticDistributionTemplate());
+      analyticDistributionTemplateService.validateTemplatePercentages(
+          account.getAnalyticDistributionTemplate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

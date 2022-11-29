@@ -19,7 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.DataConfigLine;
 import com.axelor.apps.base.db.repo.DataConfigLineRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
+import com.axelor.apps.base.exceptions.AdminExceptionMessage;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -82,7 +82,7 @@ public class ObjectDataCommonService {
           throw new AxelorException(
               line,
               TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessages.EMPTY_RELATIONAL_FIELD_IN_DATA_CONFIG_LINE),
+              I18n.get(AdminExceptionMessage.EMPTY_RELATIONAL_FIELD_IN_DATA_CONFIG_LINE),
               line.getMetaModel().getName());
         }
         filter = createFilter(relationalField.getName());
@@ -94,7 +94,7 @@ public class ObjectDataCommonService {
           throw new AxelorException(
               line,
               TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessages.EMPTY_QUERY_IN_DATA_CONFIG_LINE),
+              I18n.get(AdminExceptionMessage.EMPTY_QUERY_IN_DATA_CONFIG_LINE),
               line.getMetaModel().getName());
         }
         break;

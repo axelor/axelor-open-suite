@@ -79,6 +79,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     try {
       AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
       SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
+
       if (appSale.getEnablePackManagement()) {
         saleOrderComputeService.computePackTotal(saleOrder);
       } else {

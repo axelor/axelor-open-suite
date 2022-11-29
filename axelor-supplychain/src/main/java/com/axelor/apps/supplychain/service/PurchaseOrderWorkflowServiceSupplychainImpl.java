@@ -64,6 +64,8 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       return;
     }
 
+    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+
     if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()
         && !purchaseOrderStockService.existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
       purchaseOrderStockService.createStockMoveFromPurchaseOrder(purchaseOrder);
@@ -80,7 +82,9 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
 
-    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+    if (!appAccountService.getAppBudget().getManageMultiBudget()) {
+      purchaseOrderSupplychainService.updateBudgetDistributionAmountAvailable(purchaseOrder);
+    }
   }
 
   @Override

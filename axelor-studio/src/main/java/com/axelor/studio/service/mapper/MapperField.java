@@ -18,6 +18,7 @@
 package com.axelor.studio.service.mapper;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.StringUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MapperField {
@@ -35,6 +36,8 @@ public class MapperField {
   private String parent = null;
 
   private MapperValue value = null;
+
+  private String condition = null;
 
   public String getDataPath() {
     return dataPath;
@@ -92,6 +95,14 @@ public class MapperField {
     this.jsonModel = jsonModel;
   }
 
+  public String getCondition() {
+    return condition;
+  }
+
+  public void setCondition(String condition) {
+    this.condition = condition;
+  }
+
   public String toScript(String parent) {
 
     this.parent = parent;
@@ -100,6 +111,10 @@ public class MapperField {
     String field = parent + "." + name;
 
     stb.append(field + " = " + value.toScript(this));
+
+    if (!StringUtils.isBlank(condition)) {
+      return "if (" + condition + ") {\n\t" + stb.toString() + "\n}";
+    }
 
     return stb.toString();
   }

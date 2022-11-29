@@ -18,7 +18,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.BarcodeTypeConfig;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -144,7 +144,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
         default:
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BARCODE_GENERATOR_9));
+              I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_9));
       }
       return generateBarcode(serialno, barcodeTypeConfig, barcodeFormat);
     }
@@ -189,7 +189,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_3),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_3),
         serialno,
         barcodeFormat,
         null);
@@ -205,7 +205,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_4),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_4),
         serialno,
         barcodeFormat,
         null);
@@ -225,7 +225,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_2),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_2),
         serialno,
         barcodeFormat,
         null);
@@ -245,7 +245,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
       }
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BARCODE_GENERATOR_6),
+          I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_6),
           serialno,
           barcodeFormat);
     }
@@ -258,7 +258,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
       }
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BARCODE_GENERATOR_8),
+          I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_8),
           serialno,
           barcodeFormat);
     } else if (serialno.length() > 3 && serialno.length() < 12) {
@@ -266,7 +266,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_5),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_5),
         serialno,
         barcodeFormat,
         3,
@@ -316,7 +316,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_1),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_1),
         serialno,
         barcodeFormat,
         barcodeLength);
@@ -371,7 +371,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_7),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_7),
         serialno,
         barcodeFormat,
         barcodeLength);
@@ -392,7 +392,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.BARCODE_GENERATOR_7),
+        I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_7),
         serialno,
         barcodeFormat,
         barcodeLength);
@@ -447,7 +447,7 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
         default:
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BARCODE_GENERATOR_9));
+              I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_9));
       }
       return true;
     }

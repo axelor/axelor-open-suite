@@ -65,7 +65,7 @@
     <!-- Exchanges -->
     <integer name="entryCodeSelect" title="Entry code"
       selection="bankpayment.bank.order.entry.code.select"/>
-    <integer name="dailyCodeSelect" title="Daily code"
+    <integer name="dailyCodeSelect" title="Dailly code"
       selection="bankpayment.bank.order.daily.code.select"/>
     <integer name="acceptPerLineCodeSelect" title="Acceptance code per recipient line"
       selection="bankpayment.bank.order.accept.per.line.code.select"/>
