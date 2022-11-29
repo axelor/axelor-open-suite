@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -65,8 +66,9 @@ public class MoveTemplateService {
   protected AnalyticMoveLineService analyticMoveLineService;
   protected TaxService taxService;
   protected BankDetailsService bankDetailsService;
+  protected MoveTemplateRepository moveTemplateRepo;
 
-  @Inject protected MoveTemplateRepository moveTemplateRepo;
+  protected List<String> exceptionsList;
 
   @Inject
   public MoveTemplateService(
@@ -78,7 +80,8 @@ public class MoveTemplateService {
       AnalyticMoveLineService analyticMoveLineService,
       TaxService taxService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      MoveTemplateRepository moveTemplateRepo) {
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
@@ -88,6 +91,12 @@ public class MoveTemplateService {
     this.taxService = taxService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.bankDetailsService = bankDetailsService;
+    this.moveTemplateRepo = moveTemplateRepo;
+    this.exceptionsList = Lists.newArrayList();
+  }
+
+  public List<String> getExceptionsList() {
+    return exceptionsList;
   }
 
   @Transactional
@@ -237,9 +246,7 @@ public class MoveTemplateService {
           counter++;
         }
 
-        if (moveTemplate.getAutomaticallyValidate()) {
-          moveValidateService.accounting(move);
-        }
+        manageAccounting(moveTemplate, move);
 
         moveRepo.save(move);
         moveList.add(move.getId());
@@ -335,15 +342,27 @@ public class MoveTemplateService {
           counter++;
         }
 
-        if (moveTemplate.getAutomaticallyValidate()) {
-          moveValidateService.accounting(move);
-        }
+        manageAccounting(moveTemplate, move);
 
         moveRepo.save(move);
         moveList.add(move.getId());
       }
     }
     return moveList;
+  }
+
+  protected void manageAccounting(MoveTemplate moveTemplate, Move move) {
+    if (!moveTemplate.getAutomaticallyValidate()) {
+      return;
+    }
+    try {
+      moveValidateService.accounting(move);
+    } catch (AxelorException e) {
+      String message = e.getMessage();
+      if (!exceptionsList.contains(message)) {
+        exceptionsList.add(message);
+      }
+    }
   }
 
   public boolean checkValidity(MoveTemplate moveTemplate) {
