@@ -57,7 +57,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
@@ -130,7 +129,8 @@ public class IntercoServiceImpl implements IntercoService {
 
     // get stock location
     saleOrder.setStockLocation(
-        Beans.get(StockLocationService.class).getPickupDefaultStockLocation(intercoCompany));
+        Beans.get(SaleOrderSupplychainService.class)
+            .getStockLocation(purchaseOrder.getCompany().getPartner(), intercoCompany));
 
     // copy timetable info
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
@@ -203,7 +203,8 @@ public class IntercoServiceImpl implements IntercoService {
     // copy delivery info
     purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setStockLocation(
-        Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(intercoCompany));
+        Beans.get(PurchaseOrderSupplychainService.class)
+            .getStockLocation(saleOrder.getCompany().getPartner(), intercoCompany));
     purchaseOrder.setShipmentMode(saleOrder.getShipmentMode());
     purchaseOrder.setFreightCarrierMode(saleOrder.getFreightCarrierMode());
 

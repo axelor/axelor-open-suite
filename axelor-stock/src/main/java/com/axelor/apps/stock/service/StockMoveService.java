@@ -224,4 +224,8 @@ public interface StockMoveService {
   void updateStocks(StockMove stockMove) throws AxelorException;
 
   void updateProductNetMass(StockMove stockMove) throws AxelorException;
+
+  StockLocation getFromStockLocation(StockMove stockMove) throws AxelorException;
+
+  StockLocation getToStockLocation(StockMove stockMove) throws AxelorException;
 }
