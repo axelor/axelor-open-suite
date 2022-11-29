@@ -407,7 +407,7 @@
       <panel name="invoiceTermPanel" title="Term(s)"
         showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
-          onClick="save,action-move-line-view-show-related-invoice-terms,close"
+          onClick="save,action-move-line-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
         <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
           grid-view="invoice-term-move-line-grid"
@@ -416,7 +416,7 @@
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
         showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
         <button name="showInvoiceTermsFromInvoiceBtn" title="Show related invoice term(s)"
-          onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice,close"
+          onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice"
           readonlyIf="!invoiceTermList.length"/>
         <field name="$invoiceTermListPercentageWarningText" hidden="true" colSpan="12"
           showTitle="false" readonly="true">
@@ -650,7 +650,7 @@
           </panel>
         </panel>
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
-          onClick="save,action-move-line-view-show-related-invoice-terms,close"
+          onClick="save,action-move-line-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
         <field name="invoiceTermList" colSpan="12" form-view="invoice-term-move-line-form"
           grid-view="invoice-term-move-line-grid"
@@ -659,7 +659,7 @@
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
         showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
         <button name="showInvoiceTermsFromInvoiceBtn" title="Show related invoice term(s)"
-          onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice,close"
+          onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice"
           readonlyIf="!invoiceTermList.length"/>
         <field name="$invoiceTermListPercentageWarningText" hidden="true" colSpan="12"
           showTitle="false" readonly="true">
