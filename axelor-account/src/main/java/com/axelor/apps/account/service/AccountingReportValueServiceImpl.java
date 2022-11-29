@@ -327,7 +327,9 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       throws AxelorException {
     if (groupColumn != null
         && groupColumn.getRuleTypeSelect()
-            == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+            == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+        && column.getRuleTypeSelect()
+            != AccountingReportConfigLineRepository.RULE_TYPE_PERCENTAGE) {
       this.createValueFromCustomRule(
           accountingReport,
           column,
@@ -516,9 +518,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     for (String code : valuesMap.keySet()) {
       if (valuesMap.get(code) != null) {
-        if (groupColumn != null || (!Strings.isNullOrEmpty(parentTitle)
-            && column.getRuleTypeSelect()
-                == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
+        if (groupColumn != null
+            || (!Strings.isNullOrEmpty(parentTitle)
+                && column.getRuleTypeSelect()
+                    == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
           String[] tokens = code.split("__");
 
           if (tokens.length > 1) {
@@ -535,9 +538,12 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     }
 
     String rule;
-    if (groupColumn != null && groupColumn.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+    if (groupColumn != null
+        && groupColumn.getRuleTypeSelect()
+            == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       rule = groupColumn.getRule();
-    } else if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+    } else if (column.getRuleTypeSelect()
+        == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       rule = column.getRule();
     } else {
       rule = line.getRule();
@@ -549,8 +555,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     try {
       return (BigDecimal) scriptHelper.eval(rule);
     } catch (Exception e) {
-      this.addNullValue(
-          column, line, groupColumn, valuesMapByColumn, valuesMapByLine, parentTitle);
+      this.addNullValue(column, line, groupColumn, valuesMapByColumn, valuesMapByLine, parentTitle);
       return null;
     }
   }
