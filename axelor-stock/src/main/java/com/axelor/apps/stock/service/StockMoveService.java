@@ -238,4 +238,8 @@ public interface StockMoveService {
       StockLocation toStockLocation,
       int initialStatus)
       throws AxelorException;
+
+  StockLocation getFromStockLocation(StockMove stockMove) throws AxelorException;
+
+  StockLocation getToStockLocation(StockMove stockMove) throws AxelorException;
 }
