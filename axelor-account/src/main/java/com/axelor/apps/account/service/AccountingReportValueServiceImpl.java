@@ -951,11 +951,11 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     }
 
     if (!Strings.isNullOrEmpty(columnAccountFilter)) {
-      queryList.addAll(this.getAccountFilterQueryList(columnAccountFilter, "column", moveLine));
+      queryList.add(this.getAccountFilterQueryList(columnAccountFilter, "column", moveLine));
     }
 
     if (!Strings.isNullOrEmpty(lineAccountFilter)) {
-      queryList.addAll(this.getAccountFilterQueryList(lineAccountFilter, "line", moveLine));
+      queryList.add(this.getAccountFilterQueryList(lineAccountFilter, "line", moveLine));
     }
 
     if (CollectionUtils.isNotEmpty(accountTypeSet)) {
@@ -972,18 +972,18 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     return queryList;
   }
 
-  protected List<String> getAccountFilterQueryList(
-      String accountFilter, String type, boolean moveLine) {
-    List<String> queryList = new ArrayList<>();
+  protected String getAccountFilterQueryList(String accountFilter, String type, boolean moveLine) {
     String[] tokens = accountFilter.split(",");
-
+    String condition = "(";
     for (int i = 0; i < tokens.length; i++) {
-      queryList.add(
-          String.format(
-              "self%s.code LIKE :%sAccountFilter%d", moveLine ? ".account" : "", type, i));
+      if (i != 0) {
+        condition += " OR ";
+      }
+      condition +=
+          String.format("self%s.code LIKE :%sAccountFilter%d", moveLine ? ".account" : "", type, i);
     }
-
-    return queryList;
+    condition += ")";
+    return condition;
   }
 
   protected BigDecimal getResultFromMoveLine(List<MoveLine> moveLineList, int resultSelect) {
