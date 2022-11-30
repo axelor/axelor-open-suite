@@ -44,6 +44,7 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -434,6 +435,40 @@ public class InvoiceTermController {
       response.setValue("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void isMultiCurrency(ActionRequest request, ActionResponse response) {
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+    if (invoiceTerm.getInvoice() == null) {
+      Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+      invoiceTerm.setInvoice(invoice);
+    }
+
+    if (invoiceTerm.getMoveLine() == null) {
+      MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+      if (moveLine != null && moveLine.getMove() == null) {
+        Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+        moveLine.setMove(move);
+      }
+
+      invoiceTerm.setMoveLine(moveLine);
+    }
+
+    boolean isMultiCurrency = Beans.get(InvoiceTermService.class).isMultiCurrency(invoiceTerm);
+
+    response.setValue("$isMultiCurrency", isMultiCurrency);
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+    Invoice invoice = invoiceTerm.getInvoice();
+    if (invoice != null
+            && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
+        || invoice == null
+            && !Objects.equals(
+                moveLine.getMove().getCurrency(), moveLine.getMove().getCompany().getCurrency())) {
+      response.setAttr("amount", "title", I18n.get("Amount in currency"));
+      response.setAttr("amountRemaining", "title", I18n.get("Amount remaining in currency"));
     }
   }
 }
