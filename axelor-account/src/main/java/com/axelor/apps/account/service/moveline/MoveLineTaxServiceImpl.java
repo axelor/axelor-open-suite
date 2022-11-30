@@ -205,7 +205,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void autoTaxLineGenerate(Move move) throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
