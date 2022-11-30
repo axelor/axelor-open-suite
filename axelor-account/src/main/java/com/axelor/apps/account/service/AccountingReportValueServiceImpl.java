@@ -823,31 +823,49 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine line,
       LocalDate startDate,
       LocalDate endDate) {
-    return moveLineRepo
-        .all()
-        .filter(
-            this.getMoveLineQuery(
-                accountingReport,
-                accountSet,
-                accountTypeSet,
-                analyticAccountSet,
-                groupColumn,
-                column,
-                line))
-        .bind("dateFrom", startDate)
-        .bind("dateTo", endDate)
-        .bind("journal", accountingReport.getJournal())
-        .bind("paymentMode", accountingReport.getPaymentMode())
-        .bind("currency", accountingReport.getCurrency())
-        .bind("company", accountingReport.getCompany())
-        .bind("statusList", this.getMoveLineStatusList(accountingReport))
-        .bind("accountSet", accountSet)
-        .bind("columnAccountFilter", column.getAccountCode())
-        .bind("lineAccountFilter", line.getAccountCode())
-        .bind("columnAnalyticAccountFilter", column.getAnalyticAccountCode())
-        .bind("lineAnalyticAccountFilter", line.getAnalyticAccountCode())
-        .bind("accountTypeSet", accountTypeSet)
-        .bind("analyticAccountSet", analyticAccountSet);
+    Query<MoveLine> moveLineQuery =
+        moveLineRepo
+            .all()
+            .filter(
+                this.getMoveLineQuery(
+                    accountingReport,
+                    accountSet,
+                    accountTypeSet,
+                    analyticAccountSet,
+                    groupColumn,
+                    column,
+                    line))
+            .bind("dateFrom", startDate)
+            .bind("dateTo", endDate)
+            .bind("journal", accountingReport.getJournal())
+            .bind("paymentMode", accountingReport.getPaymentMode())
+            .bind("currency", accountingReport.getCurrency())
+            .bind("company", accountingReport.getCompany())
+            .bind("statusList", this.getMoveLineStatusList(accountingReport))
+            .bind("accountSet", accountSet)
+            .bind("columnAnalyticAccountFilter", column.getAnalyticAccountCode())
+            .bind("lineAnalyticAccountFilter", line.getAnalyticAccountCode())
+            .bind("accountTypeSet", accountTypeSet)
+            .bind("analyticAccountSet", analyticAccountSet);
+
+    moveLineQuery = this.bindAccountFilters(moveLineQuery, column.getAccountCode(), "column");
+
+    return this.bindAccountFilters(moveLineQuery, line.getAccountCode(), "line");
+  }
+
+  protected Query<MoveLine> bindAccountFilters(
+      Query<MoveLine> moveLineQuery, String accountFilter, String type) {
+    if (StringUtils.isEmpty(accountFilter)) {
+      return moveLineQuery;
+    }
+
+    String[] tokens = accountFilter.split(",");
+
+    for (int i = 0; i < tokens.length; i++) {
+      moveLineQuery = moveLineQuery.bind(String.format("%sAccountFilter%d", type, i), tokens[i]);
+    }
+
+    return moveLineQuery;
   }
 
   protected String getMoveLineQuery(
@@ -933,13 +951,11 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     }
 
     if (!Strings.isNullOrEmpty(columnAccountFilter)) {
-      queryList.add(
-          String.format("self%s.code LIKE :columnAccountFilter", moveLine ? ".account" : ""));
+      queryList.addAll(this.getAccountFilterQueryList(columnAccountFilter, "column", moveLine));
     }
 
     if (!Strings.isNullOrEmpty(lineAccountFilter)) {
-      queryList.add(
-          String.format("self%s.code LIKE :lineAccountFilter", moveLine ? ".account" : ""));
+      queryList.addAll(this.getAccountFilterQueryList(lineAccountFilter, "line", moveLine));
     }
 
     if (CollectionUtils.isNotEmpty(accountTypeSet)) {
@@ -951,6 +967,20 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     if (!moveLine) {
       queryList.add("self.isRegulatoryAccount IS FALSE");
+    }
+
+    return queryList;
+  }
+
+  protected List<String> getAccountFilterQueryList(
+      String accountFilter, String type, boolean moveLine) {
+    List<String> queryList = new ArrayList<>();
+    String[] tokens = accountFilter.split(",");
+
+    for (int i = 0; i < tokens.length; i++) {
+      queryList.add(
+          String.format(
+              "self%s.code LIKE :%sAccountFilter%d", moveLine ? ".account" : "", type, i));
     }
 
     return queryList;
