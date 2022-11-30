@@ -200,8 +200,6 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION,
             paymentSession.getAccountingTriggerSelect());
 
-    bankOrder.setIsMultiDate(this.isFileFormatMultiDate(paymentSession));
-
     if (!paymentSession.getCurrency().equals(paymentSession.getCompany().getCurrency())) {
       bankOrder.setIsMultiCurrency(true);
     }
