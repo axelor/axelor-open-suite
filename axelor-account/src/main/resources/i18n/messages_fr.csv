@@ -264,6 +264,7 @@
 "AccountConfig.Suppliers","Fournisseurs",,
 "Accounted move","Écriture comptabilisée",,
 "Accounted moves","Ecritures comptabilisées",,
+"Accounted moves exist for the current year and they cannot be modified.","Des écritures comptabilisées existent sur l'année en cours et elles ne pourront pas être modifiées.",,
 "Accounting","Comptabilité",,
 "Accounting Batch","Routine comptable",,
 "Accounting Dashboard","Tb Comptabilité",,

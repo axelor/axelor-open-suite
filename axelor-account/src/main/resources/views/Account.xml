@@ -114,7 +114,7 @@
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
             onChange="action-group-account-is-tax-authorized-onchange"/>
           <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
-            widget="boolean-switch"/>
+            widget="boolean-switch" onChange="action-account-validate-check-move-tax-required"/>
           <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
           <field name="vatSystemSelect" colSpan="4"
             showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
@@ -126,7 +126,8 @@
           <field name="analyticDistributionRequiredOnInvoiceLines"
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines"
-            showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
+            showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
+            onChange="action-account-validate-check-move-analytic-required"/>
           <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized"
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
             canEdit="false" canNew="false" onChange="action-account-method-personalize-template"
@@ -320,6 +321,16 @@
     <error
       message="The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company."
       if="parentAccount != null &amp;&amp; company != null &amp;&amp; parentAccount?.company?.id != company?.id"/>
+  </action-validate>
+
+  <action-validate name="action-account-validate-check-move-tax-required">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="isTaxRequiredOnMoveLine &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.createdOn) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+  <action-validate name="action-account-validate-check-move-analytic-required">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="analyticDistributionRequiredOnMoveLines &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.createdOn) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
   </action-validate>
 
   <!-- action-record shared among customer/supplier/employee account -->
