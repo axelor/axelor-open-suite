@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.MoveTemplateType;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
@@ -242,12 +241,7 @@ public class MoveTemplateService {
                 moveLine.setTaxLine(taxLine);
                 moveLine.setTaxRate(taxLine.getValue());
                 moveLine.setTaxCode(tax.getCode());
-                if (AccountTypeRepository.TYPE_TAX.equals(
-                    moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-                  moveLine.setVatSystemSelect(AccountRepository.VAT_SYSTEM_DEFAULT);
-                } else {
-                  moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
-                }
+                moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
               }
             }
             moveLine.setAnalyticDistributionTemplate(
@@ -390,21 +384,12 @@ public class MoveTemplateService {
   protected boolean checkValidityInPercentage(MoveTemplate moveTemplate) {
     BigDecimal debitPercent = BigDecimal.ZERO;
     BigDecimal creditPercent = BigDecimal.ZERO;
-    BigDecimal taxValue = BigDecimal.ONE;
     for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      if (!AccountTypeRepository.TYPE_TAX.equals(
-          line.getAccount().getAccountType().getTechnicalTypeSelect())) {
-        LOG.debug("Adding percent: {}", line.getPercentage());
-        if (line.getTax() != null && line.getTax().getActiveTaxLine() != null) {
-          taxValue =
-              taxValue.add(line.getTax().getActiveTaxLine().getValue().divide(new BigDecimal(100)));
-        }
-        if (MoveTemplateLineRepository.DEBIT.equals(line.getDebitCreditSelect())) {
-          debitPercent = debitPercent.add(line.getPercentage().multiply(taxValue));
-        } else {
-          creditPercent = creditPercent.add(line.getPercentage().multiply(taxValue));
-        }
-        taxValue = BigDecimal.ONE;
+      LOG.debug("Adding percent: {}", line.getPercentage());
+      if (MoveTemplateLineRepository.DEBIT.equals(line.getDebitCreditSelect())) {
+        debitPercent = debitPercent.add(line.getPercentage());
+      } else {
+        creditPercent = creditPercent.add(line.getPercentage());
       }
     }
 
@@ -422,18 +407,9 @@ public class MoveTemplateService {
   protected boolean checkValidityInAmount(MoveTemplate moveTemplate) {
     BigDecimal debit = BigDecimal.ZERO;
     BigDecimal credit = BigDecimal.ZERO;
-    BigDecimal taxValue = BigDecimal.ONE;
     for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      if (!AccountTypeRepository.TYPE_TAX.equals(
-          line.getAccount().getAccountType().getTechnicalTypeSelect())) {
-        if (line.getTax() != null && line.getTax().getActiveTaxLine() != null) {
-          taxValue =
-              taxValue.add(line.getTax().getActiveTaxLine().getValue().divide(new BigDecimal(100)));
-        }
-        debit = debit.add(line.getDebit().multiply(taxValue));
-        credit = credit.add(line.getCredit().multiply(taxValue));
-        taxValue = BigDecimal.ONE;
-      }
+      debit = debit.add(line.getDebit());
+      credit = credit.add(line.getCredit());
     }
 
     LOG.debug("Debit : {}, Credit : {}", debit, credit);
