@@ -20,6 +20,7 @@
       help="Field to define if this query is to be used for accounting or reconcile during automatic proccesses. For the auto reconcile, a sequence must be defined."/>
     <integer name="resultSelect" title="Result" default="1"
       selection="accounting.report.config.line.sum.of.account.select"/>
+    <integer name="priority" title="Priority" min="0"/>
     <boolean name="hidden" title="Hidden"/>
     <boolean name="notComputedIfIntersect" title="Do not compute intersection"/>
     <boolean name="computePreviousYear" title="Compute previous year"/>

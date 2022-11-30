@@ -283,7 +283,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       LocalDate endDate)
       throws AxelorException {
     for (AccountingReportConfigLine column : columnList) {
-      String columnCode = this.getColumnCode(column.getCode(), parentTitle);
+      String columnCode = this.getColumnCode(column.getCode(), parentTitle, groupColumn);
 
       if (!valuesMapByColumn.containsKey(columnCode)) {
         valuesMapByColumn.put(columnCode, new HashMap<>());
@@ -325,13 +325,29 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       LocalDate startDate,
       LocalDate endDate)
       throws AxelorException {
-    if ((column.getNotComputedIfIntersect() && line.getNotComputedIfIntersect())
+    if (groupColumn != null
+        && groupColumn.getRuleTypeSelect()
+            == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+        && column.getRuleTypeSelect()
+            != AccountingReportConfigLineRepository.RULE_TYPE_PERCENTAGE) {
+      this.createValueFromCustomRule(
+          accountingReport,
+          column,
+          line,
+          groupColumn,
+          valuesMapByColumn,
+          valuesMapByLine,
+          startDate,
+          endDate,
+          parentTitle);
+    } else if ((column.getNotComputedIfIntersect() && line.getNotComputedIfIntersect())
         || column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
         || line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE) {
       this.createReportValue(
           accountingReport,
           column,
           line,
+          groupColumn,
           startDate,
           endDate,
           parentTitle,
@@ -342,14 +358,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           line.getCode());
     } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-      if (line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            AccountExceptionMessage.REPORT_TYPE_INTERSECT_CUSTOM_RULE,
-            accountingReport.getReportType().getName(),
-            column.getCode(),
-            line.getCode());
-      } else if (line.getDetailByAccount()
+      if (line.getDetailByAccount()
           || line.getDetailByAccountType()
           || line.getDetailByAnalyticAccount()) {
         for (String lineCode :
@@ -360,7 +369,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
               accountingReport,
               column,
               line,
-              valuesMapByLine.get(lineCode),
+              groupColumn,
               valuesMapByColumn,
               valuesMapByLine,
               startDate,
@@ -373,7 +382,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             accountingReport,
             column,
             line,
-            valuesMapByLine.get(line.getCode()),
+            groupColumn,
             valuesMapByColumn,
             valuesMapByLine,
             startDate,
@@ -386,7 +395,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           accountingReport,
           column,
           line,
-          valuesMapByColumn.get(this.getColumnCode(column.getCode(), parentTitle)),
+          groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
           startDate,
@@ -398,6 +407,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           accountingReport,
           column,
           line,
+          groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
           startDate,
@@ -423,7 +433,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
-      Map<String, AccountingReportValue> valuesMap,
+      AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       LocalDate startDate,
@@ -433,7 +443,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         accountingReport,
         column,
         line,
-        valuesMap,
+        groupColumn,
         valuesMapByColumn,
         valuesMapByLine,
         startDate,
@@ -447,16 +457,20 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
-      Map<String, AccountingReportValue> valuesMap,
+      AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle,
       String lineCode) {
+    Map<String, AccountingReportValue> valuesMap =
+        this.getValuesMap(
+            column, line, groupColumn, valuesMapByColumn, valuesMapByLine, parentTitle);
+
     BigDecimal result =
         this.getResultFromCustomRule(
-            column, line, valuesMap, valuesMapByColumn, valuesMapByLine, parentTitle);
+            column, line, groupColumn, valuesMap, valuesMapByColumn, valuesMapByLine, parentTitle);
 
     String lineTitle = line.getLabel();
     if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
@@ -471,6 +485,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         accountingReport,
         column,
         line,
+        groupColumn,
         startDate,
         endDate,
         parentTitle,
@@ -481,28 +496,59 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         lineCode);
   }
 
+  protected Map<String, AccountingReportValue> getValuesMap(
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      AccountingReportConfigLine groupColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      String parentTitle) {
+    Map<String, AccountingReportValue> columValues =
+        valuesMapByColumn.get(this.getColumnCode(column.getCode(), parentTitle, null));
+    Map<String, AccountingReportValue> lineValues = valuesMapByLine.get(line.getCode());
+
+    if (groupColumn != null) {
+      return columValues;
+    } else if (column.getRuleTypeSelect()
+            == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+        && line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+      if (column.getPriority() > line.getPriority()) {
+        return lineValues;
+      } else {
+        return columValues;
+      }
+    } else if (column.getRuleTypeSelect()
+        == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+      return lineValues;
+    } else {
+      return columValues;
+    }
+  }
+
   protected BigDecimal getResultFromCustomRule(
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
+      AccountingReportConfigLine groupColumn,
       Map<String, AccountingReportValue> valuesMap,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       String parentTitle) {
-    AccountingReportConfigLine configLine =
-        column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
-            ? column
-            : line;
     Map<String, Object> contextMap = new HashMap<>();
 
     for (String code : valuesMap.keySet()) {
       if (valuesMap.get(code) != null) {
-        if (!Strings.isNullOrEmpty(parentTitle)
-            && column.getRuleTypeSelect()
-                == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+        if (groupColumn != null
+            || (!Strings.isNullOrEmpty(parentTitle)
+                && column.getRuleTypeSelect()
+                    == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
           String[] tokens = code.split("__");
 
-          if (tokens.length > 1 && tokens[1].equals(parentTitle)) {
-            contextMap.put(tokens[0], valuesMap.get(code).getResult());
+          if (tokens.length > 1) {
+            if (groupColumn != null && tokens[0].equals(column.getCode())) {
+              contextMap.put(tokens[1], valuesMap.get(code).getResult());
+            } else if (groupColumn == null && tokens[1].equals(parentTitle)) {
+              contextMap.put(tokens[0], valuesMap.get(code).getResult());
+            }
           }
         } else {
           contextMap.put(code, valuesMap.get(code).getResult());
@@ -510,13 +556,25 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       }
     }
 
+    String rule;
+    if (groupColumn != null
+        && groupColumn.getRuleTypeSelect()
+            == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+      rule = groupColumn.getRule();
+    } else if (column.getRuleTypeSelect()
+        == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+      rule = column.getRule();
+    } else {
+      rule = line.getRule();
+    }
+
     Context scriptContext = new Context(contextMap, Object.class);
     ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
     try {
-      return (BigDecimal) scriptHelper.eval(configLine.getRule());
+      return (BigDecimal) scriptHelper.eval(rule);
     } catch (Exception e) {
-      this.addNullValue(column, line, valuesMapByColumn, valuesMapByLine, parentTitle);
+      this.addNullValue(column, line, groupColumn, valuesMapByColumn, valuesMapByLine, parentTitle);
       return null;
     }
   }
@@ -713,6 +771,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         accountingReport,
         column,
         line,
+        groupColumn,
         startDate,
         endDate,
         parentTitle,
@@ -764,31 +823,49 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine line,
       LocalDate startDate,
       LocalDate endDate) {
-    return moveLineRepo
-        .all()
-        .filter(
-            this.getMoveLineQuery(
-                accountingReport,
-                accountSet,
-                accountTypeSet,
-                analyticAccountSet,
-                groupColumn,
-                column,
-                line))
-        .bind("dateFrom", startDate)
-        .bind("dateTo", endDate)
-        .bind("journal", accountingReport.getJournal())
-        .bind("paymentMode", accountingReport.getPaymentMode())
-        .bind("currency", accountingReport.getCurrency())
-        .bind("company", accountingReport.getCompany())
-        .bind("statusList", this.getMoveLineStatusList(accountingReport))
-        .bind("accountSet", accountSet)
-        .bind("columnAccountFilter", column.getAccountCode())
-        .bind("lineAccountFilter", line.getAccountCode())
-        .bind("columnAnalyticAccountFilter", column.getAnalyticAccountCode())
-        .bind("lineAnalyticAccountFilter", line.getAnalyticAccountCode())
-        .bind("accountTypeSet", accountTypeSet)
-        .bind("analyticAccountSet", analyticAccountSet);
+    Query<MoveLine> moveLineQuery =
+        moveLineRepo
+            .all()
+            .filter(
+                this.getMoveLineQuery(
+                    accountingReport,
+                    accountSet,
+                    accountTypeSet,
+                    analyticAccountSet,
+                    groupColumn,
+                    column,
+                    line))
+            .bind("dateFrom", startDate)
+            .bind("dateTo", endDate)
+            .bind("journal", accountingReport.getJournal())
+            .bind("paymentMode", accountingReport.getPaymentMode())
+            .bind("currency", accountingReport.getCurrency())
+            .bind("company", accountingReport.getCompany())
+            .bind("statusList", this.getMoveLineStatusList(accountingReport))
+            .bind("accountSet", accountSet)
+            .bind("columnAnalyticAccountFilter", column.getAnalyticAccountCode())
+            .bind("lineAnalyticAccountFilter", line.getAnalyticAccountCode())
+            .bind("accountTypeSet", accountTypeSet)
+            .bind("analyticAccountSet", analyticAccountSet);
+
+    moveLineQuery = this.bindAccountFilters(moveLineQuery, column.getAccountCode(), "column");
+
+    return this.bindAccountFilters(moveLineQuery, line.getAccountCode(), "line");
+  }
+
+  protected Query<MoveLine> bindAccountFilters(
+      Query<MoveLine> moveLineQuery, String accountFilter, String type) {
+    if (StringUtils.isEmpty(accountFilter)) {
+      return moveLineQuery;
+    }
+
+    String[] tokens = accountFilter.split(",");
+
+    for (int i = 0; i < tokens.length; i++) {
+      moveLineQuery = moveLineQuery.bind(String.format("%sAccountFilter%d", type, i), tokens[i]);
+    }
+
+    return moveLineQuery;
   }
 
   protected String getMoveLineQuery(
@@ -874,13 +951,11 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     }
 
     if (!Strings.isNullOrEmpty(columnAccountFilter)) {
-      queryList.add(
-          String.format("self%s.code LIKE :columnAccountFilter", moveLine ? ".account" : ""));
+      queryList.addAll(this.getAccountFilterQueryList(columnAccountFilter, "column", moveLine));
     }
 
     if (!Strings.isNullOrEmpty(lineAccountFilter)) {
-      queryList.add(
-          String.format("self%s.code LIKE :lineAccountFilter", moveLine ? ".account" : ""));
+      queryList.addAll(this.getAccountFilterQueryList(lineAccountFilter, "line", moveLine));
     }
 
     if (CollectionUtils.isNotEmpty(accountTypeSet)) {
@@ -892,6 +967,20 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     if (!moveLine) {
       queryList.add("self.isRegulatoryAccount IS FALSE");
+    }
+
+    return queryList;
+  }
+
+  protected List<String> getAccountFilterQueryList(
+      String accountFilter, String type, boolean moveLine) {
+    List<String> queryList = new ArrayList<>();
+    String[] tokens = accountFilter.split(",");
+
+    for (int i = 0; i < tokens.length; i++) {
+      queryList.add(
+          String.format(
+              "self%s.code LIKE :%sAccountFilter%d", moveLine ? ".account" : "", type, i));
     }
 
     return queryList;
@@ -909,21 +998,24 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
+      AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle) {
     Map<String, AccountingReportValue> valuesMap =
-        valuesMapByColumn.get(this.getColumnCode(column.getPercentageBaseColumn(), parentTitle));
+        valuesMapByColumn.get(
+            this.getColumnCode(column.getPercentageBaseColumn(), parentTitle, groupColumn));
 
     if (valuesMap == null) {
-      this.addNullValue(column, line, valuesMapByColumn, valuesMapByLine, parentTitle);
+      this.addNullValue(column, line, groupColumn, valuesMapByColumn, valuesMapByLine, parentTitle);
     } else {
       this.createPercentageValue(
           accountingReport,
           column,
           line,
+          groupColumn,
           valuesMap,
           valuesMapByColumn,
           valuesMapByLine,
@@ -938,6 +1030,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
+      AccountingReportConfigLine groupColumn,
       Map<String, AccountingReportValue> valuesMap,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
@@ -958,7 +1051,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
                 .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(linesCodeList)) {
-          this.addNullValue(column, line, valuesMapByColumn, valuesMapByLine, parentTitle);
+          this.addNullValue(
+              column, line, groupColumn, valuesMapByColumn, valuesMapByLine, parentTitle);
           return;
         }
       }
@@ -969,6 +1063,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           accountingReport,
           column,
           line,
+          groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
           valuesMap.get(code),
@@ -986,6 +1081,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
+      AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       AccountingReportValue baseValue,
@@ -1010,6 +1106,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         accountingReport,
         column,
         line,
+        groupColumn,
         startDate,
         endDate,
         parentTitle,
@@ -1046,6 +1143,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
+      AccountingReportConfigLine groupColumn,
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle,
@@ -1073,7 +1171,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     accountingReportValueRepo.save(accountingReportValue);
 
-    String columnCode = this.getColumnCode(column.getCode(), parentTitle);
+    String columnCode = this.getColumnCode(column.getCode(), parentTitle, groupColumn);
 
     if (valuesMapByColumn.containsKey(columnCode)) {
       valuesMapByColumn.get(columnCode).put(lineCode, accountingReportValue);
@@ -1084,8 +1182,11 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     }
   }
 
-  protected String getColumnCode(String columnCode, String parentTitle) {
-    if (Strings.isNullOrEmpty(parentTitle)) {
+  protected String getColumnCode(
+      String columnCode, String parentTitle, AccountingReportConfigLine groupColumn) {
+    if (groupColumn != null) {
+      return String.format("%s__%s", columnCode, groupColumn.getCode());
+    } else if (Strings.isNullOrEmpty(parentTitle)) {
       return columnCode;
     } else {
       return String.format("%s__%s", columnCode, parentTitle);
@@ -1095,10 +1196,11 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   protected void addNullValue(
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
+      AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       String parentTitle) {
-    String columnCode = this.getColumnCode(column.getCode(), parentTitle);
+    String columnCode = this.getColumnCode(column.getCode(), parentTitle, groupColumn);
 
     valuesMapByColumn.get(columnCode).put(line.getCode(), null);
     valuesMapByLine.get(line.getCode()).put(columnCode, null);
