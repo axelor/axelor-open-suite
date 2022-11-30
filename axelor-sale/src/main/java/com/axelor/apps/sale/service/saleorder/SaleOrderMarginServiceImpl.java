@@ -81,9 +81,9 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
   }
 
   @Override
-  public void computeSubMargin(SaleOrderLine saleOrderLine) throws AxelorException {
+  public void computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
 
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
     Company company = saleOrder.getCompany();
     Product product = saleOrderLine.getProduct();
 
@@ -114,10 +114,10 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
   }
 
   @Override
-  public Map<String, BigDecimal> getSaleOrderLineComputedMarginInfo(SaleOrderLine saleOrderLine)
-      throws AxelorException {
+  public Map<String, BigDecimal> getSaleOrderLineComputedMarginInfo(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException {
     HashMap<String, BigDecimal> map = new HashMap<>();
-    computeSubMargin(saleOrderLine);
+    computeSubMargin(saleOrder, saleOrderLine);
     map.put("subTotalGrossMargin", saleOrderLine.getSubTotalGrossMargin());
     map.put("subMarginRate", saleOrderLine.getSubMarginRate());
     map.put("subTotalMarkup", saleOrderLine.getSubTotalMarkup());

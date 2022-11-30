@@ -402,7 +402,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     map.put("companyInTaxTotal", companyInTaxTotal);
     map.put("subTotalCostPrice", subTotalCostPrice);
 
-    map.putAll(saleOrderMarginService.getSaleOrderLineComputedMarginInfo(saleOrderLine));
+    map.putAll(saleOrderMarginService.getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine));
 
     return map;
   }

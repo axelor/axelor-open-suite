@@ -75,7 +75,8 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
     Map<String, BigDecimal> map =
-        Beans.get(SaleOrderMarginService.class).getSaleOrderLineComputedMarginInfo(saleOrderLine);
+        Beans.get(SaleOrderMarginService.class)
+            .getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine);
 
     response.setValues(map);
   }

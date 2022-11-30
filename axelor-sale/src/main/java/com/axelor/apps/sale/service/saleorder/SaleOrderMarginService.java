@@ -27,8 +27,8 @@ public interface SaleOrderMarginService {
 
   void computeMarginSaleOrder(SaleOrder saleOrder);
 
-  void computeSubMargin(SaleOrderLine saleOrderLine) throws AxelorException;
+  void computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
 
-  Map<String, BigDecimal> getSaleOrderLineComputedMarginInfo(SaleOrderLine saleOrderLine)
-      throws AxelorException;
+  Map<String, BigDecimal> getSaleOrderLineComputedMarginInfo(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
 }
