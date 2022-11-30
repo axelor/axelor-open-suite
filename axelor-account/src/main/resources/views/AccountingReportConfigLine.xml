@@ -91,6 +91,8 @@
           <field name="computePreviousYear"/>
           <field name="computeOtherPeriod"/>
         </panel>
+        <field name="priority" showIf="typeSelect != 4 &amp;&amp; ruleTypeSelect == 3"
+          requiredIf="typeSelect != 4 &amp;&amp; ruleTypeSelect == 3"/>
       </panel>
       <field name="computeOtherPeriod"
         showIf="reportTypeColumn != null &amp;&amp; typeSelect == 4 &amp;&amp; ruleTypeSelect == 2"/>
