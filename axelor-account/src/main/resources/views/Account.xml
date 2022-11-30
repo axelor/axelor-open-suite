@@ -295,11 +295,13 @@
 
   <action-group name="action-account-group-on-change-analytic-distribution-authorized">
     <action name="action-account-record-uncheck-analytic-distribution-required"/>
+    <action name="action-account-validate-uncheck-analytic-distribution-authorized"/>
   </action-group>
 
   <action-group name="action-group-account-is-tax-authorized-onchange">
     <action name="action-account-record-uncheck-tax-required"/>
     <action name="action-record-account-tax-system-value"/>
+    <action name="action-account-validate-uncheck-tax-authorized"/>
   </action-group>
 
   <action-group name="action-account-group-company-onChange">
@@ -331,6 +333,18 @@
   <action-validate name="action-account-validate-check-move-analytic-required">
     <info message="Accounted moves exist for the current year and they cannot be modified."
       if="analyticDistributionRequiredOnMoveLines &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.createdOn) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+  <action-validate
+    name="action-account-validate-uncheck-analytic-distribution-authorized">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="!analyticDistributionAuthorized &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.createdOn) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+
+  <action-validate name="action-account-validate-uncheck-tax-authorized">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="!isTaxAuthorizedOnMoveLine &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.createdOn) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
   </action-validate>
 
   <!-- action-record shared among customer/supplier/employee account -->
