@@ -53,6 +53,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,6 +131,11 @@ public class MoveTemplateService {
       throws AxelorException {
     List<Long> moveList = new ArrayList<>();
     BigDecimal hundred = new BigDecimal(100);
+
+    if (CollectionUtils.isEmpty(dataList)) {
+      return moveList;
+    }
+
     for (HashMap<String, Object> data : dataList) {
       LocalDate moveDate = LocalDate.parse(data.get("date").toString(), DateTimeFormatter.ISO_DATE);
       boolean isDebit = false;
