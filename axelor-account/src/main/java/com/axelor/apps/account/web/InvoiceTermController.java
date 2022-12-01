@@ -136,7 +136,6 @@ public class InvoiceTermController {
         invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
       } else if (invoice != null) {
         invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
-        response.setValues(invoiceTerm);
       }
 
       invoiceTermService.setParentFields(invoiceTerm, moveLine, invoice);
