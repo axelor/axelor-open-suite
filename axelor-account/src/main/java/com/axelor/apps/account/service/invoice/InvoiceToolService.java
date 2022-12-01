@@ -355,6 +355,7 @@ public class InvoiceToolService {
   }
 
   public static boolean isMultiCurrency(Invoice invoice) {
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
     return invoice != null
         && invoice.getCurrency() != null
         && invoice.getCompany() != null

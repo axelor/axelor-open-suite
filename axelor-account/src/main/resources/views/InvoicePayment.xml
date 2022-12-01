@@ -30,7 +30,7 @@
     </panel>
     <panel-related name="invoiceTermPaymentPanel" field="invoiceTermPaymentList"
       grid-view="invoice-term-payment-grid" form-view="invoice-term-payment-form" colSpan="12"
-      readonly="true" hidden="true" showIf="invoice.invoiceTermList.length &gt; 1"/>
+      readonly="true" showIf="invoice.invoiceTermList.length &gt; 1"/>
     <panel name="mainPanel" readonlyIf="statusSelect != 0">
       <field name="typeSelect" showIf="id" colSpan="12"/>
       <field name="amount" onChange="action-invoice-payment-group-change-amounts"/>
@@ -61,9 +61,9 @@
     <panel name="discountPanel" title="Financial discount" showIf="applyFinancialDiscount"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
       <field name="applyFinancialDiscount" readonly="true"/>
-      <field name="$totalAmountWithFinancialDiscount" type="decimal"
+      <field name="totalAmountWithFinancialDiscount" type="decimal"
         title="Total amount with Fin. Discount"
-        showIf="applyFinancialDiscount &amp;&amp; $totalAmountWithFinancialDiscount != null"
+        showIf="applyFinancialDiscount &amp;&amp; totalAmountWithFinancialDiscount != null"
         readonly="true"/>
       <panel name="financialDiscountAmountPanel"
         showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" readonly="true" colSpan="12">
