@@ -608,7 +608,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 partner,
                 account,
                 invoiceTerm.getAmount(),
-                companyAmount,
+                companyAmount.setScale(
+                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_DOWN),
                 currencyRate,
                 isDebitCustomer,
                 invoice.getInvoiceDate(),
