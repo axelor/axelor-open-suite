@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.tool.MassUpdateTool;
 import com.axelor.common.ObjectUtils;
@@ -261,6 +262,19 @@ public class AccountController {
           account.getAnalyticDistributionTemplate());
       analyticDistributionTemplateService.validateTemplatePercentages(
           account.getAnalyticDistributionTemplate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setAmountRemainingReconciliableMoveLines(
+      ActionRequest request, ActionResponse response) {
+    Long accountId = Long.valueOf(request.getContext().get("_id").toString());
+    String startDate = (String) request.getContext().get("startDate");
+
+    try {
+      Beans.get(MoveLineToolService.class)
+          .setAmountRemainingReconciliableMoveLines(startDate, accountId);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

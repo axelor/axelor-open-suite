@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import static java.lang.Long.max;
+import static java.lang.Long.parseLong;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -28,21 +31,25 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
   protected static final int CURRENCY_RATE_SCALE = 5;
+  protected final int jpaLimit = 20;
 
   protected TaxService taxService;
   protected CurrencyService currencyService;
@@ -353,6 +360,50 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
             moveLine,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(AccountExceptionMessage.DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT));
+      }
+    }
+  }
+
+  @Transactional
+  public void setAmountRemainingReconciliableMoveLines(String startDate, Long accountId) {
+    List<Map> idMoveLinesList;
+    int count = 0;
+
+    if (startDate == null) {
+      idMoveLinesList =
+          this.moveLineRepository
+              .all()
+              .filter("self.accountId = :accountId")
+              .bind("accountId", accountId)
+              .order("id")
+              .select("id")
+              .fetch(0, 0);
+    } else {
+      idMoveLinesList =
+          this.moveLineRepository
+              .all()
+              .filter("self.accountId = :accountId AND self.move.createdOn >= :startDate")
+              .bind("accountId", accountId)
+              .bind("startDate", startDate)
+              .order("id")
+              .select("id")
+              .fetch(0, 0);
+    }
+
+    if (idMoveLinesList != null) {
+      while (count < idMoveLinesList.size()) {
+        MoveLine moveLine =
+            this.moveLineRepository.find(
+                parseLong(idMoveLinesList.get(count).get("id").toString()));
+        moveLine.setAmountRemaining(
+            BigDecimal.valueOf(
+                max(moveLine.getDebit().longValue(), moveLine.getCredit().longValue())));
+        this.moveLineRepository.save(moveLine);
+        count++;
+
+        if (count % jpaLimit == 0) {
+          JPA.clear();
+        }
       }
     }
   }

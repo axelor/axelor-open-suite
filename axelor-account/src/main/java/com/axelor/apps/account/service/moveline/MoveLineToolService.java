@@ -60,4 +60,6 @@ public interface MoveLineToolService {
       Account account, TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml);
 
   void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
+
+  void setAmountRemainingReconciliableMoveLines(String startDate, Long accountId);
 }

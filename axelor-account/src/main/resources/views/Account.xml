@@ -101,7 +101,8 @@
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"
-          hideIf="accountType.technicalTypeSelect == 'view'"/>
+          hideIf="accountType.technicalTypeSelect == 'view'"
+          onChange="action-account-group-reconcile-onChange"/>
         <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
           showIf="useForPartnerBalance &amp;&amp; ['payable', 'receivable'].indexOf(accountType.technicalTypeSelect) != -1"
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
@@ -232,6 +233,15 @@
     </panel>
   </form>
 
+  <form title="" name="reconcile-wizard-form" model="com.axelor.apps.account.db.Account">
+    <panel name="mainPanel" title="Make entries letterable">
+      <field name="startDate" widget="date" title="Start date of entries to be lettered"/>
+      <field name="id"/>
+      <button name="reconcileMovesBtn" title="Make entries letterable"
+        onClick="action-account-method-wizard-reconcile-line"/>
+    </panel>
+  </form>
+
   <action-view name="action-account-view-account-onchange-view"
     title="Financial Accounts" model="com.axelor.apps.account.db.Account">
     <view type="form" name="account-info-form"/>
@@ -309,6 +319,12 @@
     <action name="action-account-validate"/>
   </action-group>
 
+  <action-group name="action-account-group-reconcile-onChange">
+    <action name="action-account-validate-check-reconcile"/>
+    <action name="save" if="reconcileOk"/>
+    <action name="action-account-view-reconcile-wizard-form" if="reconcileOk"/>
+  </action-group>
+
   <action-record name="action-account-record-new"
     model="com.axelor.apps.account.db.Account">
     <field name="company" expr="eval:__user__.activeCompany"
@@ -345,6 +361,10 @@
   <action-validate name="action-account-validate-uncheck-tax-authorized">
     <info message="Accounted moves exist for the current year and they cannot be modified."
       if="!isTaxAuthorizedOnMoveLine &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.createdOn) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+  <action-validate name="action-account-validate-check-reconcile">
+    <alert message="Do you want to make existing accounted moves letterable?" if="reconcileOk"/>
   </action-validate>
 
   <!-- action-record shared among customer/supplier/employee account -->
@@ -468,6 +488,11 @@
     <call class="com.axelor.apps.account.web.AccountController" method="verifyTemplateValues"/>
   </action-method>
 
+  <action-method name="action-account-method-wizard-reconcile-line">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="setAmountRemainingReconciliableMoveLines"/>
+  </action-method>
+
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
     <attribute name="value" for="$isReadOnly"
       expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
@@ -482,6 +507,15 @@
     <view type="grid" name="accounting-report-config-line-account-grid"/>
     <view type="form" name="accounting-report-config-line-form"/>
     <domain>:id MEMBER OF self.accountSet</domain>
+  </action-view>
+
+  <action-view name="action-account-view-reconcile-wizard-form" title=""
+    model="com.axelor.apps.account.db.Account">
+    <view type="form" name="reconcile-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="true"/>
   </action-view>
 
 </object-views>
