@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
 @RequestScoped
 public class MoveValidateServiceImpl implements MoveValidateService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
+  protected int jpaLimit = 20;
   protected MoveLineControlService moveLineControlService;
   protected MoveLineToolService moveLineToolService;
   protected AccountConfigService accountConfigService;
@@ -602,7 +602,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         }
         errors = errors.concat(move.getReference());
       } finally {
-        if (++i % 20 == 0) {
+        if (++i % jpaLimit == 0) {
           JPA.clear();
         }
       }

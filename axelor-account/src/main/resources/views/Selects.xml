@@ -109,6 +109,8 @@
     <option value="1">Title</option>
     <option value="2">Detail</option>
     <option value="3">Separator</option>
+    <option value="4">Group</option>
+    <option value="5">Group by account</option>
   </selection>
 
   <selection name='accounting.report.type.report.export.type.select'>
@@ -119,12 +121,15 @@
   <selection name='accounting.report.config.line.rule.type.select'>
     <option value="1">No value</option>
     <option value="2">Sum of accounts</option>
-    <option value="3">Custom rule</option>
+    <option value="4" order="3">Percentage</option>
+    <option value="3" order="4">Custom rule</option>
   </selection>
 
   <selection name='accounting.report.config.line.sum.of.account.select'>
     <option value="1">Debit - Credit</option>
     <option value="2">Credit - Debit</option>
+    <option value="3">Same as column</option>
+    <option value="4">Same as line</option>
   </selection>
 
   <selection name='iaccount.move.status.select'>
@@ -407,11 +412,7 @@
     <option value="1">No comparison</option>
     <option value="2">Previous year</option>
     <option value="3">Same period on previous year</option>
-  </selection>
-
-  <selection name="accounting.report.type.no.of.periods.select">
-    <option value="1">1</option>
-    <option value="2">2</option>
+    <option value="4">Other period</option>
   </selection>
 
   <selection name="account.fixed.type.category.computation.method.select">

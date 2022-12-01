@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
@@ -95,36 +96,23 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   @Transactional
   public FixedAsset generateAndComputeLines(FixedAsset fixedAsset) throws AxelorException {
 
-    if (fixedAsset.getGrossValue().signum() > 0) {
-
-      if (fixedAsset.getFixedAssetLineList() != null
-          && !fixedAsset.getFixedAssetLineList().isEmpty()) {
-        fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
-      }
-      if (fixedAsset.getFiscalFixedAssetLineList() != null
-          && !fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
-        fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
-      }
-      if (fixedAsset.getIfrsFixedAssetLineList() != null
-          && !fixedAsset.getIfrsFixedAssetLineList().isEmpty()) {
-        fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
-      }
-
-      generateAndComputeFixedAssetLines(fixedAsset);
-      generateAndComputeFiscalFixedAssetLines(fixedAsset);
-      generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
-      generateAndComputeIfrsFixedAssetLines(fixedAsset);
-    } else {
-      if (fixedAsset.getFixedAssetLineList() != null) {
-        fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
-      }
-      if (fixedAsset.getFiscalFixedAssetLineList() != null) {
-        fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
-      }
-      if (fixedAsset.getIfrsFixedAssetLineList() != null) {
-        fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
-      }
+    if (fixedAsset.getFixedAssetLineList() != null
+        && !fixedAsset.getFixedAssetLineList().isEmpty()) {
+      fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());
     }
+    if (fixedAsset.getFiscalFixedAssetLineList() != null
+        && !fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
+      fixedAssetLineService.clear(fixedAsset.getFiscalFixedAssetLineList());
+    }
+    if (fixedAsset.getIfrsFixedAssetLineList() != null
+        && !fixedAsset.getIfrsFixedAssetLineList().isEmpty()) {
+      fixedAssetLineService.clear(fixedAsset.getIfrsFixedAssetLineList());
+    }
+
+    generateAndComputeFixedAssetLines(fixedAsset);
+    generateAndComputeFiscalFixedAssetLines(fixedAsset);
+    generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
+    generateAndComputeIfrsFixedAssetLines(fixedAsset);
 
     return fixedAssetRepo.save(fixedAsset);
   }
@@ -350,7 +338,11 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAsset.setCompany(fixedAsset.getFixedAssetCategory().getCompany());
       fixedAsset.setJournal(fixedAsset.getFixedAssetCategory().getJournal());
       copyInfos(fixedAsset.getFixedAssetCategory(), fixedAsset);
-      fixedAsset.setGrossValue(invoiceLine.getCompanyExTaxTotal());
+      BigDecimal grossValue = invoiceLine.getCompanyExTaxTotal();
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+        grossValue = grossValue.negate();
+      }
+      fixedAsset.setGrossValue(grossValue);
       fixedAsset.setPartner(invoice.getPartner());
       fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
       fixedAsset.setInvoiceLine(invoiceLine);

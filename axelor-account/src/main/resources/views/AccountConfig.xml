@@ -218,9 +218,11 @@
 
         <panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
-          <field name="isManagePassedForPayment" widget="boolean-switch"/>
+          <field name="isManagePassedForPayment" widget="boolean-switch" colSpan="4"/>
           <field name="isManagePFPInRefund" widget="boolean-switch"
-            showIf="isManagePassedForPayment"/>
+            showIf="isManagePassedForPayment" colSpan="4"/>
+          <field name="isManageDaybookInPFP" widget="boolean-switch"
+            showIf="isManagePassedForPayment" colSpan="4"/>
         </panel>
 
         <panel name="invoiceSequencesPanel" title="Invoices sequences" colSpan="12">
