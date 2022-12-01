@@ -686,10 +686,11 @@ AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company
 AND (
   (Account.service_type IS NULL AND Partner.das2activity IS NOT NULL)
-  OR (Partner.das2activity IS NULL AND Account.service_type IS NOT NULL AND ServiceType.code != 'NDAS')
+  OR (Partner.das2activity IS NULL AND Account.service_type IS NOT NULL AND ServiceType.is_das2declarable is true)
 )
 AND Move.status_select = 3
 AND JournalType.id = config.das_report_journal_type
+AND MoveLine.amount_remaining < MoveLine.debit + MoveLine.credit
 )
 order by MoveLine.partner_full_name, MoveLine.date_val, MoveLine.name]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>

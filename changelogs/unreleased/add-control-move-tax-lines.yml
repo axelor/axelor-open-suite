@@ -1,5 +1,0 @@
----
-title: "Move :  add of a coherence control with tax lines"
-type: feature
-description: |
-  When you want to validate a move, a coherence control check if tax lines are duplicated with the same taxline and the same vat system

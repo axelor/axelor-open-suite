@@ -1,6 +1,0 @@
----
-title : "Bank details : change how full name is computed"
-type: change
-description: |
-  Bank details full name is now computed as : 
-  <code> - <label> - <iban> - <bank.fullname>

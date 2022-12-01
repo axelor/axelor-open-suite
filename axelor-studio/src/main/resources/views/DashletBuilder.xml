@@ -6,7 +6,8 @@
   <grid name="dashlet-builder-grid" title="Dashlet builders"
     model="com.axelor.studio.db.DashletBuilder" canMove="true" orderBy="sequence">
     <field name="viewType"/>
-    <field name="name"/>
+    <field name="name"
+      onChange="action-studio-meta-json-model-name-onchange-record,action-studio-menu-builder-attrs-check-generate-name"/>
     <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
       if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
   </grid>
@@ -19,7 +20,8 @@
       <spacer name="appBuilderSpacer"
         if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
       <field name="viewType" selection-in="['chart','grid', 'custom']"/>
-      <field name="name"/>
+      <field name="name"
+        onChange="action-studio-meta-json-model-name-onchange-record,action-studio-menu-builder-attrs-check-generate-name"/>
       <field name="metaView" requiredIf="action == null" domain="self.type = :viewType"
         showIf="action == null"/>
       <field name="action" requiredIf="metaView == null" domain="self.type = 'action-view'"

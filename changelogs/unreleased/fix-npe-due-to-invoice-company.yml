@@ -1,3 +1,0 @@
----
-title: "Invoice: Fix npe due to user.activeCompany is not filled"
-type: fix

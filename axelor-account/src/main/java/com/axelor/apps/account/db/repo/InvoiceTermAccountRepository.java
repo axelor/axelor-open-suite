@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.InvoicePayment;
@@ -39,22 +56,23 @@ public class InvoiceTermAccountRepository extends InvoiceTermRepository {
       }
 
       json.put("$amountRemaining", amountRemaining);
-      if (!((boolean) json.get("isPaid"))) {
-        LocalDate today = Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getCompany());
-        if (invoiceTerm.getInvoice() != null && invoiceTerm.getInvoice().getNextDueDate() != null) {
-          if (invoiceTerm.getInvoice().getNextDueDate().isBefore(today)) {
-            json.put(
-                "$originBasedPaymentDelay",
-                Duration.between(
-                        today.atStartOfDay(),
-                        invoiceTerm.getInvoice().getNextDueDate().atStartOfDay())
-                    .toDays());
-          } else {
-            json.put("$originBasedPaymentDelay", 0);
-          }
-        } else {
-          json.put("$originBasedPaymentDelay", invoiceTerm.getPaymentDelay());
+    }
+
+    long id = (long) json.get("id");
+    InvoiceTerm invoiceTerm = this.find(id);
+    json.put("$originBasedPaymentDelay", 0);
+    if (json.containsKey("amountRemaining")
+        && ((BigDecimal) json.get("amountRemaining")).signum() > 0) {
+      LocalDate today = Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getCompany());
+      if (invoiceTerm.getDueDate() != null) {
+        if (invoiceTerm.getDueDate().isBefore(today)) {
+          json.put(
+              "$originBasedPaymentDelay",
+              Duration.between(invoiceTerm.getDueDate().atStartOfDay(), today.atStartOfDay())
+                  .toDays());
         }
+      } else {
+        json.put("$originBasedPaymentDelay", invoiceTerm.getPaymentDelay());
       }
     }
 
