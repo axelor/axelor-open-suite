@@ -298,6 +298,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   @Override
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
+    boolean isDebit = moveLine.getDebit().compareTo(moveLine.getCredit()) > 0;
     if (move.getMoveLineList().size() == 0 || moveLine.getCurrencyRate().signum() == 0) {
       try {
         moveLine.setCurrencyRate(
@@ -311,8 +312,9 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       moveLine.setCurrencyRate(move.getMoveLineList().get(0).getCurrencyRate());
     }
     BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
-    moveLine.setCurrencyAmount(
-        unratedAmount.divide(moveLine.getCurrencyRate(), RETURNED_SCALE, RoundingMode.HALF_UP));
+    BigDecimal currencyAmount =
+        unratedAmount.divide(moveLine.getCurrencyRate(), RETURNED_SCALE, RoundingMode.HALF_UP);
+    moveLine.setCurrencyAmount(isDebit ? currencyAmount.negate() : currencyAmount.abs());
     return moveLine;
   }
 

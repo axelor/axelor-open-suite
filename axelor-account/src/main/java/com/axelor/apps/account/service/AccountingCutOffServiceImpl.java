@@ -360,14 +360,15 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         // Check if move line already exists with that account
         if (cutOffMoveLineMap.containsKey(moveLineAccount)) {
           cutOffMoveLine = cutOffMoveLineMap.get(moveLineAccount);
-          cutOffMoveLine.setCurrencyAmount(
-              cutOffMoveLine.getCurrencyAmount().add(amountInCurrency));
+          BigDecimal currencyAmount = cutOffMoveLine.getCurrencyAmount().add(amountInCurrency);
           if (isReverse
               != (accountingCutOffTypeSelect
                   == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES)) {
             cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(convertedAmount));
+            cutOffMoveLine.setCurrencyAmount(currencyAmount.abs());
           } else {
             cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount));
+            cutOffMoveLine.setCurrencyAmount(currencyAmount.negate());
           }
 
         } else {

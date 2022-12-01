@@ -176,7 +176,7 @@ public class PaymentVoucherLoadService {
 
     payVoucherDueElement.setInvoiceTerm(invoiceTerm);
 
-    payVoucherDueElement.setMoveLine(invoiceTerm.getMoveLine().abs());
+    payVoucherDueElement.setMoveLine(invoiceTerm.getMoveLine());
 
     payVoucherDueElement.setDueAmount(invoiceTerm.getAmount());
 
