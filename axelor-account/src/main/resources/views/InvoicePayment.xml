@@ -254,7 +254,7 @@
   </action-method>
 
   <action-method name="action-invoice-payment-method-set-is-multi-currency">
-     <call class="com.axelor.apps.account.web.InvoicePaymentController"
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="setIsMultiCurrency"/>
   </action-method>
 
