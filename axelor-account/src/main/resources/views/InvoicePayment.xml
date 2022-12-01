@@ -138,7 +138,7 @@
   <action-group name="action-invoice-payment-group-new">
     <action name="action-invoice-payment-record-new"/>
     <action name="action-invoice-payment-attrs-new"/>
-    <action name="action-invoice-payment-attrs-set-is-multi-currency"/>
+    <action name="action-invoice-payment-method-set-is-multi-currency"/>
     <action name="action-invoice-payment-method-filter-payment-mode"/>
     <action name="action-invoice-payment-method-load-invoice-terms"/>
     <action name="action-invoice-payment-method-change-amount"/>
@@ -253,10 +253,10 @@
       method="setMassPaymentAmount"/>
   </action-method>
 
-  <action-attrs name="action-invoice-payment-attrs-set-is-multi-currency">
-    <attribute name="value" for="$isMultiCurrency"
-      expr="eval: com.axelor.apps.account.service.invoice.InvoiceToolService.isMultiCurrency(invoice)"/>
-  </action-attrs>
+  <action-method name="action-invoice-payment-method-set-is-multi-currency">
+     <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="setIsMultiCurrency"/>
+  </action-method>
 
   <action-record name="action-record-on-change-invoice-payment-financial-discount"
     model="com.axelor.apps.account.db.InvoicePayment">
