@@ -224,7 +224,8 @@
         <panel-dashlet name="allTimesheetsLinesPanel"
           if="!__config__.app.getApp('timesheet')?.needValidation"
           action="action-project-dashlet-project-all-timesheet-lines"
-          title="TimesheetLine.timeSpent" colSpan="12" canSearch="true"/>
+          title="TimesheetLine.timeSpent" colSpan="12" canSearch="true"
+          help="To create new timespent lines, you need to do it via project task or via the HR &quot;Complete my Timesheet&quot; menu."/>
       </panel>
       <panel title="Sales" name="salesPanel" showIf="isBusinessProject"
         if="__config__.app.isApp('business-project')
@@ -351,7 +352,8 @@
       </panel>
       <panel title="Invoicing" name="invoicingPanel" showIf="isBusinessProject"
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <field name="toInvoice" title="Project.toInvoice" colSpan="3"
+        <help><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
+        <field name="toInvoice" colSpan="3"
           onChange="action-project-attrs-set-invoicing-sequence"/>
         <field name="isInvoicingTimesheet" colSpan="3" showIf="isShowTimeSpent"/>
         <field name="isInvoicingExpenses" colSpan="3"/>
@@ -1118,7 +1120,7 @@
 
   <action-record name="action-project-record-is-show-timespent-reset-values"
     model="com.axelor.apps.project.db.Project">
-    <field name="isInvoicingTimesheet" expr="eval: false" if="!isShowtimeSpent"/>
+    <field name="isInvoicingTimesheet" expr="eval: false" if="!isShowTimeSpent"/>
   </action-record>
 
   <search-filters name="project-filters" model="com.axelor.apps.project.db.Project"

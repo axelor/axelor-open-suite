@@ -46,8 +46,8 @@
     <decimal name="sequence" title="Sequence"/>
     <integer name="orderByState"/>
 
-    <boolean name="imputable" default="true" massUpdate="true"
-      help="If this option is disabled this project cannot be selected on a timesheet."/>
+    <boolean name="imputable" title="Imputable to HR timesheets" default="true"
+      massUpdate="true"/>
 
     <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project"
       title="Finish tasks to start"/>
@@ -81,9 +81,9 @@
     <boolean name="isShowTaskCategory" title="Categories?" default="true"/>
     <many-to-many name="projectTaskCategorySet"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Type of authorized categories"/>
-    <boolean name="isShowProgress" title="Progress?" default="true"/>
-    <boolean name="isShowPlanning" title="Planning?" default="true"/>
-    <boolean name="isShowFrequency" title="Frequency?"/>
+    <boolean name="isShowProgress" title="Task progress" default="true"/>
+    <boolean name="isShowPlanning" title="Task planning" default="true"/>
+    <boolean name="isShowFrequency" title="Task recurrence"/>
     <boolean name="isShowTimeSpent" title="Time Spent?"/>
     <boolean name="isShowSection" title="Section?" default="true"/>
     <boolean name="isShowTopic" title="Topic?"/>
