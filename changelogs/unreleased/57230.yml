@@ -1,0 +1,3 @@
+---
+title: "MoveLine : fix currency amount/rate readonly condition in the counterpart generation"
+type: fix
