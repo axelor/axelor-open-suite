@@ -547,7 +547,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               : fixedAsset.getAccountingValue();
       BigDecimal cumulativeDepreciationAmount =
           fixedAssetLine != null ? fixedAssetLine.getCumulativeDepreciation() : null;
-      if (chargeAmount.signum() > 0) {
+      if (chargeAmount.signum() != 0) {
         Account chargeAccount;
         if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION
             || transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
@@ -702,7 +702,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       Account debitAccount = fixedAsset.getFixedAssetCategory().getDebtReceivableAccount();
       BigDecimal debitAmount = disposalAmount.add(creditAmountTwo);
 
-      if (creditAccountOne == null || creditAccountTwo == null || debitAccount == null) {
+      if (creditAccountOne == null
+          || (creditAccountTwo == null && creditAmountTwo.compareTo(BigDecimal.ZERO) > 0)
+          || debitAccount == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(
@@ -726,6 +728,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               1,
               origin,
               fixedAsset.getName());
+      creditMoveLine1.setTaxLine(taxLine);
       moveLines.add(creditMoveLine1);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine1);
@@ -741,6 +744,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 1,
                 origin,
                 fixedAsset.getName());
+        creditMoveLine2.setTaxLine(taxLine);
         moveLines.add(creditMoveLine2);
 
         this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine2);

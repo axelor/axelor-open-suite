@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
@@ -175,14 +192,15 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     BigDecimal amount = invoiceAmount.subtract(grantedAmount);
     Invoice invoice = originalInvoiceTerm.getInvoice();
     originalInvoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
-    this.createPfpInvoiceTerm(originalInvoiceTerm, invoice, amount);
-    this.updateOriginalTerm(originalInvoiceTerm, grantedAmount, partialReason, amount, invoice);
+    InvoiceTerm newInvoiceTerm = this.createPfpInvoiceTerm(originalInvoiceTerm, invoice, amount);
+    this.updateOriginalTerm(
+        originalInvoiceTerm, newInvoiceTerm, grantedAmount, partialReason, amount, invoice);
 
     invoiceTermService.initInvoiceTermsSequence(invoice);
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void createPfpInvoiceTerm(
+  protected InvoiceTerm createPfpInvoiceTerm(
       InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) throws AxelorException {
     BigDecimal total;
     int sequence;
@@ -218,11 +236,13 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
     invoiceTerm.setIsCustomized(true);
     invoiceTermRepo.save(invoiceTerm);
+    return invoiceTerm;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void updateOriginalTerm(
       InvoiceTerm originalInvoiceTerm,
+      InvoiceTerm newInvoiceTerm,
       BigDecimal grantedAmount,
       PfpPartialReason partialReason,
       BigDecimal amount,
@@ -246,6 +266,12 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setRemainingPfpAmount(amount);
     originalInvoiceTerm.setDecisionPfpTakenDate(LocalDate.now());
     originalInvoiceTerm.setPfpPartialReason(partialReason);
+    originalInvoiceTerm.setCompanyAmount(
+        originalInvoiceTerm.getCompanyAmount().subtract(newInvoiceTerm.getCompanyAmount()));
+    originalInvoiceTerm.setCompanyAmount(
+        originalInvoiceTerm
+            .getCompanyAmountRemaining()
+            .subtract(newInvoiceTerm.getCompanyAmountRemaining()));
   }
 
   @Transactional(rollbackOn = {Exception.class})

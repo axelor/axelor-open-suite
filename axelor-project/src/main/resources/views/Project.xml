@@ -468,12 +468,14 @@
           form-view="product-activity-form" grid-view="product-activity-grid"/>
         <field name="projectFolderSet" colSpan="12" widget="TagSelect"
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-        <field name="excludeTimesheetEditor" if-module="axelor-human-resource"/>
+        <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
+          if-module="axelor-human-resource"/>
         <field name="excludePlanning" if-module="axelor-business-project"/>
         <field name="childProjectList" hidden="true"/>
         <field name="sequence" hidden="true"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
+          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
+          if-module="axelor-human-resource"/>
         <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
           <field name="isShowStatus" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-status-reset-values"/>
@@ -492,7 +494,8 @@
           <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowTimeSpent" colSpan="4" widget="inline-checkbox"
-            onChange="action-project-record-is-show-timespent-reset-values"/>
+            onChange="action-project-record-is-show-timespent-reset-values"
+            if="__config__.app.isApp('timesheet')"/>
           <field name="isShowSection" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-section-reset-values"/>
           <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>

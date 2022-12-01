@@ -217,8 +217,6 @@ public class BankReconciliationLineService {
 
   public void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine) {
 
-    bankReconciliationLine.setIsPosted(true);
-
     BigDecimal bankReconciledAmount =
         bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit());
 

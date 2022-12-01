@@ -91,6 +91,9 @@
         <field name="startingBalance" readonlyIf="bankStatement" colSpan="3"/>
         <field name="endingBalance" colSpan="3"/>
       </panel>
+      <label name="infoCorrection"
+        title="Each (un)reconciliation with the status 'Under correction' updates immediately the reconciled amount of the relevant line"
+        showIf="statusSelect == 3" colSpan="12"/>
       <panel-related name="bankReconciliationLineListPanel" colSpan="12"
         field="bankReconciliationLineList" form-view="bank-reconciliation-line-form"
         grid-view="bank-reconciliation-line-grid" editable="true"
@@ -121,8 +124,7 @@
       <panel name="mainBalancePanel" colSpan="6"
         showIf="bankReconciliationLineList.length > 0">
         <button name="computeBalances" title="Compute balances" colSpan="12"
-          onClick="save,action-bank-reconciliation-method-compute-balances"
-          readonlyIf="bankDetails == null || cashAccount == null"/>
+          onClick="save,action-bank-reconciliation-method-compute-balances"/>
         <label name="bankStatementLabel" title="Bank statement" colSpan="4"/>
         <spacer colSpan="4"/>
         <label name="accountingLabel" title="Accounting" colSpan="4"/>

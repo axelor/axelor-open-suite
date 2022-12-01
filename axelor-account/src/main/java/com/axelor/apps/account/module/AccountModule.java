@@ -85,6 +85,8 @@ import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.AccountingReportToolServiceImpl;
 import com.axelor.apps.account.service.AccountingReportTypeService;
 import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
+import com.axelor.apps.account.service.AccountingReportValueService;
+import com.axelor.apps.account.service.AccountingReportValueServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationInitService;
 import com.axelor.apps.account.service.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -209,6 +211,8 @@ import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -622,5 +626,9 @@ public class AccountModule extends AxelorModule {
     bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
 
     bind(MoveLineQueryService.class).to(MoveLineQueryServiceImpl.class);
+
+    bind(InvoiceFinancialDiscountService.class).to(InvoiceFinancialDiscountServiceImpl.class);
+
+    bind(AccountingReportValueService.class).to(AccountingReportValueServiceImpl.class);
   }
 }

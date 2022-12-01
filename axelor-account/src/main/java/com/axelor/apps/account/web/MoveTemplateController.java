@@ -40,6 +40,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,10 +102,15 @@ public class MoveTemplateController {
 
       if ((dataList != null && !dataList.isEmpty())
           || (moveTemplateList != null && !moveTemplateList.isEmpty())) {
+        MoveTemplateService moveTemplateService = Beans.get(MoveTemplateService.class);
         List<Long> moveList =
-            Beans.get(MoveTemplateService.class)
-                .generateMove(moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
-        if (moveList != null && !moveList.isEmpty()) {
+            moveTemplateService.generateMove(
+                moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
+        List<String> exceptionsList = moveTemplateService.getExceptionsList();
+        if (!CollectionUtils.isEmpty(exceptionsList)) {
+          response.setFlash(Joiner.on("<br>").join(exceptionsList));
+        }
+        if (!CollectionUtils.isEmpty(moveList)) {
           response.setView(
               ActionView.define(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_3))
                   .model(Move.class.getName())

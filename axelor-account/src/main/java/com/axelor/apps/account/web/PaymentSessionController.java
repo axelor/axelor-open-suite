@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -290,6 +290,17 @@ public class PaymentSessionController {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
       Beans.get(PaymentSessionService.class).selectAll(paymentSession);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void searchEligibleTerms(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionService.class).retrieveEligibleTerms(paymentSession);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

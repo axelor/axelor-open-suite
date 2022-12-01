@@ -52,7 +52,7 @@
       <field name="toInvoice" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
       <field name="timesheet" form-view="timesheet-form"/>
-      <field name="enableEditor"/>
+      <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
       <field name="comments"/>
       <field name="hoursDuration" hidden="true"/>
     </panel>

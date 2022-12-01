@@ -90,6 +90,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       getDefaultQtys(stockLocationLine, stockCorrectionQtys);
     } else {
       stockCorrectionQtys.put("realQty", BigDecimal.ZERO);
+      stockCorrectionQtys.put("baseQty", BigDecimal.ZERO);
     }
     return stockCorrectionQtys;
   }
@@ -234,7 +235,6 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
     stockCorrectionQtys.put("baseQty", stockLocationLine.getCurrentQty());
     stockCorrectionQtys.put("realQty", stockLocationLine.getCurrentQty());
-    stockCorrectionQtys.put("futureQty", stockLocationLine.getFutureQty());
   }
 
   @Override

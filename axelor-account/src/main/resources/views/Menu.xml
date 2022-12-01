@@ -174,6 +174,45 @@
     <view-param name="search-filters" value="move-line-filters"/>
   </action-view>
 
+  <menuitem name="account-root-pfp" title="PFP" parent="account-root"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isPfpValidator"
+    order="2"/>
+
+  <menuitem name="account-root-pfp-my-awaiting-pfp" title="My awaiting PFP"
+    action="account.root.my.awaiting.pfp" parent="account-root-pfp"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isPfpValidator"/>
+
+  <action-view name="account.root.my.awaiting.pfp" title="My awaiting PFP"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-pfp-grid"/>
+    <view type="form" name="invoice-term-move-form"/>
+    <view-param name="search-filters" value="supplier-invoices-filters"/>
+    <view-param name="details-view" value="true"/>
+    <domain> self.pfpValidateStatusSelect IN (1,4) AND
+      self.pfpValidatorUser = :_currentUser AND (
+      self.moveLine.move.statusSelect = 3 OR (self.moveLine.move.statusSelect = 2 AND
+      self.moveLine.move.company.accountConfig.isManageDaybookInPFP = true))</domain>
+    <context name="_operationTypeSelect" expr="eval:1"/>
+    <context name="_currentUser" expr="eval:__user__"/>
+  </action-view>
+
+  <menuitem name="account-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
+    action="account.root.pfp.awaiting.pfp" parent="account-root-pfp"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
+
+  <action-view name="account.root.pfp.awaiting.pfp" title="awaitingPfpMenuTitle"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-pfp-grid"/>
+    <view type="form" name="invoice-term-move-form"/>
+    <view-param name="search-filters" value="supplier-invoices-filters"/>
+    <view-param name="details-view" value="true"/>
+    <domain> self.pfpValidateStatusSelect IN (1,4) AND
+      (self.moveLine.move.statusSelect = 3 OR
+      (self.moveLine.move.statusSelect = 2 AND
+      self.moveLine.move.company.accountConfig.isManageDaybookInPFP = true))</domain>
+    <context name="_operationTypeSelect" expr="eval:1"/>
+  </action-view>
+
   <menuitem name="account-root-payments" parent="account-root" title="Payments" order="5"/>
 
   <menuitem name="account-root-payments-payment-session" parent="account-root-payments"
@@ -867,6 +906,14 @@
 
   <action-view name="accounting.dashboard.view" title="Accounting Details">
     <view type="dashboard" name="accounting.dashboard.sample"/>
+  </action-view>
+
+  <menuitem name="menu-accounting-dashboard-2" parent="account-root-report"
+    title="Accounting with invoice terms" action="accounting.dashboard.invoice.terms.view"/>
+
+  <action-view name="accounting.dashboard.invoice.terms.view"
+    title="Accounting Details with invoice terms">
+    <view type="dashboard" name="accounting.dashboard.invoice.terms.sample"/>
   </action-view>
   <!-- Move template -->
 
