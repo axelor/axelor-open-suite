@@ -611,7 +611,8 @@
 
   <action-view name="action-timesheet-show-timesheet-line-editor"
     title="Timesheet lines">
-    <view type="html" name="hr/timesheet?timesheetId={{id}}&amp;showActivity={{$showActivity}}"/>
+    <view type="html"
+      name="hr/timesheet/?timesheetId={{id}}&amp;showActivity={{$showActivity}}"/>
   </action-view>
 
   <action-view name="action-timesheet-see-timesheet-lines" title="See timesheet lines"
