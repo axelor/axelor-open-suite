@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,11 +21,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PfpPartialReason;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -121,25 +121,21 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       Invoice invoice = null;
-      MoveLine moveLine = null;
+      MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
 
       if (request.getContext().getParent() != null) {
         invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
-        if (invoice != null) {
-          invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
-          response.setValues(invoiceTerm);
-        } else {
-          moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+      } else if (request.getContext().get("_invoiceId") != null) {
+        invoice =
+            Beans.get(InvoiceRepository.class)
+                .find(Long.valueOf((Integer) request.getContext().get("_invoiceId")));
+      }
 
-          if (moveLine != null) {
-            Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
-            invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
-
-            if (move != null) {
-              moveLine.setMove(move);
-            }
-          }
-        }
+      if (invoice == null && moveLine != null) {
+        Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+        invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
+      } else if (invoice != null) {
+        invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
       }
 
       invoiceTermService.setParentFields(invoiceTerm, moveLine, invoice);
@@ -219,17 +215,6 @@ public class InvoiceTermController {
                     Beans.get(InvoiceTermService.class)
                         .getPfpValidatorUser(invoiceTerm.getPartner(), invoiceTerm.getCompany())));
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void searchEligibleTerms(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      Beans.get(InvoiceTermService.class).retrieveEligibleTerms(paymentSession);
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -436,6 +421,10 @@ public class InvoiceTermController {
         if (moveLine != null && moveLine.getMove() == null) {
           Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
           moveLine.setMove(move);
+        } else {
+          moveLine =
+              Beans.get(MoveLineRepository.class)
+                  .find(Long.valueOf((Integer) request.getContext().get("_moveLineId")));
         }
 
         invoiceTerm.setMoveLine(moveLine);

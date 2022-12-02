@@ -1,8 +1,0 @@
----
-title: "MRP: add new scheduler to run MRP at predefined times."
-type: feature
-description: |
-  Add a new scheduler that allows to select a MRP.
-  Please note following database changes for MRP::
-  - Added new fields name and fullName (mrpSeq + name)
-  - Add a unicity constraint on mrpSeq

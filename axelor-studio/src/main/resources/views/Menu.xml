@@ -10,7 +10,7 @@
     action="action.studio.view" order="10"/>
 
   <action-view name="action.studio.view" title="Studio">
-    <view type="html" name="studio/custom-model"/>
+    <view type="html" name="studio/custom-model/"/>
   </action-view>
 
   <!-- Reporting menu -->

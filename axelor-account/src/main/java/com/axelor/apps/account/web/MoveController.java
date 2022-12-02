@@ -144,7 +144,7 @@ public class MoveController {
       Move newMove = Beans.get(MoveReverseService.class).generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
-            ActionView.define(I18n.get("Account move"))
+            ActionView.define(I18n.get("Account moves"))
                 .model("com.axelor.apps.account.db.Move")
                 .add("grid", "move-grid")
                 .add("form", "move-form")
@@ -185,7 +185,7 @@ public class MoveController {
                   .collect(Collectors.joining(","));
 
           response.setView(
-              ActionView.define(I18n.get("Account move"))
+              ActionView.define(I18n.get("Account moves"))
                   .model("com.axelor.apps.account.db.Move")
                   .add("grid", "move-grid")
                   .add("form", "move-form")
