@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PfpPartialReason;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -119,25 +121,21 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       Invoice invoice = null;
-      MoveLine moveLine = null;
+      MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
 
       if (request.getContext().getParent() != null) {
         invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
-        if (invoice != null) {
-          invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
-          response.setValues(invoiceTerm);
-        } else {
-          moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+      } else if (request.getContext().get("_invoiceId") != null) {
+        invoice =
+            Beans.get(InvoiceRepository.class)
+                .find(Long.valueOf((Integer) request.getContext().get("_invoiceId")));
+      }
 
-          if (moveLine != null) {
-            Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
-            invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
-
-            if (move != null) {
-              moveLine.setMove(move);
-            }
-          }
-        }
+      if (invoice == null && moveLine != null) {
+        Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
+        invoiceTermService.initCustomizedInvoiceTerm(moveLine, invoiceTerm, move);
+      } else if (invoice != null) {
+        invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
       }
 
       invoiceTermService.setParentFields(invoiceTerm, moveLine, invoice);
@@ -423,6 +421,10 @@ public class InvoiceTermController {
         if (moveLine != null && moveLine.getMove() == null) {
           Move move = ContextTool.getContextParent(request.getContext(), Move.class, 2);
           moveLine.setMove(move);
+        } else {
+          moveLine =
+              Beans.get(MoveLineRepository.class)
+                  .find(Long.valueOf((Integer) request.getContext().get("_moveLineId")));
         }
 
         invoiceTerm.setMoveLine(moveLine);
