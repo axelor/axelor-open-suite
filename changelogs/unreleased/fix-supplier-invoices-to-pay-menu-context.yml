@@ -1,0 +1,3 @@
+---
+title: "INVOICE / PAYMENT : Supplier invoices to pay not displayed in the grid due to context not updated"
+type: fix
