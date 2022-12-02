@@ -269,10 +269,10 @@ public class AccountController {
 
   public void setAmountRemainingReconciliableMoveLines(
       ActionRequest request, ActionResponse response) {
-    Long accountId = Long.valueOf(request.getContext().get("_id").toString());
-    String startDate = (String) request.getContext().get("startDate");
-
     try {
+      Long accountId = Long.valueOf(request.getContext().get("_accountId").toString());
+      String startDate = (String) request.getContext().get("startDate");
+
       Beans.get(MoveLineToolService.class)
           .setAmountRemainingReconciliableMoveLines(startDate, accountId);
     } catch (Exception e) {

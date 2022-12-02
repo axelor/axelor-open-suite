@@ -101,7 +101,7 @@
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"
-          hideIf="accountType.technicalTypeSelect == 'view'"
+          hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
           onChange="action-account-group-reconcile-onChange"/>
         <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
           showIf="useForPartnerBalance &amp;&amp; ['payable', 'receivable'].indexOf(accountType.technicalTypeSelect) != -1"
@@ -233,10 +233,10 @@
     </panel>
   </form>
 
-  <form title="" name="reconcile-wizard-form" model="com.axelor.apps.account.db.Account">
+  <form title="" name="reconcile-wizard-form" model="com.axelor.apps.base.db.Wizard">
     <panel name="mainPanel" title="Make entries letterable">
-      <field name="startDate" widget="date" title="Start date of entries to be lettered"/>
-      <field name="id"/>
+      <field name="startDate" widget="date" title="Start date of entries to be lettered"
+        type="date"/>
       <button name="reconcileMovesBtn" title="Make entries letterable"
         onClick="action-account-method-wizard-reconcile-line"/>
     </panel>
@@ -343,24 +343,24 @@
 
   <action-validate name="action-account-validate-check-move-tax-required">
     <info message="Accounted moves exist for the current year and they cannot be modified."
-      if="isTaxRequiredOnMoveLine &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.createdOn) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+      if="isTaxRequiredOnMoveLine &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
   </action-validate>
 
   <action-validate name="action-account-validate-check-move-analytic-required">
     <info message="Accounted moves exist for the current year and they cannot be modified."
-      if="analyticDistributionRequiredOnMoveLines &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.createdOn) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+      if="analyticDistributionRequiredOnMoveLines &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
   </action-validate>
 
   <action-validate
     name="action-account-validate-uncheck-analytic-distribution-authorized">
     <info message="Accounted moves exist for the current year and they cannot be modified."
-      if="!analyticDistributionAuthorized &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.createdOn) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+      if="!analyticDistributionAuthorized &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
   </action-validate>
 
 
   <action-validate name="action-account-validate-uncheck-tax-authorized">
     <info message="Accounted moves exist for the current year and they cannot be modified."
-      if="!isTaxAuthorizedOnMoveLine &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.createdOn) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+      if="!isTaxAuthorizedOnMoveLine &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
   </action-validate>
 
   <action-validate name="action-account-validate-check-reconcile">
@@ -516,6 +516,7 @@
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="popup" value="true"/>
+    <context name="_accountId" expr="eval: __id__"/>
   </action-view>
 
 </object-views>
