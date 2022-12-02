@@ -1,0 +1,5 @@
+---
+title: "TASK EDITOR : fix section and task issue."
+type: fix
+description: |
+  Fix issue of section auto creation issue while dragging task from the middle of the task row and task creation from task editor either section is there or not. 
