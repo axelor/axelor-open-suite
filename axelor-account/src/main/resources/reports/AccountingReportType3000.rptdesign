@@ -1065,15 +1065,41 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                 <structure>
                     <property name="name">param_1</property>
                     <property name="paramName">AccountingReportId</property>
-                    <property name="dataType">string</property>
+                    <property name="dataType">decimal</property>
                     <property name="position">1</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">accountName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">analyticLevel</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet"/>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">accountName</property>
+                    <property name="nativeName">accountName</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">analyticLevel</property>
+                    <property name="nativeName">analyticLevel</property>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
 	AnalyticAccount.name AS "accountName",
 	AnalyticLevel.nbr AS "analyticLevel"

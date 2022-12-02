@@ -14,10 +14,14 @@
     <panel name="mainPanel">
       <field name="ruleLevel"/>
       <field name="typeSelect"/>
-      <field name="analyticAccountCode" showIf="typeSelect == 1" requiredIf="typeSelect == 1"/>
-      <field name="analyticAccountSet" widget="TagSelect" showIf="typeSelect == 2"
-        requiredIf="typeSelect == 2"/>
-      <field name="analyticAccount" showIf="typeSelect == 3" requiredIf="typeSelect == 3"/>
+      <panel name="analyticAccountPanel" stacked="true" colSpan="12" itemSpan="12">
+        <field name="analyticAccountCode" showIf="typeSelect == 1"
+          requiredIf="typeSelect == 1"/>
+        <field name="analyticAccountSet" widget="TagSelect" showIf="typeSelect == 2"
+          requiredIf="typeSelect == 2" domain="self.analyticLevel.nbr = :ruleLevel"/>
+        <field name="analyticAccount" showIf="typeSelect == 3" requiredIf="typeSelect== 3"
+          domain="self.analyticLevel.nbr = :ruleLevel"/>
+      </panel>
     </panel>
   </form>
 </object-views>
