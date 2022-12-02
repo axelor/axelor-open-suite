@@ -151,6 +151,13 @@
           requiredIf="reportType.typeSelect == 17"/>
         <field name="minAmountExcl"
           showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
+        <field name="displayAnalyticAccountsDetails" showIf="reportType.typeSelect == 3000"
+          colSpan="12"/>
+        <panel-related name="accountingReportAnalyticConfigLineListPanel"
+          field="accountingReportAnalyticConfigLineList" colSpan="12" height="15" x-row-height="29"
+          form-view="analytic-accounting-report-rule-form"
+          grid-view="analytic-accounting-report-rule-grid" showIf="reportType.typeSelect == 3000"/>
+
       </panel>
       <panel name="printingInformationsPanel" title="Printing information"
         hideIf="[16,17,18,19,20,21,22,23,24].indexOf(reportType.typeSelect) != -1">

@@ -1350,7 +1350,9 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             accountingReport,
             line,
             column,
-            this.getMinLevelAnalyticAccountStream(configAnalyticAccountSet).findFirst().orElse(null));
+            this.getMinLevelAnalyticAccountStream(configAnalyticAccountSet)
+                .findFirst()
+                .orElse(null));
 
     accountingReportValueRepo.save(accountingReportValue);
 
