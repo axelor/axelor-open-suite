@@ -4911,7 +4911,7 @@ else {
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">params["Locale"].value != 'fr'</expression>
+                                    <expression name="valueExpr" type="javascript">params["Locale"].value != 'fr'|| !row["siren"]</expression>
                                 </structure>
                             </list-property>
                             <cell id="5972">
