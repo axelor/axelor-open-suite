@@ -1,20 +1,3 @@
-/*
- * Axelor Business Solutions
- *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
- *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 /**
  * Welcome to your Workbox-powered service worker!
  *
@@ -31,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "./precache-manifest.4074a9ec385bc5eb4ba7a0b1af8cc601.js"
+  "./precache-manifest.3b5a915cce538b4375ae97a33d7d4f1c.js"
 );
 
 self.addEventListener('message', (event) => {
