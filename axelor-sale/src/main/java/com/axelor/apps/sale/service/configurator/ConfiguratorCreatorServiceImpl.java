@@ -35,6 +35,7 @@ import static com.axelor.apps.tool.MetaJsonFieldType.SEPARATOR;
 import static com.axelor.apps.tool.MetaJsonFieldType.STRING;
 import static com.axelor.apps.tool.MetaJsonFieldType.TIME;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
@@ -201,13 +202,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       case BOOLEAN:
         return Optional.of(true);
       case DATETIME:
-        return Optional.of(
-            appBaseService.getTodayDateTime(
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
+        return Optional.of(appBaseService.getTodayDateTime(getActiveCompanyOfUser()));
       case DATE:
-        return Optional.of(
-            appBaseService.getTodayDate(
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
+        return Optional.of(appBaseService.getTodayDate(getActiveCompanyOfUser()));
       case TIME:
         return Optional.of(LocalTime.now());
       case MANY_TO_ONE:
@@ -225,6 +222,10 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       default:
         return Optional.empty();
     }
+  }
+
+  protected Company getActiveCompanyOfUser() {
+    return Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
   }
 
   /**
