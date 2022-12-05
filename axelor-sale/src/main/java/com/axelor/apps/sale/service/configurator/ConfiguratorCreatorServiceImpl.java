@@ -64,12 +64,12 @@ import javax.validation.constraints.NotNull;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
-  private ConfiguratorCreatorRepository configuratorCreatorRepo;
-  private AppBaseService appBaseService;
-  private MetaFieldRepository metaFieldRepository;
-  private MetaJsonFieldRepository metaJsonFieldRepository;
-  private MetaModelRepository metaModelRepository;
-  private SaleOrderRepository saleOrderRepository;
+  protected final ConfiguratorCreatorRepository configuratorCreatorRepo;
+  protected final AppBaseService appBaseService;
+  protected final MetaFieldRepository metaFieldRepository;
+  protected final MetaJsonFieldRepository metaJsonFieldRepository;
+  protected final MetaModelRepository metaModelRepository;
+  protected final SaleOrderRepository saleOrderRepository;
 
   @Inject
   public ConfiguratorCreatorServiceImpl(
