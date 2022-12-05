@@ -2541,6 +2541,7 @@
 "The defined number of Analytic axis is $nbrOfAnalyticAxisSelect and the number of defined analytic axis $analyticAxisByCompanyList.nbrOfRecords in the attached list is inconsistent. Please configure the correct number and order of analytic axis in the table Order of Analytic Axis.",,,
 "The deposit slip has already been published.",,,
 "The disposal of the asset cannot be executed while depreciation has already been accounted.",,,
+"The fixed asset can't be disposed at the moment as there are still depreciations that remains to be accounted before input disposal date. Please proceed to the realization of those depreciations before proceeding to the disposal of the asset on that date.",,,
 "The following account within the moveLine : %s is inactive. Thus, the move can't be set to accounted",,,
 "The following accounts within the moveLine : %s are inactive. Thus, the move can't be set to accounted",,,
 "The following analytic account : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
