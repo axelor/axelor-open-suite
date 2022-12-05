@@ -68,20 +68,13 @@ import java.util.stream.Collectors;
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   protected AppBaseService appBaseService;
-
-  private ConfiguratorFormulaService configuratorFormulaService;
-
-  private ProductRepository productRepository;
-
-  private SaleOrderLineService saleOrderLineService;
-
-  private SaleOrderLineRepository saleOrderLineRepository;
-
-  private SaleOrderComputeService saleOrderComputeService;
-
-  private MetaFieldRepository metaFieldRepository;
-
-  private ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService;
+  protected ConfiguratorFormulaService configuratorFormulaService;
+  protected ProductRepository productRepository;
+  protected SaleOrderLineService saleOrderLineService;
+  protected SaleOrderLineRepository saleOrderLineRepository;
+  protected SaleOrderComputeService saleOrderComputeService;
+  protected MetaFieldRepository metaFieldRepository;
+  protected ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService;
 
   @Inject
   public ConfiguratorServiceImpl(
