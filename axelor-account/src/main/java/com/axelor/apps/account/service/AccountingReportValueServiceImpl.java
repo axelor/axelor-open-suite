@@ -94,9 +94,13 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     Set<AnalyticAccount> minLevelAnalyticAccountSet =
         this.getMinLevelAnalyticAccountStream(configAnalyticAccountSet).collect(Collectors.toSet());
 
-    for (AnalyticAccount configAnalyticAccount : minLevelAnalyticAccountSet) {
-      this.computeReportValuesRecursive(
-          accountingReport, configAnalyticAccountSet, new HashSet<>(), configAnalyticAccount);
+    if (CollectionUtils.isEmpty(minLevelAnalyticAccountSet)) {
+      this.computeReportValues(accountingReport, null);
+    } else {
+      for (AnalyticAccount configAnalyticAccount : minLevelAnalyticAccountSet) {
+        this.computeReportValuesRecursive(
+            accountingReport, configAnalyticAccountSet, new HashSet<>(), configAnalyticAccount);
+      }
     }
   }
 
@@ -105,11 +109,11 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     Set<AnalyticAccount> configAnalyticAccountSet = new HashSet<>();
 
     if (CollectionUtils.isEmpty(analyticConfigLineList)) {
-      configAnalyticAccountSet.add(null);
-    } else {
-      analyticConfigLineList.forEach(
-          it -> configAnalyticAccountSet.addAll(this.fetchConfigAnalyticAccountSet(it)));
+      return null;
     }
+
+    analyticConfigLineList.forEach(
+        it -> configAnalyticAccountSet.addAll(this.fetchConfigAnalyticAccountSet(it)));
 
     return configAnalyticAccountSet;
   }
@@ -136,7 +140,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   protected Stream<AnalyticAccount> getMinLevelAnalyticAccountStream(
       Set<AnalyticAccount> analyticAccountSet) {
     if (CollectionUtils.isEmpty(analyticAccountSet)) {
-      return new HashSet<AnalyticAccount>(Collections.singletonList(null)).stream();
+      return new HashSet<AnalyticAccount>().stream();
     }
 
     int minLevel =
