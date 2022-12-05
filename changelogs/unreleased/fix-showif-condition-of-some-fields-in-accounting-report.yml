@@ -1,0 +1,3 @@
+---
+title: "ACCOUNTINGREPORT : Correct wrongly defined ShowIf condition on analyticAxisSet, analyticAccountSet, accountTypeSet"
+type: fix
