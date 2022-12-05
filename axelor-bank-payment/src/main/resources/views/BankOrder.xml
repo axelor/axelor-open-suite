@@ -634,7 +634,7 @@
     <attribute name="hidden" for="bankOrderLineList.furtherInformationPanel"
       expr="eval: !bankOrderFileFormat?.displayFurtherInformations"/>
     <attribute name="hidden" for="bankOrderLineList.bankOrderDate"
-      expr="eval: id &amp;&amp; !isMultiDate || !id &amp;&amp; !bankOrderFileFormat?.isMultiDate"/>
+      expr="eval: (id &amp;&amp; !isMultiDate) || (!id &amp;&amp; !bankOrderFileFormat?.isMultiDate)"/>
     <attribute name="hidden" for="bankOrderLineList.bankOrderCurrency"
       expr="eval: !bankOrderFileFormat?.isMultiCurrency"/>
     <attribute name="hidden" for="bankOrderLineList.bankOrder.bankOrderCurrency"
