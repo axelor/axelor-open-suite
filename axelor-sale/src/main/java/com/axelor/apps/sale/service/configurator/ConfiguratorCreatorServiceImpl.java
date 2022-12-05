@@ -278,7 +278,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   /**
-   * Method that create metaJsonField from {@link ConfiguratorFormula#metaField}
+   * Create {@link MetaJsonField} from {@link ConfiguratorFormula#metaField}.
    *
    * @param formula
    * @param creator
@@ -288,17 +288,13 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       ConfiguratorFormula formula, ConfiguratorCreator creator) throws AxelorException {
     MetaField formulaMetaField = formula.getMetaField();
     MetaJsonField newField = new MetaJsonField();
-    String metaModelName = formulaMetaField.getMetaModel().getName();
 
     newField.setModel(Configurator.class.getName());
     newField.setModelField("indicators");
     MetaField metaField =
-        metaFieldRepository
-            .all()
-            .filter("self.metaModel.name = :metaModelName AND self.name = :name")
-            .bind("metaModelName", metaModelName)
-            .bind("name", formulaMetaField.getName())
-            .fetchOne();
+        metaFieldRepository.findByModel(
+            formulaMetaField.getName(), formulaMetaField.getMetaModel());
+
     String typeName;
     if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
       typeName = metaField.getRelationship();
@@ -315,7 +311,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   /**
-   * Method that copy and modify metajsonfield from {@link ConfiguratorFormula#metaJsonField}
+   * Copy and modify {@link MetaJsonField} from {@link ConfiguratorFormula#metaJsonField}.
    *
    * @param formula
    * @param creator
@@ -330,7 +326,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   /**
-   * Check if {@link ConfiguratorFormula} is missing in {@link ConfiguratorCreator#indicators}
+   * Check if {@link ConfiguratorFormula} is missing in {@link ConfiguratorCreator#indicators}.
    *
    * @param formula : {@link ConfiguratorFormula}
    * @param creator : {@link ConfiguratorCreator}
