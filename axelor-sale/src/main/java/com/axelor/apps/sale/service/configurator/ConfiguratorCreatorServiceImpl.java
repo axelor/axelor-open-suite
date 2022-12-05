@@ -106,7 +106,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     configuratorCreatorRepo.save(creator);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public void updateIndicators(ConfiguratorCreator creator) throws AxelorException {
     List<MetaJsonField> indicators =
         Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
