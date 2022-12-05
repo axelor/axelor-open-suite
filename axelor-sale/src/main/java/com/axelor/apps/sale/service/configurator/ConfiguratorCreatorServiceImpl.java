@@ -173,10 +173,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     List<MetaJsonField> attributes = creator.getAttributes();
     if (attributes != null) {
       for (MetaJsonField attribute : attributes) {
-        Object defaultAttribute = getAttributesDefaultValue(attribute);
-        if (defaultAttribute != null) {
-          attributesValues.put(attribute.getName(), getAttributesDefaultValue(attribute));
-        }
+        getAttributesDefaultValue(attribute)
+            .ifPresent(defaultValue -> attributesValues.put(attribute.getName(), defaultValue));
       }
     }
     attributesValues.put(
@@ -191,28 +189,30 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * @param attribute
    * @return
    */
-  protected Object getAttributesDefaultValue(MetaJsonField attribute) {
+  protected Optional<Object> getAttributesDefaultValue(MetaJsonField attribute) {
     switch (attribute.getType()) {
       case STRING:
-        return "a";
+        return Optional.of("a");
       case INTEGER:
-        return 1;
+        return Optional.of(1);
       case DECIMAL:
-        return BigDecimal.ONE;
+        return Optional.of(BigDecimal.ONE);
       case BOOLEAN:
-        return true;
+        return Optional.of(true);
       case DATETIME:
-        return appBaseService.getTodayDateTime(
-            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+        return Optional.of(
+            appBaseService.getTodayDateTime(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
       case DATE:
-        return appBaseService.getTodayDate(
-            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+        return Optional.of(
+            appBaseService.getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
       case TIME:
-        return LocalTime.now();
+        return Optional.of(LocalTime.now());
       case MANY_TO_ONE:
       case MANY_TO_MANY:
       case ONE_TO_MANY:
-        return getAttributeRelationalField(attribute, attribute.getType());
+        return Optional.of(getAttributeRelationalField(attribute, attribute.getType()));
       case JSON_MANY_TO_ONE:
       case JSON_MANY_TO_MANY:
       case JSON_ONE_TO_MANY:
@@ -220,9 +220,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       case ENUM:
       case BUTTON:
       case SEPARATOR:
-        return null;
+        return Optional.empty();
       default:
-        return null;
+        return Optional.empty();
     }
   }
 
