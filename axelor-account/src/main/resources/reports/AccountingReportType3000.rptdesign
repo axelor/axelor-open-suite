@@ -1066,6 +1066,11 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                     <expression name="expr" type="javascript">dataSetRow["columnHidden"] || dataSetRow["lineHidden"]</expression>
                     <property name="updateAggregation">true</property>
                 </structure>
+                <structure>
+                    <property name="operator">is-not-null</property>
+                    <expression name="expr" type="javascript">dataSetRow["result"]</expression>
+                    <property name="updateAggregation">true</property>
+                </structure>
             </list-property>
             <property name="dimensions">
                 <tabular-dimension name="Line" id="5641">
