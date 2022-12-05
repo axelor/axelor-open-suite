@@ -62,6 +62,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -207,8 +208,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         jsonIndicators,
         Product.class,
         product);
-    for (String key : jsonIndicators.keySet()) {
-      mapper.set(product, key, jsonIndicators.get(key));
+    for (Entry<String, Object> entry : jsonIndicators.entrySet()) {
+      mapper.set(product, entry.getKey(), entry.getValue());
     }
 
     fixRelationalFields(product);
