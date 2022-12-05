@@ -512,7 +512,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     List<ConfiguratorCreator> configuratorCreatorList =
         configuratorCreatorRepo.all().filter("self.isActive = true").fetch();
 
-    if (configuratorCreatorList == null || configuratorCreatorList.isEmpty()) {
+    if (ObjectUtils.isEmpty(configuratorCreatorList)) {
       return "self.id in (0)";
     }
 
@@ -528,11 +528,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   @Transactional
   public void init(ConfiguratorCreator creator) {
     User user = AuthUtils.getUser();
-    if (user != null) {
-      creator.addAuthorizedUserSetItem(AuthUtils.getUser());
-    } else {
-      creator.addAuthorizedUserSetItem(AuthUtils.getUser("admin"));
-    }
+    creator.addAuthorizedUserSetItem(user != null ? user : AuthUtils.getUser("admin"));
     addRequiredFormulas(creator);
   }
 
