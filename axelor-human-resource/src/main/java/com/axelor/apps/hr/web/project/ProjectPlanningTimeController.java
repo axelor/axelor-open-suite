@@ -66,7 +66,7 @@ public class ProjectPlanningTimeController {
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Project Planning time"))
             .model(ProjectPlanningTime.class.getName());
-    String url = "project/planning";
+    String url = "project/planning/";
 
     if (!userIds.isEmpty() && !projectId.isEmpty()) {
       url += "?userIds=" + userIds + "&projectIds=" + projectId;
