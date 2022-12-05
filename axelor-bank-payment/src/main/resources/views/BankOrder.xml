@@ -126,10 +126,7 @@
         onClick="action-bank-order-method-print"/>
     </toolbar>
     <panel title="Status" name="statusPanel" readonlyIf="technicalOriginSelect == 1">
-      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10"
-        selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 2 || orderTypeSelect == 4"/>
-      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10"
-        showIf="orderTypeSelect != 2 &amp;&amp; orderTypeSelect != 4"/>
+      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10"/>
       <field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
         <viewer depends="technicalOriginSelect">
                     <![CDATA[
