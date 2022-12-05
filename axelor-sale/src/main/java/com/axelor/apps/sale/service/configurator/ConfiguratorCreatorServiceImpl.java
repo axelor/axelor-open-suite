@@ -253,7 +253,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     if (!formulaIsMissing(formula, creator)) {
       return;
     }
-    ;
+
     // Specific meta json field can be specified in configurator now
     // So we check if this field is null or not
     // If it is not, we apply the formula on this field
