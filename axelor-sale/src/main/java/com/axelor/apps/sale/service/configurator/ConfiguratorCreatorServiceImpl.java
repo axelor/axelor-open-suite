@@ -52,6 +52,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
 import com.axelor.common.Inflector;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.annotations.Widget;
 import com.axelor.db.mapper.Mapper;
@@ -307,7 +308,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     }
     completeSelection(metaField, newField);
     newField.setType(MetaTool.typeToJsonType(typeName));
-    newField.setName(formulaMetaField.getName() + "_" + creator.getId());
+    newField.setName(computeFormulaMetaFieldName(creator, formulaMetaField));
     newField.setTitle(formulaMetaField.getLabel());
 
     return newField;
@@ -324,14 +325,12 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     MetaJsonField newField = metaJsonFieldRepository.copy(formula.getMetaJsonField(), true);
     newField.setModel(Configurator.class.getName());
     newField.setModelField("indicators");
-    newField.setName(
-        formula.getMetaField().getName() + "$" + newField.getName() + "_" + creator.getId());
+    newField.setName(computeFormulaMetaFieldNameForJson(creator, formula, newField));
     return newField;
   }
 
   /**
-   * Method to check if {@link ConfiguratorFormula} is missing in {@link
-   * ConfiguratorCreator#indicators}
+   * Check if {@link ConfiguratorFormula} is missing in {@link ConfiguratorCreator#indicators}
    *
    * @param formula : {@link ConfiguratorFormula}
    * @param creator : {@link ConfiguratorCreator}
@@ -339,57 +338,69 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    */
   protected boolean formulaIsMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
 
-    MetaField formulaMetaField = formula.getMetaField();
-    List<MetaJsonField> fields =
-        Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
-    for (MetaJsonField field : fields) {
-      if (field.getName().equals(formulaMetaField.getName() + "_" + creator.getId())) {
-        return false;
-      }
-      // Check if metaJsonField is not null and in this case, checking if he is missing
-      else if (formula.getMetaJsonField() != null
-          && field
-              .getName()
-              .equals(
-                  formula.getMetaField().getName()
-                      + "$"
-                      + formula.getMetaJsonField().getName()
-                      + "_"
-                      + creator.getId())) {
-        return false;
-      }
+    List<MetaJsonField> fields = creator.getIndicators();
+    if (ObjectUtils.isEmpty(fields)) {
+      return true;
     }
-    return true;
+
+    String formulaMetaFieldName = computeFormulaMetaFieldName(creator, formula.getMetaField());
+
+    MetaJsonField metaJsonField = formula.getMetaJsonField();
+    String formulaMetaFieldNameForJson =
+        metaJsonField != null
+            ? computeFormulaMetaFieldNameForJson(creator, formula, metaJsonField)
+            : null;
+
+    return fields.stream()
+        .map(MetaJsonField::getName)
+        .noneMatch(
+            fieldName ->
+                fieldName.equals(formulaMetaFieldName)
+                    || fieldName.equals(formulaMetaFieldNameForJson));
+  }
+
+  protected String computeFormulaMetaFieldName(
+      ConfiguratorCreator creator, MetaField formulaMetaField) {
+    return formulaMetaField.getName() + "_" + creator.getId();
+  }
+
+  protected String computeFormulaMetaFieldNameForJson(
+      ConfiguratorCreator creator, ConfiguratorFormula formula, MetaJsonField metaJsonField) {
+    return formula.getMetaField().getName() + "$" + metaJsonField.getName() + "_" + creator.getId();
   }
 
   /**
    * @param field
    * @param creator
-   * @return false if field is represented in the creator formula list true if field is missing in
-   *     the creator formula list
+   * @return false if the field is represented in the creator formula list, true if field is missing
+   *     in the creator formula list
    */
   protected boolean isNotInFormulas(
       MetaJsonField field,
       ConfiguratorCreator creator,
       List<? extends ConfiguratorFormula> formulas) {
+
+    if (ObjectUtils.isEmpty(formulas)) {
+      return true;
+    }
+
+    String fieldName = field.getName();
+
     for (ConfiguratorFormula formula : formulas) {
       MetaField formulaMetaField = formula.getMetaField();
-      if ((formulaMetaField.getName() + "_" + creator.getId()).equals(field.getName())) {
+      if (computeFormulaMetaFieldName(creator, formulaMetaField).equals(fieldName)) {
         return false;
       }
+
       // If it is a specified meta json field
-      if (formula.getMetaJsonField() != null
-          && field
-              .getName()
-              .equals(
-                  formula.getMetaField().getName()
-                      + "$"
-                      + formula.getMetaJsonField().getName()
-                      + "_"
-                      + creator.getId())) {
+      MetaJsonField metaJsonField = formula.getMetaJsonField();
+      if (metaJsonField != null
+          && fieldName.equals(
+              computeFormulaMetaFieldNameForJson(creator, formula, metaJsonField))) {
         return false;
       }
     }
+
     return true;
   }
 
@@ -468,14 +479,12 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
     // Case where meta json field is specified
     if (formula.getMetaJsonField() != null) {
-      if (!fieldName.equals(
-          formula.getMetaField().getName()
-              + "$"
-              + formula.getMetaJsonField().getName()
-              + "_"
-              + creator.getId())) {
+      String formulaMetaFieldNameForJson =
+          computeFormulaMetaFieldNameForJson(creator, formula, formula.getMetaJsonField());
+      if (!fieldName.equals(formulaMetaFieldNameForJson)) {
         return;
       }
+
     } else {
       fieldName = fieldName.substring(0, fieldName.indexOf('_'));
 
