@@ -1,0 +1,2 @@
+"module";"object";"view";"field";"help"
+"axelor-contract";"Contract";"contract-form";"consumptionLineList";"Utilisé pour les produits ou prestations qui sont comptabilisés à la consommation. On renseigne les consommations du mois N pour facturation à N+1. Important: pour pouvoir facturer des consommations, le produit doit également être présent dans le contenu de facturation, avec la checkbox ""Facturer en consommation"" cochée."

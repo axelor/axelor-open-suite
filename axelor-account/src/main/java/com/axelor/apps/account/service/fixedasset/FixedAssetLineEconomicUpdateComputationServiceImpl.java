@@ -182,7 +182,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   private void prepareRecomputation(FixedAsset fixedAsset) throws AxelorException {
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
     if (fixedAsset.getCorrectedAccountingValue() == null
-        || fixedAsset.getCorrectedAccountingValue().signum() <= 0) {
+        || fixedAsset.getCorrectedAccountingValue().signum() == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           "You can not call this implementation without a corrected accounting value");
@@ -243,18 +243,20 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     Optional<FixedAssetLine> previousLastRealizedFAL =
         fixedAssetLineService.findNewestFixedAssetLine(
             fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
+    BigDecimal impairmentValue = firstPlannedFixedAssetLine.getImpairmentValue().abs();
+    if (correctedAccountingValue.signum() < 0) {
+      impairmentValue = impairmentValue.negate();
+    }
     if (previousLastRealizedFAL.isPresent()) {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
           previousLastRealizedFAL
               .get()
               .getCumulativeDepreciation()
               .add(firstPlannedFixedAssetLine.getDepreciation())
-              .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
+              .add(impairmentValue));
     } else {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
-          BigDecimal.ZERO
-              .add(firstPlannedFixedAssetLine.getDepreciation())
-              .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
+          BigDecimal.ZERO.add(firstPlannedFixedAssetLine.getDepreciation()).add(impairmentValue));
     }
   }
 
