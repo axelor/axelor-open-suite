@@ -125,9 +125,8 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
       MetaJsonField metaJsonField,
       Map<String, Map<String, Object>> attrValueMap) {
 
-    if (!attrValueMap.containsKey(attrName)) {
-      attrValueMap.put(attrName, new HashMap<>());
-    }
+    attrValueMap.computeIfAbsent(attrName, i -> new HashMap<>());
+
     Entry<String, Object> entry = adaptType(nameField, object, metaJsonField);
     attrValueMap.get(attrName).put(entry.getKey(), entry.getValue());
   }
