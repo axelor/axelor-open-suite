@@ -148,8 +148,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Query<User> query = Query.of(User.class);
 
     if (!isBlank(filter)) {
-      if (userPermissionFilter != null) {
-        query.filter(filter, userPermissionFilter.getParams());
+      if (userPermissionFilter != null && userPermissionFilter.getParams() != null) {
+        query.filter(filter, userPermissionFilter.getParams().toArray());
       } else {
         query.filter(filter);
       }

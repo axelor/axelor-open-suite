@@ -1,0 +1,3 @@
+---
+title: "Followers: Fixed a bug where trying to fetch a recipient would result in a exception with somes conditions"
+type: fix
