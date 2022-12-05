@@ -516,7 +516,7 @@
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="popup" value="true"/>
-    <context name="_accountId" expr="eval: __id__"/>
+    <context name="_showRecord" expr="eval: __id__"/>
   </action-view>
 
 </object-views>
