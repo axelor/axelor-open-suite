@@ -233,7 +233,7 @@
     </panel>
   </form>
 
-  <form title="" name="reconcile-wizard-form" model="com.axelor.apps.base.db.Wizard">
+  <form title="" name="reconcile-wizard-form" model="com.axelor.apps.account.db.Account">
     <panel name="mainPanel" title="Make entries letterable">
       <field name="startDate" widget="date" title="Start date of entries to be lettered"
         type="date"/>
@@ -321,7 +321,7 @@
 
   <action-group name="action-account-group-reconcile-onChange">
     <action name="action-account-validate-check-reconcile"/>
-    <action name="save" if="reconcileOk"/>
+    <action name="save"/>
     <action name="action-account-view-reconcile-wizard-form" if="reconcileOk"/>
   </action-group>
 
@@ -516,7 +516,7 @@
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="popup" value="true"/>
-    <context name="_showRecord" expr="eval: __id__"/>
+    <context name="_accountId" expr="eval: __id__"/>
   </action-view>
 
 </object-views>

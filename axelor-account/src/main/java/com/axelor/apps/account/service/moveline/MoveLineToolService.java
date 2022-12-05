@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
 import java.util.List;
 
 public interface MoveLineToolService {
@@ -61,5 +62,5 @@ public interface MoveLineToolService {
 
   void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
 
-  void setAmountRemainingReconciliableMoveLines(String startDate, Long accountId);
+  void setAmountRemainingReconciliableMoveLines(Context context);
 }

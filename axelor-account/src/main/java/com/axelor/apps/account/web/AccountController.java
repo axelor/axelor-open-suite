@@ -38,6 +38,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
@@ -270,11 +271,9 @@ public class AccountController {
   public void setAmountRemainingReconciliableMoveLines(
       ActionRequest request, ActionResponse response) {
     try {
-      Account account = request.getContext().asType(Account.class);
-      String startDate = (String) request.getContext().get("startDate");
+      Context context = request.getContext();
 
-      Beans.get(MoveLineToolService.class)
-          .setAmountRemainingReconciliableMoveLines(startDate, account.getId());
+      Beans.get(MoveLineToolService.class).setAmountRemainingReconciliableMoveLines(context);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

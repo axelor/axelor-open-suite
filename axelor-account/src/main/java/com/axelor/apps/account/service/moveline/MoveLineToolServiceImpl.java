@@ -27,14 +27,13 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -44,6 +43,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Query;
 
 @RequestScoped
 public class MoveLineToolServiceImpl implements MoveLineToolService {
@@ -365,31 +365,21 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void setAmountRemainingReconciliableMoveLines(String startDate, Long accountId) {
-    Query<MoveLine> moveLineQuery;
-    List<MoveLine> moveLineList;
-    int offset = 0;
-    String queryFilter =
-        String.format(
-            "self.accountId = :accountId%s",
-            startDate == null ? "" : " AND self.move.createdOn >= :startDate");
+  public void setAmountRemainingReconciliableMoveLines(Context context) {
+    Long accountId = Long.valueOf(context.get("_accountId").toString());
+    String startDate = (String) context.get("startDate");
 
-    moveLineQuery =
-        this.moveLineRepository
-            .all()
-            .filter(queryFilter)
-            .bind("accountId", accountId)
-            .bind("startDate", startDate)
-            .order("id");
+    Query update =
+        JPA.em()
+            .createQuery(
+                "UPDATE MoveLine self SET self.amountRemaining = GREATEST(self.credit, self.debit) "
+                    + "WHERE self.accountId = :accountId"
+                    + (startDate == null ? "" : " AND self.move.date >= :startDate"));
+    update.setParameter("accountId", accountId);
 
-    while (!(moveLineList = moveLineQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
-      offset += moveLineList.size();
-
-      for (MoveLine moveLine : moveLineList) {
-        moveLine.setAmountRemaining(moveLine.getCredit().max(moveLine.getDebit()));
-        this.moveLineRepository.save(moveLine);
-      }
-      JPA.clear();
+    if (startDate != null) {
+      update.setParameter("startDate", LocalDate.parse(startDate));
     }
+    update.executeUpdate();
   }
 }
