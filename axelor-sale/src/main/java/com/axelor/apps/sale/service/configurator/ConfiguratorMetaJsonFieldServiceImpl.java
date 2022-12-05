@@ -41,14 +41,16 @@ import java.util.stream.Collectors;
 public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJsonFieldService {
 
   /**
-   * Method that generate a Map for attrs fields (wich are storing customs fields). A map entry's
-   * form is <attrNameField, mapOfCustomsFields>, with attrNameField the name of the attr field (for
-   * example 'attr') and mapOfCustomsFields are entries with the form of <customFieldName, value>.
-   * Only indicators that have name in form of "attrFieldName$fieldName_*" , with "_*" being
-   * optional, will be treated Note : This method will consume indicators that are attr fields (i.e.
-   * : will be removed from jsonIndicators)
+   * Generate a Map for custom fields. The map entry pattern is {@code <attrNameField,
+   * mapOfCustomsFields>}, with {@code attrNameField} the name of the custom field (for example
+   * 'attrs') and {@code mapOfCustomsFields} the entries with the form of {@code<customFieldName,
+   * value>}. Only indicators having a name with the pattern "attrFieldName$fieldName_*" ("_*" being
+   * optional) will be treated.
    *
-   * @param configurator
+   * <p>Note: This method consumes indicators which are custom fields (i.e.: will be removed from
+   * jsonIndicators).
+   *
+   * @param formulas
    * @param jsonIndicators
    * @return
    */
@@ -60,29 +62,29 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
     HashMap<String, Map<String, Object>> attrValueMap = new HashMap<>();
     // Keys to remove from map, because we don't need them afterward
     List<String> keysToRemove = new ArrayList<>();
-    jsonIndicators.entrySet().stream()
-        .map(Entry::getKey)
-        .filter(fullName -> fullName.contains("$"))
-        .forEach(
-            fullName -> {
-              formulas.forEach(
-                  formula -> {
-                    String[] nameFieldInfo = fullName.split("[\\$_]");
-                    String attrName = nameFieldInfo[0];
-                    String fieldName = nameFieldInfo[1];
-                    if (formula.getMetaJsonField() != null
-                        && attrName.equals(formula.getMetaField().getName())
-                        && fieldName.equals(formula.getMetaJsonField().getName())) {
-                      putFieldValueInMap(
-                          fieldName,
-                          jsonIndicators.get(fullName),
-                          attrName,
-                          formula.getMetaJsonField(),
-                          attrValueMap);
-                      keysToRemove.add(fullName);
-                    }
-                  });
-            });
+
+    for (Entry<String, Object> entry : jsonIndicators.entrySet()) {
+      String fullName = entry.getKey();
+      if (!fullName.contains("$")) {
+        continue;
+      }
+
+      Object value = entry.getValue();
+      String[] nameFieldInfo = fullName.split("[\\$_]");
+      String attrName = nameFieldInfo[0];
+      String fieldName = nameFieldInfo[1];
+
+      formulas.forEach(
+          formula -> {
+            MetaJsonField metaJsonField = formula.getMetaJsonField();
+            if (metaJsonField != null
+                && attrName.equals(formula.getMetaField().getName())
+                && fieldName.equals(metaJsonField.getName())) {
+              putFieldValueInMap(fieldName, value, attrName, metaJsonField, attrValueMap);
+              keysToRemove.add(fullName);
+            }
+          });
+    }
 
     jsonIndicators.entrySet().removeIf(entry -> keysToRemove.contains(entry.getKey()));
     return attrValueMap;
