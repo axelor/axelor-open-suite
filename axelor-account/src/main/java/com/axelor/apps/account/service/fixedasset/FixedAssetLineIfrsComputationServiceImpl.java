@@ -47,10 +47,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsIfrsEqualToFiscalDepreciation()
-        && fixedAsset
-            .getIfrsComputationMethodSelect()
-            .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
+    if (!fixedAsset.getIsIfrsEqualToFiscalDepreciation()) {
       return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
     }
 

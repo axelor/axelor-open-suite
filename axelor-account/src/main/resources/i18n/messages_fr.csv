@@ -2396,6 +2396,7 @@
 "Please be aware that the selected %s offers financial discounts but the system does not support at the moment financial discount on invoices/refunds in a currency different from the company currency.","Veuillez noter que le %s selectionné propose des escomptes mais le système ne supporte pas pour le moment des escomptes sur factures/avoirs dans une devise différente de la devise comptable de la société.",,
 "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management","Veuillez renseigner les dates d'application de la période de Cut off sur les lignes de facture ayant un compte comptable gérant le Cut off.",,
 "Please enter a Cut off start and end date for the move lines that have an account Cut off management","Veuillez renseigner les dates d'application de la période de Cut off sur les lignes d'écritures ayant un compte comptable gérant le Cut off.",,
+"Please enter a gross value greater than the residual value in terms of absolute value","Veuillez sélectionner une valeur brute ayant une valeur absolue supérieure à celle de la valeur résiduelle",,
 "Please enter valid start date and end date","Veuillez sélectionner des dates de début et date de fin valides.",,
 "Please fill analytic accounts in all analytic distribution lines.","Veuillez sélectionner des comptes analytiques pour chaque ligne analytique.",,
 "Please fill in the company bank details.","Merci de renseigner le rib de la société.",,
