@@ -149,7 +149,8 @@
   </grid>
 
   <grid name="invoice-term-move-line-invoice-grid" title="Invoice terms"
-    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="sequence" canDelete="false">
+    model="com.axelor.apps.account.db.InvoiceTerm" orderBy="sequence" canDelete="false"
+    canNew="false">
     <field name="sequence"/>
     <field name="name"/>
     <field name="dueDate"/>
