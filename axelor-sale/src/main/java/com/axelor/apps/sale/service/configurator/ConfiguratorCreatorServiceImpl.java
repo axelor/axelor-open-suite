@@ -584,12 +584,13 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     configuratorFormula.setShowOnConfigurator(true);
     configuratorFormula.setFormula("");
 
-    Long modelId =
-        JPA.all(MetaModel.class).filter("self.name = ?", metaFieldType).fetchOne().getId();
-    MetaField metaField =
-        JPA.all(MetaField.class)
-            .filter("self.name = ? AND self.metaModel.id = ?", name, modelId)
+    MetaModel model =
+        JPA.all(MetaModel.class)
+            .filter("self.name = :metaFieldType")
+            .bind("metaFieldType", metaFieldType)
             .fetchOne();
+    MetaField metaField = metaFieldRepository.findByModel(name, model);
+
     configuratorFormula.setMetaField(metaField);
   }
 
