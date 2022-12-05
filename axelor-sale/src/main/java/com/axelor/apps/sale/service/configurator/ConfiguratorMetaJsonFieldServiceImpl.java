@@ -61,7 +61,7 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
     // Keys to remove from map, because we don't need them afterward
     List<String> keysToRemove = new ArrayList<>();
     jsonIndicators.entrySet().stream()
-        .map(entry -> entry.getKey())
+        .map(Entry::getKey)
         .filter(fullName -> fullName.contains("$"))
         .forEach(
             fullName -> {
