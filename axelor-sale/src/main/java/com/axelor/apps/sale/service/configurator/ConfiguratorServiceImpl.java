@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
+import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -151,7 +153,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected Boolean isOneToManyNotAttr(
       List<ConfiguratorFormula> formulas, MetaJsonField metaJsonField) {
 
-    return "one-to-many".equals(metaJsonField.getType()) && !metaJsonField.getName().contains("$");
+    return ONE_TO_MANY.equals(metaJsonField.getType()) && !metaJsonField.getName().contains("$");
   }
 
   @Override

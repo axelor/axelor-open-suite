@@ -17,6 +17,24 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
+import static com.axelor.apps.tool.MetaJsonFieldType.BOOLEAN;
+import static com.axelor.apps.tool.MetaJsonFieldType.BUTTON;
+import static com.axelor.apps.tool.MetaJsonFieldType.DATE;
+import static com.axelor.apps.tool.MetaJsonFieldType.DATETIME;
+import static com.axelor.apps.tool.MetaJsonFieldType.DECIMAL;
+import static com.axelor.apps.tool.MetaJsonFieldType.ENUM;
+import static com.axelor.apps.tool.MetaJsonFieldType.INTEGER;
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_ONE;
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_ONE_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_ONE;
+import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.PANEL;
+import static com.axelor.apps.tool.MetaJsonFieldType.SEPARATOR;
+import static com.axelor.apps.tool.MetaJsonFieldType.STRING;
+import static com.axelor.apps.tool.MetaJsonFieldType.TIME;
+
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
@@ -174,41 +192,33 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    */
   protected Object getAttributesDefaultValue(MetaJsonField attribute) {
     switch (attribute.getType()) {
-      case "string":
+      case STRING:
         return "a";
-      case "integer":
+      case INTEGER:
         return 1;
-      case "decimal":
+      case DECIMAL:
         return BigDecimal.ONE;
-      case "boolean":
+      case BOOLEAN:
         return true;
-      case "datetime":
+      case DATETIME:
         return appBaseService.getTodayDateTime(
             Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
-      case "date":
+      case DATE:
         return appBaseService.getTodayDate(
             Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
-      case "time":
+      case TIME:
         return LocalTime.now();
-      case "panel":
-        return null;
-      case "enum":
-        return null;
-      case "button":
-        return null;
-      case "separator":
-        return null;
-      case "many-to-one":
-        return getAttributeRelationalField(attribute, "many-to-one");
-      case "many-to-many":
-        return getAttributeRelationalField(attribute, "many-to-many");
-      case "one-to-many":
-        return getAttributeRelationalField(attribute, "one-to-many");
-      case "json-many-to-one":
-        return null;
-      case "json-many-to-many":
-        return null;
-      case "json-one-to-many":
+      case MANY_TO_ONE:
+      case MANY_TO_MANY:
+      case ONE_TO_MANY:
+        return getAttributeRelationalField(attribute, attribute.getType());
+      case JSON_MANY_TO_ONE:
+      case JSON_MANY_TO_MANY:
+      case JSON_ONE_TO_MANY:
+      case PANEL:
+      case ENUM:
+      case BUTTON:
+      case SEPARATOR:
         return null;
       default:
         return null;
@@ -225,11 +235,11 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   protected Object getAttributeRelationalField(MetaJsonField attribute, String relation) {
     try {
       Class targetClass = Class.forName(attribute.getTargetModel());
-      if (relation.equals("many-to-one")) {
+      if (relation.equals(MANY_TO_ONE)) {
         return JPA.all(targetClass).fetchOne();
-      } else if (relation.equals("one-to-many")) {
+      } else if (relation.equals(ONE_TO_MANY)) {
         return JPA.all(targetClass).fetch(1);
-      } else if (relation.equals("many-to-many")) {
+      } else if (relation.equals(MANY_TO_MANY)) {
         return new HashSet(JPA.all(targetClass).fetch(1));
       } else {
         return null;
