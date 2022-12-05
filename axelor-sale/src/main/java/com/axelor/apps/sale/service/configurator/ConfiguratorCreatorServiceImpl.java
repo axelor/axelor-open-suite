@@ -430,11 +430,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    */
   protected void completeSelection(MetaField metaField, MetaJsonField newField) {
     try {
+      MetaModel metaModel = metaField.getMetaModel();
       Field correspondingField =
-          Class.forName(
-                  metaField.getMetaModel().getPackageName()
-                      + "."
-                      + metaField.getMetaModel().getName())
+          Class.forName(metaModel.getPackageName() + "." + metaModel.getName())
               .getDeclaredField(metaField.getName());
       Widget widget = correspondingField.getAnnotation(Widget.class);
       if (widget == null) {
@@ -493,12 +491,13 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       if (!metaField.getName().equals(fieldName)) {
         return;
       }
-      if (metaField.getTypeName().equals("BigDecimal")) {
+
+      String metaFieldTypeName = metaField.getTypeName();
+      if (metaFieldTypeName.equals("BigDecimal")) {
         indicator.setPrecision(20);
         indicator.setScale(scale);
       } else if (!Strings.isNullOrEmpty(metaField.getRelationship())) {
-        indicator.setTargetModel(
-            metaModelRepository.findByName(metaField.getTypeName()).getFullName());
+        indicator.setTargetModel(metaModelRepository.findByName(metaFieldTypeName).getFullName());
       }
     }
 
