@@ -373,8 +373,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         JPA.em()
             .createQuery(
                 "UPDATE MoveLine self SET self.amountRemaining = GREATEST(self.credit, self.debit) "
-                    + "WHERE self.accountId = :accountId"
-                    + (startDate == null ? "" : " AND self.move.date >= :startDate"));
+                    + "WHERE self.id IN (SELECT self.id FROM MoveLine self WHERE self.accountId = :accountId"
+                    + (startDate == null ? ")" : " AND self.move.date >= :startDate)"));
     update.setParameter("accountId", accountId);
 
     if (startDate != null) {

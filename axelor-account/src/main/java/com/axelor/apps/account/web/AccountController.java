@@ -274,6 +274,7 @@ public class AccountController {
       Context context = request.getContext();
 
       Beans.get(MoveLineToolService.class).setAmountRemainingReconciliableMoveLines(context);
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
