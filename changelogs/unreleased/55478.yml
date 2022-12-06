@@ -1,0 +1,3 @@
+---
+title : "Mass invoicing: Fixed a bug where some stock moves could not be invoiced when the invoice was created from a merge."
+type: fix

@@ -110,4 +110,7 @@ public interface InvoiceLineService {
 
   void applyCutOffDates(
       InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+
+  Map<String, String> getProductDescriptionAndNameTranslation(
+      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException;
 }
