@@ -142,8 +142,8 @@
       showIf="typeSelect == 5 || ruleTypeSelect == 2"
       onSelect="action-accounting-report-config-line-attrs-account-set-domain"/>
     <panel-related name="accountingReportConfigLineAnalyticAccountSetPanel"
-      field="analyticAccountSet" colSpan="12" form-view="account-form" grid-view="account-grid"
-      showIf="typeSelect == 5 || ruleTypeSelect == 2"/>
+      field="analyticAccountSet" colSpan="12" showIf="typeSelect == 5 || ruleTypeSelect == 2"
+      form-view="analytic-account-form" grid-view="analytic-account-grid"/>
 
   </form>
 
