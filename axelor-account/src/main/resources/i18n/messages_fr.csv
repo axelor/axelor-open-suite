@@ -2120,7 +2120,7 @@
 "No Accounting Situation related to %s.","Aucun fournisseur à déléguer",,
 "No Lines selected","Aucune ligne sélectionnée",,
 "No PFP","Aucun BAP",,
-"No account found for Tax: %s (company: %s)","Aucun compte trouvé pour la taxe",,
+"No account found for Tax: %s (company: %s)","Aucun compte trouvé pour la taxe: %s (société: %s)",,
 "No comparison","Aucune comparaison",,
 "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line.","Aucune période de Cut off n'a pu être appliquée. Veuillez vérifier que vous avez saisi des lignes et que le paramétrage du Cut off est bien activé sur le compte comptable associé à chaque ligne.",,
 "No email address in debt recovery %s. Please set one.","La méthode de recouvrement %s n'a pas d'adresse email à qui envoyer le message. Veuillez en configurer une.",,
