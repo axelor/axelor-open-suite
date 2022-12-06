@@ -36,7 +36,6 @@
     <domain><![CDATA[
       self.defineSubBillOfMaterial = true
       AND self.personalized = false
-      AND self.typeSelect != 3
     ]]></domain>
   </action-view>
 

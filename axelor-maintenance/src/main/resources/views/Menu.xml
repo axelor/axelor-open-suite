@@ -135,4 +135,17 @@
     <domain>self.typeSelect = 1</domain>
   </action-view>
 
+  <action-view id="maintenance.manufacturing.root.general.bill.of.material"
+    name="manufacturing.root.general.bill.of.material" title="General BoM"
+    model="com.axelor.apps.production.db.BillOfMaterial">
+    <view type="grid" name="bill-of-material-grid"/>
+    <view type="form" name="bill-of-material-form"/>
+    <view-param name="search-filters" value="bill-of-material-filters"/>
+    <domain><![CDATA[
+      self.defineSubBillOfMaterial = true
+      AND self.personalized = false
+      AND self.typeSelect != 3
+    ]]></domain>
+  </action-view>
+
 </object-views>
