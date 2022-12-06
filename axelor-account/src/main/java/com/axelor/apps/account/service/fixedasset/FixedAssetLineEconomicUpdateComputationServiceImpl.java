@@ -239,7 +239,8 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     firstPlannedFixedAssetLine.setImpairmentValue(
         firstPlannedFixedAssetLine
             .getAccountingValue()
-            .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue()));
+            .abs()
+            .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue().abs()));
     Optional<FixedAssetLine> previousLastRealizedFAL =
         fixedAssetLineService.findNewestFixedAssetLine(
             fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
