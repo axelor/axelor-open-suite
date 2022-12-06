@@ -1,0 +1,3 @@
+---
+title: "Invoice : fix an error occurring when total A.T.I was equal to zero"
+type: fix
