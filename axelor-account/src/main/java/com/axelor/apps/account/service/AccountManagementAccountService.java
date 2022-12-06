@@ -92,4 +92,6 @@ public interface AccountManagementAccountService extends AccountManagementServic
       boolean isFixedAssets,
       boolean isFinancialDiscount)
       throws AxelorException;
+
+  public String getCompanyDomain(AccountManagement accountManagement, Tax tax);
 }

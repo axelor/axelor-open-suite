@@ -36,12 +36,14 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -417,5 +419,22 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       return account;
     }
     return null;
+  }
+
+  @Override
+  public String getCompanyDomain(AccountManagement accountManagement, Tax tax) {
+    String idListStr =
+        tax.getAccountManagementList().stream()
+            .filter(am -> !accountManagement.equals(am))
+            .map(am -> am.getCompany().getId().toString())
+            .collect(Collectors.joining(","));
+    StringBuilder domain = new StringBuilder("self.id NOT IN (");
+    if (StringUtils.notEmpty(idListStr)) {
+      domain.append(idListStr);
+    } else {
+      domain.append("0");
+    }
+    domain.append(")");
+    return domain.toString();
   }
 }
