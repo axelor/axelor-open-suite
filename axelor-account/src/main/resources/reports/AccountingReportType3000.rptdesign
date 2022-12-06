@@ -36,6 +36,18 @@
             <property name="id">8</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">5994</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">5994</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">5994</property>
+        </structure>
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -1091,10 +1103,10 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                     <text-property name="heading">accountName</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">analyticLevel</property>
+                    <property name="columnName">analyticOrder</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">analyticLevel</text-property>
-                    <text-property name="heading">analyticLevel</text-property>
+                    <text-property name="displayName">analyticOrder</text-property>
+                    <text-property name="heading">analyticOrder</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -1123,7 +1135,7 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">analyticLevel</property>
+                        <property name="name">analyticOrder</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1146,8 +1158,8 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">analyticLevel</property>
-                    <property name="nativeName">analyticLevel</property>
+                    <property name="name">analyticOrder</property>
+                    <property name="nativeName">analyticOrder</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
@@ -1155,15 +1167,12 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
             <xml-property name="queryText"><![CDATA[SELECT
 	DISTINCT(AnalyticAccount.id) AS "id",
 	AnalyticAccount.name AS "accountName",
-	AnalyticLevel.nbr AS "analyticLevel"
+	ReportValue.analytic_order AS "analyticOrder"
 	
 FROM account_accounting_report_value AS ReportValue
 
 LEFT JOIN account_analytic_account AS AnalyticAccount
 ON ReportValue.analytic_account = AnalyticAccount.id
-
-LEFT JOIN account_analytic_level AS AnalyticLevel
-ON AnalyticAccount.analytic_level = AnalyticLevel.id
 
 WHERE ReportValue.accounting_report = ?;]]></xml-property>
         </oda-data-set>
@@ -2329,10 +2338,17 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">analyticLevel</property>
-                                <text-property name="displayName">analyticLevel</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["analyticLevel"]</expression>
+                                <property name="name">analyticOrder</property>
+                                <text-property name="displayName">analyticOrder</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["analyticOrder"]</expression>
                                 <property name="dataType">integer</property>
+                            </structure>
+                        </list-property>
+                        <list-property name="sort">
+                            <structure>
+                                <expression name="key" type="javascript">row["analyticOrder"]</expression>
+                                <property name="direction">asc</property>
+                                <property name="strength">-1</property>
                             </structure>
                         </list-property>
                         <column id="6008"/>

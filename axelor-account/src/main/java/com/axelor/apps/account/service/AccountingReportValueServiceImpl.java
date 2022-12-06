@@ -8,7 +8,6 @@ import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticLevel;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportAnalyticConfigLineRepository;
@@ -63,6 +62,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   protected AccountRepository accountRepo;
 
   protected int lineOffset = 0;
+  protected int analyticCounter;
 
   @Inject
   public AccountingReportValueServiceImpl(
@@ -90,15 +90,17 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     Set<AnalyticAccount> configAnalyticAccountSet =
         this.getConfigAnalyticAccountSet(
             accountingReport.getAccountingReportAnalyticConfigLineList());
-    Set<AnalyticAccount> minLevelAnalyticAccountSet =
-        this.getMinLevelAnalyticAccountSet(configAnalyticAccountSet);
 
-    if (CollectionUtils.isEmpty(minLevelAnalyticAccountSet)) {
+    if (CollectionUtils.isEmpty(configAnalyticAccountSet)) {
       this.computeReportValues(accountingReport, null);
     } else {
-      for (AnalyticAccount configAnalyticAccount : minLevelAnalyticAccountSet) {
-        this.computeReportValuesRecursive(
-            accountingReport, configAnalyticAccountSet, configAnalyticAccount);
+      Set<AnalyticAccount> sortedConfigAnalyticAccountSet = new HashSet<>();
+      this.sortAnalyticAccountSetRecursive(
+          configAnalyticAccountSet, sortedConfigAnalyticAccountSet, null);
+
+      for (AnalyticAccount configAnalyticAccount : sortedConfigAnalyticAccountSet) {
+        this.computeReportValues(accountingReport, configAnalyticAccount);
+        analyticCounter++;
       }
     }
   }
@@ -136,37 +138,23 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         analyticAccountRepo.all().filter("self.code LIKE :code").bind("code", code).fetch());
   }
 
-  protected Set<AnalyticAccount> getMinLevelAnalyticAccountSet(
-      Set<AnalyticAccount> analyticAccountSet) {
-    if (CollectionUtils.isEmpty(analyticAccountSet)) {
-      return new HashSet<>();
+  protected void sortAnalyticAccountSetRecursive(
+      Set<AnalyticAccount> analyticAccountSet,
+      Set<AnalyticAccount> sortedAnalyticAccountSet,
+      AnalyticAccount parentAnalyticAccount) {
+    Set<AnalyticAccount> currentLevelAnalyticAccountSet =
+        analyticAccountSet.stream()
+            .filter(it -> it.getParent() == parentAnalyticAccount)
+            .collect(Collectors.toSet());
+
+    if (CollectionUtils.isEmpty(currentLevelAnalyticAccountSet)) {
+      return;
     }
 
-    int minLevel =
-        analyticAccountSet.stream()
-            .filter(Objects::nonNull)
-            .map(AnalyticAccount::getAnalyticLevel)
-            .map(AnalyticLevel::getNbr)
-            .min(Integer::compareTo)
-            .orElse(-1);
-
-    return analyticAccountSet.stream()
-        .filter(it -> it.getAnalyticLevel().getNbr() == minLevel)
-        .collect(Collectors.toSet());
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void computeReportValuesRecursive(
-      AccountingReport accountingReport,
-      Set<AnalyticAccount> configAnalyticAccountSet,
-      AnalyticAccount configAnalyticAccount)
-      throws AxelorException {
-    this.computeReportValues(accountingReport, configAnalyticAccount);
-
-    if (configAnalyticAccount.getParent() != null
-        && configAnalyticAccountSet.contains(configAnalyticAccount.getParent())) {
-      this.computeReportValuesRecursive(
-          accountingReport, configAnalyticAccountSet, configAnalyticAccount.getParent());
+    for (AnalyticAccount currentLevelAnalyticAccount : currentLevelAnalyticAccountSet) {
+      sortedAnalyticAccountSet.add(currentLevelAnalyticAccount);
+      this.sortAnalyticAccountSetRecursive(
+          analyticAccountSet, sortedAnalyticAccountSet, currentLevelAnalyticAccount);
     }
   }
 
@@ -908,8 +896,6 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       String parentTitle,
       String lineTitle,
       String lineCode) {
-    analyticAccountSet.add(configAnalyticAccount);
-
     List<MoveLine> moveLineList =
         this.getMoveLineQuery(
                 accountingReport,
@@ -918,7 +904,9 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
                 line,
                 accountSet,
                 accountTypeSet,
-                analyticAccountSet,
+                this.mergeSets(
+                    analyticAccountSet,
+                    new HashSet<>(Collections.singletonList(configAnalyticAccount))),
                 startDate,
                 endDate)
             .fetch();
@@ -1348,6 +1336,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         new AccountingReportValue(
             columnNumber,
             lineNumber + lineOffset,
+            analyticCounter,
             result,
             lineTitle,
             parentTitle,
