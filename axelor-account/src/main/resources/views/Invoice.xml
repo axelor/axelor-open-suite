@@ -682,11 +682,11 @@ InvoiceSet.length > 0))"
       <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
         onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
       <button name="addPaymentBtn" title="Register payment"
-        showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInRefund || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; pfpValidateStatusSelect == 2))"
+        showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInRefund || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; (!$activatePassedForPayment || pfpValidateStatusSelect == 2)))"
         colSpan="12" onClick="action-invoice-group-add-invoice-payment"
         if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
       <button name="addPaymentBtn" title="Register payment"
-        showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInRefund || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; pfpValidateStatusSelect == 2))"
+        showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInRefund || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; (!$activatePassedForPayment || pfpValidateStatusSelect == 2)))"
         colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"
         if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
       <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
@@ -699,6 +699,7 @@ InvoiceSet.length > 0))"
         onSelect="action-invoice-method-domain-pfp-validator-user-on-select"
         onChange="action-invoice-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user"
         canEdit="false"/>
+      <field name="$activatePassedForPayment" type="boolean" hidden="true"/>
       <panel name="pfpEmailPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
         <field name="decisionPfpTakenDate" hidden="true"
@@ -1187,7 +1188,8 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-change-create-refund-title"/>
     <action name="action-invoice-record-printing-fields"
       if="__config__.app.isApp('business-project')"/>
-    <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
+    <action
+      name="action-invoice-record-load-dummy-field-payment-voucher-passed-for-payment-on-invoice"/>
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-attrs-selection-in-operation-type-select"/>
   </action-group>
@@ -1201,7 +1203,8 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-show-validate-button"/>
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-attrs-change-create-refund-title"/>
-    <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
+    <action
+      name="action-invoice-record-load-dummy-field-payment-voucher-passed-for-payment-on-invoice"/>
     <action name="action-account-invoice-method-show-duplicate-invoice-nbr-warning"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"
@@ -1354,10 +1357,12 @@ InvoiceSet.length > 0))"
   </action-record>
 
   <action-record
-    name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"
+    name="action-invoice-record-load-dummy-field-payment-voucher-passed-for-payment-on-invoice"
     model="com.axelor.apps.account.db.Invoice">
     <field name="$paymentVouchersOnInvoice"
       expr="eval: __config__.app.getApp('account').paymentVouchersOnInvoice"/>
+    <field name="$activatePassedForPayment"
+      expr="eval: __config__.app.getApp('account').activatePassedForPayment"/>
   </action-record>
 
   <action-record name="action-invoice-record-partner-change"
