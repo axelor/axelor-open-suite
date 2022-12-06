@@ -774,7 +774,7 @@
 
   <action-group name="action-invoice-term-group-onload">
     <action name="action-invoice-term-group-check-pfp-validator-user"/>
-    <action name="action-invoice-term-attrs-is-multi-currency"/>
+    <action name="action-invoice-term-method-is-multi-currency"/>
     <action name="action-invoice-term-record-set-show-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
@@ -965,6 +965,10 @@
     <call class="com.axelor.apps.account.web.InvoiceTermController" method="setPfpStatus"/>
   </action-method>
 
+  <action-method name="action-invoice-term-method-is-multi-currency">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="isMultiCurrency"/>
+  </action-method>
+
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="form" name="invoice-term-refusal-to-pay-wizard-form"/>
@@ -1030,22 +1034,5 @@
     <attribute name="hidden" for="actionPanel"
       expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(moveLine?.move?.statusSelect)"
       if="invoice == null &amp;&amp; moveLine != null"/>
-  </action-attrs>
-
-  <action-attrs name="action-invoice-term-attrs-is-multi-currency">
-    <attribute name="value" for="$isMultiCurrency"
-      expr="call: com.axelor.apps.account.service.invoice.InvoiceTermService:isMultiCurrency(__this__)"/>
-    <attribute name="title" for="amount"
-      expr="eval: com.axelor.i18n.I18n.get('Amount in currency')"
-      if="invoice != null &amp;&amp; invoice.currency?.code != invoice.company?.currency?.code"/>
-    <attribute name="title" for="amountRemaining"
-      expr="eval: com.axelor.i18n.I18n.get('Amount remaining in currency')"
-      if="invoice != null &amp;&amp; invoice.currency?.code != invoice.company?.currency?.code"/>
-    <attribute name="title" for="amount"
-      expr="eval: com.axelor.i18n.I18n.get('Amount in currency')"
-      if="invoice == null &amp;&amp; moveLine.move?.currency?.code != moveLine.move?.company?.currency?.code"/>
-    <attribute name="title" for="amountRemaining"
-      expr="eval: com.axelor.i18n.I18n.get('Amount remaining in currency')"
-      if="invoice == null &amp;&amp; moveLine.move?.currency?.code != moveLine.move?.company?.currency?.code"/>
   </action-attrs>
 </object-views>
