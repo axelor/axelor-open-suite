@@ -1260,6 +1260,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected boolean isUnevenRounding(InvoiceTerm invoiceTerm, BigDecimal total) {
+    if (total.compareTo(BigDecimal.ZERO) == 0) {
+      return false;
+    }
+
     BigDecimal percentageUp =
         invoiceTerm
             .getAmount()
