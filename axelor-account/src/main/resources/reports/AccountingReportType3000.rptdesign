@@ -48,7 +48,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/sigma</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -62,6 +62,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">lmdpdlaa</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -120,8 +123,11 @@
         <scalar-parameter name="AccountingReportId" id="5370">
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">string</property>
+            <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -1061,7 +1067,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ConfigLine.hidden AS "lineHidden",
 	ConfigLine.not_computed_if_intersect AS "lineNotCompute",
 	ConfigLine.rule_type_select AS "lineRuleType",
-	ReportValue.min_level_analytic_account AS "analyticAccount"
+	ReportValue.analytic_account AS "analyticAccount"
 
 FROM account_accounting_report AS AccountingReport
 
@@ -1162,7 +1168,7 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
 FROM account_accounting_report_value AS ReportValue
 
 LEFT JOIN account_analytic_account AS AnalyticAccount
-ON ReportValue.min_level_analytic_account = AnalyticAccount.id
+ON ReportValue.analytic_account = AnalyticAccount.id
 
 LEFT JOIN account_analytic_level AS AnalyticLevel
 ON AnalyticAccount.analytic_level = AnalyticLevel.id
@@ -1268,6 +1274,19 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                         </tabular-hierarchy>
                     </property>
                 </tabular-dimension>
+                <tabular-dimension name="AnalyticAccount" id="6028">
+                    <property name="defaultHierarchy">NewTabularHierarchy4</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy4" id="6029">
+                            <property name="levels">
+                                <tabular-level name="analyticAccount" id="6030">
+                                    <property name="dataType">decimal</property>
+                                    <property name="columnName">analyticAccount</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
             </property>
             <property name="measureGroups">
                 <tabular-measure-group name="Summary Field" id="5794">
@@ -1295,13 +1314,6 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                         <tabular-measure name="previousYear" id="5975">
                             <expression name="measureExpression" type="javascript">dataSetRow["previousYear"]</expression>
                             <property name="dataType">integer</property>
-                        </tabular-measure>
-                        <tabular-measure name="analyticAccount" id="6009">
-                            <property name="function">sum</property>
-                            <property name="isCalculated">false</property>
-                            <expression name="measureExpression" type="javascript">dataSetRow["analyticAccount"]</expression>
-                            <property name="dataType">float</property>
-                            <property name="isVisible">true</property>
                         </tabular-measure>
                     </property>
                 </tabular-measure-group>
@@ -2316,6 +2328,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                 <text-property name="displayName">id</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["id"]</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">accountName</property>
@@ -2371,6 +2384,19 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                         <property name="rows">
                                             <extended-item extensionName="CrosstabView" id="5840">
                                                 <property name="views">
+                                                    <extended-item extensionName="DimensionView" id="6046">
+                                                        <property name="dimension">AnalyticAccount</property>
+                                                        <property name="levels">
+                                                            <extended-item extensionName="LevelView" name="NewLevel View4" id="6047">
+                                                                <property name="level">AnalyticAccount/analyticAccount</property>
+                                                                <property name="member">
+                                                                    <extended-item extensionName="CrosstabCell" id="6048">
+                                                                        <property name="width">0in</property>
+                                                                    </extended-item>
+                                                                </property>
+                                                            </extended-item>
+                                                        </property>
+                                                    </extended-item>
                                                     <extended-item extensionName="DimensionView" id="5841">
                                                         <property name="dimension">Line</property>
                                                         <property name="levels">
@@ -2482,13 +2508,23 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                             </extended-item>
                                         </property>
                                         <property name="header">
+                                            <extended-item extensionName="CrosstabCell" id="6052"/>
                                             <extended-item extensionName="CrosstabCell" id="5991"/>
+                                            <extended-item extensionName="CrosstabCell" id="6051"/>
                                             <extended-item extensionName="CrosstabCell" id="5982"/>
+                                            <extended-item extensionName="CrosstabCell" id="6050"/>
                                             <extended-item extensionName="CrosstabCell" id="5856">
                                                 <property name="content">
                                                     <data id="6001">
-                                                        <property name="resultSetColumn">accountName</property>
+                                                        <property name="resultSetColumn">Column Binding</property>
                                                     </data>
+                                                </property>
+                                            </extended-item>
+                                            <extended-item extensionName="CrosstabCell" id="6049">
+                                                <property name="content">
+                                                    <label id="6054">
+                                                        <text-property name="text">analyticAccount</text-property>
+                                                    </label>
                                                 </property>
                                             </extended-item>
                                             <extended-item extensionName="CrosstabCell" id="5839"/>
@@ -2560,8 +2596,13 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                             </structure>
                                             <structure>
                                                 <property name="name">analyticAccount</property>
-                                                <expression name="expression" type="javascript">measure["analyticAccount"]</expression>
+                                                <expression name="expression" type="javascript">dimension["AnalyticAccount"]["analyticAccount"]</expression>
                                                 <property name="dataType">decimal</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">Column Binding</property>
+                                                <expression name="expression" type="javascript">row._outer["accountName"]</expression>
+                                                <property name="dataType">string</property>
                                             </structure>
                                         </list-property>
                                     </extended-item>

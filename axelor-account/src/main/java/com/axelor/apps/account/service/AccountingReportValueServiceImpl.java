@@ -53,7 +53,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportValueServiceImpl implements AccountingReportValueService {
@@ -92,14 +91,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         this.getConfigAnalyticAccountSet(
             accountingReport.getAccountingReportAnalyticConfigLineList());
     Set<AnalyticAccount> minLevelAnalyticAccountSet =
-        this.getMinLevelAnalyticAccountStream(configAnalyticAccountSet).collect(Collectors.toSet());
+        this.getMinLevelAnalyticAccountSet(configAnalyticAccountSet);
 
     if (CollectionUtils.isEmpty(minLevelAnalyticAccountSet)) {
       this.computeReportValues(accountingReport, null);
     } else {
       for (AnalyticAccount configAnalyticAccount : minLevelAnalyticAccountSet) {
         this.computeReportValuesRecursive(
-            accountingReport, configAnalyticAccountSet, new HashSet<>(), configAnalyticAccount);
+            accountingReport, configAnalyticAccountSet, configAnalyticAccount);
       }
     }
   }
@@ -137,10 +136,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         analyticAccountRepo.all().filter("self.code LIKE :code").bind("code", code).fetch());
   }
 
-  protected Stream<AnalyticAccount> getMinLevelAnalyticAccountStream(
+  protected Set<AnalyticAccount> getMinLevelAnalyticAccountSet(
       Set<AnalyticAccount> analyticAccountSet) {
     if (CollectionUtils.isEmpty(analyticAccountSet)) {
-      return new HashSet<AnalyticAccount>().stream();
+      return new HashSet<>();
     }
 
     int minLevel =
@@ -151,36 +150,34 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             .min(Integer::compareTo)
             .orElse(-1);
 
-    return analyticAccountSet.stream().filter(it -> it.getAnalyticLevel().getNbr() == minLevel);
+    return analyticAccountSet.stream()
+        .filter(it -> it.getAnalyticLevel().getNbr() == minLevel)
+        .collect(Collectors.toSet());
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void computeReportValuesRecursive(
       AccountingReport accountingReport,
       Set<AnalyticAccount> configAnalyticAccountSet,
-      Set<AnalyticAccount> configAnalyticAccountRecursiveSet,
-      AnalyticAccount analyticAccount)
+      AnalyticAccount configAnalyticAccount)
       throws AxelorException {
-    configAnalyticAccountRecursiveSet.add(analyticAccount);
-    this.computeReportValues(accountingReport, configAnalyticAccountRecursiveSet);
+    this.computeReportValues(accountingReport, configAnalyticAccount);
 
-    if (configAnalyticAccountSet.contains(analyticAccount.getParent())) {
+    if (configAnalyticAccount.getParent() != null
+        && configAnalyticAccountSet.contains(configAnalyticAccount.getParent())) {
       this.computeReportValuesRecursive(
-          accountingReport,
-          configAnalyticAccountSet,
-          configAnalyticAccountRecursiveSet,
-          analyticAccount.getParent());
+          accountingReport, configAnalyticAccountSet, configAnalyticAccount.getParent());
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void computeReportValues(
-      AccountingReport accountingReport, Set<AnalyticAccount> configAnalyticAccountSet)
+      AccountingReport accountingReport, AnalyticAccount configAnalyticAccount)
       throws AxelorException {
     LocalDate startDate = accountingReport.getDateFrom();
     LocalDate endDate = accountingReport.getDateTo();
 
-    this.computeReportValues(accountingReport, configAnalyticAccountSet, startDate, endDate);
+    this.computeReportValues(accountingReport, configAnalyticAccount, startDate, endDate);
 
     AccountingReportType reportType = accountingReport.getReportType();
 
@@ -189,7 +186,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         for (int i = 1; i < accountingReport.getReportType().getNoOfPeriods() + 1; i++) {
           this.computeReportValues(
               accountingReport,
-              configAnalyticAccountSet,
+              configAnalyticAccount,
               startDate.minusYears(i).with(TemporalAdjusters.firstDayOfYear()),
               endDate.minusYears(i).with(TemporalAdjusters.lastDayOfYear()));
         }
@@ -198,7 +195,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         for (int i = 1; i < accountingReport.getReportType().getNoOfPeriods() + 1; i++) {
           this.computeReportValues(
               accountingReport,
-              configAnalyticAccountSet,
+              configAnalyticAccount,
               startDate.minusYears(i),
               endDate.minusYears(i));
         }
@@ -206,7 +203,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       case AccountingReportTypeRepository.COMPARISON_OTHER_PERIOD:
         this.computeReportValues(
             accountingReport,
-            configAnalyticAccountSet,
+            configAnalyticAccount,
             accountingReport.getOtherDateFrom(),
             accountingReport.getOtherDateTo());
     }
@@ -215,7 +212,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   @Transactional(rollbackOn = {Exception.class})
   protected void computeReportValues(
       AccountingReport accountingReport,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate)
       throws AxelorException {
@@ -234,7 +231,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
               accountingReport,
               valuesMapByColumn,
               valuesMapByLine,
-              configAnalyticAccountSet,
+              configAnalyticAccount,
               startDate,
               endDate);
 
@@ -285,7 +282,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReport accountingReport,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate)
       throws AxelorException {
@@ -330,7 +327,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             columnList,
             lineList,
             accountSet,
-            configAnalyticAccountSet,
+            configAnalyticAccount,
             account.getLabel(),
             startDate,
             endDate);
@@ -349,7 +346,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             columnList,
             lineList,
             accountSet,
-            configAnalyticAccountSet,
+            configAnalyticAccount,
             groupColumn.getLabel(),
             startDate,
             endDate);
@@ -363,7 +360,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           columnList,
           lineList,
           null,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           null,
           startDate,
           endDate);
@@ -392,14 +389,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       List<AccountingReportConfigLine> columnList,
       List<AccountingReportConfigLine> lineList,
       Set<Account> groupAccountSet,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate)
       throws AxelorException {
     for (AccountingReportConfigLine column : columnList) {
       String columnCode =
-          this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccountSet);
+          this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
 
       if (!valuesMapByColumn.containsKey(columnCode)) {
         valuesMapByColumn.put(columnCode, new HashMap<>());
@@ -420,7 +417,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
               valuesMapByColumn,
               valuesMapByLine,
               groupAccountSet,
-              configAnalyticAccountSet,
+              configAnalyticAccount,
               parentTitle,
               startDate,
               endDate);
@@ -438,7 +435,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       Set<Account> groupAccountSet,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate)
@@ -455,7 +452,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           startDate,
           endDate,
           parentTitle);
@@ -474,7 +471,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           null,
           valuesMapByColumn,
           valuesMapByLine,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           line.getCode());
     } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
@@ -492,7 +489,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
               groupColumn,
               valuesMapByColumn,
               valuesMapByLine,
-              configAnalyticAccountSet,
+              configAnalyticAccount,
               startDate,
               endDate,
               parentTitle,
@@ -506,7 +503,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             groupColumn,
             valuesMapByColumn,
             valuesMapByLine,
-            configAnalyticAccountSet,
+            configAnalyticAccount,
             startDate,
             endDate,
             parentTitle);
@@ -520,7 +517,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           startDate,
           endDate,
           parentTitle);
@@ -533,7 +530,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           startDate,
           endDate,
           parentTitle);
@@ -546,7 +543,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           valuesMapByColumn,
           valuesMapByLine,
           groupAccountSet,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           parentTitle,
           startDate,
           endDate);
@@ -561,7 +558,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle) {
@@ -572,7 +569,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         groupColumn,
         valuesMapByColumn,
         valuesMapByLine,
-        configAnalyticAccountSet,
+        configAnalyticAccount,
         startDate,
         endDate,
         parentTitle,
@@ -587,7 +584,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle,
@@ -599,7 +596,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             groupColumn,
             valuesMapByColumn,
             valuesMapByLine,
-            configAnalyticAccountSet,
+            configAnalyticAccount,
             parentTitle);
 
     BigDecimal result =
@@ -610,7 +607,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             valuesMap,
             valuesMapByColumn,
             valuesMapByLine,
-            configAnalyticAccountSet,
+            configAnalyticAccount,
             parentTitle);
 
     String lineTitle = line.getLabel();
@@ -634,7 +631,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         result,
         valuesMapByColumn,
         valuesMapByLine,
-        configAnalyticAccountSet,
+        configAnalyticAccount,
         lineCode);
   }
 
@@ -644,11 +641,11 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       String parentTitle) {
     Map<String, AccountingReportValue> columValues =
         valuesMapByColumn.get(
-            this.getColumnCode(column.getCode(), parentTitle, null, configAnalyticAccountSet));
+            this.getColumnCode(column.getCode(), parentTitle, null, configAnalyticAccount));
     Map<String, AccountingReportValue> lineValues = valuesMapByLine.get(line.getCode());
 
     if (groupColumn != null) {
@@ -676,22 +673,27 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, AccountingReportValue> valuesMap,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       String parentTitle) {
     Map<String, Object> contextMap = new HashMap<>();
+    String rule = this.getRule(column, line, groupColumn);
 
     for (String code : valuesMap.keySet()) {
       if (valuesMap.get(code) != null) {
         if (groupColumn != null
             || (!Strings.isNullOrEmpty(parentTitle)
                 && column.getRuleTypeSelect()
-                    == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
+                    == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)
+            || (configAnalyticAccount != null
+                && (StringUtils.isEmpty(line.getRule()) || !line.getRule().equals(rule)))) {
           String[] tokens = code.split("__");
 
           if (tokens.length > 1) {
             if (groupColumn != null && tokens[0].equals(column.getCode())) {
               contextMap.put(tokens[1], valuesMap.get(code).getResult());
-            } else if (groupColumn == null && tokens[1].equals(parentTitle)) {
+            } else if ((groupColumn == null && tokens[1].equals(parentTitle))
+                || (configAnalyticAccount != null
+                    && Arrays.asList(tokens).contains(configAnalyticAccount.getCode()))) {
               contextMap.put(tokens[0], valuesMap.get(code).getResult());
             }
           }
@@ -704,7 +706,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
     try {
-      return (BigDecimal) scriptHelper.eval(this.getRule(column, line, groupColumn));
+      return (BigDecimal) scriptHelper.eval(rule);
     } catch (Exception e) {
       this.addNullValue(
           column,
@@ -712,7 +714,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           parentTitle);
       return null;
     }
@@ -743,7 +745,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       Set<Account> groupAccountSet,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate)
@@ -797,7 +799,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             new HashSet<>(Collections.singletonList(account)),
             accountTypeSet,
             analyticAccountSet,
-            configAnalyticAccountSet,
+            configAnalyticAccount,
             startDate,
             endDate,
             null,
@@ -822,7 +824,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             accountSet,
             new HashSet<>(Collections.singletonList(accountType)),
             analyticAccountSet,
-            configAnalyticAccountSet,
+            configAnalyticAccount,
             startDate,
             endDate,
             null,
@@ -848,7 +850,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             accountSet,
             accountTypeSet,
             new HashSet<>(Collections.singletonList(analyticAccount)),
-            configAnalyticAccountSet,
+            configAnalyticAccount,
             startDate,
             endDate,
             null,
@@ -868,7 +870,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           accountSet,
           accountTypeSet,
           analyticAccountSet,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           startDate,
           endDate,
           parentTitle,
@@ -900,12 +902,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
       Set<AnalyticAccount> analyticAccountSet,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle,
       String lineTitle,
       String lineCode) {
+    analyticAccountSet.add(configAnalyticAccount);
+
     List<MoveLine> moveLineList =
         this.getMoveLineQuery(
                 accountingReport,
@@ -914,7 +918,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
                 line,
                 accountSet,
                 accountTypeSet,
-                this.mergeSets(analyticAccountSet, configAnalyticAccountSet),
+                analyticAccountSet,
                 startDate,
                 endDate)
             .fetch();
@@ -940,7 +944,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         result,
         valuesMapByColumn,
         valuesMapByLine,
-        configAnalyticAccountSet,
+        configAnalyticAccount,
         lineCode);
   }
 
@@ -1163,17 +1167,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle) {
     Map<String, AccountingReportValue> valuesMap =
         valuesMapByColumn.get(
             this.getColumnCode(
-                column.getPercentageBaseColumn(),
-                parentTitle,
-                groupColumn,
-                configAnalyticAccountSet));
+                column.getPercentageBaseColumn(), parentTitle, groupColumn, configAnalyticAccount));
 
     if (valuesMap == null) {
       this.addNullValue(
@@ -1182,7 +1183,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           parentTitle);
     } else {
       this.createPercentageValue(
@@ -1193,7 +1194,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           valuesMap,
           valuesMapByColumn,
           valuesMapByLine,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           startDate,
           endDate,
           parentTitle);
@@ -1209,7 +1210,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, AccountingReportValue> valuesMap,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle) {
@@ -1233,7 +1234,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
               groupColumn,
               valuesMapByColumn,
               valuesMapByLine,
-              configAnalyticAccountSet,
+              configAnalyticAccount,
               parentTitle);
           return;
         }
@@ -1248,7 +1249,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
-          configAnalyticAccountSet,
+          configAnalyticAccount,
           valuesMap.get(code),
           totalValue,
           startDate,
@@ -1267,7 +1268,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       AccountingReportValue baseValue,
       AccountingReportValue totalValue,
       LocalDate startDate,
@@ -1300,7 +1301,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         result,
         valuesMapByColumn,
         valuesMapByLine,
-        configAnalyticAccountSet,
+        configAnalyticAccount,
         lineCode);
   }
 
@@ -1336,7 +1337,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       BigDecimal result,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       String lineCode) {
     DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     String period = String.format("%s - %s", startDate.format(format), endDate.format(format));
@@ -1354,14 +1355,12 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             accountingReport,
             line,
             column,
-            this.getMinLevelAnalyticAccountStream(configAnalyticAccountSet)
-                .findFirst()
-                .orElse(null));
+            configAnalyticAccount);
 
     accountingReportValueRepo.save(accountingReportValue);
 
     String columnCode =
-        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccountSet);
+        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
 
     if (valuesMapByColumn.containsKey(columnCode)) {
       valuesMapByColumn.get(columnCode).put(lineCode, accountingReportValue);
@@ -1376,7 +1375,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       String columnCode,
       String parentTitle,
       AccountingReportConfigLine groupColumn,
-      Set<AnalyticAccount> configAnalyticAccountSet) {
+      AnalyticAccount configAnalyticAccount) {
     List<String> columnCodeTokens = new ArrayList<>(Collections.singletonList(columnCode));
 
     if (groupColumn != null) {
@@ -1385,8 +1384,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       columnCodeTokens.add(parentTitle);
     }
 
-    if (CollectionUtils.isNotEmpty(configAnalyticAccountSet)) {
-      configAnalyticAccountSet.forEach(it -> columnCodeTokens.add(it.getCode()));
+    if (configAnalyticAccount != null) {
+      columnCodeTokens.add(configAnalyticAccount.getCode());
     }
 
     return String.join("__", columnCodeTokens);
@@ -1398,10 +1397,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<AnalyticAccount> configAnalyticAccountSet,
+      AnalyticAccount configAnalyticAccount,
       String parentTitle) {
     String columnCode =
-        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccountSet);
+        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
 
     valuesMapByColumn.get(columnCode).put(line.getCode(), null);
     valuesMapByLine.get(line.getCode()).put(columnCode, null);
