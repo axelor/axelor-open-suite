@@ -1071,7 +1071,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ConfigLine.hidden AS "lineHidden",
 	ConfigLine.not_computed_if_intersect AS "lineNotCompute",
 	ConfigLine.rule_type_select AS "lineRuleType",
-	ReportValue.analytic_account AS "analyticAccount"
+	CASE 
+		WHEN ReportValue.analytic_account IS NULL THEN 0
+		ELSE ReportValue.analytic_account 
+	END AS "analyticAccount"
 
 FROM account_accounting_report AS AccountingReport
 
@@ -1165,7 +1168,10 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
-	DISTINCT(AnalyticAccount.id) AS "id",
+	DISTINCT(CASE
+		WHEN ReportValue.analytic_account IS NULL THEN 0
+		ELSE AnalyticAccount.id
+	END ) AS "id",
 	AnalyticAccount.name AS "accountName",
 	ReportValue.analytic_order AS "analyticOrder"
 	

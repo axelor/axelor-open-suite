@@ -906,7 +906,9 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
                 accountTypeSet,
                 this.mergeSets(
                     analyticAccountSet,
-                    new HashSet<>(Collections.singletonList(configAnalyticAccount))),
+                    configAnalyticAccount == null
+                        ? null
+                        : new HashSet<>(Collections.singletonList(configAnalyticAccount))),
                 startDate,
                 endDate)
             .fetch();
