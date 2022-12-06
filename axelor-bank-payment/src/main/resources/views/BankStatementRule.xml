@@ -50,7 +50,7 @@
 
   <action-attrs name="action-bank-statement-rule-attrs-set-counterpart-account-domain">
     <attribute name="domain" for="counterpartAccount"
-      expr="eval: &quot; self.company = ${accountManagement.company?.id} &quot;"/>
+      expr="eval: &quot; self.company = ${accountManagement.company?.id} AND self.accountType.technicalTypeSelect != &apos;${__repo__(AccountType).TYPE_VIEW}&apos; &quot;"/>
   </action-attrs>
 
   <action-group name="action-bank-statement-rule-group-onchange-account-management">
