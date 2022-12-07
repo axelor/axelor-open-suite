@@ -239,35 +239,28 @@
     model="com.axelor.apps.account.db.AccountingReport"
     onNew="action-accounting-report-record-default">
 
-    <panel name="searchPanel" title="Search" readonlyIf="reportType.typeSelect == 1011">
-      <field name="ref" readonly="true"/>
-      <field name="date" title="Export Date fixed to" readonlyIf="statusSelect == 2"/>
-      <field name="reportType"
-        onChange="action-group-account-accounting-report-reporttype-onchange"
-        domain="self.reportExportTypeSelect = 2 AND self.company = :company AND self.typeSelect != 1011"/>
+    <panel name="searchPanel">
       <field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox"
         onChange="action-group-account-accounting-report-company-onchange" form-view="company-form"
         grid-view="company-grid"/>
-      <field name="year" hideIf="!$contains([1000, 1010, 1001, 1011], reportType.typeSelect)"
-        onChange="action-accounting-report-record-period-dates"
-        onSelect="action-accounting-report-attrs-year-domain"
-        requiredIf="$contains([1000, 1010,1011], reportType.typeSelect)"
-        grid-view="year-account-grid" form-view="year-account-form"/>
-      <field name="period" canEdit="false"
-        onChange="action-group-account-accounting-report-period-onchange"
-        onSelect="action-accounting-report-attrs-period-domain"
-        hideIf="reportType.typeSelect == 1000 || reportType.typeSelect == 1011"
-        requiredIf="!$contains([1000, 1010, 1001, 1011], reportType.typeSelect)"
-        form-view="period-form" grid-view="period-grid" canView="false"/>
-      <field name="dateFrom" onChange="action-move-Live-report-record-set-date-to"
-        readonlyIf="(reportType.typeSelect == 1010 &amp;&amp; period != null) || reportType.typeSelect == 1000"
-        requiredIf="reportType.typeSelect == 1001"/>
-      <field name="dateTo"
-        readonlyIf="(reportType.typeSelect == 1010 &amp;&amp; period != null) || reportType.typeSelect == 1000"
-        requiredIf="reportType.typeSelect == 1001"/>
+      <field name="reportType"
+        onChange="action-group-account-accounting-report-reporttype-onchange"
+        domain="self.reportExportTypeSelect = 2 AND self.company = :company AND self.typeSelect != 1011"/>
+      <panel name="filterPanel" title="Filter" colSpan="12" hideIf="reportType == null">
+        <field name="year" onChange="action-accounting-report-record-period-dates"
+          onSelect="action-accounting-report-attrs-year-domain" grid-view="year-account-grid"
+          form-view="year-account-form" requiredIf="$contains([1000], reportType.typeSelect)"/>
+        <field name="period" canEdit="false"
+          onChange="action-group-account-accounting-report-period-onchange"
+          onSelect="action-accounting-report-attrs-period-domain" form-view="period-form"
+          grid-view="period-grid" canView="false" hideIf="$contains([1000], reportType.typeSelect)"/>
+        <field name="dateFrom" onChange="action-move-Live-report-record-set-date-to"
+          readonlyIf="$contains([1000], reportType.typeSelect)"/>
+        <field name="dateTo" readonlyIf="$contains([1000], reportType.typeSelect)"/>
+      </panel>
       <field name="journal" form-view="journal-form" grid-view="journal-grid"
-        hideIf="$contains([1000, 1010, 1011], reportType.typeSelect)"/>
-      <field name="minAmountExcl" showIf="reportType.typeSelect == 1011"/>
+        showIf="$contains([1010, 1001], reportType.typeSelect)"/>
+      <field name="minAmountExcl" hidden="true"/>
       <field name="reportType.typeSelect" hidden="true"/>
     </panel>
 
