@@ -70,24 +70,22 @@
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             onChange="action-group-move-company-onchange" form-view="company-form"
-            grid-view="company-grid" colSpan="3"/>
+            grid-view="company-grid" colSpan="2"/>
           <field name="tradingName"
-                 readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-                 if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-                 form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
-                 onSelect="action-move-set-trading-name-domain" colSpan="3"/>
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+            if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+            form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
+            onSelect="action-move-set-trading-name-domain" colSpan="3"/>
           <field name="companyBankDetails" canEdit="false" colSpan="3"
-                 onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
-                 form-view="bank-details-form" grid-view="bank-details-grid"/>
+            onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
+            form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
-            onChange="action-move-group-journal-on-change" colSpan="3"/>
-          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
-            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null">
-            <viewer>
-            </viewer>
-          </field>
+            onChange="action-move-group-journal-on-change" colSpan="2"/>
+          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="2"
+            showTitle="false"
+            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
           <panel name="datePanel" showFrame="false" colSpan="12" itemSpan="3">
             <field name="period" form-view="period-form" grid-view="period-grid"
               canEdit="false" canView="false" readonly="true"/>
@@ -110,7 +108,8 @@
           <field name="paymentMode" colSpan="3"
             readonlyIf="period.statusSelect == 2 || $validatePeriod" form-view="payment-mode-form"
             grid-view="payment-mode-grid" onChange="action-move-group-payment-mode-onchange"/>
-          <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4 &amp;&amp; partner != null"
+          <field name="paymentCondition" colSpan="3"
+            showIf="$journalTechnicalTypeSelect != 4 &amp;&amp; partner != null"
             form-view="payment-condition-form" grid-view="payment-condition-grid"
             readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3"
             onChange="action-move-group-payment-condition-onchange"/>
@@ -122,9 +121,12 @@
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" readonlyIf="$validatePeriod"
-            onChange="action-account-move-group-set-origin-and-description-on-lines" colSpan="6" widget="text" height="2"/>
+            onChange="action-account-move-group-set-origin-and-description-on-lines" colSpan="6"
+            widget="text" height="1"/>
           <field name="origin" colSpan="3" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-origin" requiredIf="journal.hasRequiredOrigin"/>
+          <field name="fiscalPosition" grid-view="fiscal-position-grid"
+            form-view="fiscal-position-form" canNew="false" canEdit="false" colSpan="3"/>
         </panel>
       </panel>
 
@@ -179,7 +181,8 @@
           </viewer>
         </field>
 
-        <field name="reference" colSpan="12" showTitle="false" hideIf="reference == null" css="label-bold bold large"/>
+        <field name="reference" colSpan="12" showTitle="false" hideIf="reference == null"
+          css="label-bold bold"/>
         <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
         <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
           onClick="action-move-account-group-simulate" colSpan="12"
@@ -195,14 +198,18 @@
           name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
           onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         <panel name="cutOffPanel" colSpan="12" title="Cut off"
-               hideIf="$periodClosed || ($periodClosed &amp;&amp; $cutOffStartDate == null &amp;&amp; $cutOffEndDate == null) || cutOffMoveGenerated == null" if="__config__.app.getApp('account').manageCutOffPeriod">
+          hideIf="$periodClosed || cutOffOriginMove!= null || cutOffMoveGenerated"
+          if="__config__.app.getApp('account').manageCutOffPeriod">
           <field name="$cutOffStartDate" type="date" title="From date"
-                 validIf="!$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate" colSpan="12" readonlyIf="cutOffMoveGenerated == true" hideIf="cutOffOriginMove != null"/>
+            validIf="!$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate" colSpan="12"
+            readonlyIf="cutOffMoveGenerated == true" hideIf="cutOffOriginMove != null"/>
           <field name="$cutOffEndDate" type="date" title="To date"
-                 validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate" colSpan="12" readonlyIf="cutOffMoveGenerated == true" hideIf="cutOffOriginMove != null"/>
+            validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate" colSpan="12"
+            readonlyIf="cutOffMoveGenerated == true" hideIf="cutOffOriginMove != null"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
-                  onClick="action-move-method-apply-cut-off-dates"
-                  hideIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate" colSpan="12"/>
+            onClick="action-move-method-apply-cut-off-dates"
+            hideIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"
+            colSpan="12"/>
         </panel>
       </panel>
     </panel>
@@ -210,17 +217,17 @@
     <panel-tabs name="mainPanelTab">
       <panel title="Move Lines" readonlyIf="$validatePeriod">
         <panel-related name="moveLineListPanel" field="moveLineList" editable="true"
-                       colSpan="12" height="20"
-                       showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
-                       canNew="true" canRemove="true" grid-view="move-line-move-grid"
-                       form-view="move-line-move-form" onChange="action-move-group-move-line-list-onchange"/>
+          colSpan="12" height="20"
+          showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
+          canNew="true" canRemove="true" grid-view="move-line-move-grid"
+          form-view="move-line-move-form" onChange="action-move-group-move-line-list-onchange"/>
         <panel-related name="moveLineListPanel" field="moveLineList" editable="false"
-                       colSpan="12" height="20"
-                       showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
-                       canNew="false" canRemove="false" grid-view="move-line-move-grid"
-                       form-view="move-line-move-form" onChange="action-move-group-move-line-list-onchange"/>
+          colSpan="12" height="20"
+          showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
+          canNew="false" canRemove="false" grid-view="move-line-move-grid"
+          form-view="move-line-move-form" onChange="action-move-group-move-line-list-onchange"/>
         <field name="$reconcileTags" colSpan="12" hidden="true" readonly="true"
-               showTitle="false">
+          showTitle="false">
           <viewer depends="moveLineList">
             <![CDATA[
                             <h4 class="text-left">
@@ -229,7 +236,8 @@
                         ]]>
           </viewer>
         </field>
-        <field name="$totalLines" title="Total lines" type="integer" colSpan="1" readonly="true">
+        <field name="$totalLines" title="Total lines" type="integer" colSpan="1"
+          readonly="true">
           <viewer>
             <![CDATA[
 						<h3>{{$fmt('$totalLines')}}</h3>
@@ -237,14 +245,15 @@
           </viewer>
         </field>
         <field name="$totalCurrency" title="Total Currency" type="integer" colSpan="3"
-               readonly="true" showIf="currency.id != companyCurrency.id">
+          readonly="true" showIf="currency.id != companyCurrency.id">
           <viewer>
             <![CDATA[
             <h3>{{$fmt('$totalCurrency')+' '+$fmt('currencyCode')}}</h3>
           ]]>
           </viewer>
         </field>
-        <field name="$totalDebit" title="Total debit" type="decimal" colSpan="3" readonly="true">
+        <field name="$totalDebit" title="Total debit" type="decimal" colSpan="3"
+          readonly="true">
           <viewer>
             <![CDATA[
 						<h3>{{$fmt('$totalDebit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
@@ -252,14 +261,15 @@
           </viewer>
         </field>
         <field name="$totalCredit" title="Total credit" type="decimal" colSpan="3"
-               readonly="true">
+          readonly="true">
           <viewer>
             <![CDATA[
 						<h3>{{$fmt('$totalCredit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
 					]]>
           </viewer>
         </field>
-        <field name="$difference" title="Difference" type="decimal" colSpan="2" readonly="true">
+        <field name="$difference" title="Difference" type="decimal" colSpan="2"
+          readonly="true">
           <viewer>
             <![CDATA[
 						<h3>
@@ -290,8 +300,6 @@
           showIf="$isThereRelatedCutOffMoves"
           if="__config__.app.getApp('account').manageCutOffPeriod"/>
         <field name="$isThereRelatedCutOffMoves" type="boolean" hidden="true"/>
-        <field name="fiscalPosition" grid-view="fiscal-position-grid"
-          form-view="fiscal-position-form" canNew="false" canEdit="false"/>
       </panel>
 
       <panel name="accountingExportPanel" title="Accounting export" hideIf="statusSelect == 1"
@@ -323,7 +331,7 @@
         <field name="$periodClosed" hidden="true"/>
         <field name="$simulatedPeriodClosed" hidden="true"/>
         <field name="getInfoFromFirstMoveLineOk" colSpan="12" readonlyIf="$validatePeriod"
-               hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch"/>
+          hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch"/>
 
         <field name="period.statusSelect" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
@@ -332,7 +340,7 @@
         <field name="$paymentConditionChange" type="boolean" hidden="true"/>
         <field name="$paymentConditionChangeError" hidden="true"/>
         <field name="$dateChange" type="boolean" hidden="true"/>
-        <field name="paymentCondition.isFree" hidden="true" />
+        <field name="paymentCondition.isFree" hidden="true"/>
         <field name="$validatePeriod" hidden="true" type="boolean"/>
         <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
         <field name="journal.hasDuplicateDetectionOnOrigin" readonly="true" hidden="true"/>
