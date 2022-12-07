@@ -88,7 +88,7 @@
 
   <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine"
     title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-group">
-    <field name="counter" hidden="true" width="80"/>
+    <field name="counter" hidden="true" width="40"/>
     <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
     <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
     <field name="account.analyticDistributionAuthorized" hidden="true"/>
@@ -110,7 +110,7 @@
     <field name="credit"
       onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
       width="90" readonlyIf="amountPaid &gt; 0"/>
-    <field name="amountRemaining" hidden="true" width="150"/>
+    <field name="amountRemaining" hidden="true" width="80"/>
     <field name="amountPaid" hidden="true"/>
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"

@@ -110,19 +110,19 @@
 	]]></extra-code>
 
     <track>
-      <field name="statusSelect"/>
-      <field name="journal"/>
+      <field name="statusSelect" on="UPDATE"/>
+      <field name="journal" on="UPDATE"/>
       <field name="reference"/>
-      <field name="period"/>
-      <field name="partner"/>
+      <field name="period" on="UPDATE"/>
+      <field name="partner" on="UPDATE"/>
       <field name="fiscalPosition" on="UPDATE"/>
-      <field name="currency"/>
-      <field name="companyCurrency"/>
-      <field name="ignoreInAccountingOk"/>
-      <field name="ignoreInDebtRecoveryOk"/>
-      <field name="originDate"/>
-      <field name="origin"/>
-      <field name="description"/>
+      <field name="currency" on="UPDATE"/>
+      <field name="companyCurrency" on="UPDATE"/>
+      <field name="ignoreInAccountingOk" on="UPDATE"/>
+      <field name="ignoreInDebtRecoveryOk" on="UPDATE"/>
+      <field name="originDate" on="UPDATE"/>
+      <field name="origin" on="UPDATE"/>
+      <field name="description" on="UPDATE"/>
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">New move</message>
       <message if="statusSelect == 2" tag="info">Daybook move</message>
