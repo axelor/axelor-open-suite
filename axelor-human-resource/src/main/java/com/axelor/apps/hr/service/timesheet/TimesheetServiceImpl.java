@@ -452,7 +452,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       LocalDate date, Map<Integer, String> correspMap, List<DayPlanning> dayPlanningList) {
     DayPlanning dayPlanningCurr = new DayPlanning();
     for (DayPlanning dayPlanning : dayPlanningList) {
-      if (dayPlanning.getName().equals(correspMap.get(date.getDayOfWeek().getValue()))) {
+      if (dayPlanning.getNameSelect().equals(correspMap.get(date.getDayOfWeek().getValue()))) {
         dayPlanningCurr = dayPlanning;
         break;
       }

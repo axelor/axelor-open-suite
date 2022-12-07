@@ -57,7 +57,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   }
 
   private DayOfWeek getDayOfWeek(DayPlanning day) {
-    switch (day.getName()) {
+    switch (day.getNameSelect()) {
       case "monday":
         return DayOfWeek.MONDAY;
       case "tuesday":
@@ -84,7 +84,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
         new String[] {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
     for (int i = 0; i < dayTab.length; i++) {
       DayPlanning day = new DayPlanning();
-      day.setName(dayTab[i]);
+      day.setNameSelect(dayTab[i]);
       planning.addWeekDay(day);
     }
     return planning;
@@ -244,7 +244,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   public DayPlanning findDayWithName(WeeklyPlanning planning, String name) {
     List<DayPlanning> dayPlanningList = planning.getWeekDays();
     for (DayPlanning dayPlanning : dayPlanningList) {
-      if (dayPlanning.getName().equals(name)) {
+      if (dayPlanning.getNameSelect().equals(name)) {
         return dayPlanning;
       }
     }
@@ -252,7 +252,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   }
 
   public String messageInCheckPlanning(String message, DayPlanning dayPlanning) {
-    String dayPlanningName = dayPlanning.getName();
+    String dayPlanningName = dayPlanning.getNameSelect();
     return String.format(
         I18n.get(message),
         I18n.get(Character.toUpperCase(dayPlanningName.charAt(0)) + dayPlanningName.substring(1))
