@@ -751,7 +751,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     List<Integer> basicResultSelectList =
         Arrays.asList(
             AccountingReportConfigLineRepository.RESULT_CREDIT_MINUS_DEBIT,
-            AccountingReportConfigLineRepository.RESULT_CREDIT_MINUS_DEBIT);
+            AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT);
 
     boolean isBasicResultSelect =
         basicResultSelectList.contains(column.getResultSelect())
