@@ -1211,13 +1211,9 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                             <property name="name">lineNb</property>
                                             <property name="dataType">integer</property>
                                         </structure>
-                                        <structure>
-                                            <property name="name">lineName</property>
-                                            <property name="dataType">string</property>
-                                        </structure>
                                     </list-property>
-                                    <property name="columnName">line</property>
-                                    <expression name="displayColumnName" type="javascript">dataSetRow["line"]</expression>
+                                    <property name="columnName">lineName</property>
+                                    <expression name="displayColumnName" type="javascript">dataSetRow["lineName"]</expression>
                                 </tabular-level>
                             </property>
                         </tabular-hierarchy>
@@ -2421,6 +2417,24 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                         <expression name="key" type="javascript">dimension["Line"]["line"]["lineNb"]</expression>
                                                                         <property name="direction">asc</property>
                                                                         <property name="strength">-1</property>
+                                                                        <property name="member">
+                                                                            <member-value>
+                                                                                <property name="value"></property>
+                                                                                <property name="level">Period/period</property>
+                                                                                <property name="memberValues">
+                                                                                    <member-value>
+                                                                                        <property name="value"></property>
+                                                                                        <property name="level">Group/group</property>
+                                                                                        <property name="memberValues">
+                                                                                            <member-value>
+                                                                                                <property name="value"></property>
+                                                                                                <property name="level">Column/column</property>
+                                                                                            </member-value>
+                                                                                        </property>
+                                                                                    </member-value>
+                                                                                </property>
+                                                                            </member-value>
+                                                                        </property>
                                                                     </sort-element>
                                                                 </property>
                                                                 <property name="member">
@@ -2555,7 +2569,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                         <list-property name="boundDataColumns">
                                             <structure>
                                                 <property name="name">line</property>
-                                                <expression name="expression" type="javascript">dimension["Line"]["line"]["lineName"]</expression>
+                                                <expression name="expression" type="javascript">dimension["Line"]["line"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
