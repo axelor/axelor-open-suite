@@ -6,7 +6,8 @@
   <grid name="account-equiv-grid" title="Account equivalences"
     model="com.axelor.apps.account.db.AccountEquiv" orderBy="fromAccount" editable="true">
     <field name="fromAccount" onChange="action-account-equiv-attrs-reset-to-account"
-      form-view="account-form" grid-view="account-grid"/>
+      form-view="account-form" grid-view="account-grid"
+      onSelect="action-account-equiv-method-set-from-account-domain"/>
     <field name="toAccount" onSelect="action-account-equiv-attrs-domain-to-account"
       form-view="account-form" grid-view="account-grid"/>
   </grid>
@@ -15,7 +16,8 @@
     model="com.axelor.apps.account.db.AccountEquiv">
     <panel name="mainPanel">
       <field name="fromAccount" onChange="action-account-equiv-attrs-reset-to-account"
-        form-view="account-form" grid-view="account-grid"/>
+        onSelect="action-account-equiv-method-set-from-account-domain" form-view="account-form"
+        grid-view="account-grid"/>
       <field name="toAccount" onSelect="action-account-equiv-attrs-domain-to-account"
         form-view="account-form" grid-view="account-grid"/>
     </panel>
@@ -29,5 +31,10 @@
   <action-attrs name="action-account-equiv-attrs-reset-to-account">
     <attribute name="value" for="toAccount" expr="eval: null"/>
   </action-attrs>
+
+  <action-method name="action-account-equiv-method-set-from-account-domain">
+    <call class="com.axelor.apps.account.web.AccountEquivController"
+      method="setFromAccountDomain"/>
+  </action-method>
 
 </object-views>
