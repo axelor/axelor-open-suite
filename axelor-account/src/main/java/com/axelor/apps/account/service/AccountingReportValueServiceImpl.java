@@ -748,16 +748,22 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       LocalDate startDate,
       LocalDate endDate)
       throws AxelorException {
-    if (column.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_LINE
-        && line.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_COLUMN) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.REPORT_TYPE_NO_RESULT_SELECT,
-          accountingReport.getReportType().getName(),
-          column.getCode(),
-          line.getCode());
-    } else if (column.getResultSelect() != AccountingReportConfigLineRepository.RESULT_SAME_AS_LINE
-        && line.getResultSelect() != AccountingReportConfigLineRepository.RESULT_SAME_AS_COLUMN
+    List<Integer> basicResultSelectList =
+        Arrays.asList(
+            AccountingReportConfigLineRepository.RESULT_CREDIT_MINUS_DEBIT,
+            AccountingReportConfigLineRepository.RESULT_CREDIT_MINUS_DEBIT);
+
+    boolean isBasicResultSelect =
+        basicResultSelectList.contains(column.getResultSelect())
+            || basicResultSelectList.contains(line.getResultSelect());
+    boolean isOnlyBasicResultSelect =
+        basicResultSelectList.contains(column.getResultSelect())
+            && basicResultSelectList.contains(line.getResultSelect());
+    boolean isGroupResultSelect =
+        column.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_GROUP
+            || line.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_GROUP;
+
+    if (isOnlyBasicResultSelect
         && !Objects.equals(column.getResultSelect(), line.getResultSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -765,6 +771,18 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           accountingReport.getReportType().getName(),
           column.getCode(),
           line.getCode());
+    } else if (!isBasicResultSelect && !isGroupResultSelect) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.REPORT_TYPE_NO_RESULT_SELECT,
+          accountingReport.getReportType().getName(),
+          column.getCode(),
+          line.getCode());
+    } else if (isGroupResultSelect && groupColumn == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.REPORT_TYPE_SAME_AS_GROUP_NO_GROUP,
+          accountingReport.getReportType().getName());
     }
 
     Set<Account> accountSet;
@@ -923,14 +941,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
                 endDate)
             .fetch();
 
-    int resultSelect;
-    if (column.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_LINE) {
-      resultSelect = line.getResultSelect();
-    } else {
-      resultSelect = column.getResultSelect();
-    }
-
-    BigDecimal result = this.getResultFromMoveLine(moveLineList, resultSelect);
+    BigDecimal result =
+        this.getResultFromMoveLine(moveLineList, this.getResultSelect(column, line, groupColumn));
 
     this.createReportValue(
         accountingReport,
@@ -946,6 +958,21 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         valuesMapByLine,
         configAnalyticAccount,
         lineCode);
+  }
+
+  protected int getResultSelect(
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      AccountingReportConfigLine groupColumn) {
+    if (column.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_GROUP
+        || line.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_GROUP) {
+      return groupColumn.getResultSelect();
+    } else if (column.getResultSelect()
+        == AccountingReportConfigLineRepository.RESULT_SAME_AS_LINE) {
+      return line.getResultSelect();
+    } else {
+      return column.getResultSelect();
+    }
   }
 
   protected Query<MoveLine> getMoveLineQuery(
