@@ -1566,7 +1566,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 	ELSE (
 		CASE WHEN every(bp.product_type_select LIKE 'service') IS TRUE THEN 'service'
   			ELSE (
-  				CASE WHEN every(bp.product_type_select IS NULL) IS TRUE THEN null 
+  				CASE WHEN every(bp.product_type_select IS NULL) IS NULL THEN null 
   				ELSE 'serviceAndStorable'
   				END)
   		END
