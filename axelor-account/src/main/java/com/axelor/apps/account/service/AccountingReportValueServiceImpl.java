@@ -764,13 +764,13 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             || line.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_GROUP;
 
     if (isOnlyBasicResultSelect
-            && !Objects.equals(column.getResultSelect(), line.getResultSelect())) {
+        && !Objects.equals(column.getResultSelect(), line.getResultSelect())) {
       throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT,
-              accountingReport.getReportType().getName(),
-              column.getCode(),
-              line.getCode());
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT,
+          accountingReport.getReportType().getName(),
+          column.getCode(),
+          line.getCode());
     } else if (!isBasicResultSelect && !isGroupResultSelect) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -778,7 +778,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           accountingReport.getReportType().getName(),
           column.getCode(),
           line.getCode());
-    }  else if (isGroupResultSelect && groupColumn == null) {
+    } else if (isGroupResultSelect && groupColumn == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           AccountExceptionMessage.REPORT_TYPE_SAME_AS_GROUP_NO_GROUP,
