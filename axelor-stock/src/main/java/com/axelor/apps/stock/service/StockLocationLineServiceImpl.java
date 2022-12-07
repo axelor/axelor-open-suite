@@ -268,6 +268,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throws AxelorException {
 
     StockLocationLine detailLocationLine;
+    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 
     // If not increment,
     if (!isIncrement) {
@@ -287,7 +288,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       return;
     }
 
-    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     Unit stockLocationLineUnit = detailLocationLine.getUnit();
 
     if (stockLocationLineUnit != null && !stockLocationLineUnit.equals(stockMoveLineUnit)) {
