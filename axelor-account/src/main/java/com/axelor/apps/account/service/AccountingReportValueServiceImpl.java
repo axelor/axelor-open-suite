@@ -94,11 +94,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     if (CollectionUtils.isEmpty(configAnalyticAccountSet)) {
       this.computeReportValues(accountingReport, null);
     } else {
-      Set<AnalyticAccount> sortedConfigAnalyticAccountSet = new HashSet<>();
-      this.sortAnalyticAccountSetRecursive(
-          configAnalyticAccountSet, sortedConfigAnalyticAccountSet, null);
-
-      for (AnalyticAccount configAnalyticAccount : sortedConfigAnalyticAccountSet) {
+      for (AnalyticAccount configAnalyticAccount :
+          this.getSortedAnalyticAccountSet(configAnalyticAccountSet)) {
         this.computeReportValues(accountingReport, configAnalyticAccount);
         analyticCounter++;
       }
@@ -138,13 +135,26 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         analyticAccountRepo.all().filter("self.code LIKE :code").bind("code", code).fetch());
   }
 
+  protected Set<AnalyticAccount> getSortedAnalyticAccountSet(
+      Set<AnalyticAccount> analyticAccountSet) {
+    Set<AnalyticAccount> sortedConfigAnalyticAccountSet = new HashSet<>();
+
+    this.sortAnalyticAccountSetRecursive(analyticAccountSet, sortedConfigAnalyticAccountSet, null);
+
+    return sortedConfigAnalyticAccountSet;
+  }
+
   protected void sortAnalyticAccountSetRecursive(
       Set<AnalyticAccount> analyticAccountSet,
       Set<AnalyticAccount> sortedAnalyticAccountSet,
       AnalyticAccount parentAnalyticAccount) {
     Set<AnalyticAccount> currentLevelAnalyticAccountSet =
         analyticAccountSet.stream()
-            .filter(it -> it.getParent() == parentAnalyticAccount)
+            .filter(
+                it ->
+                    it.getParent() == parentAnalyticAccount
+                        || (parentAnalyticAccount == null
+                            && !analyticAccountSet.contains(it.getParent())))
             .collect(Collectors.toSet());
 
     if (CollectionUtils.isEmpty(currentLevelAnalyticAccountSet)) {
@@ -1130,16 +1140,15 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
   protected String getAccountFilterQueryList(String accountFilter, String type, boolean moveLine) {
     String[] tokens = accountFilter.split(",");
-    String condition = "(";
+    List<String> filterQueryList = new ArrayList<>();
+
     for (int i = 0; i < tokens.length; i++) {
-      if (i != 0) {
-        condition += " OR ";
-      }
-      condition +=
-          String.format("self%s.code LIKE :%sAccountFilter%d", moveLine ? ".account" : "", type, i);
+      filterQueryList.add(
+          String.format(
+              "self%s.code LIKE :%sAccountFilter%d", moveLine ? ".account" : "", type, i));
     }
-    condition += ")";
-    return condition;
+
+    return String.format("(%s)", String.join(" OR ", filterQueryList));
   }
 
   protected BigDecimal getResultFromMoveLine(List<MoveLine> moveLineList, int resultSelect) {
