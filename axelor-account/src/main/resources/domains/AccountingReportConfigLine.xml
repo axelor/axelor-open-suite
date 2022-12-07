@@ -62,6 +62,7 @@
       public static final int RESULT_CREDIT_MINUS_DEBIT = 2;
       public static final int RESULT_SAME_AS_COLUMN = 3;
       public static final int RESULT_SAME_AS_LINE = 4;
+      public static final int RESULT_SAME_AS_GROUP = 5;
 
 	  ]]></extra-code>
 

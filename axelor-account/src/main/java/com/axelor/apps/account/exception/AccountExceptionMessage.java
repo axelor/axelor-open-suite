@@ -1505,4 +1505,7 @@ public final class AccountExceptionMessage {
 
   public static final String REPORT_TYPE_MULTIPLE_GROUPS = /*$$(*/
       "Report type %s has group columns of different types." /*)*/;
+
+  public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
+      "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
 }
