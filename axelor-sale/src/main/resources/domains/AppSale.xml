@@ -34,6 +34,9 @@
     <boolean name="isEnableCalculationEntireQuotationUsingPricing"
       title="Enable calculation of the entire quotation using pricing"/>
     <boolean name="enablePricingScale" title="Enable pricing scale"/>
+    <boolean name="considerZeroCost"
+      title="Consider zero cost and zero price lines in the margin"
+      help="When activated, the total margin of a sale order will take into account sale order lines where the cost price or the sale price is zero."/>
 
     <track>
       <field name="manageSaleOrderVersion" on="UPDATE"/>
@@ -47,6 +50,7 @@
       <field name="salemanSelect" on="UPDATE"/>
       <field name="enableCustomerCatalogMgt" on="UPDATE"/>
       <field name="isDisplaySaleOrderLineNumber" on="UPDATE"/>
+      <field name="considerZeroCost" on="UPDATE"/>
     </track>
   </entity>
 

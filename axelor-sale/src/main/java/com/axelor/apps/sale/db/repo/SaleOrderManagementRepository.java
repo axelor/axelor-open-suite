@@ -24,7 +24,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.exception.AxelorException;
@@ -32,6 +31,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.PersistenceException;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
@@ -132,11 +132,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     }
   }
 
-  public void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
-
-    if (saleOrder.getSaleOrderLineList() != null) {
+  protected void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Beans.get(SaleOrderLineService.class).computeSubMargin(saleOrder, saleOrderLine);
+        Beans.get(SaleOrderMarginService.class).computeSubMargin(saleOrder, saleOrderLine);
       }
     }
   }
