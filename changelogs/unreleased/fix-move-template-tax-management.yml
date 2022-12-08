@@ -1,0 +1,7 @@
+---
+title: "Move Template: rework of tax management"
+type: fix
+description: |
+  Tax move lines are now selectable just for preview
+  Recompute of tax move lines via other move lines with tax on it
+  Message when a tax move line is set to inform user
