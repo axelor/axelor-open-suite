@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -176,7 +177,8 @@ public class BankOrderLineService {
     }
 
     if (bankOrderFileFormat.getIsMultiDate()) {
-      bankOrderLine.setBankOrderDate(bankOrderDate);
+      LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(receiverCompany);
+      bankOrderLine.setBankOrderDate(bankOrderDate.isBefore(todayDate) ? todayDate : bankOrderDate);
     }
 
     bankOrderLine.setReceiverReference(receiverReference);

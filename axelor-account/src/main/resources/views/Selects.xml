@@ -130,6 +130,7 @@
     <option value="2">Credit - Debit</option>
     <option value="3">Same as column</option>
     <option value="4">Same as line</option>
+    <option value="5">Same as group</option>
   </selection>
 
   <selection name='iaccount.move.status.select'>
@@ -804,5 +805,11 @@
   <selection name="account.move.line.query.process.select">
     <option value="0">Reconcile</option>
     <option value="1">Unreconcile</option>
+  </selection>
+
+  <selection name="accounting.report.analytic.config.line.type.select">
+    <option value="1">Code</option>
+    <option value="2">Range</option>
+    <option value="3">Account</option>
   </selection>
 </object-views>

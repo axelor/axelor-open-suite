@@ -25,6 +25,8 @@ public final class AccountExceptionMessage {
       /*$$(*/ "An invoice with the same number (%s) already exists for this supplier %s and the year %s." /*)*/;
   public static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
+  public static final String IMMO_FIXED_ASSET_DEPRECIATIONS_NOT_ACCOUNTED_BEFORE_DISPOSAL_DATE =
+      /*$$(*/ "The fixed asset can't be disposed at the moment as there are still depreciations that remains to be accounted before input disposal date. Please proceed to the realization of those depreciations before proceeding to the disposal of the asset on that date." /*)*/;
   public static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
       /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
 
@@ -1503,4 +1505,7 @@ public final class AccountExceptionMessage {
 
   public static final String REPORT_TYPE_MULTIPLE_GROUPS = /*$$(*/
       "Report type %s has group columns of different types." /*)*/;
+
+  public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
+      "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
 }

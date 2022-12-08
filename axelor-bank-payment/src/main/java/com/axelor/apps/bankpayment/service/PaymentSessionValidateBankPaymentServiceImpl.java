@@ -200,8 +200,6 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION,
             paymentSession.getAccountingTriggerSelect());
 
-    bankOrder.setIsMultiDate(this.isMultiDate(paymentSession));
-
     if (!paymentSession.getCurrency().equals(paymentSession.getCompany().getCurrency())) {
       bankOrder.setIsMultiCurrency(true);
     }
@@ -210,13 +208,17 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   protected boolean isMultiDate(PaymentSession paymentSession) {
-    return Optional.of(paymentSession)
-            .map(PaymentSession::getPaymentMode)
-            .map(PaymentMode::getBankOrderFileFormat)
-            .map(BankOrderFileFormat::getIsMultiDate)
-            .orElse(false)
+    return this.isFileFormatMultiDate(paymentSession)
         && paymentSession.getMoveAccountingDateSelect()
             == PaymentSessionRepository.MOVE_ACCOUNTING_DATE_ORIGIN_DOCUMENT;
+  }
+
+  protected boolean isFileFormatMultiDate(PaymentSession paymentSession) {
+    return Optional.of(paymentSession)
+        .map(PaymentSession::getPaymentMode)
+        .map(PaymentMode::getBankOrderFileFormat)
+        .map(BankOrderFileFormat::getIsMultiDate)
+        .orElse(false);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -297,7 +299,14 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected void generateBankOrderLineFromInvoiceTerm(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrder bankOrder)
       throws AxelorException {
-    LocalDate bankOrderDate = this.isMultiDate(paymentSession) ? invoiceTerm.getDueDate() : null;
+    LocalDate bankOrderDate = null;
+    if (this.isFileFormatMultiDate(paymentSession)) {
+      bankOrderDate =
+          paymentSession.getMoveAccountingDateSelect()
+                  == PaymentSessionRepository.MOVE_ACCOUNTING_DATE_PAYMENT
+              ? paymentSession.getPaymentDate()
+              : invoiceTerm.getDueDate();
+    }
 
     BankOrderLine bankOrderLine =
         bankOrderLineService.createBankOrderLine(
