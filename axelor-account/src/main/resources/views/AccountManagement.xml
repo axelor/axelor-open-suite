@@ -56,7 +56,7 @@
 
   <grid name="account-management-editable-grid" title="Account management list"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
-    groupBy="company,bankDetails">
+    groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management">
     <field name="company"/>
     <field name="bankDetails"/>
     <field name="journal" domain="self.statusSelect = 1"/>
@@ -183,5 +183,10 @@
     <attribute for="bankDetails" name="value" expr="eval: company?.defaultBankDetails"
       if="company?.defaultBankDetails?.active"/>
   </action-attrs>
+
+  <action-record name="action-record-account-management-new-account-management"
+    model="com.axelor.apps.account.db.AccountManagement">
+    <field name="typeSelect" expr="eval: 3"/>
+  </action-record>
 
 </object-views>
