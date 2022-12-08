@@ -1,3 +1,33 @@
+## [5.4.30] (2022-12-08)
+
+#### Features
+
+* Invoice: add new French statements in Invoice Report depending of product type.
+* Invoice: add partner siret number in French report.
+
+#### Fixed
+
+* User: email field is now correctly displayed
+
+Email field is now displayed in editing mode.
+Email field is now displayed in readonly mode only if a value is present.
+
+* Leave request / employee: a HR manager can now access draft requests for other employees from the menu.
+* Stock move: changing the real quantity of a line will not reset the discounted price to the original price anymore.
+
+When generating a Stock move from a Purchase order, if a line had a discount,
+changing the real quantity of a discounted line would set the price to the original one. This wrong behavior is now fixed.
+
+* Sale order: fixed the automatic filling when partner change for the field 'Hide discount on prints' according to it value in the price list.
+* Mass invoicing: fixed a bug where some stock moves could not be invoiced when the invoice was created from a merge.
+* Accounting batch: Fix the batch to realize fixed asset line so it correctly update only the fixed asset lines from the selected company.
+* Operation order: fix a blocking NullPointerException error when we plan an operation order without a machine.
+* Sequence / Forecast recap: Fix demo data sequence for the forecast recap.
+* Stock move: details stock locations lines will not longer be generated with zero quantity when the stock move is a delivery.
+* Bank Order: now can always sign bank orders even without EBICS module.
+* Expense: when paying expense, correctly fill sender company and sender bank details in the generated payment.
+* Stock move: if the configuration is active, services (product) are now correctly managed in stock moves.
+
 ## [5.4.29] (2022-11-25)
 
 #### Fixed
@@ -746,6 +776,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.30]: https://github.com/axelor/axelor-open-suite/compare/v5.4.29...v5.4.30
 [5.4.29]: https://github.com/axelor/axelor-open-suite/compare/v5.4.28...v5.4.29
 [5.4.28]: https://github.com/axelor/axelor-open-suite/compare/v5.4.27...v5.4.28
 [5.4.27]: https://github.com/axelor/axelor-open-suite/compare/v5.4.26...v5.4.27
