@@ -245,7 +245,8 @@
         grid-view="company-grid"/>
       <field name="reportType"
         onChange="action-group-account-accounting-report-reporttype-onchange"
-        domain="self.reportExportTypeSelect = 2 AND self.company = :company AND self.typeSelect != 1011"/>
+        domain="self.reportExportTypeSelect = 2 AND self.company = :company AND self.typeSelect != 1011"
+        required="true"/>
       <panel name="filterPanel" title="Filter" colSpan="12" hideIf="reportType == null">
         <field name="year" onChange="action-accounting-report-record-period-dates"
           onSelect="action-accounting-report-attrs-year-domain" grid-view="year-account-grid"
@@ -255,12 +256,12 @@
           onSelect="action-accounting-report-attrs-period-domain" form-view="period-form"
           grid-view="period-grid" canView="false" hideIf="$contains([1000], reportType.typeSelect)"/>
         <field name="dateFrom" onChange="action-move-Live-report-record-set-date-to"
-          readonlyIf="$contains([1000], reportType.typeSelect)"/>
-        <field name="dateTo" readonlyIf="$contains([1000], reportType.typeSelect)"/>
+          readonlyIf="$contains([1000], reportType.typeSelect) || year || period"/>
+        <field name="dateTo" readonlyIf="$contains([1000], reportType.typeSelect)  || year || period"/>
       </panel>
       <field name="journal" form-view="journal-form" grid-view="journal-grid"
-        showIf="$contains([1010, 1001], reportType.typeSelect)"/>
-      <field name="minAmountExcl" hidden="true"/>
+        showIf="$contains([1001], reportType.typeSelect)"/>
+      <field name="minAmountExcl" showIf="reportType.typeSelect == 1011"/>
       <field name="reportType.typeSelect" hidden="true"/>
     </panel>
 
