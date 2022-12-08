@@ -51,6 +51,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -692,19 +693,9 @@ public class EventServiceImpl implements EventService {
     if (lead != null
         && lead.getLastEventDate() != null
         && lead.getLastEventDate().equals(eventDateTime.toLocalDate())) {
-      List<Event> eventList =
-          lead.getEventList().stream()
-              .filter(
-                  e ->
-                      e != event
-                          && e.getEndDateTime() != null
-                          && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
-                          && e.getEndDateTime().compareTo(eventDateTime) <= 0)
-              .sorted(Comparator.comparing(Event::getEndDateTime).reversed())
-              .collect(Collectors.toList());
-
-      if (!eventList.isEmpty()) {
-        lead.setLastEventDate(eventList.get(0).getEndDateTime().toLocalDate());
+      LocalDate endDate = this.fetchLatestEventEndDate(event, lead.getEventList());
+      if (endDate != null) {
+        lead.setLastEventDate(endDate);
         leadRepo.save(lead);
       }
     }
@@ -713,22 +704,29 @@ public class EventServiceImpl implements EventService {
     if (partner != null
         && partner.getLastEventDate() != null
         && partner.getLastEventDate().equals(eventDateTime.toLocalDate())) {
-      List<Event> eventList =
-          eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch().stream()
-              .filter(
-                  e ->
-                      e != event
-                          && e.getEndDateTime() != null
-                          && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
-                          && e.getEndDateTime().compareTo(eventDateTime) <= 0)
-              .sorted(Comparator.comparing(Event::getEndDateTime).reversed())
-              .collect(Collectors.toList());
-
-      if (!eventList.isEmpty()) {
-        partner.setLastEventDate(eventList.get(0).getEndDateTime().toLocalDate());
+      LocalDate endDate =
+          this.fetchLatestEventEndDate(
+              event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch());
+      if (endDate != null) {
+        partner.setLastEventDate(endDate);
         partnerRepo.save(partner);
       }
     }
+  }
+
+  public LocalDate fetchLatestEventEndDate(Event event, List<Event> eventList) {
+    Optional<Event> optEvent =
+        eventList.stream()
+            .filter(
+                e ->
+                    e != event
+                        && e.getEndDateTime() != null
+                        && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
+                        && e.getEndDateTime().compareTo(event.getEndDateTime()) <= 0)
+            .sorted(Comparator.comparing(Event::getEndDateTime).reversed())
+            .findFirst();
+
+    return (optEvent.isPresent()) ? optEvent.get().getEndDateTime().toLocalDate() : null;
   }
 
   @Transactional
@@ -784,21 +782,10 @@ public class EventServiceImpl implements EventService {
   protected void updatePartnerScheduledEventDateAfterRealized(Event event) {
     Partner partner = event.getPartner();
     if (partner != null && event.getStartDateTime() != null) {
-      List<Event> eventList =
-          eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch().stream()
-              .filter(
-                  e ->
-                      e != event
-                          && e.getStartDateTime() != null
-                          && e.getStatusSelect().equals(EventRepository.STATUS_PLANNED)
-                          && e.getStartDateTime().compareTo(event.getStartDateTime()) > 0)
-              .sorted(Comparator.comparing(Event::getStartDateTime))
-              .collect(Collectors.toList());
-      if (!eventList.isEmpty()) {
-        partner.setScheduledEventDate(eventList.get(0).getStartDateTime().toLocalDate());
-      } else {
-        partner.setScheduledEventDate(null);
-      }
+      LocalDate startDate =
+          this.fetchNextEventStartDate(
+              event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch());
+      partner.setScheduledEventDate(startDate);
       partnerRepo.save(partner);
     }
   }
@@ -807,22 +794,23 @@ public class EventServiceImpl implements EventService {
   protected void updateLeadScheduledEventDateAfterRealized(Event event) {
     Lead lead = event.getLead();
     if (lead != null && event.getStartDateTime() != null && !lead.getEventList().isEmpty()) {
-      List<Event> eventList =
-          lead.getEventList().stream()
-              .filter(
-                  e ->
-                      e != event
-                          && e.getStartDateTime() != null
-                          && e.getStatusSelect().equals(EventRepository.STATUS_PLANNED)
-                          && e.getStartDateTime().compareTo(event.getStartDateTime()) > 0)
-              .sorted(Comparator.comparing(Event::getStartDateTime))
-              .collect(Collectors.toList());
-      if (!eventList.isEmpty()) {
-        lead.setNextScheduledEventDate(eventList.get(0).getStartDateTime().toLocalDate());
-      } else {
-        lead.setNextScheduledEventDate(null);
-      }
+      LocalDate startDate = this.fetchNextEventStartDate(event, lead.getEventList());
+      lead.setNextScheduledEventDate(startDate);
       leadRepo.save(lead);
     }
+  }
+
+  public LocalDate fetchNextEventStartDate(Event event, List<Event> eventList) {
+    Optional<Event> optEvent =
+        eventList.stream()
+            .filter(
+                e ->
+                    e != event
+                        && e.getStartDateTime() != null
+                        && e.getStatusSelect().equals(EventRepository.STATUS_PLANNED)
+                        && e.getStartDateTime().compareTo(event.getStartDateTime()) > 0)
+            .sorted(Comparator.comparing(Event::getStartDateTime))
+            .findFirst();
+    return (optEvent.isPresent()) ? optEvent.get().getStartDateTime().toLocalDate() : null;
   }
 }
