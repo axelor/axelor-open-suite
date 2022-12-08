@@ -17,12 +17,10 @@
  */
 package com.axelor.apps.hr.service.analytic;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.google.inject.Inject;
+import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 
 public class AnalyticMoveLineGenerateRealServiceHrImpl
     extends AnalyticMoveLineGenerateRealServiceImpl {
@@ -30,8 +28,18 @@ public class AnalyticMoveLineGenerateRealServiceHrImpl
   @Inject
   public AnalyticMoveLineGenerateRealServiceHrImpl(
       AnalyticMoveLineRepository analyticMoveLineRepository,
-      AnalyticMoveLineService analyticMoveLineService) {
-    super(analyticMoveLineRepository, analyticMoveLineService);
+      AnalyticMoveLineService analyticMoveLineService,
+      AccountConfigService accountConfigService,
+      AppAccountService appAccountService,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AccountManagementAccountService accountManagementAccountService) {
+    super(
+        analyticMoveLineRepository,
+        analyticMoveLineService,
+        accountConfigService,
+        appAccountService,
+        moveLineComputeAnalyticService,
+        accountManagementAccountService);
   }
 
   @Override

@@ -17,10 +17,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
@@ -31,9 +28,9 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.db.AppAccount;
-import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 
 public class AnalyticMoveLineGenerateRealServiceImpl
     implements AnalyticMoveLineGenerateRealService {
@@ -74,27 +71,34 @@ public class AnalyticMoveLineGenerateRealServiceImpl
         analyticMoveLine, moveLine.getDebit().add(moveLine.getCredit()), moveLine.getDate());
     return analyticMoveLine;
   }
-  
+
   @Override
-  public void computeAnalyticDistribution(Move move, MoveLine moveLine, BigDecimal amount) throws AxelorException {
-	  if (move != null && move.getCompany() != null && moveLine != null && moveLine.getAccount() != null && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
-		  AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
-		  AppAccount appAccount = appAccountService.getAppAccount();
-		  if (appAccount != null && appAccount.getManageAnalyticAccounting() && accountConfig != null 
-				  && accountConfig.getManageAnalyticAccounting() && accountConfig.getAnalyticDistributionTypeSelect() != 1) {
-			  AnalyticDistributionTemplate analyticDistributionTemplate = null;
-			  if (accountConfig.getAnalyticDistributionTypeSelect() == 2 && move.getPartner() != null) {
-				  analyticDistributionTemplate = move.getPartner().getAnalyticDistributionTemplate();
-			  }
-			  else if (accountConfig.getAnalyticDistributionTypeSelect() == 3) {
-				  analyticDistributionTemplate = moveLine.getAccount().getAnalyticDistributionTemplate();
-			  }
-			  
-			  if (analyticDistributionTemplate != null) {
-				  moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-				  moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine);
-			  }
-		  }
-	  }
+  public void computeAnalyticDistribution(Move move, MoveLine moveLine, BigDecimal amount)
+      throws AxelorException {
+    if (move != null
+        && move.getCompany() != null
+        && moveLine != null
+        && moveLine.getAccount() != null
+        && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
+      AppAccount appAccount = appAccountService.getAppAccount();
+      if (appAccount != null
+          && appAccount.getManageAnalyticAccounting()
+          && accountConfig != null
+          && accountConfig.getManageAnalyticAccounting()
+          && accountConfig.getAnalyticDistributionTypeSelect() != 1) {
+        AnalyticDistributionTemplate analyticDistributionTemplate = null;
+        if (accountConfig.getAnalyticDistributionTypeSelect() == 2 && move.getPartner() != null) {
+          analyticDistributionTemplate = move.getPartner().getAnalyticDistributionTemplate();
+        } else if (accountConfig.getAnalyticDistributionTypeSelect() == 3) {
+          analyticDistributionTemplate = moveLine.getAccount().getAnalyticDistributionTemplate();
+        }
+
+        if (analyticDistributionTemplate != null) {
+          moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+          moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine);
+        }
+      }
+    }
   }
 }

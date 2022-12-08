@@ -17,12 +17,11 @@
  */
 package com.axelor.apps.account.service.analytic;
 
-import java.math.BigDecimal;
-
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 
 public interface AnalyticMoveLineGenerateRealService {
 
@@ -36,5 +35,6 @@ public interface AnalyticMoveLineGenerateRealService {
    */
   AnalyticMoveLine createFromForecast(AnalyticMoveLine forecastAnalyticMoveLine, MoveLine moveLine);
 
-  void computeAnalyticDistribution(Move move, MoveLine moveLine, BigDecimal amount) throws AxelorException;
+  void computeAnalyticDistribution(Move move, MoveLine moveLine, BigDecimal amount)
+      throws AxelorException;
 }
