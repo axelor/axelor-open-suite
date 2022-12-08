@@ -1,3 +1,37 @@
+## [6.1.26] (2022-12-08)
+
+#### Features
+
+* Invoice: add new French statements in Invoice Report depending of product type.
+* Invoice: add partner siret number in French report.
+
+#### Fixed
+
+* User: email field is now correctly displayed
+
+Email field is now displayed in editing mode.
+Email field is now displayed in readonly mode only if a value is present.
+
+* Followers: Fixed a bug where trying to fetch a recipient would result in a exception with somes conditions.
+* Cash management: fixed an issue were some data were not displayed correctly on the PDF report.
+* Leave request / employee: a HR manager can now access draft requests for other employees from the menu.
+* Debt recovery history: prevent the user from printing a report when there is no debt recovery.
+* Stock move: changing the real quantity of a line will not reset the discounted price to the original price anymore.
+
+When generating a Stock move from a Purchase order, if a line had a discount,
+changing the real quantity of a discounted line would set the price to the original one. This wrong behavior is now fixed.
+
+* Sale order: fixed the automatic filling when partner change for the field 'Hide discount on prints' according to it value in the price list.
+* Price List: fixed wrong filter on price list menu entry which prevented most price lists to be displayed.
+* Mass invoicing: fixed a bug where some stock moves could not be invoiced when the invoice was created from a merge.
+* Accounting batch: Fix the batch to realize fixed asset line so it correctly update only the fixed asset lines from the selected company.
+* Operation order: fix a blocking NullPointerException error when we plan an operation order without a machine.
+* Sequence / Forecast recap: Fix demo data sequence for the forecast recap.
+* Stock move: details stock locations lines will not longer be generated with zero quantity when the stock move is a delivery.
+* Bank order: Ad the possibility to sign bank orders even without EBICS module.
+* Expense: when paying expense, correctly fill sender company and sender bank details in the generated payment.
+* Stock move: if the configuration is active, services (product) are now correctly managed in stock moves.
+
 ## [6.1.25] (2022-11-25)
 
 #### Fixed
@@ -845,6 +879,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.26]: https://github.com/axelor/axelor-open-suite/compare/v6.1.25...v6.1.26
 [6.1.25]: https://github.com/axelor/axelor-open-suite/compare/v6.1.24...v6.1.25
 [6.1.24]: https://github.com/axelor/axelor-open-suite/compare/v6.1.23...v6.1.24
 [6.1.23]: https://github.com/axelor/axelor-open-suite/compare/v6.1.22...v6.1.23
