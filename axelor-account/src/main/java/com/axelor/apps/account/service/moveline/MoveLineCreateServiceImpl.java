@@ -595,7 +595,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       companyAmount =
-          invoice.getInvoiceTermList().get(invoice.getInvoiceTermList().size() - 1) == invoiceTerm
+          invoiceTerm.equals(
+                  invoice.getInvoiceTermList().get(invoice.getInvoiceTermList().size() - 1))
               ? (invoice.getCompanyInTaxTotal().subtract(totalCompanyAmount))
               : invoiceTerm.getCompanyAmount();
       totalCompanyAmount = totalCompanyAmount.add(invoiceTerm.getCompanyAmount());
