@@ -439,6 +439,7 @@ public class DataBackupCreateService {
           dataList = getMetaModelDataList(metaModel, i, fetchLimit, subClasses);
 
           if (dataList != null && !dataList.isEmpty()) {
+            dataBackup = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
             for (Object dataObject : dataList) {
               dataArr = new ArrayList<>();
 
