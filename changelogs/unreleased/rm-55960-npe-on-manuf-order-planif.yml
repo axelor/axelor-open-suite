@@ -1,3 +1,0 @@
----
-title: Fix NullPointerException when we plan an operation order without machine.
-type: fix

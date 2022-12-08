@@ -1,3 +1,0 @@
----
-title : "Stock move: details stock locations lines will not longer be generated with zero quantity when the stock move is a delivery"
-type: fix
