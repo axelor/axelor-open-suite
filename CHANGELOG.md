@@ -1,3 +1,50 @@
+## [6.3.6] (2022-12-08)
+
+#### Features
+
+* Invoice: add new French statements in Invoice Report depending of product type.
+* Invoice: add partner siret number in French report.
+
+#### Fixed
+
+* User: email field is now correctly displayed
+
+Email field is now displayed in editing mode.
+Email field is now displayed in readonly mode only if a value is present.
+
+* Followers: fixed a bug where trying to fetch a recipient would result in a exception with somes conditions.
+* Sale order: fixed stack overflow error when the partner had a parent partner.
+* Cash management: fixed an issue were some data were not displayed correctly on the PDF report.
+* Invoice line: choosing a product from a supplier catalog now takes the product name from the supplier catalog and not the translation.
+* Leave request / employee: a HR manager can now access draft requests for other employees from the menu.
+* Debt recovery history: prevent the user from printing a report when there is no debt recovery.
+* Fixed asset: fixed disposal move not generated when proceeding to the disposal of a fixed asset where accounting value is equal to 0.
+* Fixed asset: fixed wrong accounting value in degressive computation.
+* Fixed asset: fixed tax lines management in cession sale move generation
+
+Check on missing tax account only when the tax line value is positive
+Initialize of taxline in movelines for credit move line and tax move line
+
+* Accounting demo data: fix demo data for fixed asset category and journals.
+* Stock move: changing the real quantity of a line will not reset the discounted price to the original price anymore.
+
+When generating a Stock move from a Purchase order, if a line had a discount,
+changing the real quantity of a discounted line would set the price to the original one. This wrong behavior is now fixed.
+
+* Sale order: fixed the automatic filling when partner change for the field 'Hide discount on prints' according to it value in the price list.
+* Price List: fixed wrong filter on price list menu entry which prevented most price lists to be displayed.
+* Mass invoicing: fixed a bug where some stock moves could not be invoiced when the invoice was created from a merge.
+* Accounting batch: Fix the batch to realize fixed asset line so it correctly update only the fixed asset lines from the selected company.
+* Accounting move: when we reverse a move, the analytic move lines are now correctly kept on the reversed move.
+* Operation order: fix a blocking NullPointerException error when we plan an operation order without a machine.
+* Sequence / Forecast recap: Fix demo data sequence for the forecast recap.
+* Stock move: details stock locations lines will not longer be generated with zero quantity when the stock move is a delivery.
+* Bank order: Add the possibility to sign bank orders even without EBICS module.
+* Sale/Purchase order: fix the way we fetch default stock location on purchase and sale orders using partner stock settings.
+* Expense: when paying expense, correctly fill sender company and sender bank details in the generated payment.
+* Accounting move line: fix currency amount/rate readonly condition in the counterpart generation.
+* Stock move: if the configuration is active, services (product) are now correctly managed in stock moves.
+
 ## [6.3.5] (2022-11-25)
 
 #### Fixed
@@ -268,6 +315,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.6]: https://github.com/axelor/axelor-open-suite/compare/v6.3.5...v6.3.6
 [6.3.5]: https://github.com/axelor/axelor-open-suite/compare/v6.3.4...v6.3.5
 [6.3.4]: https://github.com/axelor/axelor-open-suite/compare/v6.3.3...v6.3.4
 [6.3.3]: https://github.com/axelor/axelor-open-suite/compare/v6.3.2...v6.3.3
