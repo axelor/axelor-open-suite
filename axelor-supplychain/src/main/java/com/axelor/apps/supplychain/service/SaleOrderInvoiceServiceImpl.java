@@ -190,6 +190,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       invoice.setAdvancePaymentInvoiceSet(invoiceService.getDefaultAdvancePaymentInvoice(invoice));
     }
 
+    invoice.setHideDiscount(saleOrder.getHideDiscount());
+
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
 
     invoice = invoiceRepo.save(invoice);
