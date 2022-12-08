@@ -1478,6 +1478,7 @@
     <action name="action-sale-order-method-address-str"/>
     <action name="action-sale-order-method-fill-price-list"
       if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
+    <action name="action-sale-order-record-hide-discount"/>
     <action name="action-sale-order-attrs-interco" if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-interco" if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-set-contact-partner"/>
@@ -1774,6 +1775,7 @@
   <action-record name="action-sale-order-record-hide-discount"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="hideDiscount" expr="eval: priceList?.hideDiscount" if="priceList"/>
+    <field name="hideDiscount" expr="false" if="!priceList"/>
   </action-record>
 
   <action-record name="action-record-so-contact-partner-change"
