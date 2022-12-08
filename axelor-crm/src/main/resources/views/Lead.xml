@@ -31,7 +31,7 @@
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="leadStatus" title="Status"/>
-    <field name="leadScoring" widget="ImageSelect" x-labels="false"/>
+    <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
     <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
       help="Take charge" onClick="action-lead-method-assign-to-me"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
@@ -69,7 +69,7 @@
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="leadStatus" title="Status"/>
     <field name="isConverted"/>
-    <field name="leadScoring" widget="ImageSelect" x-labels="false"/>
+    <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
     <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
       help="Take charge" onClick="action-lead-method-assign-to-me"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
@@ -272,7 +272,7 @@
     </panel>
 
     <panel sidebar="true" name="marketingPanel" title="Marketing" colSpan="12">
-      <field name="leadScoring" widget="ImageSelect" x-labels="false" colSpan="6"/>
+      <field name="leadScoringSelect" widget="ImageSelect" x-labels="false" colSpan="6"/>
       <field name="sizeSelect" colSpan="6"/>
       <field name="isKeyAccount" colSpan="6"/>
       <field name="isNurturing" colSpan="6"/>

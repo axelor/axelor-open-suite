@@ -218,7 +218,7 @@ public class ConvertLeadWizardController {
     response.setAttr("team", "value", lead.getTeam());
     response.setAttr("user", "value", lead.getUser());
     response.setAttr("isKeyAccount", "value", lead.getIsKeyAccount());
-    response.setAttr("leadScoring", "value", lead.getLeadScoring());
+    response.setAttr("leadScoringSelect", "value", lead.getLeadScoringSelect());
     response.setAttr("partnerCategory", "value", lead.getType());
     response.setAttr("sizeSelect", "value", lead.getSizeSelect());
     response.setAttr("isNurturing", "value", lead.getIsNurturing());

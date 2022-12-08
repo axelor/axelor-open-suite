@@ -85,7 +85,7 @@
             <field name="isCustomer" showTitle="true" colSpan="3"
               onChange="action-partner-attrs-unset-prospect"/>
             <field name="isSupplier" showTitle="true" colSpan="3"/>
-            <field name="leadScoring" showIf="isProspect" widget="ImageSelect"
+            <field name="leadScoringSelect" showIf="isProspect" widget="ImageSelect"
               x-labels="false" colSpan="3" showTitle="true"/>
             <field name="agency"/>
           </panel>
