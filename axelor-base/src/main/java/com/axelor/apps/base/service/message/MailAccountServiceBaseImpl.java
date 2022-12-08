@@ -25,14 +25,10 @@ import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.axelor.auth.db.User;
-import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
@@ -48,59 +44,32 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
   @Override
   public void checkDefaultMailAccount(EmailAccount mailAccount) throws AxelorException {
 
-    if (mailAccount.getIsDefault()
-        && (appBaseService.getAppBase().getEmailAccountByUser()
-            || (appBaseService.getAppBase().getEmailAccountByCompany()))) {
-      String query = "self.isDefault = true";
-      Map<String, Object> params = new HashMap<>();
-
-      if (appBaseService.getAppBase().getEmailAccountByUser()) {
-        if (mailAccount.getUser() != null) {
-          query += " AND self.user = :user";
-          params.put("user", mailAccount.getUser());
-        } else {
-          query += " AND self.user IS NULL";
+    AppBase appBase = appBaseService.getAppBase();
+    if (appBase.getEmailAccountByUser() || appBase.getEmailAccountByCompany()) {
+      String query = this.mailAccountQuery(mailAccount);
+      if (!query.isEmpty()) {
+        if (appBase.getEmailAccountByUser()) {
+          query +=
+              " AND self.user"
+                  + ((mailAccount.getUser() != null)
+                      ? ".id = " + mailAccount.getUser().getId()
+                      : " IS NULL");
         }
-      }
 
-      if (mailAccount.getId() != null) {
-        query += " AND self.id != :mailAccountId";
-        params.put("mailAccountId", mailAccount.getId());
-      }
-
-      if (appBaseService.getAppBase().getEmailAccountByCompany()) {
-        if (mailAccount.getCompany() != null) {
-          query += " AND self.company = :company";
-          params.put("company", mailAccount.getCompany());
-        } else {
-          query += " AND self.company IS NULL";
+        if (appBase.getEmailAccountByCompany()) {
+          query +=
+              " AND self.company"
+                  + ((mailAccount.getCompany() != null)
+                      ? ".id = " + mailAccount.getCompany().getId()
+                      : " IS NULL");
         }
-      }
+        Long count = mailAccountRepo.all().filter(query).count();
 
-      Integer serverTypeSelect = mailAccount.getServerTypeSelect();
-      if (serverTypeSelect == EmailAccountRepository.SERVER_TYPE_SMTP) {
-        query += " AND self.serverTypeSelect = " + EmailAccountRepository.SERVER_TYPE_SMTP + " ";
-      } else if (serverTypeSelect == EmailAccountRepository.SERVER_TYPE_IMAP
-          || serverTypeSelect == EmailAccountRepository.SERVER_TYPE_POP) {
-        query +=
-            " AND (self.serverTypeSelect = "
-                + EmailAccountRepository.SERVER_TYPE_IMAP
-                + " OR "
-                + "self.serverTypeSelect = "
-                + EmailAccountRepository.SERVER_TYPE_POP
-                + ") ";
-      }
-
-      Query<EmailAccount> mailAccountQuery = mailAccountRepo.all().filter(query, params);
-      for (Entry<String, Object> param : params.entrySet()) {
-        mailAccountQuery.bind(param.getKey(), param.getValue());
-      }
-      Long count = mailAccountQuery.count();
-
-      if (count > 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
+        if (count > 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
+        }
       }
     } else {
       super.checkDefaultMailAccount(mailAccount);
@@ -117,7 +86,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
     EmailAccount emailAccount = null;
     User user = userService.getUser();
-    if (appBase.getEmailAccountByUser()) {
+    if (appBase.getEmailAccountByUser() && user != null) {
       emailAccount =
           mailAccountRepo
               .all()
@@ -155,7 +124,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
     User user = userService.getUser();
     EmailAccount emailAccount = null;
-    if (appBaseService.getAppBase().getEmailAccountByUser()) {
+    if (appBase.getEmailAccountByUser() && user != null) {
       emailAccount =
           mailAccountRepo
               .all()
@@ -169,7 +138,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
     }
 
     if (emailAccount == null
-        && appBaseService.getAppBase().getEmailAccountByCompany()
+        && appBase.getEmailAccountByCompany()
         && user != null
         && user.getActiveCompany() != null) {
       emailAccount =
