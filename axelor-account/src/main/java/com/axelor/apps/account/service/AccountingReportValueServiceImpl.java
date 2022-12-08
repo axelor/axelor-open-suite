@@ -366,14 +366,16 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   }
 
   protected Set<Account> getColumnGroupAccounts(AccountingReportConfigLine groupColumn) {
-    return new HashSet<>(
+    Query<Account> accountQuery =
         accountRepo
             .all()
             .filter(this.getAccountQuery(groupColumn))
             .bind("accountSet", groupColumn.getAccountSet())
-            .bind("columnAccountFilter", groupColumn.getAccountCode())
-            .bind("accountTypeSet", groupColumn.getAccountTypeSet())
-            .fetch());
+            .bind("accountTypeSet", groupColumn.getAccountTypeSet());
+
+    this.bindAccountFilters(accountQuery, groupColumn.getAccountCode(), "groupColumn");
+
+    return new HashSet<>(accountQuery.fetch());
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -1048,18 +1050,26 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             .bind("company", accountingReport.getCompany())
             .bind("statusList", this.getMoveLineStatusList(accountingReport))
             .bind("accountSet", accountSet)
+            .bind(
+                "groupColumnAnalyticAccountFilter",
+                groupColumn == null ? "" : groupColumn.getAnalyticAccountCode())
             .bind("columnAnalyticAccountFilter", column.getAnalyticAccountCode())
             .bind("lineAnalyticAccountFilter", line.getAnalyticAccountCode())
             .bind("accountTypeSet", accountTypeSet)
             .bind("analyticAccountSet", analyticAccountSet);
+
+    if (groupColumn != null) {
+      moveLineQuery =
+          this.bindAccountFilters(moveLineQuery, groupColumn.getAccountCode(), "groupColumn");
+    }
 
     moveLineQuery = this.bindAccountFilters(moveLineQuery, column.getAccountCode(), "column");
 
     return this.bindAccountFilters(moveLineQuery, line.getAccountCode(), "line");
   }
 
-  protected Query<MoveLine> bindAccountFilters(
-      Query<MoveLine> moveLineQuery, String accountFilter, String type) {
+  protected <T extends Model> Query<T> bindAccountFilters(
+      Query<T> moveLineQuery, String accountFilter, String type) {
     if (StringUtils.isEmpty(accountFilter)) {
       return moveLineQuery;
     }
@@ -1110,11 +1120,21 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     queryList.addAll(
         this.getAccountFilters(
-            accountSet, accountTypeSet, column.getAccountCode(), line.getAccountCode(), true));
+            accountSet,
+            accountTypeSet,
+            groupColumn == null ? null : groupColumn.getCode(),
+            column.getAccountCode(),
+            line.getAccountCode(),
+            true));
 
     if (CollectionUtils.isNotEmpty(analyticAccountSet)) {
       queryList.add(
           "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount IN :analyticAccountSet AND aml.moveLine = self)");
+    }
+
+    if (groupColumn != null && !Strings.isNullOrEmpty(groupColumn.getAnalyticAccountCode())) {
+      queryList.add(
+          "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount.code LIKE :groupColumnAnalyticAccountFilter AND aml.moveLine = self)");
     }
 
     if (!Strings.isNullOrEmpty(column.getAnalyticAccountCode())) {
@@ -1138,12 +1158,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             configLine.getAccountTypeSet(),
             configLine.getAccountCode(),
             null,
+            null,
             false));
   }
 
   protected List<String> getAccountFilters(
       Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
+      String groupColumnFilter,
       String columnAccountFilter,
       String lineAccountFilter,
       boolean moveLine) {
@@ -1153,6 +1175,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       queryList.add(
           String.format(
               "(self%1$s IS NULL OR self%1$s IN :accountSet)", moveLine ? ".account" : ""));
+    }
+
+    if (!Strings.isNullOrEmpty(groupColumnFilter)) {
+      queryList.add(this.getAccountFilterQueryList(groupColumnFilter, "groupColumn", moveLine));
     }
 
     if (!Strings.isNullOrEmpty(columnAccountFilter)) {
