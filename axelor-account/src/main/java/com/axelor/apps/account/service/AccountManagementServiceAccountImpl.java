@@ -43,6 +43,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -422,9 +423,10 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
   }
 
   @Override
-  public String getCompanyDomain(AccountManagement accountManagement, Tax tax) {
+  public String getCompanyDomain(
+      AccountManagement accountManagement, List<AccountManagement> accountManagementList) {
     String idListStr =
-        tax.getAccountManagementList().stream()
+        accountManagementList.stream()
             .filter(am -> !accountManagement.equals(am))
             .map(am -> am.getCompany().getId().toString())
             .collect(Collectors.joining(","));

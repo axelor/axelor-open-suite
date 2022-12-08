@@ -20,12 +20,15 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AccountManagementController {
@@ -33,14 +36,22 @@ public class AccountManagementController {
   public void setCompanyDomain(ActionRequest request, ActionResponse response) {
     try {
       AccountManagement accountManagement = request.getContext().asType(AccountManagement.class);
+      List<AccountManagement> accountManagementList;
+
       Tax tax = ContextTool.getContextParent(request.getContext(), Tax.class, 1);
       if (tax != null) {
-        String domain =
-            Beans.get(AccountManagementAccountService.class)
-                .getCompanyDomain(accountManagement, tax);
-        response.setAttr("company", "domain", domain);
+        accountManagementList = tax.getAccountManagementList();
+      } else {
+        Product product = ContextTool.getContextParent(request.getContext(), Product.class, 1);
+        accountManagementList = product.getAccountManagementList();
       }
 
+      if (CollectionUtils.isNotEmpty(accountManagementList)) {
+        String domain =
+            Beans.get(AccountManagementAccountService.class)
+                .getCompanyDomain(accountManagement, accountManagementList);
+        response.setAttr("company", "domain", domain);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
