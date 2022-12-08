@@ -289,6 +289,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             originDate);
 
     moveLine.setIsOtherCurrency(!move.getCurrency().equals(move.getCompanyCurrency()));
+    
+    analyticMoveLineGenerateRealService.computeAnalyticDistribution(move, moveLine, credit.add(debit));
 
     return moveLine;
   }
