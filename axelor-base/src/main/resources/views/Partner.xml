@@ -1606,11 +1606,11 @@
   </action-method>
 
   <action-method name="action-partner-method-view-sent-emails">
-    <call class="com.axelor.apps.base.web.PartnerController" method="findPartnerSentMails"/>
+    <call class="com.axelor.apps.base.web.PartnerController" method="findSentMails"/>
   </action-method>
 
   <action-method name="action-partner-method-view-received-emails">
-    <call class="com.axelor.apps.base.web.PartnerController" method="findPartnerReceivedMails"/>
+    <call class="com.axelor.apps.base.web.PartnerController" method="findReceivedMails"/>
   </action-method>
 
   <action-method name="action-partner-iban-check-on-save">
