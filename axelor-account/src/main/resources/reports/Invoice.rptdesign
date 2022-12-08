@@ -987,7 +987,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">62</property>
+                        <property name="position">63</property>
                         <property name="name">products_type</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -1504,7 +1504,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 	ELSE (
 		CASE WHEN every(bp.product_type_select LIKE 'service') IS TRUE THEN 'service'
   			ELSE (
-  				CASE WHEN every(bp.product_type_select IS NULL) IS NULL THEN null 
+  				CASE WHEN every(bp.product_type_select IS NULL) IS TRUE THEN null 
   				ELSE 'serviceAndStorable'
   				END)
   		END
@@ -9233,7 +9233,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                 <cell id="5625"/>
                                 <cell id="5626"/>
                             </row>
-                            <row id="5848">
+                            <row id="5982">
                                 <property name="height">0.609cm</property>
                                 <list-property name="visibility">
                                     <structure>
@@ -9241,7 +9241,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                         <expression name="valueExpr" type="javascript">row["operation_type_select"] != 3 || params["Locale"].value != 'fr'</expression>
                                     </structure>
                                 </list-property>
-                                <cell id="5849">
+                                <cell id="5983">
                                     <property name="colSpan">8</property>
                                     <property name="rowSpan">1</property>
                                     <text id="5981">
