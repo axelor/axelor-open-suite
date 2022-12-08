@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -85,12 +86,14 @@ public class AnalyticMoveLineGenerateRealServiceImpl
       if (appAccount != null
           && appAccount.getManageAnalyticAccounting()
           && accountConfig != null
-          && accountConfig.getManageAnalyticAccounting()
-          && accountConfig.getAnalyticDistributionTypeSelect() != 1) {
+          && accountConfig.getManageAnalyticAccounting()) {
         AnalyticDistributionTemplate analyticDistributionTemplate = null;
-        if (accountConfig.getAnalyticDistributionTypeSelect() == 2 && move.getPartner() != null) {
+        if (accountConfig.getAnalyticDistributionTypeSelect()
+                == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER
+            && move.getPartner() != null) {
           analyticDistributionTemplate = move.getPartner().getAnalyticDistributionTemplate();
-        } else if (accountConfig.getAnalyticDistributionTypeSelect() == 3) {
+        } else if (accountConfig.getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
           analyticDistributionTemplate = moveLine.getAccount().getAnalyticDistributionTemplate();
         }
 
