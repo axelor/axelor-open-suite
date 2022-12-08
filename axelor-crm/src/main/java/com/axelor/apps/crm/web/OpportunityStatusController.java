@@ -18,6 +18,8 @@
 package com.axelor.apps.crm.web;
 
 import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -25,28 +27,32 @@ import com.axelor.rpc.ActionResponse;
 public class OpportunityStatusController {
 
   public void setAttrs(ActionRequest request, ActionResponse response) {
-    Boolean isWonPresent = false;
-    Boolean isLostPresent = false;
+    boolean isWonPresent = false;
+    boolean isLostPresent = false;
 
     OpportunityStatusRepository opportunityStatusRepo =
         Beans.get(OpportunityStatusRepository.class);
 
-    if (opportunityStatusRepo.findByTypeSelect(OpportunityStatusRepository.STATUS_TYPE_CLOSED_WON)
-        != null) {
-      isWonPresent = true;
-    }
+    try {
+      if (opportunityStatusRepo.findByTypeSelect(OpportunityStatusRepository.STATUS_TYPE_CLOSED_WON)
+          != null) {
+        isWonPresent = true;
+      }
 
-    if (opportunityStatusRepo.findByTypeSelect(OpportunityStatusRepository.STATUS_TYPE_CLOSED_LOST)
-        != null) {
-      isLostPresent = true;
-    }
-
-    if (isWonPresent) {
-      response.setAttr(
-          "typeSelect", "selection-in", OpportunityStatusRepository.STATUS_TYPE_CLOSED_LOST);
-    } else if (isLostPresent) {
-      response.setAttr(
-          "typeSelect", "selection-in", OpportunityStatusRepository.STATUS_TYPE_CLOSED_WON);
+      if (opportunityStatusRepo.findByTypeSelect(
+              OpportunityStatusRepository.STATUS_TYPE_CLOSED_LOST)
+          != null) {
+        isLostPresent = true;
+      }
+      if (isWonPresent) {
+        response.setAttr(
+            "typeSelect", "selection-in", OpportunityStatusRepository.STATUS_TYPE_CLOSED_LOST);
+      } else if (isLostPresent) {
+        response.setAttr(
+            "typeSelect", "selection-in", OpportunityStatusRepository.STATUS_TYPE_CLOSED_WON);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
