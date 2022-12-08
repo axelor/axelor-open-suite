@@ -61,8 +61,6 @@
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Type of authorized activities"/>
 
-    <boolean name="excludePlanning" title="Exclude planning"/>
-
     <string name="fullName" namecolumn="true" title="Name"/>
 
     <boolean name="isShowPhasesElements" title="Show sub-projects"/>
