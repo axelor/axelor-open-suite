@@ -6071,7 +6071,15 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["price_discounted"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"] || 2))</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row._outer._outer["hideDiscount"] == 0){
+	Formatter.format(row._outer["unit_price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"] || 2))
+}
+
+if(row._outer._outer["hideDiscount"] == 1){
+	Formatter.format(row._outer["price_discounted"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"] || 2))
+}
+</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4569">
