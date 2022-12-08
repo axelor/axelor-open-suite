@@ -673,8 +673,38 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       AnalyticAccount configAnalyticAccount,
       String parentTitle) {
-    Map<String, Object> contextMap = new HashMap<>();
     String rule = this.getRule(column, line, groupColumn);
+    Map<String, Object> contextMap =
+        this.createRuleContextMap(
+            column, line, groupColumn, valuesMap, configAnalyticAccount, parentTitle, rule);
+
+    Context scriptContext = new Context(contextMap, Object.class);
+    ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
+
+    try {
+      return (BigDecimal) scriptHelper.eval(rule);
+    } catch (Exception e) {
+      this.addNullValue(
+          column,
+          line,
+          groupColumn,
+          valuesMapByColumn,
+          valuesMapByLine,
+          configAnalyticAccount,
+          parentTitle);
+      return null;
+    }
+  }
+
+  protected Map<String, Object> createRuleContextMap(
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      AccountingReportConfigLine groupColumn,
+      Map<String, AccountingReportValue> valuesMap,
+      AnalyticAccount configAnalyticAccount,
+      String parentTitle,
+      String rule) {
+    Map<String, Object> contextMap = new HashMap<>();
 
     for (String code : valuesMap.keySet()) {
       if (valuesMap.get(code) != null) {
@@ -700,22 +730,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         }
       }
     }
-    Context scriptContext = new Context(contextMap, Object.class);
-    ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
-    try {
-      return (BigDecimal) scriptHelper.eval(rule);
-    } catch (Exception e) {
-      this.addNullValue(
-          column,
-          line,
-          groupColumn,
-          valuesMapByColumn,
-          valuesMapByLine,
-          configAnalyticAccount,
-          parentTitle);
-      return null;
-    }
+    contextMap.put("analyticAccount", configAnalyticAccount);
+
+    return contextMap;
   }
 
   protected String getRule(
