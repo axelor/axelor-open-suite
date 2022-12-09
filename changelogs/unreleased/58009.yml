@@ -1,0 +1,3 @@
+---
+title: "Invoice : fix an error occurring when creating a line without product"
+type: fix
