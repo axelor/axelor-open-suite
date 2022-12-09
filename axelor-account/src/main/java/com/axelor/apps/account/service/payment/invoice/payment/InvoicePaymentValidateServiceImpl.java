@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTermPayment;
@@ -29,6 +30,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -431,29 +433,44 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         && financialDiscountVat
         && financialDiscountMoveLine != null
         && BigDecimal.ZERO.compareTo(invoicePayment.getFinancialDiscountTaxAmount()) != 0) {
-      int vatSytem = financialDiscountMoveLine.getAccount().getVatSystemSelect();
-      Account financialDiscountVATAccount =
-          this.getFinancialDiscountVATAccount(
-              invoice, company, move.getJournal(), vatSytem, move.getFunctionalOriginSelect());
+      for (MoveLine moveTaxLine : invoice.getMove().getMoveLineList()) {
+        AccountType accountType = moveTaxLine.getAccount().getAccountType();
+        if (accountType != null
+            && AccountTypeRepository.TYPE_TAX.equals(
+                moveTaxLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+          int vatSytem = moveTaxLine.getVatSystemSelect();
+          Account financialDiscountVATAccount =
+              this.getFinancialDiscountVATAccount(
+                  invoice, company, move.getJournal(), vatSytem, move.getFunctionalOriginSelect());
+          if (financialDiscountVATAccount != null) {
+            BigDecimal totalInvoicedTaxAmount =
+                moveToolService.getTotalTaxAmount(invoice.getMove());
+            BigDecimal invoicedTaxAmount = moveTaxLine.getLineAmount();
 
-      if (financialDiscountVATAccount != null) {
-        MoveLine financialDiscountVatMoveLine =
-            moveLineCreateService.createMoveLine(
-                move,
-                partner,
-                financialDiscountVATAccount,
-                invoicePayment.getFinancialDiscountTaxAmount(),
-                isDebitInvoice,
-                paymentDate,
-                null,
-                counter,
-                origin,
-                invoicePayment.getDescription());
-        financialDiscountVatMoveLine.setTaxLine(financialDiscountMoveLine.getTaxLine());
-        financialDiscountVatMoveLine.setTaxRate(financialDiscountMoveLine.getTaxRate());
-        financialDiscountVatMoveLine.setTaxCode(financialDiscountMoveLine.getTaxCode());
-        financialDiscountVatMoveLine.setVatSystemSelect(vatSytem);
-        move.addMoveLineListItem(financialDiscountVatMoveLine);
+            BigDecimal financialDiscountTaxAmount =
+                invoicePayment
+                    .getFinancialDiscountTaxAmount()
+                    .multiply(invoicedTaxAmount)
+                    .divide(totalInvoicedTaxAmount, 2, RoundingMode.HALF_UP);
+            MoveLine financialDiscountVatMoveLine =
+                moveLineCreateService.createMoveLine(
+                    move,
+                    partner,
+                    financialDiscountVATAccount,
+                    financialDiscountTaxAmount,
+                    isDebitInvoice,
+                    paymentDate,
+                    null,
+                    counter,
+                    origin,
+                    invoicePayment.getDescription());
+            financialDiscountVatMoveLine.setTaxLine(moveTaxLine.getTaxLine());
+            financialDiscountVatMoveLine.setTaxRate(moveTaxLine.getTaxRate());
+            financialDiscountVatMoveLine.setTaxCode(moveTaxLine.getTaxCode());
+            financialDiscountVatMoveLine.setVatSystemSelect(moveTaxLine.getVatSystemSelect());
+            move.addMoveLineListItem(financialDiscountVatMoveLine);
+          }
+        }
       }
     }
     return move;

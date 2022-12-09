@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
@@ -30,6 +31,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
@@ -42,6 +44,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -87,6 +90,7 @@ public class PaymentVoucherConfirmService {
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
   protected AccountManagementAccountService accountManagementAccountService;
+  protected MoveToolService moveToolService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -103,7 +107,8 @@ public class PaymentVoucherConfirmService {
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       PaymentVoucherRepository paymentVoucherRepository,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      MoveToolService moveToolService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -119,6 +124,7 @@ public class PaymentVoucherConfirmService {
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.accountManagementAccountService = accountManagementAccountService;
+    this.moveToolService = moveToolService;
   }
 
   /**
@@ -676,32 +682,47 @@ public class PaymentVoucherConfirmService {
               .findFirst()
               .orElse(null);
       if (accountManagement != null) {
-        int vatSystem = financialDiscountAccount.getVatSystemSelect();
-        MoveLine financialDiscountVatMoveLine =
-            moveLineCreateService.createMoveLine(
-                move,
-                payerPartner,
-                accountManagementAccountService.getTaxAccount(
-                    accountManagement,
-                    financialDiscountTax,
-                    company,
-                    move.getJournal(),
-                    vatSystem,
-                    move.getFunctionalOriginSelect(),
-                    false,
-                    true),
-                payVoucherElementToPay.getFinancialDiscountTaxAmount(),
-                isDebitToPay,
-                paymentDate,
-                dueDate,
-                moveLineNo++,
-                invoiceName,
-                null);
-        financialDiscountVatMoveLine.setTaxLine(financialDiscountMoveLine.getTaxLine());
-        financialDiscountVatMoveLine.setTaxRate(financialDiscountMoveLine.getTaxRate());
-        financialDiscountVatMoveLine.setTaxCode(financialDiscountMoveLine.getTaxCode());
-        financialDiscountVatMoveLine.setVatSystemSelect(vatSystem);
-        move.addMoveLineListItem(financialDiscountVatMoveLine);
+        Move moveToPay = moveLineToPay.getMove();
+        for (MoveLine moveTaxLine : moveToPay.getMoveLineList()) {
+          AccountType accountType = moveTaxLine.getAccount().getAccountType();
+          if (accountType != null
+              && AccountTypeRepository.TYPE_TAX.equals(
+                  moveTaxLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+            BigDecimal totalInvoicedTaxAmount = moveToolService.getTotalTaxAmount(moveToPay);
+            BigDecimal invoicedTaxAmount = moveTaxLine.getLineAmount();
+            BigDecimal financialDiscountTaxAmount =
+                payVoucherElementToPay
+                    .getFinancialDiscountTaxAmount()
+                    .multiply(invoicedTaxAmount)
+                    .divide(totalInvoicedTaxAmount, 2, RoundingMode.HALF_UP);
+            Integer vatSystemSelect = moveTaxLine.getVatSystemSelect();
+            MoveLine financialDiscountVatMoveLine =
+                moveLineCreateService.createMoveLine(
+                    move,
+                    payerPartner,
+                    accountManagementAccountService.getTaxAccount(
+                        accountManagement,
+                        financialDiscountTax,
+                        company,
+                        move.getJournal(),
+                        vatSystemSelect,
+                        move.getFunctionalOriginSelect(),
+                        false,
+                        true),
+                    financialDiscountTaxAmount,
+                    isDebitToPay,
+                    paymentDate,
+                    dueDate,
+                    moveLineNo++,
+                    invoiceName,
+                    null);
+            financialDiscountVatMoveLine.setTaxLine(moveTaxLine.getTaxLine());
+            financialDiscountVatMoveLine.setTaxRate(moveTaxLine.getTaxRate());
+            financialDiscountVatMoveLine.setTaxCode(moveTaxLine.getTaxCode());
+            financialDiscountVatMoveLine.setVatSystemSelect(vatSystemSelect);
+            move.addMoveLineListItem(financialDiscountVatMoveLine);
+          }
+        }
       }
     }
 

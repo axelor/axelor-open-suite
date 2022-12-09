@@ -199,5 +199,9 @@ public interface MoveToolService {
 
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 
+
   void setDescriptionOnMoveLineList(Move move);
+
+  BigDecimal getTotalTaxAmount(Move move) throws AxelorException;
+
 }

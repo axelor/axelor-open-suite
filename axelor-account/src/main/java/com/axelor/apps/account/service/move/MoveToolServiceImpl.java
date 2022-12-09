@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -646,5 +647,20 @@ public class MoveToolServiceImpl implements MoveToolService {
               .fetch();
     }
     return moveList;
+  }
+
+  @Override
+  public BigDecimal getTotalTaxAmount(Move move) throws AxelorException {
+    BigDecimal totalTaxAmount =
+        move.getMoveLineList().stream()
+            .filter(
+                moveLine ->
+                    moveLine.getAccount().getAccountType() != null
+                        && AccountTypeRepository.TYPE_TAX.equals(
+                            moveLine.getAccount().getAccountType().getTechnicalTypeSelect()))
+            .map(it -> it.getLineAmount())
+            .reduce((a, b) -> a.add(b))
+            .orElse(BigDecimal.ZERO);
+    return totalTaxAmount;
   }
 }
