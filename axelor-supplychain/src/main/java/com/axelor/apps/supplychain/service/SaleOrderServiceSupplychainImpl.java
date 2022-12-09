@@ -138,7 +138,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     boolean checkAvailabiltyRequest = super.enableEditOrder(saleOrder);
     AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return checkAvailabiltyRequest;
     }
 
@@ -189,7 +189,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   public void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView)
       throws AxelorException {
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       super.checkModifiedConfirmedOrder(saleOrder, saleOrderView);
       return;
     }
@@ -233,7 +233,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
     super.validateChanges(saleOrder);
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return;
     }
 
