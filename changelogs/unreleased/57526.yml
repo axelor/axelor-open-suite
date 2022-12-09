@@ -1,6 +1,0 @@
----
-title: "User : email field is now correctly displayed"
-type: fix
-description: |
-  Email field is now displayed in editing mode.
-  Email field is now displayed in readonly mode only if there is one.

@@ -26,11 +26,24 @@ import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.common.base.Predicates;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsService {
+
+  protected PartnerStockSettingsRepository partnerStockSettingsRepository;
+
+  @Inject
+  public PartnerStockSettingsServiceImpl(
+      PartnerStockSettingsRepository partnerStockSettingsRepository) {
+    this.partnerStockSettingsRepository = partnerStockSettingsRepository;
+  }
 
   @Override
   public PartnerStockSettings getOrCreateMailSettings(Partner partner, Company company)
@@ -65,37 +78,52 @@ public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsServ
   }
 
   @Override
-  public StockLocation getDefaultStockLocation(Partner partner, Company company) {
-
-    if (partner != null && company != null) {
-      PartnerStockSettings partnerStockSettings =
-          Beans.get(PartnerStockSettingsRepository.class)
-              .all()
-              .filter("self.partner = ? AND self.company = ?", partner, company)
-              .fetchOne();
-
-      if (partnerStockSettings != null) {
-        return partnerStockSettings.getDefaultStockLocation();
-      }
+  public StockLocation getDefaultStockLocation(
+      Partner partner, Company company, Predicate<? super StockLocation> predicate) {
+    if (predicate == null) {
+      predicate = Predicates.alwaysTrue();
     }
 
-    return null;
+    List<PartnerStockSettings> partnerStockSettings = getPartnerStockSettings(partner, company);
+    if (CollectionUtils.isEmpty(partnerStockSettings)) {
+      return null;
+    }
+
+    return partnerStockSettings.stream()
+        .map(PartnerStockSettings::getDefaultStockLocation)
+        .filter(Objects::nonNull)
+        .filter(predicate)
+        .findAny()
+        .orElse(null);
   }
 
   @Override
-  public StockLocation getDefaultExternalStockLocation(Partner partner, Company company) {
-
-    if (partner != null && company != null) {
-      PartnerStockSettings partnerStockSettings =
-          Beans.get(PartnerStockSettingsRepository.class)
-              .all()
-              .filter("self.partner = ? AND self.company = ?", partner, company)
-              .fetchOne();
-
-      if (partnerStockSettings != null) {
-        return partnerStockSettings.getDefaultExternalStockLocation();
-      }
+  public StockLocation getDefaultExternalStockLocation(
+      Partner partner, Company company, Predicate<? super StockLocation> predicate) {
+    if (predicate == null) {
+      predicate = Predicates.alwaysTrue();
     }
-    return null;
+
+    List<PartnerStockSettings> partnerStockSettings = getPartnerStockSettings(partner, company);
+    if (CollectionUtils.isEmpty(partnerStockSettings)) {
+      return null;
+    }
+
+    return partnerStockSettings.stream()
+        .map(PartnerStockSettings::getDefaultExternalStockLocation)
+        .filter(Objects::nonNull)
+        .filter(predicate)
+        .findAny()
+        .orElse(null);
+  }
+
+  protected List<PartnerStockSettings> getPartnerStockSettings(Partner partner, Company company) {
+    if (partner == null || company == null) {
+      return null;
+    }
+    return partnerStockSettingsRepository
+        .all()
+        .filter("self.partner = ? AND self.company = ?", partner, company)
+        .fetch();
   }
 }

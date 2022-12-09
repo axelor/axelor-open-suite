@@ -25,8 +25,7 @@
   </grid>
 
   <form name="fixed-asset-form" title="Fixed asset"
-    model="com.axelor.apps.account.db.FixedAsset"
-    onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control"
+    model="com.axelor.apps.account.db.FixedAsset" onSave="action-group-fixed-asset-onsave"
     onNew="action-group-fixed-asset-onnew" onLoad="action-group-fixed-asset-onload"
     canDelete="statusSelect == 1">
     <panel>
@@ -261,8 +260,10 @@
     </panel>
     <panel name="allValuesPanel" sidebar="true">
       <field name="grossValue" requiredIf="originSelect == 99" min="0"
-        readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
-      <field name="residualValue" readonly="true"/>
+        readonlyIf="statusSelect > 1"
+        onChange="action-fixed-asset-record-set-residual-value,action-validate-gross-value-residual-value"/>
+      <field name="residualValue" readonly="true"
+        onChange="action-validate-gross-value-residual-value"/>
       <field name="accountingValue"
         hideIf="depreciationPlanSelect.includes('0') || statusSelect == 1" readonly="true"
         hidden="true"/>
@@ -360,6 +361,13 @@
     </panel>
   </form>
 
+  <action-group name="action-group-fixed-asset-onsave">
+    <action name="action-fixed-asset-category-record-compute-duration"/>
+    <action name="action-fixed-asset-validate-check-first-depreciation-date"/>
+    <action name="action-group-account-fixed-asset-failover-control"/>
+    <action name="action-validate-gross-value-residual-value"/>
+  </action-group>
+
   <action-method name="action-method-account-fixed-asset-split">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="splitFixedAsset"/>
   </action-method>
@@ -368,6 +376,12 @@
     name="action-validate-account-fixed-asset-wizard-form-validate-qty">
     <error if="disposalQtySelect == 2 &amp;&amp; (qty &lt;= 0) "
       message="Disposal Quantity must be greater than 0"/>
+  </action-validate>
+
+  <action-validate name="action-validate-gross-value-residual-value">
+    <error
+      message="Please enter a gross value greater than the residual value in terms of absolute value"
+      if="(grossValue &lt; 0 &amp;&amp; (residualValue &gt; 0 || residualValue &lt;= grossValue)) || (grossValue &gt; 0 &amp;&amp; (residualValue &lt; 0 || residualValue &gt;= grossValue))"/>
   </action-validate>
 
   <action-attrs

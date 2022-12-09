@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -36,10 +37,14 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -71,6 +76,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   protected AppSupplychain appSupplychain;
   protected SaleOrderStockService saleOrderStockService;
+  protected PartnerStockSettingsService partnerStockSettingsService;
+  protected StockConfigService stockConfigService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -81,7 +88,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       AppSupplychainService appSupplychainService,
-      SaleOrderStockService saleOrderStockService) {
+      SaleOrderStockService saleOrderStockService,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService) {
     super(
         saleOrderLineService,
         appBaseService,
@@ -93,6 +102,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     this.saleOrderStockService = saleOrderStockService;
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.saleOrderStockService = saleOrderStockService;
+    this.partnerStockSettingsService = partnerStockSettingsService;
+    this.stockConfigService = stockConfigService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -433,5 +444,37 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       saleOrder.setInvoicedPartner(clientPartner);
       saleOrder.setDeliveredPartner(clientPartner);
     }
+  }
+
+  @Override
+  public StockLocation getStockLocation(Partner clientPartner, Company company)
+      throws AxelorException {
+    if (company == null) {
+      return null;
+    }
+    StockLocation stockLocation =
+        partnerStockSettingsService.getDefaultStockLocation(
+            clientPartner, company, StockLocation::getUsableOnSaleOrder);
+    if (stockLocation == null) {
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      stockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+    }
+    return stockLocation;
+  }
+
+  @Override
+  public StockLocation getToStockLocation(Partner clientPartner, Company company)
+      throws AxelorException {
+    if (company == null) {
+      return null;
+    }
+    StockLocation toStockLocation =
+        partnerStockSettingsService.getDefaultExternalStockLocation(
+            clientPartner, company, StockLocation::getUsableOnSaleOrder);
+    if (toStockLocation == null) {
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+    }
+    return toStockLocation;
   }
 }
