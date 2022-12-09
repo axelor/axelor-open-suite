@@ -131,6 +131,7 @@
       <field name="paymentSession"/>
       <field name="pfpValidateStatusSelect"/>
       <field name="pfpValidatorUser"/>
+      <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
     </track>
 
   </entity>
