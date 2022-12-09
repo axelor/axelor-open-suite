@@ -324,7 +324,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             null,
             columnList,
             lineList,
-            accountSet,
+            account,
             configAnalyticAccount,
             account.getLabel(),
             startDate,
@@ -334,8 +334,6 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       columnList.removeAll(groupColumnList);
 
       for (AccountingReportConfigLine groupColumn : groupColumnList) {
-        Set<Account> accountSet = this.getColumnGroupAccounts(groupColumn);
-
         this.createReportValues(
             accountingReport,
             valuesMapByColumn,
@@ -343,7 +341,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             groupColumn,
             columnList,
             lineList,
-            accountSet,
+            null,
             configAnalyticAccount,
             groupColumn.getLabel(),
             startDate,
@@ -368,14 +366,16 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
   }
 
   protected Set<Account> getColumnGroupAccounts(AccountingReportConfigLine groupColumn) {
-    return new HashSet<>(
+    Query<Account> accountQuery =
         accountRepo
             .all()
             .filter(this.getAccountQuery(groupColumn))
             .bind("accountSet", groupColumn.getAccountSet())
-            .bind("columnAccountFilter", groupColumn.getAccountCode())
-            .bind("accountTypeSet", groupColumn.getAccountTypeSet())
-            .fetch());
+            .bind("accountTypeSet", groupColumn.getAccountTypeSet());
+
+    this.bindAccountFilters(accountQuery, groupColumn.getAccountCode(), "groupColumn");
+
+    return new HashSet<>(accountQuery.fetch());
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -386,13 +386,22 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine groupColumn,
       List<AccountingReportConfigLine> columnList,
       List<AccountingReportConfigLine> lineList,
-      Set<Account> groupAccountSet,
+      Account groupAccount,
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate)
       throws AxelorException {
     for (AccountingReportConfigLine column : columnList) {
+      if (StringUtils.notEmpty(column.getGroupsWithoutColumn()) && groupColumn != null) {
+        List<String> groupsWithoutColumnCodeList =
+            Arrays.asList(column.getGroupsWithoutColumn().split(","));
+
+        if (groupsWithoutColumnCodeList.contains(groupColumn.getCode())) {
+          continue;
+        }
+      }
+
       String columnCode =
           this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
 
@@ -414,7 +423,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
               line,
               valuesMapByColumn,
               valuesMapByLine,
-              groupAccountSet,
+              groupAccount,
               configAnalyticAccount,
               parentTitle,
               startDate,
@@ -432,7 +441,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine line,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<Account> groupAccountSet,
+      Account groupAccount,
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
@@ -540,7 +549,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           line,
           valuesMapByColumn,
           valuesMapByLine,
-          groupAccountSet,
+          groupAccount,
           configAnalyticAccount,
           parentTitle,
           startDate,
@@ -673,8 +682,38 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       AnalyticAccount configAnalyticAccount,
       String parentTitle) {
-    Map<String, Object> contextMap = new HashMap<>();
     String rule = this.getRule(column, line, groupColumn);
+    Map<String, Object> contextMap =
+        this.createRuleContextMap(
+            column, line, groupColumn, valuesMap, configAnalyticAccount, parentTitle, rule);
+
+    Context scriptContext = new Context(contextMap, Object.class);
+    ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
+
+    try {
+      return (BigDecimal) scriptHelper.eval(rule);
+    } catch (Exception e) {
+      this.addNullValue(
+          column,
+          line,
+          groupColumn,
+          valuesMapByColumn,
+          valuesMapByLine,
+          configAnalyticAccount,
+          parentTitle);
+      return null;
+    }
+  }
+
+  protected Map<String, Object> createRuleContextMap(
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      AccountingReportConfigLine groupColumn,
+      Map<String, AccountingReportValue> valuesMap,
+      AnalyticAccount configAnalyticAccount,
+      String parentTitle,
+      String rule) {
+    Map<String, Object> contextMap = new HashMap<>();
 
     for (String code : valuesMap.keySet()) {
       if (valuesMap.get(code) != null) {
@@ -700,22 +739,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         }
       }
     }
-    Context scriptContext = new Context(contextMap, Object.class);
-    ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
-    try {
-      return (BigDecimal) scriptHelper.eval(rule);
-    } catch (Exception e) {
-      this.addNullValue(
-          column,
-          line,
-          groupColumn,
-          valuesMapByColumn,
-          valuesMapByLine,
-          configAnalyticAccount,
-          parentTitle);
-      return null;
-    }
+    contextMap.put("analyticAccount", configAnalyticAccount);
+
+    return contextMap;
   }
 
   protected String getRule(
@@ -742,11 +769,134 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AccountingReportConfigLine line,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
-      Set<Account> groupAccountSet,
+      Account groupAccount,
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate)
+      throws AxelorException {
+    this.checkResultSelects(accountingReport, groupColumn, column, line);
+
+    Set<Account> accountSet;
+    Set<AccountType> accountTypeSet = null;
+    Set<AnalyticAccount> analyticAccountSet =
+        this.mergeSets(column.getAnalyticAccountSet(), line.getAnalyticAccountSet());
+
+    if (groupAccount != null) {
+      accountSet = new HashSet<>(Collections.singletonList(groupAccount));
+    } else {
+      accountSet = this.mergeSets(column.getAccountSet(), line.getAccountSet());
+      accountTypeSet = this.mergeSets(column.getAccountTypeSet(), line.getAccountTypeSet());
+    }
+
+    if (groupColumn != null && groupAccount == null) {
+      accountSet = this.mergeSets(groupColumn.getAccountSet(), accountSet);
+      accountTypeSet = this.mergeSets(groupColumn.getAccountTypeSet(), accountTypeSet);
+      analyticAccountSet = this.mergeSets(groupColumn.getAnalyticAccountSet(), analyticAccountSet);
+    }
+
+    if (line.getDetailByAccount()) {
+      int counter = 1;
+
+      for (Account account : accountSet) {
+        String lineCode = String.format("%s_%d", line.getCode(), counter++);
+        valuesMapByLine.put(lineCode, new HashMap<>());
+
+        this.createValueFromMoveLine(
+            accountingReport,
+            groupColumn,
+            column,
+            line,
+            valuesMapByColumn,
+            valuesMapByLine,
+            new HashSet<>(Collections.singletonList(account)),
+            accountTypeSet,
+            analyticAccountSet,
+            configAnalyticAccount,
+            startDate,
+            endDate,
+            parentTitle,
+            account.getLabel(),
+            lineCode);
+        lineOffset++;
+      }
+    } else if (line.getDetailByAccountType() && accountTypeSet != null) {
+      int counter = 1;
+
+      for (AccountType accountType : accountTypeSet) {
+        String lineCode = String.format("%s_%d", line.getCode(), counter++);
+        valuesMapByLine.put(lineCode, new HashMap<>());
+
+        this.createValueFromMoveLine(
+            accountingReport,
+            groupColumn,
+            column,
+            line,
+            valuesMapByColumn,
+            valuesMapByLine,
+            accountSet,
+            new HashSet<>(Collections.singletonList(accountType)),
+            analyticAccountSet,
+            configAnalyticAccount,
+            startDate,
+            endDate,
+            parentTitle,
+            accountType.getName(),
+            lineCode);
+
+        lineOffset++;
+      }
+    } else if (line.getDetailByAnalyticAccount() && analyticAccountSet != null) {
+      int counter = 1;
+
+      for (AnalyticAccount analyticAccount : analyticAccountSet) {
+        String lineCode = String.format("%s_%d", line.getCode(), counter++);
+        valuesMapByLine.put(lineCode, new HashMap<>());
+
+        this.createValueFromMoveLine(
+            accountingReport,
+            groupColumn,
+            column,
+            line,
+            valuesMapByColumn,
+            valuesMapByLine,
+            accountSet,
+            accountTypeSet,
+            new HashSet<>(Collections.singletonList(analyticAccount)),
+            configAnalyticAccount,
+            startDate,
+            endDate,
+            parentTitle,
+            analyticAccount.getFullName(),
+            lineCode);
+
+        lineOffset++;
+      }
+    } else {
+      this.createValueFromMoveLine(
+          accountingReport,
+          groupColumn,
+          column,
+          line,
+          valuesMapByColumn,
+          valuesMapByLine,
+          accountSet,
+          accountTypeSet,
+          analyticAccountSet,
+          configAnalyticAccount,
+          startDate,
+          endDate,
+          parentTitle,
+          line.getLabel(),
+          line.getCode());
+    }
+  }
+
+  protected void checkResultSelects(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line)
       throws AxelorException {
     List<Integer> basicResultSelectList =
         Arrays.asList(
@@ -783,115 +933,6 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           AccountExceptionMessage.REPORT_TYPE_SAME_AS_GROUP_NO_GROUP,
           accountingReport.getReportType().getName());
-    }
-
-    Set<Account> accountSet;
-    Set<AccountType> accountTypeSet = null;
-    Set<AnalyticAccount> analyticAccountSet = null;
-
-    if (groupAccountSet == null) {
-      accountSet = this.mergeSets(column.getAccountSet(), line.getAccountSet());
-      accountTypeSet = this.mergeSets(column.getAccountTypeSet(), line.getAccountTypeSet());
-      analyticAccountSet =
-          this.mergeSets(column.getAnalyticAccountSet(), line.getAnalyticAccountSet());
-    } else {
-      accountSet = this.mergeSets(groupAccountSet, line.getAccountSet());
-    }
-
-    if (line.getDetailByAccount()) {
-      int counter = 1;
-
-      for (Account account : accountSet) {
-        String lineCode = String.format("%s_%d", line.getCode(), counter++);
-        valuesMapByLine.put(lineCode, new HashMap<>());
-
-        this.createValueFromMoveLine(
-            accountingReport,
-            groupColumn,
-            column,
-            line,
-            valuesMapByColumn,
-            valuesMapByLine,
-            new HashSet<>(Collections.singletonList(account)),
-            accountTypeSet,
-            analyticAccountSet,
-            configAnalyticAccount,
-            startDate,
-            endDate,
-            null,
-            account.getLabel(),
-            lineCode);
-        lineOffset++;
-      }
-    } else if (line.getDetailByAccountType() && accountTypeSet != null) {
-      int counter = 1;
-
-      for (AccountType accountType : accountTypeSet) {
-        String lineCode = String.format("%s_%d", line.getCode(), counter++);
-        valuesMapByLine.put(lineCode, new HashMap<>());
-
-        this.createValueFromMoveLine(
-            accountingReport,
-            groupColumn,
-            column,
-            line,
-            valuesMapByColumn,
-            valuesMapByLine,
-            accountSet,
-            new HashSet<>(Collections.singletonList(accountType)),
-            analyticAccountSet,
-            configAnalyticAccount,
-            startDate,
-            endDate,
-            null,
-            accountType.getName(),
-            lineCode);
-
-        lineOffset++;
-      }
-    } else if (line.getDetailByAnalyticAccount() && analyticAccountSet != null) {
-      int counter = 1;
-
-      for (AnalyticAccount analyticAccount : analyticAccountSet) {
-        String lineCode = String.format("%s_%d", line.getCode(), counter++);
-        valuesMapByLine.put(lineCode, new HashMap<>());
-
-        this.createValueFromMoveLine(
-            accountingReport,
-            groupColumn,
-            column,
-            line,
-            valuesMapByColumn,
-            valuesMapByLine,
-            accountSet,
-            accountTypeSet,
-            new HashSet<>(Collections.singletonList(analyticAccount)),
-            configAnalyticAccount,
-            startDate,
-            endDate,
-            null,
-            analyticAccount.getFullName(),
-            lineCode);
-
-        lineOffset++;
-      }
-    } else {
-      this.createValueFromMoveLine(
-          accountingReport,
-          groupColumn,
-          column,
-          line,
-          valuesMapByColumn,
-          valuesMapByLine,
-          accountSet,
-          accountTypeSet,
-          analyticAccountSet,
-          configAnalyticAccount,
-          startDate,
-          endDate,
-          parentTitle,
-          line.getLabel(),
-          line.getCode());
     }
   }
 
@@ -1036,18 +1077,26 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             .bind("company", accountingReport.getCompany())
             .bind("statusList", this.getMoveLineStatusList(accountingReport))
             .bind("accountSet", accountSet)
+            .bind(
+                "groupColumnAnalyticAccountFilter",
+                groupColumn == null ? "" : groupColumn.getAnalyticAccountCode())
             .bind("columnAnalyticAccountFilter", column.getAnalyticAccountCode())
             .bind("lineAnalyticAccountFilter", line.getAnalyticAccountCode())
             .bind("accountTypeSet", accountTypeSet)
             .bind("analyticAccountSet", analyticAccountSet);
+
+    if (groupColumn != null) {
+      moveLineQuery =
+          this.bindAccountFilters(moveLineQuery, groupColumn.getAccountCode(), "groupColumn");
+    }
 
     moveLineQuery = this.bindAccountFilters(moveLineQuery, column.getAccountCode(), "column");
 
     return this.bindAccountFilters(moveLineQuery, line.getAccountCode(), "line");
   }
 
-  protected Query<MoveLine> bindAccountFilters(
-      Query<MoveLine> moveLineQuery, String accountFilter, String type) {
+  protected <T extends Model> Query<T> bindAccountFilters(
+      Query<T> moveLineQuery, String accountFilter, String type) {
     if (StringUtils.isEmpty(accountFilter)) {
       return moveLineQuery;
     }
@@ -1098,11 +1147,21 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
     queryList.addAll(
         this.getAccountFilters(
-            accountSet, accountTypeSet, column.getAccountCode(), line.getAccountCode(), true));
+            accountSet,
+            accountTypeSet,
+            groupColumn == null ? null : groupColumn.getCode(),
+            column.getAccountCode(),
+            line.getAccountCode(),
+            true));
 
     if (CollectionUtils.isNotEmpty(analyticAccountSet)) {
       queryList.add(
           "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount IN :analyticAccountSet AND aml.moveLine = self)");
+    }
+
+    if (groupColumn != null && !Strings.isNullOrEmpty(groupColumn.getAnalyticAccountCode())) {
+      queryList.add(
+          "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount.code LIKE :groupColumnAnalyticAccountFilter AND aml.moveLine = self)");
     }
 
     if (!Strings.isNullOrEmpty(column.getAnalyticAccountCode())) {
@@ -1126,12 +1185,14 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             configLine.getAccountTypeSet(),
             configLine.getAccountCode(),
             null,
+            null,
             false));
   }
 
   protected List<String> getAccountFilters(
       Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
+      String groupColumnFilter,
       String columnAccountFilter,
       String lineAccountFilter,
       boolean moveLine) {
@@ -1141,6 +1202,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       queryList.add(
           String.format(
               "(self%1$s IS NULL OR self%1$s IN :accountSet)", moveLine ? ".account" : ""));
+    }
+
+    if (!Strings.isNullOrEmpty(groupColumnFilter)) {
+      queryList.add(this.getAccountFilterQueryList(groupColumnFilter, "groupColumn", moveLine));
     }
 
     if (!Strings.isNullOrEmpty(columnAccountFilter)) {
