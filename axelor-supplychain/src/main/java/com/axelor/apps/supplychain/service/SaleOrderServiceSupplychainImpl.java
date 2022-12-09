@@ -74,7 +74,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected AppSupplychain appSupplychain;
+  protected AppSupplychainService appSupplychainService;
   protected SaleOrderStockService saleOrderStockService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
@@ -98,9 +98,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         saleOrderRepo,
         saleOrderComputeService,
         saleOrderMarginService);
-    this.appSupplychain = appSupplychainService.getAppSupplychain();
-    this.saleOrderStockService = saleOrderStockService;
-    this.appSupplychain = appSupplychainService.getAppSupplychain();
+    this.appSupplychainService = appSupplychainService;
     this.saleOrderStockService = saleOrderStockService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
@@ -138,6 +136,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
     boolean checkAvailabiltyRequest = super.enableEditOrder(saleOrder);
+    AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return checkAvailabiltyRequest;
@@ -241,7 +240,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
     saleOrder.setOrderBeingEdited(false);
 
-    if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
+    if (appSupplychainService.getAppSupplychain().getCustomerStockMoveGenerationAuto()) {
       saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
     }
   }
