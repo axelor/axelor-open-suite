@@ -278,6 +278,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             : fixedAsset.getReference();
     BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
     BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
+    BigDecimal accountingValue = fixedAssetLine.getAccountingValue();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
@@ -324,7 +325,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         Account debitLineAccount;
         Account creditLineAccount;
         BigDecimal amount;
-        if (impairmentValue.compareTo(BigDecimal.ZERO) > 0) {
+        if ((impairmentValue.signum() > 0 && accountingValue.signum() > 0)
+            || (impairmentValue.signum() < 0 && accountingValue.signum() < 0)) {
           if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
               || fixedAssetCategory.getAppProvisionTangibleFixedAssetAccount() == null) {
             throw new AxelorException(
@@ -350,6 +352,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
         }
         amount = impairmentValue.abs();
+        if (accountingValue.signum() < 0) {
+          amount = amount.negate();
+        }
 
         MoveLine debitMoveLine =
             moveLineCreateService.createMoveLine(
