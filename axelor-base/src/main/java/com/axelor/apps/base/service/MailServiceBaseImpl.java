@@ -206,8 +206,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Query<Partner> query2 = Query.of(Partner.class);
 
     if (!isBlank(filter2)) {
-      if (partnerPermissionFilter != null) {
-        query2.filter(filter2, partnerPermissionFilter.getParams());
+      if (partnerPermissionFilter != null && partnerPermissionFilter.getParams() != null) {
+        query2.filter(filter2, partnerPermissionFilter.getParams().toArray());
       } else {
         query2.filter(filter2);
       }
