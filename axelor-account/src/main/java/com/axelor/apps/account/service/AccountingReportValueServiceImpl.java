@@ -482,9 +482,10 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
           line.getCode());
     } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-      if (line.getDetailByAccount()
-          || line.getDetailByAccountType()
-          || line.getDetailByAnalyticAccount()) {
+      if (accountingReport.getDisplayDetails()
+          && (line.getDetailByAccount()
+              || line.getDetailByAccountType()
+              || line.getDetailByAnalyticAccount())) {
         for (String lineCode :
             valuesMapByLine.keySet().stream()
                 .filter(it -> it.matches(String.format("%s_[0-9]+", line.getCode())))
@@ -795,7 +796,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       analyticAccountSet = this.mergeSets(groupColumn.getAnalyticAccountSet(), analyticAccountSet);
     }
 
-    if (line.getDetailByAccount()) {
+    if (accountingReport.getDisplayDetails() && line.getDetailByAccount()) {
       int counter = 1;
 
       for (Account account : accountSet) {
@@ -820,7 +821,9 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
             lineCode);
         lineOffset++;
       }
-    } else if (line.getDetailByAccountType() && accountTypeSet != null) {
+    } else if (accountingReport.getDisplayDetails()
+        && line.getDetailByAccountType()
+        && accountTypeSet != null) {
       int counter = 1;
 
       for (AccountType accountType : accountTypeSet) {
@@ -846,7 +849,9 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
         lineOffset++;
       }
-    } else if (line.getDetailByAnalyticAccount() && analyticAccountSet != null) {
+    } else if (accountingReport.getDisplayDetails()
+        && line.getDetailByAnalyticAccount()
+        && analyticAccountSet != null) {
       int counter = 1;
 
       for (AnalyticAccount analyticAccount : analyticAccountSet) {

@@ -151,8 +151,8 @@
           requiredIf="reportType.typeSelect == 17"/>
         <field name="minAmountExcl"
           showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
-        <field name="displayAnalyticAccountsDetails" showIf="reportType.typeSelect == 3000"
-          colSpan="12"/>
+        <field name="displayDetails" showIf="reportType.typeSelect == 3000"/>
+        <field name="displayAnalyticAccountsDetails" showIf="reportType.typeSelect == 3000"/>
         <panel-related name="accountingReportAnalyticConfigLineListPanel"
           field="accountingReportAnalyticConfigLineList" colSpan="12" height="15" x-row-height="29"
           form-view="accounting-report-analytic-config-line-form"
