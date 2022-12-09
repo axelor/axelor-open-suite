@@ -393,6 +393,15 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       LocalDate endDate)
       throws AxelorException {
     for (AccountingReportConfigLine column : columnList) {
+      if (StringUtils.notEmpty(column.getGroupsWithoutColumn()) && groupColumn != null) {
+        List<String> groupsWithoutColumnCodeList =
+            Arrays.asList(column.getGroupsWithoutColumn().split(","));
+
+        if (groupsWithoutColumnCodeList.contains(groupColumn.getCode())) {
+          continue;
+        }
+      }
+
       String columnCode =
           this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
 
