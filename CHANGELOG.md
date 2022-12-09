@@ -1,3 +1,71 @@
+## [6.4.1] (2022-12-08)
+
+#### Features
+
+* Invoice: add new French statements in Invoice Report depending of product type.
+* Invoice: add partner siret number in French report.
+
+#### Fixed
+
+* Move line query: partner field is no more required in database and views.
+* Reconcile: optimization were made to reduce execution time on all accounting processes related to reconciliation.
+* User: email field is now correctly displayed
+
+Email field is now displayed in editing mode.
+Email field is now displayed in readonly mode only if a value is present.
+
+* Followers: fixed a bug where trying to fetch a recipient would result in a exception with somes conditions.
+* Sale order: fixed stack overflow error when the partner had a parent partner.
+* Cash management: fixed an issue were some data were not displayed correctly on the PDF report.
+* Invoice line: choosing a product from a supplier catalog now takes the product name from the supplier catalog and not the translation.
+* Payment session: fix confirming a bank order generated from a payment session when the bank order lines had different dates.
+* Invoice tax line: set vat system to default value when tax line value is 0.
+* Leave request / employee: a HR manager can now access draft requests for other employees from the menu.
+* Fix creation of new invoice term from moves and invoices.
+* Accounting move: fix NPE when modifying move lines on a duplicated move.
+* Accounting move: when we reverse a move, the analytic move lines are now correctly kept on the reversed move.
+* Account config: add missing sequences of analytic axis in demo datas.
+* Debt recovery history: prevent the user from printing a report when there is no debt recovery.
+* Fixed asset: fixed disposal move not generated when proceeding to the disposal of a fixed asset where accounting value is equal to 0.
+* Fixed asset: fixed wrong accounting value in degressive computation.
+* Fixed asset: fixed tax lines management in cession sale move generation
+
+Check on missing tax account only when the tax line value is positive
+Initialize of taxline in movelines for credit move line and tax move line
+
+* Move line: fix typo in french error message.
+* Payment voucher: change payment voucher element lists to display the moveline origin instead of the invoice directly.
+* Move Template: rework of tax management
+  - Tax move lines are now selectable just for preview.
+  - Recompute of tax move lines via other move lines with tax on it.
+  - Message when a tax move line is set to inform user.
+
+* Stock move: changing the real quantity of a line will not reset the discounted price to the original price anymore.
+
+When generating a Stock move from a Purchase order, if a line had a discount,
+changing the real quantity of a discounted line would set the price to the original one. This wrong behavior is now fixed.
+
+* Journal: "Has required origin" boolean french help text have been corrected.
+* Sale order : Fixed the automatic filling when partner change for the field 'Hide discount on prints' according to it value in the price list.
+* Price List: fixed wrong filter on price list menu entry.
+* Stock move mass invoicing: fixed a bug where some stock moves were not be invoiced when the invoice was created from a merge.
+* Accounting batch: Fix the batch to realize fixed asset line so it correctly update only the fixed asset lines from the selected company.
+* Operation order: fix a blocking NullPointerException error when we plan an operation order without a machine.
+* Sequence / Forecast recap: Fix demo data sequence for the forecast recap.
+* Accounting dashboard: fix not opening the right grid when clicking on the rejection reason pie chart.
+* Invoice: when trying to ventilate an invoice, fixed a case where rounding issue happened preventing the ventilation.
+* Accounting report : fix DAS2 printing
+* Stock move: details stock locations lines will not longer be generated with zero quantity when the stock move is a delivery. This change will allow to correctly use auto generation of tracking number for sales.
+* Bank order: Add the possibility to sign bank orders even without EBICS module.
+* Sale/Purchase order: fix the way we fetch default stock location on purchase and sale orders using partner stock settings.
+* Expense: when paying expense, correctly fill sender company and sender bank details in the generated payment.
+* Accounting demo data: fix demo data for fixed asset category and journals.
+* Discounted payment move: corrected discounted payment move been not balanced.
+* Invoice payment: corrected discount fields not displayed in invoice payment.
+* Payment voucher: fix amount controls on payment given auto imputation and financial discount.
+* Accounting move line: fix currency amount/rate readonly condition in the counterpart generation.
+* Stock move: if the configuration is active, services (product) are now correctly managed in stock moves.
+
 ## [6.4.0] (2022-11-28)
 
 #### Features
@@ -143,4 +211,5 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.1]: https://github.com/axelor/axelor-open-suite/compare/v6.4.0...v6.4.1
 [6.4.0]: https://github.com/axelor/axelor-open-suite/compare/v6.3.5...v6.4.0

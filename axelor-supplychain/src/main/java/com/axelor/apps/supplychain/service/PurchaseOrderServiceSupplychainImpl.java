@@ -40,7 +40,10 @@ import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -73,6 +76,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected BudgetSupplychainService budgetSupplychainService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepository;
   protected PurchaseOrderLineService purchaseOrderLineService;
+  protected PartnerStockSettingsService partnerStockSettingsService;
+  protected StockConfigService stockConfigService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -83,7 +88,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       PurchaseOrderStockService purchaseOrderStockService,
       BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
-      PurchaseOrderLineService purchaseOrderLineService) {
+      PurchaseOrderLineService purchaseOrderLineService,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -93,6 +100,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.budgetSupplychainService = budgetSupplychainService;
     this.purchaseOrderLineRepository = purchaseOrderLineRepository;
     this.purchaseOrderLineService = purchaseOrderLineService;
+    this.partnerStockSettingsService = partnerStockSettingsService;
+    this.stockConfigService = stockConfigService;
   }
 
   @Override
@@ -485,5 +494,38 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       }
     }
     return true;
+  }
+
+  @Override
+  public StockLocation getStockLocation(Partner supplierPartner, Company company)
+      throws AxelorException {
+    if (company == null) {
+      return null;
+    }
+    StockLocation stockLocation =
+        partnerStockSettingsService.getDefaultStockLocation(
+            supplierPartner, company, StockLocation::getUsableOnPurchaseOrder);
+    if (stockLocation == null) {
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      stockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+    }
+    return stockLocation;
+  }
+
+  @Override
+  public StockLocation getFromStockLocation(Partner supplierPartner, Company company)
+      throws AxelorException {
+    if (company == null) {
+      return null;
+    }
+
+    StockLocation fromStockLocation =
+        partnerStockSettingsService.getDefaultExternalStockLocation(
+            supplierPartner, company, StockLocation::getUsableOnPurchaseOrder);
+    if (fromStockLocation == null) {
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      fromStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+    }
+    return fromStockLocation;
   }
 }
