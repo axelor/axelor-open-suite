@@ -71,7 +71,8 @@
       <field name="invoiceLine" colSpan="3"
         domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)"
         form-view="invoice-line-form" grid-view="invoice-line-grid"/>
-      <field name="purchaseAccountMove" colSpan="3" domain="self.company = :company"/>
+      <field name="purchaseAccountMove" colSpan="3"
+        domain="self.company = :company AND self.journal.journalType = 4"/>
       <field name="journal" readonlyIf="statusSelect > 1" canEdit="false"
         domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form"
         grid-view="journal-grid"/>
