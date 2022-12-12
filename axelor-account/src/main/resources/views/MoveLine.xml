@@ -52,7 +52,9 @@
     <field name="date" width="100" onChange="account-move-line-group-date-onchange"
       hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonly="false"/>
+      onSelect="action-account-move-line-partner-group"
+      onChange="action-move-line-record-reset-partner-details" width="120" canEdit="false"
+      readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
       readonlyIf="amountPaid &gt; 0" onChange="action-account-move-line-account-group-on-change"/>
@@ -462,7 +464,8 @@
         readonlyIf="amountPaid &gt; 0"
         onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        onSelect="action-move-line-attrs-domain-partner" canEdit="false"
+        onSelect="action-move-line-attrs-domain-partner"
+        onChange="action-move-line-record-reset-partner-details" canEdit="false"
         readonlyIf="amountPaid &gt; 0"/>
       <field name="currencyAmount" onChange="action-move-line-record-set-amount"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
@@ -674,6 +677,11 @@
     <field name="credit"
       expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum()"
       if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &lt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"/>
+  </action-record>
+
+  <action-record name="action-move-line-record-reset-partner-details"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="partnerFullName,partnerSeq,partnerId" expr="eval: null" if="!partner"/>
   </action-record>
 
   <action-group name="account-move-line-group-date-onchange">
