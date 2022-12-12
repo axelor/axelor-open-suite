@@ -136,16 +136,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
 
   @Transactional
   public TimesheetLine setTimesheet(TimesheetLine timesheetLine) throws AxelorException {
-    Timesheet timesheet =
-        timesheetRepo
-            .all()
-            .filter(
-                "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
-                timesheetLine.getEmployee(),
-                timesheetLine.getProject().getCompany(),
-                timesheetLine.getDate())
-            .order("id")
-            .fetchOne();
+    Timesheet timesheet = getTimesheetQuery(timesheetLine).order("id").fetchOne();
     if (timesheet == null) {
       Timesheet lastTimesheet =
           timesheetRepo
@@ -210,5 +201,16 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
       }
       JPA.clear();
     }
+  }
+
+  @Override
+  public Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine) {
+    return timesheetRepo
+        .all()
+        .filter(
+            "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
+            timesheetLine.getEmployee(),
+            timesheetLine.getProject().getCompany(),
+            timesheetLine.getDate());
   }
 }
