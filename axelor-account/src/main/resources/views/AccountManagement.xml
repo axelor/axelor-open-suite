@@ -59,7 +59,9 @@
     groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management">
     <field name="company"/>
     <field name="bankDetails"/>
-    <field name="journal" domain="self.statusSelect = 1"/>
+    <field name="journal"
+      domain="self.statusSelect = 1 AND (:company IS NULL OR self.company = :company)"
+      onChange="action-account-management-fill-company"/>
     <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"/>
     <field name="paymentMode"/>
   </grid>
@@ -183,6 +185,11 @@
     <attribute for="bankDetails" name="value" expr="eval: company?.defaultBankDetails"
       if="company?.defaultBankDetails?.active"/>
   </action-attrs>
+
+  <action-record name="action-account-management-fill-company"
+    model="com.axelor.apps.account.db.AccountManagement">
+    <field name="company" expr="eval: journal.company" if="journal != null"/>
+  </action-record>
 
   <action-record name="action-record-account-management-new-account-management"
     model="com.axelor.apps.account.db.AccountManagement">
