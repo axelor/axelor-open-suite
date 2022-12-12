@@ -9,9 +9,7 @@
   </grid>
 
   <form name="opportunity-status-form" title="Opportunity status"
-    model="com.axelor.apps.crm.db.OpportunityStatus"
-    onNew="action-opportunity-status-method-set-attrs-on-new"
-    onLoad="action-opportunity-status-method-set-attrs-on-new">
+    model="com.axelor.apps.crm.db.OpportunityStatus">
     <panel name="mainPanel">
       <label colSpan="12"
         title="These statuses are essential to the operation of the process, they can be renamed but cannot be deleted."
@@ -22,9 +20,5 @@
       <field name="typeSelect"/>
     </panel>
   </form>
-
-  <action-method name="action-opportunity-status-method-set-attrs-on-new">
-    <call class="com.axelor.apps.crm.web.OpportunityStatusController" method="setAttrs"/>
-  </action-method>
 
 </object-views>

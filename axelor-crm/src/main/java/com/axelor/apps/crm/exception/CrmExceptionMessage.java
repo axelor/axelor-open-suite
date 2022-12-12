@@ -105,4 +105,11 @@ public final class CrmExceptionMessage {
       "The end date must be after the start date" /*)*/;
   public static final String OPPORTUNITY_1 = /*$$(*/
       "There's no configured sequence for opportunities for the company %s" /*)*/;
+
+  /** Opportunity Status */
+  public static final String OPPORTUNITY_STATUS_CLOSED_WON_LOST_NOT_DELETED =
+      /* $$( */ "%s status can't be deleted." /* ) */;
+
+  public static final String OPPORTUNITY_STATUS_CLOSED_WON_LOST_ALREADY_EXIST =
+      /* $$( */ "Opportunity status '%s' is already exist." /* ) */;
 }

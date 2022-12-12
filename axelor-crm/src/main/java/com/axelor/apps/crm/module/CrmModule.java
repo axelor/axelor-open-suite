@@ -33,6 +33,8 @@ import com.axelor.apps.crm.db.repo.LeadStatusManagementRepository;
 import com.axelor.apps.crm.db.repo.LeadStatusRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.db.repo.OpportunityStatusManagementRepository;
+import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.CrmReportingService;
@@ -66,5 +68,6 @@ public class CrmModule extends AxelorModule {
     bind(GenerateMessageController.class).to(CrmGenerateMessageController.class);
     bind(LeadStatusRepository.class).to(LeadStatusManagementRepository.class);
     bind(CrmReportingService.class).to(CrmReportingServiceImpl.class);
+    bind(OpportunityStatusRepository.class).to(OpportunityStatusManagementRepository.class);
   }
 }
