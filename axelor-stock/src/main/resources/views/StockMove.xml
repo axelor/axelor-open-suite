@@ -1096,19 +1096,19 @@
   <action-record name="action-stock-move-record-mail-configuration"
     model="com.axelor.apps.stock.db.StockMove">
     <field
-      if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING"
+      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __user__.activeCompany != null"
       name="plannedStockMoveAutomaticMail"
       expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveAutomaticMail"/>
     <field
-      if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING"
+      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __user__.activeCompany != null"
       name="realStockMoveAutomaticMail"
       expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail"/>
     <field
-      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveAutomaticMail"
+      if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveAutomaticMail"
       name="plannedStockMoveMessageTemplate"
       expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveMessageTemplate"/>
     <field
-      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail"
+      if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail"
       name="realStockMoveMessageTemplate"
       expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveMessageTemplate"/>
     <field if="company == null" name="plannedStockMoveAutomaticMail" expr="eval: false"/>

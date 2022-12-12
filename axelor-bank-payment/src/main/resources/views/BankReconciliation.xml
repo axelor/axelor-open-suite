@@ -139,7 +139,7 @@
           readonly="true"/>
         <field name="statementOngoingReconciledBalance" showTitle="false" colSpan="4"
           readonly="true"/>
-        <label name="balanceLabel" title="Ongoing" colSpan="4"/>
+        <label name="balanceLabel" title="BankReconciliation.ongoing" colSpan="4"/>
         <field name="movesOngoingReconciledBalance" showTitle="false" colSpan="4"
           readonly="true"/>
         <field name="statementAmountRemainingToReconcile" showTitle="false" colSpan="4"
