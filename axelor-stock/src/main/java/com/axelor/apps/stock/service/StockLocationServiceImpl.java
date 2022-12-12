@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -55,38 +54,20 @@ public class StockLocationServiceImpl implements StockLocationService {
 
   protected ProductRepository productRepo;
 
+  protected StockConfigService stockConfigService;
+
   protected Set<Long> locationIdSet = new HashSet<>();
 
   @Inject
   public StockLocationServiceImpl(
       StockLocationRepository stockLocationRepo,
       StockLocationLineService stockLocationLineService,
-      ProductRepository productRepo) {
+      ProductRepository productRepo,
+      StockConfigService stockConfigService) {
     this.stockLocationRepo = stockLocationRepo;
     this.stockLocationLineService = stockLocationLineService;
     this.productRepo = productRepo;
-  }
-
-  @Override
-  public StockLocation getDefaultReceiptStockLocation(Company company) {
-    try {
-      StockConfigService stockConfigService = Beans.get(StockConfigService.class);
-      StockConfig stockConfig = stockConfigService.getStockConfig(company);
-      return stockConfigService.getReceiptDefaultStockLocation(stockConfig);
-    } catch (Exception e) {
-      return null;
-    }
-  }
-
-  @Override
-  public StockLocation getPickupDefaultStockLocation(Company company) {
-    try {
-      StockConfigService stockConfigService = Beans.get(StockConfigService.class);
-      StockConfig stockConfig = stockConfigService.getStockConfig(company);
-      return stockConfigService.getPickupDefaultStockLocation(stockConfig);
-    } catch (Exception e) {
-      return null;
-    }
+    this.stockConfigService = stockConfigService;
   }
 
   protected List<StockLocation> getNonVirtualStockLocations(Long companyId) {
