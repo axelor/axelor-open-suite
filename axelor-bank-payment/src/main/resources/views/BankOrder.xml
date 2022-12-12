@@ -145,7 +145,8 @@
         <field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true"
           hideIf="isMultiDate" readonlyIf="technicalOriginSelect == 1"/>
         <field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"
-          readonlyIf="technicalOriginSelect == 1"/>
+          readonlyIf="technicalOriginSelect == 1"
+          onChange="action-bank-order-record-order-type-select-onchange"/>
         <field name="paymentMode" css="label-bold bold" colSpan="6" canView="false"
           domain="self.orderTypeSelect = :orderTypeSelect"
           onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"
@@ -700,6 +701,11 @@
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <field name="senderBankDetails"
       if="!bankOrderFileFormat?.allowOrderCurrDiffFromBankDetails" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-bank-order-record-order-type-select-onchange"
+    model="com.axelor.apps.bankpayment.db.BankOrder">
+    <field name="paymentMode,bankOrderFileFormat" expr="eval: null"/>
   </action-record>
 
   <!-- Actions Methods -->
