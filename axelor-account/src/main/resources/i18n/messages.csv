@@ -1418,6 +1418,7 @@
 "Display partner sequence on printing",,,
 "Display product code on printing",,,
 "Display tax detail on printing",,,
+"Display the Siren of the partner on invoice printing",,,
 "Display the balances",,,
 "Display the delta between years",,,
 "Display the percentage delta between years",,,

@@ -217,6 +217,8 @@
       title="Display head office address on invoice printing"/>
     <boolean name="displayStockMoveOnInvoicePrinting"
       title="Display Deliveries information on invoice printing" default="false"/>
+    <boolean name="displayPartnerSirenOnInvoicePrinting"
+      title="Display the Siren of the partner on invoice printing" default="true"/>
     <string name="invoiceClientBox" large="true" multiline="true"
       title="Client box in invoice"/>
     <string name="saleInvoiceLegalNote" large="true" multiline="true"

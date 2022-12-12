@@ -261,8 +261,9 @@
             if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
           <field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
           <field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
-          <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch" colSpan="12"
+          <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch"
             if="__config__.app.isApp('supplychain')"/>
+          <field name="displayPartnerSirenOnInvoicePrinting" widget="boolean-switch"/>
           <field name="invoiceWatermark" widget="Image"/>
           <field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
           <field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
