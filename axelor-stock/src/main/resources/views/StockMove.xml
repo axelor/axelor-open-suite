@@ -595,7 +595,7 @@
           <field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
         </panel>
         <panel name="pickingOrderCommentsPanel" title="Comment to display on picking order"
-          colSpan="12">
+          colSpan="12" showIf="typeSelect == 2">
           <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
       </panel>
