@@ -157,6 +157,12 @@ public class AccountClearanceService {
     Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 
     for (MoveLine moveLine : moveLineList) {
+      if (moveLine.getAccount().getVatSystemSelect() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+            moveLine.getAccount().getCode());
+      }
       Account taxAccount =
           taxAccountService.getAccount(
               tax,

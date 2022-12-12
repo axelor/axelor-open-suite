@@ -484,6 +484,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           int vatSystemSelect =
               accountingSituationService.determineVatSystemSelect(
                   accountingSituation, invoiceLineTax.getVatSystemSelect());
+          if (accountingSituation.getVatSystemSelect() == null
+              && invoiceLineTax.getVatSystemSelect() == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_TAX_PARTNER),
+                invoiceLineTax.getTaxLine().getName(),
+                partner.getFullName());
+          }
           account =
               taxAccountService.getAccount(
                   tax,
@@ -855,6 +863,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       int vatSystemSelect =
           accountingSituationService.determineVatSystemSelect(
               accountingSituation, moveLine.getAccount().getVatSystemSelect());
+      if (accountingSituation.getVatSystemSelect() == null
+          && moveLine.getAccount().getVatSystemSelect() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT_PARTNER),
+            moveLine.getAccount().getCode(),
+            partner.getFullName());
+      }
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
