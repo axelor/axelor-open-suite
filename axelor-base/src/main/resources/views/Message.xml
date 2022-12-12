@@ -80,12 +80,8 @@
   </form>
 
   <action-group name="action-group-base-message-onnew">
-    <action name="action-message-method-display-generate-message" if="_message != null"/>
-    <action name="action-message-record-default"/>
-    <action name="action-message-record-active-company"/>
-    <action name="action-message-record-mail-account"/>
-    <action name="action-message-record-get-signature"/>
-    <action name="action-message-record-default-media-type"/>
+    <action name="action-group-message-message-onnew"/>
+    <action name="action-message-record-active-company" if="_message == null"/>
   </action-group>
 
   <action-attrs name="action-message-attribute-mail-account">
