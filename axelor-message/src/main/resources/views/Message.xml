@@ -139,10 +139,10 @@
 
   <action-group name="action-group-message-message-onnew">
     <action name="action-message-method-display-generate-message" if="_message != null"/>
-    <action name="action-message-record-default"/>
-    <action name="action-message-record-mail-account"/>
-    <action name="action-message-record-get-signature"/>
-    <action name="action-message-record-default-media-type"/>
+    <action name="action-message-record-default" if="_message == null"/>
+    <action name="action-message-record-mail-account" if="_message == null"/>
+    <action name="action-message-record-get-signature" if="_message == null"/>
+    <action name="action-message-record-default-media-type" if="_message == null"/>
   </action-group>
 
   <action-group name="action-group-message-message-send-click">
