@@ -61,6 +61,7 @@ import com.axelor.apps.supplychain.service.MrpLineTypeService;
 import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -594,8 +595,24 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     }
     Company company = mrp.getStockLocation().getCompany();
     BillOfMaterial billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+    String procurementMethodSelect =
+        (String)
+            productCompanyService.get(
+                product, "procurementMethodSelect", mrp.getStockLocation().getCompany());
 
-    if (billOfMaterial != null && mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP) {
+    // If procurementMethodSelect is null of productCompany
+    if (StringUtils.isEmpty(procurementMethodSelect)) {
+      procurementMethodSelect = product.getProcurementMethodSelect();
+    }
+
+    boolean purchasable =
+        (boolean)
+            productCompanyService.get(product, "purchasable", mrp.getStockLocation().getCompany());
+
+    if (billOfMaterial != null
+        && mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP
+        && !procurementMethodSelect.equals(ProductRepository.PROCUREMENT_METHOD_BUY)
+        && !purchasable) {
       this.assignProductLevel(billOfMaterial, 0);
     } else {
       log.debug("Add product: {}", product.getFullName());
