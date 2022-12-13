@@ -88,8 +88,8 @@
         <field name="notComputedIfIntersect"/>
         <panel name="columnConfigPanel" colSpan="12"
           showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2">
-          <field name="computePreviousYear"/>
-          <field name="computeOtherPeriod"/>
+          <field name="computePreviousYear" hideIf="computeOtherPeriod"/>
+          <field name="computeOtherPeriod" hideIf="computePreviousYear"/>
         </panel>
         <field name="priority" showIf="typeSelect != 4 &amp;&amp; ruleTypeSelect == 3"
           requiredIf="typeSelect != 4 &amp;&amp; ruleTypeSelect == 3"/>
