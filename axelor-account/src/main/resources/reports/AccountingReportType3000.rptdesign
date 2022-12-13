@@ -2460,6 +2460,37 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                         <property name="levels">
                                                             <extended-item extensionName="LevelView" name="NewLevel View3" id="5989">
                                                                 <property name="level">Period/period</property>
+                                                                <property name="sort">
+                                                                    <sort-element>
+                                                                        <expression name="key" type="javascript">dimension["Period"]["period"]</expression>
+                                                                        <property name="direction">desc</property>
+                                                                        <property name="strength">-1</property>
+                                                                        <property name="member">
+                                                                            <member-value>
+                                                                                <property name="value"></property>
+                                                                                <property name="level">AnalyticAccount/analyticAccount</property>
+                                                                                <property name="memberValues">
+                                                                                    <member-value>
+                                                                                        <property name="value"></property>
+                                                                                        <property name="level">Line/line</property>
+                                                                                        <property name="memberValues">
+                                                                                            <member-value>
+                                                                                                <property name="value"></property>
+                                                                                                <property name="level">Group/group</property>
+                                                                                                <property name="memberValues">
+                                                                                                    <member-value>
+                                                                                                        <property name="value"></property>
+                                                                                                        <property name="level">Column/column</property>
+                                                                                                    </member-value>
+                                                                                                </property>
+                                                                                            </member-value>
+                                                                                        </property>
+                                                                                    </member-value>
+                                                                                </property>
+                                                                            </member-value>
+                                                                        </property>
+                                                                    </sort-element>
+                                                                </property>
                                                                 <property name="member">
                                                                     <extended-item extensionName="CrosstabCell" id="5990">
                                                                         <property name="content">
