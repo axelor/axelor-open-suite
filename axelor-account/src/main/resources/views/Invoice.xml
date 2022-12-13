@@ -642,7 +642,7 @@
             form-view="invoice-form" grid-view="invoice-grid"/>
           <panel-related name="refundInvoiceListPanel" field="refundInvoiceList"
             readonly="true"
-            showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12"
+            showIf="refundInvoiceList != null &amp;&amp; refundInvoiceList.length > 0" colSpan="12"
             form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
         </panel>
         <field name="paymentDelayReason" canNew="false" canEdit="false"
