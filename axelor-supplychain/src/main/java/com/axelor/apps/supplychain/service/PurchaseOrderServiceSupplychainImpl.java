@@ -597,7 +597,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             supplierPartner, company, StockLocation::getUsableOnPurchaseOrder);
     if (fromStockLocation == null) {
       StockConfig stockConfig = stockConfigService.getStockConfig(company);
-      fromStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+      fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
     }
     return fromStockLocation;
   }
