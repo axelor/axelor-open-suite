@@ -207,11 +207,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     StockLocation stockLocation = manufOrder.getProdProcess().getStockLocation();
 
-    LocalDate maturityDate;
+    LocalDate maturityDate = null;
 
     if (manufOrder.getPlannedEndDateT() != null) {
       maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
-    } else {
+    } else if (manufOrder.getPlannedStartDateT() != null) {
       maturityDate = manufOrder.getPlannedStartDateT().toLocalDate();
     }
 
@@ -259,7 +259,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
             if (operationOrder.getPlannedEndDateT() != null) {
               maturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
-            } else {
+            } else if (operationOrder.getPlannedStartDateT() != null) {
               maturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
             }
 
