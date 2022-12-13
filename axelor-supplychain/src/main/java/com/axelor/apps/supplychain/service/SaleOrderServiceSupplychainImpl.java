@@ -69,7 +69,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected AppSupplychain appSupplychain;
+  protected AppSupplychainService appSupplychainService;
   protected SaleOrderStockService saleOrderStockService;
 
   @Inject
@@ -89,9 +89,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         saleOrderRepo,
         saleOrderComputeService,
         saleOrderMarginService);
-    this.appSupplychain = appSupplychainService.getAppSupplychain();
-    this.saleOrderStockService = saleOrderStockService;
-    this.appSupplychain = appSupplychainService.getAppSupplychain();
+    this.appSupplychainService = appSupplychainService;
     this.saleOrderStockService = saleOrderStockService;
   }
 
@@ -127,8 +125,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
     boolean checkAvailabiltyRequest = super.enableEditOrder(saleOrder);
+    AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return checkAvailabiltyRequest;
     }
 
@@ -179,7 +178,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   public void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView)
       throws AxelorException {
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       super.checkModifiedConfirmedOrder(saleOrder, saleOrderView);
       return;
     }
@@ -223,14 +222,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
     super.validateChanges(saleOrder);
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return;
     }
 
     saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
     saleOrder.setOrderBeingEdited(false);
 
-    if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
+    if (appSupplychainService.getAppSupplychain().getCustomerStockMoveGenerationAuto()) {
       saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
     }
   }
