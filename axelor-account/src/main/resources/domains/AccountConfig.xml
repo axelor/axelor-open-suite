@@ -209,7 +209,8 @@
       ref="com.axelor.apps.base.db.Product"/>
 
     <!-- Invoice printing -->
-    <boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing"/>
+    <boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing"
+      default="true"/>
     <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
     <boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
     <boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
