@@ -179,7 +179,7 @@
         form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
         onChange="action-expense-group-expense-line-on-change"/>
       <panel-related name="employeeAdvanceUsageListPanel"
-        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length"
+        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length > 0"
         field="employeeAdvanceUsageList" title="Employee advance list" readonly="false"
         canNew="false" canSelect="false" canEdit="true" editable="true"
         form-view="employee-advance-usage-expense-form"
