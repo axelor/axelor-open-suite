@@ -31,7 +31,8 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}" readonlyIf="$isReadOnly"/>
       <field name="company" canEdit="false"
         readonlyIf="statusSelect == 1 || statusSelect == 2 || $isReadOnly" form-view="company-form"
-        grid-view="company-grid" onChange="action-journal-record-reset-valid-account-set"/>
+        grid-view="company-grid"
+        onChange="action-journal-record-reset-valid-account-set,action-journal-record-change-config-values"/>
       <field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
       <field name="authorizedFunctionalOriginSelect" widget="MultiSelect"/>
       <field name="journalType.isDisplayBalances" hidden="true"/>
@@ -78,6 +79,12 @@
             showIf="company.accountConfig.isActivateSimulatedMove"/>
           <field name="allowAccountingDaybook"
             showIf="company.accountConfig.accountingDaybook"/>
+          <panel name="originControlSettings" showTitle="false" colSpan="12">
+            <field name="hasDuplicateDetectionOnOrigin"/>
+            <field name="hasRequiredOrigin"/>
+            <field name="prefixOrigin" requiredIf="hasDuplicateDetectionOnOrigin"/>
+          </panel>
+          <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         </panel>
@@ -115,8 +122,7 @@
       self.move.period.year.fromDate &lt; :todayDate and self.move.period.year.toDate &gt;
       :todayDate
     </domain>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
 
@@ -178,6 +184,14 @@
   <action-method name="action-journal-method-set-totals">
     <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>
   </action-method>
+
+  <action-record name="action-journal-record-change-config-values"
+    model="com.axelor.apps.account.db.Journal">
+    <field name="authorizeSimulatedMove"
+      expr="eval: company?.accountConfig?.isActivateSimulatedMove"/>
+    <field name="allowAccountingDaybook"
+      expr="eval: company?.accountConfig?.accountingDaybook"/>
+  </action-record>
 
   <action-attrs name="action-attrs-account-journal-readonly-if-account-in-move-line">
     <attribute name="value" for="$isReadOnly"

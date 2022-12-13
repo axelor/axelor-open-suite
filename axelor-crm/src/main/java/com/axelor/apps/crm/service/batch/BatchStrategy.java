@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.service.batch;
 
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.TargetConfiguration;
@@ -66,5 +67,9 @@ public abstract class BatchStrategy extends AbstractBatch {
     targetConfiguration.addBatchSetItem(batchRepo.find(batch.getId()));
 
     incrementDone();
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_CRM_BATCH);
   }
 }

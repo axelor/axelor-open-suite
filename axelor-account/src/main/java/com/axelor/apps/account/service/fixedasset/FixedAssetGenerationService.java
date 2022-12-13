@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface FixedAssetGenerationService {
@@ -124,11 +123,10 @@ public interface FixedAssetGenerationService {
    * Copy FixedAsset including all lines.
    *
    * @param fixedAsset
-   * @param disposalQty
    * @return
    * @throws AxelorException
    */
-  FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty) throws AxelorException;
+  FixedAsset copyFixedAsset(FixedAsset fixedAsset) throws AxelorException;
 
   /**
    * Copy fixedAssetCategory infos such as computationMethodSelect, numberOfDepreciation, etc.. in

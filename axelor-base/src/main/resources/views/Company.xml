@@ -102,11 +102,11 @@
           if="__config__.app.isApp('cash-management')"/>
         <field name="tradingNameSet" canNew="true" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="12"
-          if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+          if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
         <field name="tradingNamePrintingSettingsList" canNew="true"
           form-view="trading-name-printing-settings-company-form"
           grid-view="trading-name-printing-settings-company-grid" colSpan="12"
-          if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+          if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
         <field name="weeklyPlanning" title="Weekly planning" canNew="true"
           form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
         <field name="publicHolidayEventsPlanning" form-view="events-planning-form"
@@ -185,9 +185,9 @@
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
     title="Company filters">
     <field name="tradingNameSet" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="tradingNamePrintingSettingsList" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="customerPaymentDelay" hidden="true"
       if="!__config__.app.isApp('cash-management')"/>
     <field name="supplierPaymentDelay" hidden="true"

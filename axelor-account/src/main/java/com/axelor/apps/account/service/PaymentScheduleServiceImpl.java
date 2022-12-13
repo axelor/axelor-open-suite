@@ -175,7 +175,12 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    */
   @Override
   public String getPaymentScheduleSequence(Company company) throws AxelorException {
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PAYMENT_SCHEDULE, company);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PAYMENT_SCHEDULE,
+            company,
+            PaymentSchedule.class,
+            "paymentScheduleSeq");
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

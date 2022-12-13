@@ -55,8 +55,7 @@ public class FixedAssetLineFiscalComputationServiceImpl
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       return fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset));
     }
-
-    return fixedAsset.getGrossValue();
+    return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
   }
 
   @Override

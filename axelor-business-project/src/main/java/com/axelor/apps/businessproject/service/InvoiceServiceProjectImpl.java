@@ -28,12 +28,15 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -68,6 +71,9 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
+      InvoiceTermService invoiceTermService,
+      InvoiceTermPfpService invoiceTermPfpService,
+      AppBaseService appBaseService,
       IntercoService intercoService,
       TaxService taxService,
       StockMoveRepository stockMoveRepository) {
@@ -83,6 +89,9 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         accountConfigService,
         moveToolService,
         invoiceLineRepo,
+        invoiceTermService,
+        invoiceTermPfpService,
+        appBaseService,
         intercoService,
         taxService,
         stockMoveRepository);

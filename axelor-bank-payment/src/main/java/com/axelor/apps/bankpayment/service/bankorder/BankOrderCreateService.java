@@ -32,8 +32,10 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -79,7 +81,9 @@ public class BankOrderCreateService {
       Currency currency,
       String senderReference,
       String senderLabel,
-      int technicalOriginSelect)
+      int technicalOriginSelect,
+      int functionalOriginSelect,
+      int accountingTriggerSelect)
       throws AxelorException {
 
     BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
@@ -90,9 +94,9 @@ public class BankOrderCreateService {
     bankOrder.setPaymentMode(paymentMode);
     bankOrder.setPartnerTypeSelect(partnerType);
 
-    if (!bankOrderFileFormat.getIsMultiDate()) {
-      bankOrder.setBankOrderDate(bankOrderDate);
-    }
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(senderCompany);
+    bankOrder.setBankOrderDate(bankOrderDate.isBefore(todayDate) ? todayDate : bankOrderDate);
+    bankOrder.setIsMultiDate(bankOrderFileFormat.getIsMultiDate());
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
     bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_NOT_REJECTED);
@@ -116,9 +120,11 @@ public class BankOrderCreateService {
 
     bankOrder.setSenderReference(senderReference);
     bankOrder.setSenderLabel(senderLabel);
-    bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
+    bankOrder.setBankOrderLineList(new ArrayList<>());
     bankOrder.setBankOrderFileFormat(bankOrderFileFormat);
     bankOrder.setTechnicalOriginSelect(technicalOriginSelect);
+    bankOrder.setFunctionalOriginSelect(functionalOriginSelect);
+    bankOrder.setAccountingTriggerSelect(accountingTriggerSelect);
     return bankOrder;
   }
 
@@ -156,7 +162,9 @@ public class BankOrderCreateService {
             currency,
             reference,
             null,
-            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            BankOrderRepository.FUNCTIONAL_ORIGIN_INVOICE_PAYMENT,
+            paymentMode.getAccountingTriggerSelect());
 
     BankDetails receiverBankDetails = invoiceService.getBankDetails(invoice);
     BankOrderLine bankOrderLine =

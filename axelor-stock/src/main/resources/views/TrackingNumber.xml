@@ -23,7 +23,8 @@
   </grid>
 
   <form name="tracking-number-form" title="Tracking Number"
-    model="com.axelor.apps.stock.db.TrackingNumber" onNew="action-tracking-number-attrs-set-scale"
+    model="com.axelor.apps.stock.db.TrackingNumber"
+    onNew="action-tracking-number-attrs-set-scale,action-tracking-number-record-product"
     onLoad="action-tracking-number-attrs-hide-fields,action-tracking-number-attrs-set-scale">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
@@ -36,7 +37,7 @@
       <field name="note" colSpan="12"/>
     </panel>
     <panel name="barcodePanel" title="Barcode"
-      if="__config__.app.getApp('stock').getActivateTrackingNumberBarCodeGeneration()">
+      if="__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()">
       <field name="barCode" showTitle="false" widget="Image" colSpan="4"/>
       <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
       <field name="barcodeTypeConfig" readonlyIf="barCode != null" hidden="true" colSpan="4"/>
@@ -110,6 +111,11 @@
     <action name="action-tracking-number-record-from-stock-move-line"/>
     <action name="action-tracking-number-attrs-from-stock-move-line"/>
   </action-group>
+
+  <action-record name="action-tracking-number-record-product"
+    model="com.axelor.apps.stock.db.TrackingNumber">
+    <field name="product" expr="eval: __parent__?.product"/>
+  </action-record>
 
   <action-record name="action-tracking-number-record-from-stock-move-line"
     model="com.axelor.apps.stock.db.TrackingNumber">

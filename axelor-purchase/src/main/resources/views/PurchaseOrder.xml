@@ -17,7 +17,7 @@
       </menu>
     </menubar>
     <field name="purchaseOrderSeq" width="120"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
@@ -46,7 +46,7 @@
       </menu>
     </menubar>
     <field name="purchaseOrderSeq" width="120"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
@@ -154,13 +154,13 @@
           grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null"/>
         <field name="tradingName" canEdit="false" grid-view="trading-name-grid"
           form-view="trading-name-form"
-          if="__config__.app.getApp('base').enableTradingNamesManagement" colSpan="3"
+          if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="3"
           readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"
           domain=":company MEMBER OF self.companySet"
           onChange="action-purchase-order-method-printing-settings-default-value,action-purchase-order-record-set-stock-location"
           requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
         <label name="tradingNameLabel"
-          if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3"/>
+          if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
         <field name="currency" canEdit="false" colSpan="3" form-view="currency-form"
           grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
         <field name="priceList" onSelect="action-purchase-order-method-price-list-domain"
@@ -176,7 +176,7 @@
           colSpan="3" form-view="partner-contact-form" grid-view="partner-contact-grid"
           hideIf="company == null"/>
         <field name="versionNumber"
-          if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" colSpan="3"/>
+          if="__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()" colSpan="3"/>
         <panel name="inAtiAndIntercoPanel" colSpan="3">
           <field name="inAti" onChange="action-purchase-order-attrs-in-ati"
             readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"/>
@@ -247,7 +247,7 @@
       </panel>
       <panel name="POManagementPanel" title="PO Management"
         if-module="axelor-supplier-management" colSpan="12"
-        if="__config__.app.getApp('purchase').getSupplierRequestMgt()">
+        if="__config__.app.getApp('purchase')?.getSupplierRequestMgt()">
         <panel-include view="purchase-order-supplier-form"
           from="axelor-supplier-management"/>
       </panel>
@@ -276,7 +276,7 @@
         <field name="printingSettings"
           onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
         <field name="groupProductsOnPrintings"
-          if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" colSpan="6"/>
+          if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()" colSpan="6"/>
         <field name="displayPriceOnQuotationRequest" colSpan="12"/>
         <field name="priceRequest" hideIf="displayPriceOnQuotationRequest" colSpan="12"
           x-height="5"/>
@@ -301,17 +301,17 @@
         onClick="save,action-purchase-order-method-requested"/>
       <button name="newVersionBtn" title="New version" showIf="statusSelect == 2"
         onClick="save,action-purchase-record-newVersion,save"
-        if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
+        if="__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()"/>
       <button name="validateBtn" title="Validate" showIf="statusSelect == 2"
         onClick="action-group-purchase-order-on-validate-actions"/>
       <button name="generateSupplierStockMoveBtn" title="Generate supplier arrival"
         showIf="statusSelect == 3 || statusSelect == 4"
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getSupplStockMoveMgtOnPO() &amp;&amp; !__config__.app.getApp('supplychain').getSupplierStockMoveGenerationAuto()"
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getSupplStockMoveMgtOnPO() &amp;&amp; !__config__.app.getApp('supplychain')?.getSupplierStockMoveGenerationAuto()"
         onClick="save,action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
       <button name="generateInvoiceBtn" title="Generate control invoice"
         showIf="statusSelect == 3"
         onClick="save,action-purchase-order-method-generate-control-invoice"
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').generateInvoiceFromPurchaseOrder"
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.generateInvoiceFromPurchaseOrder"
         if-module="axelor-supplychain"/>
       <button name="showInvoiceBtn" title="Show invoice"
         showIf="statusSelect == 3 || statusSelect == 4" onClick="action-purchase-order-show-invoice"
@@ -357,7 +357,7 @@
       collapseIf="true">
       <field name="buyerUser" canNew="false" canEdit="false" canView="false"
         form-view="user-form" grid-view="user-grid"/>
-      <field if="__config__.app.getApp('base').getTeamManagement()" name="team"
+      <field if="__config__.app.getApp('base')?.getTeamManagement()" name="team"
         canEdit="false" form-view="team-form" grid-view="team-grid"/>
     </panel>
     <panel name="datesPanel" title="Dates" sidebar="true" hideIf="supplierPartner == null"
@@ -394,7 +394,7 @@
         if="__config__.app.isApp('supplychain')" colSpan="6"/>
       <field name="companyBankDetails" widget="SuggestBox"
         onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form"
-        grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"
+        grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
         if-module="axelor-cash-management"/>
     </panel>
     <panel name="internalNotePanel" title="Internal note" sidebar="true">
@@ -555,6 +555,8 @@
     <action name="action-purchase-order-record-company-configuration"/>
     <action name="action-purchase-order-method-get-stock-location"
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-record-in-ati"/>
     <action name="action-purchase-order-attrs-in-ati"/>
     <action name="action-purchase-order-record-display-price"/>
@@ -579,6 +581,9 @@
     <action name="action-purchase-order-attrs-interco"/>
     <action name="action-purchase-order-attrs-external-reference"/>
     <action name="action-purchase-order-record-load-trading-name-config"/>
+    <action
+      name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available"
+      if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-company-change-actions">
@@ -586,12 +591,16 @@
     <action name="action-purchase-order-method-fill-company-bank-details"/>
     <action name="action-purchase-order-method-get-stock-location"
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-record-update-info-company"/>
     <action name="action-purchase-order-record-display-price"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-on-validate-actions">
     <action name="action-purchase-order-method-check-analytic-distribution-template"/>
+    <action name="action-method-purchase-order-validate-budget-distribution-list"
+      if="__config__.app.getApp('budget')?.manageMultiBudget"/>
     <action name="action-purchase-order-validate-purchase-order-line"/>
     <action name="action-purchase-order-validate-stock-location"/>
     <action name="save"/>
@@ -608,6 +617,8 @@
     <action name="action-purchase-order-record-partner"/>
     <action name="action-purchase-order-method-get-stock-location"
       if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.receiptDefaultStockLocation == null || stockLocation == null)"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-attrs-hide-contact-partner"/>
     <action name="action-purchase-order-method-fill-company-bank-details"/>
     <action name="action-purchase-order-method-fill-price-list"/>
@@ -656,7 +667,7 @@
   <action-record name="action-purchase-order-record-load-trading-name-config"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="$enablePurchasesProductByTradName"
-      expr="eval: __config__.app.getApp('purchase').enablePurchasesProductByTradName"/>
+      expr="eval: __config__.app.getApp('purchase')?.enablePurchasesProductByTradName"/>
   </action-record>
 
   <action-record name="action-purchase-order-record-in-ati"
@@ -721,19 +732,13 @@
     <field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     <field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
     <field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
-    <field name="stockLocation"
-      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(supplierPartner, company)"
-      if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.receiptDefaultStockLocation == null || stockLocation == null)"/>
-    <field name="fromStockLocation"
-      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultExternalStockLocation(supplierPartner, company)"
-      if="__config__.app.isApp('supplychain')"/>
   </action-record>
 
   <action-record name="action-purchase-order-record-set-group-product-on-printing"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="groupProductsOnPrintings"
       expr="eval: supplierPartner?.groupProductsOnPrintings"
-      if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
+      if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"/>
   </action-record>
 
   <action-record name="action-purchase-order-record-payment-mode"
@@ -924,7 +929,7 @@
 
   <action-attrs name="action-attrs-po-hidden-bank-details">
     <attribute for="companyBankDetails" name="hidden"
-      expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
+      expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()"/>
   </action-attrs>
 
   <action-method name="action-set-supplier-partner-domain">
@@ -947,16 +952,16 @@
   <search-filters name="purchase-order-filters"
     model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="versionNumber" hidden="true"
-      if="!__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
+      if="!__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <field name="tradingName" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="companyBankDetails" hidden="true"
-      if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+      if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="fromStockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -982,7 +987,7 @@
   <action-record name="action-purchase-order-record-update-info-company"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="tradingName" expr="eval: null"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="printingSettings" expr="eval: company?.printingSettings"/>
   </action-record>
 
@@ -1033,10 +1038,10 @@
   <action-attrs name="action-purchase-order-attrs-set-stock-location-domain">
     <attribute name="domain" for="stockLocation"
       expr="eval: &quot;self.company = :company AND ((self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true) OR self.id IN (${(tradingName?.stockLocationList.collect{it.id}+[0]).join(',')}))&quot;"
-      if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <attribute name="domain" for="stockLocation"
       expr="eval: &quot;self.company = :company AND self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true&quot;"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-attrs>
 
   <action-attrs name="action-purchase-order-attrs-compute-tax-number-domain">
@@ -1051,4 +1056,10 @@
     <attribute name="domain" for="fiscalPosition" if="!taxNumber"
       expr="eval: &quot;'${supplierPartner?.fiscalPosition?.code}' = self.code&quot;"/>
   </action-attrs>
+
+  <action-method name="action-method-purchase-order-validate-budget-distribution-list">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="confirmBudgetDistributionList"/>
+  </action-method>
+
 </object-views>

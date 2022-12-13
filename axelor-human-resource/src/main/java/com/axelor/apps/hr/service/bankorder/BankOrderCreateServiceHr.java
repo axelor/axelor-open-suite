@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service.bankorder;
 
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -87,7 +88,9 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             currency,
             expense.getFullName(),
             expense.getFullName(),
-            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE,
+            PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
 
     bankOrder.addBankOrderLineListItem(
         bankOrderLineService.createBankOrderLine(

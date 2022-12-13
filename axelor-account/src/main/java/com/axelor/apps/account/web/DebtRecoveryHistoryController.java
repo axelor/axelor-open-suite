@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.repo.DebtRecoveryHistoryRepository;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -39,23 +40,25 @@ public class DebtRecoveryHistoryController {
       debtRecoveryHistory =
           Beans.get(DebtRecoveryHistoryRepository.class).find(debtRecoveryHistory.getId());
 
-      String name = I18n.get("Payment reminder") + " " + debtRecoveryHistory.getName();
+      if (!ObjectUtils.isEmpty(debtRecoveryHistory.getDebtRecovery())) {
+        String name = I18n.get("Payment reminder") + " " + debtRecoveryHistory.getName();
 
-      String fileLink =
-          ReportFactory.createReport(IReport.DEBT_RECOVERY, name + "-${date}")
-              .addParam("DebtRecoveryHistoryID", debtRecoveryHistory.getId())
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addFormat("pdf")
-              .addParam(
-                  "Timezone",
-                  debtRecoveryHistory.getDebtRecovery().getCompany() != null
-                      ? debtRecoveryHistory.getDebtRecovery().getCompany().getTimezone()
-                      : null)
-              .toAttach(debtRecoveryHistory)
-              .generate()
-              .getFileLink();
+        String fileLink =
+            ReportFactory.createReport(IReport.DEBT_RECOVERY, name + "-${date}")
+                .addParam("DebtRecoveryHistoryID", debtRecoveryHistory.getId())
+                .addParam("Locale", ReportSettings.getPrintingLocale(null))
+                .addFormat("pdf")
+                .addParam(
+                    "Timezone",
+                    debtRecoveryHistory.getDebtRecovery().getCompany() != null
+                        ? debtRecoveryHistory.getDebtRecovery().getCompany().getTimezone()
+                        : null)
+                .toAttach(debtRecoveryHistory)
+                .generate()
+                .getFileLink();
 
-      response.setView(ActionView.define(name).add("html", fileLink).map());
+        response.setView(ActionView.define(name).add("html", fileLink).map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
@@ -31,7 +32,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
@@ -72,6 +72,7 @@ import java.util.Optional;
 public class SaleOrderController {
 
   private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
+  private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -146,16 +147,14 @@ public class SaleOrderController {
   public void getStockLocation(ActionRequest request, ActionResponse response) {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-    if (saleOrder != null && saleOrder.getCompany() != null) {
-
+    try {
+      Company company = saleOrder.getCompany();
       StockLocation stockLocation =
-          Beans.get(StockLocationService.class)
-              .getPickupDefaultStockLocation(saleOrder.getCompany());
-
-      if (stockLocation != null) {
-        response.setValue("stockLocation", stockLocation);
-      }
+          Beans.get(SaleOrderSupplychainService.class)
+              .getStockLocation(saleOrder.getClientPartner(), company);
+      response.setValue("stockLocation", stockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -314,9 +313,8 @@ public class SaleOrderController {
 
       SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
 
-      saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
-          saleOrder, amountToInvoice, isPercent);
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
+      Map<Long, BigDecimal> priceMap = new HashMap<>();
 
       List<Map<String, Object>> saleOrderLineListContext;
       saleOrderLineListContext =
@@ -328,9 +326,19 @@ public class SaleOrderController {
           if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
             Long soLineId = Long.valueOf((Integer) map.get("id"));
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
+            BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
+            priceMap.put(soLineId, priceItem);
           }
         }
       }
+
+      // Re-compute amount to invoice if invoicing partially
+      amountToInvoice =
+          saleOrderInvoiceService.computeAmountToInvoice(
+              amountToInvoice, operationSelect, saleOrder, qtyToInvoiceMap, priceMap);
+
+      saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
+          saleOrder, amountToInvoice, isPercent);
 
       // Information to send to the service to handle an invoicing on timetables
       List<Long> timetableIdList = new ArrayList<>();
@@ -756,6 +764,19 @@ public class SaleOrderController {
       Beans.get(SaleOrderSupplychainService.class)
           .setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
       response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getToStockLocation(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      Company company = saleOrder.getCompany();
+      StockLocation toStockLocation =
+          Beans.get(SaleOrderSupplychainService.class)
+              .getToStockLocation(saleOrder.getClientPartner(), company);
+      response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -38,11 +38,9 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,38 +209,6 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   /**
    * {@inheritDoc}
    *
-   * @throws NullPointerException if fixedAsset is null
-   */
-  @Override
-  public LinkedHashMap<LocalDate, List<FixedAssetLine>> groupAndSortByDateFixedAssetLine(
-      FixedAsset fixedAsset) {
-    Objects.requireNonNull(fixedAsset);
-    // Preparation of data needed for computation
-    List<FixedAssetLine> tmpList = new ArrayList<>();
-    // This method will only compute line that are not realized.
-    tmpList.addAll(
-        fixedAsset.getFiscalFixedAssetLineList().stream()
-            .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
-            .collect(Collectors.toList()));
-    tmpList.addAll(
-        fixedAsset.getFixedAssetLineList().stream()
-            .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
-            .collect(Collectors.toList()));
-
-    // Sorting by depreciation date
-    tmpList.sort((f1, f2) -> f1.getDepreciationDate().compareTo(f2.getDepreciationDate()));
-
-    // Grouping lines from both list by date and keeping the order (because we want to have the
-    // previous line)
-    return tmpList.stream()
-        .collect(
-            Collectors.groupingBy(
-                FixedAssetLine::getDepreciationDate, LinkedHashMap::new, Collectors.toList()));
-  }
-
-  /**
-   * {@inheritDoc}
-   *
    * @throws NullPointerException if fixedAssetDerogatoryLineList is null
    */
   @Override
@@ -280,7 +246,8 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       throws AxelorException {
     FixedAssetLine correspondingFixedAssetLine;
     correspondingFixedAssetLine = getLineFromDate(fixedAsset, disposalDate);
-    if (!correspondingFixedAssetLine.getDepreciationDate().equals(disposalDate)) {
+    if (correspondingFixedAssetLine != null
+        && !correspondingFixedAssetLine.getDepreciationDate().equals(disposalDate)) {
       computeLineProrata(fixedAsset, disposalDate, correspondingFixedAssetLine);
     }
 

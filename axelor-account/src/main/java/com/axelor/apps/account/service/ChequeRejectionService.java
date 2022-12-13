@@ -24,14 +24,14 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -40,7 +40,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class ChequeRejectionService {
@@ -51,6 +50,8 @@ public class ChequeRejectionService {
   protected SequenceService sequenceService;
   protected AccountConfigService accountConfigService;
   protected ChequeRejectionRepository chequeRejectionRepository;
+  protected MoveReverseService moveReverseService;
+  protected PaymentVoucherCancelService paymentVoucherCancelService;
 
   @Inject
   public ChequeRejectionService(
@@ -59,7 +60,9 @@ public class ChequeRejectionService {
       MoveLineCreateService moveLineCreateService,
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
-      ChequeRejectionRepository chequeRejectionRepository) {
+      ChequeRejectionRepository chequeRejectionRepository,
+      MoveReverseService moveReverseService,
+      PaymentVoucherCancelService paymentVoucherCancelService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -67,6 +70,8 @@ public class ChequeRejectionService {
     this.sequenceService = sequenceService;
     this.accountConfigService = accountConfigService;
     this.chequeRejectionRepository = chequeRejectionRepository;
+    this.moveReverseService = moveReverseService;
+    this.paymentVoucherCancelService = paymentVoucherCancelService;
   }
 
   /**
@@ -84,9 +89,11 @@ public class ChequeRejectionService {
 
     this.setSequence(chequeRejection);
 
-    Move move = this.createChequeRejectionMove(chequeRejection, company);
+    if (chequeRejection.getPaymentVoucher().getGeneratedMove() != null) {
+      Move move = this.createChequeRejectionMove(chequeRejection, company);
 
-    chequeRejection.setMove(move);
+      chequeRejection.setMove(move);
+    }
 
     chequeRejection.setStatusSelect(ChequeRejectionRepository.STATUS_VALIDATED);
 
@@ -112,73 +119,27 @@ public class ChequeRejectionService {
 
     Move paymentMove = paymentVoucher.getGeneratedMove();
 
-    Partner partner = paymentVoucher.getPartner();
-
     InterbankCodeLine interbankCodeLine = chequeRejection.getInterbankCodeLine();
 
     String description = chequeRejection.getDescription();
 
     LocalDate rejectionDate = chequeRejection.getRejectionDate();
 
-    // Move
-    Move move =
-        moveCreateService.createMove(
-            journal,
-            company,
-            null,
-            partner,
-            rejectionDate,
-            rejectionDate,
-            null,
-            partner != null ? partner.getFiscalPosition() : null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-            chequeRejection.getName(),
-            description);
+    Move move = moveReverseService.generateReverse(paymentMove, true, false, true, rejectionDate);
 
-    int ref = 1;
+    move.setJournal(journal);
+    move.setOrigin(chequeRejection.getName());
+    move.setDescription(description);
 
-    for (MoveLine moveLine : paymentMove.getMoveLineList()) {
-
-      if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-        // Debit MoveLine
-        MoveLine debitMoveLine =
-            moveLineCreateService.createMoveLine(
-                move,
-                partner,
-                moveLine.getAccount(),
-                moveLine.getCredit(),
-                true,
-                rejectionDate,
-                ref,
-                chequeRejection.getName(),
-                description);
-        move.getMoveLineList().add(debitMoveLine);
-        debitMoveLine.setInterbankCodeLine(interbankCodeLine);
-        debitMoveLine.setDescription(description);
-
-      } else {
-        // Credit MoveLine
-        MoveLine creditMoveLine =
-            moveLineCreateService.createMoveLine(
-                move,
-                partner,
-                moveLine.getAccount(),
-                moveLine.getDebit(),
-                false,
-                rejectionDate,
-                ref,
-                chequeRejection.getName(),
-                chequeRejection.getDescription());
-        move.getMoveLineList().add(creditMoveLine);
-        creditMoveLine.setInterbankCodeLine(interbankCodeLine);
-        creditMoveLine.setDescription(description);
-      }
-
-      ref++;
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLine.setOrigin(chequeRejection.getName());
+      moveLine.setDescription(description);
+      moveLine.setInterbankCodeLine(interbankCodeLine);
     }
 
     move.setRejectOk(true);
+
+    paymentVoucherCancelService.cancelPaymentVoucher(paymentVoucher);
 
     moveValidateService.accounting(move);
 
@@ -206,7 +167,10 @@ public class ChequeRejectionService {
 
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.CHEQUE_REJECT, chequeRejection.getCompany());
+            SequenceRepository.CHEQUE_REJECT,
+            chequeRejection.getCompany(),
+            ChequeRejection.class,
+            "name");
 
     if (seq == null) {
       throw new AxelorException(

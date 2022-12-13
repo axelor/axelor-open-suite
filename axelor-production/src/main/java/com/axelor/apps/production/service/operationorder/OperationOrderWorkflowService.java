@@ -34,6 +34,7 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
@@ -50,12 +51,12 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
 public class OperationOrderWorkflowService {
@@ -65,6 +66,7 @@ public class OperationOrderWorkflowService {
   protected AppProductionService appProductionService;
   protected MachineToolRepository machineToolRepo;
   protected WeeklyPlanningService weeklyPlanningService;
+  protected ProdProcessLineService prodProcessLineService;
 
   @Inject
   public OperationOrderWorkflowService(
@@ -73,13 +75,15 @@ public class OperationOrderWorkflowService {
       OperationOrderDurationRepository operationOrderDurationRepo,
       AppProductionService appProductionService,
       MachineToolRepository machineToolRepo,
-      WeeklyPlanningService weeklyPlanningService) {
+      WeeklyPlanningService weeklyPlanningService,
+      ProdProcessLineService prodProcessLineService) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
     this.appProductionService = appProductionService;
     this.machineToolRepo = machineToolRepo;
     this.weeklyPlanningService = weeklyPlanningService;
+    this.prodProcessLineService = prodProcessLineService;
   }
 
   @Transactional
@@ -229,7 +233,7 @@ public class OperationOrderWorkflowService {
 
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
-    LocalDateTime lastOPerationDate = this.getLastOperationOrder(operationOrder);
+    LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
     LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
     operationOrder.setPlannedStartDateT(maxDate);
 
@@ -313,7 +317,7 @@ public class OperationOrderWorkflowService {
   @Transactional(rollbackOn = {Exception.class})
   public OperationOrder replan(OperationOrder operationOrder) throws AxelorException {
 
-    operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
+    operationOrder.setPlannedStartDateT(this.getLastOperationDate(operationOrder));
 
     operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
 
@@ -342,47 +346,42 @@ public class OperationOrderWorkflowService {
     return operationOrderList;
   }
 
-  public LocalDateTime getLastOperationOrder(OperationOrder operationOrder) {
-
+  protected LocalDateTime getLastOperationDate(OperationOrder operationOrder) {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
     OperationOrder lastOperationOrder =
         operationOrderRepo
             .all()
             .filter(
-                "self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6 AND self.id != ?3",
-                operationOrder.getManufOrder(),
-                operationOrder.getPriority(),
-                operationOrder.getId())
+                "self.manufOrder = :manufOrder AND self.priority <= :priority AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
+            .bind("manufOrder", manufOrder)
+            .bind("priority", operationOrder.getPriority())
+            .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
+            .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
+            .bind("operationOrderId", operationOrder.getId())
             .order("-priority")
             .order("-plannedEndDateT")
             .fetchOne();
 
-    if (lastOperationOrder != null) {
-      if (lastOperationOrder.getPriority() != null
-          && lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
-        if (lastOperationOrder.getPlannedStartDateT() != null
-            && lastOperationOrder
-                .getPlannedStartDateT()
-                .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
-          if (lastOperationOrder.getMachine().equals(operationOrder.getMachine())) {
-            return lastOperationOrder.getPlannedEndDateT();
-          }
-          return lastOperationOrder.getPlannedStartDateT();
-        } else {
-          return operationOrder.getManufOrder().getPlannedStartDateT();
-        }
-      } else {
-        if (lastOperationOrder.getPlannedEndDateT() != null
-            && lastOperationOrder
-                .getPlannedEndDateT()
-                .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
-          return lastOperationOrder.getPlannedEndDateT();
-        } else {
-          return operationOrder.getManufOrder().getPlannedStartDateT();
-        }
-      }
+    LocalDateTime manufOrderPlannedStartDateT = manufOrder.getPlannedStartDateT();
+    if (lastOperationOrder == null) {
+      return manufOrderPlannedStartDateT;
     }
 
-    return operationOrder.getManufOrder().getPlannedStartDateT();
+    LocalDateTime plannedEndDateT = lastOperationOrder.getPlannedEndDateT();
+
+    if (Objects.equals(lastOperationOrder.getPriority(), operationOrder.getPriority())) {
+      LocalDateTime plannedStartDateT = lastOperationOrder.getPlannedStartDateT();
+      if (plannedStartDateT != null && plannedStartDateT.isAfter(manufOrderPlannedStartDateT)) {
+        boolean isOnSameMachine =
+            Objects.equals(lastOperationOrder.getMachine(), operationOrder.getMachine());
+        return isOnSameMachine ? plannedEndDateT : plannedStartDateT;
+      }
+
+    } else if (plannedEndDateT != null && plannedEndDateT.isAfter(manufOrderPlannedStartDateT)) {
+      return plannedEndDateT;
+    }
+
+    return manufOrderPlannedStartDateT;
   }
 
   /**
@@ -656,53 +655,7 @@ public class OperationOrderWorkflowService {
       throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
-    WorkCenter workCenter = prodProcessLine.getWorkCenter();
-
-    long duration = 0;
-    if (prodProcessLine.getWorkCenter() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
-          prodProcessLine.getProdProcess() != null
-              ? prodProcessLine.getProdProcess().getCode()
-              : "null",
-          prodProcessLine.getName());
-    }
-
-    BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
-
-    BigDecimal nbCycles;
-    if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
-      nbCycles = qty;
-    } else {
-      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
-    }
-
-    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-
-    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
-        || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      Machine machine = workCenter.getMachine();
-      if (machine == null) {
-        throw new AxelorException(
-            workCenter,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
-            workCenter.getName());
-      }
-      duration += machine.getStartingDuration();
-      duration += machine.getEndingDuration();
-      duration +=
-          nbCycles
-              .subtract(new BigDecimal(1))
-              .multiply(new BigDecimal(machine.getSetupDuration()))
-              .longValue();
-    }
-
-    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
-    duration += nbCycles.multiply(durationPerCycle).longValue();
-
-    return duration;
+    return prodProcessLineService.computeEntireCycleDuration(prodProcessLine, qty);
   }
 
   private void calculateHoursOfUse(OperationOrder operationOrder) {

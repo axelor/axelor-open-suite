@@ -109,7 +109,9 @@ public class StockMoveLineController {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
       Map<String, Object> newStockMoveLine = Mapper.toMap(new StockMoveLine());
+      newStockMoveLine.put("productName", stockMoveLine.getProductName());
       newStockMoveLine.put("qty", BigDecimal.ZERO);
+      newStockMoveLine.put("realQty", BigDecimal.ZERO);
       newStockMoveLine.put("id", stockMoveLine.getId());
       newStockMoveLine.put("version", stockMoveLine.getVersion());
       newStockMoveLine.put("lineTypeSelect", stockMoveLine.getLineTypeSelect());
@@ -224,9 +226,13 @@ public class StockMoveLineController {
         context.getParent() != null
             ? context.getParent().asType(StockMove.class)
             : stockMoveLine.getStockMove();
-    String domain =
-        Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
-    response.setAttr("product", "domain", domain);
+    try {
+      String domain =
+          Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
+      response.setAttr("product", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
@@ -302,17 +308,23 @@ public class StockMoveLineController {
         StockMove stockMove = parentContext.asType(StockMove.class);
         Partner partner = stockMove.getPartner();
         String userLanguage = AuthUtils.getUser().getLanguage();
+        Product product = stockMoveLine.getProduct();
 
-        if (stockMoveLine.getProduct() != null && partner != null) {
-          String partnerLanguage = partner.getLanguage().getCode();
-          response.setValue(
-              "description",
-              internationalService.translate(
-                  stockMoveLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-          response.setValue(
-              "productName",
-              internationalService.translate(
-                  stockMoveLine.getProduct().getName(), userLanguage, partnerLanguage));
+        if (product != null) {
+          Map<String, String> translation =
+              internationalService.getProductDescriptionAndNameTranslation(
+                  product, partner, userLanguage);
+
+          String description = translation.get("description");
+          String productName = translation.get("productName");
+
+          if (description != null
+              && !description.isEmpty()
+              && productName != null
+              && !productName.isEmpty()) {
+            response.setValue("description", description);
+            response.setValue("productName", productName);
+          }
         }
       }
     } catch (Exception e) {

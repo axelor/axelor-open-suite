@@ -203,7 +203,8 @@ public class ReimbursementExportService {
                     MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                     MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                     reimbursement.getRef(),
-                    reimbursement.getDescription());
+                    reimbursement.getDescription(),
+                    moveLine.getMove().getCompanyBankDetails());
             first = false;
           }
           // Création d'une ligne au débit
@@ -229,7 +230,7 @@ public class ReimbursementExportService {
           Reconcile reconcile =
               reconcileService.createReconcile(newDebitMoveLine, moveLine, amountRemaining, false);
           if (reconcile != null) {
-            reconcileService.confirmReconcile(reconcile, true);
+            reconcileService.confirmReconcile(reconcile, true, true);
           }
         }
       }
@@ -306,7 +307,8 @@ public class ReimbursementExportService {
     reimbursement.setBankDetails(bankDetails);
 
     reimbursement.setRef(
-        sequenceService.getSequenceNumber(SequenceRepository.REIMBOURSEMENT, company));
+        sequenceService.getSequenceNumber(
+            SequenceRepository.REIMBOURSEMENT, company, Reimbursement.class, "ref"));
 
     return reimbursement;
   }
