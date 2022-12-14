@@ -1422,7 +1422,8 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
 
   protected List<Integer> getMoveLineStatusList(AccountingReport accountingReport) {
     List<Integer> statusList =
-        Arrays.asList(MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED);
+        new ArrayList<>(
+            Arrays.asList(MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED));
 
     if (accountingReport.getDisplaySimulatedMove()) {
       statusList.add(MoveRepository.STATUS_SIMULATED);
