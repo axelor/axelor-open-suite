@@ -1,0 +1,3 @@
+---
+title: "Data Backup : fix an error occurring when creating a data backup with the anonymization enabled"
+type: fix
