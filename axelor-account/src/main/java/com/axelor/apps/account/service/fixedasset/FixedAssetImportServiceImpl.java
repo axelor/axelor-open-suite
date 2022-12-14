@@ -109,6 +109,13 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)
         && CollectionUtils.isEmpty(fixedAsset.getFiscalFixedAssetLineList())) {
 
+      BigDecimal depreciationBase = fixedAsset.getFiscalDepreciatedAmountCurrentYear();
+      if (fixedAsset.getFiscalComputationMethodSelect()
+              == FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE
+          && fixedAsset.getFixedAssetCategory().getIsProrataTemporis()) {
+        depreciationBase = depreciationBase.add(fixedAsset.getFiscalAlreadyDepreciatedAmount());
+      }
+
       fixedAssetLine =
           fixedAssetLineComputationService.createFixedAssetLine(
               fixedAsset,
@@ -118,9 +125,7 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
                   .getFiscalAlreadyDepreciatedAmount()
                   .add(fixedAsset.getFiscalDepreciatedAmountCurrentYear()),
               BigDecimal.ZERO,
-              fixedAsset
-                  .getFiscalAlreadyDepreciatedAmount()
-                  .add(fixedAsset.getFiscalDepreciatedAmountCurrentYear()),
+              depreciationBase,
               FixedAssetLineRepository.TYPE_SELECT_FISCAL,
               FixedAssetLineRepository.STATUS_PLANNED);
       fixedAsset.addFiscalFixedAssetLineListItem(fixedAssetLine);
@@ -129,6 +134,13 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)
         && CollectionUtils.isEmpty(fixedAsset.getFixedAssetLineList())) {
+
+      BigDecimal depreciationBase = fixedAsset.getDepreciatedAmountCurrentYear();
+      if (fixedAsset.getComputationMethodSelect()
+              == FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE
+          && fixedAsset.getFixedAssetCategory().getIsProrataTemporis()) {
+        depreciationBase = depreciationBase.add(fixedAsset.getAlreadyDepreciatedAmount());
+      }
 
       fixedAssetLine =
           fixedAssetLineComputationService.createFixedAssetLine(
@@ -139,9 +151,7 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
                   .getAlreadyDepreciatedAmount()
                   .add(fixedAsset.getDepreciatedAmountCurrentYear()),
               BigDecimal.ZERO,
-              fixedAsset
-                  .getAlreadyDepreciatedAmount()
-                  .add(fixedAsset.getDepreciatedAmountCurrentYear()),
+              depreciationBase,
               FixedAssetLineRepository.TYPE_SELECT_ECONOMIC,
               FixedAssetLineRepository.STATUS_PLANNED);
       fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
@@ -269,23 +279,39 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
 
   protected void generateAndComputeDisposedLines(FixedAsset fixedAsset) throws AxelorException {
     FixedAssetLine fixedAssetLine = null;
+
+    BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
+    BigDecimal grossValue = fixedAsset.getGrossValue();
+    BigDecimal residualValue = fixedAsset.getResidualValue();
+    BigDecimal depreciationBase =
+        correctedAccountingValue.signum() != 0
+            ? correctedAccountingValue
+            : grossValue.subtract(residualValue);
     if (fixedAsset
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)
         && CollectionUtils.isEmpty(fixedAsset.getFiscalFixedAssetLineList())) {
+
+      BigDecimal cumulativeDepreciation =
+          fixedAsset
+              .getFiscalAlreadyDepreciatedAmount()
+              .add(fixedAsset.getFiscalDepreciatedAmountCurrentYear());
+
+      if (fixedAsset.getFiscalComputationMethodSelect()
+              == FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE
+          && correctedAccountingValue.signum() == 0) {
+        depreciationBase =
+            depreciationBase.subtract(fixedAsset.getFiscalAlreadyDepreciatedAmount());
+      }
 
       fixedAssetLine =
           fixedAssetLineComputationService.createFixedAssetLine(
               fixedAsset,
               fixedAsset.getDisposalDate(),
               fixedAsset.getFiscalDepreciatedAmountCurrentYear(),
-              fixedAsset
-                  .getFiscalAlreadyDepreciatedAmount()
-                  .add(fixedAsset.getFiscalDepreciatedAmountCurrentYear()),
-              BigDecimal.ZERO,
-              fixedAsset
-                  .getFiscalAlreadyDepreciatedAmount()
-                  .add(fixedAsset.getFiscalDepreciatedAmountCurrentYear()),
+              cumulativeDepreciation,
+              grossValue.subtract(cumulativeDepreciation),
+              depreciationBase,
               FixedAssetLineRepository.TYPE_SELECT_FISCAL,
               FixedAssetLineRepository.STATUS_PLANNED);
       fixedAsset.addFiscalFixedAssetLineListItem(fixedAssetLine);
@@ -294,19 +320,25 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)
         && CollectionUtils.isEmpty(fixedAsset.getFixedAssetLineList())) {
+      BigDecimal cumulativeDepreciation =
+          fixedAsset
+              .getAlreadyDepreciatedAmount()
+              .add(fixedAsset.getDepreciatedAmountCurrentYear());
+
+      if (fixedAsset.getComputationMethodSelect()
+              == FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE
+          && correctedAccountingValue.signum() == 0) {
+        depreciationBase = depreciationBase.subtract(fixedAsset.getAlreadyDepreciatedAmount());
+      }
 
       fixedAssetLine =
           fixedAssetLineComputationService.createFixedAssetLine(
               fixedAsset,
               fixedAsset.getDisposalDate(),
               fixedAsset.getDepreciatedAmountCurrentYear(),
-              fixedAsset
-                  .getAlreadyDepreciatedAmount()
-                  .add(fixedAsset.getDepreciatedAmountCurrentYear()),
-              BigDecimal.ZERO,
-              fixedAsset
-                  .getAlreadyDepreciatedAmount()
-                  .add(fixedAsset.getDepreciatedAmountCurrentYear()),
+              cumulativeDepreciation,
+              grossValue.subtract(cumulativeDepreciation),
+              depreciationBase,
               FixedAssetLineRepository.TYPE_SELECT_ECONOMIC,
               FixedAssetLineRepository.STATUS_PLANNED);
       fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
