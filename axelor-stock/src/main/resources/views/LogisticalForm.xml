@@ -28,7 +28,7 @@
     onSave="action-group-logistical-form-save,action-logistical-form-validate-mass-on-save">
     <toolbar>
       <button name="packingListBtn" title="Print packing list"
-        readonlyIf="!logisticalFormLineList.length"
+        readonlyIf="!(logisticalFormLineList &amp;&amp; logisticalFormLineList.length > 0)"
         onClick="action-group-logistical-form-print-packing-list" icon="fa-print"
         if="__config__.app.isApp('supplychain')"/>
       <button name="refreshProductNetMassBtn" title="Refresh the products net mass"
@@ -56,11 +56,12 @@
       </panel>
       <panel name="actionsPanel" colSpan="4">
         <button name="carrierValidatedBtn" title="Carrier validated"
-          showIf="statusSelect == 1" readonlyIf="!logisticalFormLineList.length"
+          showIf="statusSelect == 1"
+          readonlyIf="!(logisticalFormLineList &amp;&amp; logisticalFormLineList.length > 0)"
           onClick="action-group-logistical-form-carrier-validated" icon="fa-check"
           css="btn btn-success" colSpan="12" prompt="Are you sure you want to validate the carrier?"/>
         <button name="collectedBtn" title="Collected" showIf="statusSelect == 2"
-          readonlyIf="!logisticalFormLineList.length"
+          readonlyIf="!(logisticalFormLineList &amp;&amp; logisticalFormLineList.length > 0)"
           onClick="action-logistical-form-method-process-collected" icon="fa-truck"
           css="btn btn-success" colSpan="12"
           prompt="Are you sure you want to change status to  &quot;Collected &quot; ?"/>

@@ -22,11 +22,12 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true" colSpan="3"/>
       <field name="company" canEdit="false" readonlyIf="journal" colSpan="3" canNew="false"
         form-view="company-form" grid-view="company-grid" required="true"/>
-      <field name="journal" canEdit="false" readonlyIf="moveTemplateLineList.length > 0"
+      <field name="journal" canEdit="false"
+        readonlyIf="moveTemplateLineList &amp;&amp; moveTemplateLineList.length > 0"
         onSelect="action-move-template-set-journal-domain" grid-view="journal-grid"
         form-view="journal-form" required="true"/>
       <field name="moveTemplateType" canEdit="false"
-        readonlyIf="moveTemplateLineList.length > 0" required="true"
+        readonlyIf="moveTemplateLineList &amp;&amp; moveTemplateLineList.length > 0" required="true"
         grid-view="move-template-type-grid" form-view="move-template-type-form" colSpan="3"/>
       <field name="moveTemplateType.typeSelect" colSpan="3"/>
       <field name="endOfValidityDate"/>
@@ -129,7 +130,7 @@
     </panel>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="generateMovesBtn"
-        readonlyIf="(dataInputList == null || dataInputList.isEmpty()) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.isEmpty()) || (moveTemplateType == null)"
+        readonlyIf="(dataInputList == null || dataInputList.length == 0) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.length == 0) || (moveTemplateType == null)"
         title="Generate Moves" onClick="save,action-move-template-wizard-method-generate-move"
         colSpan="12"/>
     </panel>

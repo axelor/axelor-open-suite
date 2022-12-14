@@ -613,13 +613,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     Partner partner = expense.getEmployee().getContactPartner();
     LocalDate paymentDate = expense.getPaymentDate();
     BigDecimal paymentAmount = expense.getInTaxTotal();
-    BankDetails companyBankDetails = company.getDefaultBankDetails();
+    BankDetails bankDetails = expense.getBankDetails();
     String origin = expense.getExpenseSeq();
 
     Account employeeAccount;
 
-    Journal journal =
-        paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
+    Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails);
 
     MoveLine expenseMoveLine = this.getExpenseEmployeeMoveLineByLoop(expense);
 
@@ -642,13 +641,13 @@ public class ExpenseServiceImpl implements ExpenseService {
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
             null,
-            companyBankDetails);
+            bankDetails);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
             move,
             partner,
-            paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
+            paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails),
             paymentAmount,
             false,
             paymentDate,
