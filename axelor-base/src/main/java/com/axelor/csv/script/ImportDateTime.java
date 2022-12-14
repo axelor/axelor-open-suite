@@ -33,14 +33,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ImportDateTime {
-  String pat = "((\\+|\\-|\\=)?[0-9]{1,%s}%s)";
-  String dt = "[0-9]{4}-[0-9]{2}-[0-9]{2}";
-  Pattern patternYear = Pattern.compile("[0-9]{1,4}");
-  Pattern patternMonth = Pattern.compile("[0-9]{1,2}");
+  public static final String PREFIX_PATTERN = "((\\+|\\-|\\=)?[0-9]{1,%s}%s)";
+  public static final String ISO_DATE_PATTERN_REGEX = "[0-9]{4}-[0-9]{2}-[0-9]{2}";
+  public static final String HOUR_MINUTE_SECOND_REGEX = "[0-9]{2}:[0-9]{2}:[0-9]{2}";
+  public static final Pattern FOUR_DIGITS_PATTERN = Pattern.compile("[0-9]{1,4}");
+  public static final Pattern TWO_DIGITS_PATTERN = Pattern.compile("[0-9]{1,2}");
+  public static final String TODAY_KEYWORD = "TODAY";
+  public static final String NOW_KEYWORD = "NOW";
 
   public LocalDateTime updateYear(LocalDateTime datetime, String year) {
     if (!Strings.isNullOrEmpty(year)) {
-      Matcher matcher = patternYear.matcher(year);
+      Matcher matcher = FOUR_DIGITS_PATTERN.matcher(year);
       if (matcher.find()) {
         Long years = Long.parseLong(matcher.group());
         if (year.startsWith("+")) {
@@ -59,7 +62,7 @@ public class ImportDateTime {
 
   public LocalDateTime updateMonth(LocalDateTime datetime, String month) {
     if (!Strings.isNullOrEmpty(month)) {
-      Matcher matcher = patternMonth.matcher(month);
+      Matcher matcher = TWO_DIGITS_PATTERN.matcher(month);
       if (matcher.find()) {
         Long months = Long.parseLong(matcher.group());
         if (month.startsWith("+")) {
@@ -78,7 +81,7 @@ public class ImportDateTime {
 
   public LocalDateTime updateDay(LocalDateTime datetime, String day) {
     if (!Strings.isNullOrEmpty(day)) {
-      Matcher matcher = patternMonth.matcher(day);
+      Matcher matcher = TWO_DIGITS_PATTERN.matcher(day);
       if (matcher.find()) {
         Long days = Long.parseLong(matcher.group());
         if (day.startsWith("+")) {
@@ -100,7 +103,7 @@ public class ImportDateTime {
 
   public LocalDateTime updateHour(LocalDateTime datetime, String hour) {
     if (!Strings.isNullOrEmpty(hour)) {
-      Matcher matcher = patternMonth.matcher(hour);
+      Matcher matcher = TWO_DIGITS_PATTERN.matcher(hour);
       if (matcher.find()) {
         Long hours = Long.parseLong(matcher.group());
         if (hour.startsWith("+")) {
@@ -117,7 +120,7 @@ public class ImportDateTime {
 
   public LocalDateTime updateMinute(LocalDateTime datetime, String minute) {
     if (!Strings.isNullOrEmpty(minute)) {
-      Matcher matcher = patternMonth.matcher(minute);
+      Matcher matcher = TWO_DIGITS_PATTERN.matcher(minute);
       if (matcher.find()) {
         Long minutes = Long.parseLong(matcher.group());
         if (minute.startsWith("+")) {
@@ -134,7 +137,7 @@ public class ImportDateTime {
 
   public LocalDateTime updateSecond(LocalDateTime datetime, String second) {
     if (!Strings.isNullOrEmpty(second)) {
-      Matcher matcher = patternMonth.matcher(second);
+      Matcher matcher = TWO_DIGITS_PATTERN.matcher(second);
       if (matcher.find()) {
         Long seconds = Long.parseLong(matcher.group());
         if (second.startsWith("+")) {
@@ -151,113 +154,139 @@ public class ImportDateTime {
 
   @CallMethod
   public String importDate(String inputDate) {
-
-    String patDate =
-        "("
-            + dt
-            + "|TODAY)(\\[("
-            + String.format(pat, 4, "y")
-            + "?"
-            + String.format(pat, 2, "M")
-            + "?"
-            + String.format(pat, 2, "d")
-            + "?"
-            + ")\\])?";
-    try {
-      if (!Strings.isNullOrEmpty(inputDate) && inputDate.matches(patDate)) {
-        List<String> dates = Arrays.asList(inputDate.split("\\["));
-        inputDate =
-            dates.get(0).equals("TODAY")
-                ? Beans.get(AppBaseService.class)
-                    .getTodayDate(
-                        Optional.ofNullable(AuthUtils.getUser())
-                            .map(User::getActiveCompany)
-                            .orElse(null))
-                    .toString()
-                : dates.get(0);
-        if (dates.size() > 1) {
-          LocalDateTime localDate =
-              LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
-          Matcher matcher = Pattern.compile(String.format(pat, 4, "y")).matcher(dates.get(1));
-          if (matcher.find()) {
-            localDate = updateYear(localDate, matcher.group());
-          }
-          matcher = Pattern.compile(String.format(pat, 2, "M")).matcher(dates.get(1));
-          if (matcher.find()) {
-            localDate = updateMonth(localDate, matcher.group());
-          }
-          matcher = Pattern.compile(String.format(pat, 2, "d")).matcher(dates.get(1));
-          if (matcher.find()) {
-            localDate = updateDay(localDate, matcher.group());
-          }
-          return localDate.toString();
-        } else return inputDate;
-      } else return null;
-    } catch (Exception e) {
+    String patDate = getDatePattern();
+    if (Strings.isNullOrEmpty(inputDate) || !inputDate.matches(patDate)) {
       return null;
+    }
+
+    List<String> dates = Arrays.asList(inputDate.split("\\["));
+    inputDate = computeInputDate(dates.get(0));
+    if (dates.size() > 1) {
+      LocalDateTime localDate =
+          LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
+      localDate = updateDateElements(localDate, dates.get(1));
+      return localDate.toString();
+    } else {
+      return inputDate;
     }
   }
 
+  protected String computeInputDate(String inputDate) {
+    if (inputDate.equals(TODAY_KEYWORD)) {
+      return Beans.get(AppBaseService.class)
+          .getTodayDate(
+              Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
+          .toString();
+    }
+    return inputDate;
+  }
+
   public String importDateTime(String inputDateTime) {
-    String tm = "[0-9]{2}:[0-9]{2}:[0-9]{2}";
-    String patTime =
-        "("
-            + dt
-            + " "
-            + tm
-            + "|NOW)(\\[("
-            + String.format(pat, 4, "y")
-            + "?"
-            + String.format(pat, 2, "M")
-            + "?"
-            + String.format(pat, 2, "d")
-            + "?"
-            + String.format(pat, 2, "H")
-            + "?"
-            + String.format(pat, 2, "m")
-            + "?"
-            + String.format(pat, 2, "s")
-            + "?"
-            + ")\\])?";
-    try {
-      if (!Strings.isNullOrEmpty(inputDateTime) && inputDateTime.matches(patTime)) {
-        List<String> timeList = Arrays.asList(inputDateTime.split("\\["));
-        inputDateTime =
-            timeList.get(0).equals("NOW") ? LocalDateTime.now().toString() : timeList.get(0);
-        if (timeList.size() > 1) {
-          LocalDateTime datetime =
-              LocalDateTime.parse(inputDateTime, DateTimeFormatter.ISO_DATE_TIME);
-          Matcher matcher = Pattern.compile(String.format(pat, 4, "y")).matcher(timeList.get(1));
-          if (matcher.find()) {
-            datetime = updateYear(datetime, matcher.group());
-          }
-          matcher = Pattern.compile(String.format(pat, 2, "M")).matcher(timeList.get(1));
-          if (matcher.find()) {
-            datetime = updateMonth(datetime, matcher.group());
-          }
-          matcher = Pattern.compile(String.format(pat, 2, "d")).matcher(timeList.get(1));
-          if (matcher.find()) {
-            datetime = updateDay(datetime, matcher.group());
-          }
-          matcher = Pattern.compile(String.format(pat, 2, "H")).matcher(timeList.get(1));
-          if (matcher.find()) {
-            datetime = updateHour(datetime, matcher.group());
-          }
-          matcher = Pattern.compile(String.format(pat, 2, "m")).matcher(timeList.get(1));
-          if (matcher.find()) {
-            datetime = updateMinute(datetime, matcher.group());
-          }
-          matcher = Pattern.compile(String.format(pat, 2, "s")).matcher(timeList.get(1));
-          if (matcher.find()) {
-            datetime = updateSecond(datetime, matcher.group());
-          }
-          return datetime.toString();
-        }
-        return inputDateTime.replace(" ", "T");
-      }
-      return null;
-    } catch (Exception e) {
+    String dateTimePattern = getDateTimePattern();
+    if (Strings.isNullOrEmpty(inputDateTime) || !inputDateTime.matches(dateTimePattern)) {
       return null;
     }
+    List<String> timeList = Arrays.asList(inputDateTime.split("\\["));
+    inputDateTime =
+        timeList.get(0).equals(NOW_KEYWORD) ? LocalDateTime.now().toString() : timeList.get(0);
+    if (timeList.size() > 1) {
+      LocalDateTime datetime = LocalDateTime.parse(inputDateTime, DateTimeFormatter.ISO_DATE_TIME);
+      datetime = updateDateTimeElements(datetime, timeList.get(1));
+      return datetime.toString();
+    } else {
+      return inputDateTime;
+    }
+  }
+
+  protected String getDatePattern() {
+    return "("
+        + ISO_DATE_PATTERN_REGEX
+        + "|"
+        + TODAY_KEYWORD
+        + ")(\\[("
+        + String.format(PREFIX_PATTERN, 4, "y")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "M")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "d")
+        + "?"
+        + ")\\])?";
+  }
+
+  protected String getDateTimePattern() {
+    return "("
+        + ISO_DATE_PATTERN_REGEX
+        + " "
+        + HOUR_MINUTE_SECOND_REGEX
+        + "|"
+        + NOW_KEYWORD
+        + ")(\\[("
+        + String.format(PREFIX_PATTERN, 4, "y")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "M")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "d")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "H")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "m")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "s")
+        + "?"
+        + ")\\])?";
+  }
+
+  protected LocalDateTime updateDateTimeElements(LocalDateTime datetime, String time) {
+    datetime = updateDateElements(datetime, time);
+    datetime = checkAndUpdateTwoDigitsDateElement(time, datetime, "H");
+    datetime = checkAndUpdateTwoDigitsDateElement(time, datetime, "m");
+    datetime = checkAndUpdateTwoDigitsDateElement(time, datetime, "s");
+    return datetime;
+  }
+
+  protected LocalDateTime updateDateElements(LocalDateTime localDate, String date) {
+    localDate = checkAndUpdateYear(date, localDate);
+    localDate = checkAndUpdateTwoDigitsDateElement(date, localDate, "M");
+    localDate = checkAndUpdateTwoDigitsDateElement(date, localDate, "d");
+    return localDate;
+  }
+
+  protected LocalDateTime checkAndUpdateYear(String time, LocalDateTime datetime) {
+    Matcher matcher = Pattern.compile(String.format(PREFIX_PATTERN, 4, "y")).matcher(time);
+    if (!matcher.find()) {
+      return datetime;
+    }
+    return updateYear(datetime, matcher.group());
+  }
+
+  protected LocalDateTime checkAndUpdateTwoDigitsDateElement(
+      String time, LocalDateTime datetime, String letter) {
+    Matcher matcher = Pattern.compile(String.format(PREFIX_PATTERN, 2, letter)).matcher(time);
+    if (!matcher.find()) {
+      return datetime;
+    }
+
+    String result = matcher.group();
+    LocalDateTime resultDate;
+    switch (letter) {
+      case "M":
+        resultDate = updateMonth(datetime, result);
+        break;
+      case "d":
+        resultDate = updateDay(datetime, result);
+        break;
+      case "H":
+        resultDate = updateHour(datetime, result);
+        break;
+      case "m":
+        resultDate = updateMinute(datetime, result);
+        break;
+      case "s":
+        resultDate = updateSecond(datetime, result);
+        break;
+      default:
+        resultDate = datetime;
+    }
+    return resultDate;
   }
 }
