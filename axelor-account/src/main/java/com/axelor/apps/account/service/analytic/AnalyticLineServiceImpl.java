@@ -124,25 +124,33 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
           analyticAxis = axis.getAnalyticAxis();
         }
       }
+      analyticAccountListByAxis = getAnalyticAccountsByAxis(line, analyticAxis);
+    }
+    return analyticAccountListByAxis;
+  }
 
-      for (AnalyticAccount analyticAccount :
-          analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
-        analyticAccountListByAxis.add(analyticAccount.getId());
-      }
-      if (line.getAccount() != null) {
-        List<AnalyticAccount> analyticAccountList =
-            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(line.getAccount());
-        if (!analyticAccountList.isEmpty()) {
-          for (AnalyticAccount analyticAccount : analyticAccountList) {
-            analyticAccountListByRules.add(analyticAccount.getId());
-          }
-          if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
-            analyticAccountListByAxis =
-                listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
-          }
-        } else {
-          analyticAccountListByAxis = new ArrayList<>();
+  @Override
+  public List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis) {
+    List<Long> analyticAccountListByAxis = new ArrayList<>();
+    List<Long> analyticAccountListByRules = new ArrayList<>();
+
+    for (AnalyticAccount analyticAccount :
+        analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
+      analyticAccountListByAxis.add(analyticAccount.getId());
+    }
+    if (line.getAccount() != null) {
+      List<AnalyticAccount> analyticAccountList =
+          accountAnalyticRulesRepository.findAnalyticAccountByAccounts(line.getAccount());
+      if (!analyticAccountList.isEmpty()) {
+        for (AnalyticAccount analyticAccount : analyticAccountList) {
+          analyticAccountListByRules.add(analyticAccount.getId());
         }
+        if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
+          analyticAccountListByAxis =
+              listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
+        }
+      } else {
+        analyticAccountListByAxis = new ArrayList<>();
       }
     }
     return analyticAccountListByAxis;

@@ -545,9 +545,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   @Override
   public boolean checkAnalyticDistribution(InvoiceLine invoiceLine) {
     return invoiceLine == null
-        || CollectionUtils.isNotEmpty(invoiceLine.getAnalyticMoveLineList())
+        || (CollectionUtils.isNotEmpty(invoiceLine.getAnalyticMoveLineList())
             && invoiceLineAnalyticService.validateAnalyticMoveLines(
-                invoiceLine.getAnalyticMoveLineList())
+                invoiceLine.getAnalyticMoveLineList()))
         || invoiceLine.getAccount() == null
         || !invoiceLine.getAccount().getAnalyticDistributionAuthorized()
         || !invoiceLine.getAccount().getAnalyticDistributionRequiredOnInvoiceLines();
