@@ -279,10 +279,10 @@ public class SelectionBuilderService {
       String key = StringUtils.substringBefore(option, ":");
       String value = StringUtils.substringAfter(option, ":");
 
-      if (key.equals(COLOR)) {
+      if (key.equals(COLOR) && optionMap != null) {
         optionMap.put(COLOR, value);
 
-      } else if (key.equals(ICON)) {
+      } else if (key.equals(ICON) && optionMap != null) {
         optionMap.put(ICON, value);
 
       } else {

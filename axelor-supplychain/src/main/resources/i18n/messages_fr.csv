@@ -694,7 +694,7 @@
 "You must configure a forecasted invoiced customer account for the company %s","Vous devez configurer un compte client pour FAE pour la société %s",,
 "You must configure a forecasted invoiced supplier account for the company %s","Vous devez configurer un compte fournisseur pour FNP pour la société %s",,
 "You must configure an advance payment account for the company %s","Vous devez configurer un compte pour les acomptes pour la société %s",,
-"You must configure an supplier advance payment account for the company %s",,,
+"You must configure an supplier advance payment account for the company %s","Vous devez configurer un compte d'acompte fournisseur pour la société %s",,
 "You must select at least one line to validate","Vous devez sélectionner au moins une ligne à valider",,
 "com.axelor.apps.supplychain.job.BillSubJob",,,
 "com.axelor.apps.supplychain.job.MrpJob",,,

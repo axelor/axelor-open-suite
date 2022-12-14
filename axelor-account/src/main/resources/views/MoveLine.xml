@@ -34,7 +34,7 @@
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"
       onChange="action-move-line-method-create-analytic-distribution"
-      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length > 0) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
     <field name="move.statusSelect" width="90"/>
     <field name="reconcileGroup" width="120"/>
     <field name="origin" width="120"/>
@@ -194,7 +194,7 @@
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"
       onChange="action-move-line-method-create-analytic-distribution"
-      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length > 0) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
     <field name="move.statusSelect"/>
     <field name="reconcileGroup" width="120"/>
     <field name="origin" width="120"/>
@@ -229,7 +229,7 @@
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"
       onChange="action-move-line-method-create-analytic-distribution"
-      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length > 0) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
     <field name="move.statusSelect"/>
     <field name="reconcileGroup" width="120"/>
     <field name="origin" width="120"/>
