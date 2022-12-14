@@ -654,7 +654,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
       String lineCode) {
-    Map<String, AccountingReportValue> columValues =
+    Map<String, AccountingReportValue> columnValues =
         valuesMapByColumn.get(
             this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount));
     Map<String, AccountingReportValue> lineValues = valuesMapByLine.get(lineCode);
@@ -662,20 +662,20 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
     if (groupColumn != null
         && groupColumn.getRuleTypeSelect()
             == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-      return columValues;
+      return lineValues;
     } else if (column.getRuleTypeSelect()
             == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
         && line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       if (column.getPriority() > line.getPriority()) {
         return lineValues;
       } else {
-        return columValues;
+        return columnValues;
       }
     } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       return lineValues;
     } else {
-      return columValues;
+      return columnValues;
     }
   }
 
