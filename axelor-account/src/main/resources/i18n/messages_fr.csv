@@ -168,7 +168,7 @@
 "%s : You must configure an irrevocable doubtful account for the company %s","%s : Veuillez configurer un compte de créance irrécouvrable pour la société %s",,
 "%s : You must configure an irrevocable journal for the company %s","%s : Veuillez configurer un journal irrécouvrable pour la société %s",,
 "%s : You must configure an overpayment account clearance journal for the company %s","%s : Veuillez configurer un journal d'apurements des trop-perçus pour la société %s",,
-"%s : You must configure an supplier advance payment account for the company %s","%s : Vous devez configurer un compte d'avance fournisseur pour la société %s",,
+"%s : You must configure an supplier advance payment account for the company %s","%s : Vous devez configurer un compte d'acompte fournisseur pour la société %s",,
 "%s : You must configure shit to irrecoverable sequence for the company %s","%s : Veuillez configurer une séquence de Passage en irrécouvrable pour la société %s",,
 "%s account not found in move %s","Compte %s non trouvé dans le mouvement %s",,
 "%s has not exaclty the same internal companies as %s.","%s n'a pas exactement les mêmes sociétés internes que %s",,
