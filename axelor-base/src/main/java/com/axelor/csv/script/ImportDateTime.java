@@ -20,7 +20,6 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import java.time.LocalDate;
@@ -31,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.inject.Inject;
 
 public class ImportDateTime {
   public static final String PREFIX_PATTERN = "((\\+|\\-|\\=)?[0-9]{1,%s}%s)";
@@ -40,6 +40,49 @@ public class ImportDateTime {
   public static final Pattern TWO_DIGITS_PATTERN = Pattern.compile("[0-9]{1,2}");
   public static final String TODAY_KEYWORD = "TODAY";
   public static final String NOW_KEYWORD = "NOW";
+
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public ImportDateTime(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
+
+  @CallMethod
+  public String importDate(String inputDate) {
+    String patDate = getDatePattern();
+    if (Strings.isNullOrEmpty(inputDate) || !inputDate.matches(patDate)) {
+      return null;
+    }
+
+    List<String> dates = Arrays.asList(inputDate.split("\\["));
+    inputDate = computeInputDate(dates.get(0));
+    if (dates.size() > 1) {
+      LocalDateTime localDate =
+          LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
+      localDate = updateDateElements(localDate, dates.get(1));
+      return localDate.toString();
+    } else {
+      return inputDate;
+    }
+  }
+
+  public String importDateTime(String inputDateTime) {
+    String dateTimePattern = getDateTimePattern();
+    if (Strings.isNullOrEmpty(inputDateTime) || !inputDateTime.matches(dateTimePattern)) {
+      return null;
+    }
+    List<String> timeList = Arrays.asList(inputDateTime.split("\\["));
+    inputDateTime =
+        timeList.get(0).equals(NOW_KEYWORD) ? LocalDateTime.now().toString() : timeList.get(0);
+    if (timeList.size() > 1) {
+      LocalDateTime datetime = LocalDateTime.parse(inputDateTime, DateTimeFormatter.ISO_DATE_TIME);
+      datetime = updateDateTimeElements(datetime, timeList.get(1));
+      return datetime.toString();
+    } else {
+      return inputDateTime;
+    }
+  }
 
   public LocalDateTime updateYear(LocalDateTime datetime, String year) {
     if (!Strings.isNullOrEmpty(year)) {
@@ -51,7 +94,7 @@ public class ImportDateTime {
         } else if (year.startsWith("-")) {
           datetime = datetime.minusYears(years);
         } else if (year.startsWith("=")) {
-          datetime = datetime.withMonth(years.intValue());
+          datetime = datetime.withYear(years.intValue());
         } else {
           datetime = datetime.withYear(years.intValue());
         }
@@ -152,90 +195,6 @@ public class ImportDateTime {
     return datetime;
   }
 
-  @CallMethod
-  public String importDate(String inputDate) {
-    String patDate = getDatePattern();
-    if (Strings.isNullOrEmpty(inputDate) || !inputDate.matches(patDate)) {
-      return null;
-    }
-
-    List<String> dates = Arrays.asList(inputDate.split("\\["));
-    inputDate = computeInputDate(dates.get(0));
-    if (dates.size() > 1) {
-      LocalDateTime localDate =
-          LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
-      localDate = updateDateElements(localDate, dates.get(1));
-      return localDate.toString();
-    } else {
-      return inputDate;
-    }
-  }
-
-  protected String computeInputDate(String inputDate) {
-    if (inputDate.equals(TODAY_KEYWORD)) {
-      return Beans.get(AppBaseService.class)
-          .getTodayDate(
-              Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-          .toString();
-    }
-    return inputDate;
-  }
-
-  public String importDateTime(String inputDateTime) {
-    String dateTimePattern = getDateTimePattern();
-    if (Strings.isNullOrEmpty(inputDateTime) || !inputDateTime.matches(dateTimePattern)) {
-      return null;
-    }
-    List<String> timeList = Arrays.asList(inputDateTime.split("\\["));
-    inputDateTime =
-        timeList.get(0).equals(NOW_KEYWORD) ? LocalDateTime.now().toString() : timeList.get(0);
-    if (timeList.size() > 1) {
-      LocalDateTime datetime = LocalDateTime.parse(inputDateTime, DateTimeFormatter.ISO_DATE_TIME);
-      datetime = updateDateTimeElements(datetime, timeList.get(1));
-      return datetime.toString();
-    } else {
-      return inputDateTime;
-    }
-  }
-
-  protected String getDatePattern() {
-    return "("
-        + ISO_DATE_PATTERN_REGEX
-        + "|"
-        + TODAY_KEYWORD
-        + ")(\\[("
-        + String.format(PREFIX_PATTERN, 4, "y")
-        + "?"
-        + String.format(PREFIX_PATTERN, 2, "M")
-        + "?"
-        + String.format(PREFIX_PATTERN, 2, "d")
-        + "?"
-        + ")\\])?";
-  }
-
-  protected String getDateTimePattern() {
-    return "("
-        + ISO_DATE_PATTERN_REGEX
-        + " "
-        + HOUR_MINUTE_SECOND_REGEX
-        + "|"
-        + NOW_KEYWORD
-        + ")(\\[("
-        + String.format(PREFIX_PATTERN, 4, "y")
-        + "?"
-        + String.format(PREFIX_PATTERN, 2, "M")
-        + "?"
-        + String.format(PREFIX_PATTERN, 2, "d")
-        + "?"
-        + String.format(PREFIX_PATTERN, 2, "H")
-        + "?"
-        + String.format(PREFIX_PATTERN, 2, "m")
-        + "?"
-        + String.format(PREFIX_PATTERN, 2, "s")
-        + "?"
-        + ")\\])?";
-  }
-
   protected LocalDateTime updateDateTimeElements(LocalDateTime datetime, String time) {
     datetime = updateDateElements(datetime, time);
     datetime = checkAndUpdateTwoDigitsDateElement(time, datetime, "H");
@@ -288,5 +247,53 @@ public class ImportDateTime {
         resultDate = datetime;
     }
     return resultDate;
+  }
+
+  protected String computeInputDate(String inputDate) {
+    if (inputDate.equals(TODAY_KEYWORD)) {
+      return appBaseService
+          .getTodayDate(
+              Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
+          .toString();
+    }
+    return inputDate;
+  }
+
+  protected String getDatePattern() {
+    return "("
+        + ISO_DATE_PATTERN_REGEX
+        + "|"
+        + TODAY_KEYWORD
+        + ")(\\[("
+        + String.format(PREFIX_PATTERN, 4, "y")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "M")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "d")
+        + "?"
+        + ")\\])?";
+  }
+
+  protected String getDateTimePattern() {
+    return "("
+        + ISO_DATE_PATTERN_REGEX
+        + " "
+        + HOUR_MINUTE_SECOND_REGEX
+        + "|"
+        + NOW_KEYWORD
+        + ")(\\[("
+        + String.format(PREFIX_PATTERN, 4, "y")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "M")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "d")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "H")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "m")
+        + "?"
+        + String.format(PREFIX_PATTERN, 2, "s")
+        + "?"
+        + ")\\])?";
   }
 }
