@@ -1173,7 +1173,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         this.getAccountFilters(
             accountSet,
             accountTypeSet,
-            groupColumn == null ? null : groupColumn.getCode(),
+            groupColumn == null ? null : groupColumn.getAccountCode(),
             column.getAccountCode(),
             line.getAccountCode(),
             true));
