@@ -169,10 +169,16 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     // When calling this fonction, incomeDepreciationAmount and derogatoryAmount are not supposed to
     // be both different to 0.
     // Because when computed, only one of theses values is filled. But they can be both equals to 0.
+    BigDecimal amount;
     if (fixedAssetDerogatoryLine.getIncomeDepreciationAmount().signum() != 0) {
-      return fixedAssetDerogatoryLine.getIncomeDepreciationAmount().abs();
+      amount = fixedAssetDerogatoryLine.getIncomeDepreciationAmount().abs();
+    } else {
+      amount = fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
     }
-    return fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
+    if (fixedAssetDerogatoryLine.getFixedAsset().getGrossValue().signum() < 0) {
+      amount = amount.negate();
+    }
+    return amount;
   }
 
   protected Account computeDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
