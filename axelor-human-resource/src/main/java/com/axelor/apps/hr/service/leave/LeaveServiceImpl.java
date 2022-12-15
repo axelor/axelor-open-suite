@@ -787,8 +787,9 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     LeaveLine leaveLine = leaveRequest.getLeaveLine();
-    if (leaveRequest.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+    if (leaveLine.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
       isOverlapped(leaveRequest);
     }
     if (leaveLine.getLeaveReason().getManageAccumulation()) {
@@ -985,8 +986,8 @@ public class LeaveServiceImpl implements LeaveService {
 
     if (ObjectUtils.isEmpty(leaveRequest.getCompany())) {
       throw new AxelorException(
-        TraceBackRepository.CATEGORY_NO_VALUE,
-        I18n.get(IExceptionMessage.LEAVE_REQUEST_NO_COMPANY));
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.LEAVE_REQUEST_NO_COMPANY));
     }
   }
 }
