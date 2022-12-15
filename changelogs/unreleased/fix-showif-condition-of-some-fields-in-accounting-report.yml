@@ -1,3 +1,3 @@
 ---
-title: "ACCOUNTINGREPORT : Correct wrongly defined ShowIf condition on analyticAxisSet, analyticAccountSet, accountTypeSet"
+title: "Accounting report: fixed wrongly defined display condition on analytic axis, analytic account, account type fields for analytic type reports form view."
 type: fix
