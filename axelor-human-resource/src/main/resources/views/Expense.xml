@@ -166,8 +166,8 @@
       <field name="refusedBy" canEdit="false" hidden="true" form-view="user-form"
         grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
       <field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
-      <field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12"
-        readonly="true"/>
+      <field name="groundForRefusal" hidden="true"
+        showIf="statusSelect == 5 || groundForRefusal != null" colSpan="12" readonly="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList"
