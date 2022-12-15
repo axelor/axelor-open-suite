@@ -221,7 +221,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       String description)
       throws AxelorException {
 
-    amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+    if (amountInSpecificMoveCurrency != null) {
+      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+    }
 
     log.debug(
         "Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",
@@ -258,7 +260,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (currencyRate == null) {
-      if (amountInSpecificMoveCurrency.compareTo(BigDecimal.ZERO) == 0) {
+      if (amountInSpecificMoveCurrency == null
+          || amountInSpecificMoveCurrency.compareTo(BigDecimal.ZERO) == 0) {
         currencyRate = BigDecimal.ONE;
       } else {
         currencyRate =
@@ -270,22 +273,27 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       originDate = date;
     }
 
-    return new MoveLine(
-        move,
-        partner,
-        account,
-        date,
-        dueDate,
-        counter,
-        debit,
-        credit,
-        StringTool.cutTooLongString(
-            moveLineToolService.determineDescriptionMoveLine(
-                move.getJournal(), origin, description)),
-        origin,
-        currencyRate.setScale(5, RoundingMode.HALF_UP),
-        amountInSpecificMoveCurrency,
-        originDate);
+    MoveLine moveLine =
+        new MoveLine(
+            move,
+            partner,
+            account,
+            date,
+            dueDate,
+            counter,
+            debit,
+            credit,
+            StringTool.cutTooLongString(
+                moveLineToolService.determineDescriptionMoveLine(
+                    move.getJournal(), origin, description)),
+            origin,
+            currencyRate.setScale(5, RoundingMode.HALF_UP),
+            amountInSpecificMoveCurrency,
+            originDate);
+
+    moveLine.setIsOtherCurrency(!move.getCurrency().equals(move.getCompanyCurrency()));
+
+    return moveLine;
   }
 
   /**
@@ -582,6 +590,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       String origin)
       throws AxelorException {
     int moveLineId = 1;
+    BigDecimal totalCompanyAmount = BigDecimal.ZERO;
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
     Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     MoveLine moveLine = null;
@@ -594,10 +603,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       companyAmount =
-          invoice
-              .getCompanyInTaxTotal()
-              .multiply(invoiceTerm.getPercentage())
-              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+          invoiceTerm.equals(
+                  invoice.getInvoiceTermList().get(invoice.getInvoiceTermList().size() - 1))
+              ? (invoice.getCompanyInTaxTotal().subtract(totalCompanyAmount))
+              : invoiceTerm.getCompanyAmount();
+      totalCompanyAmount = totalCompanyAmount.add(invoiceTerm.getCompanyAmount());
 
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {

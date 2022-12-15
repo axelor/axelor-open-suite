@@ -9,10 +9,10 @@
     <hilite if="isConsumptionLine" background="primary"/>
     <field name="productName"/>
     <field name="qty"/>
+    <field name="isConsumptionLine"/>
     <field name="price"/>
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
-    <field name="isConsumptionLine" hidden="true"/>
   </grid>
 
   <form name="contract-line-form" title="Contract line"
@@ -96,6 +96,10 @@
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
     <field name="isInvoiced" hidden="true"/>
+    <field name="invoiceId" type="string" title="Invoice N°"/>
+    <field name="subscriptionFromDate" type="date" title="From"/>
+    <field name="subscriptionToDate" type="date" title="To"/>
+    <field name="statusSelect" type="string" title="Status"/>
   </grid>
 
   <form name="additional-contract-line-form" title="Additional benefit"

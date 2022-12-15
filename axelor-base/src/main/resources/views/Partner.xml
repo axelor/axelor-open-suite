@@ -400,7 +400,8 @@
                   css="label-bold" name="addressHelperLabel"/>
                 <panel colSpan="12" stacked="true" css="field-append">
                   <field name="address" canEdit="!$canSelect" canNew="true"
-                    form-view="address-form" grid-view="address-grid" canSelect="$canSelect"/>
+                    form-view="address-form" grid-view="address-grid" canSelect="$canSelect"
+                    required="true"/>
                   <field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()"
                     x-icon="fa-list-alt"/>
                   <field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()"

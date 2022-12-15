@@ -570,7 +570,7 @@ public class TimesheetController {
     Context context = request.getContext();
 
     String url =
-        "hr/timesheet?timesheetId="
+        "hr/timesheet/?timesheetId="
             + context.get("id")
             + "&showActivity="
             + context.get("showActivity");

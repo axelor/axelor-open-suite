@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <grid name="debt-recovery-history-grid" title="Debt recovery history"
-    model="com.axelor.apps.account.db.DebtRecoveryHistory">
+    model="com.axelor.apps.account.db.DebtRecoveryHistory" canNew="false">
     <field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
     <field name="debtRecovery.accountingSituation.partner" title="Partner"
       form-view="partner-form" grid-view="partner-grid"/>

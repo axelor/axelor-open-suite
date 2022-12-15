@@ -51,6 +51,7 @@ public class BankOrderLineController {
     BankDetails bankDetails =
         Beans.get(BankOrderLineService.class).getDefaultBankDetails(bankOrderLine, bankOrder);
     response.setValue("receiverBankDetails", bankDetails);
+    response.setAttr("bankOrderDate", "hidden", !bankOrder.getIsMultiDate());
   }
 
   public void computeCompanyCurrencyAmount(ActionRequest request, ActionResponse response) {

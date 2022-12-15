@@ -25,11 +25,20 @@ public final class AccountExceptionMessage {
       /*$$(*/ "An invoice with the same number (%s) already exists for this supplier %s and the year %s." /*)*/;
   public static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
+  public static final String IMMO_FIXED_ASSET_DEPRECIATIONS_NOT_ACCOUNTED_BEFORE_DISPOSAL_DATE =
+      /*$$(*/ "The fixed asset can't be disposed at the moment as there are still depreciations that remains to be accounted before input disposal date. Please proceed to the realization of those depreciations before proceeding to the disposal of the asset on that date." /*)*/;
   public static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
       /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
 
   public static final String IMMO_FIXED_ASSET_GROSS_VALUE_GREATER_ORIGINAL =
-      /*$$(*/ "The input gross value neither can't be greater or equal to the asset gross value nor equal to 0." /*)*/;
+      /*$$(*/ "The input gross value can't be greater than the asset gross value." /*)*/;
+  public static final String IMMO_FIXED_ASSET_GROSS_VALUE_LOWER_ORIGINAL =
+      /*$$(*/ "The input gross value can't be lower than the asset gross value." /*)*/;
+  public static final String IMMO_FIXED_ASSET_GROSS_VALUE_EQUAL_ORIGINAL =
+      /*$$(*/ "The input gross value can't be equal to the asset gross value." /*)*/;
+  public static final String IMMO_FIXED_ASSET_GROSS_VALUE_ZERO =
+      /*$$(*/ "The input gross value can't be equal to 0." /*)*/;
+
   public static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX =
       /*$$(*/ "Disposal quantity can not be equal to the fixed asset max quantity (%s)" /*)*/;
   public static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0 =
@@ -37,7 +46,7 @@ public final class AccountExceptionMessage {
   public static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: Disposal move could not be generated because the following account setting : '%s' is missing on the associated fixed asset category." /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
@@ -48,8 +57,6 @@ public final class AccountExceptionMessage {
       /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
   public static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
       /*$$(*/ "Disposal date can not be before the first service date of the fixed asset" /*)*/;
-  public static final String IMMO_FIXED_ASSET_VALIDATE_GROSS_VALUE_0 =
-      /*$$(*/ "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated." /*)*/;
   public static final String IMMO_FIXED_ASSET_FAILOVER_CONTROL_ONLY_LINEAR =
       /*$$(*/ "The reimport process of fixed asser is only available for fixed asset depreciated with the linear method, with the Economic and fiscal methode being equal" /*)*/;
   public static final String
@@ -1469,7 +1476,6 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
       "You must configure an account for cashier regulation." /*)*/;
-
   public static final String MOVE_INVOICE_TERM_IN_PAYMENT_VOUCHER_CHANGE = /*$$(*/
       "At least one of the invoice term is selected in at least one payment voucher process %s. Thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms (only)." /*)*/;
 
@@ -1478,4 +1484,28 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE = /*$$(*/
       "At least one of the invoice term is paid or partially paid, thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms." /*)*/;
+
+  public static final String CUSTOM_REPORT_TIMEOUT = /*$$(*/
+      "Custom report %s couldn't be computed (timeout)." /*)*/;
+
+  public static final String REPORT_TYPE_NOT_CUSTOM = /*$$(*/
+      "Report type %s is not of a custom type and thus cannot be computed as such." /*)*/;
+
+  public static final String REPORT_TYPE_NO_COLUMN = /*$$(*/
+      "Report type %s doesn't have any column." /*)*/;
+
+  public static final String REPORT_TYPE_NO_LINE = /*$$(*/
+      "Report type %s doesn't have any line." /*)*/;
+
+  public static final String REPORT_TYPE_DIFFERENT_RESULT_SELECT = /*$$(*/
+      "Report type %s has intersecting column %s and line %s with different computation method." /*)*/;
+
+  public static final String REPORT_TYPE_NO_RESULT_SELECT = /*$$(*/
+      "Report type %s has intersecting column %s and line %s with no defined computation method." /*)*/;
+
+  public static final String REPORT_TYPE_MULTIPLE_GROUPS = /*$$(*/
+      "Report type %s has group columns of different types." /*)*/;
+
+  public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
+      "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
 }

@@ -15,6 +15,10 @@
     <field name="unit"/>
     <field name="isInvoiced" hidden="true"/>
     <field name="isError" hidden="true"/>
+    <field name="invoiceLine.invoice.invoiceId"/>
+    <field name="invoiceLine.invoice.subscriptionFromDate"/>
+    <field name="invoiceLine.invoice.subscriptionToDate"/>
+    <field name="invoiceLine.invoice.statusSelect"/>
   </grid>
 
   <form name="consumption-line-form" title="Consumption Line"

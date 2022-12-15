@@ -233,6 +233,8 @@
 
     <boolean name="isManagePassedForPayment" title="Passed for payment"/>
     <boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
+    <boolean name="isManageDaybookInPFP" title="Show daybook moves in PFP menu"
+      help="If this field is activated, daybook moves will been selected too in accounting PFP menu"/>
 
     <!-- Account Report -->
     <integer name="lineMinBeforeLongReportGenerationMessageNumber"

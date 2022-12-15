@@ -151,7 +151,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
     // If fiscal depreciation is greater than economic depreciation then we fill
     // derogatoryAmount, else incomeDepreciation.
-    if (fiscalDepreciationAmount.compareTo(depreciationAmount) > 0) {
+    if (fiscalDepreciationAmount.abs().compareTo(depreciationAmount.abs()) > 0) {
       derogatoryAmount = fiscalDepreciationAmount.subtract(depreciationAmount);
     } else {
       incomeDepreciationAmount = depreciationAmount.subtract(fiscalDepreciationAmount);

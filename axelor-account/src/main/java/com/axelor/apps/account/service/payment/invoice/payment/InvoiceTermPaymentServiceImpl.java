@@ -224,20 +224,18 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     invoiceTermPayment.setInvoicePayment(invoicePayment);
     invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
     invoiceTermPayment.setPaidAmount(paidAmount);
-    invoiceTermPayment.setCompanyPaidAmount(
-        this.computeCompanyPaidAmount(invoiceTermToPay, paidAmount));
-
     manageInvoiceTermFinancialDiscount(
         invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
-
+    invoiceTermPayment.setCompanyPaidAmount(
+        this.computeCompanyPaidAmount(invoiceTermToPay, invoiceTermPayment.getPaidAmount()));
     return invoiceTermPayment;
   }
 
   protected BigDecimal computeCompanyPaidAmount(InvoiceTerm invoiceTerm, BigDecimal paidAmount) {
-    BigDecimal ratio = paidAmount.divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+    BigDecimal ratio =
+        invoiceTerm.getAmount().divide(invoiceTerm.getCompanyAmount(), 10, RoundingMode.HALF_UP);
 
-    return invoiceTerm
-        .getCompanyAmount()
+    return paidAmount
         .multiply(ratio)
         .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }

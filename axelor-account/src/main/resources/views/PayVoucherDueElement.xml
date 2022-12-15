@@ -6,7 +6,7 @@
     model="com.axelor.apps.account.db.PayVoucherDueElement" orderBy="invoiceTerm.dueDate">
     <field name="invoiceTerm.dueDate"/>
     <field name="moveLine" width="135" form-view="move-line-form" grid-view="move-line-grid"/>
-    <field name="moveLine.move.invoice" width="120"/>
+    <field name="moveLine.origin" width="120"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="applyFinancialDiscount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
@@ -19,7 +19,7 @@
     <panel name="mainPanel">
       <field name="sequence"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-      <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+      <field name="moveLine.origin"/>
       <field name="invoiceTerm" form-view="invoice-term-form"
         grid-view="invoice-term-move-line-invoice-grid"/>
       <field name="invoiceTerm.dueDate"/>
