@@ -29,7 +29,9 @@ public class ImportYear {
 
   public Object importYear(Object bean, Map<String, Object> values) throws AxelorException {
     Year year = (Year) bean;
-    year.getPeriodList().addAll(yearService.generatePeriods(year));
+    year.setName(year.getName() + " " + year.getFromDate().getYear());
+    year.setCode(year.getCode() + year.getFromDate().getYear());
+    year.setPeriodList(yearService.generatePeriods(year));
     return year;
   }
 }
