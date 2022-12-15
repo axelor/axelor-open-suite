@@ -672,6 +672,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageCancelLeaves(leaveRequest);
     }
@@ -709,6 +710,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageSentLeaves(leaveRequest);
     }
@@ -743,6 +745,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
       isOverlapped(leaveRequest);
     }
@@ -786,6 +789,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   public void refuse(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageRefuseLeaves(leaveRequest);
     }
@@ -1001,5 +1005,14 @@ public class LeaveServiceImpl implements LeaveService {
             leaveRequest.getUser().getEmployee(),
             leaveRequest.getLeaveReason())
         .fetchOne();
+  }
+
+  protected void checkCompany(LeaveRequest leaveRequest) throws AxelorException {
+
+    if (ObjectUtils.isEmpty(leaveRequest.getCompany())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.LEAVE_REQUEST_NO_COMPANY));
+    }
   }
 }

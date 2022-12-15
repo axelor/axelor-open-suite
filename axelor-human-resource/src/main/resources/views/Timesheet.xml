@@ -620,11 +620,6 @@
       expr="eval: &quot; self.employee.id IN (0) &quot;"/>
   </action-attrs>
 
-  <action-record name="action-hr-record-empty-user"
-    model="com.axelor.apps.hr.db.Timesheet">
-    <field name="user" expr="eval: null"/>
-  </action-record>
-
   <action-condition name="action-hr-condition-automatic-from-generation-date">
     <check
       if="eval: fromGenerationDate != null &amp;&amp; ((toDate == null &amp;&amp; fromGenerationDate &lt; fromDate.toString()) ||
