@@ -21,12 +21,14 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -36,14 +38,18 @@ public class AccountManagementController {
   public void setCompanyDomain(ActionRequest request, ActionResponse response) {
     try {
       AccountManagement accountManagement = request.getContext().asType(AccountManagement.class);
-      List<AccountManagement> accountManagementList;
+      List<AccountManagement> accountManagementList = new ArrayList<>();
 
       Tax tax = ContextTool.getContextParent(request.getContext(), Tax.class, 1);
+      Product product = ContextTool.getContextParent(request.getContext(), Product.class, 1);
+      ProductFamily productFamily =
+          ContextTool.getContextParent(request.getContext(), ProductFamily.class, 1);
       if (tax != null) {
         accountManagementList = tax.getAccountManagementList();
-      } else {
-        Product product = ContextTool.getContextParent(request.getContext(), Product.class, 1);
+      } else if (product != null) {
         accountManagementList = product.getAccountManagementList();
+      } else if (productFamily != null) {
+        accountManagementList = productFamily.getAccountManagementList();
       }
 
       if (CollectionUtils.isNotEmpty(accountManagementList)) {

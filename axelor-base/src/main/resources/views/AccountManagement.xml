@@ -205,9 +205,9 @@
   <action-record name="action-account-management-record-default"
     model="com.axelor.apps.account.db.AccountManagement">
     <field name="company" expr="eval:__user__.activeCompany"
-      if="__user__.activeCompany != null &amp;&amp; (__parent__ == null || (__parent__._model != 'com.axelor.apps.account.db.Tax' &amp;&amp; __parent__._model != 'com.axelor.apps.base.db.Product') || __parent__.accountManagementList.every{!it.company.equals(__user__.activeCompany)})"/>
+      if="__user__.activeCompany != null &amp;&amp; (__parent__ == null || (__parent__._model != 'com.axelor.apps.account.db.Tax' &amp;&amp; __parent__._model != 'com.axelor.apps.base.db.Product' &amp;&amp; __parent__._model != 'com.axelor.apps.base.db.ProductFamily') || __parent__.accountManagementList.every{!it.company.equals(__user__.activeCompany)})"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1 &amp;&amp; (__parent__ == null || (__parent__._model != 'com.axelor.apps.account.db.Tax' &amp;&amp; __parent__._model != 'com.axelor.apps.base.db.Product') || __parent__.accountManagementList.every{!it.company.equals(__repo__(Company).all().fetchOne())})"/>
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1 &amp;&amp; (__parent__ == null || (__parent__._model != 'com.axelor.apps.account.db.Tax' &amp;&amp; __parent__._model != 'com.axelor.apps.base.db.Product' &amp;&amp; __parent__._model != 'com.axelor.apps.base.db.ProductFamily') || __parent__.accountManagementList.every{!it.company.equals(__repo__(Company).all().fetchOne())})"/>
   </action-record>
 
   <action-attrs name="action-account-management-attrs-hide-sale">
