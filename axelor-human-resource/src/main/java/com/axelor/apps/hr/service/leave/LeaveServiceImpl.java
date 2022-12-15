@@ -723,6 +723,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
       manageCancelLeaves(leaveRequest);
     }
@@ -755,6 +756,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
       manageSentLeaves(leaveRequest);
     }
@@ -786,7 +788,7 @@ public class LeaveServiceImpl implements LeaveService {
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
 
     LeaveLine leaveLine = leaveRequest.getLeaveLine();
-    if (leaveLine.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+    if (leaveRequest.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
       isOverlapped(leaveRequest);
     }
     if (leaveLine.getLeaveReason().getManageAccumulation()) {
@@ -823,6 +825,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   public void refuse(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
       manageRefuseLeaves(leaveRequest);
     }
@@ -976,5 +979,14 @@ public class LeaveServiceImpl implements LeaveService {
     return request1.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING
         && request2.getStartOnSelect() == LeaveRequestRepository.SELECT_AFTERNOON
         && request1.getToDateT().isEqual(request2.getFromDateT());
+  }
+
+  protected void checkCompany(LeaveRequest leaveRequest) throws AxelorException {
+
+    if (ObjectUtils.isEmpty(leaveRequest.getCompany())) {
+      throw new AxelorException(
+        TraceBackRepository.CATEGORY_NO_VALUE,
+        I18n.get(IExceptionMessage.LEAVE_REQUEST_NO_COMPANY));
+    }
   }
 }
