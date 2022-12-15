@@ -6,10 +6,10 @@
   <grid name="account-equiv-grid" title="Account equivalences"
     model="com.axelor.apps.account.db.AccountEquiv" orderBy="fromAccount" editable="true">
     <field name="fromAccount" onChange="action-account-equiv-attrs-reset-to-account"
-      form-view="account-form" grid-view="account-grid"
+      form-view="account-form" grid-view="account-grid" validIf="fromAccount.id != toAccount.id"
       onSelect="action-account-equiv-method-set-from-account-domain"/>
     <field name="toAccount" onSelect="action-account-equiv-attrs-domain-to-account"
-      form-view="account-form" grid-view="account-grid"/>
+      form-view="account-form" grid-view="account-grid" validIf="fromAccount.id != toAccount.id"/>
   </grid>
 
   <form name="account-equiv-form" title="Account equivalence"
@@ -17,9 +17,9 @@
     <panel name="mainPanel">
       <field name="fromAccount" onChange="action-account-equiv-attrs-reset-to-account"
         onSelect="action-account-equiv-method-set-from-account-domain" form-view="account-form"
-        grid-view="account-grid"/>
+        grid-view="account-grid" validIf="fromAccount.id != toAccount.id"/>
       <field name="toAccount" onSelect="action-account-equiv-attrs-domain-to-account"
-        form-view="account-form" grid-view="account-grid"/>
+        form-view="account-form" grid-view="account-grid" validIf="fromAccount.id != toAccount.id"/>
     </panel>
   </form>
 
