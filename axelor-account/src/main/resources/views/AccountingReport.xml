@@ -76,8 +76,8 @@
           domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
           grid-view="journal-grid" canEdit="false"/>
         <field name="journalSet" if-module="axelor-bank-payment"
-          if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" widget="TagSelect"
-          canNew="false" showIf="reportType.typeSelect == 18" colSpan="12"
+          if="__config__.app.isApp('bank-payment')" requiredIf="reportType.typeSelect == 18"
+          widget="TagSelect" canNew="false" showIf="reportType.typeSelect == 18" colSpan="12"
           domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
           grid-view="journal-grid" canEdit="false"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
@@ -94,14 +94,17 @@
           showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001" canNew="false"
           domain="self.company = :company" form-view="analytic-journal-form"
           grid-view="analytic-journal-grid"/>
-        <field name="analyticAxisSet" showIf="typeSelect == 2000 || typeSelect == 2001"
-          colSpan="12" widget="TagSelect" canNew="false" form-view="analytic-axis-form"
+        <field name="analyticAxisSet"
+          showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001" colSpan="12"
+          widget="TagSelect" canNew="false" form-view="analytic-axis-form"
           grid-view="analytic-axis-grid"/>
-        <field name="analyticAccountSet" showIf="typeSelect == 2000 || typeSelect == 2001"
-          colSpan="12" widget="TagSelect" canNew="false" form-view="analytic-account-form"
+        <field name="analyticAccountSet"
+          showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001" colSpan="12"
+          widget="TagSelect" canNew="false" form-view="analytic-account-form"
           grid-view="analytic-account-grid"/>
-        <field name="accountTypeSet" showIf="typeSelect == 2000 || typeSelect == 2001"
-          colSpan="12" widget="TagSelect" canNew="false" form-view="account-type-form"
+        <field name="accountTypeSet"
+          showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001" colSpan="12"
+          widget="TagSelect" canNew="false" form-view="account-type-form"
           grid-view="account-type-grid"/>
         <field name="bankDetailsSet" if-module="axelor-bank-payment"
           if="__config__.app.isApp('bank-payment')" requiredIf="reportType.typeSelect == 18"
