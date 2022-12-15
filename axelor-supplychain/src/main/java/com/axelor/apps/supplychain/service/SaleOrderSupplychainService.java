@@ -39,4 +39,6 @@ public interface SaleOrderSupplychainService {
   BigDecimal computeExTaxTotalWithoutShippingLines(SaleOrder saleOrder);
 
   public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder);
+
+  public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder);
 }
