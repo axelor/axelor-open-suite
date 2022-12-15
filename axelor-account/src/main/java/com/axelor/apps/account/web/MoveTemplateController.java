@@ -108,7 +108,7 @@ public class MoveTemplateController {
                 moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
         List<String> exceptionsList = moveTemplateService.getExceptionsList();
         if (!CollectionUtils.isEmpty(exceptionsList)) {
-          response.setFlash(Joiner.on("<br>").join(exceptionsList));
+          response.setInfo(Joiner.on("<br>").join(exceptionsList));
         }
         if (!CollectionUtils.isEmpty(moveList)) {
           response.setView(
