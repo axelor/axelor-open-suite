@@ -106,6 +106,8 @@ public final class HumanResourceExceptionMessage {
       "Please, choose unit in leave reason %s." /*)*/;
   public static final String LEAVE_REQUEST_DATES_OVERLAPPED = /*$$(*/
       "A leave request is already accepted over this or a portion of this period of time. Please cancel the previous one to accept this one." /*)*/;
+  public static final String LEAVE_REQUEST_NO_COMPANY = /*$$(*/
+      "Please set a company up on leave request" /*)*/;
 
   public static final String EMPLOYEE_PLANNING = /*$$(*/
       "Please, add a planning for employee : %s" /*)*/;

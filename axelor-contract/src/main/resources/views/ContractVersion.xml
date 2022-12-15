@@ -129,12 +129,16 @@
               <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
             </panel>
             <panel name="invoicingDetailsPanel" colSpan="12">
-              <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
+              <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"
+                readonlyIf="!nextContract.currentContractVersion.isPeriodicInvoicing"/>
               <panel showIf="isPeriodicInvoicing" colSpan="9" name="subInvoicingDetailsPanel">
                 <field name="invoicingDuration" colSpan="4"/>
                 <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                 <field name="isVersionProratedInvoice" hidden="true"
                   showIf="isTimeProratedInvoice" widget="boolean-switch" colSpan="4"/>
+                <field name="nextContract.currentContractVersion" hidden="true"/>
+                <field name="nextContract.currentContractVersion.isPeriodicInvoicing"
+                  hidden="true"/>
               </panel>
             </panel>
           </panel>
