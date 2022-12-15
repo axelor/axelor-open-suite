@@ -758,10 +758,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty()) {
       this.addParams(
-          "(self.account in (?%d) or self.account.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
+          "(self.moveLine.account in (?%d) or self.moveLine.account.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
           accountingReport.getAccountSet());
     }
 
