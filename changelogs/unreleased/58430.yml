@@ -1,0 +1,3 @@
+---
+title: "Move : fix reverse process to fill bank reconciled amount only if 'Hide move lines in bank reconciliation' is ticked and if the account type is 'cash'"
+type: fix
