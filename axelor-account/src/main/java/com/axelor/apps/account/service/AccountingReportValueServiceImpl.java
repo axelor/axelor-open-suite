@@ -1413,7 +1413,7 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
         Optional.ofNullable(baseValue)
             .map(AccountingReportValue::getLineTitle)
             .orElse(line.getLabel()),
-        result,
+        result.abs(),
         valuesMapByColumn,
         valuesMapByLine,
         configAnalyticAccount,
