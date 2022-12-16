@@ -28,13 +28,12 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.message.exception.AxelorMessageException;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -94,8 +93,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
             .generateAndSendMessage(invoice, invoice.getInvoiceMessageTemplate());
       } catch (Exception e) {
         TraceBackService.trace(
-            new AxelorMessageException(
-                e, invoice, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
+            new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
       }
     }
   }

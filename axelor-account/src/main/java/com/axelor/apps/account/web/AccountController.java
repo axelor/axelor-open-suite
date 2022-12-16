@@ -26,7 +26,6 @@ import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServ
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.translation.ITranslation;
-import com.axelor.apps.tool.MassUpdateTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -37,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.MassUpdateTool;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;

@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.tool.date.DateTool;
+import com.axelor.utils.date.DateTool;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
