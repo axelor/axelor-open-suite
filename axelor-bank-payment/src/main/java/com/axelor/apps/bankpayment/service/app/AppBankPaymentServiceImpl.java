@@ -19,11 +19,11 @@ package com.axelor.apps.bankpayment.service.app;
 
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentConfigRepository;
-import com.axelor.apps.base.db.AppBankPayment;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppBankPaymentRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.studio.db.AppBankPayment;
+import com.axelor.studio.db.repo.AppBankPaymentRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
