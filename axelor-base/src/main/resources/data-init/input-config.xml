@@ -22,9 +22,9 @@
     type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
 
   <input file="base_templateContext.csv" separator=";"
-    type="com.axelor.apps.message.db.TemplateContext" search="self.name = :name"/>
+    type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
 
-  <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind column="birtTemplateSet_importId" to="birtTemplateSet"
       search="self.importId in :birtTemplateSet_importId"
@@ -33,10 +33,10 @@
       if="templateContext != null &amp;&amp; !templateContext.empty"/>
   </input>
 
-  <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.App"
+  <input file="studio_appBase.csv" separator=";" type="com.axelor.studio.db.App"
     search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp"/>
 
-  <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"
+  <input file="studio_appBase.csv" separator=";" type="com.axelor.studio.db.AppBase"
     search="self.app.code = :code">
     <bind to="app" column="code" search="self.code = :code"/>
   </input>

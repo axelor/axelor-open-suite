@@ -60,7 +60,7 @@ import wslite.json.JSONException;
 public class AddressServiceImpl implements AddressService {
 
   @Inject protected AddressRepository addressRepo;
-  @Inject protected com.axelor.apps.tool.address.AddressTool ads;
+  @Inject protected com.axelor.utils.address.AddressTool ads;
   @Inject protected MapService mapService;
   @Inject protected CityRepository cityRepository;
   @Inject protected StreetRepository streetRepository;

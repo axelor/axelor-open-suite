@@ -23,11 +23,6 @@ import com.axelor.apps.base.db.MailTemplateAssociation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.EmailAccount;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.MailServiceMessageImpl;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
@@ -45,6 +40,12 @@ import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.mail.db.repo.MailMessageRepository;
+import com.axelor.message.db.EmailAccount;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailServiceMessageImpl;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.rpc.filter.Filter;
@@ -83,6 +84,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MailServiceBaseImpl extends MailServiceMessageImpl {
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private ExecutorService executor = Executors.newCachedThreadPool();
@@ -92,7 +94,13 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected Templates templates;
   protected static final String RECIPIENTS_SPLIT_REGEX = "\\s*(;|,|\\|)\\s*|\\s+";
 
-  @Inject AppBaseService appBaseService;
+  protected final AppBaseService appBaseService;
+
+  @Inject
+  public MailServiceBaseImpl(MailAccountService mailAccountService, AppBaseService appBaseService) {
+    super(mailAccountService);
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public Model resolve(String email) {

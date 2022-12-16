@@ -9,8 +9,7 @@
 
     <integer name="sequence" title="Sequence"/>
 
-    <many-to-one name="template" ref="com.axelor.apps.message.db.Template"
-      title="Template"/>
+    <many-to-one name="template" ref="com.axelor.message.db.Template" title="Template"/>
     <many-to-one name="metaAction" ref="com.axelor.meta.db.MetaAction" title="Action"/>
 
     <!-- back reference -->

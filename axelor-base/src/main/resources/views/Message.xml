@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <form name="message-form" id="base-message-form" title="Email"
-    model="com.axelor.apps.message.db.Message" onNew="action-group-base-message-onnew">
+    model="com.axelor.message.db.Message" onNew="action-group-base-message-onnew">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
         onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
@@ -94,7 +94,7 @@
       if="eval: __config__.app.getApp('base')?.getEmailAccountByUser()"/>
   </action-attrs>
 
-  <action-record model="com.axelor.apps.message.db.Message"
+  <action-record model="com.axelor.message.db.Message"
     name="action-message-record-active-company">
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>

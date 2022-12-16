@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.test;
 
-import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.utils.file.CsvTool;
 import com.google.common.base.CaseFormat;
 import java.io.File;
 import java.io.IOException;

@@ -491,8 +491,8 @@
         <panel-include if-module="axelor-purchase" view="incl-purchases-partner-form"
           if="__config__.app.isApp('purchase')"/>
         <field name="$emailsList" colSpan="12" type="many-to-many"
-          target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
-          canSelect="false" canRemove="false"/>
+          target="com.axelor.message.db.Message" title="Emails" canNew="false" canSelect="false"
+          canRemove="false"/>
         <panel-dashlet name="marketingCampaignsPanel"
           action="action-partner-view-marketing-campaigns" if-module="axelor-marketing"
           if="__config__.app.isApp('marketing')" colSpan="12"/>
@@ -706,8 +706,8 @@
         <panel-include if-module="axelor-supplychain" view="incl-sales-contact-form"
           if="__config__.app.isApp('supplychain')"/>
         <field name="$emailsList" colSpan="12" type="many-to-many"
-          target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
-          canSelect="false" canRemove="false"/>
+          target="com.axelor.message.db.Message" title="Emails" canNew="false" canSelect="false"
+          canRemove="false"/>
       </panel>
       <panel-dashlet name="contactPartnerPanel"
         action="action-contact-partner-dashlet" title="Partners"/>
@@ -1103,8 +1103,8 @@
         <panel-include if-module="axelor-supplychain" view="incl-sales-contact-form"
           if="__config__.app.isApp('supplychain')"/>
         <field name="$emailsList" colSpan="12" type="many-to-many"
-          target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
-          canSelect="false" canRemove="false"/>
+          target="com.axelor.message.db.Message" title="Emails" canNew="false" canSelect="false"
+          canRemove="false"/>
       </panel>
       <panel-dashlet name="contactPartnerDetailsPanel"
         action="action-contact-partner-dashlet" title="Partners"/>

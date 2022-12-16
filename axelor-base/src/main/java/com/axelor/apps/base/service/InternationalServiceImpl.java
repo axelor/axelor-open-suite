@@ -19,7 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.tool.service.TranslationService;
+import com.axelor.utils.service.TranslationService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

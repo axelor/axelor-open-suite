@@ -17,13 +17,11 @@
  */
 package com.axelor.apps.base.service.imports;
 
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -31,6 +29,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
+import com.axelor.studio.db.AppBase;
+import com.axelor.utils.net.URLService;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.BufferedReader;
