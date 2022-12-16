@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.0.xsd">
 
-  <input file="base_appBusinessProject.csv" separator=";"
-    type="com.axelor.apps.base.db.AppBusinessProject" search="self.app.code = :code" update="true">
+  <input file="studio_appBusinessProject.csv" separator=";"
+    type="com.axelor.studio.db.AppBusinessProject" search="self.app.code = :code" update="true">
     <bind to="preTaskStatusSet" column="preTaskStatusSetImportId"
       search="self.importId in :preTaskStatusSetImportId"
       eval="preTaskStatusSetImportId.split('\\|') as List"/>
