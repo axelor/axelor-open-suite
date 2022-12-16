@@ -106,9 +106,8 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
 
       BigDecimal depreciationBase;
       if (fixedAsset
-              .getFiscalComputationMethodSelect()
-              .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)
-          && fixedAsset.getFixedAssetCategory().getIsProrataTemporis()) {
+          .getFiscalComputationMethodSelect()
+          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
         depreciationBase = fiscalDepreciatedAmountCurrentYear;
       } else {
         depreciationBase = fiscalAlreadyDepreciatedAmount.add(fiscalDepreciatedAmountCurrentYear);
@@ -133,9 +132,8 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
 
       BigDecimal depreciationBase;
       if (fixedAsset
-              .getComputationMethodSelect()
-              .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)
-          && fixedAsset.getFixedAssetCategory().getIsProrataTemporis()) {
+          .getComputationMethodSelect()
+          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
         depreciationBase = depreciatedAmountCurrentYear;
       } else {
         depreciationBase = alreadyDepreciatedAmount.add(depreciatedAmountCurrentYear);
@@ -267,10 +265,6 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
 
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
     BigDecimal grossValue = fixedAsset.getGrossValue();
-    BigDecimal depreciationBase =
-        correctedAccountingValue.signum() != 0
-            ? correctedAccountingValue
-            : grossValue.subtract(fixedAsset.getResidualValue());
 
     if (isFiscal(fixedAsset)) {
 
@@ -279,12 +273,17 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
               .getFiscalAlreadyDepreciatedAmount()
               .add(fixedAsset.getFiscalDepreciatedAmountCurrentYear());
 
-      if (fixedAsset
-              .getFiscalComputationMethodSelect()
-              .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)
-          && correctedAccountingValue.signum() == 0) {
-        depreciationBase =
-            depreciationBase.subtract(fixedAsset.getFiscalAlreadyDepreciatedAmount());
+      BigDecimal depreciationBase;
+      if (correctedAccountingValue.signum() != 0) {
+        depreciationBase = correctedAccountingValue;
+      } else {
+        depreciationBase = grossValue.subtract(fixedAsset.getResidualValue());
+        if (fixedAsset
+            .getFiscalComputationMethodSelect()
+            .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+          depreciationBase =
+              depreciationBase.subtract(fixedAsset.getFiscalAlreadyDepreciatedAmount());
+        }
       }
 
       fixedAssetLine =
@@ -300,16 +299,22 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
       fixedAsset.addFiscalFixedAssetLineListItem(fixedAssetLine);
     }
     if (isEconomic(fixedAsset)) {
+
       BigDecimal cumulativeDepreciation =
           fixedAsset
               .getAlreadyDepreciatedAmount()
               .add(fixedAsset.getDepreciatedAmountCurrentYear());
 
-      if (fixedAsset
-              .getComputationMethodSelect()
-              .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)
-          && correctedAccountingValue.signum() == 0) {
-        depreciationBase = depreciationBase.subtract(fixedAsset.getAlreadyDepreciatedAmount());
+      BigDecimal depreciationBase;
+      if (correctedAccountingValue.signum() != 0) {
+        depreciationBase = correctedAccountingValue;
+      } else {
+        depreciationBase = grossValue.subtract(fixedAsset.getResidualValue());
+        if (fixedAsset
+            .getComputationMethodSelect()
+            .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
+          depreciationBase = depreciationBase.subtract(fixedAsset.getAlreadyDepreciatedAmount());
+        }
       }
 
       fixedAssetLine =
