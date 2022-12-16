@@ -28,18 +28,17 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.EmailAccountRepository;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.EmailAccountRepository;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -200,8 +199,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
   }
 
   @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
-  protected Message generateAndSendMessage(Employee employee)
-      throws MessagingException, IOException, AxelorException {
+  protected Message generateAndSendMessage(Employee employee) throws MessagingException {
 
     Message message = new Message();
     message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);

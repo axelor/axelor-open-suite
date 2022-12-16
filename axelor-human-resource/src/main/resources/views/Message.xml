@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <grid name="message-timesheet-reminder-grid" title="Emails"
-    model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
+    model="com.axelor.message.db.Message" orderBy="-sentDateT">
     <field name="sentDateT"/>
     <field name="senderUser" form-view="user-form" grid-view="user-grid"/>
     <field name="subject"/>

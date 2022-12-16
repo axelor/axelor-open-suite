@@ -24,20 +24,19 @@ import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.db.MetaModel;
 import com.google.inject.Inject;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -140,8 +139,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
   }
 
   protected void sendReminderUsingEmployees(Template template)
-      throws AxelorException, MessagingException, IOException, ClassNotFoundException,
-          InstantiationException, IllegalAccessException {
+      throws ClassNotFoundException, MessagingException {
     for (Employee employee :
         getEmployeesWithoutRecentTimesheet(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
@@ -155,8 +153,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
   }
 
   protected void sendReminderUsingTimesheets(Template template)
-      throws AxelorException, MessagingException, IOException, ClassNotFoundException,
-          InstantiationException, IllegalAccessException {
+      throws ClassNotFoundException, MessagingException, AxelorException {
     for (Employee employee :
         getEmployeesWithoutRecentTimesheet(
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))

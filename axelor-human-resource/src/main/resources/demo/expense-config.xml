@@ -22,8 +22,8 @@
     <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
   </input>
 
-  <input file="base_expenseTemplate.csv" separator=";"
-    type="com.axelor.apps.message.db.Template" search="self.importId = :importId"/>
+  <input file="base_expenseTemplate.csv" separator=";" type="com.axelor.message.db.Template"
+    search="self.importId = :importId"/>
 
   <input file="account_accountConfig.csv" separator=";"
     type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true"/>

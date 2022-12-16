@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.0.xsd">
 
-  <input file="base_appTimesheet.csv" separator=";"
-    type="com.axelor.apps.base.db.AppTimesheet" search="self.app.code = :code"/>
+  <input file="studio_appTimesheet.csv" separator=";" type="com.axelor.studio.db.AppTimesheet"
+    search="self.app.code = :code"/>
 
   <input file="hr_timesheet.csv" type="com.axelor.apps.hr.db.Timesheet" separator=";"
     search="self.importId = :importId">
@@ -23,7 +23,7 @@
     <bind to="hoursDuration" column="hoursDuration"/>
   </input>
 
-  <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind to="language" search="self.code = :languageCode"/>
     <bind column="birtTemplateSet_importId" to="birtTemplateSet"
