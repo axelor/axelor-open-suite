@@ -85,8 +85,6 @@ import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.AccountingReportToolServiceImpl;
 import com.axelor.apps.account.service.AccountingReportTypeService;
 import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
-import com.axelor.apps.account.service.AccountingReportValueService;
-import com.axelor.apps.account.service.AccountingReportValueServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationInitService;
 import com.axelor.apps.account.service.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -177,6 +175,14 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportServiceImpl;
+import com.axelor.apps.account.service.custom.AccountingReportValueCustomRuleService;
+import com.axelor.apps.account.service.custom.AccountingReportValueCustomRuleServiceImpl;
+import com.axelor.apps.account.service.custom.AccountingReportValueMoveLineService;
+import com.axelor.apps.account.service.custom.AccountingReportValueMoveLineServiceImpl;
+import com.axelor.apps.account.service.custom.AccountingReportValuePercentageService;
+import com.axelor.apps.account.service.custom.AccountingReportValuePercentageServiceImpl;
+import com.axelor.apps.account.service.custom.AccountingReportValueService;
+import com.axelor.apps.account.service.custom.AccountingReportValueServiceImpl;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
@@ -630,5 +636,11 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceFinancialDiscountService.class).to(InvoiceFinancialDiscountServiceImpl.class);
 
     bind(AccountingReportValueService.class).to(AccountingReportValueServiceImpl.class);
+
+    bind(AccountingReportValueCustomRuleService.class).to(AccountingReportValueCustomRuleServiceImpl.class);
+
+    bind(AccountingReportValueMoveLineService.class).to(AccountingReportValueMoveLineServiceImpl.class);
+
+    bind(AccountingReportValuePercentageService.class).to(AccountingReportValuePercentageServiceImpl.class);
   }
 }
