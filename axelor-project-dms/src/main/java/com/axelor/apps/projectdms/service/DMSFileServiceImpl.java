@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.projectdms.service;
 
-import com.axelor.apps.message.db.EmailAccount;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MailAccountService;
-import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.projectdms.exception.ProjectDmsExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -31,6 +24,13 @@ import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.EmailAccount;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.repo.EmailAddressRepository;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MessageService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.ArrayList;
