@@ -29,8 +29,8 @@
   <input file="supplychain_supplyChainConfig.csv" separator=";"
     type="com.axelor.apps.supplychain.db.SupplyChainConfig"/>
 
-  <input file="base_appSupplychain.csv" separator=";"
-    type="com.axelor.apps.base.db.AppSupplychain" search="self.app.code = :code"
+  <input file="studio_appSupplychain.csv" separator=";"
+    type="com.axelor.studio.db.AppSupplychain" search="self.app.code = :code"
     call="com.axelor.csv.script.ImportSupplyChain:importSupplyChain"/>
 
   <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"

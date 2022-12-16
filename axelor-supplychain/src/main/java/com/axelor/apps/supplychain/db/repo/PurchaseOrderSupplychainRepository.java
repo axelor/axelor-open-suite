@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.inject.Beans;
+import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 
 public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementRepository {
