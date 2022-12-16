@@ -1001,7 +1001,7 @@ SalespersonUser.use_signature_for_sales_quotations as "useSignature",
 ContactPartner.title_select as "contactPartnerTitleSelect"
 from sale_sale_order as SaleOrder
 left outer join base_company as Company on (SaleOrder.company = Company.id)
-left outer join base_app_sale as AppSale on true 
+left outer join studio_app_sale as AppSale on true 
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
 left outer join base_partner as ContactPartner on (SaleOrder.contact_partner = ContactPartner.id)
@@ -1581,7 +1581,7 @@ SELECT
     SOL."UnitCode",
 	SOL."packHideUnitAmounts"
 FROM SOL
-LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
+LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
 WHERE  AppBase.is_regroup_products_on_printings IS NULL OR AppBase.is_regroup_products_on_printings IS FALSE
 OR SaleOrder.group_products_on_printings IS NULL OR SaleOrder.group_products_on_printings IS FALSE
@@ -1619,7 +1619,7 @@ SELECT
     SOL."UnitCode",
 	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
 FROM SOL
-LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
+LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
 WHERE AppBase.is_regroup_products_on_printings IS TRUE AND SaleOrder.group_products_on_printings IS TRUE
 AND AppBase.regroup_products_level_select = 'category'
@@ -1660,7 +1660,7 @@ SELECT
     SOL."UnitCode",
 	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
 FROM SOL
-LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
+LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL.SaleOrderId = SaleOrder.id)
 WHERE AppBase.is_regroup_products_on_printings IS TRUE AND SaleOrder.group_products_on_printings IS TRUE
 AND AppBase.regroup_products_level_select = 'global'
@@ -1927,7 +1927,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </list-property>
             <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_unit_price,
 nb_decimal_digit_for_qty
-from base_app_base]]></xml-property>
+from studio_app_base]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.sale.db.repo;
 
-import com.axelor.apps.base.db.AppSale;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -30,6 +29,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppSale;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;

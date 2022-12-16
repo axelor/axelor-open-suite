@@ -18,8 +18,8 @@
 package com.axelor.apps.sale.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
-import static com.axelor.apps.tool.date.DateTool.toDate;
-import static com.axelor.apps.tool.date.DateTool.toLocalDateT;
+import static com.axelor.utils.date.DateTool.toDate;
+import static com.axelor.utils.date.DateTool.toLocalDateT;
 
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisLine;

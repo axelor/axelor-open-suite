@@ -25,15 +25,15 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
-import com.axelor.apps.tool.ModelTool;
-import com.axelor.apps.tool.ThrowConsumer;
-import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.ModelTool;
+import com.axelor.utils.ThrowConsumer;
+import com.axelor.utils.file.PdfTool;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
     ModelTool.apply(
         SaleOrder.class,
         ids,
-        new ThrowConsumer<SaleOrder>() {
+        new ThrowConsumer<SaleOrder, Exception>() {
           @Override
           public void accept(SaleOrder saleOrder) throws Exception {
             printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF));
