@@ -736,7 +736,7 @@
     title="Convert demo file" action="admin.root.convert.demo.file"/>
 
   <action-view name="admin.root.convert.demo.file" title="Convert demo file"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="convert-demo-file-wizard-form"/>
   </action-view>
 
@@ -744,7 +744,7 @@
     title="Import demo data" action="admin.root.import.demo.data"/>
 
   <action-view name="admin.root.import.demo.data" title="Import demo data"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="import-demo-data-wizard-form"/>
   </action-view>
 
@@ -787,7 +787,7 @@
   <menuitem title="DMS Import" name="menu-dms-import-wizard"
     parent="admin-root-maintenance" action="menu.dms.import.wizard"/>
 
-  <action-view name="menu.dms.import.wizard" model="com.axelor.apps.base.db.Wizard"
+  <action-view name="menu.dms.import.wizard" model="com.axelor.message.db.Wizard"
     title="DMS Import">
     <view name="dms-import-wizard-form" type="form"/>
     <view-param name="show-confirm" value="false"/>
@@ -912,7 +912,7 @@
     parent="admin-root-maintenance" action="admin.global.tracking.log.show"/>
 
   <action-view name="admin.global.tracking.log.show" title="Global tracking logs"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="global-tracking-log-view-wizard-form"/>
   </action-view>
 

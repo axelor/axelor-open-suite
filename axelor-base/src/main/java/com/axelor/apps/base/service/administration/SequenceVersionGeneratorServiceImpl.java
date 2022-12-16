@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.administration;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.date.DateTool;
+import com.axelor.utils.date.DateTool;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.Optional;

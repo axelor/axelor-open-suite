@@ -18,13 +18,13 @@
 package com.axelor.apps.base.listener;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.App;
-import com.axelor.apps.base.db.repo.AppRepository;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.common.StringUtils;
 import com.axelor.event.Observes;
 import com.axelor.events.StartupEvent;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.studio.db.App;
+import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;

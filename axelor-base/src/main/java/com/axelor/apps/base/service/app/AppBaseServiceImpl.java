@@ -18,18 +18,19 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.axelor.studio.app.service.AppServiceImpl;
+import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.repo.AppBaseRepository;
+import com.axelor.utils.date.DateTool;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;

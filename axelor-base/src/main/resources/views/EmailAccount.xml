@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <form name="mail-account-form" id="base-mail-account-form" title="Mail account"
-    model="com.axelor.apps.message.db.EmailAccount" onNew="action-mail-account-default-record"
+    model="com.axelor.message.db.EmailAccount" onNew="action-mail-account-default-record"
     onSave="action-mail-account-method-check-default-mail-account,action-method-mail-account-validate-password">
     <panel name="informationsPanel" title="Information">
       <field name="name"/>
@@ -47,7 +47,7 @@
   </form>
 
   <action-record name="action-mail-account-default-record"
-    model="com.axelor.apps.message.db.EmailAccount">
+    model="com.axelor.message.db.EmailAccount">
     <field name="user" expr="eval:__user__"
       if="__config__.app.getApp('base')?.getEmailAccountByUser()"/>
   </action-record>

@@ -2,8 +2,8 @@
 "perms.user";"com.axelor.auth.db.User";"true";"true";"true";"true";"true";;
 "perm.base.rw";"com.axelor.apps.base.db.*";"true";"true";"false";"false";"true";;
 "perm.base.rwc";"com.axelor.apps.base.db.*";"true";"true";"true";"false";"true";;
-"perm.message.rwc";"com.axelor.apps.message.db.*";"true";"true";"true";"false";"true";;
-"perm.message.rw";"com.axelor.apps.message.db.*";"true";"true";"false";"false";"true";;
+"perm.message.rwc";"com.axelor.message.db.*";"true";"true";"true";"false";"true";;
+"perm.message.rw";"com.axelor.message.db.*";"true";"true";"false";"false";"true";;
 "perm.account.rw";"com.axelor.apps.account.db.*";"true";"true";"false";"false";"true";;
 "perm.account.rwc";"com.axelor.apps.account.db.*";"true";"true";"true";"false";"true";;
 "perm.hr.rwc";"com.axelor.apps.hr.db.*";"true";"true";"true";"false";"true";;
