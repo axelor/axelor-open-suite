@@ -84,7 +84,7 @@
   </form>
 
   <form name="wizard-unit-cost-calc-import-form" title="Import CSV"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <panel name="wizardPanel">
       <field name="metaFile" title="Input file" type="many-to-one"
         target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
@@ -119,7 +119,7 @@
   </action-method>
 
   <action-view name="action-unit-cost-calculation-view-import-csv" title="import.name"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="wizard-unit-cost-calc-import-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="width" value="800"/>
