@@ -37,11 +37,11 @@ package com.axelor.apps.bankpayment.ebics.client;
  */
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.xml.XPathParse;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
