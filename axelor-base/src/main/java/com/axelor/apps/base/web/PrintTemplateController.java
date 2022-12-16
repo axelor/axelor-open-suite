@@ -19,7 +19,6 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Print;
 import com.axelor.apps.base.db.PrintTemplate;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PrintTemplateRepository;
 import com.axelor.apps.base.service.PrintService;
 import com.axelor.apps.base.service.PrintTemplateService;
@@ -31,6 +30,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Wizard;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;

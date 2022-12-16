@@ -18,7 +18,6 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
@@ -34,6 +33,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.quartz.JobRunner;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Singleton;
 
 @Singleton

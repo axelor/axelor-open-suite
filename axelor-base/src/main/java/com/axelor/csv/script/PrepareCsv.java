@@ -17,9 +17,9 @@
  */
 package com.axelor.csv.script;
 
-import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.inject.Beans;
+import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.xml.XPathParse;
 import com.google.common.base.CaseFormat;
 import java.io.File;
 import java.io.IOException;

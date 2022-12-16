@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
@@ -26,6 +24,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import groovy.util.XmlSlurper;

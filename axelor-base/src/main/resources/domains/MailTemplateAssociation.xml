@@ -9,7 +9,7 @@
 
     <many-to-one name="model" ref="com.axelor.meta.db.MetaModel" title="Object"
       required="true"/>
-    <many-to-one name="emailTemplate" ref="com.axelor.apps.message.db.Template"
+    <many-to-one name="emailTemplate" ref="com.axelor.message.db.Template"
       title="Email template" required="true"/>
 
   </entity>

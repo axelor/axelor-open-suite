@@ -21,15 +21,15 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateContextService;
-import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateContextService;
+import com.axelor.message.service.TemplateMessageServiceImpl;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.text.Templates;
@@ -64,8 +64,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
   @Override
   public Set<MetaFile> getMetaFiles(
-      Template template, Templates templates, Map<String, Object> templatesContext)
-      throws AxelorException, IOException {
+      Template template, Templates templates, Map<String, Object> templatesContext) {
 
     Set<MetaFile> metaFiles = super.getMetaFiles(template, templates, templatesContext);
     Set<BirtTemplate> birtTemplates = template.getBirtTemplateSet();
@@ -74,8 +73,12 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     }
 
     for (BirtTemplate birtTemplate : birtTemplates) {
-      metaFiles.add(
-          createMetaFileUsingBirtTemplate(null, birtTemplate, templates, templatesContext));
+      try {
+        metaFiles.add(
+            createMetaFileUsingBirtTemplate(null, birtTemplate, templates, templatesContext));
+      } catch (Exception e) {
+        throw new IllegalStateException(e);
+      }
     }
 
     logger.debug("Metafile to attach: {}", metaFiles);
