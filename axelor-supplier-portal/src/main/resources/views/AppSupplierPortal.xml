@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <form name="app-supplier-portal-config-form" title="App Supplier Portal"
-    model="com.axelor.apps.base.db.AppSupplierPortal" canDelete="false" canNew="false" width="large">
+    model="com.axelor.studio.db.AppSupplierPortal" canDelete="false" canNew="false" width="large">
     <panel title="Displaying module portal" name="appPortalConfigPanel" colSpan="12"
       itemSpan="4" showTitle="false">
       <field name="managePurchaseOrders" widget="boolean-switch"/>
