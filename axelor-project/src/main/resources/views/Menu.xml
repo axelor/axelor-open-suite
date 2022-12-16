@@ -68,7 +68,7 @@
   <menuitem name="project-activity" title="Project Activities"
     parent="project-current-project" action="project.activity" order="10"/>
   <action-view name="project.activity" title="Project Activity"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="project-activity-dashboard-form"/>
   </action-view>
 
@@ -128,7 +128,7 @@
     order="33" title="Project dashboard" action="project.reporting.projects.dashboard"
     if="__user__.contextProject"/>
   <action-view name="project.reporting.projects.dashboard" title="Project dashboard"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="project-dashboard-form"/>
   </action-view>
 
