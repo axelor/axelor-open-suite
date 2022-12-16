@@ -28,7 +28,6 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConf
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
@@ -36,6 +35,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;

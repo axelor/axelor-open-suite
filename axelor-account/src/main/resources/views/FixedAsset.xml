@@ -303,7 +303,7 @@
 
 
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Disposal"
+  <form model="com.axelor.message.db.Wizard" title="Disposal"
     name="fixed-asset-disposal-wizard-form"
     onNew="action-fixed-asset-disposal-wizard-record-onnew, action-attrs-account-fixed-asset-wizard-form-disposal-amount, action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
     <panel name="mainPanel">
@@ -336,7 +336,7 @@
     </panel>
   </form>
 
-  <form name="fixed-asset-split-wizard-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="fixed-asset-split-wizard-form" model="com.axelor.message.db.Wizard"
     title="Split fixed asset" onNew="action-fixed-asset-method-wizard-init-values">
     <panel name="mainPanel">
       <field name="splitTypeSelect" title="Split type" type="integer"
@@ -417,7 +417,7 @@
   </action-attrs>
 
   <action-record name="action-fixed-asset-disposal-wizard-record-onnew"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <field name="disposalDate" expr="eval: __config__.date"/>
     <field name="disposalAmount" expr="eval: _fixedAsset?.residualValue"/>
     <field name="qty" expr="eval:_fixedAsset?.qty"/>

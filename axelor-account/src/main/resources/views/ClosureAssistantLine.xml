@@ -49,7 +49,7 @@
   </grid>
 
   <form name="closure-assistant-line-outrun-wizard" title="Outrun result"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-closure-assistant-line-method-outrun">
+    model="com.axelor.message.db.Wizard" onNew="action-closure-assistant-line-method-outrun">
     <panel name="mainPanel" itemSpan="12" readonly="true">
       <field name="year" title="Fiscal year" type="many-to-one"
         target="com.axelor.apps.base.db.Year"/>

@@ -250,8 +250,8 @@
   <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"
     search="self.importId = :importId" update="true"/>
 
-  <input file="base_appAccount.csv" separator=";" search="self.app.code = :code" update="true"
-    type="com.axelor.apps.base.db.AppAccount"/>
+  <input file="studio_appAccount.csv" separator=";" search="self.app.code = :code"
+    update="true" type="com.axelor.studio.db.AppAccount"/>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">

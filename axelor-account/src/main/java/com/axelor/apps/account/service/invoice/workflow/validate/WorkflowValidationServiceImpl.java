@@ -18,12 +18,11 @@
 package com.axelor.apps.account.service.invoice.workflow.validate;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.message.exception.AxelorMessageException;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.message.service.TemplateMessageService;
 
 public class WorkflowValidationServiceImpl implements WorkflowValidationService {
 
@@ -36,8 +35,7 @@ public class WorkflowValidationServiceImpl implements WorkflowValidationService 
             .generateAndSendMessage(invoice, invoice.getInvoiceMessageTemplateOnValidate());
       } catch (Exception e) {
         TraceBackService.trace(
-            new AxelorMessageException(
-                e, invoice, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
+            new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
       }
     }
   }
