@@ -18,7 +18,7 @@
 package com.axelor.apps.production.rest.dto;
 
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.tool.api.ResponseStructure;
+import com.axelor.utils.api.ResponseStructure;
 
 public class ManufOrderResponse extends ResponseStructure {
 

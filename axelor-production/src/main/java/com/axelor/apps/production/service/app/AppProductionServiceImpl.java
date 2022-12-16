@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.production.service.app;
 
-import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.production.db.ProductionConfig;
@@ -25,6 +24,7 @@ import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppProduction;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
