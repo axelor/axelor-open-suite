@@ -20,20 +20,18 @@ package com.axelor.apps.talent.service;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.mail.db.repo.MailFollowerRepository;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -54,9 +52,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void send(Appraisal appraisal)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException {
+  public void send(Appraisal appraisal) throws ClassNotFoundException, MessagingException {
 
     Employee employee = appraisal.getEmployee();
 
@@ -118,8 +114,7 @@ public class AppraisalServiceImpl implements AppraisalService {
   @Override
   public Set<Long> createAppraisals(
       Appraisal appraisalTemplate, Set<Employee> employees, Boolean send)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException {
+      throws ClassNotFoundException, MessagingException {
 
     Set<Long> appraisalIds = new HashSet<Long>();
 
