@@ -18,7 +18,7 @@
 package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.stock.db.Inventory;
-import com.axelor.apps.tool.api.ResponseStructure;
+import com.axelor.utils.api.ResponseStructure;
 
 public class InventoryResponse extends ResponseStructure {
 

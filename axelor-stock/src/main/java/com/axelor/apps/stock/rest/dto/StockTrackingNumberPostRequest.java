@@ -19,8 +19,8 @@ package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.tool.api.ObjectFinder;
-import com.axelor.apps.tool.api.RequestPostStructure;
+import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestPostStructure;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 

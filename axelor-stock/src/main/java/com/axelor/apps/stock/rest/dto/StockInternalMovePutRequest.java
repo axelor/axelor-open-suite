@@ -19,8 +19,8 @@ package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.tool.api.ObjectFinder;
-import com.axelor.apps.tool.api.RequestStructure;
+import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
