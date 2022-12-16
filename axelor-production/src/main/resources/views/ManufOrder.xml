@@ -477,7 +477,7 @@
 
   </grid>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Draft orders"
+  <form model="com.axelor.message.db.Wizard" title="Draft orders"
     name="multi-level-generated-draft-manuf-order-wizard-form"
     onNew="action-manuf-order-attrs-multi-level-wizard-onnew">
     <panel name="mainPanel">

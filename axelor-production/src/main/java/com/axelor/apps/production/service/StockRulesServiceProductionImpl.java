@@ -18,9 +18,6 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -32,6 +29,9 @@ import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
