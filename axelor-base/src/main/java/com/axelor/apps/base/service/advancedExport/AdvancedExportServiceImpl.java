@@ -52,6 +52,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import java.io.File;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       selectionJoinFieldSet = new LinkedHashSet<>();
 
   private List<Object> params = null;
+  private HashSet<String> aliasNameSet = new HashSet<>();
 
   private String exportFileName, language, selectField, aliasName;
   private boolean isReachMaxExportLimit, isNormalField, isSelectionField = false;
@@ -209,13 +211,14 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       for (int subIndex = 1; subIndex <= parentIndex; subIndex++) {
         tempAliasName = isKeyword(splitField, subIndex);
         if (!aliasName.equals(splitField[parentIndex])) {
+          tempAliasName = isSameAlias(tempAliasName);
           joinFieldSet.add(
               "LEFT JOIN " + aliasName + "." + splitField[subIndex] + " " + tempAliasName);
           aliasName = tempAliasName;
         }
       }
     } else {
-      tempAliasName = isKeyword(splitField, parentIndex);
+      tempAliasName = isSameAlias(isKeyword(splitField, parentIndex));
       joinFieldSet.add("LEFT JOIN self." + splitField[parentIndex] + " " + tempAliasName);
       aliasName = tempAliasName;
     }
@@ -240,6 +243,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
           break;
         }
 
+        tempAliasName = isSameAlias(tempAliasName);
         joinFieldSet.add(
             "LEFT JOIN MetaJsonRecord "
                 + tempAliasName
@@ -256,6 +260,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
       } else if (!Strings.isNullOrEmpty(jsonField.getTargetModel())) {
 
+        tempAliasName = isSameAlias(tempAliasName);
         joinFieldSet.add(
             "LEFT JOIN "
                 + jsonField.getTargetModel()
@@ -315,6 +320,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
         checkNormalField(splitField, count + 1, false);
       }
 
+      tempAliasName = isSameAlias(tempAliasName);
       joinFieldSet.add("LEFT JOIN " + tempAlias + "." + fieldName + " " + tempAliasName);
       tempAlias = tempAliasName;
     }
@@ -325,6 +331,15 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       return fieldNames[ind] + "_id";
     }
     return fieldNames[ind];
+  }
+
+  private String isSameAlias(String alias) {
+    if (aliasNameSet.contains(alias)) {
+      String startWith = alias;
+      alias += "_" + (aliasNameSet.stream().filter(name -> name.startsWith(startWith)).count());
+    }
+    aliasNameSet.add(alias);
+    return alias;
   }
 
   private void checkSelectionField(String[] fieldName, int index, String metaModelFullName)
