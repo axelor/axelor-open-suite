@@ -18,7 +18,6 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -46,6 +45,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
