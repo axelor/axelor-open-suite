@@ -1485,8 +1485,8 @@ public final class AccountExceptionMessage {
       "Please select a vat system on the account %s." /*)*/;
 
   public static final String MISSING_VAT_SYSTEM_ON_ACCOUNT_PARTNER = /*$$(*/
-      "Please select a vat system on the account %s or on the accounting config for partner %s." /*)*/;
+      "Please select a vat system on the account %s and on the accounting config for partner %s." /*)*/;
 
   public static final String MISSING_VAT_SYSTEM_ON_TAX_PARTNER = /*$$(*/
-      "Please select a vat system on the accounting config of tax %s or partner %s." /*)*/;
+      "Please select a vat system on the accounting config of tax %s and partner %s." /*)*/;
 }

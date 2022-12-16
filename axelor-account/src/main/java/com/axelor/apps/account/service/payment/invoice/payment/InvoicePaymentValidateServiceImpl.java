@@ -432,7 +432,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         && financialDiscountMoveLine != null
         && BigDecimal.ZERO.compareTo(invoicePayment.getFinancialDiscountTaxAmount()) != 0) {
 
-      if (financialDiscountMoveLine.getAccount().getVatSystemSelect() == null) {
+      if (financialDiscountMoveLine.getAccount().getVatSystemSelect() == null
+          || financialDiscountMoveLine.getAccount().getVatSystemSelect() == 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),

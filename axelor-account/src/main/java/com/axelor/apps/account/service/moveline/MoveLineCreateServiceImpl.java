@@ -484,8 +484,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           int vatSystemSelect =
               accountingSituationService.determineVatSystemSelect(
                   accountingSituation, invoiceLineTax.getVatSystemSelect());
-          if (accountingSituation.getVatSystemSelect() == null
-              && invoiceLineTax.getVatSystemSelect() == null) {
+          if (vatSystemSelect == 0) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_TAX_PARTNER),
@@ -863,8 +862,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       int vatSystemSelect =
           accountingSituationService.determineVatSystemSelect(
               accountingSituation, moveLine.getAccount().getVatSystemSelect());
-      if (accountingSituation.getVatSystemSelect() == null
-          && moveLine.getAccount().getVatSystemSelect() == null) {
+      if (vatSystemSelect == 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT_PARTNER),
@@ -886,6 +884,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       int vatSystemSelect =
           accountingSituationService.determineVatSystemSelect(
               accountingSituation, moveLine.getAccount().getVatSystemSelect());
+      if (vatSystemSelect == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT_PARTNER),
+            moveLine.getAccount().getCode(),
+            company.getPartner().getFullName());
+      }
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
@@ -901,6 +906,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       int vatSystemSelect =
           accountingSituationService.determineVatSystemSelect(
               accountingSituation, moveLine.getAccount().getVatSystemSelect());
+      if (vatSystemSelect == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT_PARTNER),
+            moveLine.getAccount().getCode(),
+            partner.getFullName());
+      }
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
