@@ -17,14 +17,19 @@
  */
 package com.axelor.apps.talent.service;
 
-import com.axelor.apps.base.db.AppRecruitment;
-import com.axelor.apps.base.db.repo.AppRecruitmentRepository;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.EmailAccount;
-import com.axelor.apps.message.db.Message;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailParser;
+import com.axelor.message.db.EmailAccount;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.repo.EmailAccountRepository;
+import com.axelor.message.db.repo.EmailAddressRepository;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.db.AppRecruitment;
+import com.axelor.studio.db.repo.AppRecruitmentRepository;
+import com.axelor.utils.service.CipherService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Date;
@@ -33,8 +38,14 @@ import javax.mail.MessagingException;
 public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
 
   @Inject
-  public MailAccountServiceTalentImpl(UserService userService) {
-    super(userService);
+  public MailAccountServiceTalentImpl(
+      EmailAccountRepository mailAccountRepo,
+      CipherService cipherService,
+      EmailAddressRepository emailAddressRepo,
+      MessageRepository messageRepo,
+      MetaFiles metaFiles,
+      UserService userService) {
+    super(mailAccountRepo, cipherService, emailAddressRepo, messageRepo, metaFiles, userService);
   }
 
   @Inject private AppRecruitmentRepository appRecruitmentRepo;

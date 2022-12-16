@@ -3,16 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.0.xsd">
 
-  <module name="studio" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="App" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.AppAppraisal" name="appAppraisal"
+    <one-to-one ref="com.axelor.studio.db.AppAppraisal" name="appAppraisal"
       mappedBy="app"/>
-    <one-to-one ref="com.axelor.apps.base.db.AppRecruitment" name="appRecruitment"
+    <one-to-one ref="com.axelor.studio.db.AppRecruitment" name="appRecruitment"
       mappedBy="app"/>
-    <one-to-one ref="com.axelor.apps.base.db.AppTraining" name="appTraining"
-      mappedBy="app"/>
+    <one-to-one ref="com.axelor.studio.db.AppTraining" name="appTraining" mappedBy="app"/>
 
   </entity>
 

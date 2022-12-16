@@ -9,7 +9,7 @@
     <string name="lastName" title="Last name"/>
     <string name="firstName" title="First name"/>
     <string name="fullName" title="Full name" namecolumn="true"/>
-    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress"
+    <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
       title="Email"/>
     <string name="fixedPhone" title="Fixed phone"/>
     <string name="mobilePhone" title="Mobile phone"/>

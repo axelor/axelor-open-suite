@@ -17,17 +17,17 @@
  */
 package com.axelor.apps.talent.service;
 
-import com.axelor.apps.base.db.AppRecruitment;
-import com.axelor.apps.base.db.repo.AppRecruitmentRepository;
-import com.axelor.apps.message.db.Message;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.JobPosition;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.axelor.apps.talent.db.repo.JobPositionRepository;
+import com.axelor.message.db.Message;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
+import com.axelor.studio.db.AppRecruitment;
+import com.axelor.studio.db.repo.AppRecruitmentRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
