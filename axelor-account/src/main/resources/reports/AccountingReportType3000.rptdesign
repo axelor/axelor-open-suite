@@ -1269,15 +1269,15 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                         <tabular-hierarchy name="NewTabularHierarchy2" id="5977">
                             <property name="levels">
                                 <tabular-level name="group" id="5978">
-                                    <property name="dataType">string</property>
+                                    <property name="dataType">integer</property>
                                     <property name="levelType">dynamic</property>
                                     <list-property name="attributes">
                                         <structure>
-                                            <property name="name">groupNb</property>
-                                            <property name="dataType">integer</property>
+                                            <property name="name">group</property>
+                                            <property name="dataType">string</property>
                                         </structure>
                                     </list-property>
-                                    <property name="columnName">group</property>
+                                    <property name="columnName">groupNb</property>
                                 </tabular-level>
                             </property>
                         </tabular-hierarchy>
@@ -2652,7 +2652,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                             </structure>
                                             <structure>
                                                 <property name="name">group</property>
-                                                <expression name="expression">dimension["Group"]["group"]</expression>
+                                                <expression name="expression" type="javascript">dimension["Group"]["group"]["group"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
