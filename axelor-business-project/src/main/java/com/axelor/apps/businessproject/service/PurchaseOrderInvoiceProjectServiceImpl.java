@@ -32,7 +32,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -54,6 +53,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGenerato
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
