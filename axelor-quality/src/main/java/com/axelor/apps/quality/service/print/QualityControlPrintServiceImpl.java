@@ -23,10 +23,10 @@ import com.axelor.apps.quality.db.QualityControl;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.apps.quality.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.file.PdfTool;
 import com.google.inject.Inject;
 import java.io.File;
 

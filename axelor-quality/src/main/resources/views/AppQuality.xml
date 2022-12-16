@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <form name="app-quality-config-form" title="App quality"
-    model="com.axelor.apps.base.db.AppQuality" width="large" canNew="false" canDelete="false">
+    model="com.axelor.studio.db.AppQuality" width="large" canNew="false" canDelete="false">
     <panel name="mainPanel">
       <field name="qualityControlTemplate" requiredIf="automaticMail" canEdit="false"/>
       <field name="automaticMail" widget="boolean-switch"/>
