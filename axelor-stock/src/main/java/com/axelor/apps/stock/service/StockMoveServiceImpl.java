@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -32,9 +31,6 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.exception.AxelorMessageException;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.*;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
@@ -51,6 +47,9 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -540,8 +539,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
     } catch (Exception e) {
       TraceBackService.trace(
-          new AxelorMessageException(
-              e, stockMove, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
+          new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
     }
   }
 
