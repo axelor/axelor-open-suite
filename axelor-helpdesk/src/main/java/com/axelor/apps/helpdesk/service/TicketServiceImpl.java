@@ -17,9 +17,7 @@
  */
 package com.axelor.apps.helpdesk.service;
 
-import com.axelor.apps.base.db.AppHelpdesk;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppHelpdeskRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
@@ -30,6 +28,8 @@ import com.axelor.apps.helpdesk.db.repo.SlaRepository;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.studio.db.AppHelpdesk;
+import com.axelor.studio.db.repo.AppHelpdeskRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
