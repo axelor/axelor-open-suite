@@ -6,7 +6,7 @@
   <input file="marketing_targetList.csv" separator=";"
     type="com.axelor.apps.marketing.db.TargetList" search="self.importId = :importId"/>
 
-  <input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template"/>
+  <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template"/>
 
   <input file="marketing_campaignType.csv" separator=";"
     type="com.axelor.apps.marketing.db.CampaignType" search="self.importId = :importId"/>
