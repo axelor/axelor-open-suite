@@ -21,7 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
-import com.axelor.apps.account.service.AccountingReportValueService;
+import com.axelor.apps.account.service.custom.AccountingReportValueService;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
