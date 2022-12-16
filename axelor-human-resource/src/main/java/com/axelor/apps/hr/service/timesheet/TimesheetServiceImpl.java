@@ -20,7 +20,6 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.AppTimesheet;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
@@ -29,7 +28,6 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
@@ -54,9 +52,6 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -74,8 +69,13 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.studio.db.AppTimesheet;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -97,7 +97,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
@@ -170,8 +169,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendConfirmationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getSentTimesheetTemplate();
@@ -237,8 +235,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
     confirm(timesheet);
     return sendConfirmationEmail(timesheet);
   }
@@ -255,8 +252,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendValidationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getValidatedTimesheetTemplate();
@@ -272,8 +268,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message validateAndSendValidationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
     validate(timesheet);
     return sendValidationEmail(timesheet);
   }
@@ -290,8 +285,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendRefusalEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getRefusedTimesheetTemplate();
@@ -307,8 +301,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
     refuse(timesheet);
     return sendRefusalEmail(timesheet);
   }
@@ -328,8 +321,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendCancellationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getCanceledTimesheetTemplate();
@@ -345,8 +337,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message cancelAndSendCancellationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
     cancel(timesheet);
     return sendCancellationEmail(timesheet);
   }

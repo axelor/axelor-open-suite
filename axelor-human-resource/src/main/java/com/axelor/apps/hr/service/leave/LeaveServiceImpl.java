@@ -37,14 +37,14 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.Message;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -55,7 +55,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class LeaveServiceImpl implements LeaveService {
@@ -665,8 +664,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   @Override
   public Message sendCancellationEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -699,8 +697,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   @Override
   public Message sendConfirmationEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -742,8 +739,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   @Override
   public Message sendValidationEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -776,8 +772,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   @Override
   public Message sendRefusalEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 

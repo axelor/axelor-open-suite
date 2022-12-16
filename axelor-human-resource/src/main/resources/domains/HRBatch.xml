@@ -52,8 +52,7 @@
 
     <!-- Timesheet Reminder -->
     <long name="daysBeforeReminder" title="Number of days before reminder"/>
-    <many-to-one name="template" ref="com.axelor.apps.message.db.Template"
-      title="Template"/>
+    <many-to-one name="template" ref="com.axelor.message.db.Template" title="Template"/>
 
     <extra-code><![CDATA[
 
