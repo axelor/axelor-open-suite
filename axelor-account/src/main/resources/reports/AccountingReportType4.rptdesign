@@ -384,9 +384,9 @@
             <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name, 
 MoveLine.partner_seq,
 COALESCE(Invoice.invoice_id,MoveLine.name) as invoice_name,
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  < 0
+SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 0
 then
-(CASE WHEN MoveLine.debit - MoveLine.credit <= 0
+(CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
