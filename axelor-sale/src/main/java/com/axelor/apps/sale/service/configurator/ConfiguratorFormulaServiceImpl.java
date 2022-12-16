@@ -23,7 +23,6 @@ import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -33,6 +32,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
+import com.axelor.utils.MetaTool;
 
 public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaService {
 
