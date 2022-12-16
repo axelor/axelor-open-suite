@@ -20,8 +20,8 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.apps.tool.ModelTool;
 import com.axelor.inject.Beans;
+import com.axelor.utils.ModelTool;
 import java.util.List;
 
 public class ContractVersionRepository extends AbstractContractVersionRepository {
