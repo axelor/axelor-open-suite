@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.purchase.service.app;
 
-import com.axelor.apps.base.db.AppPurchase;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.studio.db.AppPurchase;
 
 public interface AppPurchaseService extends AppBaseService {
 
