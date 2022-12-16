@@ -273,7 +273,7 @@ public class TraceBackService {
    * @return the tracebacks count
    */
   public long countMessageTraceBack(Model model) {
-    return createTraceBackQuery(model, "com.axelor.apps.message.exception.AxelorMessageException")
+    return createTraceBackQuery(model, "com.axelor.message.exception.AxelorMessageException")
         .count();
   }
 
@@ -294,7 +294,7 @@ public class TraceBackService {
    * @return empty if no tracebacks were found, else the found traceback
    */
   public Optional<TraceBack> findLastMessageTraceBack(Model model) {
-    return getLastTraceBack(model, "com.axelor.apps.message.exception.AxelorMessageException");
+    return getLastTraceBack(model, "com.axelor.message.exception.AxelorMessageException");
   }
 
   protected Optional<TraceBack> getLastTraceBack(Model model, String className) {
