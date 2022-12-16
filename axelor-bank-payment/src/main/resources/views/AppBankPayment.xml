@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <form name="app-bank-payment-config-form" title="App bank payment"
-    model="com.axelor.apps.base.db.AppBankPayment" canDelete="false" canNew="false" width="large">
+    model="com.axelor.studio.db.AppBankPayment" canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
       <field name="manageDirectDebitPayment" widget="boolean-switch"/>
       <field name="manageCreditTransferPayment" widget="boolean-switch"/>
