@@ -14,7 +14,7 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
-  <input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
+  <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind to="language" search="self.code = :languageCode"/>
     <bind column="birtTemplateSet_importId" to="birtTemplateSet"
