@@ -1,3 +1,32 @@
+## [6.2.15] (2022-12-16)
+
+#### Fixed
+
+* Bill of materials: fix error when accessing general bill of materials menu.
+* Leave request: fix error message when sending leave request when company is missing.
+* Accounting reports: add origin informations (ref and date) on general ledger and partner general ledger.
+* Invoice: correctly hide refund list when there is no refund.
+* Move: on move generation from template view, correctly set "generate move" button as readonly when there is no input.
+* Task editor: fix error while dragging task.
+* Partner address: improve UI when adding an address to a partner to avoid inconsistencies.
+* Menu builder: eval is automatically added for context value fixed.
+* Menu builder: set context by default when overriding an existing menu.
+* Account management: set default values when we create a new record in account management grid.
+* Purchase Order: add missing translation when generating advance payment.
+* Debt recovery history: prevent the user from inserting new rows in grid view.
+* Bank Order: Payment mode and file format now are correctly reset when order type select is changed.
+* Stock move: picking order comments panel are now correctly hidden for supplier arrivals.
+* Purchase order report: fixed an issue where product name was displayed instead of specific supplier product name.
+* Accounting report: fixed wrongly defined display condition on analytic axis, analytic account, account type fields for analytic type reports form view.
+* Translation: fix wrong french translation for Ongoing.
+* Purchase order: now correctly takes the default virtual supplier stock location when creating a purchase order.
+* Bank statement rule: Add filter on counter part account to avoid selecting view accounts.
+* Product details: fixed permission so users do not need write permissions on Product to use this feature.
+* Stock move: fixed query exception that happened on the form view when the user had no active company.
+* Contract / ContractVersion: allow to correctly fill dates when 'isPeriodicInvoicing' is activated on a new contract version.
+* Account Management : Add filter by company on journal field.
+* Expense: now takes the correct bank details when registering a payment.
+
 ## [6.2.14] (2022-12-08)
 
 #### Features
@@ -758,6 +787,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.15]: https://github.com/axelor/axelor-open-suite/compare/v6.2.14...v6.2.15
 [6.2.14]: https://github.com/axelor/axelor-open-suite/compare/v6.2.13...v6.2.14
 [6.2.13]: https://github.com/axelor/axelor-open-suite/compare/v6.2.12...v6.2.13
 [6.2.12]: https://github.com/axelor/axelor-open-suite/compare/v6.2.11...v6.2.12
