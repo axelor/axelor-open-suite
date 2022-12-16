@@ -28,6 +28,8 @@ import javax.persistence.Query;
 public interface AdvancedExportService {
 
   public static final String LANGUAGE_FR = "fr";
+  public static final String META_JSON_RECORD_FULL_NAME = "com.axelor.meta.db.MetaJsonRecord";
+  public static final String FIELD_ATTRS = "attrs";
 
   public static final String PDF = "PDF";
   public static final String EXCEL = "EXCEL";

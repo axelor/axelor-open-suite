@@ -53,11 +53,15 @@ public class PdfExportGenerator extends AdvancedExportGenerator {
 
   public PdfExportGenerator(AdvancedExport advancedExport) throws AxelorException {
     this.advancedExport = advancedExport;
-    exportFileName = advancedExport.getMetaModel().getName() + ".pdf";
+    String modelName;
+    if (advancedExport.getIsJson()) modelName = advancedExport.getJsonModel().getName();
+    else modelName = advancedExport.getMetaModel().getName();
+
+    exportFileName = modelName + ".pdf";
     document = new Document();
     table = new PdfPTable(advancedExport.getAdvancedExportLineList().size());
     try {
-      exportFile = File.createTempFile(advancedExport.getMetaModel().getName(), ".pdf");
+      exportFile = File.createTempFile(modelName, ".pdf");
       FileOutputStream outStream = new FileOutputStream(exportFile);
       PdfWriter.getInstance(document, outStream);
     } catch (IOException | DocumentException e) {

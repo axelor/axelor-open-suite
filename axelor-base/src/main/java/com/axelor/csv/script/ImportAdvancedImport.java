@@ -20,6 +20,8 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileTabRepository;
 import com.axelor.apps.base.service.advanced.imports.ActionService;
+import com.axelor.apps.base.service.advanced.imports.CustomAdvancedImportService;
+import com.axelor.apps.base.service.advanced.imports.CustomValidatorService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
 import com.axelor.common.Inflector;
 import com.axelor.common.ObjectUtils;
@@ -30,6 +32,11 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.MetaJsonRecord;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonRecordRepository;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
@@ -41,6 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +56,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import wslite.json.JSONException;
+import wslite.json.JSONObject;
 
 public class ImportAdvancedImport {
 
@@ -55,13 +65,19 @@ public class ImportAdvancedImport {
 
   @Inject private FileTabRepository fileTabRepo;
 
+  @Inject private MetaJsonRecordRepository metaJsonRecordRepo;
+
   @Inject private ValidatorService validatorService;
+
+  @Inject private CustomValidatorService customValidatorService;
 
   @Inject protected ActionService actionService;
 
+  @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
+
   @SuppressWarnings("unchecked")
   public Object importGeneral(Object bean, Map<String, Object> values)
-      throws ClassNotFoundException {
+      throws ClassNotFoundException, JSONException {
     if (bean == null) {
       return bean;
     }
@@ -78,26 +94,13 @@ public class ImportAdvancedImport {
     }
 
     if (((Model) bean).getId() == null) {
-      List<Property> propList = this.getProperties(bean);
-      JPA.save((Model) bean);
-      this.addJsonObjectRecord(bean, fileTab, fileTab.getMetaModel().getName(), values);
+      prepareRealObject(bean, values, fileTab);
+    }
 
-      int fieldSeq = 2;
-      int btnSeq = 3;
-      for (Property prop : propList) {
-        validatorService.createCustomObjectSet(
-            fileTab.getClass().getName(), prop.getTarget().getName(), fieldSeq);
-        validatorService.createCustomButton(
-            fileTab.getClass().getName(), prop.getTarget().getName(), btnSeq);
+    if (((Model) bean).getClass().getSimpleName().equals("MetaJsonRecord")
+        && ((Model) bean).getVersion() == 0) {
 
-        this.addJsonObjectRecord(
-            prop.get(bean),
-            fileTab,
-            StringUtils.substringAfterLast(prop.getTarget().getName(), "."),
-            values);
-        fieldSeq++;
-        btnSeq++;
-      }
+      prepareCustomObject(bean, values, fileTab);
     }
 
     final String ACTIONS_TO_APPLY = "actionsToApply" + fileTab.getId();
@@ -105,6 +108,94 @@ public class ImportAdvancedImport {
       bean = actionService.apply(values.get(ACTIONS_TO_APPLY).toString(), bean);
     }
     return bean;
+  }
+
+  private void prepareRealObject(Object bean, Map<String, Object> values, FileTab fileTab)
+      throws JSONException {
+    List<Property> propList = this.getProperties(bean);
+    Mapper mapper = Mapper.of(bean.getClass());
+    Property property = mapper.getProperty("attrs");
+    String jsonString = (String) property.get(bean);
+    JSONObject jsonObject = new JSONObject(jsonString);
+    List<MetaJsonField> jsonFields = new ArrayList<>();
+    if (!jsonObject.isEmpty()) {
+      jsonFields = this.getRealModelJsonFields(bean.getClass().getCanonicalName(), jsonObject);
+    }
+    JPA.save((Model) bean);
+    this.addJsonObjectRecord(bean, fileTab, fileTab.getMetaModel().getName(), values);
+
+    int fieldSeq = 2;
+    int btnSeq = 3;
+    for (Property prop : propList) {
+      validatorService.createCustomObjectSet(
+          fileTab.getClass().getName(), prop.getTarget().getName(), fieldSeq);
+      validatorService.createCustomButton(
+          fileTab.getClass().getName(), prop.getTarget().getName(), btnSeq);
+
+      this.addJsonObjectRecord(
+          prop.get(bean),
+          fileTab,
+          StringUtils.substringAfterLast(prop.getTarget().getName(), "."),
+          values);
+      fieldSeq++;
+      btnSeq++;
+    }
+
+    for (MetaJsonField field : jsonFields) {
+      jsonObject = (JSONObject) jsonObject.get(field.getName());
+      long id = jsonObject.getLong("id");
+      MetaJsonRecord record = new MetaJsonRecord();
+      record.setId(id);
+
+      customValidatorService.createCustomObjectSetForJson(
+          fileTab.getClass().getName(), field.getTargetJsonModel(), fieldSeq);
+      customValidatorService.createCustomButtonForJson(
+          fileTab.getClass().getName(), field.getTargetJsonModel().getName(), btnSeq);
+      this.addJsonObjectRecord(
+          (Object) record, fileTab, field.getTargetJsonModel().getName(), values);
+
+      fieldSeq++;
+      btnSeq++;
+    }
+  }
+
+  private void prepareCustomObject(Object bean, Map<String, Object> values, FileTab fileTab)
+      throws JSONException {
+    List<MetaJsonField> jsonFields =
+        this.getJsonFields((MetaJsonRecord) bean, fileTab.getJsonModel());
+    this.addJsonObjectRecord(bean, fileTab, ((MetaJsonRecord) bean).getJsonModel(), values);
+
+    int fieldSeq = 2;
+    int btnSeq = 3;
+    for (MetaJsonField field : jsonFields) {
+      MetaJsonRecord record = (MetaJsonRecord) bean;
+      JSONObject jsonObject = new JSONObject(record.getAttrs());
+      jsonObject = (JSONObject) jsonObject.get(field.getName());
+      record = new MetaJsonRecord();
+      record.setId(jsonObject.getLong("id"));
+
+      if (Strings.isNullOrEmpty(field.getTargetModel())) {
+        customValidatorService.createCustomObjectSetForJson(
+            fileTab.getClass().getName(), field.getTargetJsonModel(), fieldSeq);
+        customValidatorService.createCustomButtonForJson(
+            fileTab.getClass().getName(), field.getTargetJsonModel().getName(), btnSeq);
+        this.addJsonObjectRecord(
+            (Object) record, fileTab, field.getTargetJsonModel().getName(), values);
+      } else {
+        validatorService.createCustomObjectSet(
+            fileTab.getClass().getName(), field.getTargetModel(), fieldSeq);
+        validatorService.createCustomButton(
+            fileTab.getClass().getName(), field.getTargetModel(), btnSeq);
+        this.addJsonObjectRecord(
+            (Object) record,
+            fileTab,
+            StringUtils.substringAfterLast(field.getTargetModel(), "."),
+            values);
+      }
+
+      fieldSeq++;
+      btnSeq++;
+    }
   }
 
   private List<Property> getProperties(Object bean) {
@@ -120,6 +211,56 @@ public class ImportAdvancedImport {
       }
     }
     return propList;
+  }
+
+  private List<MetaJsonField> getJsonFields(MetaJsonRecord record, MetaJsonModel jsonModel)
+      throws JSONException {
+    List<MetaJsonField> jsonFields = new ArrayList<>();
+    for (MetaJsonField field : jsonModel.getFields()) {
+      if (record != null && !field.getType().endsWith("-many")) {
+        if (field.getTargetJsonModel() != null && !isAlreadyStored(record, field.getName())) {
+          jsonFields.add(field);
+        }
+      }
+    }
+    return jsonFields;
+  }
+
+  private boolean isAlreadyStored(MetaJsonRecord record, String field) throws JSONException {
+    JSONObject jsonObject = new JSONObject(record.getAttrs());
+    if (!jsonObject.isEmpty() && !jsonObject.isNull(field)) {
+      jsonObject = (JSONObject) jsonObject.get(field);
+      record = metaJsonRecordRepo.find(jsonObject.getLong("id"));
+      if (record != null && record.getVersion() == 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private List<MetaJsonField> getRealModelJsonFields(String model, JSONObject jsonObject)
+      throws JSONException {
+    List<MetaJsonField> jsonFields = new ArrayList<>();
+    if (!jsonObject.isEmpty()) {
+      for (MetaJsonField jsonField :
+          metaJsonFieldRepo.all().filter("self.model = ?1", model).fetch().stream()
+              .filter(
+                  field ->
+                      CustomAdvancedImportService.relationTypeList.contains(field.getType())
+                          && !field.getType().endsWith("-many"))
+              .collect(Collectors.toList())) {
+        if (jsonField.getTargetJsonModel() != null && !jsonObject.isNull(jsonField.getName())) {
+          jsonObject = (JSONObject) jsonObject.get(jsonField.getName());
+          MetaJsonRecord record = metaJsonRecordRepo.find(jsonObject.getLong("id"));
+          if (record != null
+              && record.getVersion() == 0
+              && record.getCreatedOn().isAfter(LocalDateTime.now().minusSeconds(5))) {
+            jsonFields.add(jsonField);
+          }
+        }
+      }
+    }
+    return jsonFields;
   }
 
   @SuppressWarnings("unchecked")

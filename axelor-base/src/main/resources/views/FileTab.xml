@@ -11,26 +11,52 @@
     <field name="validationLog" hidden="true"/>
   </grid>
 
-  <form name="file-tab-form" title="File tab" model="com.axelor.apps.base.db.FileTab">
+  <form name="file-tab-form" title="File tab" model="com.axelor.apps.base.db.FileTab"
+    onNew="action-file-tab-group-onnew-onload" onLoad="action-file-tab-group-onnew-onload">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="metaModel" required="true" onChange="action-file-tab-group-on-meta-model"/>
-      <field name="importType" selection-in="[1,2,3]" showIf="metaModel != null"
+      <panel name="modelPanel" colSpan="6" itemSpan="12">
+        <field name="metaModel" onChange="action-file-tab-group-on-meta-model" hideIf="isJson"
+          requiredIf="!isJson"/>
+        <field name="jsonModel" hideIf="!isJson" requiredIf="isJson"
+          onChange="action-file-tab-group-on-meta-model"/>
+      </panel>
+      <field name="importType" selection-in="[1,2,3]"
+        showIf="metaModel != null || jsonModel != null"
         onChange="action-file-tab-record-set-search-field" validIf="$number(importType) > 0"
         colSpan="12"/>
       <field name="actions" onChange="action-file-tab-method-on-change-validate-actions"/>
       <field name="searchCall"
         onChange="action-file-tab-method-on-change-validate-search-call"
-        showIf="(importType == 1 || importType == 2) &amp;&amp; metaModel != null &amp;&amp; (searchFieldSet.length === 0 || !searchFieldSet)"/>
+        showIf="(importType == 1 || importType == 2) &amp;&amp; (metaModel != null || jsonModel != null) &amp;&amp; (searchFieldSet.length === 0 || !searchFieldSet)"/>
       <field name="searchFieldSet" domain="self.fileTab = :id" widget="TagSelect"
         form-view="file-field-form" grid-view="file-field-grid" colSpan="12" canNew="false"
-        showIf="(importType == 1 || importType == 2) &amp;&amp; metaModel != null &amp;&amp; !searchCall"/>
+        showIf="(importType == 1 || importType == 2) &amp;&amp; (metaModel != null || jsonModel != null) &amp;&amp; !searchCall"/>
       <panel-related field="fileFieldList" onChange="action-file-tab-method-compute"
-        colSpan="12" grid-view="file-field-grid" form-view="file-field-form" orderBy="sequence"/>
+        colSpan="12" grid-view="file-field-grid" form-view="file-field-form" orderBy="sequence"
+        showIf="!isJson"/>
+      <panel-related field="fileFieldList" onChange="action-file-tab-method-compute"
+        colSpan="12" grid-view="json-file-field-grid" form-view="file-field-form" orderBy="sequence"
+        showIf="isJson"/>
       <field name="validationLog" widget="binary-link" showIf="validationLog != null"/>
+      <field name="isJson" hidden="true"/>
       <field name="advancedImport.statusSelect" hidden="true"/>
     </panel>
   </form>
+
+  <action-record name="action-file-tab-record-update-isJson"
+    model="com.axelor.apps.base.db.FileTab">
+    <field name="isJson" expr="eval: __parent__?.isJson"/>
+  </action-record>
+
+  <action-method name="action-file-tab-method-update-file-Field-isJson">
+    <call class="com.axelor.apps.base.web.FileTabController" method="updateIsJson"/>
+  </action-method>
+
+  <action-group name="action-file-tab-group-onnew-onload">
+    <action name="action-file-tab-record-update-isJson"/>
+    <action name="action-file-tab-method-update-file-Field-isJson"/>
+  </action-group>
 
   <action-method name="action-file-tab-method-update-fields">
     <call class="com.axelor.apps.base.web.FileTabController" method="updateFields"/>
@@ -55,6 +81,10 @@
 
   <action-method name="action-file-tab-method-show-record">
     <call class="com.axelor.apps.base.web.FileTabController" method="showRecord"/>
+  </action-method>
+
+  <action-method name="action-file-tab-method-show-record-json">
+    <call class="com.axelor.apps.base.web.FileTabController" method="showJsonRecord"/>
   </action-method>
 
   <action-group name="action-file-tab-group-on-meta-model">

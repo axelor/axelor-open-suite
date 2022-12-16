@@ -16,6 +16,9 @@
     <many-to-one name="importField" ref="com.axelor.meta.db.MetaField"
       title="Import field"/>
 
+    <many-to-one ref="com.axelor.meta.db.MetaJsonField" name="jsonField"
+      title="Import Field"/>
+
     <string name="subImportField" title="Sub import field"/>
     <string name="fullName" title="Name" namecolumn="true" readonly="true"/>
     <string name="dateFormat" title="Date format"/>
@@ -36,6 +39,7 @@
     <boolean name="isMatchWithFile" title="Match with file"/>
     <string name="targetType" title="Target type"/>
     <string name="relationship" title="Relationship"/>
+    <boolean name="isJson"/>
 
     <extra-code>
     <![CDATA[

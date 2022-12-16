@@ -9,10 +9,12 @@
     <integer name="sequence" title="Seq."/>
     <string name="targetField" readonly="true"/>
     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Sub Field"/>
+    <many-to-one ref="com.axelor.meta.db.MetaJsonField" name="jsonField"/>
     <string name="title"/>
     <many-to-one name="advancedExport" ref="com.axelor.apps.base.db.AdvancedExport"
       title="Advanced export"/>
     <string name="currentDomain"/>
+    <boolean name="isJson" title="Json"/>
     <boolean name="orderBy" title="Order by"/>
     <string name="orderByType" selection="order.by.type" title="Order by type" default="asc"/>
   </entity>

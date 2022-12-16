@@ -16,6 +16,20 @@
     <field name="isMatchWithFile" hidden="true"/>
   </grid>
 
+  <grid name="json-file-field-grid" title="File fields"
+    model="com.axelor.apps.base.db.FileField">
+    <hilite color="danger"
+      if="(jsonField == null || ((jsonField.targetModel != null || jsonField.targetJsonModel != null) &amp;&amp; subImportField == null) || (dateFormat == null &amp;&amp; expression == null &amp;&amp; isMatchWithFile &amp;&amp; (targetType == 'LocalDate' || targetType == 'LocalDateTime' || targetType == 'LocalTime' || targetType == 'ZonedDateTime'))"/>
+    <field name="jsonField"/>
+    <field name="subImportField"/>
+    <field name="importType"/>
+    <field name="relationship" hidden="true"/>
+    <field name="dateFormat" hidden="true"/>
+    <field name="expression" hidden="true"/>
+    <field name="targetType" hidden="true"/>
+    <field name="isMatchWithFile" hidden="true"/>
+  </grid>
+
   <form name="file-field-form" title="File field" model="com.axelor.apps.base.db.FileField"
     onNew="action-file-field-attrs-onnew-onload"
     onLoad="action-file-field-attrs-onnew-onload,action-file-field-attrs-readonly-onload">
@@ -36,18 +50,24 @@
           showIf="relationship == 'ManyToMany' &amp;&amp; targetType != 'MetaFile'"
           selection-in="[1,4]"/>
         <field name="importType" showIf="targetType == 'MetaFile'" selection-in="[3,4]"/>
-        <field name="importField"
-          onChange="action-advanced-import-method-fill-type,action-file-field-record-set-import-type"
-          onSelect="action-file-field-attrs-domain-on-import-field" requiredIf="importType != 4"/>
+        <panel name="importFieldPanel" colSpan="6" itemSpan="12">
+          <field name="importField"
+            onChange="action-advanced-import-method-fill-type,action-file-field-record-set-import-type"
+            onSelect="action-file-field-attrs-domain-on-import-field"
+            requiredIf="importType != 4 &amp;&amp; !isJson" showIf="!isJson"/>
+          <field name="jsonField" requiredIf="importType != 4 &amp;&amp; isJson"
+            showIf="isJson" onSelect="action-file-field-method-set-domain-on-json-field"
+            onChange="action-advanced-import-method-fill-type,action-file-field-record-set-import-type"/>
+        </panel>
         <field name="expression" showIf="targetType != 'MetaFile'"
-          requiredIf="((!isMatchWithFile &amp;&amp; importType != 4) || (dateFormat == null &amp;&amp; isMatchWithFile &amp;&amp; (targetType == 'LocalDate' || targetType == 'LocalDateTime' || targetType == 'LocalTime' || targetType == 'ZonedDateTime'))) &amp;&amp; targetType != 'MetaFile'"/>
+          requiredIf="(((!isMatchWithFile &amp;&amp; importType != 4) || (dateFormat == null &amp;&amp; isMatchWithFile &amp;&amp; (targetType == 'LocalDate' || targetType == 'LocalDateTime' || targetType == 'LocalTime' || targetType == 'ZonedDateTime'))) &amp;&amp; targetType != 'MetaFile')"/>
       </panel>
       <panel name="otherInfoPanel" itemSpan="12">
         <field name="forSelectUse"/>
         <field name="subImportField"
-          showIf="importField != null &amp;&amp; importField.relationship != null"
+          showIf="((importField != null &amp;&amp; importField.relationship != null) || (jsonField != null &amp;&amp; jsonField.targetModel != null) || (jsonField != null &amp;&amp; jsonField.targetJsonModel != null) || (importField.name == 'attrs'))"
           onChange="action-advanced-import-method-fill-type,action-advanced-import-validate-field,action-file-field-record-set-import-type"
-          requiredIf="importField.relationship != null"/>
+          requiredIf="importField.relationship != null || jsonField.targetJsonModel != null || jsonField.targetModel != null || importField.name == 'attrs'"/>
         <field name="dateFormat"
           showIf="isMatchWithFile &amp;&amp; (targetType == 'LocalDate' || targetType == 'LocalDateTime' || targetType == 'LocalTime' || targetType == 'ZonedDateTime')"
           requiredIf="expression == null &amp;&amp; isMatchWithFile &amp;&amp; (targetType == 'LocalDate' || targetType == 'LocalDateTime' || targetType == 'LocalTime' || targetType == 'ZonedDateTime')"/>
@@ -59,13 +79,21 @@
         <field name="importField.typeName" hidden="true"/>
         <field name="targetType" hidden="true"/>
         <field name="relationship" hidden="true"/>
+        <field name="isJson" hidden="true"/>
+        <field name="jsonField.targetModel" hidden="true"/>
+        <field name="jsonField.targetJsonModel" hidden="true"/>
       </panel>
     </panel>
   </form>
 
   <action-attrs name="action-file-field-attrs-onnew-onload">
     <attribute name="hidden" for="columnTitle" expr="eval: !_parent?._parent?.isHeader"/>
+    <attribute name="value" for="isJson" expr="eval: __parent__?.isJson"/>
   </action-attrs>
+
+  <action-method name="action-file-field-method-set-domain-on-json-field">
+    <call class="com.axelor.apps.base.web.FileFieldController" method="setJsonFieldDomain"/>
+  </action-method>
 
   <action-attrs name="action-file-field-attrs-domain-on-import-field">
     <attribute name="domain" for="importField"

@@ -25,27 +25,78 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class FileTabServiceImpl implements FileTabService {
 
   @Inject MetaFieldRepository metaFieldRepo;
 
+  @Inject MetaJsonFieldRepository metaJsonFieldRepo;
+
   @Inject FileFieldService fileFieldService;
+
+  @Inject FileFieldRepository fileFieldRepo;
 
   @Override
   public FileTab updateFields(FileTab fileTab) throws ClassNotFoundException {
+    return fileTab.getIsJson() ? this.updateJsonFields(fileTab) : this.updateRealFields(fileTab);
+  }
 
+  private FileTab updateJsonFields(FileTab fileTab) throws ClassNotFoundException {
+    MetaJsonModel model = fileTab.getJsonModel();
+    if (model == null || CollectionUtils.isEmpty(fileTab.getFileFieldList())) {
+      return fileTab;
+    }
+    Beans.get(ValidatorService.class).sortFileFieldList(fileTab.getFileFieldList());
+    for (FileField fileField : fileTab.getFileFieldList()) {
+
+      MetaJsonField importField =
+          metaJsonFieldRepo
+              .all()
+              .filter(
+                  "self.title = ?1 AND self.jsonModel = ?2",
+                  fileField.getColumnTitle(),
+                  model.getId())
+              .fetchOne();
+      if (importField != null) {
+        fileField.setJsonField(importField);
+        String relationship = importField.getType();
+        if (relationship.equals("json-one-to-many") || relationship.equals("one-to-many")) {
+          continue;
+        }
+        if (importField.getTargetJsonModel() != null
+            || !Strings.isNullOrEmpty(importField.getTargetModel())) {
+          fileField.setImportType(FileFieldRepository.IMPORT_TYPE_FIND);
+          String subImportField = this.getSubImportField(null, importField);
+          fileField.setSubImportField(subImportField);
+        }
+
+        fileField = fileFieldService.fillType(fileField);
+        fileField.setFullName(fileFieldService.computeFullName(fileField));
+      } else {
+        fileField.setImportField(null);
+        fileField.setSubImportField(null);
+      }
+    }
+    return fileTab;
+  }
+
+  private FileTab updateRealFields(FileTab fileTab) throws ClassNotFoundException {
     MetaModel model = fileTab.getMetaModel();
 
     if (model == null || CollectionUtils.isEmpty(fileTab.getFileFieldList())) {
@@ -73,7 +124,7 @@ public class FileTabServiceImpl implements FileTabService {
 
         fileField.setImportField(importField);
         if (!Strings.isNullOrEmpty(relationship)) {
-          String subImportField = this.getSubImportField(importField);
+          String subImportField = this.getSubImportField(importField, null);
           fileField.setSubImportField(subImportField);
         }
         fileField = fileFieldService.fillType(fileField);
@@ -95,8 +146,18 @@ public class FileTabServiceImpl implements FileTabService {
     return fileTab;
   }
 
-  private String getSubImportField(MetaField importField) throws ClassNotFoundException {
-    String modelName = importField.getTypeName();
+  private String getSubImportField(MetaField metaField, MetaJsonField jsonField)
+      throws ClassNotFoundException {
+    String modelName = "";
+
+    if (jsonField != null && jsonField.getTargetJsonModel() != null) {
+      return jsonField.getTargetJsonModel().getNameField();
+    } else if (jsonField != null && !Strings.isNullOrEmpty(jsonField.getTargetModel())) {
+      modelName = StringUtils.substringAfterLast(jsonField.getTargetModel(), ".");
+    } else if (metaField != null) {
+      modelName = metaField.getTypeName();
+    }
+
     MetaModel metaModel = Beans.get(MetaModelRepository.class).findByName(modelName);
 
     AdvancedImportService advancedImportService = Beans.get(AdvancedImportService.class);
@@ -145,5 +206,23 @@ public class FileTabServiceImpl implements FileTabService {
             .collect(Collectors.joining(","));
 
     return ids;
+  }
+
+  @Override
+  @Transactional
+  public void setIsJson(FileTab fileTab) {
+    if (fileTab == null) {
+      return;
+    }
+
+    boolean isJson = fileTab.getIsJson();
+    for (FileField fileField : fileTab.getFileFieldList()) {
+      if (fileField == null) {
+        continue;
+      }
+
+      fileField.setIsJson(isJson);
+      fileFieldRepo.save(fileField);
+    }
   }
 }

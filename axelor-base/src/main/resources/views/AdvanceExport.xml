@@ -7,6 +7,7 @@
     name="advanced-export-grid">
     <field name="name"/>
     <field name="metaModel"/>
+    <field name="jsonModel"/>
   </grid>
 
   <form name="advanced-export-form" title="Advanced Export"
@@ -14,9 +15,16 @@
     onNew="action-advanced-export-record-on-new">
     <panel name="generalInfoPanel">
       <field name="name" colSpan="4" required="true"/>
-      <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"
-        colSpan="4" onChange="action-attr-reset-advanced-export-line"
-        onSelect="action-advanced-export-attr-change-domain-from-model"/>
+      <field name="isJson" widget="boolean"
+        onChange="action-advanced-export-attrs-set-model-onChange"/>
+      <panel name="targetModelPanel" colSpan="6" itemSpan="12">
+        <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"
+          onChange="action-attr-reset-advanced-export-line"
+          onSelect="action-advanced-export-attr-change-domain-from-model" hideIf="isJson"
+          requiredIf="!isJson"/>
+        <field name="jsonModel" hideIf="!isJson" requiredIf="isJson"
+          onChange="action-attr-reset-advanced-export-line"/>
+      </panel>
       <button name="selectAllBtn" title="Select all fields" colSpan="3"
         onClick="save,action-method-get-model-all-fields"/>
       <field name="maxExportLimit" colSpan="4"
@@ -29,8 +37,9 @@
         colSpan="12" css="label-bold label-danger"/>
     </panel>
     <panel-related name="advancedExportLineListPanel" field="advancedExportLineList"
-      title="Fields" hideIf="metaModel == null" grid-view="advanced-export-line-grid"
-      form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
+      title="Fields" hideIf="metaModel == null &amp;&amp; jsonModel == null"
+      grid-view="advanced-export-line-grid" form-view="advanced-export-line-form" canMove="true"
+      orderBy="sequence"/>
     <panel name="actionsPanel">
       <button name="exportPDFBtn" title="Export PDF" icon="fa-reply" colSpan="3"
         onClick="save,action-export-pdf-method,save"/>
@@ -40,6 +49,11 @@
         colSpan="3" onClick="save,action-export-csv-method,save"/>
     </panel>
   </form>
+
+  <action-attrs name="action-advanced-export-attrs-set-model-onChange">
+    <attribute name="value" for="jsonModel" expr="eval:null" if="!isJson"/>
+    <attribute name="value" for="metaModel" expr="eval:null" if="isJson"/>
+  </action-attrs>
 
   <action-record name="action-advanced-export-record-on-new"
     model="com.axelor.apps.base.db.AdvancedExport">

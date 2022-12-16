@@ -19,9 +19,10 @@
       <panel name="headPanel" colSpan="12">
         <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
       </panel>
-      <field name="name" colSpan="5"/>
+      <field name="name" colSpan="4"/>
+      <field name="isJson" colSpan="2" readonlyIf="statusSelect == 1"/>
       <field name="importFile" widget="binary-link"
-        onChange="action-advanced-import-record-set-values" colSpan="4"/>
+        onChange="action-advanced-import-record-set-values" colSpan="3"/>
       <field name="attachment" widget="binary-link"
         onChange="action-advanced-import-record-set-values" colSpan="3"/>
       <field name="languageSelect"/>

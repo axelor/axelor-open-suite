@@ -32,8 +32,12 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -50,6 +54,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +69,19 @@ public class AdvancedExportController {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private Inflector inflector;
+  public static final List<String> JSON_FIELDS_IGNORE =
+      Arrays.asList(
+          "one-to-many",
+          "json-one-to-many",
+          "many-to-many",
+          "json-many-to-many",
+          "panel",
+          "tabs",
+          "label",
+          "seperator",
+          "spacer",
+          "selection",
+          "button");
 
   public void getModelAllFields(ActionRequest request, ActionResponse response)
       throws ClassNotFoundException {
@@ -71,32 +89,30 @@ public class AdvancedExportController {
     AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
     inflector = Inflector.getInstance();
 
-    if (advancedExport.getMetaModel() != null) {
-      List<Map<String, Object>> allFieldList = new ArrayList<>();
-      MetaModelRepository metaModelRepository = Beans.get(MetaModelRepository.class);
-      MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
+    List<Map<String, Object>> allFieldList = new ArrayList<>();
+
+    if (!advancedExport.getIsJson() && advancedExport.getMetaModel() != null) {
 
       for (MetaField field : advancedExport.getMetaModel().getMetaFields()) {
-        Map<String, Object> allFieldMap = new HashMap<>();
-        allFieldMap.put("currentDomain", advancedExport.getMetaModel().getName());
-
-        Class<?> modelClass = Class.forName(advancedExport.getMetaModel().getFullName());
-        Mapper modelMapper = Mapper.of(modelClass);
-
-        if (modelMapper.getProperty(field.getName()) == null
-            || modelMapper.getProperty(field.getName()).isTransient()) {
+        if (AdvancedExportService.FIELD_ATTRS.equals(field.getName())) {
           continue;
         }
 
+        Map<String, Object> allFieldMap = new HashMap<>();
+        allFieldMap.put("currentDomain", advancedExport.getMetaModel().getName());
+
         if (!Strings.isNullOrEmpty(field.getRelationship())) {
           MetaModel metaModel =
-              metaModelRepository.all().filter("self.name = ?", field.getTypeName()).fetchOne();
+              Beans.get(MetaModelRepository.class)
+                  .all()
+                  .filter("self.name = ?", field.getTypeName())
+                  .fetchOne();
 
           Class<?> klass = Class.forName(metaModel.getFullName());
           Mapper mapper = Mapper.of(klass);
           String fieldName = mapper.getNameField() == null ? "id" : mapper.getNameField().getName();
           MetaField metaField =
-              metaFieldRepository
+              Beans.get(MetaFieldRepository.class)
                   .all()
                   .filter("self.name = ?1 AND self.metaModel = ?2", fieldName, metaModel)
                   .fetchOne();
@@ -114,13 +130,31 @@ public class AdvancedExportController {
         }
         allFieldList.add(allFieldMap);
       }
-      response.setAttr("advancedExportLineList", "value", allFieldList);
+
+      List<MetaJsonField> jsonFields =
+          Beans.get(MetaJsonFieldRepository.class).all()
+              .filter("self.uniqueModel = ?1", advancedExport.getMetaModel().getFullName()).fetch()
+              .stream()
+              .filter(field -> (!JSON_FIELDS_IGNORE.contains(field.getType())))
+              .collect(Collectors.toList());
+      this.addAllJsonFields(jsonFields, allFieldList, "attrs.");
+
+    } else if (advancedExport.getIsJson() && advancedExport.getJsonModel() != null) {
+
+      List<MetaJsonField> jsonFields =
+          advancedExport.getJsonModel().getFields().stream()
+              .filter(field -> (!JSON_FIELDS_IGNORE.contains(field.getType())))
+              .collect(Collectors.toList());
+
+      this.addAllJsonFields(jsonFields, allFieldList, "");
     }
+    response.setAttr("advancedExportLineList", "value", allFieldList);
   }
 
   public void fillTitle(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     MetaField metaField = (MetaField) context.get("metaField");
+    MetaJsonField metaJsonField = (MetaJsonField) context.get("jsonField");
     if (metaField != null) {
       if (Strings.isNullOrEmpty(metaField.getLabel())) {
         inflector = Inflector.getInstance();
@@ -128,6 +162,8 @@ public class AdvancedExportController {
       } else {
         response.setValue("title", I18n.get(metaField.getLabel()));
       }
+    } else if (metaJsonField != null) {
+      response.setValue("title", I18n.get(metaJsonField.getTitle()));
     } else {
       response.setValue("title", null);
     }
@@ -140,6 +176,7 @@ public class AdvancedExportController {
   public void fillTargetField(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     MetaField metaField = (MetaField) context.get("metaField");
+    MetaJsonField metaJsonField = (MetaJsonField) context.get("jsonField");
 
     if (metaField != null) {
       String targetField = "";
@@ -154,8 +191,36 @@ public class AdvancedExportController {
       if (metaField.getRelationship() != null) {
         response.setValue("currentDomain", metaField.getTypeName());
         response.setValue("metaField", null);
+      } else if (metaField.getName().equals(AdvancedExportService.FIELD_ATTRS)) {
+        response.setValue("isJson", true);
+        response.setValue("metaField", null);
       } else {
         response.setAttr("metaField", "readonly", true);
+        response.setAttr("validateFieldSelectionBtn", "readonly", true);
+        response.setAttr("$viewerMessage", "hidden", false);
+        response.setAttr("$isValidate", "value", true);
+      }
+    } else if (metaJsonField != null) {
+      String targetField = "";
+      if (context.get("targetField") == null) {
+        targetField = metaJsonField.getName();
+      } else {
+        targetField = context.get("targetField").toString();
+        targetField += "." + metaJsonField.getName();
+      }
+      response.setValue("targetField", targetField);
+
+      if (metaJsonField.getTargetJsonModel() != null) {
+        response.setValue("currentDomain", metaJsonField.getTargetJsonModel().getName());
+        response.setValue("jsonField", null);
+        response.setValue("isJson", true);
+      } else if (metaJsonField.getTargetModel() != null) {
+        String[] targetModelName = metaJsonField.getTargetModel().split("\\.");
+        response.setValue("currentDomain", targetModelName[targetModelName.length - 1]);
+        response.setValue("jsonField", null);
+        response.setValue("isJson", false);
+      } else {
+        response.setAttr("jsonField", "readonly", true);
         response.setAttr("validateFieldSelectionBtn", "readonly", true);
         response.setAttr("$viewerMessage", "hidden", false);
         response.setAttr("$isValidate", "value", true);
@@ -348,7 +413,10 @@ public class AdvancedExportController {
       throws ClassNotFoundException {
     AdvancedExportLine adv = request.getContext().asType(AdvancedExportLine.class);
     MetaModel metaModel = Beans.get(MetaModelRepository.class).findByName(adv.getCurrentDomain());
-    List<MetaField> metaFields = metaModel.getMetaFields();
+    List<MetaField> metaFields = null;
+    if (metaModel != null) {
+      metaFields = metaModel.getMetaFields();
+    }
     List<Long> metaFieldList = new ArrayList<>();
 
     if (metaFields != null) {
@@ -365,5 +433,90 @@ public class AdvancedExportController {
     metaFieldList.add(0L);
     response.setAttr(
         "metaField", "domain", "self.id in (" + Joiner.on(",").join(metaFieldList) + ")");
+  }
+
+  public void metaJsonFieldDomain(ActionRequest request, ActionResponse response) {
+    AdvancedExportLine advExportLine = request.getContext().asType(AdvancedExportLine.class);
+    MetaJsonModel jsonModel =
+        Beans.get(MetaJsonModelRepository.class).findByName(advExportLine.getCurrentDomain());
+    List<Long> metaJsonFieldIds = new ArrayList<>();
+    if (jsonModel != null) {
+      metaJsonFieldIds =
+          jsonModel.getFields().stream()
+              .filter(field -> (!JSON_FIELDS_IGNORE.contains(field.getType())))
+              .collect(Collectors.toList())
+              .stream()
+              .map(MetaJsonField::getId)
+              .collect(Collectors.toList());
+    } else {
+      MetaModel metaModel =
+          Beans.get(MetaModelRepository.class).findByName(advExportLine.getCurrentDomain());
+      metaJsonFieldIds =
+          Beans.get(MetaJsonFieldRepository.class).all()
+              .filter(
+                  "self.model = ?1 AND self.type NOT IN (?2)",
+                  metaModel.getFullName(),
+                  JSON_FIELDS_IGNORE)
+              .fetch().stream()
+              .map(MetaJsonField::getId)
+              .collect(Collectors.toList());
+    }
+    metaJsonFieldIds.add(0L);
+    response.setAttr(
+        "jsonField", "domain", "self.id in (" + Joiner.on(",").join(metaJsonFieldIds) + ")");
+  }
+
+  private void addAllJsonFields(
+      List<MetaJsonField> jsonFields, List<Map<String, Object>> allFieldList, String preField)
+      throws ClassNotFoundException {
+    for (MetaJsonField field : jsonFields) {
+      Map<String, Object> allFieldMap = new HashMap<>();
+
+      if (!Strings.isNullOrEmpty(field.getTargetModel())) {
+        Class<?> klass = Class.forName(field.getTargetModel());
+        Mapper mapper = Mapper.of(klass);
+        String fieldName = mapper.getNameField() == null ? "id" : mapper.getNameField().getName();
+        MetaField metaField =
+            Beans.get(MetaFieldRepository.class)
+                .all()
+                .filter(
+                    "self.name = ?1 AND self.metaModel.fullName = ?2",
+                    fieldName,
+                    field.getTargetModel())
+                .fetchOne();
+        allFieldMap.put("metaField", metaField);
+        allFieldMap.put("targetField", preField + field.getName() + "." + metaField.getName());
+        if (Strings.isNullOrEmpty(metaField.getLabel())) {
+          allFieldMap.put("title", this.getFieldTitle(inflector, field.getName()));
+        } else {
+          allFieldMap.put("title", metaField.getLabel());
+        }
+      } else if (field.getTargetJsonModel() != null) {
+        MetaJsonModel metaJsonModel = field.getTargetJsonModel();
+        String fieldName = metaJsonModel.getNameField();
+
+        if (Strings.isNullOrEmpty(fieldName)) {
+          allFieldMap.put("jsonField", field);
+          allFieldMap.put("targetField", preField + field.getName() + ".id");
+          allFieldMap.put("title", metaJsonModel.getName() + "_Id");
+        } else {
+          MetaJsonField metaJsonField =
+              Beans.get(MetaJsonFieldRepository.class)
+                  .all()
+                  .filter("self.name = ?1 AND self.jsonModel = ?2", fieldName, metaJsonModel)
+                  .fetchOne();
+
+          allFieldMap.put("jsonField", metaJsonField);
+          allFieldMap.put(
+              "targetField", preField + field.getName() + "." + metaJsonField.getName());
+          allFieldMap.put("title", metaJsonField.getTitle());
+        }
+      } else {
+        allFieldMap.put("jsonField", field);
+        allFieldMap.put("targetField", preField + field.getName());
+        allFieldMap.put("title", field.getTitle());
+      }
+      allFieldList.add(allFieldMap);
+    }
   }
 }

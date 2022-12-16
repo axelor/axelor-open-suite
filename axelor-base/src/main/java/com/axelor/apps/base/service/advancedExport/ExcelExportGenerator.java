@@ -58,15 +58,18 @@ public class ExcelExportGenerator extends AdvancedExportGenerator {
 
   public ExcelExportGenerator(AdvancedExport advancedExport) throws AxelorException {
     this.advancedExport = advancedExport;
-    exportFileName = advancedExport.getMetaModel().getName() + ".xlsx";
+    String modelName;
+    if (advancedExport.getIsJson()) modelName = advancedExport.getJsonModel().getName();
+    else modelName = advancedExport.getMetaModel().getName();
+    exportFileName = modelName + ".xlsx";
     try {
-      exportFile = File.createTempFile(advancedExport.getMetaModel().getName(), ".xlsx");
+      exportFile = File.createTempFile(modelName, ".xlsx");
     } catch (IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
     workbook = new XSSFWorkbook();
-    sheet = workbook.createSheet(advancedExport.getMetaModel().getName());
+    sheet = workbook.createSheet(modelName);
   }
 
   @Override

@@ -22,13 +22,13 @@ import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
+import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.Inflector;
-import com.axelor.common.StringUtils;
 import com.axelor.data.XStreamUtils;
 import com.axelor.data.adapter.DataAdapter;
 import com.axelor.data.adapter.JavaTimeAdapter;
@@ -36,6 +36,7 @@ import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.csv.CSVInput;
+import com.axelor.data.csv.CSVInputJson;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -43,6 +44,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
@@ -75,6 +78,7 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,6 +100,7 @@ public class DataImportServiceImpl implements DataImportService {
   private static final String REPLACE_SYMBOL = "$";
 
   private CSVInput csvInput;
+  private CSVInputJson jsonCsvInput;
 
   private Map<String, CSVBind> parentBindMap;
   private Map<String, CSVBind> subBindMap;
@@ -125,7 +130,13 @@ public class DataImportServiceImpl implements DataImportService {
 
   @Inject private ValidatorService validatorService;
 
+  @Inject private CustomValidatorService customValidatorService;
+
   @Inject private AdvancedImportService advancedImportService;
+
+  @Inject private CustomAdvancedImportService customAdvancedImportService;
+
+  @Inject private CustomDataImportService customDataImportService;
 
   @Inject private MetaSelectRepository metaSelectRepo;
 
@@ -174,7 +185,13 @@ public class DataImportServiceImpl implements DataImportService {
       this.initializeVariables();
 
       String fileName = createDataFileName(fileTab);
-      csvInput = this.createCSVInput(fileTab, fileName);
+      if (fileTab.getIsJson()) {
+        jsonCsvInput =
+            customDataImportService.createCSVInputJson(
+                fileTab, fileName, INPUT_CALLABLE, CSV_SEPRATOR);
+      } else {
+        csvInput = this.createCSVInput(fileTab, fileName);
+      }
       ifList = new ArrayList<String>();
 
       try (CSVWriter csvWriter =
@@ -185,7 +202,10 @@ public class DataImportServiceImpl implements DataImportService {
           continue;
         }
 
-        Mapper mapper = advancedImportService.getMapper(fileTab.getMetaModel().getFullName());
+        Mapper mapper =
+            fileTab.getIsJson()
+                ? advancedImportService.getMapper("com.axelor.meta.db.MetaJsonRecord")
+                : advancedImportService.getMapper(fileTab.getMetaModel().getFullName());
         List<String[]> allLines = new ArrayList<String[]>();
         int startIndex = isConfig ? 1 : linesToIgnore;
 
@@ -217,14 +237,17 @@ public class DataImportServiceImpl implements DataImportService {
         csvWriter.flush();
       }
 
-      inputList.add(csvInput);
+      inputList.add(fileTab.getIsJson() ? jsonCsvInput : csvInput);
       importContext.put("ifConditions" + fileTab.getId(), ifList);
       importContext.put("jsonContextValues" + fileTab.getId(), createJsonContext(fileTab));
       importContext.put("actionsToApply" + fileTab.getId(), fileTab.getActions());
 
       XStream stream = XStreamUtils.createXStream();
       stream.processAnnotations(CSVConfig.class);
-      LOG.debug("CSV Config created :" + "\n" + stream.toXML(csvInput));
+      LOG.debug(
+          "CSV Config created :"
+              + "\n"
+              + stream.toXML(fileTab.getIsJson() ? jsonCsvInput : csvInput));
     }
     return inputList;
   }
@@ -254,25 +277,35 @@ public class DataImportServiceImpl implements DataImportService {
     List<String> headers = new ArrayList<>();
     List<CSVBind> allBindings = new ArrayList<CSVBind>();
     int cnt = 0;
-    Map<String, Object> searchMap = new HashMap<String, Object>();
+    boolean isJson = fileTab.getIsJson();
+    Map<Object, Object> searchMap = new HashMap<Object, Object>();
 
     for (FileField fileField : fileTab.getFileFieldList()) {
       if (fileField.getImportType() == FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
         continue;
       }
 
-      String key = (isConfig) ? validatorService.getField(fileField) : fileField.getColumnTitle();
+      String key =
+          (isConfig)
+              ? (isJson
+                  ? customValidatorService.getJsonFieldName(fileField)
+                  : validatorService.getField(fileField))
+              : fileField.getColumnTitle();
       String column = ("cell" + (cnt + 1));
 
       if (!CollectionUtils.isEmpty(fileTab.getSearchFieldSet())
           && fileTab.getSearchFieldSet().contains(fileField)
           && fileTab.getImportType() != FileFieldRepository.IMPORT_TYPE_NEW) {
-        searchMap.put(validatorService.getField(fileField), column);
+        searchMap.put(fileField, column);
       }
 
       if ((map.containsKey(key) || (!isConfig && !fileTab.getAdvancedImport().getIsHeader()))
           && fileField.getIsMatchWithFile()) {
         headers.add(column);
+
+        if (isJson) {
+          customDataImportService.addCustomObjectNameField(fileField, column);
+        }
       }
 
       allBindings = this.createCSVBinding(column, fileField, mapper, allBindings);
@@ -284,19 +317,43 @@ public class DataImportServiceImpl implements DataImportService {
     fileTabBind.setExpression(fileTab.getId().toString());
     allBindings.add(fileTabBind);
 
-    for (Entry<String, Object> entry : searchMap.entrySet()) {
-      String field = entry.getKey(), cond1 = "", cond2 = "", condAnd = "";
-      if (field.contains(".")) {
-        int index = field.lastIndexOf(46);
-        cond1 = " (:" + entry.getValue() + " IS NOT NULL AND";
-        cond2 = " OR self." + field.substring(0, index) + " IS NULL)";
+    if (isJson) {
+      customDataImportService.addJsonModelAndSearch(
+          allBindings, searchMap, jsonCsvInput, fileTab.getJsonModel().getName());
+    } else {
+
+      for (Entry<Object, Object> entry : searchMap.entrySet()) {
+        FileField fileField = (FileField) entry.getKey();
+        String field = validatorService.getField(fileField), cond1 = "", cond2 = "", condAnd = "";
+
+        if (!Strings.isNullOrEmpty(csvInput.getSearch())) {
+          condAnd = csvInput.getSearch() + " AND";
+        }
+
+        if (field.contains("attrs.")) {
+          String search =
+              customDataImportService.appendSearchFieldFilter(
+                  fileField, fileTab.getMetaModel().getFullName(), (String) entry.getValue());
+
+          csvInput.setSearch(condAnd + search);
+        } else {
+
+          if (field.contains(".")) {
+            int index = field.lastIndexOf(46);
+            cond1 = " (:" + entry.getValue() + " IS NOT NULL AND";
+            cond2 = " OR self." + field.substring(0, index) + " IS NULL)";
+          }
+
+          csvInput.setSearch(
+              condAnd + cond1 + " self." + field + " = :" + entry.getValue() + cond2);
+        }
       }
-      if (!Strings.isNullOrEmpty(csvInput.getSearch())) {
-        condAnd = csvInput.getSearch() + " AND";
-      }
-      csvInput.setSearch(condAnd + cond1 + " self." + field + " = :" + entry.getValue() + cond2);
     }
-    csvInput.setBindings(allBindings);
+    if (isJson) {
+      jsonCsvInput.setBindings(allBindings);
+    } else {
+      csvInput.setBindings(allBindings);
+    }
 
     return headers.stream().toArray(String[]::new);
   }
@@ -306,13 +363,17 @@ public class DataImportServiceImpl implements DataImportService {
 
     Map<String, Object> map = isConfig ? fieldMap : titleMap;
     List<String> dataList = new ArrayList<String>();
+    boolean isJson = fileTab.getIsJson();
 
     for (int fieldIndex = 0; fieldIndex < fileTab.getFileFieldList().size(); fieldIndex++) {
       FileField fileField = fileTab.getFileFieldList().get(fieldIndex);
 
       String key = null;
       if (isConfig) {
-        key = validatorService.getField(fileField);
+        key =
+            isJson
+                ? customValidatorService.getJsonFieldName(fileField)
+                : validatorService.getField(fileField);
       } else {
         key = fileField.getColumnTitle();
       }
@@ -338,7 +399,11 @@ public class DataImportServiceImpl implements DataImportService {
       }
 
       String dataCell = dataRow[cell].trim();
-      this.checkAndWriteData(dataCell, fileTab.getMetaModel(), fileField, mapper, dataList);
+      if (isJson) {
+        customDataImportService.checkAndWriteJsonData(dataCell, fileField, dataList);
+      } else {
+        this.checkAndWriteData(dataCell, fileTab.getMetaModel(), fileField, mapper, dataList);
+      }
     }
     return dataList.stream().toArray(String[]::new);
   }
@@ -365,7 +430,8 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private void checkSubFieldAndWriteData(
+  @Override
+  public void checkSubFieldAndWriteData(
       String[] subFields,
       int index,
       Property parentProp,
@@ -382,7 +448,6 @@ public class DataImportServiceImpl implements DataImportService {
         if (childProp != null && childProp.getTarget() != null) {
           this.checkSubFieldAndWriteData(
               subFields, index + 1, childProp, dataCell, forSelectUse, dataList);
-
         } else {
           if (!Strings.isNullOrEmpty(childProp.getSelection())) {
             this.writeSelectionData(childProp.getSelection(), dataCell, forSelectUse, dataList);
@@ -390,11 +455,33 @@ public class DataImportServiceImpl implements DataImportService {
             dataList.add(dataCell);
           }
         }
+      } else {
+        if (AdvancedExportService.FIELD_ATTRS.equals(parentProp.getName())) {
+          MetaJsonField jsonField =
+              customAdvancedImportService.getJsonField(
+                  subFields[index], parentProp.getEntity().getCanonicalName(), null, null);
+
+          if (jsonField != null) {
+            if (jsonField.getTargetJsonModel() != null
+                || !Strings.isNullOrEmpty(jsonField.getTargetModel())) {
+              customDataImportService.checkJsonSubFieldAndWriteData(
+                  subFields, index + 1, jsonField, dataCell, forSelectUse, dataList);
+
+            } else if (!Strings.isNullOrEmpty(jsonField.getSelection())) {
+              this.writeSelectionData(jsonField.getSelection(), dataCell, forSelectUse, dataList);
+            } else {
+              dataList.add(dataCell);
+            }
+          }
+        } else {
+          dataList.add(dataCell);
+        }
       }
     }
   }
 
-  private void writeSelectionData(
+  @Override
+  public void writeSelectionData(
       String selection, String dataCell, int forSelectUse, List<String> dataList) {
 
     String value = this.getSelectionValue(selection, dataCell, forSelectUse);
@@ -441,7 +528,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     if (fileTab.getImportType() != FileFieldRepository.IMPORT_TYPE_FIND_NEW
         && (CollectionUtils.isNotEmpty(fileTab.getSearchFieldSet())
-            || StringUtils.notBlank(searchCall))) {
+            || StringUtils.isNotBlank(searchCall))) {
       update = true;
     }
 
@@ -463,8 +550,12 @@ public class DataImportServiceImpl implements DataImportService {
       String column, FileField fileField, Mapper mapper, List<CSVBind> allBindings)
       throws ClassNotFoundException {
 
-    Property prop = mapper.getProperty(fileField.getImportField().getName());
-    if (prop == null) {
+    Property prop = null;
+    boolean isJson = fileField.getIsJson();
+    if (fileField.getImportField() != null) {
+      prop = mapper.getProperty(fileField.getImportField().getName());
+    }
+    if (!isJson && prop == null) {
       return allBindings;
     }
 
@@ -475,43 +566,84 @@ public class DataImportServiceImpl implements DataImportService {
     }
 
     if (Strings.isNullOrEmpty(fileField.getSubImportField())) {
-
-      String expression = this.setExpression(column, fileField, prop);
+      String selection = isJson ? fileField.getJsonField().getSelection() : prop.getSelection();
+      String expression = this.setExpression(column, fileField, selection);
       String adapter = null;
       String dateFormat = fileField.getDateFormat();
+      String fieldName = isJson ? "$attrs." + fileField.getJsonField().getName() : prop.getName();
+      boolean isRequired = isJson ? fileField.getJsonField().getRequired() : prop.isRequired();
+
       if (Strings.isNullOrEmpty(expression) && !Strings.isNullOrEmpty(dateFormat)) {
-        adapter = this.getAdapter(prop.getJavaType().getSimpleName(), dateFormat.trim());
+        String type = isJson ? fileField.getTargetType() : prop.getJavaType().getSimpleName();
+        adapter = this.getAdapter(type, dateFormat.trim());
       }
       CSVBind bind = null;
       if (!fileField.getIsMatchWithFile()) {
         dummyBind.setExpression(expression);
         dummyBind.setAdapter(adapter);
-        bind = this.createCSVBind(column, prop.getName(), null, null, null, null);
-        this.setImportIf(prop, bind, column);
+        bind = this.createCSVBind(column, fieldName, null, null, null, null);
+        this.setImportIf(isRequired, bind, column);
       } else {
-        bind = this.createCSVBind(column, prop.getName(), null, expression, adapter, null);
-        this.setImportIf(prop, bind, column);
+        bind = this.createCSVBind(column, fieldName, null, expression, adapter, null);
+        this.setImportIf(isRequired, bind, column);
+      }
+      if (isJson && fileField.getJsonField().getType().equals("boolean")) {
+        bind.setExpression(column + " == 'true' ? true : false");
       }
       allBindings.add(bind);
 
+      allBindings = customDataImportService.createNameFieldBinding(fieldName, allBindings);
     } else {
       CSVBind parentBind = null;
       boolean isSameParentExist = false;
-      if (parentBindMap.containsKey(prop.getName())) {
-        parentBind = parentBindMap.get(prop.getName());
-        isSameParentExist = true;
+      String fieldName = isJson ? "$attrs." + fileField.getJsonField().getName() : prop.getName();
+
+      String[] subFields = fileField.getSubImportField().split("\\.");
+
+      if (AdvancedExportService.FIELD_ATTRS.equals(fieldName)) {
+        customDataImportService.createAttrsCSVBinding(
+            subFields,
+            0,
+            column,
+            mapper.getBeanClass().getCanonicalName(),
+            fileField,
+            parentBind,
+            dummyBind,
+            isSameParentExist,
+            allBindings,
+            parentBindMap,
+            fullFieldName);
 
       } else {
-        parentBind = this.createCSVBind(null, prop.getName(), null, null, null, true);
-        parentBind.setBindings(new ArrayList<>());
-        allBindings.add(parentBind);
-        parentBindMap.put(prop.getName(), parentBind);
-      }
+        if (parentBindMap.containsKey(fieldName)) {
+          parentBind = parentBindMap.get(fieldName);
+          isSameParentExist = true;
 
-      fullFieldName = prop.getName();
-      String[] subFields = fileField.getSubImportField().split("\\.");
-      this.createCSVSubBinding(
-          subFields, 0, column, prop, fileField, parentBind, dummyBind, isSameParentExist);
+        } else {
+          parentBind = this.createCSVBind(null, fieldName, null, null, null, true);
+          parentBind.setBindings(new ArrayList<>());
+          allBindings.add(parentBind);
+          parentBindMap.put(fieldName, parentBind);
+        }
+        fullFieldName = fieldName;
+
+        if (isJson) {
+          customDataImportService.createCustomCSVSubBinding(
+              subFields,
+              0,
+              column,
+              fileField.getJsonField(),
+              fileField,
+              parentBind,
+              dummyBind,
+              isSameParentExist,
+              parentBindMap,
+              fullFieldName);
+        } else {
+          this.createCSVSubBinding(
+              subFields, 0, column, prop, fileField, parentBind, dummyBind, isSameParentExist);
+        }
+      }
     }
 
     if (!Strings.isNullOrEmpty(fileField.getNoImportIf())) {
@@ -538,31 +670,37 @@ public class DataImportServiceImpl implements DataImportService {
       if (parentProp.getTarget() == null) {
         return;
       }
+
       int importType = fileField.getImportType();
       String relationship = fileField.getRelationship();
       fullFieldName += "." + subFields[index];
+
       Mapper mapper = advancedImportService.getMapper(parentProp.getTarget().getName());
       Property childProp = mapper.getProperty(subFields[index]);
 
       if (childProp != null && childProp.getTarget() != null) {
         CSVBind subBind = null;
-        if (subBindMap.containsKey(fullFieldName)) {
-          subBind = subBindMap.get(fullFieldName);
+        subBind =
+            customDataImportService.checkAvailableSubBinding(
+                subBindMap, parentBind, subBind, childProp.getName(), fullFieldName, importType);
 
-        } else if (importType != FileFieldRepository.IMPORT_TYPE_FIND) {
-          subBind = this.createCSVBind(null, childProp.getName(), null, null, null, true);
-          subBind.setBindings(new ArrayList<>());
-          parentBind.getBindings().add(subBind);
-          subBindMap.put(fullFieldName, subBind);
-        }
-        if (importType == FileFieldRepository.IMPORT_TYPE_FIND_NEW && subBind != null) {
-          String fieldName =
-              (isSameParentExist
-                      ? fullFieldName.replaceFirst(fileField.getImportField().getName() + ".", "")
-                      : fullFieldName)
-                  + "."
-                  + subFields[index + 1];
-          this.setSearch(column, fieldName, fileField, parentBind, isSameParentExist);
+        String fieldName =
+            (isSameParentExist
+                    ? fullFieldName.replaceFirst(
+                        fileField.getIsJson()
+                            ? fileField.getJsonField().getName() + "."
+                            : fileField.getImportField().getName() + ".",
+                        "")
+                    : fullFieldName)
+                + "."
+                + subFields[index + 1];
+
+        this.setSearch(
+            column, fieldName, childProp, fileField, parentBind, index, isSameParentExist);
+
+        if (fileField.getImportType() == FileFieldRepository.IMPORT_TYPE_FIND
+            && fileField.getSubImportField().contains("attrs.")) {
+          return;
         }
         this.createCSVSubBinding(
             subFields,
@@ -577,27 +715,43 @@ public class DataImportServiceImpl implements DataImportService {
             isSameParentExist);
 
       } else {
-        String expression = this.setExpression(column, fileField, childProp);
-        String adapter = null;
-        String dateFormat = fileField.getDateFormat();
-        if (Strings.isNullOrEmpty(expression) && !Strings.isNullOrEmpty(dateFormat)) {
-          adapter = this.getAdapter(childProp.getJavaType().getSimpleName(), dateFormat.trim());
-        }
-
-        if (!fileField.getIsMatchWithFile()) {
-          this.createBindForNotMatchWithFile(
-              column, importType, dummyBind, expression, adapter, parentBind, childProp);
+        if (AdvancedExportService.FIELD_ATTRS.equals(childProp.getName())) {
+          parentBind =
+              customDataImportService.createAttrsCSVBinding(
+                  subFields,
+                  index + 1,
+                  column,
+                  mapper.getBeanClass().getCanonicalName(),
+                  fileField,
+                  parentBind,
+                  dummyBind,
+                  isSameParentExist,
+                  new ArrayList<>(),
+                  parentBindMap,
+                  fullFieldName);
 
         } else {
-          this.createBindForMatchWithFile(
-              column, importType, expression, adapter, relationship, parentBind, childProp);
-        }
-        String fieldName =
-            isSameParentExist && importType == FileFieldRepository.IMPORT_TYPE_FIND
-                ? fullFieldName.replaceFirst(fileField.getImportField().getName() + ".", "")
-                : childProp.getName();
-        this.setSearch(column, fieldName, fileField, parentBind, isSameParentExist);
+          String fieldName =
+              isSameParentExist && importType == FileFieldRepository.IMPORT_TYPE_FIND
+                  ? fullFieldName.replaceFirst(
+                      fileField.getIsJson()
+                          ? fileField.getJsonField().getName() + "."
+                          : fileField.getImportField().getName() + ".",
+                      "")
+                  : childProp.getName();
 
+          customDataImportService.createChildCSVSubBinding(
+              fileField,
+              childProp,
+              parentBind,
+              dummyBind,
+              fieldName,
+              column,
+              relationship,
+              importType,
+              index,
+              isSameParentExist);
+        }
         if (importType != FileFieldRepository.IMPORT_TYPE_FIND) {
           parentBind.setUpdate(false);
         }
@@ -605,7 +759,8 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private void createBindForNotMatchWithFile(
+  @Override
+  public void createBindForNotMatchWithFile(
       String column,
       int importType,
       CSVBind dummyBind,
@@ -620,12 +775,13 @@ public class DataImportServiceImpl implements DataImportService {
     if (importType == FileFieldRepository.IMPORT_TYPE_FIND_NEW
         || importType == FileFieldRepository.IMPORT_TYPE_NEW) {
       CSVBind subBind = this.createCSVBind(column, childProp.getName(), null, null, null, null);
-      this.setImportIf(childProp, subBind, column);
+      this.setImportIf(childProp.isRequired(), subBind, column);
       parentBind.getBindings().add(subBind);
     }
   }
 
-  private void createBindForMatchWithFile(
+  @Override
+  public void createBindForMatchWithFile(
       String column,
       int importType,
       String expression,
@@ -644,7 +800,7 @@ public class DataImportServiceImpl implements DataImportService {
       }
       CSVBind subBind =
           this.createCSVBind(column, childProp.getName(), null, expression, adapter, null);
-      this.setImportIf(childProp, subBind, column);
+      this.setImportIf(childProp.isRequired(), subBind, column);
       parentBind.getBindings().add(subBind);
 
     } else {
@@ -655,9 +811,16 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private void setSearch(
-      String column, String field, FileField fileField, CSVBind bind, boolean isSameParentExist) {
-
+  @Override
+  public void setSearch(
+      String column,
+      String field,
+      Property prop,
+      FileField fileField,
+      CSVBind bind,
+      int index,
+      boolean isSameParentExist)
+      throws ClassNotFoundException {
     int importType = fileField.getImportType();
     String relationship = fileField.getRelationship();
     String splitBy = fileField.getSplitBy();
@@ -672,22 +835,37 @@ public class DataImportServiceImpl implements DataImportService {
         cond = bind.getSearch() + " AND ";
       }
 
-      if (!Strings.isNullOrEmpty(relationship)
-          && relationship.equals(MANY_TO_MANY)
-          && !Strings.isNullOrEmpty(splitBy)) {
-        bind.setSearch(cond + "self." + field + " in :" + column);
+      String subFields[] = fileField.getSubImportField().split("\\.");
+      List<String> subList = Arrays.asList(subFields).subList(index, subFields.length);
+
+      if (subList.contains("attrs")) {
+        StringBuilder searchString = new StringBuilder("self." + prop.getName() + ".");
+        Mapper mapper = advancedImportService.getMapper(prop.getTarget().getName());
+
+        customDataImportService.checkAndAppendAttrsSearch(
+            searchString, subFields, fileField, mapper, column, index + 1, false, true, false);
+
+        bind.setSearch(cond + searchString.toString());
+
       } else {
-        int index = field.lastIndexOf(46);
-        if (isSameParentExist && index > 0) {
-          cond1 = " (:" + column + " IS NOT NULL AND ";
-          cond2 = " OR self." + field.substring(0, index) + " IS NULL) ";
+        if (!Strings.isNullOrEmpty(relationship)
+            && relationship.equals(MANY_TO_MANY)
+            && !Strings.isNullOrEmpty(splitBy)) {
+          bind.setSearch(cond + "self." + field + " in :" + column);
+        } else {
+          int subIndex = field.lastIndexOf(46);
+          if (isSameParentExist && subIndex > 0) {
+            cond1 = " (:" + column + " IS NOT NULL AND ";
+            cond2 = " OR self." + field.substring(0, subIndex) + " IS NULL) ";
+          }
+          bind.setSearch(cond + cond1 + "self." + field + " = :" + column + cond2);
         }
-        bind.setSearch(cond + cond1 + "self." + field + " = :" + column + cond2);
       }
     }
   }
 
-  private String setExpression(String column, FileField fileField, Property prop) {
+  @Override
+  public String setExpression(String column, FileField fileField, String selection) {
 
     String expr = fileField.getExpression();
     String relationship = fileField.getRelationship();
@@ -713,7 +891,7 @@ public class DataImportServiceImpl implements DataImportService {
               !Strings.isNullOrEmpty(splitBy) ? expr + SPLIT + splitBy + AS_LIST : "'" + expr + "'";
           return expression;
         }
-        return this.createExpression(expr, targetType, prop, fileField.getForSelectUse());
+        return this.createExpression(expr, targetType, selection, fileField.getForSelectUse());
       }
     } else if (!Strings.isNullOrEmpty(relationship)
         && relationship.equals(MANY_TO_MANY)
@@ -732,7 +910,7 @@ public class DataImportServiceImpl implements DataImportService {
     return expression;
   }
 
-  private String createExpression(String expr, String type, Property prop, int forSelectUse) {
+  private String createExpression(String expr, String type, String selection, int forSelectUse) {
     String expression = null;
 
     switch (type) {
@@ -750,8 +928,8 @@ public class DataImportServiceImpl implements DataImportService {
       case ValidatorService.BIG_DECIMAL:
       case ValidatorService.LONG:
       case ValidatorService.STRING:
-        if (!Strings.isNullOrEmpty(prop.getSelection())) {
-          expression = this.getSelectionValue(prop.getSelection(), expr, forSelectUse);
+        if (!Strings.isNullOrEmpty(selection)) {
+          expression = this.getSelectionValue(selection, expr, forSelectUse);
           if (type.equals(ValidatorService.STRING)) {
             expression = "'" + expression + "'";
           }
@@ -771,14 +949,15 @@ public class DataImportServiceImpl implements DataImportService {
     String expression = null;
     switch (type) {
       case ValidatorService.INTEGER:
-        expression = expr.replace(REPLACE_SYMBOL, "Integer.parseInt(" + column + ")");
+        expression = expr.replace(REPLACE_SYMBOL, "new Integer(" + column + ")");
         break;
 
       case ValidatorService.LONG:
-        expression = expr.replace(REPLACE_SYMBOL, "Long.parseLong(" + column + ")");
+        expression = expr.replace(REPLACE_SYMBOL, "new Long(" + column + ")");
         break;
 
       case ValidatorService.BIG_DECIMAL:
+      case "Decimal":
         expression = expr.replace(REPLACE_SYMBOL, "new BigDecimal(" + column + ")");
         break;
 
@@ -799,7 +978,8 @@ public class DataImportServiceImpl implements DataImportService {
     return expression;
   }
 
-  private String getAdapter(String type, String dateFormat) {
+  @Override
+  public String getAdapter(String type, String dateFormat) {
     String adapter = null;
 
     switch (type) {
@@ -838,7 +1018,8 @@ public class DataImportServiceImpl implements DataImportService {
     return adapter;
   }
 
-  private CSVBind createCSVBind(
+  @Override
+  public CSVBind createCSVBind(
       String column,
       String field,
       String search,
@@ -861,15 +1042,20 @@ public class DataImportServiceImpl implements DataImportService {
 
   private String createDataFileName(FileTab fileTab) {
     String fileName = null;
-    MetaModel model = fileTab.getMetaModel();
     Long fileTabId = fileTab.getId();
-    try {
-      Mapper mapper = advancedImportService.getMapper(model.getFullName());
-      fileName =
-          inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + fileTabId + ".csv";
+    if (fileTab.getIsJson()) {
+      MetaJsonModel model = fileTab.getJsonModel();
+      fileName = inflector.camelize(model.getName(), true) + fileTabId + ".csv";
+    } else {
+      MetaModel model = fileTab.getMetaModel();
+      try {
+        Mapper mapper = advancedImportService.getMapper(model.getFullName());
+        fileName =
+            inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + fileTabId + ".csv";
 
-    } catch (ClassNotFoundException e) {
-      TraceBackService.trace(e);
+      } catch (ClassNotFoundException e) {
+        TraceBackService.trace(e);
+      }
     }
     return fileName;
   }
@@ -932,8 +1118,9 @@ public class DataImportServiceImpl implements DataImportService {
     return null;
   }
 
-  private void setImportIf(Property prop, CSVBind bind, String column) {
-    if (prop.isRequired()) {
+  @Override
+  public void setImportIf(Boolean isRequired, CSVBind bind, String column) {
+    if (isRequired) {
       bind.setCondition(column.toString() + "!= null && !" + column.toString() + ".empty");
     }
   }

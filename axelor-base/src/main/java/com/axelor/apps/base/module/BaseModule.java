@@ -128,6 +128,10 @@ import com.axelor.apps.base.service.advanced.imports.ActionService;
 import com.axelor.apps.base.service.advanced.imports.ActionServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportServiceImpl;
+import com.axelor.apps.base.service.advanced.imports.CustomAdvancedImportService;
+import com.axelor.apps.base.service.advanced.imports.CustomAdvancedImportServiceImpl;
+import com.axelor.apps.base.service.advanced.imports.CustomDataImportService;
+import com.axelor.apps.base.service.advanced.imports.CustomDataImportServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.advanced.imports.DataImportServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.FileFieldService;
@@ -138,6 +142,8 @@ import com.axelor.apps.base.service.advanced.imports.SearchCallService;
 import com.axelor.apps.base.service.advanced.imports.SearchCallServiceImpl;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
+import com.axelor.apps.base.service.advancedExport.CustomAdvancedExportService;
+import com.axelor.apps.base.service.advancedExport.CustomAdvancedExportServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.app.AppService;
@@ -272,5 +278,8 @@ public class BaseModule extends AxelorModule {
         .to(SequenceVersionGeneratorQueryServiceImpl.class);
     bind(BaseServerStartListener.class);
     bind(TranslationRestService.class).to(TranslationRestServiceImpl.class);
+    bind(CustomAdvancedExportService.class).to(CustomAdvancedExportServiceImpl.class);
+    bind(CustomAdvancedImportService.class).to(CustomAdvancedImportServiceImpl.class);
+    bind(CustomDataImportService.class).to(CustomDataImportServiceImpl.class);
   }
 }

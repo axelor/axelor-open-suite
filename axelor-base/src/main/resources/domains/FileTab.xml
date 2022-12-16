@@ -10,7 +10,11 @@
 
     <string name="name" title="Name" required="true"/>
 
+    <boolean name="isJson"/>
+
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object"/>
+
+    <many-to-one ref="com.axelor.meta.db.MetaJsonModel" name="jsonModel" title="Object"/>
 
     <integer name="importType" title="Import type" selection="file.field.import.type.select"
       min="1" default="3"/>

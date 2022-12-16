@@ -27,8 +27,11 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -100,6 +103,43 @@ public class FileTabController {
     }
   }
 
+  public void showJsonRecord(ActionRequest request, ActionResponse response) {
+    try {
+      FileTab fileTab = request.getContext().asType(FileTab.class);
+      fileTab = Beans.get(FileTabRepository.class).find(fileTab.getId());
+
+      String btnName = request.getContext().get("_signal").toString();
+      String fieldName = StringUtils.substringBetween(btnName, "show", "Btn");
+
+      MetaJsonField jsonField =
+          Beans.get(MetaJsonFieldRepository.class)
+              .all()
+              .filter(
+                  "self.name = ?1 AND self.type = 'json-many-to-many' AND self.model = ?2 AND self.modelField = 'attrs'",
+                  fieldName,
+                  fileTab.getClass().getName())
+              .fetchOne();
+
+      if (jsonField == null) {
+        return;
+      }
+
+      String ids = Beans.get(FileTabService.class).getShowRecordIds(fileTab, jsonField.getName());
+
+      MetaJsonModel metaJsonModel = jsonField.getTargetJsonModel();
+      ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get(metaJsonModel.getTitle()))
+              .model(MetaJsonRecord.class.getName())
+              .add("grid", metaJsonModel.getGridView().getName())
+              .add("form", metaJsonModel.getFormView().getName())
+              .domain("self.jsonModel = :jsonModel AND self.id IN (" + ids + ")")
+              .context("jsonModel", metaJsonModel.getName());
+      response.setView(actionViewBuilder.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void validateActions(ActionRequest request, ActionResponse response) {
     FileTab fileTab = request.getContext().asType(FileTab.class);
 
@@ -125,5 +165,10 @@ public class FileTabController {
           String.format(
               BaseExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getMetaModel().getName()));
     }
+  }
+
+  public void updateIsJson(ActionRequest request, ActionResponse response) {
+    FileTab fileTab = request.getContext().asType(FileTab.class);
+    Beans.get(FileTabService.class).setIsJson(fileTab);
   }
 }

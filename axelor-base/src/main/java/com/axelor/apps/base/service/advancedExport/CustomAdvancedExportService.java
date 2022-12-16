@@ -15,17 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.advanced.imports;
+package com.axelor.apps.base.service.advancedExport;
 
-import com.axelor.apps.base.db.FileTab;
+import com.axelor.apps.base.db.AdvancedExport;
+import com.axelor.meta.db.MetaJsonModel;
+import java.util.List;
 
-public interface FileTabService {
+public interface CustomAdvancedExportService {
 
-  public FileTab updateFields(FileTab fileTab) throws ClassNotFoundException;
+  public void createCustomQueryParts(String[] splitField, MetaJsonModel jsonModel)
+      throws ClassNotFoundException;
 
-  public FileTab compute(FileTab fileTab);
-
-  public String getShowRecordIds(FileTab fileTab, String field) throws ClassNotFoundException;
-
-  public void setIsJson(FileTab fileTab);
+  public StringBuilder createQueryBuilder(
+      AdvancedExport advancedExport,
+      StringBuilder selectFieldBuilder,
+      List<Long> recordIds,
+      StringBuilder orderByFieldBuilder);
 }

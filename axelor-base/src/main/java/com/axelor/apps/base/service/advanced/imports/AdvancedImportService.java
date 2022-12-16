@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.advanced.imports;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 
 public interface AdvancedImportService {
@@ -32,4 +33,7 @@ public interface AdvancedImportService {
       String sheet, DataReaderService reader, int totalLines, String[] objectRow);
 
   public boolean resetImport(AdvancedImport advancedImport) throws ClassNotFoundException;
+
+  public boolean checkSubFields(String[] subFields, int index, Property parentProp, String model)
+      throws AxelorException, ClassNotFoundException;
 }

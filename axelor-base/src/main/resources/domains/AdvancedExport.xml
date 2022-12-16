@@ -7,8 +7,11 @@
 
   <entity name="AdvancedExport">
     <string name="name"/>
+    <boolean name="isJson" title="Json"/>
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"
-      title="Target model" required="true"/>
+      title="Target model"/>
+    <many-to-one ref="com.axelor.meta.db.MetaJsonModel" name="jsonModel"
+      title="Target model"/>
     <one-to-many name="advancedExportLineList"
       ref="com.axelor.apps.base.db.AdvancedExportLine" mappedBy="advancedExport"
       title="Advanced export line"/>
