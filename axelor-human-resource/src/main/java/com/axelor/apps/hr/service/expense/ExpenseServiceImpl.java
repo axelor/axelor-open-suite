@@ -75,8 +75,6 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.bankorder.BankOrderCreateServiceHr;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -84,6 +82,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -95,7 +95,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 @Singleton
@@ -251,8 +250,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendConfirmationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -301,8 +299,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendValidationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -327,8 +324,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendRefusalEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -548,8 +544,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendCancellationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
