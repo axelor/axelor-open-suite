@@ -18,7 +18,7 @@
 package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.tool.api.ResponseStructure;
+import com.axelor.utils.api.ResponseStructure;
 import java.util.List;
 
 public class StockProductVariantResponse extends ResponseStructure {

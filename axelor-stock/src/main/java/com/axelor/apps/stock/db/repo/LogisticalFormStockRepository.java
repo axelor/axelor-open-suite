@@ -20,8 +20,6 @@ package com.axelor.apps.stock.db.repo;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
@@ -31,6 +29,8 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
 import javax.persistence.PersistenceException;
 

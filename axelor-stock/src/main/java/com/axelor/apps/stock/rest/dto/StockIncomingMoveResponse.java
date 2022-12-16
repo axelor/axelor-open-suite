@@ -18,7 +18,7 @@
 package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.tool.api.ResponseStructure;
+import com.axelor.utils.api.ResponseStructure;
 
 public class StockIncomingMoveResponse extends ResponseStructure {
   private final long id;

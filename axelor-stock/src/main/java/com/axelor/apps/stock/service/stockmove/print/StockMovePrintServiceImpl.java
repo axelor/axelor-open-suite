@@ -18,20 +18,20 @@
 package com.axelor.apps.stock.service.stockmove.print;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
-import com.axelor.apps.tool.ModelTool;
-import com.axelor.apps.tool.ThrowConsumer;
-import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBase;
+import com.axelor.utils.ModelTool;
+import com.axelor.utils.ThrowConsumer;
+import com.axelor.utils.file.PdfTool;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
     ModelTool.apply(
         StockMove.class,
         ids,
-        new ThrowConsumer<StockMove>() {
+        new ThrowConsumer<StockMove, Exception>() {
           @Override
           public void accept(StockMove stockMove) throws Exception {
             printedStockMoves.add(print(stockMove, ReportSettings.FORMAT_PDF));

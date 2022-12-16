@@ -79,7 +79,7 @@
   <input file="stock_freightCarrierMode.csv" separator=";"
     type="com.axelor.apps.stock.db.FreightCarrierMode" search="self.importId = :importId"/>
 
-  <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind to="language" search="self.code = :languageCode"/>
     <bind column="birtTemplateSet_importId" to="birtTemplateSet"
@@ -87,7 +87,7 @@
       eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
   </input>
 
-  <input file="base_appStock.csv" separator=";" type="com.axelor.apps.base.db.AppStock"
+  <input file="studio_appStock.csv" separator=";" type="com.axelor.studio.db.AppStock"
     search="self.app.code = :code"/>
 
   <input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"
