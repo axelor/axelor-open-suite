@@ -40,8 +40,8 @@
   <menuitem name="marketing-conf-template" parent="marketing-conf" title="Template"
     action="marketing.conf.template"/>
 
-  <action-view name="marketing.conf.template"
-    model="com.axelor.apps.message.db.Template" title="Template">
+  <action-view name="marketing.conf.template" model="com.axelor.message.db.Template"
+    title="Template">
     <view name="template-grid" type="grid"/>
     <view name="template-form" type="form"/>
     <domain>self.mediaTypeSelect IN (4)</domain>
