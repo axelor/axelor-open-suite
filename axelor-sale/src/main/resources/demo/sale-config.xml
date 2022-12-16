@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.0.xsd">
 
-  <input file="base_appSale.csv" separator=";" type="com.axelor.apps.base.db.AppSale"
+  <input file="studio_appSale.csv" separator=";" type="com.axelor.studio.db.AppSale"
     search="self.app.code = :code" update="true"/>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
@@ -62,9 +62,9 @@
   </input>
 
   <input file="base_template_context.csv" separator=";"
-    type="com.axelor.apps.message.db.TemplateContext" search="self.name = :name"/>
+    type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
 
-  <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind to="language" search="self.code = :languageCode"/>
     <bind to="templateContextList" search="self.name = :templateContext"
@@ -80,7 +80,7 @@
     <bind to="emailTemplate" column="template" search="self.name = :template"/>
   </input>
 
-  <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"
+  <input file="studio_appBase.csv" separator=";" type="com.axelor.studio.db.AppBase"
     search="self.app.code = :code">
     <bind to="mailTemplateAssociationList" column="model" search="self.model.name = :model"
       if="model != null &amp;&amp; !model.empty"/>

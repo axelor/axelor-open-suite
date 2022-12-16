@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.Checks;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
