@@ -1,3 +1,27 @@
+## [6.1.27] (2022-12-16)
+
+#### Fixed
+
+* Bill of materials: fix error when accessing general bill of materials menu.
+* Leave request: fix error message when sending leave request when company is missing.
+* Accounting reports: add origin informations (ref and date) on general ledger and partner general ledger.
+* Invoice: correctly hide refund list when there is no refund.
+* Move: on move generation from template view, correctly set "generate move" button as readonly when there is no input.
+* Task editor: fix error while dragging task.
+* Partner address: improve UI when adding an address to a partner to avoid inconsistencies.
+* Menu builder: eval is automatically added for context value fixed.
+* Menu builder: set context by default when overriding an existing menu.
+* Debt recovery history: prevent the user from inserting new rows in grid view.
+* Bank Order: Payment mode and file format now are correctly reset when order type select is changed.
+* Supplier invoice: fixed an issue where the button to pay the invoice was not displayed.
+* Stock move: picking order comments panel are now correctly hidden for supplier arrivals.
+* Purchase order report: fixed an issue where product name was displayed instead of specific supplier product name.
+* Accounting report: fixed wrongly defined display condition on analytic axis, analytic account, account type fields for analytic type reports form view.
+* Product details: fixed permission so users do not need write permissions on Product to use this feature.
+* Stock move: fixed query exception that happened on the form view when the user had no active company
+* Contract / ContractVersion: allow to correctly fill dates when 'isPeriodicInvoicing' is activated on a new contract version.
+* Expense: now takes the correct bank details when registering a payment.
+
 ## [6.1.26] (2022-12-08)
 
 #### Features
@@ -879,6 +903,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.27]: https://github.com/axelor/axelor-open-suite/compare/v6.1.26...v6.1.27
 [6.1.26]: https://github.com/axelor/axelor-open-suite/compare/v6.1.25...v6.1.26
 [6.1.25]: https://github.com/axelor/axelor-open-suite/compare/v6.1.24...v6.1.25
 [6.1.24]: https://github.com/axelor/axelor-open-suite/compare/v6.1.23...v6.1.24
