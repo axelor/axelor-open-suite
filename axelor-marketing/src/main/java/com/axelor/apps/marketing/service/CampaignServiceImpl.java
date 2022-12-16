@@ -24,14 +24,14 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
 import com.axelor.apps.marketing.exception.MarketingExceptionMessage;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -40,7 +40,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class CampaignServiceImpl implements CampaignService {
@@ -113,13 +112,7 @@ public class CampaignServiceImpl implements CampaignService {
 
       try {
         generateAndSendMessage(campaign, partner, template);
-      } catch (ClassNotFoundException
-          | InstantiationException
-          | IllegalAccessException
-          | MessagingException
-          | IOException
-          | JSONException
-          | AxelorException e) {
+      } catch (ClassNotFoundException | IOException | JSONException e) {
         errors.append(partner.getName() + "\n");
         e.printStackTrace();
       }
@@ -136,13 +129,7 @@ public class CampaignServiceImpl implements CampaignService {
 
       try {
         generateAndSendMessage(campaign, lead, template);
-      } catch (ClassNotFoundException
-          | InstantiationException
-          | IllegalAccessException
-          | MessagingException
-          | IOException
-          | JSONException
-          | AxelorException e) {
+      } catch (ClassNotFoundException | IOException | JSONException e) {
         errors.append(lead.getName() + "\n");
         e.printStackTrace();
       }
@@ -153,8 +140,7 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException, JSONException {
+      throws ClassNotFoundException, IOException, JSONException {
     Message message = templateMessageMarketingService.generateAndSendMessage(model, template);
     Beans.get(MessageService.class)
         .addMessageRelatedTo(message, Campaign.class.getCanonicalName(), campaign.getId());

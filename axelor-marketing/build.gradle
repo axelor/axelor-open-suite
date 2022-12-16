@@ -16,7 +16,6 @@ axelor {
 
 dependencies {
 	api project(":modules:axelor-crm")
-	api project(":modules:axelor-studio")
 
 	implementation libs.lutung
 }
