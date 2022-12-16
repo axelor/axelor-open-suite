@@ -224,7 +224,7 @@
   <action-record name="action-campaign-record-set-duration"
     model="com.axelor.apps.marketing.db.Campaign">
     <field name="duration"
-      expr="eval: com.axelor.apps.tool.date.DurationTool.getSecondsDuration( com.axelor.apps.tool.date.DurationTool.computeDuration(eventStartDateTime, eventEndDateTime))"
+      expr="eval: com.axelor.utils.date.DurationTool.getSecondsDuration( com.axelor.utils.date.DurationTool.computeDuration(eventStartDateTime, eventEndDateTime))"
       if="eventStartDateTime != null &amp;&amp; eventEndDateTime != null"/>
   </action-record>
 
@@ -310,7 +310,7 @@
   </action-view>
 
   <action-view name="dashlet.generated.emails" title="Generated emails"
-    model="com.axelor.apps.message.db.Message">
+    model="com.axelor.message.db.Message">
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
     <domain>self.id IN (SELECT related.message.id FROM MultiRelated as related WHERE
