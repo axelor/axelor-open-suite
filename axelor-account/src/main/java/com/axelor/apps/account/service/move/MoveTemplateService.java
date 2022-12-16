@@ -252,11 +252,11 @@ public class MoveTemplateService {
           }
         }
 
+        moveLineTaxService.autoTaxLineGenerate(move);
+
         if (moveTemplate.getAutomaticallyValidate()) {
           moveValidateService.accounting(move);
         }
-
-        moveLineTaxService.autoTaxLineGenerate(move);
 
         moveList.add(move.getId());
       }
@@ -352,11 +352,11 @@ public class MoveTemplateService {
           }
         }
 
+        moveLineTaxService.autoTaxLineGenerate(move);
+
         if (moveTemplate.getAutomaticallyValidate()) {
           moveValidateService.accounting(move);
         }
-
-        moveLineTaxService.autoTaxLineGenerate(move);
 
         moveList.add(move.getId());
       }
