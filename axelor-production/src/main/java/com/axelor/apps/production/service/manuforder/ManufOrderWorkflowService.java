@@ -33,10 +33,6 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.EmailAccountRepository;
-import com.axelor.apps.message.exception.AxelorMessageException;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
@@ -63,6 +59,9 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.EmailAccountRepository;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -532,7 +531,7 @@ public class ManufOrderWorkflowService {
   protected boolean sendMail(ManufOrder manufOrder, Template template) {
     if (template == null) {
       TraceBackService.trace(
-          new AxelorMessageException(
+          new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(ProductionExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE)));
     }
@@ -547,8 +546,7 @@ public class ManufOrderWorkflowService {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(manufOrder, template);
     } catch (Exception e) {
       TraceBackService.trace(
-          new AxelorMessageException(
-              e, manufOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
+          new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
     }
     return true;
   }

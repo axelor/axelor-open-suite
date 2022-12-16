@@ -18,7 +18,7 @@
 package com.axelor.apps.production.rest.dto;
 
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.tool.api.ResponseStructure;
+import com.axelor.utils.api.ResponseStructure;
 
 public class UnitResponse extends ResponseStructure {
   private final Long unitId;

@@ -18,8 +18,8 @@
 package com.axelor.apps.production.rest.dto;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.tool.api.ObjectFinder;
-import com.axelor.apps.tool.api.RequestStructure;
+import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
