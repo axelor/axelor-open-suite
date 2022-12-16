@@ -18,7 +18,7 @@
 package com.axelor.apps.supplychain.rest.dto;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.tool.api.ResponseStructure;
+import com.axelor.utils.api.ResponseStructure;
 import java.math.BigDecimal;
 import java.util.Map;
 

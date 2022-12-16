@@ -19,13 +19,13 @@ package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.StringTool;
 import com.google.common.collect.ImmutableMap;
 import java.io.FileInputStream;
 import java.io.IOException;
