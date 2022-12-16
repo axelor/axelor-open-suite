@@ -23,10 +23,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -45,13 +41,16 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
@@ -189,12 +188,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
     if (template != null) {
       try {
         templateMessageService.generateAndSendMessage(stockRules, template);
-      } catch (ClassNotFoundException
-          | InstantiationException
-          | IllegalAccessException
-          | MessagingException
-          | IOException
-          | JSONException e) {
+      } catch (ClassNotFoundException | IOException | JSONException e) {
         throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
       }
     }
