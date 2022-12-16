@@ -161,7 +161,8 @@
         <field name="bankOrderDate" css="label-bold bold" colSpan="6" hideIf="isMultiDate"
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"
-          readonlyIf="technicalOriginSelect == 1"/>
+          readonlyIf="technicalOriginSelect == 1"
+          onChange="action-bank-order-record-order-type-select-onchange"/>
         <field name="paymentMode" css="label-bold bold" colSpan="6" canView="false"
           domain="self.orderTypeSelect = :orderTypeSelect
                   AND (:functionalOriginSelect &lt;&gt; 1 OR self.accountingTriggerSelect &lt;&gt; 1)"
@@ -735,6 +736,11 @@
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <field name="senderBankDetails"
       if="!bankOrderFileFormat?.allowOrderCurrDiffFromBankDetails" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-bank-order-record-order-type-select-onchange"
+    model="com.axelor.apps.bankpayment.db.BankOrder">
+    <field name="paymentMode,bankOrderFileFormat" expr="eval: null"/>
   </action-record>
 
   <!-- Actions Methods -->

@@ -17,16 +17,84 @@
  */
 package com.axelor.apps.base.test;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.csv.script.ImportDateTime;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestImportDateTime {
-  @Test
-  public void testDateTimeImport() {
-    LocalDateTime dt = LocalDateTime.now();
-    LocalDateTime dt2 = dt.plusDays(2);
 
-    System.out.println(dt);
-    System.out.println(dt2);
+  protected ImportDateTime importDateTime;
+
+  protected LocalDateTime todayDateTime = LocalDateTime.of(2022, 5, 13, 0, 0, 0);
+
+  @Before
+  public void setUp() {
+    LocalDate todayDate = LocalDate.of(2022, 5, 13);
+    AppBaseService appBaseService = mock(AppBaseService.class);
+    when(appBaseService.getTodayDate(any())).thenReturn(todayDate);
+    importDateTime = new ImportDateTime(appBaseService);
+  }
+
+  @Test
+  public void testDateImportToday() {
+    Assert.assertEquals(LocalDate.of(2022, 5, 13).toString(), importDateTime.importDate("TODAY"));
+  }
+
+  @Test
+  public void testDateImportTodayMinusFourYears() {
+    Assert.assertEquals(
+        todayDateTime.minusYears(4).toString(), importDateTime.importDate("TODAY[-4y]"));
+  }
+
+  @Test
+  public void testDateImportTodayMinusOneMonth() {
+    Assert.assertEquals(
+        todayDateTime.minusMonths(1).toString(), importDateTime.importDate("TODAY[-1M]"));
+  }
+
+  @Test
+  public void testDateImportTodayMinusOneDay() {
+    Assert.assertEquals(
+        todayDateTime.minusDays(1).toString(), importDateTime.importDate("TODAY[-1d]"));
+  }
+
+  @Test
+  public void testDateImportTodayMinusFourYearsFixedMonthFixedDay() {
+    Assert.assertEquals(
+        todayDateTime.minusYears(4).withDayOfMonth(1).withMonth(1).toString(),
+        importDateTime.importDate("TODAY[-4y=1M=1d]"));
+  }
+
+  @Test
+  public void testDateImportTodayFixedMonthFixedDay() {
+    Assert.assertEquals(
+        todayDateTime.withDayOfMonth(1).withMonth(1).toString(),
+        importDateTime.importDate("TODAY[=1M=1d]"));
+  }
+
+  @Test
+  public void testDateImportTodayFixedDay() {
+    Assert.assertEquals(
+        todayDateTime.withDayOfMonth(1).toString(), importDateTime.importDate("TODAY[=1d]"));
+  }
+
+  @Test
+  public void testDateImportTodayFixedMonth() {
+    Assert.assertEquals(
+        todayDateTime.withMonth(1).toString(), importDateTime.importDate("TODAY[=1M]"));
+  }
+
+  @Test
+  public void testDateImportTodayFixedYear() {
+    Assert.assertEquals(
+        todayDateTime.withYear(2014).toString(), importDateTime.importDate("TODAY[=2014y]"));
   }
 }
