@@ -27,7 +27,8 @@ public abstract class AccountingReportValueAbstractService {
   protected AccountingReportValueRepository accountingReportValueRepo;
 
   @Inject
-  public AccountingReportValueAbstractService(AccountingReportValueRepository accountingReportValueRepo) {
+  public AccountingReportValueAbstractService(
+      AccountingReportValueRepository accountingReportValueRepo) {
     this.accountingReportValueRepo = accountingReportValueRepo;
   }
 

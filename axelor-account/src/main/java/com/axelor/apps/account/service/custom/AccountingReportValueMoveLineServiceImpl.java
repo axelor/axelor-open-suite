@@ -37,7 +37,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   protected MoveLineRepository moveLineRepo;
 
   @Inject
-  public AccountingReportValueMoveLineServiceImpl(AccountingReportValueRepository accountingReportValueRepo, MoveLineRepository moveLineRepo) {
+  public AccountingReportValueMoveLineServiceImpl(
+      AccountingReportValueRepository accountingReportValueRepo, MoveLineRepository moveLineRepo) {
     super(accountingReportValueRepo);
     this.moveLineRepo = moveLineRepo;
   }

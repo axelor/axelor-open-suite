@@ -22,7 +22,8 @@ import java.util.Map;
 public class AccountingReportValueCustomRuleServiceImpl extends AccountingReportValueAbstractService
     implements AccountingReportValueCustomRuleService {
   @Inject
-  public AccountingReportValueCustomRuleServiceImpl(AccountingReportValueRepository accountingReportValueRepo) {
+  public AccountingReportValueCustomRuleServiceImpl(
+      AccountingReportValueRepository accountingReportValueRepo) {
     super(accountingReportValueRepo);
   }
 

@@ -23,7 +23,8 @@ import org.apache.commons.collections.CollectionUtils;
 public class AccountingReportValuePercentageServiceImpl extends AccountingReportValueAbstractService
     implements AccountingReportValuePercentageService {
   @Inject
-  public AccountingReportValuePercentageServiceImpl(AccountingReportValueRepository accountingReportValueRepo) {
+  public AccountingReportValuePercentageServiceImpl(
+      AccountingReportValueRepository accountingReportValueRepo) {
     super(accountingReportValueRepo);
   }
 

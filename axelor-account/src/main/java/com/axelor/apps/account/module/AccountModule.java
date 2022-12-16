@@ -637,10 +637,13 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountingReportValueService.class).to(AccountingReportValueServiceImpl.class);
 
-    bind(AccountingReportValueCustomRuleService.class).to(AccountingReportValueCustomRuleServiceImpl.class);
+    bind(AccountingReportValueCustomRuleService.class)
+        .to(AccountingReportValueCustomRuleServiceImpl.class);
 
-    bind(AccountingReportValueMoveLineService.class).to(AccountingReportValueMoveLineServiceImpl.class);
+    bind(AccountingReportValueMoveLineService.class)
+        .to(AccountingReportValueMoveLineServiceImpl.class);
 
-    bind(AccountingReportValuePercentageService.class).to(AccountingReportValuePercentageServiceImpl.class);
+    bind(AccountingReportValuePercentageService.class)
+        .to(AccountingReportValuePercentageServiceImpl.class);
   }
 }

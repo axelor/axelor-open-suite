@@ -53,7 +53,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
   @Inject
   public AccountingReportValueServiceImpl(
-          AccountingReportValueRepository accountingReportValueRepo,
+      AccountingReportValueRepository accountingReportValueRepo,
       AccountingReportValueCustomRuleService accountingReportValueCustomRuleService,
       AccountingReportValueMoveLineService accountingReportValueMoveLineService,
       AccountingReportValuePercentageService accountingReportValuePercentageService,
