@@ -19,8 +19,8 @@ package com.axelor.apps.contract.service;
 
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.utils.date.DateTool;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
