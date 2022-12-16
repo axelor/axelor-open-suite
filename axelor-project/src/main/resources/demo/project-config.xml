@@ -25,7 +25,7 @@
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(taskDate)"/>
   </input>
 
-  <input file="app_project.csv" type="com.axelor.apps.base.db.AppProject"
+  <input file="app_project.csv" type="com.axelor.studio.db.AppProject"
     search="self.id is not null" separator=";">
     <bind to="defaultTaskStatusSet" column="projectTaskStatusSet"
       search="self.importId in :projectTaskStatusSet"
