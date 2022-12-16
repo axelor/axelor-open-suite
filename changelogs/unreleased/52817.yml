@@ -1,0 +1,3 @@
+---
+title : "PurchaseOrderInvoiceServiceImpl:Injected interface instead of implementations in PurchaseOrderInvoiceServiceImpl."
+type: fix
