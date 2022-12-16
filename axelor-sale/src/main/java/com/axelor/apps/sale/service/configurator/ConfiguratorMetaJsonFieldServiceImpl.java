@@ -18,13 +18,12 @@
 package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.ConfiguratorFormula;
-import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
+import com.axelor.utils.MetaTool;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -180,7 +179,7 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
 
         return new AbstractMap.SimpleEntry<>(nameField, mappedList);
       }
-    } catch (AxelorException | IllegalArgumentException | SecurityException e) {
+    } catch (IllegalArgumentException | SecurityException e) {
 
       TraceBackService.trace(e);
     }
