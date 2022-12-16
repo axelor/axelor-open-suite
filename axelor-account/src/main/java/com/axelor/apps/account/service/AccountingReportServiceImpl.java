@@ -236,12 +236,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect()
             != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
+
     } else if (accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect()
             == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams(
-          "((self.move.partner.das2Activity is null AND self.account.serviceType IS NOT NULL AND self.account.serviceType.isDas2Declarable is true) "
-              + " OR (self.account.serviceType is null AND self.move.partner.das2Activity IS NOT NULL ))");
+          "(self.account.serviceType is null OR (self.move.partner.das2Activity is null AND self.account.serviceType.isDas2Declarable is true))");
       this.addParams("self.amountRemaining < self.debit + self.credit");
       JournalType journalType =
           accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
