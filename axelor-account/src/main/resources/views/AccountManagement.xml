@@ -29,6 +29,7 @@
     <field name="typeSelect" hidden="true"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
+      onSelect="action-account-management-method-set-company-domain"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="purchaseTaxVatSystem1Account"
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
@@ -57,7 +58,7 @@
   <grid name="account-management-editable-grid" title="Account management list"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
     groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management">
-    <field name="company"/>
+    <field name="company" onSelect="action-account-management-method-set-company-domain"/>
     <field name="bankDetails"/>
     <field name="journal"
       domain="self.statusSelect = 1 AND (:company IS NULL OR self.company = :company)"
@@ -185,6 +186,11 @@
     <attribute for="bankDetails" name="value" expr="eval: company?.defaultBankDetails"
       if="company?.defaultBankDetails?.active"/>
   </action-attrs>
+
+  <action-method name="action-account-management-method-set-company-domain">
+    <call class="com.axelor.apps.account.web.AccountManagementController"
+      method="setCompanyDomain"/>
+  </action-method>
 
   <action-record name="action-account-management-fill-company"
     model="com.axelor.apps.account.db.AccountManagement">

@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface AccountManagementAccountService extends AccountManagementService {
 
@@ -92,4 +93,7 @@ public interface AccountManagementAccountService extends AccountManagementServic
       boolean isFixedAssets,
       boolean isFinancialDiscount)
       throws AxelorException;
+
+  String getCompanyDomain(
+      AccountManagement accountManagement, List<AccountManagement> accountManagementList);
 }
