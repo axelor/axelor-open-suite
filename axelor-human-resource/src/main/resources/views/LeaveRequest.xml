@@ -158,7 +158,7 @@
   </form>
 
   <form name="popup-leave-request-form" title="Select the leave request you want to edit"
-    model="com.axelor.apps.base.db.Wizard"
+    model="com.axelor.message.db.Wizard"
     onNew="action-leave-request-attrs-domain-leave-request-select">
     <panel name="mainPanel">
       <field name="$leaveSelect" title="Select Leave Request" type="many-to-one"

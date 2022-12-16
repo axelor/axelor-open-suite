@@ -20,7 +20,6 @@ package com.axelor.apps.hr.web.timesheet;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -36,8 +35,6 @@ import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -49,6 +46,9 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Wizard;
+import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -444,7 +444,7 @@ public class TimesheetController {
    * @param response
    * @throws AxelorException
    */
-  public void valid(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void valid(ActionRequest request, ActionResponse response) {
 
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -486,7 +486,7 @@ public class TimesheetController {
   }
 
   // action called when refusing a timesheet. Changing status + Sending mail to Applicant
-  public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
