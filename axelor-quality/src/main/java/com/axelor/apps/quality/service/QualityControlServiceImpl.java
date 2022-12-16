@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.quality.service;
 
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.quality.db.ControlPoint;
 import com.axelor.apps.quality.db.ControlPointModel;
 import com.axelor.apps.quality.db.QualityControl;
@@ -32,11 +30,12 @@ import com.axelor.apps.quality.db.repo.QualityMeasuringPointRepository;
 import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class QualityControlServiceImpl implements QualityControlService {
@@ -128,8 +127,7 @@ public class QualityControlServiceImpl implements QualityControlService {
 
   @Override
   public void sendEmail(QualityControl qualityControl)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException, JSONException {
+      throws ClassNotFoundException, IOException, JSONException {
     Template template =
         Beans.get(AppQualityService.class).getAppQuality().getQualityControlTemplate();
 
