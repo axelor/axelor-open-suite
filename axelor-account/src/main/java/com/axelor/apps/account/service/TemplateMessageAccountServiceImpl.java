@@ -19,15 +19,13 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 
 public class TemplateMessageAccountServiceImpl implements TemplateMessageAccountService {
 
@@ -41,8 +39,7 @@ public class TemplateMessageAccountServiceImpl implements TemplateMessageAccount
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message generateMessage(DebtRecoveryHistory debtRecoveryHistory, Template template)
-      throws ClassNotFoundException, IOException, InstantiationException, AxelorException,
-          IllegalAccessException {
+      throws ClassNotFoundException {
     Message message = this.templateMessageService.generateMessage(debtRecoveryHistory, template);
     Long id =
         debtRecoveryHistory.getDebtRecovery().getTradingName() == null
