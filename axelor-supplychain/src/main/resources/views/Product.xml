@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <form name="supplychain-stock-details-by-product-form" title="Stock details by product"
-    model="com.axelor.apps.base.db.Wizard" canSave="false" width="large" canNew="false"
+    model="com.axelor.message.db.Wizard" canSave="false" width="large" canNew="false"
     canCopy="false" onNew="action-group-stock-details-by-product-on-new">
     <panel name="MainFilters" itemSpan="4" colSpan="12">
       <field name="$product" title="Product" canEdit="false"
@@ -115,7 +115,7 @@
   </action-method>
 
   <action-view name="action-stock-location-line-view-for-a-product-from-product-view"
-    title="Stock location lines by product" model="com.axelor.apps.base.db.Wizard">
+    title="Stock location lines by product" model="com.axelor.message.db.Wizard">
     <view type="form" name="supplychain-stock-details-by-product-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
@@ -125,7 +125,7 @@
 
   <action-view
     name="action-stock-location-line-view-for-a-product-from-saleorderline-view"
-    title="Stock location lines by product" model="com.axelor.apps.base.db.Wizard">
+    title="Stock location lines by product" model="com.axelor.message.db.Wizard">
     <view type="form" name="supplychain-stock-details-by-product-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
@@ -199,7 +199,7 @@
   </action-view>
 
   <action-view name="action-supplychain-view-projected-stock" title="Stock history"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="stock-history-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="false"/>
