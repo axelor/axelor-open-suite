@@ -28,11 +28,11 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
-import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.EmailAddress;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 

@@ -394,7 +394,7 @@
   </action-view>
 
   <action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="convert-lead-wizard-form"/>
     <context name="_lead" expr="eval: __self__"/>
     <context name="_primaryAddress" expr="eval: primaryAddress"/>
@@ -424,7 +424,7 @@
   <!-- PORTLET -->
 
   <action-view name="action-lead-view-emails" title="Emails"
-    model="com.axelor.apps.message.db.Message">
+    model="com.axelor.message.db.Message">
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
     <domain>self.mediaTypeSelect = 2 AND (self.id IN (SELECT message.id FROM MultiRelated as related
