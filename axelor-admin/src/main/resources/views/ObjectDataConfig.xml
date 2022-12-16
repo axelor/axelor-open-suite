@@ -43,7 +43,7 @@
   </action-view>
 
   <action-view name="action-open-object-data-anonymize-wizard" title="Anonymize"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="object-data-anonymize-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>

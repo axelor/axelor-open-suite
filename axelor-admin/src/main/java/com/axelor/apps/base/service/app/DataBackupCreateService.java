@@ -17,12 +17,9 @@
  */
 package com.axelor.apps.base.service.app;
 
-import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
 import com.axelor.apps.base.db.DataBackupConfigAnonymizeLine;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
-import com.axelor.apps.tool.ComputeNameTool;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.data.csv.CSVBind;
@@ -43,6 +40,9 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.studio.db.App;
+import com.axelor.utils.ComputeNameTool;
+import com.axelor.utils.date.DateTool;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -125,7 +125,7 @@ public class DataBackupCreateService {
 
   protected static Map<Object, Object> AutoImportModelMap =
       ImmutableMap.builder()
-          .put("com.axelor.apps.base.db.App", "self.code = :code")
+          .put("com.axelor.studio.db.App", "self.code = :code")
           .put("com.axelor.auth.db.Role", "self.name = :name")
           .put("com.axelor.auth.db.User", "self.code = :code")
           .put("com.axelor.auth.db.Permission", "self.name = :name")
