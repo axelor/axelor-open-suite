@@ -1,3 +1,18 @@
+## [5.4.31] (2022-12-16)
+
+#### Fixed
+
+* Leave request: fix error message when sending leave request when company is missing.
+* Partner address: improve UI when adding an address to a partner to avoid inconsistencies.
+* Debt recovery history: prevent the user from inserting new rows in grid view.
+* Bank Order: Payment mode and file format now are correctly reset when order type select is changed.
+* Supplier invoice: fixed an issue where the button to pay the invoice was not displayed.
+* Stock move: picking order comments panel are now correctly hidden for supplier arrivals.
+* Product details: fixed permission so users do not need write permissions on Product to use this feature.
+* Stock move: fixed query exception that happened on the form view when the user had no active company
+* Contract / ContractVersion: allow to correctly fill dates when 'isPeriodicInvoicing' is activated on a new contract version.
+* Expense: now takes the correct bank details when registering a payment.
+
 ## [5.4.30] (2022-12-08)
 
 #### Features
@@ -776,6 +791,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.31]: https://github.com/axelor/axelor-open-suite/compare/v5.4.30...v5.4.31
 [5.4.30]: https://github.com/axelor/axelor-open-suite/compare/v5.4.29...v5.4.30
 [5.4.29]: https://github.com/axelor/axelor-open-suite/compare/v5.4.28...v5.4.29
 [5.4.28]: https://github.com/axelor/axelor-open-suite/compare/v5.4.27...v5.4.28
