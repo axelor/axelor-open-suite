@@ -126,7 +126,7 @@
 
   </form>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Select format to Export"
+  <form model="com.axelor.message.db.Wizard" title="Select format to Export"
     name="stock-location-print-wizard-form"
     onNew="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
     <panel name="mainPanel">

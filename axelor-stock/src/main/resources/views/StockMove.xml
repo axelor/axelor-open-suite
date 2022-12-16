@@ -730,7 +730,7 @@
   </action-record>
 
   <form name="stock-move-wizard-special-split-form" title="Special split"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-stock-move-attrs-set-scale"
+    model="com.axelor.message.db.Wizard" onNew="action-stock-move-attrs-set-scale"
     onLoad="action-stock-move-attrs-set-scale">
     <panel name="mainPanel" colSpan="12">
       <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of"
@@ -746,7 +746,7 @@
   </action-attrs>
 
   <form name="stock-move-wizard-stock-per-day" title="Stock Availability"
-    model="com.axelor.apps.base.db.Wizard" canSave="false" canDelete="false" canCopy="false"
+    model="com.axelor.message.db.Wizard" canSave="false" canDelete="false" canCopy="false"
     canAttach="false" canNew="false" onNew="action-stock-move-wizard-stock-per-day-defaults">
     <toolbar>
       <button icon="fa-play" name="runWizardBtn" title="Run"
@@ -764,7 +764,7 @@
     </panel>
   </form>
 
-  <action-view title="Special split" model="com.axelor.apps.base.db.Wizard"
+  <action-view title="Special split" model="com.axelor.message.db.Wizard"
     name="action-stock-move-wizard-special-split">
     <view type="form" name="stock-move-wizard-special-split-form"/>
     <view-param name="popup" value="reload"/>

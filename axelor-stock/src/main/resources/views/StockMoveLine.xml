@@ -451,7 +451,7 @@
     </panel-mail>
   </form>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Enter tracking numbers"
+  <form model="com.axelor.message.db.Wizard" title="Enter tracking numbers"
     name="stock-move-line-track-number-wizard-form"
     onNew="action-track-number-atts-from-stock-move-line">
     <panel name="wizardPanel" colSpan="12">
