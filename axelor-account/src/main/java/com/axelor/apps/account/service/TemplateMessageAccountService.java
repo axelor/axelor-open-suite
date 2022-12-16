@@ -18,10 +18,8 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.DebtRecoveryHistory;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.exception.AxelorException;
-import java.io.IOException;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
 
 public interface TemplateMessageAccountService {
   /**
@@ -32,12 +30,7 @@ public interface TemplateMessageAccountService {
    * @param template
    * @return
    * @throws ClassNotFoundException
-   * @throws IOException
-   * @throws InstantiationException
-   * @throws AxelorException
-   * @throws IllegalAccessException
    */
   Message generateMessage(DebtRecoveryHistory debtRecoveryHistory, Template template)
-      throws ClassNotFoundException, IOException, InstantiationException, AxelorException,
-          IllegalAccessException;
+      throws ClassNotFoundException;
 }

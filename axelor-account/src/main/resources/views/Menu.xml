@@ -920,7 +920,7 @@
   <menuitem name="move-template-wizard" title="Move From Template"
     parent="account-root-move" action="move.template.wizard" top="true" order="10"/>
   <action-view name="move.template.wizard" title="Move From Template"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="move-template-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>
