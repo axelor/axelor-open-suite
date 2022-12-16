@@ -1457,11 +1457,13 @@ public class AccountingReportValueServiceImpl implements AccountingReportValueSe
       String lineCode) {
     DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     String period = String.format("%s - %s", startDate.format(format), endDate.format(format));
+    int groupNumber = groupColumn == null ? 0 : groupColumn.getSequence();
     int columnNumber = column.getSequence();
     int lineNumber = line.getSequence();
 
     AccountingReportValue accountingReportValue =
         new AccountingReportValue(
+            groupNumber,
             columnNumber,
             lineNumber + lineOffset,
             analyticCounter,
