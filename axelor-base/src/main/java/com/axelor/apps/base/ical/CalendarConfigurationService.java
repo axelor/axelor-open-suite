@@ -19,7 +19,6 @@ package com.axelor.apps.base.ical;
 
 import com.axelor.apps.base.db.CalendarConfiguration;
 import com.axelor.apps.base.db.repo.CalendarConfigurationRepository;
-import com.axelor.apps.tool.MetaActionTool;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
@@ -32,6 +31,7 @@ import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.utils.MetaActionTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 

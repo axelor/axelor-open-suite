@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.base.service.message;
 
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ModelEmailLink;
@@ -25,12 +24,6 @@ import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.ModelEmailLinkRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.EmailAccount;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MessageServiceImpl;
-import com.axelor.apps.message.service.SendMailQueueService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -39,8 +32,15 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.EmailAccount;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.MessageServiceImpl;
+import com.axelor.message.service.SendMailQueueService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
+import com.axelor.studio.db.AppBase;
 import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
 import com.google.common.base.Joiner;
@@ -67,8 +67,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected UserService userService;
-  protected AppBaseService appBaseService;
+  protected final UserService userService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public MessageServiceBaseImpl(
@@ -194,7 +194,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
 
   @SuppressWarnings("unchecked")
   @Override
-  public String printMessage(Message message) throws AxelorException {
+  public String printMessage(Message message) {
 
     Company company = message.getCompany();
     if (company == null) {
@@ -226,19 +226,25 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
             + "-"
             + appBaseService.getTodayDate(company).format(DateTimeFormatter.BASIC_ISO_DATE);
 
-    return Beans.get(TemplateMessageServiceBaseImpl.class)
-        .generateBirtTemplateLink(
-            templates,
-            templatesContext,
-            fileName,
-            birtTemplate.getTemplateLink(),
-            birtTemplate.getFormat(),
-            birtTemplate.getBirtTemplateParameterList());
+    try {
+      return Beans.get(TemplateMessageServiceBaseImpl.class)
+          .generateBirtTemplateLink(
+              templates,
+              templatesContext,
+              fileName,
+              birtTemplate.getTemplateLink(),
+              birtTemplate.getFormat(),
+              birtTemplate.getBirtTemplateParameterList());
+
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+      throw new IllegalStateException(e);
+    }
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Message sendByEmail(Message message) throws MessagingException, AxelorException {
+  public Message sendByEmail(Message message) throws MessagingException {
 
     if (appBaseService.getAppBase().getActivateSendingEmail()) {
       message.setStatusSelect(MessageRepository.STATUS_IN_PROGRESS);
@@ -249,7 +255,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Message sendSMS(Message message) throws AxelorException, IOException, JSONException {
+  public Message sendSMS(Message message) throws IOException, JSONException {
 
     if (appBaseService.getAppBase().getActivateSendingEmail()) {
       return super.sendSMS(message);

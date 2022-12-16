@@ -53,7 +53,7 @@
       help="Allow notifications to be sent by email" default="true"/>
     <many-to-many name="followedMetaModelSet"
       title="Entities you wish to follow by email" ref="com.axelor.meta.db.MetaModel"/>
-    <one-to-many name="emailAccountList" ref="com.axelor.apps.message.db.EmailAccount"
+    <one-to-many name="emailAccountList" ref="com.axelor.message.db.EmailAccount"
       title="Email accounts"/>
 
     <string name="transientPassword" transient="true"/>

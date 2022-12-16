@@ -18,11 +18,11 @@
 package com.axelor.apps.base.callable;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.exception.ToolExceptionMessage;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;

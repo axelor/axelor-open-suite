@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;

@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
@@ -35,6 +34,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -134,7 +134,7 @@ public class CurrencyConversionLineController {
           response.setInfo(I18n.get(BaseExceptionMessage.CURRENCY_6));
         else {
           response.setValue("variations", "0");
-          if (context.get("_model").equals("com.axelor.apps.base.db.Wizard"))
+          if (context.get("_model").equals("com.axelor.message.db.Wizard"))
             response.setValue("newExchangeRate", rate);
           else response.setValue("exchangeRate", rate);
           LocalDate todayDate =

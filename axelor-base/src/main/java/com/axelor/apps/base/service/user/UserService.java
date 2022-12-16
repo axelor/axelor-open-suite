@@ -137,15 +137,11 @@ public interface UserService {
    *
    * @param user
    * @throws ClassNotFoundException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws MessagingException
    * @throws IOException
    * @throws AxelorException
    */
   void processChangedPassword(User user)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
   /**
    * Match password with configured pattern.

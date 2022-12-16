@@ -15,7 +15,7 @@
     <boolean name="trackExport" required="true" default="true"/>
     <boolean name="trackReading" required="true" default="true"/>
     <string name="trackingCondition" large="true"/>
-    <many-to-one name="appBase" ref="com.axelor.apps.base.db.AppBase" required="true"/>
+    <many-to-one name="appBase" ref="com.axelor.studio.db.AppBase" required="true"/>
 
     <unique-constraint columns="metaModel,metaField"/>
 

@@ -62,7 +62,7 @@
   <input file="base_printSetting.csv" separator=";"
     type="com.axelor.apps.base.db.PrintingSettings" search="self.importId = :importId"/>
 
-  <input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind to="language" search="self.code = :languageCode"/>
     <bind column="birtTemplateSet_importId" to="birtTemplateSet"
@@ -264,7 +264,7 @@
     <bind column="importId" to="importId"/>
   </input>
 
-  <input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"
+  <input file="studio_appBase.csv" separator=";" type="com.axelor.studio.db.AppBase"
     search="self.app.code = :code" update="true">
     <bind to="defaultPartnerLanguage" search="self.code = :defaultPartnerLanguageCode"/>
     <bind to="companySpecificProductFieldsSet" column="companySpecificFieldName"
