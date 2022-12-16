@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.businessproject.service.app;
 
-import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.studio.db.AppBusinessProject;
 
 public interface AppBusinessProjectService extends AppBaseService {
 
