@@ -180,9 +180,6 @@
             </field>
 
           </panel>
-          <field name="product.isUnrenewed" hidden="true"/>
-          <field name="product.isPrototype" hidden="true"/>
-          <field name="saleOrder" hidden="true"/>
           <field name="product" canEdit="false"
             onChange="action-group-sale-saleorderline-product-onchange"
             onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
@@ -196,6 +193,9 @@
             onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati"/>
           <field name="productName" colSpan="12"/>
           <field name="oldQty"/>
+          <field name="product.isUnrenewed" hidden="true"/>
+          <field name="product.isPrototype" hidden="true"/>
+          <field name="saleOrder" hidden="true"/>
         </panel>
         <panel name="productDetailPanel" colSpan="12">
           <field name="qty" colSpan="3"
