@@ -220,4 +220,9 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     }
     return invoiceLine;
   }
+
+  @Override
+  public boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList) {
+    return analyticMoveLineService.validateAnalyticMoveLines(analyticMoveLineList);
+  }
 }

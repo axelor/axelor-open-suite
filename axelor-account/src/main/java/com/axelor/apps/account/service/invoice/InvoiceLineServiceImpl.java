@@ -543,6 +543,17 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
+  public boolean checkAnalyticDistribution(InvoiceLine invoiceLine) {
+    return invoiceLine == null
+        || (CollectionUtils.isNotEmpty(invoiceLine.getAnalyticMoveLineList())
+            && invoiceLineAnalyticService.validateAnalyticMoveLines(
+                invoiceLine.getAnalyticMoveLineList()))
+        || invoiceLine.getAccount() == null
+        || !invoiceLine.getAccount().getAnalyticDistributionAuthorized()
+        || !invoiceLine.getAccount().getAnalyticDistributionRequiredOnInvoiceLines();
+  }
+
+  @Override
   public boolean checkCutOffDates(InvoiceLine invoiceLine) {
     return invoiceLine == null
         || invoiceLine.getAccount() == null
