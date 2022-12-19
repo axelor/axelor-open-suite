@@ -42,7 +42,7 @@ public final class AccountExceptionMessage {
   public static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: fixed asset category is missing one of theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: fixed asset category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
       /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
   public static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
@@ -1137,6 +1137,10 @@ public final class AccountExceptionMessage {
   public static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
   public static final String CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
+  public static final String EXPENSE_DEPRECIATION_DEROGATORY_ACCOUNT = /*$$(*/
+      "Expense Depreciation Derogatory Account" /*)*/;
+  public static final String INCOME_DEPRECIATION_DEROGATORY_ACCOUNT = /*$$(*/
+      "Income Depreciation Derogatory Account" /*)*/;
 
   public static final String MOVE_PERIOD_IS_CLOSED = /*$$(*/
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;

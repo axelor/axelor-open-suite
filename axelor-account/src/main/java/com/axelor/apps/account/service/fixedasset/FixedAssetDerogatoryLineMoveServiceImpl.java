@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -37,6 +38,7 @@ import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -235,10 +237,24 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       List<MoveLine> moveLines = new ArrayList<>();
 
       if (creditLineAccount == null || debitLineAccount == null) {
+        List<String> missingAccounts = new ArrayList<>();
+        FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+        if (fixedAssetCategory.getCapitalDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
+        if (fixedAssetCategory.getExpenseDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.EXPENSE_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
+        if (fixedAssetCategory.getIncomeDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.INCOME_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-            I18n.get(AccountExceptionMessage.CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT));
+            Joiner.on(", ").join(missingAccounts));
       }
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(
