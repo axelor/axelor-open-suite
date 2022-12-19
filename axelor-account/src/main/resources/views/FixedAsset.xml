@@ -433,6 +433,8 @@
     <field name="firstServiceDate" expr="eval: __config__.date"/>
     <field name="firstDepreciationDate" expr="eval: __config__.date"/>
     <field name="originSelect" expr="eval:'1'"/>
+    <field name="disposalTypeSelect" expr="eval: 0"/>
+    <field name="disposalQtySelect" expr="eval: 0"/>
   </action-record>
 
   <action-record name="action-fixed-asset-record-set-residual-value"
