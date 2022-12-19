@@ -37,6 +37,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -91,45 +92,35 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       FixedAsset fixedAsset,
       FixedAssetLine fixedAssetLine,
       FixedAssetLine previousRealizedLine,
-      FixedAssetLine previousPlannedLine,
+      FixedAssetLine nextPlannedLine,
       LocalDate disposalDate) {
     BigDecimal deprecationValue;
     LocalDate firstServiceDate =
         fixedAsset.getFirstServiceDate() == null
             ? fixedAsset.getAcquisitionDate()
             : fixedAsset.getFirstServiceDate();
-    LocalDate previousPlannedDate =
-        previousRealizedLine != null ? previousPlannedLine.getDepreciationDate() : null;
-    if (previousPlannedDate != null && previousPlannedDate.equals(disposalDate)) {
-      deprecationValue = previousPlannedLine.getDepreciation();
+    LocalDate nextPlannedDate =
+        nextPlannedLine != null ? nextPlannedLine.getDepreciationDate() : null;
+    if (nextPlannedDate != null && nextPlannedDate.equals(disposalDate)) {
+      deprecationValue = nextPlannedLine.getDepreciation();
     } else {
       LocalDate previousRealizedDate =
           previousRealizedLine != null
               ? previousRealizedLine.getDepreciationDate()
               : firstServiceDate;
+      if (nextPlannedDate != null
+          && ChronoUnit.DAYS.between(firstServiceDate, nextPlannedDate) >= 360) {
+        nextPlannedDate = null;
+      }
       BigDecimal prorataTemporis =
           Beans.get(FixedAssetLineEconomicComputationServiceImpl.class)
-              .computeProrataBetween(fixedAsset, previousRealizedDate, disposalDate.minusDays(1));
-      BigDecimal depreciationRate =
-          BigDecimal.valueOf(100)
-              .divide(
-                  BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()),
-                  FixedAssetServiceImpl.CALCULATION_SCALE,
-                  RoundingMode.HALF_UP);
-      BigDecimal ddRate = BigDecimal.ONE;
-      if (fixedAsset
-          .getComputationMethodSelect()
-          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-        ddRate = fixedAsset.getDegressiveCoef();
-      }
+              .computeProrataBetween(
+                  fixedAsset, previousRealizedDate, disposalDate.minusDays(1), nextPlannedDate);
       deprecationValue =
-          fixedAsset
-              .getGrossValue()
-              .multiply(depreciationRate)
-              .multiply(ddRate)
+          fixedAssetLine
+              .getDepreciation()
               .multiply(prorataTemporis)
-              .divide(
-                  new BigDecimal(100), FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
+              .setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
     }
     fixedAssetLine.setDepreciation(deprecationValue);
     BigDecimal cumulativeValue =
