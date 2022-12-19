@@ -600,22 +600,22 @@ public class SaleOrderController {
       throws AxelorException {
 
     Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
-    Optional<Entry<String, Object>> SOLinesEntry =
+    Optional<Entry<String, Object>> saleOrderLineEntries =
         contextEntry.stream()
             .filter(entry -> entry.getKey().equals("saleOrderLineList"))
             .findFirst();
-    if (!SOLinesEntry.isPresent()) {
+    if (!saleOrderLineEntries.isPresent()) {
       return;
     }
 
-    Entry<String, Object> entry = SOLinesEntry.get();
+    Entry<String, Object> entry = saleOrderLineEntries.get();
     @SuppressWarnings("unchecked")
-    ArrayList<LinkedHashMap<String, Object>> SOLines =
+    ArrayList<LinkedHashMap<String, Object>> saleOrderLines =
         (ArrayList<LinkedHashMap<String, Object>>) entry.getValue();
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
-        Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, SOLines);
+        Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, saleOrderLines);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
