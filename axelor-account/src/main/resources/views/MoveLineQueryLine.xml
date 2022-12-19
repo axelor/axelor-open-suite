@@ -5,8 +5,10 @@
 
   <grid model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move lines"
     name="move-line-query-line-grid" editable="true">
-    <button name="selectBtn" onClick="" title="Select / Unselect" icon="fa-check-circle" showIf="!isSelected"/>
-    <button name="selectBtn" onClick="" title="Select / Unselect" icon="fa-minus-circle" showIf="isSelected"/>
+    <button name="selectBtn" onClick="" title="Select / Unselect" icon="fa-check-circle"
+      showIf="!isSelected"/>
+    <button name="selectBtn" onClick="" title="Select / Unselect" icon="fa-minus-circle"
+      showIf="isSelected"/>
     <field name="moveLine.reconcileGroup" width="120"/>
     <field name="moveLine" readonly="true"/>
     <field name="moveLine.name" width="135"/>
