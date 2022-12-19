@@ -409,24 +409,16 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     return copySaleOrder;
   }
 
-  private void manageSeparatedSOLines(
+  protected void manageSeparatedSOLines(
       List<SaleOrderLine> separatedSOLines,
       List<SaleOrderLine> originalSOLines,
       SaleOrder copySaleOrder) {
 
-    for (SaleOrderLine SSOLine : separatedSOLines) {
-      copySaleOrder.addSaleOrderLineListItem(SSOLine);
-
-      List<SaleOrderLine> partnerComplementarySOLines =
-          originalSOLines.stream()
-              .filter(
-                  soline ->
-                      soline.getMainSaleOrderLine() != null
-                          && soline.getMainSaleOrderLine().equals(SSOLine))
-              .collect(Collectors.toList());
-      for (SaleOrderLine PCSOLine : partnerComplementarySOLines) {
-        copySaleOrder.addSaleOrderLineListItem(PCSOLine);
-      }
+    for (SaleOrderLine separatedLine : separatedSOLines) {
+      copySaleOrder.addSaleOrderLineListItem(separatedLine);
+      originalSOLines.stream()
+          .filter(soLine -> separatedLine.equals(soLine.getMainSaleOrderLine()))
+          .forEach(copySaleOrder::addSaleOrderLineListItem);
     }
   }
 
