@@ -953,6 +953,34 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
   }
 
+  @Override
+  public int getInvoicingState(SaleOrder saleOrder) {
+    int invoicingState = 0;
+    if (saleOrder.getAmountInvoiced().compareTo(BigDecimal.ZERO) > 0
+        && saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) < 0) {
+      invoicingState = 2;
+    }
+    if (saleOrder.getAmountInvoiced().compareTo(BigDecimal.ZERO) > 0
+            && (saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) == 0)
+        || saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) > 0) {
+      invoicingState = 3;
+    }
+    if (saleOrder.getAmountInvoiced().compareTo(BigDecimal.ZERO) == 0) {
+      if (atLeastOneInvoiceIsVentilated(saleOrder)
+          && saleOrder.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+        invoicingState = 3;
+      } else {
+        invoicingState = 1;
+      }
+    }
+
+    return invoicingState;
+  }
+
+  protected boolean atLeastOneInvoiceIsVentilated(SaleOrder saleOrder) {
+    return getInvoices(saleOrder).stream().anyMatch(invoice -> invoice.getStatusSelect() == 3);
+  }
+
   public BigDecimal computeSumInvoices(List<Invoice> invoices) {
     BigDecimal sumInvoices = BigDecimal.ZERO;
     for (Invoice invoice : invoices) {
