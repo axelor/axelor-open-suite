@@ -370,12 +370,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException {
 
-    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    saleOrder = saleOrderRepo.find(saleOrder.getId());
     List<SaleOrderLine> originalSOLines = saleOrder.getSaleOrderLineList();
 
-    SaleOrder copySaleOrder = Beans.get(SaleOrderRepository.class).copy(saleOrder, true);
+    SaleOrder copySaleOrder = saleOrderRepo.copy(saleOrder, true);
     copySaleOrder.clearSaleOrderLineList();
-    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+    saleOrderRepo.save(copySaleOrder);
 
     for (LinkedHashMap<String, Object> soLine : saleOrderLines) {
       if (!soLine.containsKey("selected") || !(boolean) soLine.get("selected")) {
@@ -383,8 +383,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
 
       SaleOrderLine saleOrderLine =
-          Beans.get(SaleOrderLineRepository.class)
-              .find(Long.parseLong(soLine.get("id").toString()));
+          saleOrderLineRepo.find(Long.parseLong(soLine.get("id").toString()));
       List<SaleOrderLine> separatedSOLines = new ArrayList<>();
       separatedSOLines.add(saleOrderLine);
       separatedSOLines.addAll(
@@ -397,10 +396,10 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       manageSeparatedSOLines(separatedSOLines, originalSOLines, copySaleOrder);
     }
 
-    copySaleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(copySaleOrder);
-    saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
-    Beans.get(SaleOrderRepository.class).save(saleOrder);
-    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+    copySaleOrder = saleOrderComputeService.computeSaleOrder(copySaleOrder);
+    saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
+    saleOrderRepo.save(saleOrder);
+    saleOrderRepo.save(copySaleOrder);
 
     return copySaleOrder;
   }
