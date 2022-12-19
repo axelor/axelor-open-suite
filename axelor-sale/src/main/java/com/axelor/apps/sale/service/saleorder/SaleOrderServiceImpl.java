@@ -157,7 +157,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
       throws AxelorException {
 
@@ -365,7 +365,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     return saleOrder;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException {
