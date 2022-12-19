@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -1834,7 +1834,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3) {
-    if (isNaN(rules[row["rule_code"]])) {
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    }
+    else if (isNaN(rules[row["rule_code"]])) {
     	0
     }
     else {
@@ -1863,7 +1865,9 @@ if (row["type"] != 3) {
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3){
-    if (isNaN(rulesn1[row["rule_code"]])) {
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    }
+    else if (isNaN(rulesn1[row["rule_code"]])) {
     	0
     }
     else {
@@ -1893,7 +1897,9 @@ if (row["type"] != 3){
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3){
-    if (isNaN(rulesn2[row["rule_code"]])) {
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    }
+    else if (isNaN(rulesn2[row["rule_code"]])) {
     	0
     }
     else {
