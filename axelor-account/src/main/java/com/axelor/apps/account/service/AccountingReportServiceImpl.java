@@ -243,6 +243,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           "((self.move.partner.das2Activity is null AND self.account.serviceType IS NOT NULL AND self.account.serviceType.isDas2Declarable is true) "
               + " OR (self.account.serviceType is null AND self.move.partner.das2Activity IS NOT NULL ))");
       this.addParams("self.amountRemaining < self.debit + self.credit");
+      this.addParams("self.reconcileGroup IS NOT null");
       JournalType journalType =
           accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
       if (journalType != null) {
