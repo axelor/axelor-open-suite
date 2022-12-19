@@ -174,7 +174,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       sequence = soLines.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
     }
 
-    BigDecimal conversionRate = new BigDecimal(1.00);
+    BigDecimal conversionRate = BigDecimal.valueOf(1.00);
     if (pack.getCurrency() != null
         && !pack.getCurrency().getCodeISO().equals(saleOrder.getCurrency().getCodeISO())) {
       try {
