@@ -55,6 +55,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -594,6 +595,7 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void separateInNewQuotation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
