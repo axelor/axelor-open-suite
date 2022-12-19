@@ -32,7 +32,7 @@
     <field name="moveLine.description"/>
     <field name="moveLine.dueDate"/>
     <field name="moveLineQuery.processSelect" hidden="true"/>
-    <field name="isSelected" hidden="false"/>
+    <field name="isSelected" hidden="true"/>
   </grid>
 
   <form model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move line"
