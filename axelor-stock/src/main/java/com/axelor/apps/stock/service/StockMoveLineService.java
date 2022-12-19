@@ -258,7 +258,8 @@ public interface StockMoveLineService {
    */
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
 
-  public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove);
+  public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException;
 
   public void setAvailableStatus(StockMoveLine stockMoveLine);
 

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticLine;
@@ -42,4 +43,6 @@ public interface AnalyticLineService {
   AnalyticLine checkAnalyticLineForAxis(AnalyticLine line);
 
   AnalyticLine printAnalyticAccount(AnalyticLine line, Company company) throws AxelorException;
+
+  List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis);
 }

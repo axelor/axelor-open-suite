@@ -246,7 +246,8 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       throws AxelorException {
     FixedAssetLine correspondingFixedAssetLine;
     correspondingFixedAssetLine = getLineFromDate(fixedAsset, disposalDate);
-    if (!correspondingFixedAssetLine.getDepreciationDate().equals(disposalDate)) {
+    if (correspondingFixedAssetLine != null
+        && !correspondingFixedAssetLine.getDepreciationDate().equals(disposalDate)) {
       computeLineProrata(fixedAsset, disposalDate, correspondingFixedAssetLine);
     }
 

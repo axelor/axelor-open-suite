@@ -290,6 +290,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     moveLine.setIsOtherCurrency(!move.getCurrency().equals(move.getCompanyCurrency()));
 
+    analyticMoveLineGenerateRealService.computeAnalyticDistribution(
+        move, moveLine, credit.add(debit));
+
     return moveLine;
   }
 
@@ -587,6 +590,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       String origin)
       throws AxelorException {
     int moveLineId = 1;
+    BigDecimal totalCompanyAmount = BigDecimal.ZERO;
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
     Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     MoveLine moveLine = null;
@@ -599,10 +603,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       companyAmount =
-          invoice
-              .getCompanyInTaxTotal()
-              .multiply(invoiceTerm.getPercentage())
-              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+          invoiceTerm.equals(
+                  invoice.getInvoiceTermList().get(invoice.getInvoiceTermList().size() - 1))
+              ? (invoice.getCompanyInTaxTotal().subtract(totalCompanyAmount))
+              : invoiceTerm.getCompanyAmount();
+      totalCompanyAmount = totalCompanyAmount.add(invoiceTerm.getCompanyAmount());
 
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {

@@ -664,34 +664,42 @@ MoveLine.debit,
 MoveLine.credit,
 Account.code as account_code
 FROM account_move_line MoveLine
-LEFT JOIN account_account Account ON (MoveLine.account = Account.id)
+LEFT JOIN account_accounting_report AccountingReport on (AccountingReport.id = ?)
 LEFT JOIN account_move Move ON (MoveLine.Move = Move.id)
-LEFT JOIN account_journal Journal ON (Move.journal = Journal.id)
-LEFT JOIN base_partner Partner ON (Partner.id = MoveLine.partner)
-WHERE move.id IN (
-SELECT Move.id
-FROM account_move_line MoveLine
 LEFT JOIN account_account Account ON (MoveLine.account = Account.id)
-LEFT JOIN account_service_type ServiceType ON (Account.service_type = ServiceType.id)
-LEFT JOIN account_move Move ON (MoveLine.Move = Move.id)
+left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
+left outer join public.account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
+left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
+left outer join public.account_account as ParentAccount4 on (ParentAccount3.parent_account  = ParentAccount4.id )
+left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
+left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
+left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 LEFT JOIN account_journal Journal ON (Move.journal = Journal.id)
 LEFT JOIN account_journal_type JournalType ON (Journal.journal_type = JournalType.id)
-LEFT JOIN account_accounting_report AccountingReport on (AccountingReport.id = ?)
-LEFT JOIN base_partner Partner ON (Partner.id = MoveLine.partner)
-LEFT JOIN account_account_config config ON (config.company = AccountingReport.company)
-WHERE (AccountingReport.currency = Move.company_currency)
-AND (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from)
-AND (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to)
-AND MoveLine.date_val <= AccountingReport.date_val
-AND Move.company = AccountingReport.company
-AND (
-  (Account.service_type IS NULL AND Partner.das2activity IS NOT NULL)
-  OR (Partner.das2activity IS NULL AND Account.service_type IS NOT NULL AND ServiceType.is_das2declarable is true)
-)
-AND Move.status_select = 3
-AND JournalType.id = config.das_report_journal_type
-AND MoveLine.amount_remaining < MoveLine.debit + MoveLine.credit
-)
+LEFT JOIN base_partner Partner ON (Partner.id = Move.partner)
+LEFT JOIN account_account_config Config ON (Config.company = AccountingReport.company)
+left join account_service_type ServiceType ON (Account.service_type = ServiceType.id)
+
+WHERE (AccountingReport.company IS NULL OR AccountingReport.company = Move.company)
+AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.company_currency)
+AND (AccountingReport.date_from IS NULL OR AccountingReport.date_from <= MoveLine.date_val)
+AND (AccountingReport.date_to IS NULL OR AccountingReport.date_to >= MoveLine.date_val)
+AND (AccountingReport.date_val IS NULL OR AccountingReport.date_val >= MoveLine.date_val)
+AND (AccountingReport.period IS NULL OR AccountingReport.period = Move.period)
+AND (ServiceType IS null OR (Partner.das2activity IS null AND ServiceType.is_das2declarable IS true))
+AND (AccountingReport.payment_mode IS NULL OR AccountingReport.payment_mode = Move.payment_mode)
+AND (Move.ignore_in_accounting_ok IS false)
+AND (Move.status_select = 2 OR Move.status_select = 3 OR AccountingReport.display_simulated_move IS true AND Config.is_activate_simulated_move IS true AND Move.status_select = 5)
+AND (AccountingReport.display_only_not_completely_lettered_move_lines IS false OR MoveLine.amount_remaining > 0)
+AND MoveLine.reconcile_group IS NOT null
+AND JournalType.code = 'ACH'
+AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id
+    or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
+    or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id
+    or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
+AND (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner)
+
 order by MoveLine.partner_full_name, MoveLine.date_val, MoveLine.name]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">

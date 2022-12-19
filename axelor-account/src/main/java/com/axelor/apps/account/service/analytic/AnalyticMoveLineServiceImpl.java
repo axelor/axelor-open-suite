@@ -47,6 +47,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
@@ -187,25 +189,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList) {
-
-    if (analyticMoveLineList != null) {
-      Map<AnalyticAxis, BigDecimal> map = new HashMap<AnalyticAxis, BigDecimal>();
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        if (map.containsKey(analyticMoveLine.getAnalyticAxis())) {
-          map.put(
-              analyticMoveLine.getAnalyticAxis(),
-              map.get(analyticMoveLine.getAnalyticAxis()).add(analyticMoveLine.getPercentage()));
-        } else {
-          map.put(analyticMoveLine.getAnalyticAxis(), analyticMoveLine.getPercentage());
-        }
-      }
-      for (AnalyticAxis analyticAxis : map.keySet()) {
-        if (map.get(analyticAxis).compareTo(new BigDecimal(100)) != 0) {
-          return false;
-        }
-      }
-    }
-    return true;
+    return CollectionUtils.isEmpty(analyticMoveLineList)
+        || analyticMoveLineList.stream()
+            .collect(
+                Collectors.groupingBy(
+                    AnalyticMoveLine::getAnalyticAxis,
+                    Collectors.reducing(
+                        BigDecimal.ZERO, AnalyticMoveLine::getPercentage, BigDecimal::add)))
+            .values()
+            .stream()
+            .allMatch(percentage -> percentage.compareTo(BigDecimal.valueOf(100)) == 0);
   }
 
   @Override

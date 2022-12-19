@@ -155,7 +155,7 @@
         <field name="tradingName" canEdit="false" grid-view="trading-name-grid"
           form-view="trading-name-form"
           if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="3"
-          readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"
+          readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"
           domain=":company MEMBER OF self.companySet"
           onChange="action-purchase-order-method-printing-settings-default-value,action-purchase-order-record-set-stock-location"
           requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
@@ -168,7 +168,7 @@
           grid-view="price-list-grid" hideIf="company == null"/>
         <field name="supplierPartner" canEdit="false" hideIf="company == null" colSpan="3"
           onChange="action-group-purchase-order-partner-onchange"
-          readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"
+          readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"
           onSelect="action-set-supplier-partner-domain" form-view="partner-form"
           grid-view="partner-grid"/>
         <field name="contactPartner" onChange="action-record-po-contact-partner-change"
@@ -179,7 +179,7 @@
           if="__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()" colSpan="3"/>
         <panel name="inAtiAndIntercoPanel" colSpan="3">
           <field name="inAti" onChange="action-purchase-order-attrs-in-ati"
-            readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"/>
+            readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"/>
           <field name="interco" hidden="true" if-module="axelor-supplychain"
             if="__config__.app.isApp('supplychain')"/>
           <field name="createdByInterco" showIf="createdByInterco" readonly="true"
@@ -555,6 +555,8 @@
     <action name="action-purchase-order-record-company-configuration"/>
     <action name="action-purchase-order-method-get-stock-location"
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-record-in-ati"/>
     <action name="action-purchase-order-attrs-in-ati"/>
     <action name="action-purchase-order-record-display-price"/>
@@ -589,6 +591,8 @@
     <action name="action-purchase-order-method-fill-company-bank-details"/>
     <action name="action-purchase-order-method-get-stock-location"
       if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-record-update-info-company"/>
     <action name="action-purchase-order-record-display-price"/>
   </action-group>
@@ -613,6 +617,8 @@
     <action name="action-purchase-order-record-partner"/>
     <action name="action-purchase-order-method-get-stock-location"
       if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.receiptDefaultStockLocation == null || stockLocation == null)"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-attrs-hide-contact-partner"/>
     <action name="action-purchase-order-method-fill-company-bank-details"/>
     <action name="action-purchase-order-method-fill-price-list"/>
@@ -726,12 +732,6 @@
     <field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     <field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
     <field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
-    <field name="stockLocation"
-      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(supplierPartner, company)"
-      if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.receiptDefaultStockLocation == null || stockLocation == null)"/>
-    <field name="fromStockLocation"
-      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultExternalStockLocation(supplierPartner, company)"
-      if="__config__.app.isApp('supplychain')"/>
   </action-record>
 
   <action-record name="action-purchase-order-record-set-group-product-on-printing"

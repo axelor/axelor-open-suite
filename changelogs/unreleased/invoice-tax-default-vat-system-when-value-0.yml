@@ -1,3 +1,0 @@
----
-title: "InvoiceTaxLine: set of vat system to default value when taxline value is 0"
-type: fix
