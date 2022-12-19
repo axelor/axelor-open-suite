@@ -17,10 +17,13 @@
  */
 package com.axelor.apps.hr.service.bankorder;
 
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.db.Model;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 
@@ -28,8 +31,12 @@ public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginService
 
   @Inject
   public BankOrderLineOriginServiceHRImpl(
-      BankOrderLineOriginRepository bankOrderLineOriginRepository) {
-    super(bankOrderLineOriginRepository);
+      BankOrderLineOriginRepository bankOrderLineOriginRepository,
+      InvoiceTermRepository invoiceTermRepository,
+      InvoiceRepository invoiceRepository,
+      DMSFileRepository dmsFileRepository) {
+    super(
+        bankOrderLineOriginRepository, invoiceTermRepository, invoiceRepository, dmsFileRepository);
   }
 
   @Override

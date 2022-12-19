@@ -53,8 +53,7 @@
     model="com.axelor.apps.supplychain.db.MrpForecast">
     <view type="grid" name="mrp-forecast-grid"/>
     <view type="form" name="mrp-forecast-form"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
 
@@ -80,12 +79,12 @@
     <domain>self.operationSubTypeSelect = 6 and self.statusSelect = 1</domain>
     <context name="_operationTypeSelect" expr="eval:3"/>
     <context name="_operationSubTypeSelect" expr="eval:6"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem title="Declarations of exchanges" name="supplychain-declarations-of-exchanges"
-    parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges"/>
+    parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges"
+    order="8"/>
 
   <action-view name="supplychain.declarations.of.exchanges"
     title="Declarations of exchanges" model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
@@ -209,9 +208,8 @@
     action="stock.root.stock.details.by.product"/>
 
   <action-view name="stock.root.stock.details.by.product"
-    title="Stock details by product" model="com.axelor.apps.base.db.Product">
+    title="Stock details by product" model="com.axelor.apps.base.db.Wizard">
     <view type="form" name="supplychain-stock-details-by-product-form"/>
-    <domain>self.dtype = 'Product'</domain>
     <context name="_isFromMenu" expr="eval: true"/>
   </action-view>
 

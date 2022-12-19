@@ -19,8 +19,13 @@ package com.axelor.apps.cash.management.service;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyService;
@@ -45,6 +50,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -85,6 +91,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected ForecastRecapLineTypeRepository forecastRecapLineTypeRepo;
   protected ForecastRecapRepository forecastRecapRepo;
   protected TimetableRepository timetableRepo;
+  protected InvoiceTermRepository invoiceTermRepo;
+  protected JournalService journalService;
 
   protected LocalDate today;
   protected Map<Integer, List<Integer>> invoiceStatusMap;
@@ -95,12 +103,16 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       CurrencyService currencyService,
       ForecastRecapLineTypeRepository forecastRecapLineTypeRepo,
       ForecastRecapRepository forecastRecapRepo,
-      TimetableRepository timetableRepo) {
+      TimetableRepository timetableRepo,
+      InvoiceTermRepository invoiceTermRepo,
+      JournalService journalService) {
     this.appBaseService = appBaseService;
     this.currencyService = currencyService;
     this.forecastRecapLineTypeRepo = forecastRecapLineTypeRepo;
     this.forecastRecapRepo = forecastRecapRepo;
     this.timetableRepo = timetableRepo;
+    this.invoiceTermRepo = invoiceTermRepo;
+    this.journalService = journalService;
   }
 
   @Override
@@ -172,12 +184,17 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     int offset = 0;
 
     List<ForecastRecapLineType> forecastRecapLineTypeList;
+
     while (!(forecastRecapLineTypeList = forecastRecapLineTypeQuery.fetch(FETCH_LIMIT, offset))
         .isEmpty()) {
+      boolean manageMultiBanks =
+          appBaseService.getAppBase() != null
+              ? appBaseService.getAppBase().getManageMultiBanks()
+              : false;
       for (ForecastRecapLineType forecastRecapLineType : forecastRecapLineTypeList) {
         offset++;
-        populateWithTimetables(forecastRecap, forecastRecapLineType);
-        populateWithForecastLineType(forecastRecap, forecastRecapLineType);
+        populateWithTimetables(forecastRecap, forecastRecapLineType, manageMultiBanks);
+        populateWithForecastLineType(forecastRecap, forecastRecapLineType, manageMultiBanks);
       }
       JPA.clear();
       forecastRecap = forecastRecapRepo.find(forecastRecap.getId());
@@ -187,7 +204,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   }
 
   protected void populateWithForecastLineType(
-      ForecastRecap forecastRecap, ForecastRecapLineType forecastRecapLineType)
+      ForecastRecap forecastRecap,
+      ForecastRecapLineType forecastRecapLineType,
+      boolean manageMultiBanks)
       throws AxelorException {
 
     List<Integer> statusSelectList =
@@ -197,7 +216,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     }
     Query<? extends Model> modelQuery =
         JPA.all(getModel(forecastRecapLineType))
-            .filter(getFilter(forecastRecapLineType))
+            .filter(getFilter(forecastRecapLineType, manageMultiBanks))
             .bind("company", forecastRecap.getCompany())
             .bind("fromDate", forecastRecap.getFromDate())
             .bind("toDate", forecastRecap.getToDate())
@@ -241,11 +260,46 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected void createForecastRecapLines(
       ForecastRecap forecastRecap, Model model, ForecastRecapLineType forecastRecapLineType)
       throws AxelorException {
+    BigDecimal companyAmount = getCompanyAmount(forecastRecap, forecastRecapLineType, model);
     if (forecastRecapLineType.getElementSelect()
         == ForecastRecapLineTypeRepository.ELEMENT_SALARY) {
       createForecastRecapLinesFromEmployee(forecastRecap, (Employee) model, forecastRecapLineType);
+    } else if (forecastRecapLineType.getElementSelect()
+            == ForecastRecapLineTypeRepository.ELEMENT_INVOICE
+        && companyAmount.signum() != 0) {
+      Invoice invoice = (Invoice) model;
+      if (!ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+        for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+          if (invoiceTerm.getAmountRemaining().signum() != 0
+              && invoiceTerm.getEstimatedPaymentDate() != null
+              && forecastRecap.getFromDate() != null
+              && forecastRecap.getToDate() != null
+              && invoiceTerm.getEstimatedPaymentDate().compareTo(forecastRecap.getFromDate()) >= 0
+              && invoiceTerm.getEstimatedPaymentDate().compareTo(forecastRecap.getToDate()) <= 0) {
+            createForecastRecapLine(
+                invoiceTerm.getEstimatedPaymentDate(),
+                getTypeSelect(forecastRecapLineType, model),
+                invoiceTerm.getAmountRemaining(),
+                getModel(forecastRecapLineType).getName(),
+                model.getId(),
+                invoiceTerm.getName(),
+                forecastRecapLineType,
+                forecastRecap);
+          }
+        }
+      } else {
+        createForecastRecapLine(
+            getForecastDate(forecastRecapLineType, model),
+            getTypeSelect(forecastRecapLineType, model),
+            companyAmount,
+            getModel(forecastRecapLineType).getName(),
+            model.getId(),
+            getName(forecastRecapLineType, model),
+            forecastRecapLineType,
+            forecastRecap);
+      }
+
     } else {
-      BigDecimal companyAmount = getCompanyAmount(forecastRecap, forecastRecapLineType, model);
       if (companyAmount.signum() != 0) {
         createForecastRecapLine(
             getForecastDate(forecastRecapLineType, model),
@@ -306,6 +360,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         return Opportunity.class;
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         return Employee.class;
+      case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
+        return Move.class;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -316,16 +372,17 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     }
   }
 
-  protected String getFilter(ForecastRecapLineType forecastRecapLineType) throws AxelorException {
+  protected String getFilter(ForecastRecapLineType forecastRecapLineType, boolean manageMultiBanks)
+      throws AxelorException {
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         return "self.company = :company "
             + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
-            + "AND self.estimatedPaymentDate BETWEEN :fromDate AND :toDate "
-            + "AND ((self.statusSelect = 3 AND self.companyInTaxTotalRemaining != 0) "
-            + "OR self.companyInTaxTotal != 0)";
+            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice = self.id "
+            + "AND Inv.estimatedPaymentDate BETWEEN :fromDate AND :toDate "
+            + "AND Inv.amountRemaining != 0) > 0";
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         return "(self.expectedRealisationDate BETWEEN :fromDate AND :toDate "
             + "OR (self.creationDate BETWEEN :fromDateMinusDuration AND :toDateMinusDuration "
@@ -370,6 +427,19 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         return "self.mainEmploymentContract.payCompany = :company "
             + "AND self.mainEmploymentContract.monthlyGlobalCost != 0 "
             + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails)";
+      case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
+        return "self.company = :company "
+            + "AND self.journal.journalType.technicalTypeSelect = "
+            + (forecastRecapLineType.getTypeSelect() == 1
+                ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
+                : JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
+            + (manageMultiBanks
+                ? " AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
+                : "")
+            + "AND self.statusSelect IN (:statusSelectList) "
+            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.moveLine.move = self.id "
+            + "AND Inv.dueDate BETWEEN :fromDate AND :toDate "
+            + "AND Inv.amountRemaining != 0) > 0";
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -424,6 +494,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         return getCompanyAmountForOpportunity(forecastRecap, forecastRecapLineType, opportunity);
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         // this element is not supported by this method.
+      case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
+        Move move = (Move) forecastModel;
+        return journalService.computeBalance(move.getJournal()).get("debit");
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -521,7 +594,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         Invoice invoice = (Invoice) forecastModel;
-        return invoice.getEstimatedPaymentDate();
+        return invoice.getDueDate();
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         SaleOrder saleOrder = (SaleOrder) forecastModel;
         return saleOrder.getExpectedRealisationDate() == null
@@ -547,6 +620,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         return opportunity.getExpectedCloseDate();
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         // this element is not supported by this method.
+      case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
+        Move move = (Move) forecastModel;
+        return move.getDate();
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -583,6 +659,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         Employee employee = (Employee) forecastModel;
         return employee.getName();
+      case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
+        Move move = (Move) forecastModel;
+        return move.getReference();
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -604,7 +683,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   }
 
   protected void populateWithTimetables(
-      ForecastRecap forecastRecap, ForecastRecapLineType forecastRecapLineType)
+      ForecastRecap forecastRecap,
+      ForecastRecapLineType forecastRecapLineType,
+      boolean manageMultiBanks)
       throws AxelorException {
 
     List<Integer> statusList = StringTool.getIntegerList(forecastRecapLineType.getStatusSelect());
@@ -634,6 +715,28 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                   "invoiceStatusSelectList",
                   invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
               .fetch();
+
+      for (Timetable timetable : timetableList) {
+        timetable = timetableRepo.find(timetable.getId());
+        BigDecimal amountCompanyCurr =
+            currencyService
+                .getAmountCurrencyConvertedAtDate(
+                    timetable.getSaleOrder().getCurrency(),
+                    forecastRecap.getCompany().getCurrency(),
+                    timetable.getAmount(),
+                    today)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        this.createForecastRecapLine(
+            timetable.getEstimatedDate(),
+            forecastRecapLineType.getTypeSelect(),
+            amountCompanyCurr,
+            SaleOrder.class.getName(),
+            timetable.getSaleOrder().getId(),
+            timetable.getSaleOrder().getSaleOrderSeq(),
+            forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
+            forecastRecapRepo.find(forecastRecap.getId()));
+      }
+
     } else if (forecastRecapLineType.getElementSelect()
         == ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER) {
       timetableList =
@@ -659,31 +762,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                   "invoiceStatusSelectList",
                   invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE))
               .fetch();
-    }
-    if (forecastRecapLineType.getElementSelect()
-        == ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER) {
-      for (Timetable timetable : timetableList) {
-        timetable = timetableRepo.find(timetable.getId());
-        BigDecimal amountCompanyCurr =
-            currencyService
-                .getAmountCurrencyConvertedAtDate(
-                    timetable.getSaleOrder().getCurrency(),
-                    forecastRecap.getCompany().getCurrency(),
-                    timetable.getAmount(),
-                    today)
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        this.createForecastRecapLine(
-            timetable.getEstimatedDate(),
-            forecastRecapLineType.getTypeSelect(),
-            amountCompanyCurr,
-            SaleOrder.class.getName(),
-            timetable.getSaleOrder().getId(),
-            timetable.getSaleOrder().getSaleOrderSeq(),
-            forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
-            forecastRecapRepo.find(forecastRecap.getId()));
-      }
-    } else if (forecastRecapLineType.getElementSelect()
-        == ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER) {
+
       for (Timetable timetable : timetableList) {
         timetable = timetableRepo.find(timetable.getId());
         BigDecimal amountCompanyCurr =
@@ -701,6 +780,60 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             PurchaseOrder.class.getName(),
             timetable.getPurchaseOrder().getId(),
             timetable.getPurchaseOrder().getPurchaseOrderSeq(),
+            forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
+            forecastRecapRepo.find(forecastRecap.getId()));
+      }
+    } else if (forecastRecapLineType.getElementSelect()
+        == ForecastRecapLineTypeRepository.ELEMENT_MOVE) {
+      List<InvoiceTerm> invoiceTermList =
+          invoiceTermRepo
+              .all()
+              .filter(
+                  "self.dueDate BETWEEN :fromDate AND :toDate AND self.moveLine.move.company = :company"
+                      + " AND self.moveLine.move.journal.journalType.technicalTypeSelect = :journalType"
+                      + " AND self.moveLine.move.statusSelect IN (:moveStatusList) AND self.amount != 0"
+                      + ((CollectionUtils.isNotEmpty(forecastRecap.getBankDetailsSet())
+                              && manageMultiBanks)
+                          ? " AND self.moveLine.move.companyBankDetails IN (:bankDetailsSet)"
+                          : "")
+                      + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
+              .bind("fromDate", forecastRecap.getFromDate())
+              .bind("toDate", forecastRecap.getToDate())
+              .bind("company", forecastRecap.getCompany())
+              .bind("moveStatusList", statusList)
+              .bind(
+                  "bankDetailsSet",
+                  CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
+                      ? null
+                      : forecastRecap.getBankDetailsSet())
+              .bind(
+                  "invoiceStatusSelectList",
+                  invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
+              .bind(
+                  "journalType",
+                  forecastRecapLineType.getTypeSelect() == 1
+                      ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
+                      : JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
+              .fetch();
+
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        invoiceTerm = invoiceTermRepo.find(invoiceTerm.getId());
+        BigDecimal amountCompanyCurr =
+            currencyService
+                .getAmountCurrencyConvertedAtDate(
+                    invoiceTerm.getMoveLine().getMove().getCurrency(),
+                    forecastRecap.getCompany().getCurrency(),
+                    invoiceTerm.getAmount(),
+                    today)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
+        this.createForecastRecapLine(
+            invoiceTerm.getDueDate(),
+            forecastRecapLineType.getTypeSelect(),
+            amountCompanyCurr,
+            Move.class.getName(),
+            invoiceTerm.getMoveLine().getMove().getId(),
+            invoiceTerm.getMoveLine().getMove().getReference(),
             forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
             forecastRecapRepo.find(forecastRecap.getId()));
       }

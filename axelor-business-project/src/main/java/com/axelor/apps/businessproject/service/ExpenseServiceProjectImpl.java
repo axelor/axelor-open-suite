@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.KilometricService;
@@ -61,7 +62,8 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       PaymentModeService paymentModeService,
       PeriodRepository periodRepository,
       MoveLineConsolidateService moveLineConsolidateService,
-      KilometricService kilometricService) {
+      KilometricService kilometricService,
+      BankDetailsService bankDetailsService) {
     super(
         moveCreateService,
         moveValidateService,
@@ -78,7 +80,8 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
         paymentModeService,
         periodRepository,
         moveLineConsolidateService,
-        kilometricService);
+        kilometricService,
+        bankDetailsService);
   }
 
   @Override

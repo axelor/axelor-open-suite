@@ -190,6 +190,10 @@
 		public static final int ORIGINAL_SELECT_PARTIAL_SALE = 6;
 		public static final int ORIGINAL_SELECT_IMPORT = 99;
 
+		// Split type
+		public static final int SPLIT_TYPE_QUANTITY = 1;
+		public static final int SPLIT_TYPE_AMOUNT = 2;
+
 	]]></extra-code>
 
     <track>
@@ -213,6 +217,7 @@
       <field name="comments"/>
       <field name="serialNumber"/>
       <field name="assetDisposalReason"/>
+      <field name="saleAccountMove"/>
     </track>
 
   </entity>

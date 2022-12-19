@@ -155,4 +155,8 @@
     <option value="5">Completed</option>
   </selection>
 
+  <selection name="batch.batch.type.select" id="production.batch.batch.type.select">
+    <option value="700">Production batch</option>
+  </selection>
+
 </object-views>

@@ -141,7 +141,11 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
     BigDecimal taxProratedAmount = BigDecimal.ZERO;
     if (taxLine != null) {
       taxProratedAmount =
-          exTaxProratedAmount.multiply(taxLine.getValue()).setScale(2, RoundingMode.HALF_UP);
+          taxLine == null
+              ? BigDecimal.ZERO
+              : exTaxProratedAmount
+                  .multiply(taxLine.getValue().divide(new BigDecimal(100)))
+                  .setScale(2, RoundingMode.HALF_UP);
     }
 
     paymentMvlD.setExTaxProratedAmount(exTaxProratedAmount);

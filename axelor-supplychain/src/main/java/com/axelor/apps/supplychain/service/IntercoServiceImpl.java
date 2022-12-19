@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -57,7 +58,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
@@ -130,7 +130,8 @@ public class IntercoServiceImpl implements IntercoService {
 
     // get stock location
     saleOrder.setStockLocation(
-        Beans.get(StockLocationService.class).getPickupDefaultStockLocation(intercoCompany));
+        Beans.get(SaleOrderSupplychainService.class)
+            .getStockLocation(purchaseOrder.getCompany().getPartner(), intercoCompany));
 
     // copy timetable info
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
@@ -203,7 +204,8 @@ public class IntercoServiceImpl implements IntercoService {
     // copy delivery info
     purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setStockLocation(
-        Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(intercoCompany));
+        Beans.get(PurchaseOrderSupplychainService.class)
+            .getStockLocation(saleOrder.getCompany().getPartner(), intercoCompany));
     purchaseOrder.setShipmentMode(saleOrder.getShipmentMode());
     purchaseOrder.setFreightCarrierMode(saleOrder.getFreightCarrierMode());
 
@@ -453,6 +455,8 @@ public class IntercoServiceImpl implements IntercoService {
     AccountManagementAccountService accountManagementAccountService =
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    InvoiceLineAnalyticService invoiceLineAnalyticService =
+        Beans.get(InvoiceLineAnalyticService.class);
     Invoice intercoInvoice = invoiceLine.getInvoice();
     if (intercoInvoice.getCompany() != null) {
       FiscalPosition fiscalPosition = intercoInvoice.getFiscalPosition();
@@ -482,9 +486,9 @@ public class IntercoServiceImpl implements IntercoService {
       if (invoiceLine.getAnalyticDistributionTemplate() != null) {
         invoiceLine.setAnalyticDistributionTemplate(
             accountManagementAccountService.getAnalyticDistributionTemplate(
-                invoiceLine.getProduct(), intercoInvoice.getCompany()));
+                invoiceLine.getProduct(), intercoInvoice.getCompany(), isPurchase));
         List<AnalyticMoveLine> analyticMoveLineList =
-            invoiceLineService.createAnalyticDistributionWithTemplate(invoiceLine);
+            invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
         analyticMoveLineList.forEach(
             analyticMoveLine -> analyticMoveLine.setInvoiceLine(invoiceLine));
         invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);

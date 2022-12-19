@@ -61,11 +61,16 @@ public class BpmMapperRecord extends MapperRecord {
 
     StringBuilder scriptBuilder = getScriptBuilder();
 
+    String saveStr = "$ctx.save(" + getTargetVariable() + ")";
+    if (!isSave()) {
+      saveStr = getTargetVariable();
+    }
+
     if (createVariable) {
-      scriptBuilder.append(
-          "$ctx.createVariable($ctx.save(" + getTargetVariable() + "), execution)");
-    } else if (isSavedRecord() || isNewRecord()) {
-      scriptBuilder.append("return $ctx.save(" + getTargetVariable() + ")");
+      scriptBuilder.append("$ctx.createVariable(" + saveStr + ", execution)");
+
+    } else if (isNewRecord() || isSavedRecord() || isSave()) {
+      scriptBuilder.append("return " + saveStr);
     }
   }
 

@@ -27,6 +27,8 @@
 
     </string>
 
+    <finder-method name="findByBatchId" using="batchId" all="true"/>
+
     <extra-code><![CDATA[
 
 	// CATEGORY SELECT

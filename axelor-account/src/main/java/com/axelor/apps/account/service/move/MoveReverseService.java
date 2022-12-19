@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 public interface MoveReverseService {
@@ -33,4 +34,7 @@ public interface MoveReverseService {
       throws AxelorException;
 
   Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException;
+
+  List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
+      throws AxelorException;
 }

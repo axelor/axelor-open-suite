@@ -12,6 +12,8 @@
       title="Binding file" required="true"/>
     <integer name="functionalOriginSelect" title="Functional origin"
       selection="iaccount.move.functional.origin.select"/>
+    <boolean name="isDefaultForValidGeneratedMove"
+      title="Default value for generated move validation"/>
 
   </entity>
 

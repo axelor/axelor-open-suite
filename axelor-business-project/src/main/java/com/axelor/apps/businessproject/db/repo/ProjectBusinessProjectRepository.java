@@ -45,7 +45,8 @@ public class ProjectBusinessProjectRepository extends ProjectHRRepository {
         Company company = project.getCompany();
         String seq =
             Beans.get(SequenceService.class)
-                .getSequenceNumber(SequenceRepository.PROJECT_SEQUENCE, company);
+                .getSequenceNumber(
+                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code");
 
         if (seq == null) {
           throw new AxelorException(

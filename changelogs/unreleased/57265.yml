@@ -1,0 +1,3 @@
+---
+title: "Fixed asset : fix error message when realizing a derogatory line with a category that lacks one of the derogatory depreciation accounts"
+type: fix

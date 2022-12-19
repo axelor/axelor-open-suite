@@ -26,6 +26,9 @@
     <many-to-one name="reportType" ref="com.axelor.apps.account.db.AccountingReportType"/>
     <string name="rule" title="Rule" large="true"/>
     <string name="accountCode" title="Account code"/>
+    <string name="analyticAccountCode" title="Analytic account code"/>
+    <many-to-many ref="com.axelor.apps.account.db.AnalyticAccount"
+      name="analyticAccountSet" title="Analytic accounts"/>
 
     <extra-code><![CDATA[
 

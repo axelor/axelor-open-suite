@@ -19,7 +19,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetDistribution;
-import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -41,11 +40,13 @@ import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -58,9 +59,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +76,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected BudgetSupplychainService budgetSupplychainService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepository;
   protected PurchaseOrderLineService purchaseOrderLineService;
+  protected PartnerStockSettingsService partnerStockSettingsService;
+  protected StockConfigService stockConfigService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -87,7 +88,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       PurchaseOrderStockService purchaseOrderStockService,
       BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
-      PurchaseOrderLineService purchaseOrderLineService) {
+      PurchaseOrderLineService purchaseOrderLineService,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -97,6 +100,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.budgetSupplychainService = budgetSupplychainService;
     this.purchaseOrderLineRepository = purchaseOrderLineRepository;
     this.purchaseOrderLineService = purchaseOrderLineService;
+    this.partnerStockSettingsService = partnerStockSettingsService;
+    this.stockConfigService = stockConfigService;
   }
 
   @Override
@@ -302,45 +307,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return;
     }
 
-    // budget control
-    if (appAccountService.isApp("budget")
-        && appAccountService.getAppBudget().getCheckAvailableBudget()) {
-      List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
-
-      Map<Budget, BigDecimal> amountPerBudget = new HashMap<>();
-      if (appAccountService.getAppBudget().getManageMultiBudget()) {
-        for (PurchaseOrderLine pol : purchaseOrderLines) {
-          if (pol.getBudgetDistributionList() != null) {
-            for (BudgetDistribution bd : pol.getBudgetDistributionList()) {
-              Budget budget = bd.getBudget();
-
-              if (!amountPerBudget.containsKey(budget)) {
-                amountPerBudget.put(budget, bd.getAmount());
-              } else {
-                BigDecimal oldAmount = amountPerBudget.get(budget);
-                amountPerBudget.put(budget, oldAmount.add(bd.getAmount()));
-              }
-
-              isBudgetExceeded(budget, amountPerBudget.get(budget));
-            }
-          }
-        }
-      } else {
-        for (PurchaseOrderLine pol : purchaseOrderLines) {
-          // getting Budget associated to POL
-          Budget budget = pol.getBudget();
-
-          if (!amountPerBudget.containsKey(budget)) {
-            amountPerBudget.put(budget, pol.getExTaxTotal());
-          } else {
-            BigDecimal oldAmount = amountPerBudget.get(budget);
-            amountPerBudget.put(budget, oldAmount.add(pol.getExTaxTotal()));
-          }
-
-          isBudgetExceeded(budget, amountPerBudget.get(budget));
-        }
-      }
-    }
     super.requestPurchaseOrder(purchaseOrder);
     int intercoPurchaseCreatingStatus =
         appSupplychainService.getAppSupplychain().getIntercoPurchaseCreatingStatusSelect();
@@ -367,36 +333,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             .fetchOne();
     if (saleOrder != null) {
       saleOrder.setExternalReference(purchaseOrder.getPurchaseOrderSeq());
-    }
-  }
-
-  @Override
-  public void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException {
-    if (budget == null) {
-      return;
-    }
-
-    // getting BudgetLine of the period
-    BudgetLine bl = null;
-    for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-      if (DateTool.isBetween(
-          budgetLine.getFromDate(),
-          budgetLine.getToDate(),
-          appAccountService.getTodayDate(budget.getCompany()))) {
-        bl = budgetLine;
-        break;
-      }
-    }
-
-    // checking budget excess
-    if (bl != null) {
-      if (amount.add(bl.getAmountCommitted()).compareTo(bl.getAmountExpected()) > 0) {
-        throw new AxelorException(
-            budget,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_2),
-            budget.getCode());
-      }
     }
   }
 
@@ -538,5 +474,58 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         }
       }
     }
+  }
+
+  @Override
+  public boolean isGoodAmountBudgetDistribution(PurchaseOrder purchaseOrder) {
+    if (purchaseOrder.getPurchaseOrderLineList() != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        if (purchaseOrderLine.getBudgetDistributionList() != null
+            && !purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
+          BigDecimal budgetDistributionTotalAmount =
+              purchaseOrderLine.getBudgetDistributionList().stream()
+                  .map(BudgetDistribution::getAmount)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+          if (budgetDistributionTotalAmount.compareTo(purchaseOrderLine.getCompanyExTaxTotal())
+              != 0) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public StockLocation getStockLocation(Partner supplierPartner, Company company)
+      throws AxelorException {
+    if (company == null) {
+      return null;
+    }
+    StockLocation stockLocation =
+        partnerStockSettingsService.getDefaultStockLocation(
+            supplierPartner, company, StockLocation::getUsableOnPurchaseOrder);
+    if (stockLocation == null) {
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      stockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+    }
+    return stockLocation;
+  }
+
+  @Override
+  public StockLocation getFromStockLocation(Partner supplierPartner, Company company)
+      throws AxelorException {
+    if (company == null) {
+      return null;
+    }
+
+    StockLocation fromStockLocation =
+        partnerStockSettingsService.getDefaultExternalStockLocation(
+            supplierPartner, company, StockLocation::getUsableOnPurchaseOrder);
+    if (fromStockLocation == null) {
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+    }
+    return fromStockLocation;
   }
 }

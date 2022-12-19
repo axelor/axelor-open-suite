@@ -13,6 +13,8 @@
     <string name="description" title="Description" large="true"/>
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
       mappedBy="contractBatch" title="Batchs"/>
+    <integer name="targetTypeSelect" title="Type" selection="contract.target.type.select"/>
+    <date name="invoicingDate" title="Invoicing date"/>
 
     <extra-code><![CDATA[
         public static final int INVOICING = 1;

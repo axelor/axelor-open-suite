@@ -19,12 +19,10 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingReportDas2Service;
 import com.axelor.apps.account.service.AccountingReportPrintService;
@@ -44,9 +42,9 @@ import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,15 +95,20 @@ public class AccountingReportController {
           return;
         }
 
-        List<BigInteger> paymentMoveLinedistributionIdList =
+        List<Long> paymentMoveLinedistributionIdList =
             accountingReportDas2Service.getAccountingReportDas2Pieces(accountingReport);
         ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
         actionViewBuilder.model(PaymentMoveLineDistribution.class.getName());
         actionViewBuilder.add("grid", "payment-move-line-distribution-das2-grid");
         actionViewBuilder.add("form", "payment-move-line-distribution-form");
-        actionViewBuilder.domain(
-            "self.id in (" + Joiner.on(",").join(paymentMoveLinedistributionIdList) + ")");
+        String domain = "self.id IN (0)";
+        if (CollectionUtils.isNotEmpty(paymentMoveLinedistributionIdList)) {
+          domain =
+              String.format(
+                  "self.id in ( %s )", Joiner.on(",").join(paymentMoveLinedistributionIdList));
+        }
+        actionViewBuilder.domain(domain);
 
         response.setReload(true);
         response.setView(actionViewBuilder.map());
@@ -130,31 +133,6 @@ public class AccountingReportController {
         response.setView(actionViewBuilder.map());
       }
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * @param request
-   * @param response
-   */
-  public void getJournalType(ActionRequest request, ActionResponse response) {
-
-    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-
-    try {
-
-      JournalType journalType =
-          Beans.get(AccountingReportService.class).getJournalType(accountingReport);
-      if (journalType != null) {
-        String domainQuery =
-            "self.journalType.id = "
-                + journalType.getId()
-                + " AND self.statusSelect = "
-                + JournalRepository.STATUS_ACTIVE;
-        response.setAttr("journal", "domain", domainQuery);
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -30,13 +31,16 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -60,6 +64,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
   protected MoveValidateService moveValidateService;
   protected BatchRepository batchRepository;
+  protected BankDetailsService bankDetailsService;
   private Batch batch;
 
   @Inject
@@ -70,7 +75,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       FixedAssetLineMoveService fixedAssetLineMoveService,
       MoveValidateService moveValidateService,
       MoveLineCreateService moveLineCreateService,
-      BatchRepository batchRepository) {
+      BatchRepository batchRepository,
+      BankDetailsService bankDetailsService) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
@@ -78,6 +84,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     this.moveValidateService = moveValidateService;
     this.moveLineCreateService = moveLineCreateService;
     this.batchRepository = batchRepository;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Override
@@ -211,6 +218,12 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
         company.getName(),
         journal.getCode());
 
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
+
     // Creating move
     Move move =
         moveCreateService.createMove(
@@ -225,7 +238,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
             origin,
-            fixedAsset.getName());
+            fixedAsset.getName(),
+            companyBankDetails);
 
     if (move != null) {
 
@@ -235,10 +249,24 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       List<MoveLine> moveLines = new ArrayList<>();
 
       if (creditLineAccount == null || debitLineAccount == null) {
+        List<String> missingAccounts = new ArrayList<>();
+        FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+        if (fixedAssetCategory.getCapitalDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
+        if (fixedAssetCategory.getExpenseDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.EXPENSE_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
+        if (fixedAssetCategory.getIncomeDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.INCOME_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-            I18n.get(AccountExceptionMessage.CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT));
+            Joiner.on(", ").join(missingAccounts));
       }
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(

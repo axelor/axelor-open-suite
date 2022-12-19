@@ -47,7 +47,9 @@ public interface MoveLineCreateService {
       LocalDate originDate,
       Integer counter,
       String origin,
-      String description)
+      String description,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate)
       throws AxelorException;
 
   MoveLine createMoveLine(
@@ -85,6 +87,19 @@ public interface MoveLineCreateService {
       Account account,
       BigDecimal amount,
       boolean isDebit,
+      LocalDate date,
+      int ref,
+      String origin,
+      String description)
+      throws AxelorException;
+
+  MoveLine createMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      BigDecimal amount,
+      boolean isDebit,
+      TaxLine taxLine,
       LocalDate date,
       int ref,
       String origin,

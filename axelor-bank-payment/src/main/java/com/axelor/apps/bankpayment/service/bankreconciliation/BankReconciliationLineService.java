@@ -214,4 +214,20 @@ public class BankReconciliationLineService {
       }
     }
   }
+
+  public void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine) {
+
+    BigDecimal bankReconciledAmount =
+        bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit());
+
+    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+    if (bankStatementLine != null) {
+      bankStatementLine.setAmountRemainToReconcile(
+          bankStatementLine.getAmountRemainToReconcile().subtract(bankReconciledAmount));
+    }
+
+    MoveLine moveLine = bankReconciliationLine.getMoveLine();
+
+    moveLine.setBankReconciledAmount(bankReconciledAmount);
+  }
 }

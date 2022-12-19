@@ -109,7 +109,7 @@
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="Flow_08oe0ud" sourceRef="Event_13lu7at" targetRef="Activity_1evqrwc" />
     <bpmn2:sequenceFlow id="Flow_01a930z" sourceRef="Activity_1evqrwc" targetRef="Activity_0fahoug" />
-    <bpmn2:scriptTask id="Activity_1evqrwc" name="Reset" scriptFormat="axelor" camunda:scriptValue="{&#34;fields&#34;:[{&#34;dataPath&#34;:&#34;[27]&#34;,&#34;type&#34;:&#34;INTEGER&#34;,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;1&#34;},&#34;from&#34;:&#34;none&#34;},&#34;name&#34;:&#34;statusSelect&#34;}],&#34;targetModel&#34;:&#34;Expense&#34;,&#34;newRecord&#34;:false,&#34;createVariable&#34;:false,&#34;isJson&#34;:false}">
+    <bpmn2:scriptTask id="Activity_1evqrwc" name="Reset" scriptFormat="axelor" camunda:scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;statusSelect&#34;,&#34;type&#34;:&#34;INTEGER&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;selected&#34;:{&#34;value&#34;:&#34;1&#34;},&#34;from&#34;:&#34;none&#34;,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;Expense&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:true,&#34;save&#34;:true,&#34;isJson&#34;:false,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">
       <bpmn2:incoming>Flow_08oe0ud</bpmn2:incoming>
       <bpmn2:outgoing>Flow_01a930z</bpmn2:outgoing>
       <bpmn2:script>def rec = $ctx.find('Expense',expenseId)

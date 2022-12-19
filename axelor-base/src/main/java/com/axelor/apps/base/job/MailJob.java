@@ -19,14 +19,13 @@ package com.axelor.apps.base.job;
 
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.service.batch.MailBatchService;
-import com.axelor.inject.Beans;
 import org.quartz.JobExecutionContext;
 
-public class MailJob extends ThreadedJob {
+public class MailJob extends ThreadedBaseJob {
   @Override
   public void executeInThread(JobExecutionContext context) {
     try {
-      Beans.get(MailBatchService.class).run(MailBatchRepository.CODE_BATCH_EMAIL_ALL_TIME_SHEET);
+      executeBatch(MailBatchService.class, MailBatchRepository.CODE_BATCH_EMAIL_ALL_TIME_SHEET);
     } catch (Exception e) {
       throw new UncheckedJobExecutionException(e);
     }

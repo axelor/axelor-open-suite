@@ -47,7 +47,10 @@ public class ReconcileSequenceService {
 
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.RECONCILE, reconcile.getDebitMoveLine().getMove().getCompany());
+            SequenceRepository.RECONCILE,
+            reconcile.getDebitMoveLine().getMove().getCompany(),
+            Reconcile.class,
+            "reconcileSeq");
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

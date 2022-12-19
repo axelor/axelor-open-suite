@@ -181,7 +181,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
             I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_2),
             situation.getCompany().getName());
       }
-      accountCode = sequenceService.getSequenceNumber(sequence);
+      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code");
     } else {
       throw new AxelorException(
           situation,
@@ -238,7 +238,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
             I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_5),
             situation.getCompany().getName());
       }
-      accountCode = sequenceService.getSequenceNumber(sequence);
+      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code");
     } else {
       throw new AxelorException(
           situation,
@@ -294,7 +294,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
             I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_7),
             situation.getCompany().getName());
       }
-      accountCode = sequenceService.getSequenceNumber(sequence);
+      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code");
     } else {
       throw new AxelorException(
           situation,
