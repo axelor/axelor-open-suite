@@ -660,6 +660,7 @@
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-move-method-fill-company-bank-details"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action name="default-move-record-currency"/>
   </action-group>
 
   <action-group name="action-group-move-date-onchange">
