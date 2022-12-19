@@ -33,10 +33,10 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.translation.ITranslation;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -102,15 +102,15 @@ public class PurchaseOrderController {
   }
 
   public void getStockLocation(ActionRequest request, ActionResponse response) {
-
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-
-    if (purchaseOrder.getCompany() != null) {
-
-      response.setValue(
-          "stockLocation",
-          Beans.get(StockLocationService.class)
-              .getDefaultReceiptStockLocation(purchaseOrder.getCompany()));
+    try {
+      Company company = purchaseOrder.getCompany();
+      StockLocation stockLocation =
+          Beans.get(PurchaseOrderSupplychainService.class)
+              .getStockLocation(purchaseOrder.getSupplierPartner(), company);
+      response.setValue("stockLocation", stockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -450,6 +450,33 @@ public class PurchaseOrderController {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       Beans.get(PurchaseOrderSupplychainService.class)
           .updateBudgetDistributionAmountAvailable(purchaseOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void confirmBudgetDistributionList(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+
+      if (!Beans.get(PurchaseOrderSupplychainService.class)
+          .isGoodAmountBudgetDistribution(purchaseOrder)) {
+        response.setAlert(I18n.get(ITranslation.PURCHASE_ORDER_BUDGET_DISTRIBUTIONS_SUM_NOT_EQUAL));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getFromStockLocation(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    try {
+      Company company = purchaseOrder.getCompany();
+      StockLocation fromStockLocation =
+          Beans.get(PurchaseOrderSupplychainService.class)
+              .getFromStockLocation(purchaseOrder.getSupplierPartner(), company);
+      response.setValue("fromStockLocation", fromStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

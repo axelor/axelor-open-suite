@@ -855,7 +855,7 @@
   </action-view>
 
   <action-view name="action-project-open-task-editor" title="Task editor">
-    <view name="project/task-editor?id={{id}}" type="html"/>
+    <view name="project/task-editor/?id={{id}}" type="html"/>
     <context name="id" expr="eval:id"/>
   </action-view>
 

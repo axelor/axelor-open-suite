@@ -64,7 +64,11 @@ public class MapperValue {
       case "context":
         mapContext(stb);
         break;
+      case "query":
+        mapQuery(stb);
+        break;
       case "self":
+      case "expression":
         mapSelf(stb);
         break;
       case "source":
@@ -171,10 +175,23 @@ public class MapperValue {
     String value = getSelectedScript();
 
     if (MANY_TO_ONE_TYPE.contains(parentField.getType())) {
-      if (value != null && !value.endsWith(".id")) {
+      if (value != null && !value.endsWith(".id") && !value.equals("__id__")) {
         value += "?.id";
       }
       stb.append("$ctx.find('" + parentField.getTarget() + "'," + value + ")?.getTarget()");
+    } else {
+      stb.append(value);
+    }
+  }
+
+  protected void mapQuery(StringBuilder stb) {
+
+    String value = getSelectedScript();
+
+    if (value != null) {
+      stb.append("$ctx.filterOne" + value + "");
+      stb.append("?.getTarget()");
+
     } else {
       stb.append(value);
     }

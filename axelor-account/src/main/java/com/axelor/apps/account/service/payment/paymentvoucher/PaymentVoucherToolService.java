@@ -23,6 +23,8 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.CallMethod;
+import java.util.Objects;
 
 public class PaymentVoucherToolService {
 
@@ -95,5 +97,10 @@ public class PaymentVoucherToolService {
     }
 
     return isPurchase;
+  }
+
+  @CallMethod
+  public boolean isMultiCurrency(PaymentVoucher paymentVoucher) {
+    return !Objects.equals(paymentVoucher.getCurrency(), paymentVoucher.getCompany().getCurrency());
   }
 }

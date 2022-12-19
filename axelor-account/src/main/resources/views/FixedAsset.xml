@@ -25,8 +25,7 @@
   </grid>
 
   <form name="fixed-asset-form" title="Fixed asset"
-    model="com.axelor.apps.account.db.FixedAsset"
-    onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date, action-group-account-fixed-asset-failover-control"
+    model="com.axelor.apps.account.db.FixedAsset" onSave="action-group-fixed-asset-onsave"
     onNew="action-group-fixed-asset-onnew" onLoad="action-group-fixed-asset-onload"
     canDelete="statusSelect == 1">
     <panel>
@@ -61,6 +60,7 @@
           canEdit="false" form-view="tracking-number-form" grid-view="tracking-number-grid"/>
         <field name="fixedAssetCategory.fixedAssetType" hidden="true"/>
         <field name="fixedAssetCategory.fixedAssetType.technicalTypeSelect" hidden="true"/>
+        <field name="fixedAssetCategory.depreciationPlanSelect" hidden="true"/>
       </panel>
     </panel>
     <panel name="otherDetailsPanel">
@@ -70,7 +70,8 @@
       <field name="invoiceLine" colSpan="3"
         domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)"
         form-view="invoice-line-form" grid-view="invoice-line-grid"/>
-      <field name="purchaseAccountMove" colSpan="3" domain="self.company = :company"/>
+      <field name="purchaseAccountMove" colSpan="3"
+        domain="self.company = :company AND self.journal.journalType = 4"/>
       <field name="journal" readonlyIf="statusSelect > 1" canEdit="false"
         domain="self.company = :company AND self.statusSelect = 1" form-view="journal-form"
         grid-view="journal-grid"/>
@@ -96,23 +97,22 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="fiscalPanel" title="Fiscal information" readonlyIf="statusSelect > 1"
-        showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;3&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))"
-        hidden="true">
+        showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;3&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))">
         <field name="fiscalFirstDepreciationDate"
           onChange="action-fixed-asset-validate-check-fiscal-first-depreciation-date,action-group-fixed-asset-panels-copy-fiscal-depreciation"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;3&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))"/>
         <field name="fiscalComputationMethodSelect"
           onChange="action-fixed-asset-attrs-set-fiscal-degressive-coef,action-group-account-change-fiscal-depreciation-date-init-select,action-group-fixed-asset-panels-copy-fiscal-depreciation"/>
         <field name="fiscalFirstDepreciationDateInitSelect"
-          onChange="action-method-account-fixed-asset-compute-fiscal-first-depreciation-date,action-group-fixed-asset-panels-copy-fiscal-depreciation"
+          onChange="action-method-account-fixed-asset-compute-fiscal-first-depreciation-date,action-group-fixed-asset-panels-copy-fiscal-depreciation, action-fixed-asset-method-check-depreciation-plans"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;3&quot;) || depreciationPlanSelect.includes(&quot;4&quot;))"/>
         <field name="fiscalDegressiveCoef"
           showIf="fiscalComputationMethodSelect == 'degressive'"
           onChange="action-group-fixed-asset-panels-copy-fiscal-depreciation" hidden="true"/>
         <field name="fiscalNumberOfDepreciation"
-          onChange="action-fixed-asset-attrs-set-fiscal-degressive-coef, action-group-fixed-asset-panels-copy-fiscal-depreciation, action-record-account-fixed-asset-compute-fiscal-duration"/>
+          onChange="action-fixed-asset-attrs-set-fiscal-degressive-coef, action-group-fixed-asset-panels-copy-fiscal-depreciation, action-record-account-fixed-asset-compute-fiscal-duration, action-fixed-asset-method-check-depreciation-plans"/>
         <field name="fiscalPeriodicityTypeSelect"
-          onChange="action-group-account-fixed-asset-onchange-fiscal-periodicity-type"/>
+          onChange="action-group-account-fixed-asset-onchange-fiscal-periodicity-type,action-fixed-asset-method-check-depreciation-plans"/>
         <field name="fiscalPeriodicityInMonth" showIf="fiscalPeriodicityTypeSelect == 1"
           onChange="action-group-fixed-asset-panels-copy-fiscal-depreciation, action-record-account-fixed-asset-compute-fiscal-duration, action-fixed-asset-category-record-compute-duration"
           min="1" hidden="true"/>
@@ -133,25 +133,25 @@
       </panel>
       <panel name="depreciationInfo" title="Depreciation information"
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"
-        readonlyIf="statusSelect > 1" hidden="true">
+        readonlyIf="statusSelect > 1">
         <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean"
-          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value"/>
+          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value,action-fixed-asset-method-check-depreciation-plans"/>
         <field name="firstDepreciationDate"
           onChange="action-fixed-asset-validate-check-first-depreciation-date"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"/>
         <field name="computationMethodSelect"
-          onChange="action-fixed-asset-attrs-set-degressive-coef,action-group-account-change-economic-depreciation-date-init-select"
-          requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
+          onChange="action-fixed-asset-attrs-set-degressive-coef,action-group-account-change-economic-depreciation-date-init-select,action-fixed-asset-method-check-depreciation-plans"
+          requiredIf="depreciationPlanSelect != null &amp;&amp; !depreciationPlanSelect.includes(&quot;0&quot;)"/>
         <field name="firstDepreciationDateInitSelect"
           requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"
           onChange="action-method-account-fixed-asset-compute-economic-first-depreciation-date"/>
         <field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"
           hidden="true"/>
         <field name="numberOfDepreciation"
-          onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"
+          onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration,action-fixed-asset-method-check-depreciation-plans"
           requiredIf="!depreciationPlanSelect.includes(&quot;0&quot;)"/>
         <field name="periodicityTypeSelect"
-          onChange="action-attrs-account-periodicity-type-select-on-change,action-method-account-fixed-asset-compute-economic-first-depreciation-date,action-fixed-asset-category-record-compute-duration"/>
+          onChange="action-attrs-account-periodicity-type-select-on-change,action-method-account-fixed-asset-compute-economic-first-depreciation-date,action-fixed-asset-category-record-compute-duration,action-fixed-asset-method-check-depreciation-plans"/>
         <field name="periodicityInMonth" showIf="periodicityTypeSelect == 1"
           onChange="action-fixed-asset-category-record-compute-duration" min="1" hidden="true"/>
         <field name="durationInMonth" readonly="true" showIf="periodicityTypeSelect == 1"
@@ -169,16 +169,14 @@
           grid-view="fixed-asset-line-grid" canNew="false"/>
       </panel>
       <panel name="derogatoryPanel" title="Derogatory"
-        showIf="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.includes(&quot;3&quot;)"
-        hidden="true">
+        showIf="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.includes(&quot;3&quot;)">
         <panel-related name="fixedAssetDerogatoryLineListPanel"
           readonlyIf="statusSelect > 1" field="fixedAssetDerogatoryLineList" colSpan="12"
           form-view="fixed-asset-derogatory-line-form" grid-view="fixed-asset-derogatory-line-grid"
           canNew="false"/>
       </panel>
       <panel name="ifrsPanel" title="IFRS" readonlyIf="statusSelect > 1"
-        showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;4&quot;))"
-        hidden="true">
+        showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;4&quot;))">
         <field name="isIfrsEqualToFiscalDepreciation" colSpan="12" widget="boolean"
           onChange="action-attrs-fixed-asset-ifrs-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value"/>
         <field name="ifrsFirstDepreciationDate"
@@ -213,9 +211,9 @@
           form-view="fixed-asset-line-form" grid-view="fixed-asset-line-grid" canNew="false"/>
       </panel>
       <panel name="associatedFixedAssets" title="Associated Fixed Assets">
-        <field name="associatedFixedAssetsSet" showIf="id" colSpan="12" widget="many-to-many"
+        <field name="associatedFixedAssetsSet" colSpan="12" widget="many-to-many"
           canNew="false" form-view="fixed-asset-form" grid-view="fixed-asset-grid"
-          domain="self.company = :company and (:id = null or self.id != :id)" hidden="true"/>
+          domain="self.company = :company and (:id = null or self.id != :id)"/>
       </panel>
       <panel if="__config__.app.getApp('account')?.getActivateFixedAssetBarCodeGeneration()"
         name="barcodePanel" title="Barcode" readonlyIf="barcode != null" colspan="12">
@@ -263,8 +261,10 @@
     </panel>
     <panel name="allValuesPanel" sidebar="true">
       <field name="grossValue" requiredIf="originSelect == 99" min="0"
-        readonlyIf="statusSelect > 1" onChange="action-fixed-asset-record-set-residual-value"/>
-      <field name="residualValue" readonly="true"/>
+        readonlyIf="statusSelect > 1"
+        onChange="action-fixed-asset-record-set-residual-value,action-validate-gross-value-residual-value"/>
+      <field name="residualValue" readonly="true"
+        onChange="action-validate-gross-value-residual-value"/>
       <field name="accountingValue"
         hideIf="depreciationPlanSelect.includes('0') || statusSelect == 1" readonly="true"
         hidden="true"/>
@@ -337,29 +337,60 @@
     </panel>
   </form>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Split fixed asset"
-    name="fixed-asset-split-wizard-form">
+  <form name="fixed-asset-split-wizard-form" model="com.axelor.apps.base.db.Wizard"
+    title="Split fixed asset" onNew="action-fixed-asset-method-wizard-init-values">
     <panel name="mainPanel">
-      <field name="qty" title="Quantity to split" min="0.01" type="decimal"/>
+      <field name="splitTypeSelect" title="Split type" type="integer"
+        selection="account.fixed.asset.split.type.select"/>
       <label
-        title="A new record of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity."/>
+        title="Please select the type of split to be realized. A new record of fixed asset will be generated based on the split quantity or the split amount. Current fixed asset will be recalculated based on the remaining quantity/amount."/>
+      <panel name="qtyGrossValuePanel" stacked="true" colSpan="12" itemSpan="12">
+        <panel name="qtyPanel" showIf="splitTypeSelect == 1">
+          <field name="qty" title="Quantity to split" min="0.01" type="decimal"/>
+          <label
+            title="A new record of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity."/>
+        </panel>
+        <panel name="grossValuePanel" showIf="splitTypeSelect == 2">
+          <field name="grossValue" title="Gross value" min="0.01" type="decimal"/>
+          <label
+            title="A new record of fixed asset will be generated based on the split amount. Current fixed asset will be recalculated based on the remaining gross value amount."/>
+        </panel>
+      </panel>
       <button name="splitBtn" title="Split" colSpan="4"
+        readonlyIf="splitTypeSelect == null || splitTypeSelect &lt; 1"
         onClick="action-method-account-fixed-asset-split,close"/>
     </panel>
   </form>
+
+  <action-group name="action-group-fixed-asset-onsave">
+    <action name="action-fixed-asset-category-record-compute-duration"/>
+    <action name="action-fixed-asset-validate-check-first-depreciation-date"/>
+    <action name="action-group-account-fixed-asset-failover-control"/>
+    <action name="action-validate-gross-value-residual-value"/>
+  </action-group>
+
   <action-method name="action-method-account-fixed-asset-split">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="splitFixedAsset"/>
   </action-method>
+
   <action-validate
     name="action-validate-account-fixed-asset-wizard-form-validate-qty">
     <error if="disposalQtySelect == 2 &amp;&amp; (qty &lt;= 0) "
       message="Disposal Quantity must be greater than 0"/>
   </action-validate>
+
+  <action-validate name="action-validate-gross-value-residual-value">
+    <error
+      message="Please enter a gross value greater than the residual value in terms of absolute value"
+      if="(grossValue &lt; 0 &amp;&amp; (residualValue &gt; 0 || residualValue &lt;= grossValue)) || (grossValue &gt; 0 &amp;&amp; (residualValue &lt; 0 || residualValue &gt;= grossValue))"/>
+  </action-validate>
+
   <action-attrs
     name="action-attrs-account-fixed-asset-wizard-form-init-domain-sale-tax-line">
     <attribute name="domain" for="saleTaxLine"
       expr="eval: &quot;(self.endDate &gt; :disposalDate OR self.endDate IS NULL) AND self.startDate &lt; :disposalDate &quot;"/>
   </action-attrs>
+
   <action-attrs name="action-attrs-account-fixed-asset-wizard-form-disposal-amount">
     <attribute name="value" for="disposalAmount" expr="eval: 0"/>
     <attribute name="title" for="disposalAmount"
@@ -379,9 +410,13 @@
       if="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 1"/>
     <attribute name="value" for="disposalAmount" expr="eval:_fixedAsset?.accountingValue"
       if="disposalQtySelect == 2 &amp;&amp; disposalTypeSelect == 1"/>
+    <attribute name="value" for="disposalAmount" expr="eval:_fixedAsset?.accountingValue"
+      if="disposalTypeSelect == 3"/>
+    <attribute name="value" for="assetDisposalReason" expr="eval: null"/>
     <attribute name="value" for="disposalQtySelect" expr="eval: 1"
       if="disposalTypeSelect != 2"/>
   </action-attrs>
+
   <action-record name="action-fixed-asset-disposal-wizard-record-onnew"
     model="com.axelor.apps.base.db.Wizard">
     <field name="disposalDate" expr="eval: __config__.date"/>
@@ -529,6 +564,7 @@
   <action-method name="action-fixed-asset-method-validate">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="validate"/>
   </action-method>
+
   <action-method name="action-fixed-asset-method-mass-validation">
     <call class="com.axelor.apps.account.web.FixedAssetController" method="massValidation"/>
   </action-method>
@@ -664,6 +700,8 @@
   </action-group>
 
   <action-group name="action-group-account-record-on-change-asset-category">
+    <action name="action-account-group-fixed-asset-category-depreciation-plan-null"
+      if="fixedAssetCategory != null &amp;&amp; fixedAssetCategory.depreciationPlanSelect == null"/>
     <action name="action-account-attrs-fill-depreciation-plan"/>
     <action name="action-account-attrs-fill-fiscal-panel"
       if="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.contains(&quot;1&quot;) || depreciationPlanSelect.contains(&quot;0&quot;))"/>
@@ -680,7 +718,23 @@
     <action name="action-attrs-account-change-depreciation-date-init-select"/>
     <action name="action-attrs-account-fixed-asset-reset-residual-value"/>
     <action name="action-attrs-fixed-asset-set-readonly-residual-value"/>
+    <action name="action-fixed-asset-method-check-depreciation-plans"/>
   </action-group>
+
+  <action-group name="action-account-group-fixed-asset-category-depreciation-plan-null">
+    <action name="action-account-attrs-fixed-asset-category-reset"/>
+    <action name="action-account-validate-fixed-asset-category-depreciation-plan-null"/>
+  </action-group>
+
+  <action-attrs name="action-account-attrs-fixed-asset-category-reset">
+    <attribute name="value" for="fixedAssetCategory" expr="eval: null"/>
+  </action-attrs>
+
+  <action-validate
+    name="action-account-validate-fixed-asset-category-depreciation-plan-null">
+    <error
+      message="The fixed asset category does not have value in its depreciation plan and it can not be used"/>
+  </action-validate>
 
   <action-attrs name="action-account-attrs-fill-depreciation-plan">
     <attribute name="value" for="depreciationPlanSelect"
@@ -899,6 +953,11 @@
     <action name="action-method-account-fixed-asset-compute-ifrs-first-depreciation-date"/>
   </action-group>
 
+  <action-method name="action-fixed-asset-method-wizard-init-values">
+    <call class="com.axelor.apps.account.web.FixedAssetController"
+      method="initSplitWizardValues"/>
+  </action-method>
+
   <action-record
     name="action-record-account-fixed-asset-set-default-serial-number-config-type"
     model="com.axelor.apps.account.db.FixedAsset">
@@ -906,5 +965,10 @@
       expr="eval: __config__?.app?.getApp('account')?.getFixedAssetBarcodeTypeConfig()"
       if="__config__.app.getApp('account')?.getActivateFixedAssetBarCodeGeneration()"/>
   </action-record>
+
+  <action-method name="action-fixed-asset-method-check-depreciation-plans">
+    <call class="com.axelor.apps.account.web.FixedAssetController"
+      method="checkDepreciationPlans"/>
+  </action-method>
 </object-views>
 

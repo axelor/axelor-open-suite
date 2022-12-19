@@ -32,11 +32,9 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
@@ -170,14 +168,6 @@ public class ImportMove {
           move.setJournal(journal);
         }
 
-        if (values.get("CompAuxNum") != null) {
-          Partner partner =
-              Beans.get(PartnerRepository.class)
-                  .all()
-                  .filter("self.partnerSeq = ?", values.get("CompAuxNum").toString())
-                  .fetchOne();
-          move.setPartner(partner);
-        }
         if (values.get("PieceDate") != null) {
           move.setOriginDate(parseDate(values.get("PieceDate").toString()));
         }

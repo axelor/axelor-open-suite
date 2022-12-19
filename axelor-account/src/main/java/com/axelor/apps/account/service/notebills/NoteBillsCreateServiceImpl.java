@@ -80,7 +80,8 @@ public class NoteBillsCreateServiceImpl implements NoteBillsCreateService {
           noteBills.getCompany().getName());
     }
     String seq =
-        sequenceService.getSequenceNumber(SequenceRepository.NOTE_BILLS, noteBills.getCompany());
+        sequenceService.getSequenceNumber(
+            SequenceRepository.NOTE_BILLS, noteBills.getCompany(), NoteBills.class, "noteBillsSeq");
     return seq;
   }
 }

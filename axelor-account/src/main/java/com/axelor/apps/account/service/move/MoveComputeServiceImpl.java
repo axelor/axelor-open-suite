@@ -19,12 +19,22 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveComputeServiceImpl implements MoveComputeService {
+  protected MoveLineService moveLineService;
+
+  @Inject
+  public MoveComputeServiceImpl(MoveLineService moveLineService) {
+    this.moveLineService = moveLineService;
+  }
 
   @Override
   public Map<String, Object> computeTotals(Move move) {
@@ -64,5 +74,22 @@ public class MoveComputeServiceImpl implements MoveComputeService {
     values.put("$difference", difference);
 
     return values;
+  }
+
+  @Override
+  public boolean checkManageCutOffDates(Move move) {
+    return CollectionUtils.isNotEmpty(move.getMoveLineList())
+        && move.getMoveLineList().stream()
+            .anyMatch(invoiceLine -> moveLineService.checkManageCutOffDates(invoiceLine));
+  }
+
+  @Override
+  public void applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      move.getMoveLineList()
+          .forEach(
+              moveLine ->
+                  moveLineService.applyCutOffDates(moveLine, move, cutOffStartDate, cutOffEndDate));
+    }
   }
 }

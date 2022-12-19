@@ -44,7 +44,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -52,8 +51,6 @@ import java.util.Optional;
 
 @Singleton
 public class SaleOrderLineController {
-
-  @Inject AppBaseService appBaseService;
 
   public void compute(ActionRequest request, ActionResponse response) {
 
@@ -170,6 +167,7 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     TaxService taxService = Beans.get(TaxService.class);
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
     SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
 
@@ -207,12 +205,21 @@ public class SaleOrderLineController {
           if (saleOrderLine.getProduct().getInAti()) {
             response.setValue("inTaxPrice", price);
             response.setValue(
-                "price", taxService.convertUnitPrice(true, saleOrderLine.getTaxLine(), price));
+                "price",
+                taxService.convertUnitPrice(
+                    true,
+                    saleOrderLine.getTaxLine(),
+                    price,
+                    appBaseService.getNbDecimalDigitForUnitPrice()));
           } else {
             response.setValue("price", price);
             response.setValue(
                 "inTaxPrice",
-                taxService.convertUnitPrice(false, saleOrderLine.getTaxLine(), price));
+                taxService.convertUnitPrice(
+                    false,
+                    saleOrderLine.getTaxLine(),
+                    price,
+                    appBaseService.getNbDecimalDigitForUnitPrice()));
           }
         }
 
@@ -224,7 +231,8 @@ public class SaleOrderLineController {
               taxService.convertUnitPrice(
                   saleOrderLine.getProduct().getInAti(),
                   saleOrderLine.getTaxLine(),
-                  (BigDecimal) discounts.get("discountAmount")));
+                  (BigDecimal) discounts.get("discountAmount"),
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
           response.setValue("discountAmount", discounts.get("discountAmount"));
         }
@@ -252,7 +260,13 @@ public class SaleOrderLineController {
       TaxLine taxLine = saleOrderLine.getTaxLine();
 
       response.setValue(
-          "price", Beans.get(TaxService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          "price",
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  true,
+                  taxLine,
+                  inTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -274,7 +288,13 @@ public class SaleOrderLineController {
       TaxLine taxLine = saleOrderLine.getTaxLine();
 
       response.setValue(
-          "inTaxPrice", Beans.get(TaxService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          "inTaxPrice",
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  false,
+                  taxLine,
+                  exTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -298,7 +318,9 @@ public class SaleOrderLineController {
     try {
 
       BigDecimal price = saleOrderLine.getPrice();
-      BigDecimal inTaxPrice = price.add(price.multiply(saleOrderLine.getTaxLine().getValue()));
+      BigDecimal inTaxPrice =
+          price.add(
+              price.multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
 
       response.setValue("inTaxPrice", inTaxPrice);
 

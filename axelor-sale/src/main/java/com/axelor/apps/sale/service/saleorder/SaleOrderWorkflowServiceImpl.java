@@ -89,7 +89,9 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   @Override
   public String getSequence(Company company) throws AxelorException {
 
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.SALES_ORDER, company);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.SALES_ORDER, company, SaleOrder.class, "saleOrderSeq");
     if (seq == null) {
       throw new AxelorException(
           company,

@@ -145,7 +145,10 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
-            saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany());
+            saleOrder.getClientPartner(),
+            saleOrderLine.getProduct(),
+            saleOrder.getCompany(),
+            false);
 
     saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

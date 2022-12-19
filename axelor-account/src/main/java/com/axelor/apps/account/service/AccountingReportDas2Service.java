@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 
 public interface AccountingReportDas2Service {
@@ -33,7 +32,7 @@ public interface AccountingReportDas2Service {
 
   boolean isThereAlreadyDas2ExportInPeriod(AccountingReport accountingReport);
 
-  List<BigInteger> getAccountingReportDas2Pieces(AccountingReport accountingReport);
+  List<Long> getAccountingReportDas2Pieces(AccountingReport accountingReport);
 
   AccountingReport getAssociatedDas2Export(AccountingReport accountingReport);
 }

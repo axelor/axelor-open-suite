@@ -64,10 +64,12 @@ import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -75,6 +77,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -84,7 +87,10 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -322,7 +328,8 @@ public class BankReconciliationService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             bankStatementLine != null ? bankStatementLine.getOrigin() : null,
-            description);
+            description,
+            bankReconciliationLine.getBankReconciliation().getBankDetails());
 
     MoveLine moveLine = generateMoveLine(bankReconciliationLine, bankStatementRule, move, true);
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, moveLine);
@@ -772,7 +779,7 @@ public class BankReconciliationService {
 
   public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
-        "self.move.statusSelect != :statusSelect"
+        "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
             + " AND self.account.accountType.technicalTypeSelect = :accountType";
 
@@ -810,7 +817,8 @@ public class BankReconciliationService {
     BankPaymentConfig bankPaymentConfig =
         bankPaymentConfigService.getBankPaymentConfig(bankReconciliation.getCompany());
 
-    params.put("statusSelect", MoveRepository.STATUS_CANCELED);
+    params.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+    params.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
     params.put("company", bankReconciliation.getCompany());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
     if (!bankReconciliation.getIncludeOtherBankStatements()) {
@@ -876,6 +884,13 @@ public class BankReconciliationService {
           if (Boolean.TRUE.equals(new GroovyScriptHelper(scriptContext).eval(query))) {
             bankReconciliationLine =
                 updateBankReconciliationLine(bankReconciliationLine, moveLine, bankStatementQuery);
+            boolean isUnderCorrection =
+                bankReconciliation.getStatusSelect()
+                    == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
+            if (isUnderCorrection) {
+              bankReconciliationLine.setIsPosted(true);
+              bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
+            }
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
             moveLines.remove(moveLine);
             break;
@@ -930,7 +945,21 @@ public class BankReconciliationService {
     query = query.replace("%s", bankReconciliationLine.getPostedNbr());
     List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
     for (MoveLine moveLine : moveLines) {
-      moveLine = moveLineService.removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+      moveLineService.removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+    }
+    boolean isUnderCorrection =
+        bankReconciliationLine.getBankReconciliation().getStatusSelect()
+            == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
+    if (isUnderCorrection) {
+      MoveLine moveLine = bankReconciliationLine.getMoveLine();
+      BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+      if (bankStatementLine != null) {
+        bankStatementLine.setAmountRemainToReconcile(
+            bankStatementLine.getAmountRemainToReconcile().add(moveLine.getBankReconciledAmount()));
+      }
+      moveLine.setBankReconciledAmount(BigDecimal.ZERO);
+      moveLineRepository.save(moveLine);
+      bankReconciliationLine.setIsPosted(false);
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
@@ -1012,6 +1041,10 @@ public class BankReconciliationService {
                       .getInvoiceWatermark())
               .toString();
     }
+    BankPaymentConfig bankPaymentConfig =
+        Beans.get(BankPaymentConfigService.class)
+            .getBankPaymentConfig(bankReconciliation.getCompany());
+    int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
     fileLink =
         ReportFactory.createReport(
                 IReport.BANK_RECONCILIATION2, I18n.get("Bank Reconciliation") + "-${date}")
@@ -1022,6 +1055,12 @@ public class BankReconciliationService {
                 bankReconciliation.getCompany() != null
                     ? bankReconciliation.getCompany().getTimezone()
                     : null)
+            .addParam(
+                "BankReconciliationFromDate",
+                Date.valueOf(bankReconciliation.getFromDate().minusDays(dateMargin)))
+            .addParam(
+                "BankReconciliationToDate",
+                Date.valueOf(bankReconciliation.getToDate().plusDays(dateMargin)))
             .addParam("HeaderHeight", printingSettings.getPdfHeaderHeight())
             .addParam("Watermark", watermark)
             .addParam("FooterHeight", printingSettings.getPdfFooterHeight())
@@ -1167,7 +1206,9 @@ public class BankReconciliationService {
     }
   }
 
-  public void reconcileSelected(BankReconciliation bankReconciliation) throws AxelorException {
+  @Transactional
+  public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
+      throws AxelorException {
     BankReconciliationLine bankReconciliationLine;
     String filter = getRequestMoveLines(bankReconciliation);
     filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
@@ -1187,7 +1228,14 @@ public class BankReconciliationService {
     bankReconciliationLine =
         bankReconciliationLineService.reconcileBRLAndMoveLine(
             bankReconciliationLine, moveLines.get(0));
-    computeBalances(bankReconciliation);
+    boolean isUnderCorrection =
+        bankReconciliation.getStatusSelect()
+            == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
+    if (isUnderCorrection) {
+      bankReconciliationLine.setIsPosted(true);
+      bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
+    }
+    return bankReconciliation;
   }
 
   public String getDomainForWizard(
@@ -1261,5 +1309,41 @@ public class BankReconciliationService {
       }
     }
     return selectedMoveLineTotal;
+  }
+
+  public boolean getIsCorrectButtonHidden(BankReconciliation bankReconciliation)
+      throws AxelorException {
+    String onClosedPeriodClause =
+        " AND self.move.period.statusSelect = " + PeriodRepository.STATUS_CLOSED;
+    List<MoveLine> authorizedMoveLinesOnClosedPeriod =
+        moveLineRepository
+            .all()
+            .filter(getRequestMoveLines(bankReconciliation) + onClosedPeriodClause)
+            .bind(getBindRequestMoveLine(bankReconciliation))
+            .fetch();
+    boolean haveMoveLineOnClosedPeriod = !authorizedMoveLinesOnClosedPeriod.isEmpty();
+    return bankReconciliation.getStatusSelect() != BankReconciliationRepository.STATUS_VALIDATED
+        || haveMoveLineOnClosedPeriod;
+  }
+
+  public String getCorrectedLabel(LocalDateTime correctedDateTime, User correctedUser) {
+    String space = " ";
+    StringBuilder correctedLabel = new StringBuilder();
+    correctedLabel.append(I18n.get("Reconciliation corrected at"));
+    correctedLabel.append(space);
+    correctedLabel.append(
+        correctedDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+    correctedLabel.append(space);
+    correctedLabel.append(I18n.get("by"));
+    correctedLabel.append(space);
+    correctedLabel.append(correctedUser.getFullName());
+    return correctedLabel.toString();
+  }
+
+  public void correct(BankReconciliation bankReconciliation, User user) {
+    bankReconciliation.setStatusSelect(BankReconciliationRepository.STATUS_UNDER_CORRECTION);
+    bankReconciliation.setHasBeenCorrected(true);
+    bankReconciliation.setCorrectedDateTime(LocalDateTime.now());
+    bankReconciliation.setCorrectedUser(user);
   }
 }

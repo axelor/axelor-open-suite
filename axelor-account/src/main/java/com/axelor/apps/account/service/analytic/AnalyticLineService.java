@@ -17,12 +17,15 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface AnalyticLineService {
 
@@ -31,4 +34,15 @@ public interface AnalyticLineService {
   LocalDate getDate(AnalyticLine line);
 
   BigDecimal getAnalyticAmountFromParent(AnalyticLine line, AnalyticMoveLine analyticMoveLine);
+
+  List<Long> getAxisDomains(AnalyticLine line, Company company, int position)
+      throws AxelorException;
+
+  boolean isAxisRequired(AnalyticLine line, Company company, int position) throws AxelorException;
+
+  AnalyticLine checkAnalyticLineForAxis(AnalyticLine line);
+
+  AnalyticLine printAnalyticAccount(AnalyticLine line, Company company) throws AxelorException;
+
+  List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis);
 }

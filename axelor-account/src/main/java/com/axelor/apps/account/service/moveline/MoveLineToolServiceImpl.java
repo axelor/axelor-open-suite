@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
@@ -32,12 +34,14 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequestScoped
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
   protected static final int CURRENCY_RATE_SCALE = 5;
@@ -309,6 +313,26 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   }
 
   @Override
+  public boolean checkCutOffDates(MoveLine moveLine) {
+    return moveLine == null
+        || moveLine.getAccount() == null
+        || !moveLine.getAccount().getManageCutOffPeriod()
+        || (moveLine.getCutOffStartDate() != null && moveLine.getCutOffEndDate() != null);
+  }
+
+  @Override
+  public boolean isEqualTaxMoveLine(
+      Account account, TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml) {
+    return ml.getTaxLine() != null
+        && ml.getTaxLine().equals(taxLine)
+        && ml.getVatSystemSelect() == vatSystem
+        && ml.getId() != id
+        && ml.getAccount().getAccountType() != null
+        && AccountTypeRepository.TYPE_TAX.equals(
+            ml.getAccount().getAccountType().getTechnicalTypeSelect())
+        && ml.getAccount().equals(account);
+  }
+
   public void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException {
     if (move != null
         && move.getPeriod() != null

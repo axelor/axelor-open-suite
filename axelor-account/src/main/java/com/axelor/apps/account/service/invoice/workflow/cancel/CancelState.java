@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -99,5 +100,9 @@ public class CancelState extends WorkflowInvoice {
   protected void setPfpStatus() throws AxelorException {
     InvoiceToolService.setPfpStatus(invoice);
     invoice.setDecisionPfpTakenDate(null);
+
+    invoice.getInvoiceTermList().stream()
+        .filter(it -> it.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_NO_PFP)
+        .forEach(it -> it.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING));
   }
 }

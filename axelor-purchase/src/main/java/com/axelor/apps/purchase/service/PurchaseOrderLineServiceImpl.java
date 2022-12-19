@@ -105,7 +105,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal taxRate = BigDecimal.ZERO;
 
     if (purchaseOrderLine.getTaxLine() != null) {
-      taxRate = purchaseOrderLine.getTaxLine().getValue();
+      taxRate = purchaseOrderLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
 
     if (!purchaseOrder.getInAti()) {
@@ -278,10 +278,20 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         BigDecimal discountPrice = (BigDecimal) discounts.get("price");
         if (product.getInAti()) {
           inTaxPrice = discountPrice;
-          price = taxService.convertUnitPrice(true, line.getTaxLine(), discountPrice);
+          price =
+              taxService.convertUnitPrice(
+                  true,
+                  line.getTaxLine(),
+                  discountPrice,
+                  appBaseService.getNbDecimalDigitForUnitPrice());
         } else {
           price = discountPrice;
-          inTaxPrice = taxService.convertUnitPrice(false, line.getTaxLine(), discountPrice);
+          inTaxPrice =
+              taxService.convertUnitPrice(
+                  false,
+                  line.getTaxLine(),
+                  discountPrice,
+                  appBaseService.getNbDecimalDigitForUnitPrice());
         }
       }
       if (product.getInAti() != purchaseOrder.getInAti()
@@ -291,7 +301,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
             taxService.convertUnitPrice(
                 product.getInAti(),
                 line.getTaxLine(),
-                (BigDecimal) discounts.get("discountAmount")));
+                (BigDecimal) discounts.get("discountAmount"),
+                appBaseService.getNbDecimalDigitForUnitPrice()));
       } else {
         line.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
       }
@@ -366,7 +377,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                             ? BigDecimal.ONE
                             : product.getManagPriceCoef(),
                         appBaseService.getNbDecimalDigitForUnitPrice(),
-                        RoundingMode.HALF_UP));
+                        RoundingMode.HALF_UP),
+                AppBaseService.COMPUTATION_SCALING);
       } else {
         price =
             ((BigDecimal)

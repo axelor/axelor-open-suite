@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.move.MoveRemoveService;
+import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
@@ -37,7 +37,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
+public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
 
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
 
@@ -61,9 +61,9 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
   }
 
   @Override
-  protected String checkDaybookMoveLine(MoveLine moveLine) throws AxelorException {
+  public String checkMoveLineBeforeRemove(MoveLine moveLine) throws AxelorException {
     removeMoveLineFromBankStatements(moveLine);
-    String errorMessage = super.checkDaybookMoveLine(moveLine);
+    String errorMessage = super.checkMoveLineBeforeRemove(moveLine);
 
     if (Beans.get(AppBankPaymentService.class).isApp("bank-payment")
         && moveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {

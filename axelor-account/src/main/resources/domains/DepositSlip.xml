@@ -12,7 +12,7 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true"/>
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
-      title="Bank account" required="true"/>
+      title="Bank account"/>
     <date name="fromDate" title="Start date"/>
     <date name="toDate" title="End date"/>
     <date name="depositDate" required="true" copy="false"/>
@@ -21,13 +21,19 @@
     <date name="publicationDate" readonly="true" copy="false"/>
 
     <one-to-many name="paymentVoucherList"
-      ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment vouchers" orphanRemoval="false"
-      mappedBy="depositSlip" copy="false"/>
+      ref="com.axelor.apps.account.db.PaymentVoucher"
+      title="Selected payment voucher for deposit slip" orphanRemoval="false" mappedBy="depositSlip"
+      copy="false"/>
 
     <decimal name="totalAmount" scale="2" precision="20" readonly="true" copy="false"/>
 
     <!-- Cheque -->
     <integer name="chequeCount" title="Number of cheques" readonly="true" copy="false"/>
+
+    <many-to-one name="valueForCollectionAccount"
+      ref="com.axelor.apps.account.db.Account"/>
+    <boolean name="isBankDepositMoveGenerated" title="Bank deposit move generated"
+      readonly="true" copy="true"/>
 
     <!-- Cash -->
     <!-- TODO -->
