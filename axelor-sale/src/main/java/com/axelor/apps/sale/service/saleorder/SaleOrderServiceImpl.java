@@ -372,7 +372,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     List<SaleOrderLine> originalSOLines = saleOrder.getSaleOrderLineList();
-    List<SaleOrderLine> separatedSOLines;
 
     SaleOrder copySaleOrder = Beans.get(SaleOrderRepository.class).copy(saleOrder, true);
     copySaleOrder.clearSaleOrderLineList();
@@ -386,7 +385,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderLine saleOrderLine =
           Beans.get(SaleOrderLineRepository.class)
               .find(Long.parseLong(soLine.get("id").toString()));
-      separatedSOLines = new ArrayList<>();
+      List<SaleOrderLine> separatedSOLines = new ArrayList<>();
       separatedSOLines.add(saleOrderLine);
       separatedSOLines.addAll(
           originalSOLines.stream()
