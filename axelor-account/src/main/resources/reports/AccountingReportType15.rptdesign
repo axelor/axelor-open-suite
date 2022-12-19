@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.11.0.v202007221505</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806071708</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -486,6 +486,7 @@ LEFT JOIN public.account_tax_line as TaxLine on (TaxPaymentMoveLine.origin_tax_l
 LEFT JOIN public.account_tax as Tax on (TaxLine.tax = Tax.id)
 LEFT JOIN Public.account_fiscal_position as FiscalPosition on (TaxPaymentMoveLine.fiscal_position = FiscalPosition.id)
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
@@ -503,7 +504,8 @@ AND AccountingReport.company = Move.company
 AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
     or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
     or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
-    or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) 
+    or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
+AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) 
 order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -943,6 +945,7 @@ LEFT JOIN public.account_tax_line as TaxLine on (TaxPaymentMoveLine.origin_tax_l
 LEFT JOIN public.account_tax as Tax on (TaxLine.tax = Tax.id)
 LEFT JOIN public.account_fiscal_position as FiscalPosition on (TaxPaymentMoveLine.fiscal_position = FiscalPosition.id)
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2)
@@ -961,6 +964,7 @@ AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or Ac
     or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
     or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
     or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) 
+AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner)
 GROUP BY Tax.id ,TaxPaymentMoveLine.tax_rate, FiscalPosition.code
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>

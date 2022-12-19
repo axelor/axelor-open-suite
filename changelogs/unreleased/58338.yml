@@ -1,6 +1,0 @@
----
-title: "Year : Demo data for civil, fiscal and payroll years are now based on the current year."
-type: feature
-description: |
-  Add the possibility to fix a date element when using TODAY in demo data with equal sign.
-  Example: TODAY[-4y=1M=1d] will give us 2018-01-01 if we are in 2022.

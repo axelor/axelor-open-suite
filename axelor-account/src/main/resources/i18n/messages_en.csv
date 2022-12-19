@@ -2882,6 +2882,7 @@
 "Skip ventilation",,,
 "So many accounting operations are used on this move, so move can't be canceled",,,
 "Some due elements could not be loaded there was no amount left to pay.",,,
+"Some invoice lines analytic distributions are not correct, please correct them.",,,
 "Some move amounts have been changed since the imputation. Please remake the imputation.",,,
 "Source Tax",,,
 "Special",,,

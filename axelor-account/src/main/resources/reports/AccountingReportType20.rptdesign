@@ -676,21 +676,24 @@ left outer join public.account_account as ParentAccount5 on (ParentAccount4.pare
 left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 LEFT JOIN account_journal Journal ON (Move.journal = Journal.id)
+LEFT JOIN account_journal_type JournalType ON (Journal.journal_type = JournalType.id)
 LEFT JOIN base_partner Partner ON (Partner.id = Move.partner)
 LEFT JOIN account_account_config Config ON (Config.company = AccountingReport.company)
+left join account_service_type ServiceType ON (Account.service_type = ServiceType.id)
 
 WHERE (AccountingReport.company IS NULL OR AccountingReport.company = Move.company)
 AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.company_currency)
 AND (AccountingReport.date_from IS NULL OR AccountingReport.date_from <= MoveLine.date_val)
 AND (AccountingReport.date_to IS NULL OR AccountingReport.date_to >= MoveLine.date_val)
 AND (AccountingReport.date_val IS NULL OR AccountingReport.date_val >= MoveLine.date_val)
-AND (AccountingReport.journal IS NULL OR AccountingReport.journal = Move.journal)
 AND (AccountingReport.period IS NULL OR AccountingReport.period = Move.period)
-AND (Partner.das2activity IS NULL OR Account.service_type IS NULL)
+AND (ServiceType IS null OR (Partner.das2activity IS null AND ServiceType.is_das2declarable IS true))
 AND (AccountingReport.payment_mode IS NULL OR AccountingReport.payment_mode = Move.payment_mode)
 AND (Move.ignore_in_accounting_ok IS false)
 AND (Move.status_select = 2 OR Move.status_select = 3 OR AccountingReport.display_simulated_move IS true AND Config.is_activate_simulated_move IS true AND Move.status_select = 5)
 AND (AccountingReport.display_only_not_completely_lettered_move_lines IS false OR MoveLine.amount_remaining > 0)
+AND MoveLine.reconcile_group IS NOT null
+AND JournalType.code = 'ACH'
 AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id
     or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
     or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id
