@@ -38,6 +38,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
+import com.axelor.db.JPA;
 import com.axelor.db.JpaSequence;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -397,9 +398,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     copySaleOrder = saleOrderComputeService.computeSaleOrder(copySaleOrder);
+    saleOrderRepo.save(copySaleOrder);
+
+    // refresh the origin sale order to refresh the field saleOrderLineList
+    JPA.refresh(saleOrder);
+
     saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepo.save(saleOrder);
-    saleOrderRepo.save(copySaleOrder);
 
     return copySaleOrder;
   }
