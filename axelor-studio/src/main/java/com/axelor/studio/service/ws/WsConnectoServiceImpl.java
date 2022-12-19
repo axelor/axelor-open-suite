@@ -53,6 +53,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -405,6 +406,8 @@ public class WsConnectoServiceImpl implements WsConnectorService {
         if (val.startsWith("[") && val.endsWith("]")) {
           String[] strArray = val.substring(1, val.length() - 1).trim().split("\\s*,\\s*");
           jsonVal = strArray;
+        } else if (NumberUtils.isCreatable(val)) {
+          jsonVal = NumberUtils.createNumber(val);
         }
       }
     }

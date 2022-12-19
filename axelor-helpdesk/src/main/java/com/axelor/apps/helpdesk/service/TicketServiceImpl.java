@@ -54,10 +54,12 @@ public class TicketServiceImpl implements TicketService {
 
   /** Generate sequence of the ticket. */
   @Override
-  public void computeSeq(Ticket ticket) {
+  public void computeSeq(Ticket ticket) throws AxelorException {
 
     if (Strings.isNullOrEmpty(ticket.getTicketSeq())) {
-      String ticketSeq = sequenceService.getSequenceNumber(SequenceRepository.TICKET, null);
+      String ticketSeq =
+          sequenceService.getSequenceNumber(
+              SequenceRepository.TICKET, null, Ticket.class, "ticketSeq");
       ticket.setTicketSeq(ticketSeq);
     }
   }

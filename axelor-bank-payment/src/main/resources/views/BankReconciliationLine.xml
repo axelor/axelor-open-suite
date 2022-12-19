@@ -6,9 +6,9 @@
   <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false"
     canNew="false">
-    <button onClick="action-bank-reconciliation-line-method-set-selected" name="select"
+    <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
       title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
-    <button onClick="action-bank-reconciliation-line-method-set-selected" name="select"
+    <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
       title="Select / Unselect" icon="fa-minus-circle" showIf="isSelectedBankReconciliation"/>
     <field name="postedNbr"/>
     <field name="confidenceIndex" readonly="true">

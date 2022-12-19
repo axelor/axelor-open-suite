@@ -42,7 +42,11 @@ public class CashManagementForecastRecapRepository extends ForecastRecapReposito
 
         String sequence =
             Beans.get(SequenceService.class)
-                .getSequenceNumber(SequenceRepository.FORECAST_RECAP_SEQUENCE, company);
+                .getSequenceNumber(
+                    SequenceRepository.FORECAST_RECAP_SEQUENCE,
+                    company,
+                    ForecastRecap.class,
+                    "forecastRecapSeq");
 
         if (sequence == null) {
           throw new AxelorException(

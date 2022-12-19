@@ -32,10 +32,12 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -71,6 +73,7 @@ public class AccountClearanceService {
   protected AppBaseService appBaseService;
   protected User user;
   protected MoveLineCreateService moveLineCreateService;
+  protected BankDetailsService bankDetailsService;
 
   @Inject
   public AccountClearanceService(
@@ -84,7 +87,8 @@ public class AccountClearanceService {
       TaxService taxService,
       TaxAccountService taxAccountService,
       AccountClearanceRepository accountClearanceRepo,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      BankDetailsService bankDetailsService) {
 
     this.appBaseService = appBaseService;
     this.user = userService.getUser();
@@ -97,6 +101,7 @@ public class AccountClearanceService {
     this.taxAccountService = taxAccountService;
     this.accountClearanceRepo = accountClearanceRepo;
     this.moveLineCreateService = moveLineCreateService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   public List<? extends MoveLine> getExcessPayment(AccountClearance accountClearance)
@@ -146,13 +151,20 @@ public class AccountClearanceService {
 
     BigDecimal taxRate =
         taxService.getTaxRate(tax, appBaseService.getTodayDateTime().toLocalDate());
-    Account taxAccount = taxAccountService.getAccount(tax, company, false, false);
     Account profitAccount = accountConfig.getProfitAccount();
     Journal journal = accountConfig.getAccountClearanceJournal();
 
     Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 
     for (MoveLine moveLine : moveLineList) {
+      Account taxAccount =
+          taxAccountService.getAccount(
+              tax,
+              company,
+              journal,
+              moveLine.getAccount().getVatSystemSelect(),
+              false,
+              moveLine.getMove().getFunctionalOriginSelect());
       Move move =
           this.createAccountClearanceMove(
               moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
@@ -162,7 +174,8 @@ public class AccountClearanceService {
     accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
     accountClearance.setDateTime(appBaseService.getTodayDateTime());
     accountClearance.setName(
-        sequenceService.getSequenceNumber(SequenceRepository.ACCOUNT_CLEARANCE, company));
+        sequenceService.getSequenceNumber(
+            SequenceRepository.ACCOUNT_CLEARANCE, company, AccountClearance.class, "name"));
     accountClearanceRepo.save(accountClearance);
   }
 
@@ -178,6 +191,11 @@ public class AccountClearanceService {
     Partner partner = moveLine.getPartner();
 
     // Move
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
     Move move =
         moveCreateService.createMove(
             journal,
@@ -189,7 +207,8 @@ public class AccountClearanceService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             moveLine.getMove().getFunctionalOriginSelect(),
             null,
-            null);
+            null,
+            companyBankDetails);
 
     // Debit MoveLine 411
     BigDecimal amount = moveLine.getAmountRemaining();
@@ -207,7 +226,7 @@ public class AccountClearanceService {
     move.getMoveLineList().add(debitMoveLine);
 
     // Credit MoveLine 77. (profit account)
-    BigDecimal divid = taxRate.add(BigDecimal.ONE);
+    BigDecimal divid = taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE);
     BigDecimal profitAmount =
         amount
             .divide(divid, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
@@ -242,7 +261,7 @@ public class AccountClearanceService {
 
     Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     debitMoveLine.setAccountClearance(accountClearance);

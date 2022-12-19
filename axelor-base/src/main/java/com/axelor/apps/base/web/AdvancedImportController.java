@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.AdvancedImport;
+import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
@@ -27,7 +28,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
@@ -78,11 +78,10 @@ public class AdvancedImportController {
         advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
       }
 
-      MetaFile logFile = Beans.get(DataImportService.class).importData(advancedImport);
-      if (logFile != null) {
-        response.setValue("errorLog", logFile);
+      ImportHistory importHistory = Beans.get(DataImportService.class).importData(advancedImport);
+      if (importHistory != null) {
+        response.setAttr("importHistoryList", "value:add", importHistory);
       } else {
-        response.setValue("errorLog", null);
         response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
         response.setSignal("refresh-app", true);
       }

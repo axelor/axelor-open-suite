@@ -33,4 +33,13 @@ public class ExtractContextMoveServiceBankPaymentImpl extends ExtractContextMove
         (Boolean) context.getOrDefault("isHiddenMoveLinesInBankReconciliation", true));
     return assistantMap;
   }
+
+  @Override
+  public Map<String, Object> getMapFromMoveWizardMassReverseForm(Context context) {
+    Map<String, Object> assistantMap = super.getMapFromMoveWizardMassReverseForm(context);
+    assistantMap.put(
+        "isHiddenMoveLinesInBankReconciliation",
+        (Boolean) context.getOrDefault("isHiddenMoveLinesInBankReconciliation", true));
+    return assistantMap;
+  }
 }

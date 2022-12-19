@@ -44,6 +44,8 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorAlertException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -181,7 +183,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       unitPriceUntaxed =
           unitPrice.divide(
-              taxRate.add(BigDecimal.ONE),
+              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
               appBaseService.getNbDecimalDigitForUnitPrice(),
               RoundingMode.HALF_UP);
     } else {
@@ -189,7 +191,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       unitPriceTaxed =
           unitPrice
-              .multiply(taxRate.add(BigDecimal.ONE))
+              .multiply(taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE))
               .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     }
     return this.createStockMoveLine(
@@ -449,6 +451,31 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       boolean realQty)
       throws AxelorException {
 
+    updateLocations(
+        fromStockLocation,
+        toStockLocation,
+        fromStatus,
+        toStatus,
+        stockMoveLineList,
+        lastFutureStockMoveDate,
+        realQty,
+        null,
+        null);
+  }
+
+  @Override
+  public void updateLocations(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      int fromStatus,
+      int toStatus,
+      List<StockMoveLine> stockMoveLineList,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin)
+      throws AxelorException {
+
     stockMoveLineList = MoreObjects.firstNonNull(stockMoveLineList, Collections.emptyList());
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
@@ -475,9 +502,16 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             toStatus,
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
-        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL
-            && toStatus == StockMoveRepository.STATUS_REALIZED) {
-          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
+        if (toStatus == StockMoveRepository.STATUS_REALIZED) {
+
+          if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            // We dont recompute average price for outgoing lines
+            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine, date, origin);
+          }
+          if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            this.updateAveragePriceLocationLine(
+                toStockLocation, stockMoveLine, fromStatus, toStatus, date, origin);
+          }
           weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
         }
       }
@@ -486,7 +520,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus)
+      StockLocation stockLocation,
+      StockMoveLine stockMoveLine,
+      int fromStatus,
+      int toStatus,
+      LocalDate date,
+      String origin)
       throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
@@ -496,11 +535,37 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
 
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
-      this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
+      BigDecimal avgPrice =
+          this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
+
+      stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine, date, origin);
     }
   }
 
-  protected void computeNewAveragePriceLocationLine(
+  protected void updateWapStockMoveLine(
+      StockLocation stockLocation, StockMoveLine stockMoveLine, LocalDate date, String origin) {
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getOrCreateStockLocationLine(
+            stockLocation, stockMoveLine.getProduct());
+    if (stockLocationLine == null) {
+      return;
+    }
+    BigDecimal avgPrice =
+        Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO);
+    if (date == null) {
+      date =
+          appBaseService.getTodayDate(
+              stockLocationLine.getStockLocation() != null
+                  ? stockLocationLine.getStockLocation().getCompany()
+                  : Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null));
+    }
+
+    stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine, date, origin);
+  }
+
+  protected BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     // avgPrice in stock move line is a bigdecimal but is nullable.
@@ -555,7 +620,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     } else {
       newAvgPrice = oldAvgPrice;
     }
-    stockLocationLineService.updateWap(stockLocationLine, newAvgPrice, stockMoveLine);
+    return newAvgPrice;
   }
 
   @Override
@@ -1210,19 +1275,36 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove) {
+  public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
+    String domain = getCommonFilter(stockMoveLine);
+    domain += getProductTypeFilter(stockMoveLine, stockMove);
+    return domain;
+  }
+
+  protected String getCommonFilter(StockMoveLine stockMoveLine) {
     String domain = "self.isModel = false AND self.isShippingCostsProduct = false";
     if (stockMoveLine.getProductModel() != null) {
       domain += " AND self.parentProduct.id = " + stockMoveLine.getProductModel().getId();
     }
+    domain += " AND self.dtype = 'Product'";
+    return domain;
+  }
+
+  protected String getProductTypeFilter(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
+    return getFilterForStorables(stockMoveLine, stockMove);
+  }
+
+  protected String getFilterForStorables(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
     if (stockMoveLine.getFilterOnAvailableProducts()
         && stockMove.getFromStockLocation().getTypeSelect() != 3) {
-      domain +=
-          " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
-              + stockMove.getFromStockLocation().getId()
-              + " AND sll.currentQty > 0)";
+      return " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
+          + stockMove.getFromStockLocation().getId()
+          + " AND sll.currentQty > 0)";
     }
-    return domain + " AND self.dtype = 'Product'";
+    return "";
   }
 
   @Override
@@ -1280,5 +1362,57 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     stockLocationLineOpt.ifPresent(
         stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice()));
+  }
+
+  /** Create new stock line, then set product infos and compute prices (API AOS) */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public StockMoveLine createStockMoveLine(
+      StockMove stockMove,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal qty,
+      BigDecimal realQty,
+      Unit unit,
+      Integer conformitySelect)
+      throws AxelorException {
+
+    StockMoveLine line =
+        createStockMoveLine(
+            product,
+            product.getName(),
+            "",
+            qty,
+            null,
+            null,
+            null,
+            null,
+            unit,
+            stockMove,
+            trackingNumber);
+    setProductInfo(stockMove, line, stockMove.getCompany());
+    compute(line, stockMove);
+    line.setRealQty(realQty);
+    line.setConformitySelect(conformitySelect);
+    stockMoveLineRepository.save(line);
+    return line;
+  }
+
+  /** Update stock move line realQty and conformity (API AOS) */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateStockMoveLine(
+      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity) throws AxelorException {
+    if (stockMoveLine.getStockMove() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, "Error: missing parent stock move.");
+    } else {
+      if (stockMoveLine.getStockMove().getStatusSelect() != StockMoveRepository.STATUS_REALIZED
+          && stockMoveLine.getStockMove().getStatusSelect()
+              != StockMoveRepository.STATUS_CANCELED) {
+        stockMoveLine.setRealQty(realQty);
+        stockMoveLine.setConformitySelect(conformity);
+      }
+    }
   }
 }

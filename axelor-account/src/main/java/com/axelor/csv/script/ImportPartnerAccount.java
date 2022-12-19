@@ -19,6 +19,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.google.inject.Inject;
@@ -37,6 +38,7 @@ public class ImportPartnerAccount {
         AccountingSituation accountingSituation = new AccountingSituation();
         accountingSituation.setPartner(partner);
         accountingSituation.setCompany(company);
+        accountingSituation.setVatSystemSelect(AccountingSituationRepository.VAT_COMMON_SYSTEM);
         accountingSituation.setCustomerAccount(
             accountRepo
                 .all()

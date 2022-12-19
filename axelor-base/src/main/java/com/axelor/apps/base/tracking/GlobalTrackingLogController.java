@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.base.tracking;
 
+import com.axelor.apps.base.db.GlobalTrackingLog;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -35,6 +38,21 @@ public class GlobalTrackingLogController {
 
       response.setAttr(
           showLines ? "globalTrackingLogLineDashlet" : "globalTrackingLogDashlet", "refresh", true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showReference(ActionRequest request, ActionResponse response) {
+    try {
+      GlobalTrackingLog globalTrackingLog = request.getContext().asType(GlobalTrackingLog.class);
+
+      ActionView.ActionViewBuilder actionViewBuilder =
+          Beans.get(GlobalTrackingLogService.class).createReferenceView(globalTrackingLog);
+
+      if (actionViewBuilder != null) {
+        response.setView(actionViewBuilder.map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

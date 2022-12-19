@@ -170,7 +170,8 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null);
+            null,
+            bankDetails);
 
     BigDecimal amountConverted =
         currencyService.getAmountCurrencyConvertedAtDate(

@@ -26,6 +26,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -39,8 +40,9 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
   public StockLocationServiceSupplychainImpl(
       StockLocationRepository stockLocationRepo,
       StockLocationLineService stockLocationLineService,
-      ProductRepository productRepo) {
-    super(stockLocationRepo, stockLocationLineService, productRepo);
+      ProductRepository productRepo,
+      StockConfigService stockConfigService) {
+    super(stockLocationRepo, stockLocationLineService, productRepo, stockConfigService);
   }
 
   @Override

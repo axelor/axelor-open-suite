@@ -509,7 +509,12 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   @Override
   @Transactional
   public void init(ConfiguratorCreator creator) {
-    creator.addAuthorizedUserSetItem(AuthUtils.getUser());
+    User user = AuthUtils.getUser();
+    if (user != null) {
+      creator.addAuthorizedUserSetItem(AuthUtils.getUser());
+    } else {
+      creator.addAuthorizedUserSetItem(AuthUtils.getUser("admin"));
+    }
     addRequiredFormulas(creator);
   }
 

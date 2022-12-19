@@ -18,7 +18,7 @@
       <field name="workshopStockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid"
         onSelect="action-workshop-sequence-config-line-attrs-workshop-domain"
-        if="__config__.app.getApp('production').getManageWorkshop()"/>
+        if="__config__.app.getApp('production')?.getManageWorkshop()"/>
     </panel>
   </form>
 

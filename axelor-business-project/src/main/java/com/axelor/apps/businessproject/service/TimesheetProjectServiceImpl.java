@@ -104,7 +104,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[6];
-      tabInformations[0] = timesheetLine.getProduct();
+      Product product = timesheetLine.getProduct();
+      tabInformations[0] = product;
       tabInformations[1] = timesheetLine.getEmployee();
       // Start date
       tabInformations[2] = timesheetLine.getDate();
@@ -119,8 +120,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       String key = null;
       if (consolidate) {
         key =
-            timesheetLine.getProduct().getId()
-                + "|"
+            (product != null ? product.getId() + "|" : "")
                 + timesheetLine.getEmployee().getId()
                 + "|"
                 + timesheetLine.getProject().getId();

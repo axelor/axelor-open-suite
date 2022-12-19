@@ -25,73 +25,107 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.db.Query;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DepositSlipServiceImpl implements DepositSlipService {
 
+  protected final Logger logger = LoggerFactory.getLogger(getClass());
+
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void loadPayments(DepositSlip depositSlip) throws AxelorException {
-    if (depositSlip.getPublicationDate() != null) {
+  public LocalDate publish(DepositSlip depositSlip) throws AxelorException {
+
+    List<PaymentVoucher> paymentVouchers = depositSlip.getPaymentVoucherList();
+
+    if (paymentVouchers.stream()
+        .filter(
+            paymentVoucher ->
+                Strings.isNullOrEmpty(paymentVoucher.getChequeBank())
+                    || Strings.isNullOrEmpty(paymentVoucher.getChequeOwner())
+                    || Strings.isNullOrEmpty(paymentVoucher.getChequeNumber())
+                    || Objects.isNull(paymentVoucher.getChequeDate()))
+        .findAny()
+        .isPresent()) {
       throw new AxelorException(
           depositSlip,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.DEPOSIT_SLIP_ALREADY_PUBLISHED));
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage.DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO));
     }
 
-    depositSlip.clearPaymentVoucherList();
+    Set<BankDetails> bankDetailsCollection =
+        paymentVouchers.stream()
+            .map(PaymentVoucher::getCompanyBankDetails)
+            .collect(Collectors.toSet());
 
-    fetchPaymentVouchers(depositSlip).forEach(depositSlip::addPaymentVoucherListItem);
-    compute(depositSlip);
+    for (BankDetails bankDetails : bankDetailsCollection) {
+      publish(depositSlip, bankDetails);
+    }
+
+    LocalDate date = Beans.get(AppBaseService.class).getTodayDate(depositSlip.getCompany());
+    depositSlip.setPublicationDate(date);
+
+    return date;
   }
 
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public String publish(DepositSlip depositSlip) throws AxelorException {
-    confirmPayments(depositSlip);
+  protected void publish(DepositSlip depositSlip, BankDetails bankDetails) throws AxelorException {
 
-    ReportSettings settings =
-        ReportFactory.createReport(getReportName(depositSlip), getFilename(depositSlip));
+    String filename = getFilename(depositSlip, bankDetails);
+
+    deleteExistingPublishDmsFile(depositSlip, filename);
+
+    ReportSettings settings = ReportFactory.createReport(getReportName(depositSlip), filename);
     settings.addParam("DepositSlipId", depositSlip.getId());
+    settings.addParam("BankDetailsId", bankDetails.getId());
     settings.addParam("Locale", ReportSettings.getPrintingLocale(null));
     settings.addParam(
         "Timezone",
         depositSlip.getCompany() != null ? depositSlip.getCompany().getTimezone() : null);
     settings.addFormat("pdf");
-    String fileLink = settings.toAttach(depositSlip).generate().getFileLink();
-    depositSlip.setPublicationDate(
-        Beans.get(AppBaseService.class).getTodayDate(depositSlip.getCompany()));
-    return fileLink;
+    settings.toAttach(depositSlip).generate();
   }
 
-  @Override
-  public String getFilename(DepositSlip depositSlip) throws AxelorException {
-    String name;
+  protected void deleteExistingPublishDmsFile(DepositSlip depositSlip, String filename) {
 
-    switch (depositSlip.getPaymentModeTypeSelect()) {
-      case PaymentModeRepository.TYPE_CHEQUE:
-        name = I18n.get("Cheque deposit slip");
-        break;
-      case PaymentModeRepository.TYPE_CASH:
-        name = I18n.get("Cash deposit slip");
-        break;
-      default:
-        throw new AxelorException(
-            depositSlip,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            AccountExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
-    }
+    MetaFiles metaFiles = Beans.get(MetaFiles.class);
 
-    return String.format("%s - %s", name, depositSlip.getDepositNumber());
+    Query.of(DMSFile.class)
+        .filter("self.relatedId = :id AND self.relatedModel = :model and self.fileName = :filename")
+        .bind("id", depositSlip.getId())
+        .bind("model", depositSlip.getClass().getName())
+        .bind("filename", filename + ".pdf")
+        .fetchStream()
+        .forEach(dmsFile -> metaFiles.delete(dmsFile));
+  }
+
+  public String getFilename(DepositSlip depositSlip, BankDetails bankDetails)
+      throws AxelorException {
+
+    StringBuilder stringBuilder = new StringBuilder(depositSlip.getDepositNumber());
+    stringBuilder = stringBuilder.append('-').append(bankDetails.getBankCode());
+    stringBuilder = stringBuilder.append('-').append(bankDetails.getAccountNbr());
+
+    return stringBuilder.toString();
   }
 
   private String getReportName(DepositSlip depositSlip) throws AxelorException {
@@ -108,19 +142,9 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     }
   }
 
-  private void compute(DepositSlip depositSlip) {
-    if (depositSlip.getPaymentVoucherList() != null) {
-      List<PaymentVoucher> paymentVoucherList = depositSlip.getPaymentVoucherList();
-      BigDecimal totalAmount =
-          paymentVoucherList.stream()
-              .map(PaymentVoucher::getPaidAmount)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-      depositSlip.setTotalAmount(totalAmount);
-      depositSlip.setChequeCount(paymentVoucherList.size());
-    }
-  }
+  @Override
+  public List<PaymentVoucher> fetchPaymentVouchers(DepositSlip depositSlip) {
 
-  private List<PaymentVoucher> fetchPaymentVouchers(DepositSlip depositSlip) {
     QueryBuilder<PaymentVoucher> queryBuilder = QueryBuilder.of(PaymentVoucher.class);
 
     if (depositSlip.getPaymentModeTypeSelect() != 0) {
@@ -128,20 +152,28 @@ public class DepositSlipServiceImpl implements DepositSlipService {
       queryBuilder.bind("paymentModeTypeSelect", depositSlip.getPaymentModeTypeSelect());
     }
 
-    if (depositSlip.getCompany() != null) {
+    if (Objects.nonNull(depositSlip.getCompany())) {
       queryBuilder.add("self.company = :company");
       queryBuilder.bind("company", depositSlip.getCompany());
     }
 
-    if (depositSlip.getCurrency() != null) {
+    if (Objects.nonNull(depositSlip.getCurrency())) {
       queryBuilder.add("self.currency = :currency");
       queryBuilder.bind("currency", depositSlip.getCurrency());
     }
 
-    if (depositSlip.getCompanyBankDetails() != null
-        && Beans.get(AppBaseService.class).getAppBase().getManageMultiBanks()) {
-      queryBuilder.add("self.companyBankDetails = :companyBankDetails");
+    if (Objects.nonNull(depositSlip.getCompanyBankDetails())) {
+      queryBuilder.add(
+          "self.companyBankDetails = :companyBankDetails AND ( self.bankEntryGenWithoutValEntryCollectionOk is true OR self.paymentMode.accountingTriggerSelect = :accountingTriggerSelect)");
       queryBuilder.bind("companyBankDetails", depositSlip.getCompanyBankDetails());
+      queryBuilder.bind(
+          "accountingTriggerSelect", PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
+    }
+
+    if (Objects.nonNull(depositSlip.getValueForCollectionAccount())) {
+      queryBuilder.add(
+          "self.valueForCollectionAccount = :valueForCollectionAccount AND self.bankEntryGenWithoutValEntryCollectionOk is not true");
+      queryBuilder.bind("valueForCollectionAccount", depositSlip.getValueForCollectionAccount());
     }
 
     if (depositSlip.getFromDate() != null) {
@@ -162,19 +194,44 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     queryBuilder.add("self.depositSlip IS NULL");
 
     queryBuilder.add("self.statusSelect = :statusSelect");
-    queryBuilder.bind("statusSelect", PaymentVoucherRepository.STATUS_WAITING_FOR_DEPOSIT_SLIP);
+    queryBuilder.bind("statusSelect", PaymentVoucherRepository.STATUS_CONFIRMED);
 
-    return queryBuilder.build().fetch();
-  }
-
-  private void confirmPayments(DepositSlip depositSlip) throws AxelorException {
-    if (depositSlip.getPaymentVoucherList() != null) {
-      PaymentVoucherConfirmService paymentVoucherConfirmService =
-          Beans.get(PaymentVoucherConfirmService.class);
-
-      for (PaymentVoucher paymentVoucher : depositSlip.getPaymentVoucherList()) {
-        paymentVoucherConfirmService.createMoveAndConfirm(paymentVoucher);
+    List<PaymentVoucher> paymentVouchers = queryBuilder.build().fetch();
+    List<PaymentVoucher> paymentVouchersSelected = depositSlip.getPaymentVoucherList();
+    if (CollectionUtils.isEmpty(paymentVouchers)
+        || CollectionUtils.isEmpty(paymentVouchersSelected)) {
+      return paymentVouchers;
+    } else {
+      for (PaymentVoucher paymentVoucher : paymentVouchersSelected) {
+        if (paymentVouchers.contains(paymentVoucher)) {
+          paymentVouchers.remove(paymentVoucher);
+        }
       }
     }
+    return paymentVouchers;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void validate(DepositSlip depositSlip) throws AxelorException {
+
+    if (Objects.isNull(depositSlip.getPaymentVoucherList())) {
+      return;
+    }
+
+    if (Objects.isNull(depositSlip.getPublicationDate()) || depositSlip.getChequeCount() < 1) {
+      throw new AxelorException(
+          depositSlip,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.DEPOSIT_SLIP_NOT_PUBLISHED));
+    }
+
+    PaymentVoucherConfirmService paymentVoucherConfirmService =
+        Beans.get(PaymentVoucherConfirmService.class);
+    for (PaymentVoucher paymentVoucher : depositSlip.getPaymentVoucherList()) {
+      paymentVoucherConfirmService.valueForCollectionMoveToGeneratedMove(
+          paymentVoucher, depositSlip.getDepositDate());
+    }
+
+    depositSlip.setIsBankDepositMoveGenerated(true);
   }
 }

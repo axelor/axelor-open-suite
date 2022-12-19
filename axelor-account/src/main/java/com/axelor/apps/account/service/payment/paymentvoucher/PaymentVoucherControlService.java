@@ -36,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentVoucherControlService {
 
@@ -130,8 +131,27 @@ public class PaymentVoucherControlService {
     return false;
   }
 
+  public boolean controlMoveAmounts(PaymentVoucher paymentVoucher) {
+    if (!CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
+      for (PayVoucherElementToPay elementToPay : paymentVoucher.getPayVoucherElementToPayList()) {
+        BigDecimal remainingAmountToPay = elementToPay.getRemainingAmount();
+        BigDecimal remainingAmountMoveLine;
+        if (elementToPay.getFinancialDiscount() == null) {
+          remainingAmountMoveLine = elementToPay.getMoveLine().getAmountRemaining();
+        } else {
+          remainingAmountMoveLine = elementToPay.getMoveLine().getRemainingAmountAfterFinDiscount();
+        }
+        if (!remainingAmountToPay.equals(remainingAmountMoveLine)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   public boolean isReceiptDisplayed(PaymentVoucher paymentVoucher) {
-    if (paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_CONFIRMED) {
+    if (paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_CONFIRMED
+        && paymentVoucher.getStatusSelect() != PaymentVoucherRepository.STATUS_CANCELED) {
       return false;
     }
 

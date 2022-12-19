@@ -26,6 +26,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Singleton
@@ -81,5 +82,27 @@ public class TaxService {
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(BaseExceptionMessage.TAX_1),
         tax.getName());
+  }
+
+  public BigDecimal convertUnitPrice(
+      Boolean priceIsAti, TaxLine taxLine, BigDecimal price, int scale) {
+
+    if (taxLine == null) {
+      return price;
+    }
+
+    if (priceIsAti) {
+      price =
+          price.divide(
+              taxLine.getValue().divide(new BigDecimal(100)).add(BigDecimal.ONE),
+              scale,
+              RoundingMode.HALF_UP);
+    } else {
+      price =
+          price
+              .add(price.multiply(taxLine.getValue().divide(new BigDecimal(100))))
+              .setScale(scale, RoundingMode.HALF_UP);
+    }
+    return price;
   }
 }

@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.message.db.Message;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -134,4 +135,6 @@ public interface LeaveService {
    * @param leaveLine
    */
   void updateDaysToValidate(LeaveLine leaveLine);
+
+  String getLeaveCalendarDomain(User user);
 }
