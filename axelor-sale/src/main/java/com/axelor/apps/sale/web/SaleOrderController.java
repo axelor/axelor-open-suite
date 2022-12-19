@@ -66,7 +66,6 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -76,7 +75,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,35 +114,30 @@ public class SaleOrderController {
   }
 
   /**
-   * Method that print the sale order as a Pdf
+   * Print the sale order as a PDF.
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
    */
-  public void showSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
-
+  public void showSaleOrder(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_PDF);
   }
 
-  /** Method that prints a proforma invoice as a PDF */
-  public void printProformaInvoice(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  /**
+   * Print a proforma invoice as a PDF.
+   *
+   * @param request
+   * @param response
+   */
+  public void printProformaInvoice(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, true, ReportSettings.FORMAT_PDF);
   }
 
-  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLSX);
   }
 
-  public void exportSaleOrderWord(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void exportSaleOrderWord(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_DOC);
   }
 
