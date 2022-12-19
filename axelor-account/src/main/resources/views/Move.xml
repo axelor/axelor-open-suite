@@ -569,6 +569,7 @@
     <action name="action-group-move-date-onchange"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action name="default-move-record-currency"/>
   </action-group>
 
   <action-group name="action-group-move-date-onchange">
