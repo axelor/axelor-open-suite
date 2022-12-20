@@ -27,10 +27,10 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class AccountCustomerServiceSupplyChain extends AccountCustomerServiceImpl {
+public class AccountCustomerServiceSupplyChainImpl extends AccountCustomerServiceImpl {
 
   @Inject
-  public AccountCustomerServiceSupplyChain(
+  public AccountCustomerServiceSupplyChainImpl(
       AccountingSituationService accountingSituationService,
       AccountingSituationInitService accountingSituationInitService,
       AccountingSituationRepository accSituationRepo,
