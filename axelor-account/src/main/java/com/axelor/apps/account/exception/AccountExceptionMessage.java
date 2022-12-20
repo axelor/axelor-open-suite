@@ -1037,8 +1037,11 @@ public final class AccountExceptionMessage {
   public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL = /*$$(*/
       "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
 
-  public static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
-      "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+  public static final String MOVE_CHECK_ORIGIN = /*$$(*/
+      "The move field origin is empty, do you wish to continue ?" /*)*/;
+
+  public static final String MOVE_CHECK_DESCRIPTION = /*$$(*/
+      "The move field description is empty, do you wish to continue ?" /*)*/;
 
   public static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
