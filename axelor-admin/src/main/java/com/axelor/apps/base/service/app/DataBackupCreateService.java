@@ -20,10 +20,8 @@ package com.axelor.apps.base.service.app;
 import com.axelor.apps.base.db.AnonymizerLine;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
-import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.apps.base.db.repo.AnonymizerLineRepository;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
-import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
@@ -70,7 +68,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,36 +81,15 @@ import org.slf4j.LoggerFactory;
 
 public class DataBackupCreateService {
 
-  @Inject
-  public DataBackupCreateService(
-      DataBackupRepository dataBackupRepository,
-      MetaModelRepository metaModelRepo,
-      MetaFiles metaFiles,
-      AnonymizeService anonymizeService) {
-    this.dataBackupRepository = dataBackupRepository;
-    this.metaModelRepo = metaModelRepo;
-    this.metaFiles = metaFiles;
-    this.anonymizeService = anonymizeService;
-  }
-
   protected static final char SEPARATOR = ',';
   protected static final char QUOTE_CHAR = '"';
   protected static final char REFERENCE_FIELD_SEPARATOR = '|';
-
   protected static final int BUFFER_SIZE = 1000;
-
-  protected DataBackupRepository dataBackupRepository;
-  protected MetaModelRepository metaModelRepo;
-  protected MetaFiles metaFiles;
-  protected AnonymizeService anonymizeService;
-  @Inject protected AnonymizerLineRepository anonymizerLineRepository;
-
-  protected Logger LOG = LoggerFactory.getLogger(getClass());
 
   protected boolean notNullReferenceFlag;
   protected boolean referenceFlag;
   protected boolean byteArrFieldFlag = false;
-
+  protected List<String> fileNameList;
   protected static Set<String> exceptColumnNameList =
       ImmutableSet.of(
           "importOrigin",
@@ -125,6 +101,8 @@ public class DataBackupCreateService {
           "archived",
           "version",
           "attrs");
+
+  StringBuilder sb = new StringBuilder();
 
   protected static Map<Object, Object> AutoImportModelMap =
       ImmutableMap.builder()
@@ -142,8 +120,29 @@ public class DataBackupCreateService {
           .put("com.axelor.apps.bankpayment.db.BankStatementFileFormat", "self.name = :name")
           .build();
 
-  protected List<String> fileNameList;
-  StringBuilder sb = new StringBuilder();
+  protected DataBackupRepository dataBackupRepository;
+  protected MetaModelRepository metaModelRepo;
+  protected MetaFiles metaFiles;
+  protected AnonymizeService anonymizeService;
+  protected AnonymizerLineRepository anonymizerLineRepository;
+  protected Logger LOG = LoggerFactory.getLogger(getClass());
+  protected DataBackupAnonymizeService dataBackupAnonymizeService;
+
+  @Inject
+  public DataBackupCreateService(
+      DataBackupRepository dataBackupRepository,
+      MetaModelRepository metaModelRepo,
+      MetaFiles metaFiles,
+      AnonymizeService anonymizeService,
+      AnonymizerLineRepository anonymizerLineRepository,
+      DataBackupAnonymizeService dataBackupAnonymizeService) {
+    this.dataBackupRepository = dataBackupRepository;
+    this.metaModelRepo = metaModelRepo;
+    this.metaFiles = metaFiles;
+    this.anonymizeService = anonymizeService;
+    this.anonymizerLineRepository = anonymizerLineRepository;
+    this.dataBackupAnonymizeService = dataBackupAnonymizeService;
+  }
 
   /* Generate csv Files for each individual MetaModel and single config file */
   public DataBackup create(DataBackup dataBackup) throws IOException {
@@ -497,11 +496,12 @@ public class DataBackupCreateService {
               }
 
               if ("Partner".equals(metaModel.getName()) && dataBackup.getAnonymizer() != null) {
-                dataArr = csvComputeAnonymizedFullname(dataArr, headerArr);
+                dataArr =
+                    dataBackupAnonymizeService.csvComputeAnonymizedFullname(dataArr, headerArr);
               }
 
               if (dataBackup.getAnonymizer() != null) {
-                csvAnonymizeImportId(dataArr, headerArr, salt);
+                dataBackupAnonymizeService.csvAnonymizeImportId(dataArr, headerArr, salt);
               }
 
               csvWriter.writeNext(dataArr.toArray(new String[dataArr.size()]), true);
@@ -536,80 +536,6 @@ public class DataBackupCreateService {
           e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
     return csvInput;
-  }
-
-  protected List<String> csvAnonymizeImportId(
-      List<String> dataArr, List<String> headerArr, byte[] salt) {
-
-    headerArr.stream()
-        .filter(
-            header ->
-                header.contains("importId")
-                    && dataArr.get(headerArr.indexOf(header)) != null
-                    && !"".equals(dataArr.get(headerArr.indexOf(header))))
-        .forEach(
-            header ->
-                dataArr.set(
-                    headerArr.indexOf(header),
-                    anonymizeImportId(dataArr, headerArr, header, salt)));
-    return dataArr;
-  }
-
-  protected String anonymizeImportId(
-      List<String> dataArr, List<String> headerArr, String header, byte[] salt) {
-    String anoImportId = "";
-    if (dataArr.get(headerArr.indexOf(header)).contains("|")) {
-      String[] importIds = dataArr.get(headerArr.indexOf(header)).split("\\|");
-      for (String importId : importIds) {
-        anoImportId += anonymizeService.hashValue(importId, salt) + "|";
-      }
-    } else {
-      anoImportId = anonymizeService.hashValue(dataArr.get(headerArr.indexOf(header)), salt);
-    }
-    return anoImportId;
-  }
-
-  protected List<String> csvComputeAnonymizedFullname(
-      List<String> dataArr, List<String> headerArr) {
-
-    if (headerArr.indexOf("simpleFullName") < 0
-        || headerArr.indexOf("fullName") < 0
-        || headerArr.indexOf("firstName") < 0
-        || headerArr.indexOf("name") < 0
-        || headerArr.indexOf("importId") < 0) {
-      return dataArr;
-    }
-
-    List<Integer> headersIndex = new ArrayList<>();
-    int headerMax;
-
-    headersIndex.add(headerArr.indexOf("simpleFullName"));
-    headersIndex.add(headerArr.indexOf("fullName"));
-    headersIndex.add(headerArr.indexOf("firstName"));
-    headersIndex.add(headerArr.indexOf("name"));
-    headersIndex.add(headerArr.indexOf("importId"));
-
-    headerMax = Collections.max(headersIndex);
-
-    if (dataArr.size() < headerMax) {
-      return dataArr;
-    }
-
-    dataArr.set(
-        headerArr.indexOf("simpleFullName"),
-        ComputeNameTool.computeSimpleFullName(
-            dataArr.get(headerArr.indexOf("firstName")),
-            dataArr.get(headerArr.indexOf("name")),
-            dataArr.get(headerArr.indexOf("importId"))));
-    dataArr.set(
-        headerArr.indexOf("fullName"),
-        ComputeNameTool.computeFullName(
-            dataArr.get(headerArr.indexOf("firstName")),
-            dataArr.get(headerArr.indexOf("name")),
-            dataArr.get(headerArr.indexOf("partnerSeq")),
-            dataArr.get(headerArr.indexOf("importId"))));
-
-    return dataArr;
   }
 
   protected boolean isPropertyExportable(Property property) {
@@ -717,7 +643,7 @@ public class DataBackupCreateService {
       throws AxelorException {
     String id = metaModelMapper.get(dataObject, "id").toString();
     Object value = metaModelMapper.get(dataObject, property.getName());
-    List<AnonymizerLine> anonymizerLines = new ArrayList<>();
+    List<AnonymizerLine> anonymizerLines;
 
     if (value == null) {
       return "";
@@ -725,11 +651,12 @@ public class DataBackupCreateService {
     String propertyTypeStr = property.getType().toString();
 
     if (dataBackup.getAnonymizer() != null) {
-      anonymizerLines = searchAnonymizerLines(dataBackup, property, metaModelName);
-    }
-
-    if (anonymizerLines != null && anonymizerLines.size() > 0) {
-      return anonymizeMetaModelData(property, metaModelName, value, anonymizerLines);
+      anonymizerLines =
+          dataBackupAnonymizeService.searchAnonymizerLines(dataBackup, property, metaModelName);
+      if (anonymizerLines != null && !anonymizerLines.isEmpty()) {
+        return dataBackupAnonymizeService.anonymizeMetaModelData(
+            property, metaModelName, value, anonymizerLines);
+      }
     }
 
     switch (propertyTypeStr) {
@@ -775,52 +702,6 @@ public class DataBackupCreateService {
       default:
         return value.toString();
     }
-  }
-
-  protected String anonymizeMetaModelData(
-      Property property, String metaModelName, Object value, List<AnonymizerLine> anonymizerLines)
-      throws AxelorException {
-
-    if (anonymizerLines != null && anonymizerLines.size() > 0) {
-      if (property.isJson()) {
-        return anonymizeMetaModelDataJsonValues(anonymizerLines, value);
-      }
-    }
-    return anonymizeMetaModelDataValues(anonymizerLines, value, property, metaModelName);
-  }
-
-  protected String anonymizeMetaModelDataJsonValues(
-      List<AnonymizerLine> anonymizerLines, Object value) throws AxelorException {
-    HashMap<MetaJsonField, FakerApiField> fakerMap = new HashMap<>();
-
-    anonymizerLines.stream()
-        .filter(anonymizerLine -> anonymizerLine.getMetaJsonField() != null)
-        .forEach(
-            anonymizerLine ->
-                fakerMap.put(anonymizerLine.getMetaJsonField(), anonymizerLine.getFakerApiField()));
-
-    return anonymizeService.createAnonymizedJson(value, fakerMap).toString();
-  }
-
-  protected String anonymizeMetaModelDataValues(
-      List<AnonymizerLine> anonymizerLines, Object value, Property property, String metaModelName)
-      throws AxelorException {
-    String result = "";
-    for (AnonymizerLine anonymizerLine : anonymizerLines) {
-      if (metaModelName.equals(anonymizerLine.getMetaModel().getName())
-          && anonymizerLine.getMetaField() != null
-          && property.getName().equals(anonymizerLine.getMetaField().getName())) {
-        if (anonymizerLine.getFakerApiField() != null) {
-          result =
-              anonymizeService
-                  .anonymizeValue(value, property, anonymizerLine.getFakerApiField())
-                  .toString();
-        } else {
-          result = anonymizeService.anonymizeValue(value, property).toString();
-        }
-      }
-    }
-    return result;
   }
 
   public String createRelativeDateTime(LocalDateTime dateT) {
@@ -1013,36 +894,5 @@ public class DataBackupCreateService {
       }
     }
     return errorsCount;
-  }
-
-  protected List<AnonymizerLine> searchAnonymizerLines(
-      DataBackup dataBackup, Property property, String metaModelName) {
-    List<AnonymizerLine> anonymizerLines = new ArrayList<>();
-    for (AnonymizerLine anonymizerLine : dataBackup.getAnonymizer().getAnonymizerLineList()) {
-      if (property.isJson()
-          && metaModelName.equals(anonymizerLine.getMetaModel().getName())
-          && anonymizerLine.getMetaField() != null
-          && property.getName().equals(anonymizerLine.getMetaField().getName())
-          && anonymizerLine.getMetaJsonField() != null) {
-        anonymizerLines =
-            anonymizerLineRepository
-                .all()
-                .filter(
-                    "self.anonymizer = :anonymizer "
-                        + "AND self.metaModel.name = :metaModel "
-                        + "AND self.metaField.name = :metaField "
-                        + "AND self.metaJsonField is NOT NULL")
-                .bind("anonymizer", dataBackup.getAnonymizer())
-                .bind("metaModel", metaModelName)
-                .bind("metaField", property.getName())
-                .fetch();
-      }
-      if (metaModelName.equals(anonymizerLine.getMetaModel().getName())
-          && anonymizerLine.getMetaField() != null
-          && property.getName().equals(anonymizerLine.getMetaField().getName())) {
-        anonymizerLines.add(anonymizerLine);
-      }
-    }
-    return anonymizerLines;
   }
 }

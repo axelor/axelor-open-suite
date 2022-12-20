@@ -59,6 +59,14 @@ public interface AnonymizeService {
       throws AxelorException;
 
   /**
+   * Return a hash of the value given.
+   *
+   * @param data
+   * @return
+   */
+  String hashValue(String data);
+
+  /**
    * Return a hash of the value given with the given salt.
    *
    * @param data
