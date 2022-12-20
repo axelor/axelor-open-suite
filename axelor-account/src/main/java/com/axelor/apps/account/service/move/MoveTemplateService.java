@@ -352,7 +352,12 @@ public class MoveTemplateService {
           }
         }
 
-        if (move.getMoveLineList().stream().map(it -> it.getPartner()).distinct().count() == 1) {
+        if (move.getMoveLineList().stream()
+                .filter(it -> it.getPartner() != null)
+                .map(it -> it.getPartner())
+                .distinct()
+                .count()
+            == 1) {
           move.setPartner(move.getMoveLineList().get(0).getPartner());
         }
 
