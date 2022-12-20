@@ -249,7 +249,7 @@ public class DuplicateObjectsController {
     String criteria = getCriteria(request, (Class<? extends Model>) JPA.model(request.getModel()));
 
     response.setView(
-        ActionView.define("Check duplicate")
+        ActionView.define(I18n.get("Check duplicate"))
             .model(Wizard.class.getName())
             .add("form", "wizard-check-duplicate-form")
             .param("popup", "true")

@@ -67,7 +67,7 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
     if (project.getId() != null) {
       response.setView(
-          ActionView.define("Purchase Order")
+          ActionView.define(I18n.get("Purchase Order"))
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-form")
               .add("grid", "purchase-order-quotation-grid")
@@ -116,7 +116,7 @@ public class ProjectController {
     project = Beans.get(ProjectRepository.class).find(project.getId());
 
     response.setView(
-        ActionView.define("Invoice Buisness Project")
+        ActionView.define(I18n.get("Invoice Business Project"))
             .model(InvoicingProject.class.getName())
             .add("form", "invoicing-project-form")
             .param("forceEdit", "true")

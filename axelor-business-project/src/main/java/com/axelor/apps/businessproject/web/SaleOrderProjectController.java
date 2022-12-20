@@ -73,7 +73,7 @@ public class SaleOrderProjectController {
 
       response.setReload(true);
       response.setView(
-          ActionView.define("Project")
+          ActionView.define(I18n.get("Project"))
               .model(Project.class.getName())
               .add("form", "project-form")
               .param("forceEdit", "true")

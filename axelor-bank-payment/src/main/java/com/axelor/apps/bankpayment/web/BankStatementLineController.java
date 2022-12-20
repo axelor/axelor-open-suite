@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -44,7 +45,8 @@ public class BankStatementLineController {
           Beans.get(BankStatementLineService.class)
               .print(fromDate, toDate, bankDetails, exportType);
       if (StringUtils.notEmpty(fileLink)) {
-        response.setView(ActionView.define("Bank statement lines").add("html", fileLink).map());
+        response.setView(
+            ActionView.define(I18n.get("Bank statement lines")).add("html", fileLink).map());
       }
 
     } catch (Exception e) {

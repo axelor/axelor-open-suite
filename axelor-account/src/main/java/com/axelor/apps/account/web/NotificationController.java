@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.service.NotificationService;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -67,7 +68,7 @@ public class NotificationController {
         }
       }
       response.setView(
-          ActionView.define("MoveLines")
+          ActionView.define(I18n.get("MoveLines"))
               .model(MoveLine.class.getName())
               .add("grid", "move-line-grid")
               .add("form", "move-line-form")

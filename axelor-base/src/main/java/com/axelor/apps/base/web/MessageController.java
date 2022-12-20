@@ -61,7 +61,9 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
     if (pdfPath != null) {
 
       response.setView(
-          ActionView.define("Message " + message.getSubject()).add("html", pdfPath).map());
+          ActionView.define(I18n.get("Message ") + message.getSubject())
+              .add("html", pdfPath)
+              .map());
 
     } else response.setFlash(I18n.get(BaseExceptionMessage.MESSAGE_1));
   }
