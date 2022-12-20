@@ -20,7 +20,7 @@ package com.axelor.apps.supplychain.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
-import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountCustomerServiceImpl;
 import com.axelor.apps.account.service.AccountingCutOffServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
@@ -229,7 +229,7 @@ public class SupplychainModule extends AxelorModule {
     bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
     bind(AppSupplychainService.class).to(AppSupplychainServiceImpl.class);
     bind(SupplychainSaleConfigService.class).to(SupplychainSaleConfigServiceImpl.class);
-    bind(AccountCustomerService.class).to(AccountCustomerServiceSupplyChain.class);
+    bind(AccountCustomerServiceImpl.class).to(AccountCustomerServiceSupplyChain.class);
     bind(AccountingSituationServiceImpl.class).to(AccountingSituationSupplychainServiceImpl.class);
     bind(AccountingSituationSupplychainService.class)
         .to(AccountingSituationSupplychainServiceImpl.class);
