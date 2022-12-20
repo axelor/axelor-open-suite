@@ -397,7 +397,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
+  @Override
+  public Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
 

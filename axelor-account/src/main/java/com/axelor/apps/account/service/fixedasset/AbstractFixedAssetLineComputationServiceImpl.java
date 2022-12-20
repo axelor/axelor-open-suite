@@ -359,7 +359,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     return maxDays == day;
   }
 
-  protected FixedAssetLine createFixedAssetLine(
+  @Override
+  public FixedAssetLine createFixedAssetLine(
       FixedAsset fixedAsset,
       LocalDate depreciationDate,
       BigDecimal depreciation,

@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
   protected FixedAssetLineRepository fixedAssetLineRepository;
+  protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected YearService yearService;
   protected PeriodService periodService;
 
@@ -55,9 +56,11 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   @Inject
   public FixedAssetLineServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepository,
+      FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       YearService yearService,
       PeriodService periodService) {
     this.fixedAssetLineRepository = fixedAssetLineRepository;
+    this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.yearService = yearService;
     this.periodService = periodService;
   }
@@ -175,6 +178,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
                 });
       }
     }
+    fixedAssetDerogatoryLineService.copyFixedAssetDerogatoryLineList(fixedAsset, newFixedAsset);
   }
 
   @Override
