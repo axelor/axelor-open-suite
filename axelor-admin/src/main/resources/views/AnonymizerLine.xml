@@ -14,7 +14,7 @@
   <form model="com.axelor.apps.base.db.AnonymizerLine" title="Anonymizer line"
     name="anonymizer-line-form"
     onLoad="action-data-backup-config-anonymize-line-attr-display-meta-json-field">
-    <panel name="mainPanel">
+    <panel name="mainPanel" itemSpan="4">
       <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form"
         onChange="action-anonymizer-line-attrs-empty-fields, action-anonymizer-line-attrs-meta-json-field-hidden-onchange-meta-model"/>
       <field name="metaField" grid-view="meta-field-details-grid" canNew="false"
@@ -24,10 +24,10 @@
         and not (self.metaModel.name = 'Partner' and self.name='fullName')
         and not (self.metaModel.name = 'Partner' and self.name='simpleFullName')"
         onChange="action-anonymizer-line-attrs-empty-faker-api-field, action-anonymizer-line-attrs-display-meta-json-field"
-        readonlyIf="metaModel == null"/>
+        readonlyIf="metaModel == null" hideIf="metaModel == null"/>
       <field name="metaJsonField" hidden="true"
         onSelect="action-anonymizer-line-attr-on-select-meta-json-field"/>
-      <field name="useFakeData"/>
+      <field name="useFakeData" widget="boolean-switch"/>
       <field name="fakerApiField" grid-view="faker-api-field-grid"
         form-view="faker-api-field-form" hidden="true" showIf="useFakeData" requiredIf="useFakeData"/>
     </panel>

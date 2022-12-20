@@ -25,6 +25,7 @@
           colSpan="2"/>
         <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>
         <field name="anonymizer" colSpan="4" canRemove="true"/>
+        <field name="anonymizer.anonymizerLineList" showIf="anonymizer != null"/>
 
       </panel>
       <panel name="actionPanel" colSpan="3" itemSpan="12" sidebar="true">
