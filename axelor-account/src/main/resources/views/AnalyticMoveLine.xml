@@ -66,7 +66,7 @@
     onNew="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
     <panel name="mainPanel">
       <field name="analyticAxis"
-        onSelect="action-attrs-domain-onselect-axis-analytic-move-line"
+        onSelect="action-method-domain-onselect-axis-analytic-move-line"
         onChange="action-record-onchange-axis-analytic-move-line"/>
       <field name="analyticAccount" onSelect="action-attrs-domain-onselect-analytic-account"
         readonlyIf="!analyticAxis"/>
@@ -84,7 +84,7 @@
         grid-view="analytic-journal-grid"
         onSelect="action-attrs-domain-onselect-journal-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
-        onSelect="action-attrs-domain-onselect-axis-analytic-move-line"
+        onSelect="action-method-domain-onselect-axis-analytic-move-line"
         onChange="action-record-onchange-axis-analytic-move-line"/>
       <field name="analyticAccount" form-view="analytic-account-form"
         grid-view="analytic-account-grid" onSelect="action-attrs-domain-onselect-analytic-account"/>
@@ -125,7 +125,7 @@
         onChange="action-attrs-domain-onselect-axis-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onChange="action-attrs-domain-onselect-journal-analytic-move-line"
-        onSelect="action-attrs-domain-onselect-axis-analytic-move-line"/>
+        onSelect="action-method-domain-onselect-axis-analytic-move-line"/>
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onSelect="action-attrs-domain-onselect-analytic-account"/>
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
@@ -227,13 +227,10 @@
     <field name="project" hidden="true" if="!__config__.app.isApp('business-project')"/>
   </search-filters>
 
-  <action-attrs name="action-attrs-domain-onselect-axis-analytic-move-line">
-    <attribute name="domain" for="analyticAxis"
-      expr="eval: &quot;self.company.id = ${analyticJournal.company.id} &quot;"
-      if="analyticJournal &amp;&amp; analyticJournal?.company"/>
-    <attribute name="domain" for="analyticAxis" expr="eval: null"
-      if="!(analyticJournal &amp;&amp; analyticJournal?.company)"/>
-  </action-attrs>
+  <action-method name="action-method-domain-onselect-axis-analytic-move-line">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+      method="setAnalyticAxisDomain"/>
+  </action-method>
 
   <action-attrs name="action-attrs-domain-onselect-journal-analytic-move-line">
     <attribute name="domain" for="analyticJournal"

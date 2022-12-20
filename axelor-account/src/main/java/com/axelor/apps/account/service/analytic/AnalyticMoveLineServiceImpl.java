@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
@@ -34,6 +35,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -43,12 +45,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   protected AppAccountService appAccountService;
   protected AccountManagementServiceAccountImpl accountManagementServiceAccountImpl;
   protected AccountConfigService accountConfigService;
+  protected AccountConfigRepository accountConfigRepository;
   protected AccountRepository accountRepository;
   protected AppBaseService appBaseService;
   private final int RETURN_SCALE = 2;
@@ -59,12 +63,14 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       AppAccountService appAccountService,
       AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
       AccountConfigService accountConfigService,
+      AccountConfigRepository accountConfigRepository,
       AccountRepository accountRepository,
       AppBaseService appBaseService) {
 
     this.appAccountService = appAccountService;
     this.accountManagementServiceAccountImpl = accountManagementServiceAccountImpl;
     this.accountConfigService = accountConfigService;
+    this.accountConfigRepository = accountConfigRepository;
     this.accountRepository = accountRepository;
     this.appBaseService = appBaseService;
   }
@@ -225,5 +231,18 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       analyticMoveLine.setAmount(moveLine.getDebit());
     }
     return analyticMoveLine;
+  }
+
+  @Override
+  public String getAnalyticAxisDomain(AnalyticMoveLine analyticMoveLine, Company company) {
+    StringBuilder domain = new StringBuilder();
+    domain.append("(self.company is null OR self.company.id = " + company.getId() + ")");
+    List<AnalyticAxis> analyticAxisList =
+        accountConfigRepository.findByCompany(company).getAnalyticAxisByCompanyList().stream()
+            .map(AnalyticAxisByCompany::getAnalyticAxis)
+            .collect(Collectors.toList());
+    String idList = StringTool.getIdListString(analyticAxisList);
+    domain.append(" AND self.id IN (" + idList + ")");
+    return domain.toString();
   }
 }
