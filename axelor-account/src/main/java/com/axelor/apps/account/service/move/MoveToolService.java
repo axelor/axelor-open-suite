@@ -156,7 +156,9 @@ public interface MoveToolService {
 
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
-  void setOriginAndDescriptionOnMoveLineList(Move move);
+  void setOriginOnMoveLineList(Move move);
 
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
+
+  void setDescriptionOnMoveLineList(Move move);
 }
