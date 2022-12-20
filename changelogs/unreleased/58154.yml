@@ -1,0 +1,3 @@
+---
+title: "Inventory : when changing real quantity in a line, now takes the correct wap price into account when computing gap and real value"
+type: fix
