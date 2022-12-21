@@ -143,7 +143,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
       FixedAssetLine depreciationFixedAssetLine =
           fixedAssetLineService.generateProrataDepreciationLine(
-              fixedAsset, disposalDate, previousRealizedLine);
+              fixedAsset, disposalDate, previousRealizedLine, previousPlannedLine);
       fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true);
       fixedAssetLineMoveService.generateDisposalMove(
           fixedAsset,
