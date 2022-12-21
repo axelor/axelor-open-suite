@@ -78,6 +78,17 @@ public interface BillOfMaterialService {
       throws AxelorException;
 
   /**
+   * Return a BOM associated to product and company with priority given to - Default BOM -
+   * Alternative BOM - Produt default BOM
+   *
+   * @param originalProduct
+   * @param company
+   * @return Bom found
+   * @throws AxelorException
+   */
+  public BillOfMaterial getBOM(Product originalProduct, Company company) throws AxelorException;
+
+  /**
    * Returns all the products from boms
    *
    * @param companySet

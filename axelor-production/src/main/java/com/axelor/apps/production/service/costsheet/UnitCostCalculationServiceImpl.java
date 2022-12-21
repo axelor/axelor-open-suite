@@ -269,7 +269,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
             ? CostSheetService.ORIGIN_BULK_UNIT_COST_CALCULATION
             : CostSheetService.ORIGIN_BILL_OF_MATERIAL;
 
-    BillOfMaterial billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+    BillOfMaterial billOfMaterial = billOfMaterialService.getBOM(product, company);
 
     CostSheet costSheet =
         costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);

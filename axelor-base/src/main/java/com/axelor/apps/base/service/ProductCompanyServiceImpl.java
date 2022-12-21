@@ -55,6 +55,20 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
     mapper.set(product, fieldName, fieldValue);
   }
 
+  @Override
+  public Object getWithNoDefault(Product originalProduct, String fieldName, Company company)
+      throws AxelorException {
+    Mapper mapper = Mapper.of(Product.class);
+    Product product =
+        findAppropriateProductCompanyWithNoDefault(originalProduct, fieldName, company);
+
+    if (product == null) {
+      return null;
+    }
+
+    return mapper.get(product, fieldName);
+  }
+
   /**
    * Finds the appropriate company-specific version of a product if searched field is overwritten by
    * company
@@ -80,6 +94,51 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
     }
 
     Product product = originalProduct;
+
+    if (company != null && originalProduct.getProductCompanyList() != null) {
+      for (ProductCompany productCompany : originalProduct.getProductCompanyList()) {
+        if (company.equals(productCompany.getCompany())) {
+          Set<MetaField> companySpecificFields =
+              appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+          for (MetaField field : companySpecificFields) {
+            if (field.getName().equals(fieldName)) {
+              product = productCompany;
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+
+    return product;
+  }
+
+  /**
+   * Finds the appropriate ONLY company-specific version of a product if searched field is
+   * overwritten by company
+   *
+   * @param originalProduct
+   * @param fieldName
+   * @param company
+   * @return
+   * @throws AxelorException
+   */
+  protected Product findAppropriateProductCompanyWithNoDefault(
+      Product originalProduct, String fieldName, Company company) throws AxelorException {
+    if (originalProduct == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BaseExceptionMessage.PRODUCT_COMPANY_NO_PRODUCT),
+          fieldName);
+    } else if (fieldName == null || fieldName.trim().equals("")) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BaseExceptionMessage.PRODUCT_COMPANY_NO_FIELD),
+          originalProduct.getFullName());
+    }
+
+    Product product = null;
 
     if (company != null && originalProduct.getProductCompanyList() != null) {
       for (ProductCompany productCompany : originalProduct.getProductCompanyList()) {
