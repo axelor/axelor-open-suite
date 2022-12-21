@@ -37,7 +37,10 @@ public interface FixedAssetLineService {
    * @return generated {@link FixedAssetLine}
    */
   FixedAssetLine generateProrataDepreciationLine(
-      FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine)
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      FixedAssetLine previousRealizedLine,
+      FixedAssetLine previousPlannedLine)
       throws AxelorException;
 
   /**
@@ -52,6 +55,7 @@ public interface FixedAssetLineService {
       FixedAsset fixedAsset,
       FixedAssetLine fixedAssetLine,
       FixedAssetLine previousRealizedLine,
+      FixedAssetLine previousPlannedLine,
       LocalDate disposalDate);
 
   /**

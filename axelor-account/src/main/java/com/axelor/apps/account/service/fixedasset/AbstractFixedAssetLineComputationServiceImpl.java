@@ -278,24 +278,69 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     LocalDate depreciationDate = computeProrataTemporisFirstDepreciationDate(fixedAsset);
 
     if (isProrataTemporis(fixedAsset) && !acquisitionDate.equals(depreciationDate)) {
-      prorataTemporis = computeProrataBetween(fixedAsset, acquisitionDate, depreciationDate);
+      prorataTemporis = computeProrataBetween(fixedAsset, acquisitionDate, depreciationDate, null);
     }
     return prorataTemporis;
   }
 
   protected BigDecimal computeProrataBetween(
-      FixedAsset fixedAsset, LocalDate acquisitionDate, LocalDate depreciationDate) {
+      FixedAsset fixedAsset,
+      LocalDate acquisitionDate,
+      LocalDate depreciationDate,
+      LocalDate nextDate) {
     BigDecimal prorataTemporis;
-    acquisitionDate = acquisitionDate.minusDays(1);
-    int acquisitionYear = acquisitionDate.getYear();
-    Month acquisitionMonth = acquisitionDate.getMonth();
-    int acquisitionDay = acquisitionDate.getDayOfMonth();
-    int depreciationYear = depreciationDate.getYear();
-    Month depreciationMonth = depreciationDate.getMonth();
-    int depreciationDay = depreciationDate.getDayOfMonth();
+
+    BigDecimal nbDaysBetweenAcqAndFirstDepDate =
+        nbDaysBetween(
+            fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
+            acquisitionDate,
+            depreciationDate);
+
+    BigDecimal nbDaysOfPeriod;
+    if (nextDate != null) {
+      nbDaysOfPeriod =
+          nbDaysBetween(
+              fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
+              acquisitionDate,
+              nextDate);
+    } else {
+      nbDaysOfPeriod =
+          BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
+              .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
+    }
+
+    prorataTemporis =
+        nbDaysBetweenAcqAndFirstDepDate.divide(
+            nbDaysOfPeriod, CALCULATION_SCALE, RoundingMode.HALF_UP);
+    return prorataTemporis;
+  }
+
+  /**
+   * Method only use in method computeProrataBetween
+   *
+   * @return
+   */
+  protected Integer getPeriodicityInMonthProrataTemporis(FixedAsset fixedAsset) {
+    return getPeriodicityInMonth(fixedAsset);
+  }
+
+  /**
+   * Method only use in method computeProrataBetween
+   *
+   * @return
+   */
+  protected BigDecimal nbDaysBetween(
+      boolean isUsProrataTemporis, LocalDate startDate, LocalDate endDate) {
+    startDate = startDate.minusDays(1);
+    int acquisitionYear = startDate.getYear();
+    Month acquisitionMonth = startDate.getMonth();
+    int acquisitionDay = startDate.getDayOfMonth();
+    int depreciationYear = endDate.getYear();
+    Month depreciationMonth = endDate.getMonth();
+    int depreciationDay = endDate.getDayOfMonth();
 
     // US way
-    if (fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis()) {
+    if (isUsProrataTemporis) {
 
       if (acquisitionMonth == Month.FEBRUARY
           && depreciationMonth == Month.FEBRUARY
@@ -328,28 +373,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       }
     }
 
-    BigDecimal nbDaysBetweenAcqAndFirstDepDate =
-        BigDecimal.valueOf(
-                360 * (depreciationYear - acquisitionYear)
-                    + 30 * (depreciationMonth.getValue() - acquisitionMonth.getValue())
-                    + (depreciationDay - acquisitionDay))
-            .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
-    BigDecimal nbDaysOfPeriod =
-        BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
-            .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
-    prorataTemporis =
-        nbDaysBetweenAcqAndFirstDepDate.divide(
-            nbDaysOfPeriod, CALCULATION_SCALE, RoundingMode.HALF_UP);
-    return prorataTemporis;
-  }
-
-  /**
-   * Method only use in method computeProrataBetween
-   *
-   * @return
-   */
-  protected Integer getPeriodicityInMonthProrataTemporis(FixedAsset fixedAsset) {
-    return getPeriodicityInMonth(fixedAsset);
+    return BigDecimal.valueOf(
+            360 * (depreciationYear - acquisitionYear)
+                + 30 * (depreciationMonth.getValue() - acquisitionMonth.getValue())
+                + (depreciationDay - acquisitionDay))
+        .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
   }
 
   protected boolean isLastDayOfFebruary(int year, int day) {
