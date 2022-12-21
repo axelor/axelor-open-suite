@@ -278,6 +278,7 @@
 
   <action-group name="action-accounting-batch-group-accounting-cut-off">
     <action name="save"/>
+    <action name="action-accounting-batch-validate-cut-off-move-status"/>
     <action name="action-accounting-batch-view-preview-move-lines-to-process"
       if="previewRecordsToProcess"/>
     <action name="action-accounting-batch-validate-twice-in-a-month"
@@ -444,6 +445,11 @@
       if="eval: !updateAllRealizedFixedAssetLines &amp;&amp; startDate &gt; endDate"/>
   </action-validate>
 
+  <action-validate name="action-accounting-batch-validate-cut-off-move-status">
+    <error
+      message="The selected cut off move status is incompatible with this misc. operation journal"
+      if="eval: (!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; cutOffMoveStatusSelect == 5) || (!miscOpeJournal?.allowAccountingDaybook &amp;&amp; cutOffMoveStatusSelect == 2)"/>
+  </action-validate>
 
   <!-- ACTION ATTRS -->
 
