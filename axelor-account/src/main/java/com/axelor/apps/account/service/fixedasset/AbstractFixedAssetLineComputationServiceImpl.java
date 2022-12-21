@@ -468,7 +468,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     BigDecimal depreciation;
     BigDecimal previousAccountingValue = getAccountingValue(previousFixedAssetLine);
     // If we are at the last line, we depreciate the remaining amount
-    if (!isProrataTemporis(fixedAsset)
+    if (!fixedAssetFailOverControlService.isFailOver(fixedAsset)
+        && !isProrataTemporis(fixedAsset)
         && getNumberOfDepreciation(fixedAsset)
             .equals(numberOfDepreciationDone(fixedAsset).add(BigDecimal.ONE))) {
       return previousAccountingValue;

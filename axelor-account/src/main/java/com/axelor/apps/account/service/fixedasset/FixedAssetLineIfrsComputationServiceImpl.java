@@ -97,7 +97,8 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected Boolean isProrataTemporis(FixedAsset fixedAsset) {
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
+        && fixedAsset.getIfrsNbrOfPastDepreciations() > 0) {
       // This case means that prorata temporis was already computed in another software.
       return false;
     }
