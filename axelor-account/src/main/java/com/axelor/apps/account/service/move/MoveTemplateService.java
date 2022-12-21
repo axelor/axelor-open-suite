@@ -352,6 +352,15 @@ public class MoveTemplateService {
           }
         }
 
+        if (move.getMoveLineList().stream()
+                .filter(it -> it.getPartner() != null)
+                .map(it -> it.getPartner())
+                .distinct()
+                .count()
+            == 1) {
+          move.setPartner(move.getMoveLineList().get(0).getPartner());
+        }
+
         moveLineTaxService.autoTaxLineGenerate(move);
 
         if (moveTemplate.getAutomaticallyValidate()) {
