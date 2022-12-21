@@ -1156,4 +1156,6 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT = /*$$(*/
       "You must configure an account for cashier regulation." /*)*/;
+  public static final String INVOICE_PAYMENT_CANNOT_RECONCILE = /*$$(*/
+      "Invoice move line %s with account %s couldn't be reconciled with customer move line %s with account %s." /*)*/;
 }

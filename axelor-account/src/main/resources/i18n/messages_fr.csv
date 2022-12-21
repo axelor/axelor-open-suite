@@ -1565,6 +1565,7 @@
 "Invoice line","Ligne de facture",,
 "Invoice line filters","Filtres sur ligne de facture ",,
 "Invoice lines","Lignes de facture",,
+"Invoice move line %s with account %s couldn't be reconciled with customer move line %s with account %s.","La ligne d'écriture de facture %s sur le compte %s n'a pas pu être réconciliée avec la ligne d'écriture client %s sur le compte %s.",,
 "Invoice of origin","Factures d'origine",,
 "Invoice rejected","Facture rejetée",,
 "Invoice sending media","Mode d'envoi des factures",,

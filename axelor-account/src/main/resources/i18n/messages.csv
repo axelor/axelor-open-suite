@@ -1565,6 +1565,7 @@
 "Invoice line",,,
 "Invoice line filters",,,
 "Invoice lines",,,
+"Invoice move line %s with account %s couldn't be reconciled with customer move line %s with account %s.",,,
 "Invoice of origin",,,
 "Invoice rejected",,,
 "Invoice sending media",,,

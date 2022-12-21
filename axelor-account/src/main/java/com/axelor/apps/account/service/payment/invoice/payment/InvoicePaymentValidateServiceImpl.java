@@ -244,9 +244,20 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         customerMoveLine = moveline;
       }
     }
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (customerMoveLine != null
+        && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       Reconcile reconcile =
           reconcileService.reconcile(invoiceMoveLine, customerMoveLine, true, false);
+
+      if (reconcile == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_CANNOT_RECONCILE),
+            invoiceMoveLine.getName(),
+            invoiceMoveLine.getAccount().getCode(),
+            customerMoveLine.getName(),
+            customerMoveLine.getAccount().getCode());
+      }
 
       invoicePayment.setReconcile(reconcile);
     }

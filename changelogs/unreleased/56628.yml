@@ -1,0 +1,3 @@
+---
+title: "Invoice Payment: Fixed NPE when trying to generate a payment move from a bank order"
+type: fix
