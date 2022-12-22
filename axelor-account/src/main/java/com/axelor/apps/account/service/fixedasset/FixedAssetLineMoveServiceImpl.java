@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
@@ -27,6 +28,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -681,7 +683,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
       Account creditAccountOne =
           fixedAsset.getFixedAssetCategory().getRealisedAssetsIncomeAccount();
-      List<Account> creditAccountTwoList =
+      List<AccountManagement> creditAccountTwoList =
           taxLine.getTax().getAccountManagementList().stream()
               .filter(
                   accountManagement ->
@@ -689,10 +691,18 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                           .getCompany()
                           .getName()
                           .equals(fixedAsset.getCompany().getName()))
-              .map(accountManagement -> accountManagement.getSaleAccount())
               .collect(Collectors.toList());
       Account creditAccountTwo =
-          !CollectionUtils.isEmpty(creditAccountTwoList) ? creditAccountTwoList.get(0) : null;
+          !CollectionUtils.isEmpty(creditAccountTwoList)
+              ? creditAccountTwoList.get(0).getSaleAccount()
+              : null;
+      if (creditAccountTwo != null) {
+        if (creditAccountTwo.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_GOODS) {
+          creditAccountTwo = creditAccountTwoList.get(0).getSaleTaxVatSystem1Account();
+        } else if (creditAccountTwo.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_SERVICE) {
+          creditAccountTwo = creditAccountTwoList.get(0).getSaleTaxVatSystem2Account();
+        }
+      }
       BigDecimal creditAmountTwo =
           disposalAmount
               .multiply(taxLine.getValue().divide(new BigDecimal(100)))
