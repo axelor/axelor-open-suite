@@ -1973,10 +1973,10 @@ order by MoveLine.date_val ASC]]></xml-property>
                 <property name="width">50%</property>
             </column>
             <column id="3564">
-                <property name="width">30%</property>
+                <property name="width">40%</property>
             </column>
             <column id="3565">
-                <property name="width">30%</property>
+                <property name="width">40%</property>
             </column>
             <row id="3566">
                 <cell id="3567">
@@ -3709,7 +3709,7 @@ balance
                             <property name="width">11%</property>
                         </column>
                         <column id="4157">
-                            <property name="width">11%</property>
+                            <property name="width">15%</property>
                         </column>
                         <column id="4163">
                             <property name="width">16%</property>
