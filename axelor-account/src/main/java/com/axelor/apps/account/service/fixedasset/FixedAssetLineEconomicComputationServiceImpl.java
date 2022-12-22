@@ -53,13 +53,13 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
-    }
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
         && getComputationMethodSelect(fixedAsset)
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       return fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset));
+    }
+    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
+      return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
     }
     return fixedAsset.getGrossValue();
   }
@@ -114,7 +114,7 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected BigDecimal computeInitialDegressiveDepreciation(
       FixedAsset fixedAsset, BigDecimal baseValue) {
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset) && !isProrataTemporis(fixedAsset)) {
       FixedAssetLine dummyPreviousLine = new FixedAssetLine();
       dummyPreviousLine.setAccountingValue(baseValue);
       return super.computeOnGoingDegressiveDepreciation(fixedAsset, dummyPreviousLine);

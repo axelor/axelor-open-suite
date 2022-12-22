@@ -108,7 +108,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected BigDecimal computeInitialDegressiveDepreciation(
       FixedAsset fixedAsset, BigDecimal baseValue) {
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset) && !isProrataTemporis(fixedAsset)) {
       FixedAssetLine dummyPreviousLine = new FixedAssetLine();
       dummyPreviousLine.setAccountingValue(baseValue);
       return super.computeOnGoingDegressiveDepreciation(fixedAsset, dummyPreviousLine);
