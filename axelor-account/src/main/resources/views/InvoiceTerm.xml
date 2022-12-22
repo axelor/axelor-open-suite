@@ -30,33 +30,6 @@
     <field name="isPaid" hidden="true"/>
   </grid>
 
-  <grid name="invoice-term-grid" title="Invoice terms" orderBy="sequence"
-    model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
-    <field name="moveLine.origin"/>
-    <field name="moveLine.originDate"/>
-    <field name="moveLine.move.journal"/>
-    <field name="moveLine"/>
-    <field name="sequence"/>
-    <field name="partner"/>
-    <field name="dueDate">
-      <hilite color="danger"
-        if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-    </field>
-    <field name="amount" title="To pay / To use"/>
-    <field name="amountRemaining" title="Left to pay / to use"/>
-    <field name="isHoldBack"/>
-    <field name="percentage"/>
-    <field name="paymentMode"/>
-    <field name="financialDiscount.discountRate"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="financialDiscountAmount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="financialDiscountDeadlineDate"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="moveLine.move.statusSelect"/>
-    <field name="isPaid" hidden="true"/>
-  </grid>
-
   <grid name="invoice-term-pfp-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <toolbar>
