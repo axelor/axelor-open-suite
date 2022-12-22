@@ -46,7 +46,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AccountingReportValuePercentageService accountingReportValuePercentageService;
   protected AppBaseService appBaseService;
   protected AccountingReportValueRepository accountingReportValueRepo;
-  protected AnalyticAccountRepository analyticAccountRepo;
   protected AccountRepository accountRepo;
 
   protected static int lineOffset = 0;
@@ -60,13 +59,12 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       AppBaseService appBaseService,
       AnalyticAccountRepository analyticAccountRepo,
       AccountRepository accountRepo) {
-    super(accountingReportValueRepo);
+    super(accountingReportValueRepo, analyticAccountRepo);
     this.accountingReportValueCustomRuleService = accountingReportValueCustomRuleService;
     this.accountingReportValueMoveLineService = accountingReportValueMoveLineService;
     this.accountingReportValuePercentageService = accountingReportValuePercentageService;
     this.appBaseService = appBaseService;
     this.accountingReportValueRepo = accountingReportValueRepo;
-    this.analyticAccountRepo = analyticAccountRepo;
     this.accountRepo = accountRepo;
   }
 
@@ -129,11 +127,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       default:
         return null;
     }
-  }
-
-  protected Set<AnalyticAccount> fetchAnalyticAccountsFromCode(String code) {
-    return new HashSet<>(
-        analyticAccountRepo.all().filter("self.code LIKE :code").bind("code", code).fetch());
   }
 
   protected Set<AnalyticAccount> getSortedAnalyticAccountSet(

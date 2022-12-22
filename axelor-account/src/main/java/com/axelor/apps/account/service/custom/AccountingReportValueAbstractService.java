@@ -7,6 +7,7 @@ import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,11 +27,14 @@ import org.apache.commons.collections.CollectionUtils;
 
 public abstract class AccountingReportValueAbstractService {
   protected AccountingReportValueRepository accountingReportValueRepo;
+  protected AnalyticAccountRepository analyticAccountRepo;
 
   @Inject
   public AccountingReportValueAbstractService(
-      AccountingReportValueRepository accountingReportValueRepo) {
+      AccountingReportValueRepository accountingReportValueRepo,
+      AnalyticAccountRepository analyticAccountRepo) {
     this.accountingReportValueRepo = accountingReportValueRepo;
+    this.analyticAccountRepo = analyticAccountRepo;
   }
 
   protected void addNullValue(
@@ -185,5 +190,10 @@ public abstract class AccountingReportValueAbstractService {
     }
 
     return moveLineQuery;
+  }
+
+  protected Set<AnalyticAccount> fetchAnalyticAccountsFromCode(String code) {
+    return new HashSet<>(
+        analyticAccountRepo.all().filter("self.code LIKE :code").bind("code", code).fetch());
   }
 }

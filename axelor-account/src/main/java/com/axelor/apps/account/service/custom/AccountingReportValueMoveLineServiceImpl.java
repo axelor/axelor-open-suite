@@ -6,12 +6,15 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -38,8 +41,10 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
 
   @Inject
   public AccountingReportValueMoveLineServiceImpl(
-      AccountingReportValueRepository accountingReportValueRepo, MoveLineRepository moveLineRepo) {
-    super(accountingReportValueRepo);
+      AccountingReportValueRepository accountingReportValueRepo,
+      AnalyticAccountRepository analyticAccountRepo,
+      MoveLineRepository moveLineRepo) {
+    super(accountingReportValueRepo, analyticAccountRepo);
     this.moveLineRepo = moveLineRepo;
   }
 
@@ -267,6 +272,13 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       String lineTitle,
       String lineCode,
       int analyticCounter) {
+    Set<AnalyticAccount> resultAnalyticAccountSet = new HashSet<>(analyticAccountSet);
+    this.mergeSets(
+        analyticAccountSet,
+        configAnalyticAccount == null
+            ? null
+            : new HashSet<>(Collections.singletonList(configAnalyticAccount)));
+
     List<MoveLine> moveLineList =
         this.getMoveLineQuery(
                 accountingReport,
@@ -275,17 +287,19 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
                 line,
                 accountSet,
                 accountTypeSet,
-                this.mergeSets(
-                    analyticAccountSet,
-                    configAnalyticAccount == null
-                        ? null
-                        : new HashSet<>(Collections.singletonList(configAnalyticAccount))),
+                resultAnalyticAccountSet,
                 startDate,
                 endDate)
             .fetch();
 
     BigDecimal result =
-        this.getResultFromMoveLine(moveLineList, this.getResultSelect(column, line, groupColumn));
+        this.getResultFromMoveLine(
+            moveLineList,
+            analyticAccountSet,
+            groupColumn == null ? null : groupColumn.getAnalyticAccountCode(),
+            column.getAnalyticAccountCode(),
+            line.getAnalyticAccountCode(),
+            this.getResultSelect(column, line, groupColumn));
 
     this.createReportValue(
         accountingReport,
@@ -465,9 +479,23 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     return String.join(" AND ", queryList);
   }
 
-  protected BigDecimal getResultFromMoveLine(List<MoveLine> moveLineList, int resultSelect) {
+  protected BigDecimal getResultFromMoveLine(
+      List<MoveLine> moveLineList,
+      Set<AnalyticAccount> analyticAccountSet,
+      String groupColumnAnalyticAccountCode,
+      String columnAnalyticAccountCode,
+      String lineAnalyticAccountCode,
+      int resultSelect) {
     return moveLineList.stream()
-        .map(it -> this.getMoveLineAmount(it, resultSelect))
+        .map(
+            it ->
+                this.getMoveLineAmount(
+                    it,
+                    analyticAccountSet,
+                    groupColumnAnalyticAccountCode,
+                    columnAnalyticAccountCode,
+                    lineAnalyticAccountCode,
+                    resultSelect))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
   }
@@ -484,11 +512,72 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     return statusList;
   }
 
-  protected BigDecimal getMoveLineAmount(MoveLine moveLine, int resultSelect) {
+  protected BigDecimal getMoveLineAmount(
+      MoveLine moveLine,
+      Set<AnalyticAccount> analyticAccountSet,
+      String groupColumnAnalyticAccountCode,
+      String columnAnalyticAccountCode,
+      String lineAnalyticAccountCode,
+      int resultSelect) {
+    if (CollectionUtils.isNotEmpty(analyticAccountSet)
+        || StringUtils.notEmpty(groupColumnAnalyticAccountCode)
+        || StringUtils.notEmpty(columnAnalyticAccountCode)
+        || StringUtils.notEmpty(lineAnalyticAccountCode)) {
+      return this.getAnalyticAmount(
+          moveLine,
+          analyticAccountSet,
+          groupColumnAnalyticAccountCode,
+          columnAnalyticAccountCode,
+          lineAnalyticAccountCode);
+    }
+
     BigDecimal value = moveLine.getDebit().subtract(moveLine.getCredit());
 
     return resultSelect == AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT
         ? value
         : value.negate();
+  }
+
+  protected BigDecimal getAnalyticAmount(
+      MoveLine moveLine,
+      Set<AnalyticAccount> analyticAccountSet,
+      String groupColumnAnalyticAccountCode,
+      String columnAnalyticAccountCode,
+      String lineAnalyticAccountCode) {
+    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      return BigDecimal.ZERO;
+    }
+
+    return moveLine.getAnalyticMoveLineList().stream()
+        .filter(
+            it ->
+                this.containsAnalyticAccount(
+                    it.getAnalyticAccount(),
+                    analyticAccountSet,
+                    groupColumnAnalyticAccountCode,
+                    columnAnalyticAccountCode,
+                    lineAnalyticAccountCode))
+        .map(AnalyticMoveLine::getAmount)
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
+  }
+
+  protected boolean containsAnalyticAccount(
+      AnalyticAccount analyticAccount,
+      Set<AnalyticAccount> analyticAccountSet,
+      String groupColumnAnalyticAccountCode,
+      String columnAnalyticAccountCode,
+      String lineAnalyticAccountCode) {
+    return (CollectionUtils.isNotEmpty(analyticAccountSet)
+            && analyticAccountSet.contains(analyticAccount)
+        || (StringUtils.notEmpty(groupColumnAnalyticAccountCode)
+            && this.fetchAnalyticAccountsFromCode(groupColumnAnalyticAccountCode)
+                .contains(analyticAccount))
+        || (StringUtils.notEmpty(columnAnalyticAccountCode)
+            && this.fetchAnalyticAccountsFromCode(columnAnalyticAccountCode)
+                .contains(analyticAccount))
+        || (StringUtils.notEmpty(lineAnalyticAccountCode)
+            && this.fetchAnalyticAccountsFromCode(lineAnalyticAccountCode)
+                .contains(analyticAccount)));
   }
 }

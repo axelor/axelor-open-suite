@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -23,8 +24,9 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     implements AccountingReportValueCustomRuleService {
   @Inject
   public AccountingReportValueCustomRuleServiceImpl(
-      AccountingReportValueRepository accountingReportValueRepo) {
-    super(accountingReportValueRepo);
+      AccountingReportValueRepository accountingReportValueRepo,
+      AnalyticAccountRepository analyticAccountRepo) {
+    super(accountingReportValueRepo, analyticAccountRepo);
   }
 
   @Override
