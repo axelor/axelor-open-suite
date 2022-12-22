@@ -17,20 +17,22 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.FileField;
-import com.axelor.apps.base.service.advanced.imports.FileFieldService;
+import com.axelor.apps.base.db.AdvancedImportFileField;
+import com.axelor.apps.base.service.advanced.imports.AdvancedImportFileFieldService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-public class FileFieldController {
+public class AdvancedImportFileFieldController {
 
   public void fillType(ActionRequest request, ActionResponse response) {
     try {
-      FileField fileField = request.getContext().asType(FileField.class);
-      fileField = Beans.get(FileFieldService.class).fillType(fileField);
-      response.setValues(fileField);
+      AdvancedImportFileField advancedImportFileField =
+          request.getContext().asType(AdvancedImportFileField.class);
+      advancedImportFileField =
+          Beans.get(AdvancedImportFileFieldService.class).fillType(advancedImportFileField);
+      response.setValues(advancedImportFileField);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

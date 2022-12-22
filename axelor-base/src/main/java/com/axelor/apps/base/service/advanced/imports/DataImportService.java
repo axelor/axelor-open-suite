@@ -18,7 +18,7 @@
 package com.axelor.apps.base.service.advanced.imports;
 
 import com.axelor.apps.base.db.AdvancedImport;
-import com.axelor.apps.base.db.FileTab;
+import com.axelor.apps.base.db.AdvancedImportFileTab;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.exception.AxelorException;
 import java.io.IOException;
@@ -29,5 +29,5 @@ public interface DataImportService {
   public ImportHistory importData(AdvancedImport advanceImport)
       throws IOException, AxelorException, ClassNotFoundException;
 
-  public Map<String, Object> createJsonContext(FileTab fileTab);
+  public Map<String, Object> createJsonContext(AdvancedImportFileTab advancedImportFileTab);
 }

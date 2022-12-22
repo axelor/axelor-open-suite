@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="FileField">
+  <entity name="AdvancedImportFileField">
     <integer name="sequence" title="Sequence"/>
 
     <string name="columnTitle" title="Column title"/>
@@ -20,18 +20,20 @@
     <string name="fullName" title="Name" namecolumn="true" readonly="true"/>
     <string name="dateFormat" title="Date format"/>
 
-    <integer name="importType" title="Import type" selection="file.field.import.type.select"/>
+    <integer name="importType" title="Import type"
+      selection="advanced.import.file.field.import.type.select"/>
 
     <string name="expression" title="Expression"/>
     <string name="splitBy" title="Split by" max="1"/>
     <string name="noImportIf" title="Don't import if"/>
 
     <integer name="forSelectUse" title="For select use"
-      selection="file.field.for.select.use.select"/>
+      selection="advanced.import.file.field.for.select.use.select"/>
 
     <string name="defaultIfNotFound" title="Default if not found"/>
 
-    <many-to-one name="fileTab" ref="com.axelor.apps.base.db.FileTab" title="FileTab"/>
+    <many-to-one name="advancedImportFileTab"
+      ref="com.axelor.apps.base.db.AdvancedImportFileTab" title="FileTab"/>
 
     <boolean name="isMatchWithFile" title="Match with file"/>
     <string name="targetType" title="Target type"/>
