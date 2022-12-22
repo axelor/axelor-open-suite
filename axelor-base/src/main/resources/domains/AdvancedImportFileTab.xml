@@ -5,21 +5,22 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="FileTab">
+  <entity name="AdvancedImportFileTab">
     <integer name="sequence" title="Sequence"/>
 
     <string name="name" title="Name" required="true"/>
 
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Object"/>
 
-    <integer name="importType" title="Import type" selection="file.field.import.type.select"
-      min="1" default="3"/>
+    <integer name="importType" title="Import type"
+      selection="advanced.import.file.field.import.type.select" min="1" default="3"/>
 
-    <many-to-many name="searchFieldSet" ref="com.axelor.apps.base.db.FileField"
-      title="Search fields"/>
+    <many-to-many name="advancedImportSearchFieldSet"
+      ref="com.axelor.apps.base.db.AdvancedImportFileField" title="Search fields"/>
 
-    <one-to-many name="fileFieldList" ref="com.axelor.apps.base.db.FileField"
-      title="Fields configuration" mappedBy="fileTab"/>
+    <one-to-many name="advancedImportFileFieldList"
+      ref="com.axelor.apps.base.db.AdvancedImportFileField" title="Fields configuration"
+      mappedBy="advancedImportFileTab"/>
 
     <many-to-one name="validationLog" ref="com.axelor.meta.db.MetaFile"
       title="Validation log"/>

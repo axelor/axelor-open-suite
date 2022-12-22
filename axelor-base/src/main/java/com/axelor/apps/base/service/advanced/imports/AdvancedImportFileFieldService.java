@@ -17,13 +17,11 @@
  */
 package com.axelor.apps.base.service.advanced.imports;
 
-import com.axelor.apps.base.db.FileTab;
+import com.axelor.apps.base.db.AdvancedImportFileField;
 
-public interface FileTabService {
+public interface AdvancedImportFileFieldService {
 
-  public FileTab updateFields(FileTab fileTab) throws ClassNotFoundException;
+  public AdvancedImportFileField fillType(AdvancedImportFileField advancedImportFileField);
 
-  public FileTab compute(FileTab fileTab);
-
-  public String getShowRecordIds(FileTab fileTab, String field) throws ClassNotFoundException;
+  public String computeFullName(AdvancedImportFileField advancedImportFileField);
 }

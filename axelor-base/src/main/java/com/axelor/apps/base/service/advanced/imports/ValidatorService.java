@@ -20,10 +20,10 @@ package com.axelor.apps.base.service.advanced.imports;
 import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
 
 import com.axelor.apps.base.db.AdvancedImport;
-import com.axelor.apps.base.db.FileField;
-import com.axelor.apps.base.db.FileTab;
-import com.axelor.apps.base.db.repo.FileFieldRepository;
-import com.axelor.apps.base.db.repo.FileTabRepository;
+import com.axelor.apps.base.db.AdvancedImportFileField;
+import com.axelor.apps.base.db.AdvancedImportFileTab;
+import com.axelor.apps.base.db.repo.AdvancedImportFileFieldRepository;
+import com.axelor.apps.base.db.repo.AdvancedImportFileTabRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
@@ -57,6 +57,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class ValidatorService {
 
   @Inject private AdvancedImportService advancedImportService;
 
-  @Inject private FileTabRepository fileTabRepo;
+  @Inject private AdvancedImportFileTabRepository advancedImportFileTabRepo;
 
   @Inject private ActionService actionService;
 
@@ -139,22 +140,23 @@ public class ValidatorService {
     boolean isConfig = advancedImport.getIsConfigInFile();
     boolean isTabConfig = advancedImport.getIsFileTabConfigAdded();
 
-    sortFileTabList(advancedImport.getFileTabList());
+    sortFileTabList(advancedImport.getAdvancedImportFileTabList());
 
-    for (FileTab fileTab : advancedImport.getFileTabList()) {
-      if (!Arrays.stream(sheets).anyMatch(sheet -> sheet.equals(fileTab.getName()))) {
+    for (AdvancedImportFileTab advancedImportFileTab :
+        advancedImport.getAdvancedImportFileTabList()) {
+      if (!Arrays.stream(sheets).anyMatch(sheet -> sheet.equals(advancedImportFileTab.getName()))) {
         continue;
       }
 
       fieldMap = new HashMap<>();
       titleMap = new HashMap<>();
-      String sheet = fileTab.getName();
+      String sheet = advancedImportFileTab.getName();
       logService.initialize(sheet);
 
-      this.validateModel(fileTab);
+      this.validateModel(advancedImportFileTab);
 
       int tabConfigRowCount = 0;
-      int totalLines = reader.getTotalLines(fileTab.getName());
+      int totalLines = reader.getTotalLines(advancedImportFileTab.getName());
 
       if (isConfig) {
         String[] objectRow = reader.read(sheet, 0, 0);
@@ -162,15 +164,16 @@ public class ValidatorService {
           tabConfigRowCount =
               advancedImportService.getTabConfigRowCount(sheet, reader, totalLines, objectRow);
         }
-        this.validateObject(objectRow, fileTab, isTabConfig);
+        this.validateObject(objectRow, advancedImportFileTab, isTabConfig);
       }
-      this.validateSearch(fileTab);
-      this.validateObjectRequiredFields(fileTab);
-      this.validateFieldAndData(reader, sheet, fileTab, isConfig, isTabConfig, tabConfigRowCount);
-      this.validateActions(fileTab);
+      this.validateSearch(advancedImportFileTab);
+      this.validateObjectRequiredFields(advancedImportFileTab);
+      this.validateFieldAndData(
+          reader, sheet, advancedImportFileTab, isConfig, isTabConfig, tabConfigRowCount);
+      this.validateActions(advancedImportFileTab);
 
-      if (fileTab.getValidationLog() != null) {
-        fileTab.setValidationLog(null);
+      if (advancedImportFileTab.getValidationLog() != null) {
+        advancedImportFileTab.setValidationLog(null);
       }
 
       if (logService.isLogGenerated()) {
@@ -178,17 +181,22 @@ public class ValidatorService {
         logService.close();
 
         File logFile = logService.getLogFile();
-        fileTab.setValidationLog(
+        advancedImportFileTab.setValidationLog(
             metaFiles.upload(new FileInputStream(logFile), sheet + "_err.xlsx"));
 
         logFile.delete();
         isLog = true;
       } else {
         createCustomObjectSet(
-            fileTab.getClass().getName(), fileTab.getMetaModel().getFullName(), 0);
-        createCustomButton(fileTab.getClass().getName(), fileTab.getMetaModel().getFullName(), 1);
+            advancedImportFileTab.getClass().getName(),
+            advancedImportFileTab.getMetaModel().getFullName(),
+            0);
+        createCustomButton(
+            advancedImportFileTab.getClass().getName(),
+            advancedImportFileTab.getMetaModel().getFullName(),
+            1);
       }
-      fileTabRepo.save(fileTab);
+      advancedImportFileTabRepo.save(advancedImportFileTab);
     }
     return isLog;
   }
@@ -199,7 +207,7 @@ public class ValidatorService {
     }
     List<String> sheetList = Arrays.asList(sheets);
     List<String> tabList =
-        advancedImport.getFileTabList().stream()
+        advancedImport.getAdvancedImportFileTabList().stream()
             .map(tab -> tab.getName())
             .collect(Collectors.toList());
 
@@ -210,16 +218,19 @@ public class ValidatorService {
     }
   }
 
-  private void validateModel(FileTab fileTab) throws IOException, AxelorException {
-    if (fileTab.getMetaModel() == null) {
+  private void validateModel(AdvancedImportFileTab advancedImportFileTab)
+      throws IOException, AxelorException {
+    if (advancedImportFileTab.getMetaModel() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_OBJECT), fileTab.getName()));
+              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_OBJECT),
+              advancedImportFileTab.getName()));
     }
   }
 
-  private void validateObject(String[] row, FileTab fileTab, Boolean isTabConfig)
+  private void validateObject(
+      String[] row, AdvancedImportFileTab advancedImportFileTab, Boolean isTabConfig)
       throws IOException, AxelorException {
 
     int rowIndex = isTabConfig ? 1 : 0;
@@ -236,44 +247,52 @@ public class ValidatorService {
     String object = row[rowIndex].trim();
     if (StringUtils.containsIgnoreCase(object, "Object")) {
       String model = object.split("\\:")[1].trim();
-      if (fileTab.getMetaModel() != null && !fileTab.getMetaModel().getName().equals(model)) {
+      if (advancedImportFileTab.getMetaModel() != null
+          && !advancedImportFileTab.getMetaModel().getName().equals(model)) {
         logService.addLog(
             LogService.COMMON_KEY, BaseExceptionMessage.ADVANCED_IMPORT_LOG_1, rowIndex);
       }
     }
   }
 
-  private void validateObjectRequiredFields(FileTab fileTab)
+  private void validateObjectRequiredFields(AdvancedImportFileTab advancedImportFileTab)
       throws ClassNotFoundException, IOException, AxelorException {
 
-    if (CollectionUtils.isEmpty(fileTab.getFileFieldList())) {
+    if (CollectionUtils.isEmpty(advancedImportFileTab.getAdvancedImportFileFieldList())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_FIELDS), fileTab.getName()));
+              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_FIELDS),
+              advancedImportFileTab.getName()));
     }
 
     List<String> fieldList = new ArrayList<String>();
 
-    for (FileField fileField : fileTab.getFileFieldList()) {
-      if (fileField.getImportField() != null) {
-        fieldList.add(fileField.getImportField().getName());
+    for (AdvancedImportFileField advancedImportFileField :
+        advancedImportFileTab.getAdvancedImportFileFieldList()) {
+      if (advancedImportFileField.getImportField() != null) {
+        fieldList.add(advancedImportFileField.getImportField().getName());
 
       } else {
         logService.addLog(
-            BaseExceptionMessage.ADVANCED_IMPORT_LOG_2, fileField.getColumnTitle(), null);
+            BaseExceptionMessage.ADVANCED_IMPORT_LOG_2,
+            advancedImportFileField.getColumnTitle(),
+            null);
       }
     }
 
-    if (fileTab.getImportType() == FileFieldRepository.IMPORT_TYPE_FIND) {
+    if (advancedImportFileTab.getImportType()
+        == AdvancedImportFileFieldRepository.IMPORT_TYPE_FIND) {
       return;
     }
 
-    if (fileTab.getMetaModel() != null) {
-      Mapper mapper = advancedImportService.getMapper(fileTab.getMetaModel().getFullName());
+    if (advancedImportFileTab.getMetaModel() != null) {
+      Mapper mapper =
+          advancedImportService.getMapper(advancedImportFileTab.getMetaModel().getFullName());
       Model obj = null;
       try {
-        obj = (Model) Class.forName(fileTab.getMetaModel().getFullName()).newInstance();
+        obj =
+            (Model) Class.forName(advancedImportFileTab.getMetaModel().getFullName()).newInstance();
       } catch (InstantiationException | IllegalAccessException e) {
         TraceBackService.trace(e);
       }
@@ -292,13 +311,13 @@ public class ValidatorService {
   private void validateFieldAndData(
       DataReaderService reader,
       String sheet,
-      FileTab fileTab,
+      AdvancedImportFileTab advancedImportFileTab,
       boolean isConfig,
       boolean isTabConfig,
       int tabConfigRowCount)
       throws ClassNotFoundException, IOException {
 
-    AdvancedImport advancedImport = fileTab.getAdvancedImport();
+    AdvancedImport advancedImport = advancedImportFileTab.getAdvancedImport();
     Map<String, Object> map = isConfig ? fieldMap : titleMap;
     int linesToIgnore = advancedImport.getNbOfFirstLineIgnore();
     int startIndex = isConfig ? 1 : linesToIgnore;
@@ -308,7 +327,7 @@ public class ValidatorService {
       return;
     }
 
-    sortFileFieldList(fileTab.getFileFieldList());
+    sortFileFieldList(advancedImportFileTab.getAdvancedImportFileFieldList());
 
     int rowCount = row.length;
     for (int cell = 0; cell < rowCount; cell++) {
@@ -319,7 +338,7 @@ public class ValidatorService {
       value = value.trim();
       map.put(isConfig ? value.contains("(") ? value.split("\\(")[0] : value : value, cell);
       if (cell == row.length - 1) {
-        this.validateFields(startIndex, isConfig, fileTab);
+        this.validateFields(startIndex, isConfig, advancedImportFileTab);
       }
     }
 
@@ -332,30 +351,35 @@ public class ValidatorService {
     startIndex =
         isConfig
             ? tabConfigRowCount + 3
-            : fileTab.getAdvancedImport().getIsHeader() ? linesToIgnore + 1 : linesToIgnore;
+            : advancedImportFileTab.getAdvancedImport().getIsHeader()
+                ? linesToIgnore + 1
+                : linesToIgnore;
 
     for (int line = startIndex; line < totalLines; line++) {
       String[] dataRow = reader.read(sheet, line, row.length);
       if (dataRow == null) {
         continue;
       }
-      this.validateData(dataRow, line, isConfig, fileTab);
+      this.validateData(dataRow, line, isConfig, advancedImportFileTab);
     }
   }
 
-  private void validateFields(int line, boolean isConfig, FileTab fileTab)
+  private void validateFields(
+      int line, boolean isConfig, AdvancedImportFileTab advancedImportFileTab)
       throws IOException, ClassNotFoundException {
 
     List<String> relationalFieldList =
-        fileTab.getFileFieldList().stream()
+        advancedImportFileTab.getAdvancedImportFileFieldList().stream()
             .filter(field -> !Strings.isNullOrEmpty(field.getSubImportField()))
             .map(field -> field.getImportField().getName() + "." + field.getSubImportField())
             .collect(Collectors.toList());
 
-    for (FileField fileField : fileTab.getFileFieldList()) {
-      MetaField importField = fileField.getImportField();
+    for (AdvancedImportFileField advancedImportFileField :
+        advancedImportFileTab.getAdvancedImportFileFieldList()) {
+      MetaField importField = advancedImportFileField.getImportField();
 
-      if (importField != null && Strings.isNullOrEmpty(fileField.getSubImportField())) {
+      if (importField != null
+          && Strings.isNullOrEmpty(advancedImportFileField.getSubImportField())) {
         if (importField.getRelationship() != null) {
           logService.addLog(
               BaseExceptionMessage.ADVANCED_IMPORT_LOG_4, importField.getName(), line);
@@ -363,14 +387,14 @@ public class ValidatorService {
 
         this.validateImportRequiredField(
             line,
-            Class.forName(fileTab.getMetaModel().getFullName()),
+            Class.forName(advancedImportFileTab.getMetaModel().getFullName()),
             importField.getName(),
-            fileField,
+            advancedImportFileField,
             null);
 
-        this.validateDateField(line, fileField);
+        this.validateDateField(line, advancedImportFileField);
 
-      } else if (!Strings.isNullOrEmpty(fileField.getSubImportField())) {
+      } else if (!Strings.isNullOrEmpty(advancedImportFileField.getSubImportField())) {
 
         Mapper mapper = advancedImportService.getMapper(importField.getMetaModel().getFullName());
         Property parentProp = mapper.getProperty(importField.getName());
@@ -378,32 +402,38 @@ public class ValidatorService {
           return;
         }
 
-        Property subProperty = this.getAndValidateSubField(line, parentProp, fileField, false);
+        Property subProperty =
+            this.getAndValidateSubField(line, parentProp, advancedImportFileField, false);
 
         if (subProperty != null) {
           this.validateImportRequiredField(
-              line, subProperty.getEntity(), subProperty.getName(), fileField, relationalFieldList);
+              line,
+              subProperty.getEntity(),
+              subProperty.getName(),
+              advancedImportFileField,
+              relationalFieldList);
 
-          this.validateDateField(line, fileField);
+          this.validateDateField(line, advancedImportFileField);
         }
       }
     }
   }
 
-  private void validateDateField(int line, FileField fileField) throws IOException {
+  private void validateDateField(int line, AdvancedImportFileField advancedImportFileField)
+      throws IOException {
 
-    String type = fileField.getTargetType();
-    Integer rowNum = fileField.getIsMatchWithFile() ? line : null;
+    String type = advancedImportFileField.getTargetType();
+    Integer rowNum = advancedImportFileField.getIsMatchWithFile() ? line : null;
     if (!Strings.isNullOrEmpty(type)
         && (type.equals(LOCAL_DATE)
             || type.equals(LOCAL_DATE_TIME)
             || type.equals(LOCAL_TIME)
             || type.equals(ZONED_DATE_TIME))) {
 
-      String field = getField(fileField);
+      String field = getField(advancedImportFileField);
 
-      if (Strings.isNullOrEmpty(fileField.getDateFormat())
-          && Strings.isNullOrEmpty(fileField.getExpression())) {
+      if (Strings.isNullOrEmpty(advancedImportFileField.getDateFormat())
+          && Strings.isNullOrEmpty(advancedImportFileField.getExpression())) {
 
         logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_6, field, rowNum);
       }
@@ -414,27 +444,27 @@ public class ValidatorService {
       int line,
       Class<?> model,
       String fieldName,
-      FileField fileField,
+      AdvancedImportFileField advancedImportFileField,
       List<String> relationalFieldList)
       throws IOException, ClassNotFoundException {
 
     Mapper mapper = advancedImportService.getMapper(model.getName());
-    String field = getField(fileField);
+    String field = getField(advancedImportFileField);
 
-    Integer rowNum = fileField.getIsMatchWithFile() ? line : null;
-    int importType = fileField.getImportType();
+    Integer rowNum = advancedImportFileField.getIsMatchWithFile() ? line : null;
+    int importType = advancedImportFileField.getImportType();
 
     for (Property prop : mapper.getProperties()) {
       if (prop.isRequired()) {
         if (prop.getName().equals(fieldName)
-            && importType == FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
+            && importType == AdvancedImportFileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
 
           logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_5, field, rowNum);
 
-        } else if ((importType == FileFieldRepository.IMPORT_TYPE_FIND_NEW
-                || importType == FileFieldRepository.IMPORT_TYPE_NEW)
+        } else if ((importType == AdvancedImportFileFieldRepository.IMPORT_TYPE_FIND_NEW
+                || importType == AdvancedImportFileFieldRepository.IMPORT_TYPE_NEW)
             && field.contains(".")
-            && !fileField.getTargetType().equals("MetaFile")) {
+            && !advancedImportFileField.getTargetType().equals("MetaFile")) {
 
           String newField = StringUtils.substringBeforeLast(field, ".");
           newField = newField + "." + prop.getName();
@@ -447,15 +477,20 @@ public class ValidatorService {
     }
   }
 
-  private void validateData(String[] dataRow, int line, boolean isConfig, FileTab fileTab)
+  private void validateData(
+      String[] dataRow, int line, boolean isConfig, AdvancedImportFileTab advancedImportFileTab)
       throws IOException, ClassNotFoundException {
 
     Map<String, Object> map = isConfig ? fieldMap : titleMap;
 
-    for (int fieldIndex = 0; fieldIndex < fileTab.getFileFieldList().size(); fieldIndex++) {
-      FileField fileField = fileTab.getFileFieldList().get(fieldIndex);
+    for (int fieldIndex = 0;
+        fieldIndex < advancedImportFileTab.getAdvancedImportFileFieldList().size();
+        fieldIndex++) {
+      AdvancedImportFileField advancedImportFileField =
+          advancedImportFileTab.getAdvancedImportFileFieldList().get(fieldIndex);
 
-      if (!fileField.getIsMatchWithFile() || !Strings.isNullOrEmpty(fileField.getExpression())) {
+      if (!advancedImportFileField.getIsMatchWithFile()
+          || !Strings.isNullOrEmpty(advancedImportFileField.getExpression())) {
         continue;
       }
 
@@ -464,9 +499,9 @@ public class ValidatorService {
 
       String key = null;
       if (isConfig) {
-        key = this.getField(fileField);
+        key = this.getField(advancedImportFileField);
       } else {
-        key = fileField.getColumnTitle();
+        key = advancedImportFileField.getColumnTitle();
       }
 
       int cellIndex = 0;
@@ -475,38 +510,46 @@ public class ValidatorService {
       }
 
       cellIndex =
-          (!isConfig && !fileTab.getAdvancedImport().getIsHeader()) ? fieldIndex : cellIndex;
+          (!isConfig && !advancedImportFileTab.getAdvancedImport().getIsHeader())
+              ? fieldIndex
+              : cellIndex;
 
-      if (fileField.getImportField() != null) {
+      if (advancedImportFileField.getImportField() != null) {
         mapper =
             advancedImportService.getMapper(
-                fileField.getImportField().getMetaModel().getFullName());
-        property = mapper.getProperty(fileField.getImportField().getName());
+                advancedImportFileField.getImportField().getMetaModel().getFullName());
+        property = mapper.getProperty(advancedImportFileField.getImportField().getName());
       }
 
-      if (property != null && Strings.isNullOrEmpty(fileField.getSubImportField())) {
+      if (property != null && Strings.isNullOrEmpty(advancedImportFileField.getSubImportField())) {
         if (this.validateDataRequiredField(
             dataRow,
             cellIndex,
             line,
-            Class.forName(fileTab.getMetaModel().getFullName()),
+            Class.forName(advancedImportFileTab.getMetaModel().getFullName()),
             property.getName(),
-            fileField)) {
+            advancedImportFileField)) {
 
           continue;
         }
 
         if (!Strings.isNullOrEmpty(property.getSelection())
-            && fileField.getForSelectUse() != FileFieldRepository.SELECT_USE_VALUES) {
+            && advancedImportFileField.getForSelectUse()
+                != AdvancedImportFileFieldRepository.SELECT_USE_VALUES) {
           continue;
         }
 
         this.validateDataType(
-            dataRow, cellIndex, line, property.getJavaType().getSimpleName(), fileField);
+            dataRow,
+            cellIndex,
+            line,
+            property.getJavaType().getSimpleName(),
+            advancedImportFileField);
 
-      } else if (!Strings.isNullOrEmpty(fileField.getSubImportField())) {
+      } else if (!Strings.isNullOrEmpty(advancedImportFileField.getSubImportField())) {
 
-        Property subProperty = this.getAndValidateSubField(line, property, fileField, true);
+        Property subProperty =
+            this.getAndValidateSubField(line, property, advancedImportFileField, true);
 
         if (subProperty != null) {
           if (this.validateDataRequiredField(
@@ -515,41 +558,51 @@ public class ValidatorService {
               line,
               subProperty.getEntity(),
               subProperty.getName(),
-              fileField)) {
+              advancedImportFileField)) {
 
             continue;
           }
 
           if (!Strings.isNullOrEmpty(subProperty.getSelection())
-              && fileField.getForSelectUse() != FileFieldRepository.SELECT_USE_VALUES) {
+              && advancedImportFileField.getForSelectUse()
+                  != AdvancedImportFileFieldRepository.SELECT_USE_VALUES) {
             continue;
           }
 
           this.validateDataType(
-              dataRow, cellIndex, line, subProperty.getJavaType().getSimpleName(), fileField);
+              dataRow,
+              cellIndex,
+              line,
+              subProperty.getJavaType().getSimpleName(),
+              advancedImportFileField);
         }
       }
     }
   }
 
   private boolean validateDataRequiredField(
-      String row[], int cell, int line, Class<?> model, String fieldName, FileField fileField)
+      String row[],
+      int cell,
+      int line,
+      Class<?> model,
+      String fieldName,
+      AdvancedImportFileField advancedImportFileField)
       throws IOException, ClassNotFoundException {
 
     boolean flag = false;
-    String field = getField(fileField);
-    int importType = fileField.getImportType();
+    String field = getField(advancedImportFileField);
+    int importType = advancedImportFileField.getImportType();
 
     Mapper mapper = advancedImportService.getMapper(model.getName());
     Property prop = mapper.getProperty(fieldName);
     if (prop != null) {
       if (prop.isRequired()
           && Strings.isNullOrEmpty(row[cell])
-          && importType != FileFieldRepository.IMPORT_TYPE_FIND) {
+          && importType != AdvancedImportFileFieldRepository.IMPORT_TYPE_FIND) {
 
         logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_8, field, line);
 
-      } else if (importType == FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
+      } else if (importType == AdvancedImportFileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
         flag = true;
         return flag;
       }
@@ -558,12 +611,12 @@ public class ValidatorService {
   }
 
   private Property getAndValidateSubField(
-      int line, Property parentProp, FileField fileField, boolean isLog)
+      int line, Property parentProp, AdvancedImportFileField advancedImportFileField, boolean isLog)
       throws IOException, ClassNotFoundException {
 
-    String field = getField(fileField);
-    Integer rowNum = fileField.getIsMatchWithFile() ? line : null;
-    String[] subFields = fileField.getSubImportField().split("\\.");
+    String field = getField(advancedImportFileField);
+    Integer rowNum = advancedImportFileField.getIsMatchWithFile() ? line : null;
+    String[] subFields = advancedImportFileField.getSubImportField().split("\\.");
     return this.getAndValidateSubField(subFields, 0, rowNum, parentProp, field, isLog);
   }
 
@@ -605,14 +658,19 @@ public class ValidatorService {
     return subProperty;
   }
 
-  private void validateDataType(String[] row, int cell, int line, String type, FileField fileField)
+  private void validateDataType(
+      String[] row,
+      int cell,
+      int line,
+      String type,
+      AdvancedImportFileField advancedImportFileField)
       throws IOException {
 
     if (Strings.isNullOrEmpty(row[cell])) {
       return;
     }
 
-    String field = getField(fileField);
+    String field = getField(advancedImportFileField);
     String value = row[cell].trim();
 
     switch (type) {
@@ -626,7 +684,7 @@ public class ValidatorService {
       case ZONED_DATE_TIME:
       case LOCAL_DATE_TIME:
       case LOCAL_TIME:
-        this.checkDateTime(value, line, type, fileField);
+        this.checkDateTime(value, line, type, advancedImportFileField);
         break;
 
       case BOOLEAN:
@@ -683,13 +741,14 @@ public class ValidatorService {
     }
   }
 
-  private void checkDateTime(String value, int line, String type, FileField fileField)
+  private void checkDateTime(
+      String value, int line, String type, AdvancedImportFileField advancedImportFileField)
       throws IOException {
 
-    if (!Strings.isNullOrEmpty(fileField.getDateFormat())
-        && Strings.isNullOrEmpty(fileField.getExpression())) {
+    if (!Strings.isNullOrEmpty(advancedImportFileField.getDateFormat())
+        && Strings.isNullOrEmpty(advancedImportFileField.getExpression())) {
 
-      String pattern = fileField.getDateFormat().trim();
+      String pattern = advancedImportFileField.getDateFormat().trim();
       try {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 
@@ -713,50 +772,54 @@ public class ValidatorService {
       } catch (DateTimeParseException e) {
         logService.addLog(
             BaseExceptionMessage.ADVANCED_IMPORT_LOG_9,
-            getField(fileField) + "(" + type + ")",
+            getField(advancedImportFileField) + "(" + type + ")",
             line);
       }
     }
   }
 
-  private void validateActions(FileTab fileTab) {
-    String actions = fileTab.getActions();
+  private void validateActions(AdvancedImportFileTab advancedImportFileTab) {
+    String actions = advancedImportFileTab.getActions();
     if (StringUtils.isBlank(actions)) {
       return;
     }
     if (!actionService.validate(actions)) {
       logService.addLog(
           LogService.COMMON_KEY,
-          String.format(BaseExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getName()),
+          String.format(
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_10, advancedImportFileTab.getName()),
           1);
     }
   }
 
-  private void validateSearchCall(FileTab fileTab) {
-    String searchCall = fileTab.getSearchCall();
+  private void validateSearchCall(AdvancedImportFileTab advancedImportFileTab) {
+    String searchCall = advancedImportFileTab.getSearchCall();
     if (!searchCallService.validate(searchCall)) {
       logService.addLog(
           LogService.COMMON_KEY,
-          String.format(BaseExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getName()),
+          String.format(
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_11, advancedImportFileTab.getName()),
           1);
     }
   }
 
-  public String getField(FileField fileField) {
+  public String getField(AdvancedImportFileField advancedImportFileField) {
     String field =
-        !Strings.isNullOrEmpty(fileField.getSubImportField())
-            ? fileField.getImportField().getName() + "." + fileField.getSubImportField().trim()
-            : fileField.getImportField().getName();
+        !Strings.isNullOrEmpty(advancedImportFileField.getSubImportField())
+            ? advancedImportFileField.getImportField().getName()
+                + "."
+                + advancedImportFileField.getSubImportField().trim()
+            : advancedImportFileField.getImportField().getName();
 
     return field;
   }
 
-  public void sortFileTabList(List<FileTab> fileTabList) {
-    fileTabList.sort((tab1, tab2) -> tab1.getSequence().compareTo(tab2.getSequence()));
+  public void sortFileTabList(List<AdvancedImportFileTab> advancedImportFileTabList) {
+    advancedImportFileTabList.sort(Comparator.comparing(AdvancedImportFileTab::getSequence));
   }
 
-  public void sortFileFieldList(List<FileField> fileFieldList) {
-    fileFieldList.sort((field1, field2) -> field1.getSequence().compareTo(field2.getSequence()));
+  public void sortFileFieldList(List<AdvancedImportFileField> advancedImportFileFieldList) {
+    advancedImportFileFieldList.sort(Comparator.comparing(AdvancedImportFileField::getSequence));
   }
 
   public void addLog(BufferedWriter writer, String errorType, String log) throws IOException {
@@ -825,22 +888,24 @@ public class ValidatorService {
     jsonField.setSequence(sequence);
     jsonField.setModel(modelName);
     jsonField.setModelField("attrs");
-    jsonField.setOnClick("action-file-tab-method-show-record,close");
+    jsonField.setOnClick("action-advanced-import-file-tab-method-show-record,close");
     jsonField.setWidgetAttrs("{\"colSpan\": \"4\"}");
     jsonField.setShowIf(fieldName + " != null && $record.advancedImport.statusSelect > 0");
 
     metaJsonFieldRepo.save(jsonField);
   }
 
-  private void validateSearch(FileTab fileTab) throws AxelorException {
-    if (fileTab.getImportType() != FileFieldRepository.IMPORT_TYPE_NEW) {
-      if (CollectionUtils.isEmpty(fileTab.getSearchFieldSet())
-          && StringUtils.isBlank(fileTab.getSearchCall())) {
+  private void validateSearch(AdvancedImportFileTab advancedImportFileTab) throws AxelorException {
+    if (advancedImportFileTab.getImportType()
+        != AdvancedImportFileFieldRepository.IMPORT_TYPE_NEW) {
+      if (CollectionUtils.isEmpty(advancedImportFileTab.getAdvancedImportSearchFieldSet())
+          && StringUtils.isBlank(advancedImportFileTab.getSearchCall())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_6), fileTab.getName()));
+            String.format(
+                I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_6), advancedImportFileTab.getName()));
       }
-      this.validateSearchCall(fileTab);
+      this.validateSearchCall(advancedImportFileTab);
     }
   }
 }

@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.base.service.advanced.imports;
 
-import com.axelor.apps.base.db.FileField;
-import com.axelor.apps.base.db.FileTab;
-import com.axelor.apps.base.db.repo.FileFieldRepository;
+import com.axelor.apps.base.db.AdvancedImportFileField;
+import com.axelor.apps.base.db.AdvancedImportFileTab;
+import com.axelor.apps.base.db.repo.AdvancedImportFileFieldRepository;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -37,31 +37,35 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-public class FileTabServiceImpl implements FileTabService {
+public class AdvancedImportFileTabServiceImpl implements AdvancedImportFileTabService {
 
   @Inject MetaFieldRepository metaFieldRepo;
 
-  @Inject FileFieldService fileFieldService;
+  @Inject AdvancedImportFileFieldService advancedImportFileFieldService;
 
   @Override
-  public FileTab updateFields(FileTab fileTab) throws ClassNotFoundException {
+  public AdvancedImportFileTab updateFields(AdvancedImportFileTab advancedImportFileTab)
+      throws ClassNotFoundException {
 
-    MetaModel model = fileTab.getMetaModel();
+    MetaModel model = advancedImportFileTab.getMetaModel();
 
-    if (model == null || CollectionUtils.isEmpty(fileTab.getFileFieldList())) {
-      return fileTab;
+    if (model == null
+        || CollectionUtils.isEmpty(advancedImportFileTab.getAdvancedImportFileFieldList())) {
+      return advancedImportFileTab;
     }
 
-    Beans.get(ValidatorService.class).sortFileFieldList(fileTab.getFileFieldList());
+    Beans.get(ValidatorService.class)
+        .sortFileFieldList(advancedImportFileTab.getAdvancedImportFileFieldList());
 
-    for (FileField fileField : fileTab.getFileFieldList()) {
+    for (AdvancedImportFileField advancedImportFileField :
+        advancedImportFileTab.getAdvancedImportFileFieldList()) {
 
       MetaField importField =
           metaFieldRepo
               .all()
               .filter(
                   "self.label = ?1 AND self.metaModel.id = ?2",
-                  fileField.getColumnTitle(),
+                  advancedImportFileField.getColumnTitle(),
                   model.getId())
               .fetchOne();
 
@@ -71,28 +75,31 @@ public class FileTabServiceImpl implements FileTabService {
           continue;
         }
 
-        fileField.setImportField(importField);
+        advancedImportFileField.setImportField(importField);
         if (!Strings.isNullOrEmpty(relationship)) {
           String subImportField = this.getSubImportField(importField);
-          fileField.setSubImportField(subImportField);
+          advancedImportFileField.setSubImportField(subImportField);
         }
-        fileField = fileFieldService.fillType(fileField);
+        advancedImportFileField = advancedImportFileFieldService.fillType(advancedImportFileField);
 
-        if (!Strings.isNullOrEmpty(relationship) && !fileField.getTargetType().equals("MetaFile")) {
-          fileField.setImportType(FileFieldRepository.IMPORT_TYPE_FIND);
+        if (!Strings.isNullOrEmpty(relationship)
+            && !advancedImportFileField.getTargetType().equals("MetaFile")) {
+          advancedImportFileField.setImportType(AdvancedImportFileFieldRepository.IMPORT_TYPE_FIND);
         } else {
-          if (!Strings.isNullOrEmpty(fileField.getTargetType())
-              && fileField.getTargetType().equals("MetaFile")) {
-            fileField.setImportType(FileFieldRepository.IMPORT_TYPE_NEW);
+          if (!Strings.isNullOrEmpty(advancedImportFileField.getTargetType())
+              && advancedImportFileField.getTargetType().equals("MetaFile")) {
+            advancedImportFileField.setImportType(
+                AdvancedImportFileFieldRepository.IMPORT_TYPE_NEW);
           }
         }
-        fileField.setFullName(fileFieldService.computeFullName(fileField));
+        advancedImportFileField.setFullName(
+            advancedImportFileFieldService.computeFullName(advancedImportFileField));
       } else {
-        fileField.setImportField(null);
-        fileField.setSubImportField(null);
+        advancedImportFileField.setImportField(null);
+        advancedImportFileField.setSubImportField(null);
       }
     }
-    return fileTab;
+    return advancedImportFileTab;
   }
 
   private String getSubImportField(MetaField importField) throws ClassNotFoundException {
@@ -108,27 +115,31 @@ public class FileTabServiceImpl implements FileTabService {
   }
 
   @Override
-  public FileTab compute(FileTab fileTab) {
-    if (CollectionUtils.isEmpty(fileTab.getFileFieldList())) {
-      return fileTab;
+  public AdvancedImportFileTab compute(AdvancedImportFileTab advancedImportFileTab) {
+    if (CollectionUtils.isEmpty(advancedImportFileTab.getAdvancedImportFileFieldList())) {
+      return advancedImportFileTab;
     }
 
-    for (FileField fileField : fileTab.getFileFieldList()) {
-      fileField.setFullName(fileFieldService.computeFullName(fileField));
+    for (AdvancedImportFileField advancedImportFileField :
+        advancedImportFileTab.getAdvancedImportFileFieldList()) {
+      advancedImportFileField.setFullName(
+          advancedImportFileFieldService.computeFullName(advancedImportFileField));
     }
-    return fileTab;
+    return advancedImportFileTab;
   }
 
   @SuppressWarnings("unchecked")
   @Override
-  public String getShowRecordIds(FileTab fileTab, String field) throws ClassNotFoundException {
+  public String getShowRecordIds(AdvancedImportFileTab advancedImportFileTab, String field)
+      throws ClassNotFoundException {
 
-    Context context = new Context(fileTab.getClass());
+    Context context = new Context(advancedImportFileTab.getClass());
     Class<? extends Model> klass =
-        (Class<? extends Model>) Class.forName(fileTab.getClass().getName());
+        (Class<? extends Model>) Class.forName(advancedImportFileTab.getClass().getName());
 
     JsonContext jsonContext =
-        new JsonContext(context, Mapper.of(klass).getProperty("attrs"), fileTab.getAttrs());
+        new JsonContext(
+            context, Mapper.of(klass).getProperty("attrs"), advancedImportFileTab.getAttrs());
 
     List<Object> recordList = (List<Object>) jsonContext.get(field);
     if (CollectionUtils.isEmpty(recordList)) {

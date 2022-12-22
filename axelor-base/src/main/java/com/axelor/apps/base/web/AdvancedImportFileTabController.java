@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.FileTab;
-import com.axelor.apps.base.db.repo.FileTabRepository;
+import com.axelor.apps.base.db.AdvancedImportFileTab;
+import com.axelor.apps.base.db.repo.AdvancedImportFileTabRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.advanced.imports.ActionService;
-import com.axelor.apps.base.service.advanced.imports.FileTabService;
+import com.axelor.apps.base.service.advanced.imports.AdvancedImportFileTabService;
 import com.axelor.apps.base.service.advanced.imports.SearchCallService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -35,7 +35,7 @@ import com.axelor.rpc.Context;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
-public class FileTabController {
+public class AdvancedImportFileTabController {
 
   public void updateFields(ActionRequest request, ActionResponse response) {
     try {
@@ -45,9 +45,10 @@ public class FileTabController {
         return;
       }
 
-      FileTab fileTab = context.asType(FileTab.class);
-      Beans.get(FileTabService.class).updateFields(fileTab);
-      response.setValue("fileFieldList", fileTab.getFileFieldList());
+      AdvancedImportFileTab advancedImportFileTab = context.asType(AdvancedImportFileTab.class);
+      Beans.get(AdvancedImportFileTabService.class).updateFields(advancedImportFileTab);
+      response.setValue(
+          "advancedImportFileFieldList", advancedImportFileTab.getAdvancedImportFileFieldList());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -56,9 +57,11 @@ public class FileTabController {
 
   public void compute(ActionRequest request, ActionResponse response) {
     try {
-      FileTab fileTab = request.getContext().asType(FileTab.class);
-      fileTab = Beans.get(FileTabService.class).compute(fileTab);
-      response.setValues(fileTab);
+      AdvancedImportFileTab advancedImportFileTab =
+          request.getContext().asType(AdvancedImportFileTab.class);
+      advancedImportFileTab =
+          Beans.get(AdvancedImportFileTabService.class).compute(advancedImportFileTab);
+      response.setValues(advancedImportFileTab);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -66,8 +69,10 @@ public class FileTabController {
 
   public void showRecord(ActionRequest request, ActionResponse response) {
     try {
-      FileTab fileTab = request.getContext().asType(FileTab.class);
-      fileTab = Beans.get(FileTabRepository.class).find(fileTab.getId());
+      AdvancedImportFileTab advancedImportFileTab =
+          request.getContext().asType(AdvancedImportFileTab.class);
+      advancedImportFileTab =
+          Beans.get(AdvancedImportFileTabRepository.class).find(advancedImportFileTab.getId());
 
       String btnName = request.getContext().get("_signal").toString();
       String fieldName = StringUtils.substringBetween(btnName, "show", "Btn");
@@ -78,14 +83,16 @@ public class FileTabController {
               .filter(
                   "self.name = ?1 AND self.type = 'many-to-many' AND self.model = ?2 AND self.modelField = 'attrs'",
                   fieldName,
-                  fileTab.getClass().getName())
+                  advancedImportFileTab.getClass().getName())
               .fetchOne();
 
       if (jsonField == null) {
         return;
       }
 
-      String ids = Beans.get(FileTabService.class).getShowRecordIds(fileTab, jsonField.getName());
+      String ids =
+          Beans.get(AdvancedImportFileTabService.class)
+              .getShowRecordIds(advancedImportFileTab, jsonField.getName());
 
       response.setView(
           ActionView.define(I18n.get(jsonField.getTitle()))
@@ -101,29 +108,33 @@ public class FileTabController {
   }
 
   public void validateActions(ActionRequest request, ActionResponse response) {
-    FileTab fileTab = request.getContext().asType(FileTab.class);
+    AdvancedImportFileTab advancedImportFileTab =
+        request.getContext().asType(AdvancedImportFileTab.class);
 
-    if (StringUtils.isEmpty(fileTab.getActions())) {
+    if (StringUtils.isEmpty(advancedImportFileTab.getActions())) {
       return;
     }
 
     ActionService actionService = Beans.get(ActionService.class);
-    if (!actionService.validate(fileTab.getActions())) {
+    if (!actionService.validate(advancedImportFileTab.getActions())) {
       response.setError(
           String.format(
-              BaseExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getMetaModel().getName()));
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_10,
+              advancedImportFileTab.getMetaModel().getName()));
     }
   }
 
   public void validateSearchCall(ActionRequest request, ActionResponse response) {
-    FileTab fileTab = request.getContext().asType(FileTab.class);
+    AdvancedImportFileTab advancedImportFileTab =
+        request.getContext().asType(AdvancedImportFileTab.class);
 
     SearchCallService searchCallService = Beans.get(SearchCallService.class);
 
-    if (!searchCallService.validate(fileTab.getSearchCall())) {
+    if (!searchCallService.validate(advancedImportFileTab.getSearchCall())) {
       response.setError(
           String.format(
-              BaseExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getMetaModel().getName()));
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_11,
+              advancedImportFileTab.getMetaModel().getName()));
     }
   }
 }

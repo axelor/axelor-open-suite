@@ -18,10 +18,10 @@
 package com.axelor.apps.base.service.advanced.imports;
 
 import com.axelor.apps.base.db.AdvancedImport;
-import com.axelor.apps.base.db.FileField;
-import com.axelor.apps.base.db.FileTab;
+import com.axelor.apps.base.db.AdvancedImportFileField;
+import com.axelor.apps.base.db.AdvancedImportFileTab;
+import com.axelor.apps.base.db.repo.AdvancedImportFileFieldRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
-import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
@@ -78,11 +78,11 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
   @Inject private DataReaderFactory dataReaderFactory;
 
-  @Inject private FileFieldService fileFieldService;
+  @Inject private AdvancedImportFileFieldService advancedImportFileFieldService;
 
   @Inject private AdvancedImportRepository advancedImportRepository;
 
-  @Inject private FileFieldRepository fileFieldRepository;
+  @Inject private AdvancedImportFileFieldRepository advancedImportFileFieldRepository;
 
   @Inject private DataImportService dataImportService;
 
@@ -114,9 +114,10 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     boolean isValid = true;
 
-    if (!CollectionUtils.isEmpty(advancedImport.getFileTabList())) {
-      advancedImport.getFileTabList().stream().forEach(tab -> tab.clearFileFieldList());
-      advancedImport.clearFileTabList();
+    if (!CollectionUtils.isEmpty(advancedImport.getAdvancedImportFileTabList())) {
+      advancedImport.getAdvancedImportFileTabList().stream()
+          .forEach(tab -> tab.clearAdvancedImportFileFieldList());
+      advancedImport.clearAdvancedImportFileTabList();
     }
 
     String[] sheets = reader.getSheetNames();
@@ -134,9 +135,9 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
 
-      FileTab fileTab = new FileTab();
-      fileTab.setName(sheet);
-      fileTab.setSequence(fileTabSequence);
+      AdvancedImportFileTab advancedImportFileTab = new AdvancedImportFileTab();
+      advancedImportFileTab.setName(sheet);
+      advancedImportFileTab.setSequence(fileTabSequence);
       fileTabSequence++;
 
       String[] objectRow = reader.read(sheet, startIndex, 0);
@@ -149,12 +150,13 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         tabConfigRowCount = getTabConfigRowCount(sheet, reader, totalLines, objectRow);
       }
 
-      isValid = this.applyObject(objectRow, fileTab, isConfig, linesToIgnore, isTabConfig);
+      isValid =
+          this.applyObject(objectRow, advancedImportFileTab, isConfig, linesToIgnore, isTabConfig);
       if (!isValid) {
         break;
       }
 
-      List<FileField> fileFieldList = new ArrayList<>();
+      List<AdvancedImportFileField> advancedImportFileFieldList = new ArrayList<>();
       List<Integer> ignoreFields = new ArrayList<Integer>();
 
       for (int line = isConfig ? 1 : linesToIgnore; line < totalLines; line++) {
@@ -165,26 +167,45 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
         if (isConfig) {
           this.applyWithConfig(
-              row, line, fileFieldList, ignoreFields, fileTab, isTabConfig, tabConfigRowCount);
+              row,
+              line,
+              advancedImportFileFieldList,
+              ignoreFields,
+              advancedImportFileTab,
+              isTabConfig,
+              tabConfigRowCount);
         } else {
-          this.applyWithoutConfig(row, (line - linesToIgnore), fileFieldList, fileTab, isHeader);
+          this.applyWithoutConfig(
+              row,
+              (line - linesToIgnore),
+              advancedImportFileFieldList,
+              advancedImportFileTab,
+              isHeader);
         }
       }
 
       if (isConfig) {
-        fileFieldList.removeIf(field -> field.getImportField() == null);
-        if (!fileTab.getImportType().equals(FileFieldRepository.IMPORT_TYPE_NEW)) {
-          fileTab = this.setSearchField(fileTab, searchFieldList, fileFieldList);
+        advancedImportFileFieldList.removeIf(field -> field.getImportField() == null);
+        if (!advancedImportFileTab
+            .getImportType()
+            .equals(AdvancedImportFileFieldRepository.IMPORT_TYPE_NEW)) {
+          advancedImportFileTab =
+              this.setSearchField(
+                  advancedImportFileTab, searchFieldList, advancedImportFileFieldList);
         }
       }
-      advancedImport.addFileTabListItem(fileTab);
+      advancedImport.addAdvancedImportFileTabListItem(advancedImportFileTab);
       advancedImportRepository.save(advancedImport);
     }
     return isValid;
   }
 
   private boolean applyObject(
-      String[] row, FileTab fileTab, boolean isConfig, int linesToIgnore, boolean isTabConfig)
+      String[] row,
+      AdvancedImportFileTab advancedImportFileTab,
+      boolean isConfig,
+      int linesToIgnore,
+      boolean isTabConfig)
       throws AxelorException {
     int rowIndex = isConfig ? (isTabConfig ? 1 : 0) : 0;
 
@@ -194,7 +215,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
 
     if (StringUtils.contains(row[rowIndex], "Object") && isConfig) {
-      this.setFileTabConfig(row, fileTab, rowIndex);
+      this.setFileTabConfig(row, advancedImportFileTab, rowIndex);
 
     } else if ((StringUtils.containsIgnoreCase(row[0], "Object")
             || (row.length > 1 && StringUtils.contains(row[1], "Object")))
@@ -214,7 +235,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_OBJECT),
-          fileTab.getName());
+          advancedImportFileTab.getName());
     }
 
     if ((StringUtils.isBlank(row[0])
@@ -229,15 +250,15 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   private void applyWithConfig(
       String[] row,
       int line,
-      List<FileField> fileFieldList,
+      List<AdvancedImportFileField> advancedImportFileFieldList,
       List<Integer> ignoreFields,
-      FileTab fileTab,
+      AdvancedImportFileTab advancedImportFileTab,
       Boolean isTabConfig,
       int tabConfigRowCount)
       throws AxelorException, ClassNotFoundException {
 
-    Mapper mapper = getMapper(fileTab.getMetaModel().getFullName());
-    FileField fileField = null;
+    Mapper mapper = getMapper(advancedImportFileTab.getMetaModel().getFullName());
+    AdvancedImportFileField advancedImportFileField = null;
 
     int index = 0;
     for (int i = 0; i < row.length; i++) {
@@ -248,7 +269,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       index = line;
       String value = row[i].trim();
       if (line == 1) {
-        this.readFields(value, i, fileFieldList, ignoreFields, mapper, fileTab);
+        this.readFields(
+            value, i, advancedImportFileFieldList, ignoreFields, mapper, advancedImportFileTab);
         continue;
       }
 
@@ -256,39 +278,39 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
 
-      if (fileFieldList.size() < i) {
+      if (advancedImportFileFieldList.size() < i) {
         break;
-      } else if (!isTabConfig && fileFieldList.size() <= i) {
+      } else if (!isTabConfig && advancedImportFileFieldList.size() <= i) {
         break;
       }
 
       if (row[0] == null) {
-        fileField = fileFieldList.get(i - 1);
+        advancedImportFileField = advancedImportFileFieldList.get(i - 1);
       } else if (!isTabConfig && row[0] != null) {
-        fileField = fileFieldList.get(i);
+        advancedImportFileField = advancedImportFileFieldList.get(i);
       }
 
       if (isTabWithoutConfig) {
-        fileField = fileFieldList.get(i);
+        advancedImportFileField = advancedImportFileFieldList.get(i);
       }
 
       if (line == 2) {
-        fileField.setColumnTitle(value);
+        advancedImportFileField.setColumnTitle(value);
         continue;
       }
 
       if (isTabConfig && i > 0 && row[0] != null && line >= 3 && line <= 11) {
-        fileField = fileFieldList.get(i - 1);
-        this.setFileFieldConfig(row, i, fileField);
+        advancedImportFileField = advancedImportFileFieldList.get(i - 1);
+        this.setFileFieldConfig(row, i, advancedImportFileField);
       }
 
       if (isTabConfig && i > 0 && row[0] == null) {
         line += -(tabConfigRowCount + 2);
-        this.setSampleLines(line, value, fileField);
+        this.setSampleLines(line, value, advancedImportFileField);
         line = index;
       } else if (!isTabConfig) {
         line += -2;
-        this.setSampleLines(line, value, fileField);
+        this.setSampleLines(line, value, advancedImportFileField);
         line = index;
       }
     }
@@ -296,7 +318,11 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
   @Transactional
   public void applyWithoutConfig(
-      String[] row, int line, List<FileField> fileFieldList, FileTab fileTab, boolean isHeader)
+      String[] row,
+      int line,
+      List<AdvancedImportFileField> advancedImportFileFieldList,
+      AdvancedImportFileTab advancedImportFileTab,
+      boolean isHeader)
       throws AxelorException {
     int index = 0;
     for (int i = 0; i < row.length; i++) {
@@ -305,26 +331,27 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       }
       index = line;
       String value = row[i].trim();
-      FileField fileField = null;
+      AdvancedImportFileField advancedImportFileField = null;
 
       if (line == 0) {
-        fileField = new FileField();
-        fileField.setIsMatchWithFile(true);
-        fileFieldList.add(fileField);
-        fileField.setFileTab(fileTab);
+        advancedImportFileField = new AdvancedImportFileField();
+        advancedImportFileField.setIsMatchWithFile(true);
+        advancedImportFileFieldList.add(advancedImportFileField);
+        advancedImportFileField.setAdvancedImportFileTab(advancedImportFileTab);
 
         if (isHeader) {
-          fileField.setColumnTitle(value);
+          advancedImportFileField.setColumnTitle(value);
         } else {
-          fileField.setFirstLine(value);
+          advancedImportFileField.setFirstLine(value);
         }
-        fileField.setSequence(i);
-        fileField.setFullName(fileFieldService.computeFullName(fileField));
-        fileField = fileFieldRepository.save(fileField);
+        advancedImportFileField.setSequence(i);
+        advancedImportFileField.setFullName(
+            advancedImportFileFieldService.computeFullName(advancedImportFileField));
+        advancedImportFileField = advancedImportFileFieldRepository.save(advancedImportFileField);
         continue;
       }
 
-      if (fileFieldList.size() <= i) {
+      if (advancedImportFileFieldList.size() <= i) {
         break;
       }
 
@@ -332,18 +359,19 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         line += 1;
       }
 
-      if (fileField == null) {
-        fileField = fileFieldList.get(i);
+      if (advancedImportFileField == null) {
+        advancedImportFileField = advancedImportFileFieldList.get(i);
       }
 
-      setSampleLines(line, value, fileField);
+      setSampleLines(line, value, advancedImportFileField);
       line = index;
     }
   }
 
-  private void setSampleLines(int line, String value, FileField fileField) {
-    if (!StringUtils.isBlank(fileField.getTargetType())
-        && fileField.getTargetType().equals("String")
+  private void setSampleLines(
+      int line, String value, AdvancedImportFileField advancedImportFileField) {
+    if (!StringUtils.isBlank(advancedImportFileField.getTargetType())
+        && advancedImportFileField.getTargetType().equals("String")
         && !StringUtils.isBlank(value)
         && value.length() > 255) {
       value = StringUtils.abbreviate(value, 255);
@@ -351,13 +379,13 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     switch (line) {
       case 1:
-        fileField.setFirstLine(value);
+        advancedImportFileField.setFirstLine(value);
         break;
       case 2:
-        fileField.setSecondLine(value);
+        advancedImportFileField.setSecondLine(value);
         break;
       case 3:
-        fileField.setThirdLine(value);
+        advancedImportFileField.setThirdLine(value);
         break;
       default:
         break;
@@ -368,14 +396,14 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   public void readFields(
       String value,
       int index,
-      List<FileField> fileFieldList,
+      List<AdvancedImportFileField> advancedImportFileFieldList,
       List<Integer> ignoreFields,
       Mapper mapper,
-      FileTab fileTab)
+      AdvancedImportFileTab advancedImportFileTab)
       throws AxelorException, ClassNotFoundException {
 
-    FileField fileField = new FileField();
-    fileField.setSequence(index);
+    AdvancedImportFileField advancedImportFileField = new AdvancedImportFileField();
+    advancedImportFileField.setSequence(index);
     if (Strings.isNullOrEmpty(value)) {
       return;
     }
@@ -386,9 +414,9 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         && (importType.equalsIgnoreCase(forSelectUseValues)
             || importType.equalsIgnoreCase(forSelectUseTitles)
             || importType.equalsIgnoreCase(forSelectUseTranslatedTitles))) {
-      fileField.setForSelectUse(this.getForStatusSelect(importType));
+      advancedImportFileField.setForSelectUse(this.getForStatusSelect(importType));
     } else {
-      fileField.setImportType(this.getImportType(value, importType));
+      advancedImportFileField.setImportType(this.getImportType(value, importType));
     }
 
     value = value.split("\\(")[0];
@@ -404,13 +432,13 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     boolean isValid = this.checkFields(mapper, importField, subImportField);
 
     if (isValid) {
-      this.setImportFields(mapper, fileField, importField, subImportField);
+      this.setImportFields(mapper, advancedImportFileField, importField, subImportField);
     } else {
       ignoreFields.add(index);
     }
-    fileFieldList.add(fileField);
-    fileField = fileFieldRepository.save(fileField);
-    fileTab.addFileFieldListItem(fileField);
+    advancedImportFileFieldList.add(advancedImportFileField);
+    advancedImportFileField = advancedImportFileFieldRepository.save(advancedImportFileField);
+    advancedImportFileTab.addAdvancedImportFileFieldListItem(advancedImportFileField);
   }
 
   private boolean checkFields(Mapper mapper, String importField, String subImportField)
@@ -487,7 +515,10 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   private void setImportFields(
-      Mapper mapper, FileField fileField, String importField, String subImportField) {
+      Mapper mapper,
+      AdvancedImportFileField advancedImportFileField,
+      String importField,
+      String subImportField) {
 
     Property prop = mapper.getProperty(importField);
     MetaField field =
@@ -498,18 +529,19 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
                 prop.getName(),
                 prop.getEntity().getSimpleName())
             .fetchOne();
-    fileField.setImportField(field);
-    fileField.setIsMatchWithFile(true);
+    advancedImportFileField.setImportField(field);
+    advancedImportFileField.setIsMatchWithFile(true);
 
     if (!Strings.isNullOrEmpty(subImportField)) {
-      fileField.setSubImportField(subImportField);
+      advancedImportFileField.setSubImportField(subImportField);
     }
 
-    fileField.setFullName(fileFieldService.computeFullName(fileField));
-    fileField = fileFieldService.fillType(fileField);
+    advancedImportFileField.setFullName(
+        advancedImportFileFieldService.computeFullName(advancedImportFileField));
+    advancedImportFileField = advancedImportFileFieldService.fillType(advancedImportFileField);
 
-    if (fileField.getTargetType().equals("MetaFile")) {
-      fileField.setImportType(FileFieldRepository.IMPORT_TYPE_NEW);
+    if (advancedImportFileField.getTargetType().equals("MetaFile")) {
+      advancedImportFileField.setImportType(AdvancedImportFileFieldRepository.IMPORT_TYPE_NEW);
     }
   }
 
@@ -517,29 +549,29 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     if (Strings.isNullOrEmpty(importType)) {
       if (value.contains(".")) {
-        return FileFieldRepository.IMPORT_TYPE_NEW;
+        return AdvancedImportFileFieldRepository.IMPORT_TYPE_NEW;
       }
-      return FileFieldRepository.IMPORT_TYPE_DIRECT;
+      return AdvancedImportFileFieldRepository.IMPORT_TYPE_DIRECT;
     }
 
     switch (importType.toLowerCase()) {
       case "find":
-        return FileFieldRepository.IMPORT_TYPE_FIND;
+        return AdvancedImportFileFieldRepository.IMPORT_TYPE_FIND;
 
       case "findnew":
-        return FileFieldRepository.IMPORT_TYPE_FIND_NEW;
+        return AdvancedImportFileFieldRepository.IMPORT_TYPE_FIND_NEW;
 
       case "new":
-        return FileFieldRepository.IMPORT_TYPE_NEW;
+        return AdvancedImportFileFieldRepository.IMPORT_TYPE_NEW;
 
       case "ignore/empty":
-        return FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY;
+        return AdvancedImportFileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY;
 
       default:
         if (value.contains(".")) {
-          return FileFieldRepository.IMPORT_TYPE_NEW;
+          return AdvancedImportFileFieldRepository.IMPORT_TYPE_NEW;
         }
-        return FileFieldRepository.IMPORT_TYPE_DIRECT;
+        return AdvancedImportFileFieldRepository.IMPORT_TYPE_DIRECT;
     }
   }
 
@@ -547,17 +579,18 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     switch (importType.toLowerCase()) {
       case forSelectUseTitles:
-        return FileFieldRepository.SELECT_USE_TITLES;
+        return AdvancedImportFileFieldRepository.SELECT_USE_TITLES;
       case forSelectUseValues:
-        return FileFieldRepository.SELECT_USE_VALUES;
+        return AdvancedImportFileFieldRepository.SELECT_USE_VALUES;
       case forSelectUseTranslatedTitles:
-        return FileFieldRepository.SELECT_USE_TRANSLATED_TITLES;
+        return AdvancedImportFileFieldRepository.SELECT_USE_TRANSLATED_TITLES;
       default:
-        return FileFieldRepository.SELECT_USE_VALUES;
+        return AdvancedImportFileFieldRepository.SELECT_USE_VALUES;
     }
   }
 
-  protected void setFileTabConfig(String row[], FileTab fileTab, int rowIndex)
+  protected void setFileTabConfig(
+      String row[], AdvancedImportFileTab advancedImportFileTab, int rowIndex)
       throws AxelorException {
 
     final String KEY_OBJECT = "object";
@@ -571,84 +604,88 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     Map<String, String> tabConfigDataMap = getTabConfigDataMap(row, KEY_LIST);
 
     MetaModel model = metaModelRepo.findByName(tabConfigDataMap.get(KEY_OBJECT));
-    fileTab.setMetaModel(model);
+    advancedImportFileTab.setMetaModel(model);
 
     if (tabConfigDataMap.containsKey(KEY_IMPORT_TYPE)) {
 
       Integer importType = this.getImportType(null, tabConfigDataMap.get(KEY_IMPORT_TYPE));
-      fileTab.setImportType(importType);
+      advancedImportFileTab.setImportType(importType);
 
-      if (importType != FileFieldRepository.IMPORT_TYPE_NEW) {
+      if (importType != AdvancedImportFileFieldRepository.IMPORT_TYPE_NEW) {
         if (!tabConfigDataMap.containsKey(KEY_SEARCH_FIELD_SET)
             && !tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_6),
-              fileTab.getName());
+              advancedImportFileTab.getName());
         }
         if (tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
-          fileTab.setSearchCall(tabConfigDataMap.get(KEY_SEARCH_CALL));
+          advancedImportFileTab.setSearchCall(tabConfigDataMap.get(KEY_SEARCH_CALL));
         } else {
           searchFieldList = Arrays.asList(tabConfigDataMap.get(KEY_SEARCH_FIELD_SET).split("\\,"));
         }
       }
     }
 
-    fileTab.setActions(tabConfigDataMap.get(KEY_ACTIONS));
+    advancedImportFileTab.setActions(tabConfigDataMap.get(KEY_ACTIONS));
   }
 
-  protected void setFileFieldConfig(String[] row, Integer i, FileField fileField) {
+  protected void setFileFieldConfig(
+      String[] row, Integer i, AdvancedImportFileField advancedImportFileField) {
 
     String fieldName = row[0].trim();
 
     switch (fieldName.toLowerCase()) {
       case "forselectuse":
-        fileField.setForSelectUse(this.getForStatusSelect(row[i]));
+        advancedImportFileField.setForSelectUse(this.getForStatusSelect(row[i]));
         break;
 
       case "noimportif":
-        fileField.setNoImportIf(row[i]);
+        advancedImportFileField.setNoImportIf(row[i]);
         break;
 
       case "expression":
-        fileField.setExpression(row[i]);
+        advancedImportFileField.setExpression(row[i]);
         break;
 
       case "dateformat":
-        fileField.setDateFormat(row[i]);
+        advancedImportFileField.setDateFormat(row[i]);
         break;
 
       case "importtype":
-        fileField.setImportType(Integer.parseInt(row[i]));
+        advancedImportFileField.setImportType(Integer.parseInt(row[i]));
         break;
 
       case "subimportfield":
-        fileField.setSubImportField(row[i]);
+        advancedImportFileField.setSubImportField(row[i]);
         break;
 
       case "splitby":
-        fileField.setSplitBy(row[i]);
+        advancedImportFileField.setSplitBy(row[i]);
         break;
 
       case "defaultifnotfound":
-        fileField.setDefaultIfNotFound(row[i]);
+        advancedImportFileField.setDefaultIfNotFound(row[i]);
         break;
     }
   }
 
-  protected FileTab setSearchField(
-      FileTab fileTab, List<String> searchFieldList, List<FileField> fileFieldList) {
-    Set<FileField> searchFieldSet = new HashSet<FileField>();
+  protected AdvancedImportFileTab setSearchField(
+      AdvancedImportFileTab advancedImportFileTab,
+      List<String> searchFieldList,
+      List<AdvancedImportFileField> advancedImportFileFieldList) {
+    Set<AdvancedImportFileField> advancedImportSearchFieldSet =
+        new HashSet<AdvancedImportFileField>();
 
     for (String searchField : searchFieldList) {
-      for (FileField fileField : fileFieldList) {
-        if (fileField.getFullName().endsWith("- " + searchField)) {
-          searchFieldSet.add(fileField);
+      for (AdvancedImportFileField advancedImportFileField : advancedImportFileFieldList) {
+        if (advancedImportFileField.getFullName().endsWith("- " + searchField)) {
+          advancedImportSearchFieldSet.add(advancedImportFileField);
         }
       }
     }
-    fileTab.setSearchFieldSet(searchFieldSet);
-    return fileTab;
+    advancedImportFileTab.setAdvancedImportSearchFieldSet(advancedImportSearchFieldSet);
+    return advancedImportFileTab;
   }
 
   @Override
@@ -679,26 +716,30 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
   @Override
   public boolean resetImport(AdvancedImport advancedImport) throws ClassNotFoundException {
-    List<FileTab> fileTabList = advancedImport.getFileTabList();
-    Beans.get(ValidatorService.class).sortFileTabList(fileTabList);
+    List<AdvancedImportFileTab> advancedImportFileTabList =
+        advancedImport.getAdvancedImportFileTabList();
+    Beans.get(ValidatorService.class).sortFileTabList(advancedImportFileTabList);
 
-    boolean isResetValue = resetRelationalFields(fileTabList);
+    boolean isResetValue = resetRelationalFields(advancedImportFileTabList);
     if (isResetValue) {
-      removeRecords(fileTabList);
+      removeRecords(advancedImportFileTabList);
     }
     return isResetValue;
   }
 
   @SuppressWarnings("unchecked")
-  public boolean resetRelationalFields(List<FileTab> fileTabList) throws ClassNotFoundException {
+  public boolean resetRelationalFields(List<AdvancedImportFileTab> advancedImportFileTabList)
+      throws ClassNotFoundException {
 
     boolean isResetValue = false;
 
-    for (FileTab fileTab : fileTabList) {
+    for (AdvancedImportFileTab advancedImportFileTab : advancedImportFileTabList) {
 
-      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
+      Map<String, Object> jsonContextMap =
+          dataImportService.createJsonContext(advancedImportFileTab);
       JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
-      String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
+      String fieldName =
+          inflector.camelize(advancedImportFileTab.getMetaModel().getName(), true) + "Set";
 
       List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
       if (CollectionUtils.isEmpty(recordList)) {
@@ -707,7 +748,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       isResetValue = true;
 
       Class<? extends Model> modelKlass =
-          (Class<? extends Model>) Class.forName(fileTab.getMetaModel().getFullName());
+          (Class<? extends Model>)
+              Class.forName(advancedImportFileTab.getMetaModel().getFullName());
       this.resetPropertyValue(modelKlass, recordList);
       this.resetSubPropertyValue(modelKlass, jsonContext);
     }
@@ -762,15 +804,18 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  public void removeRecords(List<FileTab> fileTabList) throws ClassNotFoundException {
+  public void removeRecords(List<AdvancedImportFileTab> advancedImportFileTabList)
+      throws ClassNotFoundException {
 
-    for (FileTab fileTab : fileTabList) {
+    for (AdvancedImportFileTab advancedImportFileTab : advancedImportFileTabList) {
 
-      String targetModelName = fileTab.getMetaModel().getFullName();
+      String targetModelName = advancedImportFileTab.getMetaModel().getFullName();
 
-      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
+      Map<String, Object> jsonContextMap =
+          dataImportService.createJsonContext(advancedImportFileTab);
       JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
-      String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
+      String fieldName =
+          inflector.camelize(advancedImportFileTab.getMetaModel().getName(), true) + "Set";
 
       List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
       if (CollectionUtils.isEmpty(recordList)) {
@@ -778,7 +823,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       }
 
       Class<? extends Model> modelKlass = (Class<? extends Model>) Class.forName(targetModelName);
-      removeRecord(fileTab, modelKlass, recordList, fileTabList);
+      removeRecord(advancedImportFileTab, modelKlass, recordList, advancedImportFileTabList);
       removeSubRecords(modelKlass, jsonContext);
     }
   }
@@ -786,15 +831,15 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   @SuppressWarnings("unchecked")
   @Transactional
   public void removeRecord(
-      FileTab fileTab,
+      AdvancedImportFileTab advancedImportFileTab,
       Class<? extends Model> modelKlass,
       List<Object> recordList,
-      List<FileTab> fileTabList)
+      List<AdvancedImportFileTab> advancedImportFileTabList)
       throws ClassNotFoundException {
 
     JpaRepository<? extends Model> modelRepo = JpaRepository.of(modelKlass);
 
-    for (FileTab tab : fileTabList) {
+    for (AdvancedImportFileTab tab : advancedImportFileTabList) {
 
       Map<String, Object> jsonContextMap = dataImportService.createJsonContext(tab);
       JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
@@ -812,7 +857,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       for (Property prop : props) {
         if (prop.getTarget() != null && prop.getTarget() == modelKlass && prop.isRequired()) {
-          removeRecord(tab, klass, recList, fileTabList);
+          removeRecord(tab, klass, recList, advancedImportFileTabList);
         }
       }
     }
@@ -827,7 +872,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
             .collect(Collectors.joining(","));
 
     modelRepo.all().filter("self.id IN (" + ids + ")").delete();
-    fileTab.setAttrs(null);
+    advancedImportFileTab.setAttrs(null);
 
     LOG.debug("Reset imported data : {}", modelKlass.getSimpleName());
   }

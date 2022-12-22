@@ -24,8 +24,9 @@
 
     <integer name="nbOfFirstLineIgnore" title="Nb of first lines to be ignore" default="0"/>
 
-    <one-to-many name="fileTabList" ref="com.axelor.apps.base.db.FileTab"
-      title="Tabs configuration" mappedBy="advancedImport"/>
+    <one-to-many name="advancedImportFileTabList"
+      ref="com.axelor.apps.base.db.AdvancedImportFileTab" title="Tabs configuration"
+      mappedBy="advancedImport"/>
     <one-to-many name="importHistoryList" title="Historical"
       ref="com.axelor.apps.base.db.ImportHistory" mappedBy="advanceImport"/>
 

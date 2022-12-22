@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service.advanced.imports;
 
-import com.axelor.apps.base.db.FileField;
+import com.axelor.apps.base.db.AdvancedImportFileField;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
@@ -25,31 +25,32 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
-public class FileFieldServiceImpl implements FileFieldService {
+public class AdvancedImportFileFieldServiceImpl implements AdvancedImportFileFieldService {
 
   @Inject private MetaModelRepository metaModelRepo;
 
   @Inject MetaFieldRepository metaFieldRepo;
 
   @Override
-  public FileField fillType(FileField fileField) {
+  public AdvancedImportFileField fillType(AdvancedImportFileField advancedImportFileField) {
     String targetType = null;
     String relationship = null;
 
-    if (fileField.getImportField() != null) {
-      targetType = fileField.getImportField().getTypeName();
-      relationship = fileField.getImportField().getRelationship();
+    if (advancedImportFileField.getImportField() != null) {
+      targetType = advancedImportFileField.getImportField().getTypeName();
+      relationship = advancedImportFileField.getImportField().getRelationship();
 
-      if (!Strings.isNullOrEmpty(fileField.getSubImportField())) {
-        String[] subFields = fileField.getSubImportField().split("\\.");
-        String[] types = this.getSubFieldType(subFields, 0, fileField.getImportField());
+      if (!Strings.isNullOrEmpty(advancedImportFileField.getSubImportField())) {
+        String[] subFields = advancedImportFileField.getSubImportField().split("\\.");
+        String[] types =
+            this.getSubFieldType(subFields, 0, advancedImportFileField.getImportField());
         targetType = types[0];
         relationship = types[1];
       }
     }
-    fileField.setTargetType(targetType);
-    fileField.setRelationship(relationship);
-    return fileField;
+    advancedImportFileField.setTargetType(targetType);
+    advancedImportFileField.setRelationship(relationship);
+    return advancedImportFileField;
   }
 
   private String[] getSubFieldType(String[] subFields, int index, MetaField parentField) {
@@ -88,17 +89,17 @@ public class FileFieldServiceImpl implements FileFieldService {
   }
 
   @Override
-  public String computeFullName(FileField fileField) {
-    String fullName = fileField.getSequence().toString();
+  public String computeFullName(AdvancedImportFileField advancedImportFileField) {
+    String fullName = advancedImportFileField.getSequence().toString();
 
-    if (!Strings.isNullOrEmpty(fileField.getColumnTitle())) {
-      fullName += " - " + fileField.getColumnTitle();
+    if (!Strings.isNullOrEmpty(advancedImportFileField.getColumnTitle())) {
+      fullName += " - " + advancedImportFileField.getColumnTitle();
     }
-    if (fileField.getImportField() != null) {
-      fullName += " - " + fileField.getImportField().getName();
+    if (advancedImportFileField.getImportField() != null) {
+      fullName += " - " + advancedImportFileField.getImportField().getName();
     }
-    if (!Strings.isNullOrEmpty(fileField.getSubImportField())) {
-      fullName += "." + fileField.getSubImportField();
+    if (!Strings.isNullOrEmpty(advancedImportFileField.getSubImportField())) {
+      fullName += "." + advancedImportFileField.getSubImportField();
     }
     return fullName;
   }

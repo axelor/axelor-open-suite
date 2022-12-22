@@ -17,8 +17,8 @@
  */
 package com.axelor.csv.script;
 
-import com.axelor.apps.base.db.FileTab;
-import com.axelor.apps.base.db.repo.FileTabRepository;
+import com.axelor.apps.base.db.AdvancedImportFileTab;
+import com.axelor.apps.base.db.repo.AdvancedImportFileTabRepository;
 import com.axelor.apps.base.service.advanced.imports.ActionService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
 import com.axelor.common.Inflector;
@@ -53,7 +53,7 @@ public class ImportAdvancedImport {
 
   @Inject protected MetaFiles metaFiles;
 
-  @Inject private FileTabRepository fileTabRepo;
+  @Inject private AdvancedImportFileTabRepository advancedImportFileTabRepo;
 
   @Inject private ValidatorService validatorService;
 
@@ -66,11 +66,12 @@ public class ImportAdvancedImport {
       return bean;
     }
 
-    FileTab fileTab = fileTabRepo.find(Long.valueOf(values.get("fileTabId").toString()));
+    AdvancedImportFileTab advancedImportFileTab =
+        advancedImportFileTabRepo.find(Long.valueOf(values.get("fileTabId").toString()));
 
     ScriptHelper scriptHelper = new GroovyScriptHelper(new ScriptBindings(values));
 
-    List<String> exprs = (List<String>) values.get("ifConditions" + fileTab.getId());
+    List<String> exprs = (List<String>) values.get("ifConditions" + advancedImportFileTab.getId());
     if (!CollectionUtils.isEmpty(exprs)) {
       if ((boolean) scriptHelper.eval(String.join(" || ", exprs))) {
         return null;
@@ -80,19 +81,20 @@ public class ImportAdvancedImport {
     if (((Model) bean).getId() == null) {
       List<Property> propList = this.getProperties(bean);
       JPA.save((Model) bean);
-      this.addJsonObjectRecord(bean, fileTab, fileTab.getMetaModel().getName(), values);
+      this.addJsonObjectRecord(
+          bean, advancedImportFileTab, advancedImportFileTab.getMetaModel().getName(), values);
 
       int fieldSeq = 2;
       int btnSeq = 3;
       for (Property prop : propList) {
         validatorService.createCustomObjectSet(
-            fileTab.getClass().getName(), prop.getTarget().getName(), fieldSeq);
+            advancedImportFileTab.getClass().getName(), prop.getTarget().getName(), fieldSeq);
         validatorService.createCustomButton(
-            fileTab.getClass().getName(), prop.getTarget().getName(), btnSeq);
+            advancedImportFileTab.getClass().getName(), prop.getTarget().getName(), btnSeq);
 
         this.addJsonObjectRecord(
             prop.get(bean),
-            fileTab,
+            advancedImportFileTab,
             StringUtils.substringAfterLast(prop.getTarget().getName(), "."),
             values);
         fieldSeq++;
@@ -100,7 +102,7 @@ public class ImportAdvancedImport {
       }
     }
 
-    final String ACTIONS_TO_APPLY = "actionsToApply" + fileTab.getId();
+    final String ACTIONS_TO_APPLY = "actionsToApply" + advancedImportFileTab.getId();
     if (!ObjectUtils.isEmpty(values.get(ACTIONS_TO_APPLY))) {
       bean = actionService.apply(values.get(ACTIONS_TO_APPLY).toString(), bean);
     }
@@ -124,7 +126,10 @@ public class ImportAdvancedImport {
 
   @SuppressWarnings("unchecked")
   private void addJsonObjectRecord(
-      Object bean, FileTab fileTab, String fieldName, Map<String, Object> values) {
+      Object bean,
+      AdvancedImportFileTab advancedImportFileTab,
+      String fieldName,
+      Map<String, Object> values) {
 
     String field = Inflector.getInstance().camelize(fieldName, true) + "Set";
     List<Object> recordList;
@@ -133,7 +138,7 @@ public class ImportAdvancedImport {
     recordMap.put("id", ((Model) bean).getId());
 
     Map<String, Object> jsonContextValues =
-        (Map<String, Object>) values.get("jsonContextValues" + fileTab.getId());
+        (Map<String, Object>) values.get("jsonContextValues" + advancedImportFileTab.getId());
 
     JsonContext jsonContext = (JsonContext) jsonContextValues.get("jsonContext");
     Context context = (Context) jsonContextValues.get("context");
@@ -158,7 +163,7 @@ public class ImportAdvancedImport {
     recordList.add(recordMap);
     jsonContext.put(field, recordList);
 
-    fileTab.setAttrs(context.get("attrs").toString());
+    advancedImportFileTab.setAttrs(context.get("attrs").toString());
   }
 
   public Object importPicture(String value, String pathVal) throws IOException {

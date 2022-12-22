@@ -39,8 +39,9 @@
       <field name="fileExtension" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel-related colSpan="12" field="fileTabList" form-view="file-tab-form"
-        grid-view="file-tab-grid" readonlyIf="statusSelect == 1" canMove="true" orderBy="sequence"/>
+      <panel-related colSpan="12" field="advancedImportFileTabList"
+        form-view="advanced-import-file-tab-form" grid-view="advanced-import-file-tab-grid"
+        readonlyIf="statusSelect == 1" canMove="true" orderBy="sequence"/>
       <panel-related field="importHistoryList" form-view="import-history-form"
         grid-view="import-history-grid" readonly="true"/>
     </panel-tabs>
@@ -50,7 +51,7 @@
         hideIf="statusSelect == 1"/>
       <button name="validateBtn" title="Validate"
         onClick="save,action-advanced-import-method-validate,save"
-        showIf="fileTabList.length &gt; 0 &amp;&amp; statusSelect == 0"/>
+        showIf="advancedImportFileTabList.length &gt; 0 &amp;&amp; statusSelect == 0"/>
       <button name="importBtn" title="import.verb"
         onClick="save,action-advanced-import-method-import,save" showIf="statusSelect == 1"/>
       <button name="resetImportBtn" title="Reset import"
@@ -78,7 +79,7 @@
 
   <action-validate name="action-advanced-import-validate-filetab">
     <alert message="You will lost all configuration. Are you sure ?"
-      if="fileTabList != null &amp;&amp; fileTabList.size > 0"/>
+      if="advancedImportFileTabList != null &amp;&amp; advancedImportFileTabList.size > 0"/>
   </action-validate>
 
   <action-record name="action-advanced-import-record-set-values"
