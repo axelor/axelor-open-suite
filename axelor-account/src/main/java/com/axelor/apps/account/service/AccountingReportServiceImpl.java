@@ -125,7 +125,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
       fileLink = accountingReportDas2Service.printPreparatoryProcessDeclaration(accountingReport);
     } else if (accountingReport.getReportType().getTypeSelect()
-        == AccountingReportRepository.REPORT_CUSTOM_STATE) {
+            == AccountingReportRepository.REPORT_CUSTOM_STATE
+        && !accountingReport.getReportType().getUseLegacyCustomReports()) {
       fileLink = accountingReportPrintService.printCustomReport(accountingReport);
     } else {
       fileLink = accountingReportPrintService.print(accountingReport);
