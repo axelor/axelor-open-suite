@@ -2392,6 +2392,10 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                         <property name="aggregationOnColumn">Column/column</property>
                                                         <property name="content">
                                                             <data id="5853">
+                                                                <structure name="numberFormat">
+                                                                    <property name="category">Custom</property>
+                                                                    <property name="pattern">#0.00</property>
+                                                                </structure>
                                                                 <list-property name="visibility">
                                                                     <structure>
                                                                         <property name="format">all</property>
