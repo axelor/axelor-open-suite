@@ -294,6 +294,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
 
     BigDecimal result =
         this.getResultFromMoveLine(
+            accountingReport,
             moveLineList,
             analyticAccountSet,
             groupColumn == null ? null : groupColumn.getAnalyticAccountCode(),
@@ -480,6 +481,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   }
 
   protected BigDecimal getResultFromMoveLine(
+      AccountingReport accountingReport,
       List<MoveLine> moveLineList,
       Set<AnalyticAccount> analyticAccountSet,
       String groupColumnAnalyticAccountCode,
@@ -491,6 +493,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             it ->
                 this.getMoveLineAmount(
                     it,
+                    accountingReport,
                     analyticAccountSet,
                     groupColumnAnalyticAccountCode,
                     columnAnalyticAccountCode,
@@ -514,6 +517,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
 
   protected BigDecimal getMoveLineAmount(
       MoveLine moveLine,
+      AccountingReport accountingReport,
       Set<AnalyticAccount> analyticAccountSet,
       String groupColumnAnalyticAccountCode,
       String columnAnalyticAccountCode,
