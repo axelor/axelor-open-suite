@@ -56,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -110,6 +111,13 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     } catch (AxelorException e) {
       TraceBackService.trace(
           new AxelorException(e, e.getCategory(), ""),
+          ExceptionOriginRepository.REPORTED_BALANCE,
+          batch.getId());
+      incrementAnomaly();
+      end = true;
+    } catch (PersistenceException e) {
+      TraceBackService.trace(
+          new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, ""),
           ExceptionOriginRepository.REPORTED_BALANCE,
           batch.getId());
       incrementAnomaly();
