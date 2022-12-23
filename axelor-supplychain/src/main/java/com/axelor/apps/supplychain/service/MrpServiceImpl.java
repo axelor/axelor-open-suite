@@ -397,6 +397,13 @@ public class MrpServiceImpl implements MrpService {
         && mrpLine.getEstimatedDeliveryMrpLine() != null) {
       return false;
     }
+
+    if ((mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER
+            || mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER)
+        && !firstPass) {
+      return false;
+    }
+
     boolean isProposalElement = this.isProposalElement(mrpLineType);
 
     BigDecimal minQty = mrpLine.getMinQty();
