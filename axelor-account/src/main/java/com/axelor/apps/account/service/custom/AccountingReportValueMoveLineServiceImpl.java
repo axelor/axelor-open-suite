@@ -527,7 +527,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         groupColumn == null ? null : groupColumn.getAnalyticAccountCode();
 
     if (CollectionUtils.isNotEmpty(analyticAccountSet)
-        || StringUtils.notEmpty(groupColumn.getAnalyticAccountCode())
+        || StringUtils.notEmpty(groupColumnAnalyticAccountCode)
         || StringUtils.notEmpty(column.getAnalyticAccountCode())
         || StringUtils.notEmpty(line.getAnalyticAccountCode())) {
       return this.getAnalyticAmount(
