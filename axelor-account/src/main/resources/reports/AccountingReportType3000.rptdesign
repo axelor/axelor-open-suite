@@ -1082,7 +1082,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ConfigColumn.label AS "columnName",
 	ReportValue.column_number AS "columnNb",
 	ConfigColumn.rule_type_select AS "columnRuleType",
-	ConfigColumn.hidden AS "columnHidden",
+	(ConfigColumn.hidden OR ConfigGroupColumn.hidden) AS "columnHidden",
 	ConfigColumn.not_computed_if_intersect AS "columnNotCompute",
 	ConfigColumn.compute_previous_year AS "previousYear",
 	ReportValue.line_title AS "lineName",
@@ -1105,6 +1105,13 @@ ON ReportValue.accounting_report_config_line = ConfigLine.id
 
 LEFT JOIN account_accounting_report_config_line AS ConfigColumn
 ON ReportValue.accounting_report_config_line_column = ConfigColumn.id
+
+LEFT JOIN account_accounting_report_type AS ReportType
+ON AccountingReport.report_type = ReportType.id
+
+LEFT JOIN account_accounting_report_config_line AS ConfigGroupColumn
+ON ReportValue.group_number = ConfigGroupColumn.sequence 
+	AND ConfigGroupColumn.report_type_column = ReportType.id
 
 WHERE AccountingReport.id = ?
 
