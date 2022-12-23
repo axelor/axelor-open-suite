@@ -757,6 +757,7 @@
 "An accounting moveline must have either a credit value or a debit value.","Une ligne d'écriture doit soit avoir une valeur au crédit, soit avoir une valeur au débit.",,
 "An analytic distribution is set in move line %s but the account used do not allow analytic distribution","La ligne d'écriture %s contient un modèle de répartition analytique alors que le compte comptable choisi n'autorise pas la distribution analytique.",,
 "An analytic distribution is set in product but the account used do not allow analytic distribution","Au moins un des produits contient un modèle de répartition analytique alors que le compte comptable choisi n'autorise pas la distribution analytique.",,
+"An exception occured while computing the following elements: group: %s, column: %s, line %s","Une exception s'est produite lors du calcul des éléments suivants: groupe: %s, colonne: %s, ligne %s",,
 "An invoice with the same number (%s) already exists for this supplier %s and the year %s.","Une facture avec un numéro identique (%s) existe déjà pour le fournisseur %s et l'année %s.",,
 "Analytic","Analytique",,
 "Analytic Acc.","Compte analytique",,

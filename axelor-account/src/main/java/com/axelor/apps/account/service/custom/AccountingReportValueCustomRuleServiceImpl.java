@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.common.StringUtils;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
@@ -183,6 +184,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
           valuesMapByLine,
           configAnalyticAccount,
           parentTitle);
+      TraceBackService.trace(e);
       return null;
     }
   }

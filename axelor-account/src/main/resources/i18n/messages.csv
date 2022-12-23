@@ -757,6 +757,7 @@
 "An accounting moveline must have either a credit value or a debit value.",,,
 "An analytic distribution is set in move line %s but the account used do not allow analytic distribution",,,
 "An analytic distribution is set in product but the account used do not allow analytic distribution",,,
+"An exception occured while computing the following elements: group: %s, column: %s, line %s",,,
 "An invoice with the same number (%s) already exists for this supplier %s and the year %s.",,,
 "Analytic",,,
 "Analytic Acc.",,,
