@@ -295,11 +295,11 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     BigDecimal result =
         this.getResultFromMoveLine(
             accountingReport,
+            groupColumn,
+            column,
+            line,
             moveLineList,
             analyticAccountSet,
-            groupColumn == null ? null : groupColumn.getAnalyticAccountCode(),
-            column.getAnalyticAccountCode(),
-            line.getAnalyticAccountCode(),
             this.getResultSelect(column, line, groupColumn));
 
     this.createReportValue(
@@ -482,11 +482,11 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
 
   protected BigDecimal getResultFromMoveLine(
       AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
       List<MoveLine> moveLineList,
       Set<AnalyticAccount> analyticAccountSet,
-      String groupColumnAnalyticAccountCode,
-      String columnAnalyticAccountCode,
-      String lineAnalyticAccountCode,
       int resultSelect) {
     return moveLineList.stream()
         .map(
@@ -494,10 +494,10 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
                 this.getMoveLineAmount(
                     it,
                     accountingReport,
+                    groupColumn,
+                    column,
+                    line,
                     analyticAccountSet,
-                    groupColumnAnalyticAccountCode,
-                    columnAnalyticAccountCode,
-                    lineAnalyticAccountCode,
                     resultSelect))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
@@ -518,21 +518,24 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   protected BigDecimal getMoveLineAmount(
       MoveLine moveLine,
       AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
       Set<AnalyticAccount> analyticAccountSet,
-      String groupColumnAnalyticAccountCode,
-      String columnAnalyticAccountCode,
-      String lineAnalyticAccountCode,
       int resultSelect) {
+    String groupColumnAnalyticAccountCode =
+        groupColumn == null ? null : groupColumn.getAnalyticAccountCode();
+
     if (CollectionUtils.isNotEmpty(analyticAccountSet)
-        || StringUtils.notEmpty(groupColumnAnalyticAccountCode)
-        || StringUtils.notEmpty(columnAnalyticAccountCode)
-        || StringUtils.notEmpty(lineAnalyticAccountCode)) {
+        || StringUtils.notEmpty(groupColumn.getAnalyticAccountCode())
+        || StringUtils.notEmpty(column.getAnalyticAccountCode())
+        || StringUtils.notEmpty(line.getAnalyticAccountCode())) {
       return this.getAnalyticAmount(
           moveLine,
           analyticAccountSet,
           groupColumnAnalyticAccountCode,
-          columnAnalyticAccountCode,
-          lineAnalyticAccountCode);
+          column.getAnalyticAccountCode(),
+          line.getAnalyticAccountCode());
     }
 
     BigDecimal value = moveLine.getDebit().subtract(moveLine.getCredit());
