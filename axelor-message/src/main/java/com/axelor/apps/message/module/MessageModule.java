@@ -20,6 +20,8 @@ package com.axelor.apps.message.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.message.db.repo.MessageManagementRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.GenerateMessagServiceImpl;
+import com.axelor.apps.message.service.GenerateMessageService;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.axelor.apps.message.service.MailMessageService;
@@ -46,5 +48,6 @@ public class MessageModule extends AxelorModule {
     // needed to use event notification methods
     bind(SendMailQueueService.class);
     bind(TemplateService.class);
+    bind(GenerateMessageService.class).to(GenerateMessagServiceImpl.class);
   }
 }

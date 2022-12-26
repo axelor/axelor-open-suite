@@ -33,6 +33,7 @@ import com.axelor.apps.crm.db.repo.LeadStatusManagementRepository;
 import com.axelor.apps.crm.db.repo.LeadStatusRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.message.CrmGenerateMessagServiceImpl;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.CrmReportingService;
@@ -45,8 +46,7 @@ import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.crm.service.app.AppCrmServiceImpl;
-import com.axelor.apps.crm.web.CrmGenerateMessageController;
-import com.axelor.apps.message.web.GenerateMessageController;
+import com.axelor.apps.message.service.GenerateMessagServiceImpl;
 
 public class CrmModule extends AxelorModule {
 
@@ -63,7 +63,7 @@ public class CrmModule extends AxelorModule {
     bind(LeadService.class).to(LeadServiceImpl.class);
     ICalendarEventFactory.register(ICalendarRepository.CRM_SYNCHRO, Event::new);
     bind(MessageServiceBaseImpl.class).to(MessageServiceCrmImpl.class);
-    bind(GenerateMessageController.class).to(CrmGenerateMessageController.class);
+    bind(GenerateMessagServiceImpl.class).to(CrmGenerateMessagServiceImpl.class);
     bind(LeadStatusRepository.class).to(LeadStatusManagementRepository.class);
     bind(CrmReportingService.class).to(CrmReportingServiceImpl.class);
   }

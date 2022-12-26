@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.web;
+package com.axelor.apps.crm.message;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.user.UserService;
@@ -23,23 +23,33 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.GenerateMessagServiceImpl;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
-import com.axelor.apps.message.web.GenerateMessageController;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.google.inject.Inject;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CrmGenerateMessageController extends GenerateMessageController {
+public class CrmGenerateMessagServiceImpl extends GenerateMessagServiceImpl {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected UserService userService;
+
+  @Inject
+  public CrmGenerateMessagServiceImpl(
+      TemplateMessageService templateMessageService,
+      MessageService messageService,
+      UserService userService) {
+    super(templateMessageService, messageService);
+    this.userService = userService;
+  }
 
   @Override
   public ActionViewBuilder getActionView(
@@ -82,33 +92,30 @@ public class CrmGenerateMessageController extends GenerateMessageController {
     LOG.debug("tag : {} ", tag);
     Message message = null;
     if (template != null) {
-      message =
-          Beans.get(TemplateMessageService.class)
-              .generateMessage(objectId, model, tag, template, true);
+      message = templateMessageService.generateMessage(objectId, model, tag, template, true);
     } else {
       message =
-          Beans.get(MessageService.class)
-              .createMessage(
-                  model,
-                  Math.toIntExact(objectId),
-                  null,
-                  null,
-                  null,
-                  null,
-                  null,
-                  null,
-                  null,
-                  null,
-                  null,
-                  MessageRepository.MEDIA_TYPE_EMAIL,
-                  null,
-                  null,
-                  true);
+          messageService.createMessage(
+              model,
+              Math.toIntExact(objectId),
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              MessageRepository.MEDIA_TYPE_EMAIL,
+              null,
+              null,
+              true);
     }
     message.setSenderUser(AuthUtils.getUser());
-    message.setCompany(Beans.get(UserService.class).getUserActiveCompany());
+    message.setCompany(userService.getUserActiveCompany());
 
-    ActionViewBuilder builder = getActionView(1, null, model, null, message);
+    ActionViewBuilder builder = this.getActionView(1, null, model, null, message);
     return builder.map();
   }
 }
