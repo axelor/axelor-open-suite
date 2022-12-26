@@ -315,27 +315,27 @@
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
         onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-group-analytic-axis-onchange"/>
+        onChange="action-move-line-group-analytic-axis-onchange"/>
       <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
         onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-group-analytic-axis-onchange"/>
+        onChange="action-move-line-group-analytic-axis-onchange"/>
       <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
         onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-group-analytic-axis-onchange"/>
+        onChange="action-move-line-group-analytic-axis-onchange"/>
       <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
         onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-group-analytic-axis-onchange"/>
+        onChange="action-move-line-group-analytic-axis-onchange"/>
       <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account || analyticDistributionTemplate != null"
         onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-group-analytic-axis-onchange"/>
+        onChange="action-move-line-group-analytic-axis-onchange"/>
       <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
         grid-view="analytic-move-line-distribution-grid"
         form-view="analytic-move-line-distribution-form" colSpan="12"
