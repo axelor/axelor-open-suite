@@ -47,8 +47,6 @@ public class OpportunityManagementRepository extends OpportunityRepository {
       if (opportunity.getOpportunityStatus() == null) {
         opportunity.setOpportunityStatus(opportunityService.getDefaultOpportunityStatus());
       }
-      // will be added later
-      // opportunity.setName(Beans.get(OpportunityService.class).computeAndGetName(opportunity));
 
       return super.save(opportunity);
     } catch (Exception e) {

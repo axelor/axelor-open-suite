@@ -18,7 +18,6 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -71,19 +70,6 @@ public class OpportunityServiceImpl implements OpportunityService {
           company != null ? company.getName() : null);
     }
     opportunity.setOpportunitySeq(seq);
-  }
-
-  @Override
-  public String computeAndGetName(Opportunity opportunity) {
-    Partner partner = opportunity.getPartner();
-    Partner contact = opportunity.getContact();
-    if (partner != null) {
-      return partner.getFullName();
-
-    } else if (contact != null) {
-      return contact.getFullName();
-    }
-    return null;
   }
 
   @Override
