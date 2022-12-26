@@ -29,8 +29,6 @@ public interface OpportunityService {
 
   public void setSequence(Opportunity opportunity) throws AxelorException;
 
-  public String computeAndGetName(Opportunity opportunity);
-
   public OpportunityStatus getDefaultOpportunityStatus();
 
   public void setStatusByTypeSelect(Opportunity opportunity, Integer typeSelect)
