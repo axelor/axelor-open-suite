@@ -826,6 +826,7 @@
     <action name="action-move-line-record-get-first-move-line-informations"/>
     <action name="action-move-line-method-get-creditdebit-balance"/>
     <action name="action-move-line-attrs-hidden-reconcileLists"/>
+    <action name="action-move-line-record-set-partner"/>
     <action name="action-move-line-method-set-is-other-currency"/>
     <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
