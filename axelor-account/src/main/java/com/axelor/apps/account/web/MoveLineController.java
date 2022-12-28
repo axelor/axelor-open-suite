@@ -361,7 +361,7 @@ public class MoveLineController {
       if (parentContext != null) {
         Move move = parentContext.asType(Move.class);
         Account accountingAccount = moveLine.getAccount();
-        if (accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
+        if (accountingAccount != null && accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
           TaxLine taxLine =
               Beans.get(MoveLoadDefaultConfigService.class)
                   .getTaxLine(move, moveLine, accountingAccount);
