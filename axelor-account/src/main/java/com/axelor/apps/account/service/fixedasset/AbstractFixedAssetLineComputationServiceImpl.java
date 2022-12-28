@@ -229,7 +229,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     // This case is if list is not empty when calling this method
     if (getFixedAssetLineList(fixedAsset) != null
         && numberOfDepreciationDone(fixedAsset)
-            .equals(getNumberOfDepreciation(fixedAsset).subtract(BigDecimal.ONE))) {
+            .equals(getNumberOfDepreciation(fixedAsset).subtract(BigDecimal.ONE))
+        && !fixedAsset.getFixedAssetCategory().getIsProrataTemporis()) {
       if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
           && getComputationMethodSelect(fixedAsset)
               .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
@@ -240,7 +241,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     if (getFixedAssetLineList(fixedAsset) == null
         && getNumberOfDepreciation(fixedAsset)
             .subtract(numberOfDepreciationDone(fixedAsset))
-            .equals(BigDecimal.ONE)) {
+            .equals(BigDecimal.ONE)
+        && !fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
       return baseValue.subtract(getAlreadyDepreciatedAmount(fixedAsset));
     }
     if (getComputationMethodSelect(fixedAsset) != null
@@ -496,7 +498,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     BigDecimal depreciation;
     BigDecimal previousAccountingValue = getAccountingValue(previousFixedAssetLine);
     // If we are at the last line, we depreciate the remaining amount
-    if (!isProrataTemporis(fixedAsset)
+    if (!fixedAssetFailOverControlService.isFailOver(fixedAsset)
+        && !isProrataTemporis(fixedAsset)
         && getNumberOfDepreciation(fixedAsset)
             .equals(numberOfDepreciationDone(fixedAsset).add(BigDecimal.ONE))) {
       return previousAccountingValue;
