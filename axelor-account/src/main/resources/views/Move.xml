@@ -225,14 +225,12 @@
         colSpan="12" height="6"
         showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="true" canRemove="true" grid-view="move-line-move-grid"
-        form-view="move-line-move-form" onChange="action-move-group-move-line-list-onchange"
-        x-call-onSave="false"/>
+        form-view="move-line-move-form" onChange="action-move-group-move-line-list-onchange"/>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="false"
         colSpan="12" height="6"
         showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
         canNew="false" canRemove="false" grid-view="move-line-move-grid"
-        form-view="move-line-move-form" onChange="action-move-group-move-line-list-onchange"
-        x-call-onSave="false"/>
+        form-view="move-line-move-form" onChange="action-move-group-move-line-list-onchange"/>
       <field name="$reconcileTags" colSpan="12" hidden="true" readonly="true"
         showTitle="false">
         <viewer depends="moveLineList">
