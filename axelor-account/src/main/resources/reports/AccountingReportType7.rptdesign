@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -2193,6 +2193,42 @@ else {
                                 <expression name="expression" type="javascript">dataSetRow["origin"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">total_debit</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["debit"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">total_credit</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["credit"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">total_balance</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["balance"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <property name="pageBreakInterval">0</property>
@@ -3513,6 +3549,8 @@ else {
                         </detail>
                         <footer>
                             <row id="4082">
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
                                 <cell id="4146"/>
                                 <cell id="4083"/>
                                 <cell id="4084"/>
@@ -3523,9 +3561,48 @@ else {
                                 <cell id="5196"/>
                                 <cell id="5214"/>
                                 <cell id="4086"/>
-                                <cell id="4088"/>
-                                <cell id="4089"/>
-                                <cell id="4152"/>
+                                <cell id="4088">
+                                    <data id="5240">
+                                        <property name="fontSize">7pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">total_debit</property>
+                                    </data>
+                                </cell>
+                                <cell id="4089">
+                                    <data id="5241">
+                                        <property name="fontSize">7pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">total_credit</property>
+                                    </data>
+                                </cell>
+                                <cell id="4152">
+                                    <data id="5242">
+                                        <property name="fontSize">7pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["total_debit"] == row["total_credit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">total_balance</property>
+                                    </data>
+                                </cell>
                                 <cell id="4224"/>
                                 <cell id="4342">
                                     <property name="backgroundColor">silver</property>
