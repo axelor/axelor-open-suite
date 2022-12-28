@@ -289,7 +289,7 @@
         hidden="true"/>
       <field name="disposalDate" readonly="true" showIf="statusSelect == 4" hidden="true"/>
       <field name="disposalValue" readonly="true"
-        showIf="statusSelect == 4 &amp;&amp; transferredReasonSelect != 2" hidden="true"/>
+        showIf="statusSelect == 4 &amp;&amp; transferredReasonSelect == 2" hidden="true"/>
       <field name="disposalMove" readonly="true" showIf="statusSelect == 4"
         form-view="move-form" grid-view="move-grid" hidden="true"/>
       <field name="saleAccountMove"
