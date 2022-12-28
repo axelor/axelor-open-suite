@@ -228,7 +228,7 @@
         <field name="isCustomized"/>
         <field name="isPaid"/>
         <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-        <field name="partner"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -385,7 +385,8 @@
         <field name="isPaid" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
-        <field name="partner" readonly="true"/>
+        <field name="partner" readonly="true" form-view="partner-form"
+          grid-view="partner-grid"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
@@ -558,7 +559,8 @@
         <field name="isPaid" title="Paid / Used" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
-        <field name="partner" readonly="true"/>
+        <field name="partner" readonly="true" form-view="partner-form"
+          grid-view="partner-grid"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"

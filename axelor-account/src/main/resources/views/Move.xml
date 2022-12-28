@@ -129,7 +129,7 @@
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
-            onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+            onChange="action-account-move-group-set-description-on-lines"/>
           <field name="origin" colSpan="3" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-origin" requiredIf="journal.hasRequiredOrigin"/>
           <field name="$validatePeriod" hidden="true" type="boolean"/>
@@ -383,7 +383,7 @@
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
-          onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+          onChange="action-account-move-group-set-description-on-lines"/>
         <field name="origin" colSpan="3" requiredIf="journal.hasRequiredOrigin"
           onChange="action-account-move-group-set-origin"/>
         <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
@@ -637,17 +637,17 @@
     <action name="action-move-method-accounting"/>
   </action-group>
 
-  <action-group name="action-account-move-group-set-origin-and-description-on-lines">
-    <action name="action-account-move-method-origin-description-is-empty"/>
-    <action name="action-account-move-method-set-origin-description-on-lines"/>
+  <action-group name="action-account-move-group-set-description-on-lines">
+    <action name="action-account-move-method-description-is-empty"/>
+    <action name="action-account-move-method-set-description-on-lines"/>
   </action-group>
 
   <action-group name="action-account-move-group-set-origin">
+    <action name="action-account-move-method-origin-is-empty"/>
     <action name="action-account-move-method-check-duplicated-move-origin"
       if="journal.hasDuplicateDetectionOnOrigin"/>
-    <action name="action-account-move-group-set-origin-and-description-on-lines"/>
+    <action name="action-account-move-method-set-origin-on-lines"/>
   </action-group>
-
 
   <action-group name="action-move-account-group-simulate">
     <action name="action-account-move-group-onsave"/>
@@ -730,8 +730,12 @@
       message="By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?"/>
   </action-validate>
 
-  <action-method name="action-account-move-method-origin-description-is-empty">
-    <call class="com.axelor.apps.account.web.MoveController" method="validateOriginDescription"/>
+  <action-method name="action-account-move-method-origin-is-empty">
+    <call class="com.axelor.apps.account.web.MoveController" method="validateOrigin"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-description-is-empty">
+    <call class="com.axelor.apps.account.web.MoveController" method="validateDescription"/>
   </action-method>
 
   <action-method name="action-account-move-method-check-duplicated-move-origin">
@@ -954,9 +958,12 @@
       method="isHiddenMoveLineListViewer"/>
   </action-method>
 
-  <action-method name="action-account-move-method-set-origin-description-on-lines">
-    <call class="com.axelor.apps.account.web.MoveController"
-      method="setOriginAndDescriptionOnLines"/>
+  <action-method name="action-account-move-method-set-origin-on-lines">
+    <call class="com.axelor.apps.account.web.MoveController" method="setOriginOnLines"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-set-description-on-lines">
+    <call class="com.axelor.apps.account.web.MoveController" method="setDescriptionOnLines"/>
   </action-method>
 
   <action-method name="action-move-method-set-moveline-dates">

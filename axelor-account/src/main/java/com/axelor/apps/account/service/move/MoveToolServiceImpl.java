@@ -501,16 +501,23 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public void setOriginAndDescriptionOnMoveLineList(Move move) {
+  public void setOriginOnMoveLineList(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine != null) {
-        moveLine.setDescription(move.getDescription());
         moveLine.setOrigin(move.getOrigin());
       }
     }
   }
 
   @Override
+  public void setDescriptionOnMoveLineList(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine != null) {
+        moveLine.setDescription(move.getDescription());
+      }
+    }
+  }
+
   public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
       throws AxelorException {
     if (period != null) {
@@ -531,10 +538,7 @@ public class MoveToolServiceImpl implements MoveToolService {
         if (period.getYear().getCompany() != null && user.getGroup() != null) {
           AccountConfig accountConfig =
               accountConfigService.getAccountConfig(period.getYear().getCompany());
-          Set<Role> roleSet =
-              accountConfigService
-                  .getAccountConfig(period.getYear().getCompany())
-                  .getClosureAuthorizedRoleList();
+          Set<Role> roleSet = accountConfig.getClosureAuthorizedRoleList();
           if (CollectionUtils.isEmpty(roleSet)) {
             return false;
           }
