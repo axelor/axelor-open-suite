@@ -220,7 +220,7 @@ public class MoveLineController {
         finalBalance = totalDebit.subtract(totalCredit);
 
         response.setView(
-            ActionView.define("Calculation")
+            ActionView.define(I18n.get("Calculation"))
                 .model(Wizard.class.getName())
                 .add("form", "account-move-line-calculation-wizard-form")
                 .param("popup", "true")

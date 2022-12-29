@@ -154,7 +154,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
     }
-    return ActionView.define("Tasks")
+    return ActionView.define(I18n.get("Tasks"))
         .model(ProjectTask.class.getName())
         .add("grid", "project-task-grid")
         .add("form", "project-task-form")
