@@ -981,7 +981,7 @@ public interface IExceptionMessage {
       "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
-      "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+      "The move field origin is empty, do you wish to continue ?" /*)*/;
 
   static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;

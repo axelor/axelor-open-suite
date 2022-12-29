@@ -1,0 +1,3 @@
+---
+title : " Fixed asset : Fix disposalValue when disposing by scrapping, hide disposalValue when asset is disposed by cession"
+type: fix

@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.batch.BatchControlMovesConsistency;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -38,7 +39,7 @@ public class BatchAccountController {
       List<Long> idList = Beans.get(BatchControlMovesConsistency.class).getAllMovesId(batchId);
       if (!CollectionUtils.isEmpty(idList)) {
         response.setView(
-            ActionView.define("Moves")
+            ActionView.define(I18n.get("Moves"))
                 .model(Move.class.getName())
                 .add("grid", "move-grid")
                 .add("form", "move-form")

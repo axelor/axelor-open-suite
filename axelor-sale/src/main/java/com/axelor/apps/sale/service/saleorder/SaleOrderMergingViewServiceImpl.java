@@ -22,6 +22,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.Checks;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
@@ -43,7 +44,7 @@ public class SaleOrderMergingViewServiceImpl implements SaleOrderMergingViewServ
       SaleOrderMergingResult result, String lineToMerge, List<SaleOrder> saleOrdersToMerge) {
 
     ActionViewBuilder confirmView =
-        ActionView.define("Confirm merge sale order")
+        ActionView.define(I18n.get("Confirm merge sale order"))
             .model(Wizard.class.getName())
             .add("form", "sale-order-merge-confirm-form")
             .param("popup", "true")
