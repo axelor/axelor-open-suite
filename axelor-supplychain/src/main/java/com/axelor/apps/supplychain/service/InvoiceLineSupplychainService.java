@@ -125,7 +125,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         if (catalogInfo.get("price") != null) {
           price = (BigDecimal) catalogInfo.get("price");
         }
-        discounts.put("productName", catalogInfo.get("productName"));
       }
     }
 
