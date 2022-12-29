@@ -17,6 +17,7 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -88,7 +89,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void computeReportValues(AccountingReport accountingReport) throws AxelorException {
     Set<AnalyticAccount> configAnalyticAccountSet =
         this.getConfigAnalyticAccountSet(
@@ -167,7 +167,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void computeReportValues(
       AccountingReport accountingReport, AnalyticAccount configAnalyticAccount, int analyticCounter)
       throws AxelorException {
@@ -210,7 +209,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void computeReportValues(
       AccountingReport accountingReport,
       AnalyticAccount configAnalyticAccount,
@@ -281,7 +279,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
         .noneMatch(Objects::isNull);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected boolean createReportValues(
       AccountingReport accountingReport,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
@@ -388,7 +385,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     return new HashSet<>(accountQuery.fetch());
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void createReportValues(
       AccountingReport accountingReport,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
@@ -421,6 +417,13 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       }
 
       for (AccountingReportConfigLine line : lineList) {
+        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
+        line = JPA.find(AccountingReportConfigLine.class, line.getId());
+        column = JPA.find(AccountingReportConfigLine.class, column.getId());
+        groupColumn =
+            groupColumn != null
+                ? JPA.find(AccountingReportConfigLine.class, groupColumn.getId())
+                : null;
         if (!valuesMapByLine.containsKey(line.getCode())) {
           valuesMapByLine.put(line.getCode(), new HashMap<>());
         }
@@ -440,12 +443,12 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               startDate,
               endDate,
               analyticCounter);
+          JPA.clear();
         }
       }
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void createValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine groupColumn,

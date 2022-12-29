@@ -9,7 +9,6 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -31,7 +30,6 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void createPercentageValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
@@ -75,7 +73,6 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void createPercentageValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
@@ -136,7 +133,6 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void createPercentageValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,

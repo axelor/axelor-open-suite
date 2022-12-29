@@ -131,7 +131,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     } else {
       fileLink = accountingReportPrintService.print(accountingReport);
     }
-
+    accountingReport = accountingReportRepo.find(accountingReport.getId());
     setStatus(accountingReport);
     return fileLink;
   }

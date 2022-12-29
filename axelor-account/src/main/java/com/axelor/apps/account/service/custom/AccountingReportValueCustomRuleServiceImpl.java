@@ -14,7 +14,6 @@ import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -31,7 +30,6 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void createValueFromCustomRule(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
@@ -60,7 +58,6 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void createValueFromCustomRule(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
