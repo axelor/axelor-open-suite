@@ -127,4 +127,6 @@ public interface InvoicePrintService {
    */
   ReportSettings prepareReportSettings(
       Invoice invoice, Integer reportType, String format, String locale) throws AxelorException;
+
+  String getInvoiceProductStatement(Invoice invoice);
 }

@@ -1223,4 +1223,15 @@ public class InvoiceController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void getInvoiceProductStatement(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      response.setValue(
+          "invoiceProductStatement",
+          Beans.get(InvoicePrintService.class).getInvoiceProductStatement(invoice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
