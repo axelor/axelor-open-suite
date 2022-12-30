@@ -103,6 +103,10 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             groupColumn != null
                 ? JPA.find(AccountingReportConfigLine.class, groupColumn.getId())
                 : null;
+        configAnalyticAccount =
+            configAnalyticAccount != null
+                ? JPA.find(AnalyticAccount.class, configAnalyticAccount.getId())
+                : null;
         this.createValueFromMoveLine(
             accountingReport,
             groupColumn,
@@ -142,6 +146,10 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             groupColumn != null
                 ? JPA.find(AccountingReportConfigLine.class, groupColumn.getId())
                 : null;
+        configAnalyticAccount =
+            configAnalyticAccount != null
+                ? JPA.find(AnalyticAccount.class, configAnalyticAccount.getId())
+                : null;
         this.createValueFromMoveLine(
             accountingReport,
             groupColumn,
@@ -180,6 +188,10 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         groupColumn =
             groupColumn != null
                 ? JPA.find(AccountingReportConfigLine.class, groupColumn.getId())
+                : null;
+        configAnalyticAccount =
+            configAnalyticAccount != null
+                ? JPA.find(AnalyticAccount.class, configAnalyticAccount.getId())
                 : null;
         this.createValueFromMoveLine(
             accountingReport,
@@ -511,7 +523,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       List<MoveLine> moveLineList,
       Set<AnalyticAccount> analyticAccountSet,
       int resultSelect) {
-    String groupColumnAnalyticAccountCode = groupColumn.getAnalyticAccountCode();
+    String groupColumnAnalyticAccountCode =
+        groupColumn != null ? groupColumn.getAnalyticAccountCode() : null;
     String columnAnalyticAccountCode = column.getAnalyticAccountCode();
     String lineAnalyticAccountCode = line.getAnalyticAccountCode();
     groupColumnAnalyticAccountSet =

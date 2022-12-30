@@ -424,6 +424,11 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             groupColumn != null
                 ? JPA.find(AccountingReportConfigLine.class, groupColumn.getId())
                 : null;
+        groupAccount = groupAccount != null ? JPA.find(Account.class, groupAccount.getId()) : null;
+        configAnalyticAccount =
+            configAnalyticAccount != null
+                ? JPA.find(AnalyticAccount.class, configAnalyticAccount.getId())
+                : null;
         if (!valuesMapByLine.containsKey(line.getCode())) {
           valuesMapByLine.put(line.getCode(), new HashMap<>());
         }
