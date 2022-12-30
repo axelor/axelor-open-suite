@@ -390,7 +390,7 @@
 
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
-        readonlyIf="!id" onClick="save,action-invoice-view-reports-wizard"/>
+        readonlyIf="!id" onClick="action-invoice-group-report-button"/>
     </toolbar>
 
     <menubar>
@@ -2702,5 +2702,11 @@ InvoiceSet.length > 0))"
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="getInvoiceProductStatement"/>
   </action-method>
+
+  <action-group name="action-invoice-group-report-button">
+    <action name="action-invoice-method-get-invoice-product-statement"/>
+    <action name="save"/>
+    <action name="action-invoice-view-reports-wizard"/>
+  </action-group>
 
 </object-views>
