@@ -4457,7 +4457,6 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                         <property name="width">10%</property>
                                     </column>
                                     <column id="7547">
-                                        <property name="suppressDuplicates">true</property>
                                         <property name="width">46%</property>
                                     </column>
                                     <column id="7548">
