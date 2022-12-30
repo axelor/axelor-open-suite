@@ -19,7 +19,11 @@
     type="com.axelor.apps.account.db.AccountEquiv"/>
 
   <input file="account_accountConfig.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId">
+    <bind to="statementsForItemsCategoriesSet" column="statementsForItemsCategoriesSet"
+      search="self.importId in :statementsForItemsCategoriesSet"
+      eval="statementsForItemsCategoriesSet.split('\\|') as List"/>
+  </input>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
     search="self.importId = :importId" update="true"
@@ -230,7 +234,11 @@
     type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
 
   <input file="account_accountConfig.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId">
+    <bind to="statementsForItemsCategoriesSet" column="statementsForItemsCategoriesSet"
+      search="self.importId in :statementsForItemsCategoriesSet"
+      eval="statementsForItemsCategoriesSet.split('\\|') as List"/>
+  </input>
 
   <input file="account_debtRecoveryConfigLine.csv" separator=";"
     type="com.axelor.apps.account.db.DebtRecoveryConfigLine"/>
