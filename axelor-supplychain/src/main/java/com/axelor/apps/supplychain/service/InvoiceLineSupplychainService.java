@@ -207,10 +207,12 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
     Map<String, String> productSupplierInfos =
         supplierCatalogService.getProductSupplierInfos(supplierPartner, company, product);
-    if (!productSupplierInfos.get("productName").isEmpty()) {
+    if (productSupplierInfos.get("productName") != null
+        && !productSupplierInfos.get("productName").isEmpty()) {
       productInformation.put("productName", productSupplierInfos.get("productName"));
     }
-    if (!productSupplierInfos.get("productCode").isEmpty()) {
+    if (productSupplierInfos.get("productCode") != null
+        && !productSupplierInfos.get("productCode").isEmpty()) {
       productInformation.put("productCode", productSupplierInfos.get("productCode"));
     }
     productInformation.put("qty", supplierCatalogService.getQty(product, supplierPartner, company));
