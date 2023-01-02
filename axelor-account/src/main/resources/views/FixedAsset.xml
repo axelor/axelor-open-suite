@@ -421,7 +421,6 @@
   <action-record name="action-fixed-asset-disposal-wizard-record-onnew"
     model="com.axelor.apps.base.db.Wizard">
     <field name="disposalDate" expr="eval: __config__.date"/>
-    <field name="disposalTypeSelect" expr="1"/>
     <field name="disposalAmount" expr="eval: _fixedAsset?.residualValue"/>
     <field name="qty" expr="eval:_fixedAsset?.qty"/>
     <field name="$originalQty" expr="eval: _fixedAsset?.qty"/>
