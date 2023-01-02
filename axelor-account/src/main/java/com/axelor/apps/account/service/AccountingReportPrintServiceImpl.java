@@ -111,17 +111,21 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
 
   @Override
   public String printCustomReport(AccountingReport accountingReport) throws AxelorException {
-    String fileLink = null;
+    String fileLink;
     accountingReportValueService.clearReportValues(accountingReport);
+
     try {
       accountingReportValueService.computeReportValues(accountingReport);
       accountingReport = accountingReportRepository.find(accountingReport.getId());
+
       fileLink = this.print(accountingReport);
     } catch (Exception e) {
       accountingReport = accountingReportRepository.find(accountingReport.getId());
       accountingReportValueService.clearReportValues(accountingReport);
+
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
+
     accountingReportValueService.clearReportValues(accountingReport);
     accountingReport = accountingReportRepository.find(accountingReport.getId());
 
