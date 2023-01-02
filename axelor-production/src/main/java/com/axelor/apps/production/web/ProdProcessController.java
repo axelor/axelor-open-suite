@@ -77,7 +77,7 @@ public class ProdProcessController {
 
     if (!prodProcess.getOutsourcing()) {
       response.setValue("generatePurchaseOrderOnMoPlanning", false);
-      response.setValue("subcontractors", null);
+      response.setValue("subcontractor", null);
       response.setValue("outsourcingStockLocation", null);
     }
   }
