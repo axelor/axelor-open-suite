@@ -939,7 +939,6 @@
 "The payment status will not update.",,,
 "The receiver bank details currency is not compatible with the currency in bank order.",,,
 "The receiver bank details for the line %s is inactive.",,,
-"The receiver bank details is inactive.",,,
 "The receiver bank details type is not compatible with the accepted types in file format.",,,
 "The selected bank statement doesn't contain, at the lines level, any information allowing to identify which bank details it concerns. Please verify the format of the data source or the configuration of the bank details in the software and please make sure both are matching.",,,
 "The sender bank details currency is not compatible with the currency in bank order.",,,
