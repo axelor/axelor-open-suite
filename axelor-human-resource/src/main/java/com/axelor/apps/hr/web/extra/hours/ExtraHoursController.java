@@ -110,7 +110,7 @@ public class ExtraHoursController {
     ExtraHours extraHours =
         Beans.get(ExtraHoursRepository.class).find(new Long((Integer) extraHoursMap.get("id")));
     response.setView(
-        ActionView.define("Extra hours")
+        ActionView.define(I18n.get("Extra hours"))
             .model(ExtraHours.class.getName())
             .add("form", "extra-hours-form")
             .param("forceEdit", "true")

@@ -279,7 +279,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     LocalDate acquisitionDate = computeProrataTemporisAcquisitionDate(fixedAsset);
     LocalDate depreciationDate = computeProrataTemporisFirstDepreciationDate(fixedAsset);
 
-    if (isProrataTemporis(fixedAsset) && !acquisitionDate.equals(depreciationDate)) {
+    if (isProrataTemporis(fixedAsset)) {
       prorataTemporis = computeProrataBetween(fixedAsset, acquisitionDate, depreciationDate, null);
     }
     return prorataTemporis;
@@ -333,7 +333,6 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
    */
   protected BigDecimal nbDaysBetween(
       boolean isUsProrataTemporis, LocalDate startDate, LocalDate endDate) {
-    startDate = startDate.minusDays(1);
     int acquisitionYear = startDate.getYear();
     Month acquisitionMonth = startDate.getMonth();
     int acquisitionDay = startDate.getDayOfMonth();
@@ -378,7 +377,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     return BigDecimal.valueOf(
             360 * (depreciationYear - acquisitionYear)
                 + 30 * (depreciationMonth.getValue() - acquisitionMonth.getValue())
-                + (depreciationDay - acquisitionDay))
+                + (depreciationDay - acquisitionDay)
+                + 1)
         .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
   }
 

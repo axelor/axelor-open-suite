@@ -69,7 +69,7 @@ public class BankOrderController {
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
     try {
       ActionViewBuilder confirmView =
-          ActionView.define("Sign bank order")
+          ActionView.define(I18n.get("Sign bank order"))
               .model(BankOrder.class.getName())
               .add("form", "bank-order-sign-wizard-form")
               .param("popup", "reload")

@@ -115,7 +115,7 @@ public class PrintTemplateController {
 
   private Map<String, Object> getPrintView(Print print) throws AxelorException {
     if (print.getIsEditable()) {
-      return ActionView.define("Create print")
+      return ActionView.define(I18n.get("Create print"))
           .model(Print.class.getName())
           .add("form", "print-form")
           .param("forceEdit", "true")

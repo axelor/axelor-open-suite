@@ -459,7 +459,9 @@ public class PaymentVoucherConfirmService {
                     financialDiscountVat);
 
             financialDiscountAmount =
-                financialDiscountAmount.add(payVoucherElementToPay.getFinancialDiscountAmount());
+                financialDiscountAmount
+                    .add(payVoucherElementToPay.getFinancialDiscountAmount())
+                    .add(payVoucherElementToPay.getFinancialDiscountTaxAmount());
           }
         }
       }

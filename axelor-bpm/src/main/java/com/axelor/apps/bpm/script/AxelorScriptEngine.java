@@ -23,6 +23,8 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaJsonRecordRepository;
 import com.axelor.script.GroovyScriptHelper;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -46,6 +48,8 @@ public class AxelorScriptEngine extends GroovyScriptEngineImpl {
     bindings.put("$ctx", WkfContextHelper.class);
     bindings.put("$beans", Beans.class);
     bindings.put("__user__", new FullContext(AuthUtils.getUser()));
+    bindings.put("__date__", LocalDate.now());
+    bindings.put("__datetime__", LocalDateTime.now());
     return new GroovyScriptHelper(bindings).eval(script);
   }
 

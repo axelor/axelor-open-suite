@@ -467,7 +467,7 @@ public class StockMoveController {
         response.setCanClose(true);
 
         response.setView(
-            ActionView.define("Stock move")
+            ActionView.define(I18n.get("Stock move"))
                 .model(StockMove.class.getName())
                 .add("grid", "stock-move-grid")
                 .add("form", "stock-move-form")

@@ -194,7 +194,7 @@ public class SaleOrderController {
             response.setFlash(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
-                ActionView.define("SaleOrder")
+                ActionView.define(I18n.get("SaleOrder"))
                     .model(SaleOrder.class.getName())
                     .add("form", "sale-order-generate-po-select-supplierpartner-form")
                     .param("popup", "true")
@@ -616,7 +616,7 @@ public class SaleOrderController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
       response.setView(
-          ActionView.define("Invoicing")
+          ActionView.define(I18n.get("Invoicing"))
               .model(SaleOrder.class.getName())
               .add("form", "sale-order-invoicing-wizard-form")
               .param("popup", "reload")
