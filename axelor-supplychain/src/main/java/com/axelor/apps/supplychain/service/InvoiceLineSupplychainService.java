@@ -43,6 +43,8 @@ import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -155,6 +157,31 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
     Map<String, Object> productInformation =
         new HashMap<>(super.fillProductInformation(invoice, invoiceLine));
+
+    computeSequence(invoice, invoiceLine);
+
+    productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
+    invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_NORMAL);
+
+    setSupplierCatalogInfo(invoice, invoiceLine, productInformation);
+
+    return productInformation;
+  }
+
+  protected void setSupplierCatalogInfo(
+      Invoice invoice, InvoiceLine invoiceLine, Map<String, Object> productInformation)
+      throws AxelorException {
+    Integer operationType = invoice.getOperationTypeSelect();
+    if ((operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
+        && supplierCatalogService.getSupplierCatalog(
+                invoiceLine.getProduct(), invoice.getPartner(), invoice.getCompany())
+            != null) {
+      setSupplierCatalogProductInfo(productInformation, invoice, invoiceLine);
+    }
+  }
+
+  protected void computeSequence(Invoice invoice, InvoiceLine invoiceLine) {
     Integer sequence = invoiceLine.getSequence();
     if (sequence == null) {
       sequence = 0;
@@ -163,17 +190,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       sequence = invoice.getInvoiceLineList().size();
       invoiceLine.setSequence(sequence);
     }
-
-    productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
-    invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_NORMAL);
-
-    if (supplierCatalogService.getSupplierCatalog(
-            invoiceLine.getProduct(), invoice.getPartner(), invoice.getCompany())
-        != null) {
-      setSupplierCatalogProductInfo(productInformation, invoice, invoiceLine);
-    }
-
-    return productInformation;
   }
 
   public void computeBudgetDistributionSumAmount(InvoiceLine invoiceLine, Invoice invoice) {
@@ -256,5 +272,21 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
     }
 
     return super.getProductDescriptionAndNameTranslation(invoice, invoiceLine, userLanguage);
+  }
+
+  public void checkMinQty(
+      Invoice invoice, InvoiceLine invoiceLine, ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Integer operationType = invoice.getOperationTypeSelect();
+    if (operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      supplierCatalogService.checkMinQty(
+          invoiceLine.getProduct(),
+          invoice.getPartner(),
+          invoice.getCompany(),
+          invoiceLine.getQty(),
+          request,
+          response);
+    }
   }
 }
