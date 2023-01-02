@@ -59,7 +59,10 @@ public class AppLoaderImportServiceImpl implements AppLoaderImportService {
         "dashlet-builder.xml",
         "dashboard-builder-call.xml",
         "action-builder.xml",
-        "menu-builder.xml"
+        "menu-builder.xml",
+        "ws-request.xml",
+        "ws-authenticator.xml",
+        "ws-connector.xml"
       };
 
   @Inject protected AppLoaderRepository appLoaderRepository;
@@ -102,17 +105,16 @@ public class AppLoaderImportServiceImpl implements AppLoaderImportService {
 
     FileInputStream fin =
         new FileInputStream(MetaFiles.getPath(appLoader.getImportMetaFile()).toFile());
-    ZipInputStream zipInputStream = new ZipInputStream(fin);
-    ZipEntry zipEntry = zipInputStream.getNextEntry();
+    try (ZipInputStream zipInputStream = new ZipInputStream(fin)) {
+      ZipEntry zipEntry = zipInputStream.getNextEntry();
 
-    while (zipEntry != null) {
-      FileOutputStream fout = new FileOutputStream(new File(dataDir, zipEntry.getName()));
-      IOUtils.copy(zipInputStream, fout);
-      fout.close();
-      zipEntry = zipInputStream.getNextEntry();
+      while (zipEntry != null) {
+        FileOutputStream fout = new FileOutputStream(new File(dataDir, zipEntry.getName()));
+        IOUtils.copy(zipInputStream, fout);
+        fout.close();
+        zipEntry = zipInputStream.getNextEntry();
+      }
     }
-
-    zipInputStream.close();
   }
 
   protected File importApp(AppLoader appLoader, File dataDir)
@@ -123,35 +125,33 @@ public class AppLoaderImportServiceImpl implements AppLoaderImportService {
             ? MetaFiles.getPath(appLoader.getImportLog()).toFile()
             : MetaFiles.createTempFile("import-", "log").toFile();
 
-    PrintWriter pw = new PrintWriter(logFile);
+    try (PrintWriter pw = new PrintWriter(logFile)) {
 
-    for (File confiFile : getAppImportConfigFiles(dataDir)) {
+      for (File confiFile : getAppImportConfigFiles(dataDir)) {
 
-      XMLImporter xmlImporter =
-          new XMLImporter(confiFile.getAbsolutePath(), dataDir.getAbsolutePath());
-      xmlImporter.setContext(getImportContext(appLoader));
+        XMLImporter xmlImporter =
+            new XMLImporter(confiFile.getAbsolutePath(), dataDir.getAbsolutePath());
+        xmlImporter.setContext(getImportContext(appLoader));
 
-      xmlImporter.addListener(
-          new Listener() {
+        xmlImporter.addListener(
+            new Listener() {
 
-            @Override
-            public void imported(Integer total, Integer success) {}
+              @Override
+              public void imported(Integer total, Integer success) {}
 
-            @Override
-            public void imported(Model bean) {}
+              @Override
+              public void imported(Model bean) {}
 
-            @Override
-            public void handle(Model bean, Exception e) {
-              pw.write("Error Importing: " + bean);
-              e.printStackTrace(pw);
-            }
-          });
+              @Override
+              public void handle(Model bean, Exception e) {
+                pw.write("Error Importing: " + bean);
+                e.printStackTrace(pw);
+              }
+            });
 
-      xmlImporter.run();
+        xmlImporter.run();
+      }
     }
-
-    pw.flush();
-    pw.close();
 
     return logFile;
   }

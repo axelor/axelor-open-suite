@@ -7,12 +7,13 @@
     model="com.axelor.apps.contract.db.ContractBatch">
     <field name="code"/>
     <field name="actionSelect"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="description"/>
   </grid>
 
   <form name="contract-batch-form" title="Contract batch"
-    model="com.axelor.apps.contract.db.ContractBatch">
+    model="com.axelor.apps.contract.db.ContractBatch"
+    onNew="action-contract-batch-record-default-onnew">
     <panel name="mainPanel">
       <field name="actionSelect"/>
       <field name="code"/>
@@ -20,6 +21,10 @@
         grid-view="company-grid"/>
     </panel>
     <panel-tabs name="mainPanelTab">
+      <panel name="invoicingPanel" title="Invoicing" showIf="actionSelect == 1">
+        <field name="targetTypeSelect"/>
+        <field name="invoicingDate" requiredIf="actionSelect == 1"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -41,6 +46,12 @@
   <search-filters name="contract-batch-filters"
     model="com.axelor.apps.contract.db.ContractBatch" title="Contract batch filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
+
+  <action-record name="action-contract-batch-record-default-onnew"
+    model="com.axelor.apps.contract.db.ContractBatch">
+    <field name="invoicingDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-record>
 </object-views>

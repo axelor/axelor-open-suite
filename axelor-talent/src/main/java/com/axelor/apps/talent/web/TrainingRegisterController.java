@@ -24,8 +24,9 @@ import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
-import com.axelor.apps.talent.exception.IExceptionMessage;
+import com.axelor.apps.talent.exception.TalentExceptionMessage;
 import com.axelor.apps.talent.service.TrainingRegisterService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -160,7 +161,7 @@ public class TrainingRegisterController {
 
     if (!eventList.equals("()")) {
       response.setView(
-          ActionView.define("Meeting")
+          ActionView.define(I18n.get("Meeting"))
               .model(Event.class.getCanonicalName())
               .add("grid", "event-grid")
               .add("form", "event-form")
@@ -168,7 +169,7 @@ public class TrainingRegisterController {
               .domain("self.id in " + eventList)
               .map());
     } else {
-      response.setAlert(IExceptionMessage.NO_EVENT_GENERATED);
+      response.setAlert(TalentExceptionMessage.NO_EVENT_GENERATED);
     }
   }
 }

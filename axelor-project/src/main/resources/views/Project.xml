@@ -208,15 +208,15 @@
         if-module="axelor-human-resource" showIf="isShowTimeSpent">
         <field name="timeSpent" title="Time Spent" readonly="true" colSpan="3"/>
         <panel-dashlet name="validatedTimesheetsPanel"
-          if="__config__.app.getApp('timesheet').needValidation"
+          if="__config__.app.getApp('timesheet')?.needValidation"
           action="action-project-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
         <panel-dashlet name="waitingTimesheetLinesPanel"
-          if="__config__.app.getApp('timesheet').needValidation"
+          if="__config__.app.getApp('timesheet')?.needValidation"
           action="action-project-dashlet-project-waiting-timesheet-lines"
           title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
         <panel-dashlet name="allTimesheetsLinesPanel"
-          if="!__config__.app.getApp('timesheet').needValidation"
+          if="!__config__.app.getApp('timesheet')?.needValidation"
           action="action-project-dashlet-project-all-timesheet-lines"
           title="TimesheetLine.timeSpent" colSpan="12" canSearch="true"/>
       </panel>
@@ -295,7 +295,7 @@
           action="action-project-dashlet-supplier-arrivals" colSpan="12"/>
       </panel>
       <panel name="resourceBookingListPanel" title="Resource booking"
-        if="__config__.app.getApp('project').resourceManagement">
+        if="__config__.app.getApp('project')?.resourceManagement">
         <panel-related name="resourceBookingListPanel" field="resourceBookingList"
           form-view="resource-booking-form" grid-view="resource-booking-grid-incl-project"
           colSpan="12"/>
@@ -855,7 +855,7 @@
   </action-view>
 
   <action-view name="action-project-open-task-editor" title="Task editor">
-    <view name="project/task-editor?id={{id}}" type="html"/>
+    <view name="project/task-editor/?id={{id}}" type="html"/>
     <context name="id" expr="eval:id"/>
   </action-view>
 
@@ -906,9 +906,9 @@
     <field name="projectStatus"
       expr="eval: __repo__(ProjectStatus).all().filter('self.relatedToSelect = ?1',__repo__(ProjectStatus).PROJECT_STATUS_PROJECT).order('sequence').fetchOne()"/>
     <field name="projectTaskStatusSet"
-      expr="eval: __config__.app.getApp('project').getDefaultTaskStatusSet()"/>
+      expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"/>
     <field name="projectTaskPrioritySet"
-      expr="eval: __config__.app.getApp('project').getDefaultPrioritySet()"/>
+      expr="eval: __config__.app.getApp('project')?.getDefaultPrioritySet()"/>
   </action-record>
 
   <action-validate name="action-wizard-validate-user-select">
@@ -937,7 +937,8 @@
     title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">
     <view type="form" name="contract-form"/>
     <context name="_xTargetType" expr="eval:1"/>
-    <context name="_project" expr="eval:__self__"/>
+    <context name="_project" expr="eval: __self__"/>
+    <context name="_clientPartner" expr="eval: __self__.clientPartner"/>
   </action-view>
 
   <action-view name="action-project-view-create-new-supplier-contract"
@@ -1062,9 +1063,9 @@
   <search-filters name="project-filters" model="com.axelor.apps.project.db.Project"
     title="Project filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany() || !__config__.app.isApp('business-project')"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany() || !__config__.app.isApp('business-project')"/>
     <field name="resourceBookingList" hidden="true"
-      if="!__config__.app.getApp('project').resourceManagement"/>
+      if="!__config__.app.getApp('project')?.resourceManagement"/>
     <field name="productionOrderList" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject())"/>
     <field name="clientPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>

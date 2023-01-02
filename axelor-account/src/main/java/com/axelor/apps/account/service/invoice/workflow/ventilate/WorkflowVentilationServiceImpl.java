@@ -20,8 +20,12 @@ package com.axelor.apps.account.service.invoice.workflow.ventilate;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.message.exception.AxelorMessageException;
@@ -42,15 +46,27 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
   protected AccountConfigService accountConfigService;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected InvoiceService invoiceService;
+  protected AppAccountService appAccountService;
+  protected InvoiceFinancialDiscountService invoiceFinancialDiscountService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public WorkflowVentilationServiceImpl(
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepo,
-      InvoicePaymentCreateService invoicePaymentCreateService) {
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoiceService invoiceService,
+      AppAccountService appAccountService,
+      InvoiceFinancialDiscountService invoiceFinancialDiscountService,
+      InvoiceTermService invoiceTermService) {
     this.accountConfigService = accountConfigService;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.invoiceService = invoiceService;
+    this.appAccountService = appAccountService;
+    this.invoiceFinancialDiscountService = invoiceFinancialDiscountService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -62,6 +78,13 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
     if (!accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
 
       copyAdvancePaymentToInvoice(invoice);
+    }
+
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()) {
+      invoiceFinancialDiscountService.setFinancialDiscountInformations(invoice);
+      if (!invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        invoiceTermService.updateFinancialDiscount(invoice);
+      }
     }
 
     // send message
@@ -122,7 +145,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
       throw new AxelorException(
           invoice,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH));
+          I18n.get(AccountExceptionMessage.AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH));
     }
   }
 }

@@ -20,20 +20,24 @@ package com.axelor.apps.account.service.analytic;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
-import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface AnalyticMoveLineService {
+
+  public AnalyticMoveLineRepository getAnalyticMoveLineRepository();
+
   public BigDecimal computeAmount(AnalyticMoveLine analyticMoveLine);
 
   public List<AnalyticMoveLine> generateLines(
@@ -43,7 +47,7 @@ public interface AnalyticMoveLineService {
       LocalDate date);
 
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company) throws AxelorException;
+      Partner partner, Product product, Company company, boolean isPurchase) throws AxelorException;
 
   public void updateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date);
@@ -56,9 +60,17 @@ public interface AnalyticMoveLineService {
   AnalyticMoveLine computeAnalyticMoveLine(
       MoveLine moveLine, Company company, AnalyticAccount analyticAccount) throws AxelorException;
 
-  AnalyticJournal getAnalyticJournalFromParent(Context parent) throws AxelorException;
+  AnalyticMoveLine computeAnalyticMoveLine(
+      InvoiceLine invoiceLine, Invoice invoice, Company company, AnalyticAccount analyticAccount)
+      throws AxelorException;
 
-  LocalDate getDateFromParent(Context parent);
+  AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 
-  BigDecimal getAnalyticAmountFromParent(Context parent, AnalyticMoveLine analyticMoveLine);
+  AnalyticMoveLine reverseAndPersist(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+
+  AnalyticMoveLine generateAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+
+  String getAnalyticAxisDomain(AnalyticMoveLine analyticMoveLine, Company company);
 }

@@ -20,6 +20,8 @@ package com.axelor.apps.quality.db.repo;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.quality.db.QualityAlert;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 
@@ -34,9 +36,15 @@ public class QualityAlertManagementRepository extends QualityAlertRepository {
    */
   @Override
   public QualityAlert save(QualityAlert qualityAlert) {
-    if (Strings.isNullOrEmpty(qualityAlert.getReference()))
-      qualityAlert.setReference(
-          sequenceService.getSequenceNumber(SequenceRepository.QUALITY_ALERT, null));
+    if (Strings.isNullOrEmpty(qualityAlert.getReference())) {
+      try {
+        qualityAlert.setReference(
+            sequenceService.getSequenceNumber(
+                SequenceRepository.QUALITY_ALERT, null, QualityAlert.class, "reference"));
+      } catch (AxelorException e) {
+        TraceBackService.traceExceptionFromSaveMethod(e);
+      }
+    }
     return super.save(qualityAlert);
   }
 }

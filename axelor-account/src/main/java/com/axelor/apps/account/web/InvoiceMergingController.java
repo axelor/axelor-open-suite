@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.tool.MapTools;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -66,7 +67,7 @@ public class InvoiceMergingController {
         if (result.isConfirmationNeeded()) {
           // Need to display intermediate screen to select some values
           ActionView.ActionViewBuilder confirmView =
-              ActionView.define("Confirm merge invoice")
+              ActionView.define(I18n.get("Confirm merge invoice"))
                   .model(Wizard.class.getName())
                   .add("form", getMergeConfirmFormViewName(result))
                   .param("popup", Boolean.TRUE.toString())
@@ -116,7 +117,7 @@ public class InvoiceMergingController {
         if (result.getInvoice() != null) {
           // Open the generated invoice in a new tab
           response.setView(
-              ActionView.define("Invoice")
+              ActionView.define(I18n.get("Invoices"))
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")
@@ -168,7 +169,7 @@ public class InvoiceMergingController {
         if (result.getInvoice() != null) {
           // Open the generated invoice in a new tab
           response.setView(
-              ActionView.define("Invoice")
+              ActionView.define(I18n.get("Invoices"))
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")
@@ -230,7 +231,7 @@ public class InvoiceMergingController {
         if (result.getInvoice() != null) {
           // Open the generated invoice in a new tab
           response.setView(
-              ActionView.define("Invoice")
+              ActionView.define(I18n.get("Invoices"))
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")

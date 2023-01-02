@@ -38,7 +38,7 @@ public class ImportReconcile {
     assert bean instanceof Reconcile;
     Reconcile reconcile = (Reconcile) bean;
     if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
-      reconcileService.updateInvoicePayments(reconcile);
+      reconcileService.updatePayments(reconcile, true);
     }
     return reconcile;
   }

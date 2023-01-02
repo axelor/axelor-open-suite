@@ -135,7 +135,7 @@ public class ProdProcessController {
     ProdProcess copy = Beans.get(ProdProcessService.class).generateNewVersion(prodProcess);
 
     response.setView(
-        ActionView.define("Production process")
+        ActionView.define(I18n.get("Production process"))
             .model(ProdProcess.class.getName())
             .add("form", "prod-process-form")
             .add("grid", "prod-process-grid")

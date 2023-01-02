@@ -23,9 +23,11 @@ import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -100,7 +102,7 @@ public class BatchBankStatement extends AbstractBatch {
             cause,
             ebicsPartner,
             category,
-            IExceptionMessage.BANK_STATEMENT_EBICS_PARTNER,
+            BankPaymentExceptionMessage.BANK_STATEMENT_EBICS_PARTNER,
             ebicsPartner.getPartnerId(),
             cause.getMessage());
     TraceBackService.trace(exception, ExceptionOriginRepository.BANK_STATEMENT, batch.getId());
@@ -109,27 +111,28 @@ public class BatchBankStatement extends AbstractBatch {
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_REPORT));
+    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT));
     sb.append(" ");
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
                 batch.getDone()),
             batch.getDone()));
     sb.append(" ");
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
     sb.append("\n");
     sb.append(
         String.format(
-            I18n.get(IExceptionMessage.BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT),
+            I18n.get(
+                BankPaymentExceptionMessage.BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT),
             bankStatementCount));
     addComment(sb.toString());
     super.stop();
@@ -145,5 +148,9 @@ public class BatchBankStatement extends AbstractBatch {
 
   public Batch bankStatement(BankPaymentBatch bankPaymentBatch) {
     return Beans.get(BatchBankStatement.class).run(bankPaymentBatch);
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BANK_PAYMENT_BATCH);
   }
 }

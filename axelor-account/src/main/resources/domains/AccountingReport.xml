@@ -94,6 +94,15 @@
     <boolean name="exported" title="Exported" default="false"/>
     <boolean name="complementaryExport" title="Complementary export" default="false"/>
 
+    <!-- Report 17 -->
+    <integer name="fixedAssetLineTypeSelect" title="Type"
+      selection="account.fixed.asset.line.type.select" default="1"/>
+
+    <!-- Report 3000 -->
+    <boolean name="displayDeltaYear" title="Display the delta between years"/>
+    <boolean name="displayDeltaYearPercentage"
+      title="Display the percentage delta between years"/>
+
     <unique-constraint columns="ref,company"/>
 
     <extra-code><![CDATA[
@@ -118,15 +127,13 @@
 		public static final int REPORT_GROSS_VALUES_AND_DEPRECIATION = 17;
 		public static final int REPORT_FEES_DECLARATION_PREPARATORY_PROCESS = 19;
 		public static final int REPORT_FEES_DECLARATION_SUPPORT = 20;
+		public static final int REPORT_UNPAID_DUE_INVOICE = 23;
+		public static final int REPORT_INVOICE_WITH_PAYMENT_DELAY = 24;
 		public static final int REPORT_CUSTOM_STATE = 3000;
 
 		// EXPORT TYPE SELECT
         public static final int EXPORT_ADMINISTRATION = 1000;
 		public static final int EXPORT_PAYROLL_JOURNAL_ENTRY = 1001;
-		public static final int EXPORT_SALES = 1006;
-		public static final int EXPORT_REFUNDS = 1007;
-		public static final int EXPORT_TREASURY = 1008;
-		public static final int EXPORT_PURCHASES = 1009;
 		public static final int EXPORT_GENERAL_BALANCE = 1010;
 		public static final int EXPORT_N4DS = 1011;
 

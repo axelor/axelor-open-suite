@@ -34,6 +34,9 @@ import com.axelor.studio.db.ChartBuilder;
 import com.axelor.studio.db.DashboardBuilder;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.SelectionBuilder;
+import com.axelor.studio.db.WsAuthenticator;
+import com.axelor.studio.db.WsConnector;
+import com.axelor.studio.db.WsRequest;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.AppBuilderRepository;
 import com.axelor.studio.db.repo.AppLoaderRepository;
@@ -41,6 +44,9 @@ import com.axelor.studio.db.repo.ChartBuilderRepository;
 import com.axelor.studio.db.repo.DashboardBuilderRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.SelectionBuilderRepository;
+import com.axelor.studio.db.repo.WsAuthenticatorRepository;
+import com.axelor.studio.db.repo.WsConnectorRepository;
+import com.axelor.studio.db.repo.WsRequestRepository;
 import com.google.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -78,6 +84,12 @@ public class ImportService {
   @Inject private MetaFileRepository metaFileRepo;
 
   @Inject private AppLoaderRepository appLoaderRepository;
+
+  @Inject private WsRequestRepository wsRequestRepo;
+
+  @Inject private WsAuthenticatorRepository wsAuthenticatorRepo;
+
+  @Inject private WsConnectorRepository wsConnectorRepo;
 
   public Object importMetaJsonModel(Object bean, Map<String, Object> values) {
 
@@ -260,7 +272,7 @@ public class ImportService {
     return appLoader;
   }
 
-  public File createAppLoaderImportZip(String importPath) {
+  public File createAppLoaderImportZip(String importPath) throws IOException {
 
     importPath = importPath.replaceAll("/|\\\\", "(/|\\\\\\\\)");
     List<URL> fileUrls = MetaScanner.findAll(importPath);
@@ -269,22 +281,47 @@ public class ImportService {
       return null;
     }
 
+    ZipOutputStream zipOutputStream = null;
     try {
       File zipFile = MetaFiles.createTempFile("app-", ".zip").toFile();
-      ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
+      zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
       for (URL url : fileUrls) {
         File file = new File(url.getFile());
         ZipEntry zipEntry = new ZipEntry(file.getName());
         zipOutputStream.putNextEntry(zipEntry);
         IOUtils.copy(url.openStream(), zipOutputStream);
       }
-      zipOutputStream.close();
 
       return zipFile;
     } catch (IOException e) {
       e.printStackTrace();
+    } finally {
+      if (zipOutputStream != null) {
+        zipOutputStream.close();
+      }
     }
 
     return null;
+  }
+
+  public Object importWsRequest(Object bean, Map<String, Object> values) {
+
+    assert bean instanceof WsRequest;
+
+    return wsRequestRepo.save((WsRequest) bean);
+  }
+
+  public Object importWsAuthenticator(Object bean, Map<String, Object> values) {
+
+    assert bean instanceof WsAuthenticator;
+
+    return wsAuthenticatorRepo.save((WsAuthenticator) bean);
+  }
+
+  public Object importWsConnector(Object bean, Map<String, Object> values) {
+
+    assert bean instanceof WsConnector;
+
+    return wsConnectorRepo.save((WsConnector) bean);
   }
 }

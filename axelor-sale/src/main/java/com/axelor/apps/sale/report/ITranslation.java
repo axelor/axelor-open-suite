@@ -35,6 +35,7 @@ public interface ITranslation {
   public static final String SALES_ORDER_INVOICING_ADDRS = /*$$(*/ "SaleOrder.invoicingAddrs"; /*)*/
   public static final String SALES_ORDER_DELIVERY_ADDRESS = /*$$(*/
       "SaleOrder.deliveryAddress"; /*)*/
+  public static final String SALES_ORDER_SHIPMENT_DATE = /*$$(*/ "SaleOrder.shipmentDate"; /*)*/
   public static final String SALES_ORDER_DESCRIPTION = /*$$(*/ "SaleOrder.description"; /*)*/
   public static final String SALES_ORDER_TAX = /*$$(*/ "SaleOrder.tax"; /*)*/
   public static final String SALES_ORDER_QTY_UNIT = /*$$(*/ "SaleOrder.qtyUnit"; /*)*/
@@ -53,6 +54,8 @@ public interface ITranslation {
   public static final String SALES_ORDER_SALEMAN_EMAIL = /*$$(*/ "SaleOrder.salemanEmail"; /*)*/
   public static final String SALES_ORDER_SALEMAN_PHONE = /*$$(*/ "SaleOrder.salemanPhone"; /*)*/
   public static final String SALES_ORDER_DELIVERY_DATE = /*$$(*/ "SaleOrder.deliveryDate"; /*)*/
+  public static final String SALES_ORDER_END_VALIDITY_DATE = /*$$(*/
+      "SaleOrder.endOfValidityDate"; /*)*/
   public static final String SALES_ORDER_DELIVERY_CONDITION = /*$$(*/
       "SaleOrder.deliveryCondition"; /*)*/
   public static final String SALES_ORDER_PRODUCT_DESCRIPTION = /*$$(*/

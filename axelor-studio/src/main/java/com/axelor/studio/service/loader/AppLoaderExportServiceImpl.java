@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.collections.CollectionUtils;
@@ -81,7 +82,10 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
         "dashboard-builder",
         "dashlet-builder",
         "chart-builder",
-        "selection-builder"
+        "selection-builder",
+        "ws-connector",
+        "ws-request",
+        "ws-authenticator"
       };
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -359,13 +363,16 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
   protected FileWriter createHeader(String dasherizeModel, File dataFile) throws IOException {
 
-    FileWriter fileWriter = new FileWriter(dataFile);
-    fileWriter.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-    fileWriter.write(
-        "<"
-            + dasherizeModel
-            + "s xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-            + "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n\n");
+    FileWriter fileWriter = null;
+    try (FileWriter fileWriterObject = new FileWriter(dataFile)) {
+      fileWriter = fileWriterObject;
+      fileWriter.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+      fileWriter.write(
+          "<"
+              + dasherizeModel
+              + "s xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+              + "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n\n");
+    }
 
     return fileWriter;
   }
@@ -508,13 +515,13 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
     File zipFile = MetaFiles.createTempFile("app-", ".zip").toFile();
 
-    ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile));
-    for (File file : exportDir.listFiles()) {
-      ZipEntry zipEntry = new ZipEntry(file.getName());
-      zipOut.putNextEntry(zipEntry);
-      Files.copy(file, zipOut);
+    try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile))) {
+      for (File file : exportDir.listFiles()) {
+        ZipEntry zipEntry = new ZipEntry(file.getName());
+        zipOut.putNextEntry(zipEntry);
+        Files.copy(file, zipOut);
+      }
     }
-    zipOut.close();
 
     return zipFile;
   }
@@ -534,9 +541,11 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
       if (file.length() == 0) {
         file.delete();
       } else {
-        long lines = java.nio.file.Files.lines(file.toPath()).count();
-        if (lines == 1) {
-          file.delete();
+        try (Stream<String> fileStream = java.nio.file.Files.lines(file.toPath())) {
+          long lines = fileStream.count();
+          if (lines == 1) {
+            file.delete();
+          }
         }
       }
     }

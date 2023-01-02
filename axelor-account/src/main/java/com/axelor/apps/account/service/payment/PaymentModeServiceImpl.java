@@ -23,27 +23,31 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class PaymentModeServiceImpl implements PaymentModeService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -59,6 +63,11 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     this.accountManagementAccountService = accountManagementAccountService;
   }
 
+  /**
+   * Get cash account from PaymentMode, Company, BankDetails.
+   *
+   * @return
+   */
   @Override
   public Account getPaymentModeAccount(Move move) throws AxelorException {
     PaymentMode paymentMode = move.getPaymentMode();
@@ -79,7 +88,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
 
     if (!accountOpt.isPresent()) {
       String exceptionMessage =
-          I18n.get(IExceptionMessage.PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE);
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE);
       exceptionMessage += " ";
       exceptionMessage +=
           I18n.get("Company")
@@ -92,7 +101,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
         exceptionMessage += I18n.get("Bank details") + " : %s, ";
       }
 
-      exceptionMessage += I18n.get(IExceptionMessage.PAYMENT_MODE_1);
+      exceptionMessage += I18n.get(AccountExceptionMessage.PAYMENT_MODE_1);
       exceptionMessage =
           String.format(
               exceptionMessage,
@@ -140,6 +149,18 @@ public class PaymentModeServiceImpl implements PaymentModeService {
   @Override
   public Account getPaymentModeAccount(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException {
+    return getPaymentModeAccount(paymentMode, company, bankDetails, false);
+  }
+
+  /**
+   * Get cash or global accrount from PaymenMode, Company, BankDetails function of boolean global.
+   *
+   * @return
+   */
+  @Override
+  public Account getPaymentModeAccount(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails, boolean global)
+      throws AxelorException {
 
     log.debug(
         "Fetching account from payment mode {} associated to the company {}",
@@ -149,7 +170,22 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     AccountManagement accountManagement =
         this.getAccountManagement(paymentMode, company, bankDetails);
 
-    return accountManagementAccountService.getCashAccount(accountManagement, paymentMode);
+    if (Objects.nonNull(accountManagement)) {
+      if (!global && Objects.nonNull(accountManagement.getCashAccount())) {
+        return accountManagement.getCashAccount();
+      }
+      if (global && Objects.nonNull(accountManagement.getGlobalAccountingCashAccount())) {
+        return accountManagement.getGlobalAccountingCashAccount();
+      }
+    }
+
+    throw new AxelorException(
+        paymentMode,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(AccountExceptionMessage.PAYMENT_MODE_CASH_ACCOUNT),
+        global ? String.format("%s ", I18n.get("global")) : "",
+        company.getName(),
+        paymentMode.getName());
   }
 
   @Override
@@ -199,16 +235,16 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
     } else if (accountManagement == null || accountManagement.getSequence() == null) {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
     }
@@ -216,32 +252,57 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     return accountManagement.getSequence();
   }
 
+  /**
+   * Get journal from PaymentMode, Company, BankDetails
+   *
+   * @return
+   */
   @Override
   public Journal getPaymentModeJournal(
       PaymentMode paymentMode, Company company, BankDetails bankDetails) throws AxelorException {
+    return getPaymentModeJournal(paymentMode, company, bankDetails, false);
+  }
+
+  /**
+   * Get journal or cheque deposit journal from PaymenMode, Company, BankDetails function of boolean
+   * global.
+   *
+   * @return
+   */
+  @Override
+  public Journal getPaymentModeJournal(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails, boolean global)
+      throws AxelorException {
 
     AccountManagement accountManagement =
         this.getAccountManagement(paymentMode, company, bankDetails);
 
-    if (accountManagement == null && appAccountService.getAppBase().getManageMultiBanks()) {
+    if (Objects.isNull(accountManagement) && appAccountService.getAppBase().getManageMultiBanks()) {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          company.getName(),
-          paymentMode.getName());
-    } else if (accountManagement == null || accountManagement.getJournal() == null) {
-      throw new AxelorException(
-          paymentMode,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_MODE_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
     }
 
-    return accountManagement.getJournal();
+    if (Objects.nonNull(accountManagement)) {
+      if (!global && Objects.nonNull(accountManagement.getJournal())) {
+        return accountManagement.getJournal();
+      }
+      if (global && Objects.nonNull(accountManagement.getChequeDepositJournal())) {
+        return accountManagement.getChequeDepositJournal();
+      }
+    }
+
+    throw new AxelorException(
+        paymentMode,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(AccountExceptionMessage.PAYMENT_MODE_2),
+        I18n.get(BaseExceptionMessage.EXCEPTION),
+        company.getName(),
+        paymentMode.getName());
   }
 
   @Override
@@ -280,5 +341,21 @@ public class PaymentModeServiceImpl implements PaymentModeService {
         .bind("_paymentModeType", paymentMode.getTypeSelect())
         .bind("_inversedInOrOut", inversedInOrOut)
         .fetchOne();
+  }
+
+  @Override
+  public boolean isPendingPayment(PaymentMode paymentMode) {
+    if (paymentMode == null) {
+      return false;
+    }
+
+    int typeSelect = paymentMode.getTypeSelect();
+    int inOutSelect = paymentMode.getInOutSelect();
+
+    return (typeSelect == PaymentModeRepository.TYPE_DD && inOutSelect == PaymentModeRepository.IN)
+        || (typeSelect == PaymentModeRepository.TYPE_TRANSFER
+            && inOutSelect == PaymentModeRepository.OUT)
+        || (typeSelect == PaymentModeRepository.TYPE_EXCHANGES
+            && inOutSelect == PaymentModeRepository.IN);
   }
 }

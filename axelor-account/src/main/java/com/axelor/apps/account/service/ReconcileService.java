@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.db.Partner;
@@ -35,7 +38,8 @@ public interface ReconcileService {
       boolean canBeZeroBalanceOk);
 
   @Transactional(rollbackOn = {Exception.class})
-  public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments)
+  public Reconcile confirmReconcile(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException;
 
   public void reconcilePreconditions(Reconcile reconcile) throws AxelorException;
@@ -44,9 +48,25 @@ public interface ReconcileService {
 
   public List<Partner> getPartners(Reconcile reconcile);
 
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments,
+      InvoicePayment invoicePayment)
+      throws AxelorException;
+
   public Reconcile reconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments)
+      throws AxelorException;
+
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      InvoicePayment invoicePayment,
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments)
       throws AxelorException;
@@ -74,4 +94,21 @@ public interface ReconcileService {
         && (acc1.getAccount().equals(acc2.getAccount())
             || acc1.getAccount().getCompatibleAccountSet().contains(acc2.getAccount()));
   }
+
+  public List<InvoiceTermPayment> updateInvoiceTerms(
+      List<InvoiceTerm> invoiceTermList,
+      InvoicePayment invoicePayment,
+      BigDecimal amount,
+      Reconcile reconcile)
+      throws AxelorException;
+
+  void checkReconcile(Reconcile reconcile) throws AxelorException;
+
+  String getStringAllowedCreditMoveLines(Reconcile reconcile);
+
+  String getStringAllowedDebitMoveLines(Reconcile reconcile);
+
+  List<Long> getAllowedCreditMoveLines(Reconcile reconcile);
+
+  List<Long> getAllowedDebitMoveLines(Reconcile reconcile);
 }

@@ -19,7 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.ModelEmailLink;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
@@ -46,7 +46,7 @@ public class ModelEmailLinkController {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
-                I18n.get(IExceptionMessage.INVALID_FIELD),
+                I18n.get(BaseExceptionMessage.INVALID_FIELD),
                 modelEmailLink.getEmailField(),
                 modelEmailLink.getMetaModel().getName()));
       }

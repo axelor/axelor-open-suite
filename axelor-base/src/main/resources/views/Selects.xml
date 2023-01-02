@@ -157,7 +157,6 @@
     <option value="category">Category</option>
   </selection>
 
-
   <selection name="base.price.list.type.select">
     <option value="1">Sale</option>
     <option value="2">Purchase</option>
@@ -257,8 +256,9 @@
 
   <selection name="base.period.status.select">
     <option value="1">Opened</option>
-    <option value="2">Closed</option>
+    <option value="2">Permanently Closed</option>
     <option value="3">Adjusting</option>
+    <option value="4">Temporarily Closed</option>
   </selection>
 
   <selection name="company.partner.category.select">
@@ -365,6 +365,7 @@
     <option value="7">Cheque</option>
     <option value="8">Web</option>
     <option value="9">Transfer</option>
+    <option value="10">Exchanges</option>
   </selection>
 
   <selection name="iaccount.payment.mode.in.out.select">
@@ -430,6 +431,7 @@
     id="base.meta.schedule.batch.service.select">
     <option value="com.axelor.apps.base.service.batch.BaseBatchService">com.axelor.apps.base.service.batch.BaseBatchService</option>
     <option value="com.axelor.apps.base.service.batch.MailBatchService">com.axelor.apps.base.service.batch.MailBatchService</option>
+    <option value="com.axelor.apps.base.service.batch.ImportBatchService">com.axelor.apps.base.service.batch.ImportBatchService</option>
   </selection>
 
   <selection name="team.type.select">
@@ -651,6 +653,27 @@
   <selection name="printing.setting.address.position">
     <option value="0">Right</option>
     <option value="1">Left</option>
+  </selection>
+
+  <selection name="batch.action.launch.origin.select">
+    <option value="1">batch.manual</option>
+    <option value="2">Scheduled</option>
+  </selection>
+
+  <selection name="batch.batch.type.select">
+    <option value="100">Base batch</option>
+    <option value="101">Alarm engine batch</option>
+    <option value="102">Mail batch</option>
+    <option value="103">Import batch</option>
+  </selection>
+
+  <selection name="base.file.source.connector.connection.type.select">
+    <option value="1">SFTP</option>
+  </selection>
+
+  <selection name="import.batch.action.select">
+    <option value="0">Import</option>
+    <option value="1">Advanced import</option>
   </selection>
 
 </object-views>

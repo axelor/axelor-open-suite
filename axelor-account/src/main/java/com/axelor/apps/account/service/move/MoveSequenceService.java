@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -55,9 +55,16 @@ public class MoveSequenceService {
     if (journal.getSequence() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_5),
+          I18n.get(AccountExceptionMessage.MOVE_5),
           journal.getName());
     }
-    move.setReference(sequenceService.getSequenceNumber(journal.getSequence(), move.getDate()));
+
+    if (!sequenceService.isEmptyOrDraftSequenceNumber(move.getReference())) {
+      return;
+    }
+
+    move.setReference(
+        sequenceService.getSequenceNumber(
+            journal.getSequence(), move.getDate(), Move.class, "reference"));
   }
 }

@@ -28,7 +28,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -50,6 +50,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +85,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         != ProductRepository.COST_TYPE_STANDARD) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
+          I18n.get(ProductionExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
     }
 
     productCompanyService.set(
@@ -129,7 +130,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     if (depth > 1000) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MAX_DEPTH_REACHED));
+          I18n.get(ProductionExceptionMessage.MAX_DEPTH_REACHED));
     }
 
     if (billOfMaterial != null) {
@@ -138,7 +139,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       personalizedBOM.setName(
           personalizedBOM.getName()
               + " ("
-              + I18n.get(IExceptionMessage.BOM_1)
+              + I18n.get(ProductionExceptionMessage.BOM_1)
               + " "
               + personalizedBOM.getId()
               + ")");
@@ -395,7 +396,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     if (rawMaterial.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BOM_MISSING_UNIT_ON_PRODUCT),
+          I18n.get(ProductionExceptionMessage.BOM_MISSING_UNIT_ON_PRODUCT),
           rawMaterial.getFullName());
     }
     newBom.setUnit(rawMaterial.getUnit());
@@ -430,5 +431,37 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     return billOfMaterial;
+  }
+
+  @Override
+  public List<BillOfMaterial> getAlternativesBOM(Product originalProduct, Company company)
+      throws AxelorException {
+
+    BillOfMaterial defaultBOM = this.getDefaultBOM(originalProduct, company);
+    return billOfMaterialRepo
+        .all()
+        .filter(
+            "self.product = ?1 AND self.company = ?2 AND self.id != ?3 AND self.statusSelect = ?4",
+            originalProduct,
+            company,
+            defaultBOM != null ? defaultBOM.getId() : 0,
+            BillOfMaterialRepository.STATUS_APPLICABLE)
+        .fetch();
+  }
+
+  @Override
+  public List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException {
+
+    if (companySet == null || companySet.isEmpty()) {
+      return Collections.emptyList();
+    }
+    String stringQuery =
+        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1)";
+    Query query = JPA.em().createQuery(stringQuery, Long.class);
+
+    query.setParameter(1, companySet.stream().map(Company::getId).collect(Collectors.toList()));
+    List<Long> productIds = (List<Long>) query.getResultList();
+
+    return productIds;
   }
 }

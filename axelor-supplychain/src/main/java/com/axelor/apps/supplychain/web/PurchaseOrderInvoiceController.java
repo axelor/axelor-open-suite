@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.service.TraceBackService;
@@ -51,15 +51,13 @@ public class PurchaseOrderInvoiceController {
       if (invoice != null) {
         response.setReload(true);
         response.setView(
-            ActionView.define(I18n.get(IExceptionMessage.PO_INVOICE_2))
+            ActionView.define(I18n.get(SupplychainExceptionMessage.PO_INVOICE_2))
                 .model(Invoice.class.getName())
                 .add("form", "invoice-form")
                 .add("grid", InvoiceViewService.computeInvoiceGridName(invoice))
                 .param("search-filters", InvoiceViewService.computeInvoiceFilterName(invoice))
-                .domain("self.purchaseOrder.id = " + String.valueOf(invoice.getId()))
-                .domain(
-                    "self.operationTypeSelect = "
-                        + String.valueOf(invoice.getOperationTypeSelect()))
+                .domain("self.purchaseOrder.id = " + invoice.getId())
+                .domain("self.operationTypeSelect = " + invoice.getOperationTypeSelect())
                 .context("_operationTypeSelect", invoice.getOperationTypeSelect())
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .map());
@@ -74,7 +72,7 @@ public class PurchaseOrderInvoiceController {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       response.setView(
-          ActionView.define("Invoicing")
+          ActionView.define(I18n.get("Invoicing"))
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-invoicing-wizard-form")
               .param("popup", "reload")

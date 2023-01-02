@@ -38,7 +38,6 @@ import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
@@ -83,15 +82,28 @@ import org.slf4j.LoggerFactory;
 
 public class DataBackupCreateService {
 
+  @Inject
+  public DataBackupCreateService(
+      DataBackupRepository dataBackupRepository,
+      MetaModelRepository metaModelRepo,
+      MetaFiles metaFiles,
+      AnonymizeService anonymizeService) {
+    this.dataBackupRepository = dataBackupRepository;
+    this.metaModelRepo = metaModelRepo;
+    this.metaFiles = metaFiles;
+    this.anonymizeService = anonymizeService;
+  }
+
   protected static final char SEPARATOR = ',';
   protected static final char QUOTE_CHAR = '"';
   protected static final char REFERENCE_FIELD_SEPARATOR = '|';
 
   protected static final int BUFFER_SIZE = 1000;
 
-  @Inject protected MetaModelRepository metaModelRepo;
-  @Inject private MetaFiles metaFiles;
-  @Inject private AnonymizeService anonymizeService;
+  protected DataBackupRepository dataBackupRepository;
+  protected MetaModelRepository metaModelRepo;
+  protected MetaFiles metaFiles;
+  protected AnonymizeService anonymizeService;
 
   protected Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -216,7 +228,7 @@ public class DataBackupCreateService {
             sb.append(e.getMessage() + "\n");
           }
           JPA.em().getTransaction().begin();
-          dataBackup = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
+          dataBackup = dataBackupRepository.find(dataBackup.getId());
           errorsCount++;
         }
       }
@@ -439,6 +451,7 @@ public class DataBackupCreateService {
           dataList = getMetaModelDataList(metaModel, i, fetchLimit, subClasses);
 
           if (dataList != null && !dataList.isEmpty()) {
+            dataBackup = dataBackupRepository.find(dataBackup.getId());
             for (Object dataObject : dataList) {
               dataArr = new ArrayList<>();
 
@@ -478,6 +491,7 @@ public class DataBackupCreateService {
               csvWriter.writeNext(dataArr.toArray(new String[dataArr.size()]), true);
             }
           }
+          JPA.clear();
         }
       } else {
         for (Property property : pro) {
@@ -901,7 +915,7 @@ public class DataBackupCreateService {
         sb.append("\nError occured while processing model : " + metaModel.getFullName() + "\n");
         sb.append(e.getMessage() + "\n");
         JPA.em().getTransaction().begin();
-        dataBackup = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
+        dataBackup = dataBackupRepository.find(dataBackup.getId());
         dataBackup.setFetchLimit(1);
         errorsCount++;
       }

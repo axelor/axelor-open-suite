@@ -22,11 +22,12 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true" colSpan="3"/>
       <field name="company" canEdit="false" readonlyIf="journal" colSpan="3" canNew="false"
         form-view="company-form" grid-view="company-grid" required="true"/>
-      <field name="journal" canEdit="false" readonlyIf="moveTemplateLineList.length > 0"
+      <field name="journal" canEdit="false"
+        readonlyIf="moveTemplateLineList &amp;&amp; moveTemplateLineList.length > 0"
         onSelect="action-move-template-set-journal-domain" grid-view="journal-grid"
         form-view="journal-form" required="true"/>
       <field name="moveTemplateType" canEdit="false"
-        readonlyIf="moveTemplateLineList.length > 0" required="true"
+        readonlyIf="moveTemplateLineList &amp;&amp; moveTemplateLineList.length > 0" required="true"
         grid-view="move-template-type-grid" form-view="move-template-type-form" colSpan="3"/>
       <field name="moveTemplateType.typeSelect" colSpan="3"/>
       <field name="endOfValidityDate"/>
@@ -80,7 +81,7 @@
       <field name="isValid" readonlyIf="!isValid"
         onChange="action-move-template-method-set-is-valid" colSpan="12"/>
       <button name="checkValidityBtn" title="Check validity" readonlyIf="isValid"
-        onClick="save,action-move-template-method-check-validity" colSpan="12"/>
+        onClick="action-move-template-group-check-validity" colSpan="12"/>
     </panel>
     <panel-mail>
       <mail-messages limit="4"/>
@@ -129,7 +130,7 @@
     </panel>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="generateMovesBtn"
-        readonlyIf="(dataInputList == null || dataInputList.isEmpty()) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.isEmpty()) || (moveTemplateType == null)"
+        readonlyIf="(dataInputList == null || dataInputList.length == 0) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.length == 0) || (moveTemplateType == null)"
         title="Generate Moves" onClick="save,action-move-template-wizard-method-generate-move"
         colSpan="12"/>
     </panel>
@@ -172,10 +173,22 @@
     </panel>
   </form>
 
+  <action-group name="action-move-template-group-check-validity">
+    <action name="save"/>
+    <action name="action-move-template-validate-check-tax-lines"/>
+    <action name="action-move-template-method-check-validity"/>
+  </action-group>
+
   <action-group name="action-move-template-group-line-list-onchange">
     <action name="action-move-template-method-set-is-valid"/>
     <action name="action-move-template-method-compute-totals"/>
   </action-group>
+
+  <action-validate name="action-move-template-validate-check-tax-lines">
+    <alert
+      message="The tax move lines will be recalculated and validity checks will be done taking into consideration other lines taxes"
+      if="moveTemplateLineList.find{mt->mt?.account?.accountType?.technicalTypeSelect == 'tax'} != null"/>
+  </action-validate>
 
   <action-validate name="action-move-template-wizard-check-value">
     <error if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0"
@@ -239,8 +252,7 @@
 
   <action-record name="action-move-template-wizard-line-set-move-template"
     model="com.axelor.apps.base.db.Wizard">
-    <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="date == null"/>
+    <field name="date" expr="eval:__config__.date" if="date == null"/>
     <field name="moveTemplate"
       expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)"/>
   </action-record>
