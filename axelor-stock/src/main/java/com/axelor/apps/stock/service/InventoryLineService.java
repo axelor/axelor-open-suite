@@ -167,7 +167,7 @@ public class InventoryLineService {
           price = stockLocationLine.getAvgPrice();
           break;
         default:
-          price = stockLocationLine.getAvgPrice();
+          price = product.getAvgPrice();
           break;
       }
 
