@@ -88,7 +88,10 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       int analyticCounter) {
     AccountingReportValue totalValue = null;
     List<String> linesCodeList = Collections.singletonList(line.getCode());
-    BigDecimal result = BigDecimal.valueOf(100);
+    BigDecimal result =
+        StringUtils.isEmpty(line.getPercentageTotalLine())
+            ? BigDecimal.valueOf(100)
+            : BigDecimal.ZERO;
 
     if (StringUtils.notEmpty(line.getPercentageTotalLine())) {
       totalValue = valuesMap.get(line.getPercentageTotalLine());
