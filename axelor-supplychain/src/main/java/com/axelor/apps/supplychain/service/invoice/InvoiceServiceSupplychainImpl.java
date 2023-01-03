@@ -302,6 +302,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
   }
 
   @Transactional
+  @Override
   public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice) {
     for (Invoice invoice : invoiceList) {
       List<StockMove> stockMoveList =

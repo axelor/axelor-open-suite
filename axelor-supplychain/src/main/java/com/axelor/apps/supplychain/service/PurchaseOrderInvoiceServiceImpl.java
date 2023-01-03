@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
@@ -46,7 +47,7 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.common.ObjectUtils;
@@ -73,24 +74,26 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected InvoiceServiceSupplychainImpl invoiceService;
+  protected InvoiceServiceSupplychain invoiceServiceSupplychain;
+  protected InvoiceService invoiceService;
   protected InvoiceRepository invoiceRepo;
   protected TimetableRepository timetableRepo;
   protected AppSupplychainService appSupplychainService;
-
   protected AccountConfigService accountConfigService;
   protected CommonInvoiceService commonInvoiceService;
   protected AddressService addressService;
 
   @Inject
   public PurchaseOrderInvoiceServiceImpl(
-      InvoiceServiceSupplychainImpl invoiceService,
+      InvoiceServiceSupplychain invoiceServiceSupplychain,
+      InvoiceService invoiceService,
       InvoiceRepository invoiceRepo,
       TimetableRepository timetableRepo,
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
       CommonInvoiceService commonInvoiceService,
       AddressService addressService) {
+    this.invoiceServiceSupplychain = invoiceServiceSupplychain;
     this.invoiceService = invoiceService;
     this.invoiceRepo = invoiceRepo;
     this.timetableRepo = timetableRepo;
@@ -103,7 +106,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
-
     Invoice invoice = this.createInvoice(purchaseOrder);
     invoice = invoiceRepo.save(invoice);
     invoiceService.setDraftSequence(invoice);
@@ -515,7 +517,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
       invoiceMerged.setPurchaseOrder(null);
       invoiceRepo.save(invoiceMerged);
-      invoiceService.swapStockMoveInvoices(invoiceList, invoiceMerged);
+      invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
     } else {
@@ -534,7 +536,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
               fiscalPosition,
               supplierInvoiceNb,
               originDate);
-      invoiceService.swapStockMoveInvoices(invoiceList, invoiceMerged);
+      invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
     }
