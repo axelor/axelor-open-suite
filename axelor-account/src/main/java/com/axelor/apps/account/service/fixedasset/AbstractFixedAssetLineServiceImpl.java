@@ -31,7 +31,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -45,17 +44,33 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FixedAssetLineServiceImpl implements FixedAssetLineService {
+/**
+ * Abstract class of FixedAssetLineComputationService. This class is not supposed to be directly
+ * used. Please use {@link FixedAssetLineEconomicComputationServiceImpl} or {@link
+ * FixedAssetLineFiscalComputationServiceImpl}.
+ */
+public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLineService {
 
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected FixedAssetLineRepository fixedAssetLineRepository;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected YearService yearService;
   protected PeriodService periodService;
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected abstract int getPeriodicityTypeSelect(FixedAsset fixedAsset);
+
+  protected abstract int getPeriodicityInMonth(FixedAsset fixedAsset);
+
+  protected abstract List<FixedAssetLine> getFixedAssetLineList(FixedAsset fixedAsset);
+
+  protected abstract BigDecimal computeProrataBetween(
+      FixedAsset fixedAsset,
+      LocalDate previousRealizedDate,
+      LocalDate disposalDate,
+      LocalDate nextPlannedDate);
 
   @Inject
-  public FixedAssetLineServiceImpl(
+  public AbstractFixedAssetLineServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepository,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       YearService yearService,
@@ -113,9 +128,8 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
               : firstServiceDate;
 
       BigDecimal prorataTemporis =
-          Beans.get(FixedAssetLineEconomicComputationServiceImpl.class)
-              .computeProrataBetween(
-                  fixedAsset, previousRealizedDate, disposalDate.minusDays(1), nextPlannedDate);
+          computeProrataBetween(
+              fixedAsset, previousRealizedDate, disposalDate.minusDays(1), nextPlannedDate);
       deprecationValue =
           fixedAssetLine
               .getDepreciation()
@@ -255,7 +269,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       throws AxelorException {
     FixedAssetLine previousRealizedLine =
         findNewestFixedAssetLine(
-                fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0)
+                getFixedAssetLineList(fixedAsset), FixedAssetLineRepository.STATUS_REALIZED, 0)
             .orElse(null);
     if (previousRealizedLine != null
         && disposalDate.isBefore(previousRealizedLine.getDepreciationDate())) {
@@ -265,7 +279,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     }
     FixedAssetLine previousPlannedLine =
         findNewestFixedAssetLine(
-                fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_PLANNED, 0)
+                getFixedAssetLineList(fixedAsset), FixedAssetLineRepository.STATUS_PLANNED, 0)
             .orElse(null);
     if (correspondingFixedAssetLine != null) {
       computeDepreciationWithProrata(
@@ -280,7 +294,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   protected FixedAssetLine getLineFromDate(FixedAsset fixedAsset, LocalDate disposalDate)
       throws AxelorException {
     FixedAssetLine correspondingFixedAssetLine;
-    if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
+    if (getPeriodicityTypeSelect(fixedAsset) == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
       Year year =
           yearService.getYear(disposalDate, fixedAsset.getCompany(), YearRepository.TYPE_FISCAL);
       if (year == null) {
@@ -292,24 +306,26 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
       }
       correspondingFixedAssetLine =
           getFirstLineWithinInterval(
-              fixedAsset.getFixedAssetLineList(),
+              getFixedAssetLineList(fixedAsset),
               FixedAssetLineRepository.STATUS_PLANNED,
               year.getFromDate(),
               year.getToDate());
 
     } else {
 
-      if (fixedAsset.getPeriodicityInMonth() > 1) {
+      if (getPeriodicityInMonth(fixedAsset) > 1) {
         correspondingFixedAssetLine =
             getFirstLineWithinInterval(
-                fixedAsset.getFixedAssetLineList(),
+                getFixedAssetLineList(fixedAsset),
                 FixedAssetLineRepository.STATUS_PLANNED,
-                disposalDate.minusMonths(fixedAsset.getPeriodicityInMonth()),
-                disposalDate.plusMonths(fixedAsset.getPeriodicityInMonth()));
+                disposalDate.minusMonths(getPeriodicityInMonth(fixedAsset)),
+                disposalDate.plusMonths(getPeriodicityInMonth(fixedAsset)));
       } else {
         correspondingFixedAssetLine =
             getExistingLineWithSameMonth(
-                fixedAsset, disposalDate, FixedAssetLineRepository.STATUS_PLANNED);
+                getFixedAssetLineList(fixedAsset),
+                disposalDate,
+                FixedAssetLineRepository.STATUS_PLANNED);
       }
     }
     return correspondingFixedAssetLine;
@@ -342,8 +358,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   }
 
   protected FixedAssetLine getExistingLineWithSameMonth(
-      FixedAsset fixedAsset, LocalDate disposalDate, int lineStatus) {
-    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+      List<FixedAssetLine> fixedAssetLineList, LocalDate disposalDate, int lineStatus) {
     if (fixedAssetLineList != null) {
       return fixedAssetLineList.stream()
           .filter(

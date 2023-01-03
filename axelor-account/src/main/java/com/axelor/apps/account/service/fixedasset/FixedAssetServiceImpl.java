@@ -71,13 +71,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected FixedAssetDateService fixedAssetDateService;
 
-  protected FixedAssetLineService fixedAssetLineService;
-
   protected FixedAssetGenerationService fixedAssetGenerationService;
   protected FixedAssetLineGenerationService fixedAssetLineGenerationService;
 
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
   protected DateService dateService;
+
+  protected FixedAssetLineService fixedAssetLineService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -194,6 +194,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     if (disposalAmount.compareTo(BigDecimal.ZERO) != 0) {
 
+      FixedAssetLineService fixedAssetLineService =
+          fixedAssetLineServiceFactory.getFixedAssetService(
+              FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
       FixedAssetLine depreciationFixedAssetLine =
           fixedAssetLineService.generateProrataDepreciationLine(
               fixedAsset, disposalDate, previousRealizedLine, previousPlannedLine);
@@ -466,8 +469,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED));
     }
+    FixedAssetLineService fixedAssetLineEconomicService =
+        fixedAssetLineServiceFactory.getFixedAssetService(
+            FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
     FixedAssetLine correspondingFixedAssetLine =
-        fixedAssetLineService.computeCessionLine(fixedAsset, disposalDate);
+        fixedAssetLineEconomicService.computeCessionLine(fixedAsset, disposalDate);
     if (correspondingFixedAssetLine != null) {
       if (fixedAsset
           .getDepreciationPlanSelect()
@@ -478,6 +484,18 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
     fixedAssetLineMoveService.generateDisposalMove(
         fixedAsset, correspondingFixedAssetLine, transferredReason, disposalDate);
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
+      FixedAssetLineService fixedAssetLineFiscalService =
+          fixedAssetLineServiceFactory.getFixedAssetService(
+              FixedAssetLineRepository.TYPE_SELECT_FISCAL);
+      FixedAssetLine correspondingFiscalFixedAssetLine =
+          fixedAssetLineFiscalService.computeCessionLine(fixedAsset, disposalDate);
+      if (correspondingFiscalFixedAssetLine != null) {
+        fixedAssetLineMoveService.realize(correspondingFiscalFixedAssetLine, false, false);
+      }
+    }
     setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
     fixedAsset.setComments(comments);
     return fixedAsset;
