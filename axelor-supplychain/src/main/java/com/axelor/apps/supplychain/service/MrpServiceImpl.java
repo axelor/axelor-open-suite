@@ -1546,9 +1546,11 @@ public class MrpServiceImpl implements MrpService {
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
-            .filter("self.mrp.id = :id AND self.proposalGenerated = false")
-            .bind("id", mrp.getId())
-            .bind("elementSelect", MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)
+            .filter(
+                "self.mrp.id = :mrpId AND self.proposalGenerated = false AND self.mrpLineType.elementSelect in (:purchaseProposal, :manufProposal)")
+            .bind("mrpId", mrp.getId())
+            .bind("purchaseProposal", MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)
+            .bind("manufProposal", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)
             .order("maturityDate")
             .fetch();
     if (mrpLineList.isEmpty()) {
