@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface FixedAssetLineService {
@@ -138,4 +139,6 @@ public interface FixedAssetLineService {
    * @param line
    */
   void setFixedAsset(FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException;
+
+  Map<Integer, List<FixedAssetLine>> getFixedAssetLineListByStatus(FixedAsset fixedAsset);
 }

@@ -64,4 +64,9 @@ public class FixedAssetLineFiscalServiceImpl extends AbstractFixedAssetLineServi
     return Beans.get(FixedAssetLineFiscalComputationServiceImpl.class)
         .computeProrataBetween(fixedAsset, previousRealizedDate, disposalDate, nextPlannedDate);
   }
+
+  @Override
+  protected int getTypeSelect() {
+    return FixedAssetLineRepository.TYPE_SELECT_FISCAL;
+  }
 }

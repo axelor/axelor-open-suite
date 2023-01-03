@@ -26,20 +26,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public interface FixedAssetService {
-  /**
-   * Allow to disposal remaining depreciation
-   *
-   * @param disposalDate
-   * @param disposalAmount
-   * @param fixedAsset
-   * @throws AxelorException
-   */
-  void disposal(
-      LocalDate disposalDate,
-      BigDecimal disposalAmount,
-      FixedAsset fixedAsset,
-      int transferredReason)
-      throws AxelorException;
 
   void createAnalyticOnMoveLine(
       AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine)

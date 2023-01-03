@@ -39,15 +39,17 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class of FixedAssetLineComputationService. This class is not supposed to be directly
- * used. Please use {@link FixedAssetLineEconomicComputationServiceImpl} or {@link
- * FixedAssetLineFiscalComputationServiceImpl}.
+ * used. Please use {@link FixedAssetLineEconomicServiceImpl} or {@link
+ * FixedAssetLineFiscalServiceImpl}.
  */
 public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLineService {
 
@@ -67,6 +69,8 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
       LocalDate previousRealizedDate,
       LocalDate disposalDate,
       LocalDate nextPlannedDate);
+
+  protected abstract int getTypeSelect();
 
   @Inject
   public AbstractFixedAssetLineServiceImpl(
@@ -89,7 +93,7 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
     if (fixedAssetLine == null) {
       fixedAssetLine = new FixedAssetLine();
       fixedAssetLine.setDepreciationDate(disposalDate);
-      fixedAssetLine.setTypeSelect(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+      fixedAssetLine.setTypeSelect(getTypeSelect());
       fixedAssetLine.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
       fixedAssetLine.setDepreciationBase(
           previousRealizedLine != null
@@ -413,5 +417,11 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             "Fixed asset line type is not recognized to set fixed asset");
     }
+  }
+
+  @Override
+  public Map<Integer, List<FixedAssetLine>> getFixedAssetLineListByStatus(FixedAsset fixedAsset) {
+    return getFixedAssetLineList(fixedAsset).stream()
+        .collect(Collectors.groupingBy(FixedAssetLine::getStatusSelect));
   }
 }
