@@ -514,7 +514,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
 
     if ((isOutMove && supplyChainConfig.getHasOutSmForStorableProduct())
-        || (isInMove && supplyChainConfig.getHasInSmForStorableProduct())) {
+        || (isInMove && supplyChainConfig.getHasInSmForStorableProduct())
+        || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
       storableFilter =
           " self.productTypeSelect = '" + ProductRepository.PRODUCT_TYPE_STORABLE + "'";
       return "(" + storableFilter + checkQtyFilterStr + ")";
@@ -528,7 +529,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     final boolean isOutMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING;
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
     if ((isOutMove && supplyChainConfig.getHasOutSmForNonStorableProduct())
-        || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())) {
+        || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())
+        || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
       return " self.productTypeSelect = '" + ProductRepository.PRODUCT_TYPE_SERVICE + "'";
     }
     return "";
