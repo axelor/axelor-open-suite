@@ -216,9 +216,13 @@
           <panel name="unitsPanel" title="Units" colSpan="12">
             <field name="unit" canEdit="false" colSpan="6" form-view="unit-form"
               grid-view="unit-grid"/>
-            <button name="updateUnitBtn" title="Update stock location" colSpan="6"
+            <button name="updateStockLocationBtn" title="Update stock location" colSpan="3"
               showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged"
               onClick="save,action-product-method-update-stock-location" if-module="axelor-stock"
+              if="__config__.app.isApp('stock')"/>
+            <button name="updateStockUnitBtn" title="Update stock unit" colSpan="3"
+              showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged"
+              onClick="save,action-product-method-update-stock-unit" if-module="axelor-stock"
               if="__config__.app.isApp('stock')"/>
             <field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6"
               form-view="unit-form" grid-view="unit-grid"

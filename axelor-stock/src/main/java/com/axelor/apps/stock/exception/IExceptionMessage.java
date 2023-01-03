@@ -251,4 +251,9 @@ public interface IExceptionMessage {
 
   public static final String INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR = /*$$(*/
       "There is more than one line for same product with same tracking number." /*)*/;
+
+  public static final String INVENTORY_PRODUCT_MISSING = /*$$(*/ "The given product is null!" /*)*/;
+
+  public static final String INVENTORY_PRODUCT_STOCK_UNMANAGEABLE = /*$$(*/
+      "The given product is stock unmanageable!" /*)*/;
 }
