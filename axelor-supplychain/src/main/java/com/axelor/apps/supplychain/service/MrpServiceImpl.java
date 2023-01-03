@@ -1511,27 +1511,86 @@ public class MrpServiceImpl implements MrpService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generateProposals(Mrp mrp, boolean isProposalPerSupplier) throws AxelorException {
+  public void generateSelectedProposals(Mrp mrp, boolean isProposalPerSupplier)
+      throws AxelorException {
 
     Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
     Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier = new HashMap<>();
+    List<MrpLine> mrpLineList = getSelectedMrpLines(mrp);
+
+    generateProposals(
+        isProposalPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLineList);
+  }
+
+  protected List<MrpLine> getSelectedMrpLines(Mrp mrp) throws AxelorException {
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
-            .filter("self.mrp.id = ?1 AND self.proposalToProcess = true", mrp.getId())
+            .filter(
+                "self.mrp.id = ?1 AND self.proposalToProcess = true AND self.proposalGenerated = false",
+                mrp.getId())
             .order("maturityDate")
             .fetch();
+    if (mrpLineList.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.MRP_GENERATE_PROPOSAL_NO_LINE_SELECTED));
+    }
+    return mrpLineList;
+  }
 
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void generateAllProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException {
+    Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
+    Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier = new HashMap<>();
+    List<MrpLine> mrpLineList = getAllMrpLines(mrp);
+    generateProposals(
+        isProposalsPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLineList);
+  }
+
+  protected List<MrpLine> getAllMrpLines(Mrp mrp) throws AxelorException {
+    List<MrpLine> mrpLineList =
+        mrpLineRepository
+            .all()
+            .filter(
+                "self.mrp.id = :mrpId AND self.proposalGenerated = false AND self.mrpLineType.elementSelect in (:purchaseProposal, :manufProposal)")
+            .bind("mrpId", mrp.getId())
+            .bind("purchaseProposal", MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)
+            .bind("manufProposal", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)
+            .order("maturityDate")
+            .fetch();
+    if (mrpLineList.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.MRP_GENERATE_PROPOSAL_NO_POSSIBLE_LINE));
+    }
+    return mrpLineList;
+  }
+
+  protected void generateProposals(
+      boolean isProposalPerSupplier,
+      Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
+      Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
+      List<MrpLine> mrpLineList)
+      throws AxelorException {
     for (MrpLine mrpLine : mrpLineList) {
-
       if (!mrpLine.getProposalGenerated()) {
-        mrpLineService.generateProposal(
-            mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalPerSupplier);
-
-        mrpLine.setProposalToProcess(false);
-        mrpLineRepository.save(mrpLine);
+        generateProposal(isProposalPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLine);
       }
     }
+  }
+
+  protected void generateProposal(
+      boolean isProposalPerSupplier,
+      Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
+      Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
+      MrpLine mrpLine)
+      throws AxelorException {
+    mrpLineService.generateProposal(
+        mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalPerSupplier);
+    mrpLine.setProposalToProcess(false);
+    mrpLineRepository.save(mrpLine);
   }
 
   @Override
