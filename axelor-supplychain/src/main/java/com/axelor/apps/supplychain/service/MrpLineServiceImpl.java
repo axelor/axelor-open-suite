@@ -178,7 +178,7 @@ public class MrpLineServiceImpl implements MrpLineService {
                   company,
                   null,
                   supplierPartner.getCurrency(),
-                  null,
+                  maturityDate,
                   this.getPurchaseOrderOrigin(mrpLine),
                   null,
                   stockLocation,
@@ -223,10 +223,6 @@ public class MrpLineServiceImpl implements MrpLineService {
         purchaseOrderLineService.createPurchaseOrderLine(
             purchaseOrder, product, null, null, qty, unit);
     poLine.setDesiredDelivDate(maturityDate);
-    if (mrpLine.getEstimatedDeliveryMrpLine() != null) {
-      poLine.setDesiredDelivDate(mrpLine.getEstimatedDeliveryMrpLine().getMaturityDate());
-    }
-    poLine.setEstimatedDelivDate(poLine.getDesiredDelivDate());
     purchaseOrder.addPurchaseOrderLineListItem(poLine);
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
