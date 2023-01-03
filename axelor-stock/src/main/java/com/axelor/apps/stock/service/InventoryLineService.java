@@ -35,10 +35,13 @@ import java.math.RoundingMode;
 public class InventoryLineService {
 
   protected StockConfigService stockConfigService;
+  protected StockLocationLineService stockLocationLineService;
 
   @Inject
-  public InventoryLineService(StockConfigService stockConfigService) {
+  public InventoryLineService(
+      StockConfigService stockConfigService, StockLocationLineService stockLocationLineService) {
     this.stockConfigService = stockConfigService;
+    this.stockLocationLineService = stockLocationLineService;
   }
 
   public InventoryLine createInventoryLine(
@@ -67,8 +70,7 @@ public class InventoryLineService {
 
     if (product != null) {
       StockLocationLine stockLocationLine =
-          Beans.get(StockLocationLineService.class)
-              .getOrCreateStockLocationLine(stockLocation, product);
+          stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
 
       if (stockLocationLine != null) {
         inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
@@ -100,6 +102,8 @@ public class InventoryLineService {
 
     StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getStockLocationLine(stockLocation, product);
 
     if (product != null) {
       inventoryLine.setUnit(product.getUnit());
@@ -120,11 +124,20 @@ public class InventoryLineService {
               .getInventoryValuationTypeSelect();
 
       switch (inventoryValuationTypeSelect) {
+        case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
+          price = product.getAvgPrice();
+          break;
         case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
           price = product.getCostPrice();
           break;
         case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
           price = product.getSalePrice();
+          break;
+        case StockConfigRepository.VALUATION_TYPE_PURCHASE_VALUE:
+          price = product.getPurchasePrice();
+          break;
+        case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
+          price = stockLocationLine.getAvgPrice();
           break;
         default:
           price = product.getAvgPrice();
