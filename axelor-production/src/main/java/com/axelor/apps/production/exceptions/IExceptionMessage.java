@@ -171,4 +171,8 @@ public interface IExceptionMessage {
       "Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
   static final String CONFIGURATOR_PROD_PROCESS_COULD_NOT_CAST_INTO_STOCK_LOCATION = /*$$(*/
       "The result formula of '%s' in configurator prod process '%s' could not be converted in a Stock location, please verify the formula." /*)*/;
+
+  public static final String GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO =
+      /*$$(*/
+      "The quantity of the bill of material %s is equal to zero." /*)*/;
 }
