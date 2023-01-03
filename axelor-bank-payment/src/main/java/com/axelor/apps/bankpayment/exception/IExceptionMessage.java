@@ -96,7 +96,7 @@ public interface IExceptionMessage {
   static final String BANK_ORDER_BANK_DETAILS_EMPTY_IBAN = /*$$(*/
       "The Iban is mandatory for the partner %s, bank order %s" /*)*/;
   static final String BANK_ORDER_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
-      "The bank details is inactive." /*)*/;
+      "The sender bank details is inactive." /*)*/;
   static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
       "The bank details type is not compatible with the accepted types in file format." /*)*/;
   static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
@@ -132,7 +132,7 @@ public interface IExceptionMessage {
   static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/
       "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
-      "The receiver bank details is inactive." /*)*/;
+      "The receiver bank details for the line %s is inactive." /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
       "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
