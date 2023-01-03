@@ -39,8 +39,7 @@ public class InventoryLineService {
 
   @Inject
   public InventoryLineService(
-      StockConfigService stockConfigService,
-      StockLocationLineService stockLocationLineService) {
+      StockConfigService stockConfigService, StockLocationLineService stockLocationLineService) {
     this.stockConfigService = stockConfigService;
     this.stockLocationLineService = stockLocationLineService;
   }
