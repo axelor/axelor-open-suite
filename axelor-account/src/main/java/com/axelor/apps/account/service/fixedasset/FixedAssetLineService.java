@@ -71,13 +71,13 @@ public interface FixedAssetLineService {
    * Return line with smallest depreciation date with statusSelect = status. The method will skip
    * nbLineToSkip, meaning that it will ignore nbLineToSkipResult.
    *
-   * @param fixedAssetLineList
+   * @param fixedAsset
    * @param status
    * @param nbLineToSkip
    * @return {@link Optional} of {@link FixedAssetLine}
    */
   Optional<FixedAssetLine> findOldestFixedAssetLine(
-      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip);
+      FixedAsset fixedAsset, int status, int nbLineToSkip);
 
   /**
    * Return line with greatest depreciation date with statusSelect = status. The method will skip

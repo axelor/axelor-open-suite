@@ -187,10 +187,10 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           "You can not call this implementation without a corrected accounting value");
     }
-    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+
     Optional<FixedAssetLine> optFixedAssetLine =
         fixedAssetLineService.findOldestFixedAssetLine(
-            fixedAssetLineList, FixedAssetLineRepository.STATUS_PLANNED, 0);
+            fixedAsset, FixedAssetLineRepository.STATUS_PLANNED, 0);
 
     if (!optFixedAssetLine.isPresent()) {
       throw new AxelorException(
@@ -199,6 +199,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     }
 
     // We can proceed the next part.
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
     FixedAssetLine firstPlannedFixedAssetLine = optFixedAssetLine.get();
     clearPlannedFixedAssetLineListExcept(fixedAssetLineList, firstPlannedFixedAssetLine);
     this.listSizeAfterClear = fixedAssetLineList.size();

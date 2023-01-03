@@ -192,7 +192,8 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
 
   @Override
   public Optional<FixedAssetLine> findOldestFixedAssetLine(
-      List<FixedAssetLine> fixedAssetLineList, int status, int nbLineToSkip) {
+      FixedAsset fixedAsset, int status, int nbLineToSkip) {
+    List<FixedAssetLine> fixedAssetLineList = getFixedAssetLineList(fixedAsset);
     if (fixedAssetLineList == null || fixedAssetLineList.isEmpty()) {
       return Optional.empty();
     }
