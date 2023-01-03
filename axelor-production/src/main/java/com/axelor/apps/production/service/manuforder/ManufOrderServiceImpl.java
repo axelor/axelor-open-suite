@@ -136,6 +136,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     Company company = billOfMaterial.getCompany();
 
+    if (billOfMaterial.getQty().signum() == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO),
+          billOfMaterial.getName());
+    }
     BigDecimal qty =
         qtyRequested.divide(
             billOfMaterial.getQty(),
