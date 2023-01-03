@@ -254,7 +254,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrderLineService.checkPreconditions(bankOrderLine);
       totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
       bankOrderLineService.checkBankDetails(
-          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder());
+          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder(), bankOrderLine);
     }
     if (!totalAmount.equals(arithmeticTotal)) {
       throw new AxelorException(
