@@ -38,6 +38,7 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -1229,7 +1230,7 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       response.setValue(
           "invoiceProductStatement",
-          Beans.get(InvoicePrintService.class).getInvoiceProductStatement(invoice));
+          Beans.get(InvoiceProductStatementService.class).getInvoiceProductStatement(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

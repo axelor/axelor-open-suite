@@ -18,10 +18,7 @@
 package com.axelor.apps.account.service.invoice.print;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceProductStatement;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -49,12 +46,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /** Implementation of the service printing invoices. */
 @Singleton
@@ -270,53 +263,5 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
         .addParam("AddressPositionSelect", invoice.getPrintingSettings().getAddressPositionSelect())
         .addFormat(format);
-  }
-
-  @Override
-  public String getInvoiceProductStatement(Invoice invoice) {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-    if (invoiceLineList == null || invoiceLineList.isEmpty()) {
-      return "";
-    }
-
-    Set<String> productTypes = getProductTypes(invoiceLineList);
-    return getStatement(invoice, productTypes);
-  }
-
-  private String getStatement(Invoice invoice, Set<String> productTypes) {
-    if (!productTypes.isEmpty()) {
-      Set<InvoiceProductStatement> invoiceProductStatementList =
-          getInvoiceProductStatements(invoice);
-      return computeStatement(productTypes, invoiceProductStatementList);
-    }
-    return "";
-  }
-
-  protected Set<InvoiceProductStatement> getInvoiceProductStatements(Invoice invoice) {
-    AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
-    return accountConfig.getStatementsForItemsCategoriesSet();
-  }
-
-  protected String computeStatement(
-      Set<String> productTypes, Set<InvoiceProductStatement> invoiceProductStatementList) {
-    if (!invoiceProductStatementList.isEmpty()) {
-      for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
-        Set<String> result =
-            Stream.of(invoiceProductStatement.getTypeList().trim().split(", "))
-                .collect(Collectors.toSet());
-        if (result.equals(productTypes)) {
-          return invoiceProductStatement.getStatement();
-        }
-      }
-    }
-    return "";
-  }
-
-  protected Set<String> getProductTypes(List<InvoiceLine> invoiceLineList) {
-    Set<String> productTypes = new HashSet<>();
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      productTypes.add(invoiceLine.getProduct().getProductTypeSelect());
-    }
-    return productTypes;
   }
 }
