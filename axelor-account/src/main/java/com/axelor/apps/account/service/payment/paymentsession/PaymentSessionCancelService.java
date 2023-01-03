@@ -15,27 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.payment.paymentsession;
 
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.MoveRepository;
-import com.google.inject.Inject;
-import java.util.Objects;
+import com.axelor.apps.account.db.PaymentSession;
 
-public class PaymentModeControlServiceImpl implements PaymentModeControlService {
-
-  protected MoveRepository moveRepository;
-
-  @Inject
-  public PaymentModeControlServiceImpl(MoveRepository moveRepository) {
-
-    this.moveRepository = moveRepository;
-  }
-
-  @Override
-  public boolean isInMove(PaymentMode paymentMode) {
-    Objects.requireNonNull(paymentMode);
-
-    return moveRepository.all().filter("self.paymentMode.id = ?", paymentMode.getId()).count() > 0;
-  }
+public interface PaymentSessionCancelService {
+  public void cancelPaymentSession(PaymentSession paymentSession);
 }
