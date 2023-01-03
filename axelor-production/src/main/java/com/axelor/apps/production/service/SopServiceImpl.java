@@ -174,10 +174,10 @@ public class SopServiceImpl implements SopService {
         LocalDate usedDate =
             saleOrderLine.getDesiredDelivDate() != null
                 ? saleOrderLine.getDesiredDelivDate()
-                : saleOrderLine.getEstimatedDelivDate() != null
-                    ? saleOrderLine.getEstimatedDelivDate()
-                    : saleOrderLine.getSaleOrder().getDeliveryDate() != null
-                        ? saleOrderLine.getSaleOrder().getDeliveryDate()
+                : saleOrderLine.getEstimatedShippingDate() != null
+                    ? saleOrderLine.getEstimatedShippingDate()
+                    : saleOrderLine.getSaleOrder().getEstimatedShippingDate() != null
+                        ? saleOrderLine.getSaleOrder().getEstimatedShippingDate()
                         : saleOrderLine.getSaleOrder().getConfirmationDateTime().toLocalDate();
 
         if (usedDate.isAfter(fromDate) && usedDate.isBefore(toDate)) {

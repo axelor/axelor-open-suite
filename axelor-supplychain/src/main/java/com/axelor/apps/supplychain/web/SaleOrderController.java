@@ -510,7 +510,7 @@ public class SaleOrderController {
         Integer deliveryState = saleOrderLine.getDeliveryState();
         if (!deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED)
             && !deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED)) {
-          saleOrderLine.setEstimatedDelivDate(saleOrder.getDeliveryDate());
+          saleOrderLine.setEstimatedShippingDate(saleOrder.getEstimatedShippingDate());
         }
       }
     }

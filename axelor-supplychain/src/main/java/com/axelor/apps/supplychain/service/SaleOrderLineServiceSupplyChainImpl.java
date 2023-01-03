@@ -374,7 +374,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         .forEach(
             stockMoveLine ->
                 stockMoveLine.setReservationDateTime(
-                    saleOrderLine.getEstimatedDelivDate().atStartOfDay()));
+                    saleOrderLine.getEstimatedShippingDate().atStartOfDay()));
   }
 
   @Override
