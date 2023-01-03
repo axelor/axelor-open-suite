@@ -28,7 +28,10 @@ public interface MrpService {
 
   public void runCalculation(Mrp mrp) throws AxelorException;
 
-  public void generateProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException;
+  public void generateSelectedProposals(Mrp mrp, boolean isProposalsPerSupplier)
+      throws AxelorException;
+
+  void generateAllProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException;
 
   public void reset(Mrp mrp);
 
