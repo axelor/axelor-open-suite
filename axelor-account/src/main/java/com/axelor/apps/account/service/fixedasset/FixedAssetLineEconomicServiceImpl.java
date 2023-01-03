@@ -61,7 +61,12 @@ public class FixedAssetLineEconomicServiceImpl extends AbstractFixedAssetLineSer
       LocalDate previousRealizedDate,
       LocalDate disposalDate,
       LocalDate nextPlannedDate) {
-    return Beans.get(FixedAssetLineFiscalComputationServiceImpl.class)
+    return Beans.get(FixedAssetLineEconomicComputationServiceImpl.class)
         .computeProrataBetween(fixedAsset, previousRealizedDate, disposalDate, nextPlannedDate);
+  }
+
+  @Override
+  protected int getTypeSelect() {
+    return FixedAssetLineRepository.TYPE_SELECT_ECONOMIC;
   }
 }
