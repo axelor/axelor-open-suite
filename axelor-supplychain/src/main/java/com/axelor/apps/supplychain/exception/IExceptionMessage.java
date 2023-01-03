@@ -149,6 +149,12 @@ public interface IExceptionMessage {
       "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
   static final String MRP_ALREADY_STARTED = /*$$(*/ "Mrp calculation is already on going." /*)*/;
 
+  static final String MRP_GENERATE_PROPOSAL_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least one line to generate a proposal." /*)*/;
+
+  static final String MRP_GENERATE_PROPOSAL_NO_POSSIBLE_LINE = /*$$(*/
+      "No proposal can be generated from these lines." /*)*/;
+
   //  Mrp Forecast
   static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
       "Can only be confirmed from drafted forecast." /*)*/;
