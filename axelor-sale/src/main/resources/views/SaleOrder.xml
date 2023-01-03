@@ -499,7 +499,8 @@
         <field name="toStockLocation" canEdit="false"
           domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true"
           form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="deliveryDate" onChange="action-sale-order-group-on-delivery-date-change"/>
+        <field name="estimatedShippingDate"
+          onChange="action-sale-order-group-on-estimated-shipping-date-change"/>
         <field name="deliveryCondition" colSpan="12"/>
         <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid"
           grid-view="shipment-mode-grid"/>
@@ -1893,7 +1894,8 @@
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="specificPackage" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <field name="deliveryDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="estimatedShippingDate" hidden="true"
+      if="!__config__.app.isApp('supplychain')"/>
     <field name="deliveryCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="shipmentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -2130,7 +2132,7 @@
       expr="eval: (statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || (orderBeingEdited &amp;&amp; __repo__(SaleOrder).STATUS_ORDER_CONFIRMED)) &amp;&amp; saleOrderLineList?.any{it.discountsNeedReview}"/>
   </action-attrs>
 
-  <action-group name="action-sale-order-group-on-delivery-date-change">
+  <action-group name="action-sale-order-group-on-estimated-shipping-date-change">
     <action name="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
     <action name="save"/>
     <action name="action-sale-order-supplychain-method-update-stock-reservation-date"/>
