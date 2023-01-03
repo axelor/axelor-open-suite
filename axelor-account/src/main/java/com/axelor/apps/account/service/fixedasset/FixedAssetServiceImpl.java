@@ -57,9 +57,6 @@ import org.slf4j.LoggerFactory;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
-  private static final String ARG_FIXED_ASSET_NPE_MSG =
-      "fixedAsset can not be null when calling this function";
-
   protected FixedAssetRepository fixedAssetRepo;
 
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
@@ -87,7 +84,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   public FixedAssetServiceImpl(
       FixedAssetRepository fixedAssetRepo,
       FixedAssetLineMoveService fixedAssetLineMoveService,
-      FixedAssetLineComputationService fixedAssetLineComputationService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetLineService fixedAssetLineService,
@@ -177,7 +173,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             ? previousRealizedLineList.get(previousRealizedLineList.size() - 1)
             : null;
 
-    checkDisposal(previousPlannedLine, previousRealizedLine, disposalDate);
+    checkDisposalDates(previousPlannedLine, previousRealizedLine, disposalDate);
 
     FixedAssetLine depreciationFixedAssetLine = null;
     if (disposalAmount.compareTo(BigDecimal.ZERO) != 0) {
@@ -195,7 +191,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return depreciationFixedAssetLine;
   }
 
-  protected void checkDisposal(
+  protected void checkDisposalDates(
       FixedAssetLine previousPlannedLine,
       FixedAssetLine previousRealizedLine,
       LocalDate disposalDate)
@@ -246,7 +242,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return FixedAssetRepository.TRANSFERED_REASON_SCRAPPING;
   }
 
-  @Override
   @Transactional
   public void createAnalyticOnMoveLine(
       AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine) {
@@ -318,8 +313,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
    * @return the new fixed asset created when splitting.
    * @throws NullPointerException if fixedAsset or disposalQty or splittingDate are null
    */
-  @Override
-  public FixedAsset splitFixedAsset(
+  protected FixedAsset splitFixedAsset(
       FixedAsset fixedAsset,
       int splitType,
       BigDecimal amount,
@@ -419,8 +413,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
   }
 
-  @Override
-  public FixedAsset filterListsByStatus(FixedAsset fixedAsset, int status) {
+  protected FixedAsset filterListsByStatus(FixedAsset fixedAsset, int status) {
     Objects.requireNonNull(fixedAsset);
     fixedAssetLineService.filterListByStatus(fixedAsset.getFixedAssetLineList(), status);
     fixedAssetLineService.filterListByStatus(fixedAsset.getFiscalFixedAssetLineList(), status);
@@ -430,13 +423,72 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return fixedAsset;
   }
 
-  @Override
-  public FixedAsset cession(
+  protected void computeCession(
       FixedAsset fixedAsset,
       LocalDate disposalDate,
       BigDecimal disposalAmount,
       int transferredReason,
       String comments)
+      throws AxelorException {
+
+    FixedAssetLine correspondingFixedAssetLine =
+        cession(
+            fixedAsset,
+            disposalDate,
+            disposalAmount,
+            transferredReason,
+            comments,
+            fixedAssetLineService);
+
+    if (correspondingFixedAssetLine != null
+        && fixedAsset
+            .getDepreciationPlanSelect()
+            .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
+      generateDerogatoryCessionMove(fixedAsset);
+    }
+    fixedAssetLineMoveService.generateDisposalMove(
+        fixedAsset, correspondingFixedAssetLine, transferredReason, disposalDate);
+
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
+      FixedAssetLineService fixedAssetLineFiscalService =
+          fixedAssetLineServiceFactory.getFixedAssetService(
+              FixedAssetLineRepository.TYPE_SELECT_FISCAL);
+      cession(
+          fixedAsset,
+          disposalDate,
+          disposalAmount,
+          transferredReason,
+          comments,
+          fixedAssetLineFiscalService);
+    }
+  }
+
+  protected FixedAssetLine cession(
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      BigDecimal disposalAmount,
+      int transferredReason,
+      String comments,
+      FixedAssetLineService fixedAssetLineService)
+      throws AxelorException {
+
+    checkCessionDates(fixedAsset, disposalDate, fixedAssetLineService);
+
+    FixedAssetLine correspondingFixedAssetLine =
+        fixedAssetLineService.computeCessionLine(fixedAsset, disposalDate);
+    if (correspondingFixedAssetLine != null) {
+      fixedAssetLineMoveService.realize(correspondingFixedAssetLine, false, false);
+    }
+
+    setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
+    fixedAsset.setComments(comments);
+    return correspondingFixedAssetLine;
+  }
+
+  protected void checkCessionDates(
+      FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLineService fixedAssetLineService)
       throws AxelorException {
     LocalDate firstServiceDate =
         fixedAsset.getFirstServiceDate() == null
@@ -449,40 +501,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
     Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineService.findOldestFixedAssetLine(
-            fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0);
+            fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
     if (fixedAssetLine.isPresent()
         && !disposalDate.isAfter(fixedAssetLine.get().getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED));
     }
-    FixedAssetLine correspondingFixedAssetLine =
-        fixedAssetLineService.computeCessionLine(fixedAsset, disposalDate);
-    if (correspondingFixedAssetLine != null) {
-      if (fixedAsset
-          .getDepreciationPlanSelect()
-          .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-        generateDerogatoryCessionMove(fixedAsset, disposalDate);
-      }
-      fixedAssetLineMoveService.realize(correspondingFixedAssetLine, false, false, true);
-    }
-    fixedAssetLineMoveService.generateDisposalMove(
-        fixedAsset, correspondingFixedAssetLine, transferredReason, disposalDate);
-    if (fixedAsset
-        .getDepreciationPlanSelect()
-        .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
-      FixedAssetLineService fixedAssetLineFiscalService =
-          fixedAssetLineServiceFactory.getFixedAssetService(
-              FixedAssetLineRepository.TYPE_SELECT_FISCAL);
-      FixedAssetLine correspondingFiscalFixedAssetLine =
-          fixedAssetLineFiscalService.computeCessionLine(fixedAsset, disposalDate);
-      if (correspondingFiscalFixedAssetLine != null) {
-        fixedAssetLineMoveService.realize(correspondingFiscalFixedAssetLine, false, false);
-      }
-    }
-    setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
-    fixedAsset.setComments(comments);
-    return fixedAsset;
   }
 
   protected void generateDerogatoryCessionMove(FixedAsset fixedAsset, LocalDate disposalDate)
@@ -533,16 +558,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               disposalQty,
               disposalDate,
               comments);
-      createdFixedAsset =
-          cession(
-              createdFixedAsset,
-              disposalDate,
-              disposalAmount,
-              transferredReason,
-              createdFixedAsset.getComments());
+      computeCession(
+          createdFixedAsset,
+          disposalDate,
+          disposalAmount,
+          transferredReason,
+          createdFixedAsset.getComments());
       filterListsByStatus(createdFixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
     } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {
-      fixedAsset = cession(fixedAsset, disposalDate, disposalAmount, transferredReason, comments);
+      computeCession(fixedAsset, disposalDate, disposalAmount, transferredReason, comments);
       filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
     } else {
       FixedAssetLine depreciationFixedAssetLine =
@@ -680,8 +704,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
   }
 
-  @Override
-  public void multiplyLinesBy(FixedAsset fixedAsset, BigDecimal prorata) throws AxelorException {
+  protected void multiplyLinesBy(FixedAsset fixedAsset, BigDecimal prorata) throws AxelorException {
 
     List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
     List<FixedAssetLine> fiscalAssetLineList = fixedAsset.getFiscalFixedAssetLineList();
@@ -741,8 +764,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAsset.setFiscalPeriodicityTypeSelect(fixedAssetCategory.getPeriodicityTypeSelect());
   }
 
-  @Override
-  public void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)
+  protected void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)
       throws AxelorException {
     if (disposalQty.compareTo(fixedAsset.getQty()) > 0) {
       throw new AxelorException(
