@@ -241,9 +241,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect()
             == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams(
-          "(self.account.serviceType is null OR (self.move.partner.das2Activity is null AND self.account.serviceType.isDas2Declarable is true))");
+          "(self.account.serviceType is null OR self.move.partner.das2Activity is null)");
       this.addParams("self.amountRemaining < self.debit + self.credit");
-      this.addParams("self.reconcileGroup IS NOT null");
+      this.addParams(
+          "self.reconcileGroup IS NOT null or exists (select 1 from MoveLine as ml where ml.reconcileGroup IS NOT null and ml.move.id = self.move.id)");
       JournalType journalType =
           accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
       if (journalType != null) {

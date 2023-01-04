@@ -687,12 +687,12 @@ AND (AccountingReport.date_from IS NULL OR AccountingReport.date_from <= MoveLin
 AND (AccountingReport.date_to IS NULL OR AccountingReport.date_to >= MoveLine.date_val)
 AND (AccountingReport.date_val IS NULL OR AccountingReport.date_val >= MoveLine.date_val)
 AND (AccountingReport.period IS NULL OR AccountingReport.period = Move.period)
-AND (ServiceType IS null OR (Partner.das2activity IS null AND ServiceType.is_das2declarable IS true))
+AND (ServiceType IS null OR Partner.das2activity IS null)
 AND (AccountingReport.payment_mode IS NULL OR AccountingReport.payment_mode = Move.payment_mode)
 AND (Move.ignore_in_accounting_ok IS false)
 AND (Move.status_select = 2 OR Move.status_select = 3 OR AccountingReport.display_simulated_move IS true AND Config.is_activate_simulated_move IS true AND Move.status_select = 5)
 AND (AccountingReport.display_only_not_completely_lettered_move_lines IS false OR MoveLine.amount_remaining > 0)
-AND MoveLine.reconcile_group IS NOT null
+AND (MoveLine.reconcile_group IS NOT null OR EXISTS (SELECT 1 FROM account_move_line ML where ML.reconcile_group IS NOT null and ML.move = Move.id))
 AND JournalType.code = 'ACH'
 AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id
     or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
