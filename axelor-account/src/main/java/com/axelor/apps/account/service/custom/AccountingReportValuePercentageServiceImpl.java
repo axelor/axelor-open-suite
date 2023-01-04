@@ -50,12 +50,12 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
     if (valuesMap == null) {
       this.addNullValue(
           column,
-          line,
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
           configAnalyticAccount,
-          parentTitle);
+          parentTitle,
+          line.getCode());
     } else {
       this.createPercentageValue(
           accountingReport,
@@ -102,12 +102,12 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
         if (CollectionUtils.isEmpty(linesCodeList)) {
           this.addNullValue(
               column,
-              line,
               groupColumn,
               valuesMapByColumn,
               valuesMapByLine,
               configAnalyticAccount,
-              parentTitle);
+              parentTitle,
+              line.getCode());
           return;
         }
       }

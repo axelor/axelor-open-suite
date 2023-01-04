@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AccountingReportValueCustomRuleServiceImpl extends AccountingReportValueAbstractService
     implements AccountingReportValueCustomRuleService {
@@ -27,6 +28,57 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo) {
     super(accountingReportValueRepo, analyticAccountRepo);
+  }
+
+  @Override
+  public void createValueFromCustomRuleForColumn(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      AnalyticAccount configAnalyticAccount,
+      String parentTitle,
+      LocalDate startDate,
+      LocalDate endDate,
+      int analyticCounter) {
+    if (accountingReport.getDisplayDetails()
+        && (line.getDetailByAccount()
+            || line.getDetailByAccountType()
+            || line.getDetailByAnalyticAccount())) {
+      for (String lineCode :
+          valuesMapByLine.keySet().stream()
+              .filter(it -> it.matches(String.format("%s_[0-9]+", line.getCode())))
+              .collect(Collectors.toList())) {
+        this.createValueFromCustomRule(
+            accountingReport,
+            column,
+            line,
+            groupColumn,
+            valuesMapByColumn,
+            valuesMapByLine,
+            configAnalyticAccount,
+            startDate,
+            endDate,
+            parentTitle,
+            lineCode,
+            analyticCounter);
+      }
+    } else {
+      this.createValueFromCustomRule(
+          accountingReport,
+          column,
+          line,
+          groupColumn,
+          valuesMapByColumn,
+          valuesMapByLine,
+          configAnalyticAccount,
+          startDate,
+          endDate,
+          parentTitle,
+          analyticCounter);
+    }
   }
 
   @Override
@@ -57,8 +109,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
         analyticCounter);
   }
 
-  @Override
-  public void createValueFromCustomRule(
+  protected void createValueFromCustomRule(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
@@ -91,7 +142,12 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
             valuesMapByColumn,
             valuesMapByLine,
             configAnalyticAccount,
-            parentTitle);
+            parentTitle,
+            lineCode);
+
+    if (result == null) {
+      return;
+    }
 
     String lineTitle = line.getLabel();
     if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
@@ -161,7 +217,8 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       AnalyticAccount configAnalyticAccount,
-      String parentTitle) {
+      String parentTitle,
+      String lineCode) {
     String rule = this.getRule(column, line, groupColumn);
     Map<String, Object> contextMap =
         this.createRuleContextMap(
@@ -175,12 +232,12 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     } catch (Exception e) {
       this.addNullValue(
           column,
-          line,
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
           configAnalyticAccount,
-          parentTitle);
+          parentTitle,
+          lineCode);
       TraceBackService.trace(e);
       return null;
     }
