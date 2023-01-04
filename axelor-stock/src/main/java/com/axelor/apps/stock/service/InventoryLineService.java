@@ -111,8 +111,8 @@ public class InventoryLineService {
       BigDecimal gap =
           inventoryLine.getRealQty() != null
               ? inventoryLine
-                  .getCurrentQty()
-                  .subtract(inventoryLine.getRealQty())
+                  .getRealQty()
+                  .subtract(inventoryLine.getCurrentQty())
                   .setScale(2, RoundingMode.HALF_UP)
               : BigDecimal.ZERO;
       inventoryLine.setGap(gap);
