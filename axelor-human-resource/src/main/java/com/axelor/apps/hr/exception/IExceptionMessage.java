@@ -98,7 +98,7 @@ public interface IExceptionMessage {
   static final String LEAVE_ALLOW_NEGATIVE_VALUE_REASON = /*$$(*/
       "You are not able to take leave in advance for the reason '%s'." /*)*/;
   static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/
-      "You now have a negative amount of leave available for the reason %s" /*)*/;
+      "You now have a negative number of leaves available for the reason %s" /*)*/;
   static final String LEAVE_REASON_NO_UNIT = /*$$(*/
       "Please, choose unit in leave reason %s." /*)*/;
   static final String LEAVE_REQUEST_DATES_OVERLAPPED = /*$$(*/
