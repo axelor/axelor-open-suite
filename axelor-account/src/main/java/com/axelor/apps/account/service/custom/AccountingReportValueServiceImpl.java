@@ -478,17 +478,17 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
           && column.getRuleTypeSelect()
               != AccountingReportConfigLineRepository.RULE_TYPE_PERCENTAGE) {
-        accountingReportValueCustomRuleService.createValueFromCustomRule(
+        accountingReportValueCustomRuleService.createValueFromCustomRuleForColumn(
             accountingReport,
+            groupColumn,
             column,
             line,
-            groupColumn,
             valuesMapByColumn,
             valuesMapByLine,
             configAnalyticAccount,
+            parentTitle,
             startDate,
             endDate,
-            parentTitle,
             analyticCounter);
       } else if ((column.getNotComputedIfIntersect() && line.getNotComputedIfIntersect())
           || column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
@@ -510,42 +510,18 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             analyticCounter);
       } else if (column.getRuleTypeSelect()
           == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-        if (accountingReport.getDisplayDetails()
-            && (line.getDetailByAccount()
-                || line.getDetailByAccountType()
-                || line.getDetailByAnalyticAccount())) {
-          for (String lineCode :
-              valuesMapByLine.keySet().stream()
-                  .filter(it -> it.matches(String.format("%s_[0-9]+", line.getCode())))
-                  .collect(Collectors.toList())) {
-            accountingReportValueCustomRuleService.createValueFromCustomRule(
-                accountingReport,
-                column,
-                line,
-                groupColumn,
-                valuesMapByColumn,
-                valuesMapByLine,
-                configAnalyticAccount,
-                startDate,
-                endDate,
-                parentTitle,
-                lineCode,
-                analyticCounter);
-          }
-        } else {
-          accountingReportValueCustomRuleService.createValueFromCustomRule(
-              accountingReport,
-              column,
-              line,
-              groupColumn,
-              valuesMapByColumn,
-              valuesMapByLine,
-              configAnalyticAccount,
-              startDate,
-              endDate,
-              parentTitle,
-              analyticCounter);
-        }
+        accountingReportValueCustomRuleService.createValueFromCustomRuleForColumn(
+            accountingReport,
+            groupColumn,
+            column,
+            line,
+            valuesMapByColumn,
+            valuesMapByLine,
+            configAnalyticAccount,
+            parentTitle,
+            startDate,
+            endDate,
+            analyticCounter);
       } else if (line.getRuleTypeSelect()
           == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
         accountingReportValueCustomRuleService.createValueFromCustomRule(

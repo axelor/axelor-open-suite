@@ -50,12 +50,12 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
     if (valuesMap == null) {
       this.addNullValue(
           column,
-          line,
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
           configAnalyticAccount,
-          parentTitle);
+          parentTitle,
+          line.getCode());
     } else {
       this.createPercentageValue(
           accountingReport,
@@ -88,10 +88,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       int analyticCounter) {
     AccountingReportValue totalValue = null;
     List<String> linesCodeList = Collections.singletonList(line.getCode());
-    BigDecimal result =
-        StringUtils.isEmpty(line.getPercentageTotalLine())
-            ? BigDecimal.valueOf(100)
-            : BigDecimal.ZERO;
+    BigDecimal result = BigDecimal.valueOf(100);
 
     if (StringUtils.notEmpty(line.getPercentageTotalLine())) {
       totalValue = valuesMap.get(line.getPercentageTotalLine());
@@ -105,12 +102,12 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
         if (CollectionUtils.isEmpty(linesCodeList)) {
           this.addNullValue(
               column,
-              line,
               groupColumn,
               valuesMapByColumn,
               valuesMapByLine,
               configAnalyticAccount,
-              parentTitle);
+              parentTitle,
+              line.getCode());
           return;
         }
       }

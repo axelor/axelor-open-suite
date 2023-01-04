@@ -39,17 +39,17 @@ public abstract class AccountingReportValueAbstractService {
 
   protected void addNullValue(
       AccountingReportConfigLine column,
-      AccountingReportConfigLine line,
       AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       AnalyticAccount configAnalyticAccount,
-      String parentTitle) {
+      String parentTitle,
+      String lineCode) {
     String columnCode =
         this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
 
-    valuesMapByColumn.get(columnCode).put(line.getCode(), null);
-    valuesMapByLine.get(line.getCode()).put(columnCode, null);
+    valuesMapByColumn.get(columnCode).put(lineCode, null);
+    valuesMapByLine.get(lineCode).put(columnCode, null);
   }
 
   @Transactional(rollbackOn = {Exception.class})
