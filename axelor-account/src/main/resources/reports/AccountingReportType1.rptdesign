@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -823,6 +823,11 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <text-property name="displayName">display_cumulative_balance</text-property>
                     <text-property name="heading">display_cumulative_balance</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">display_simulated_move</property>
+                    <property name="alias">display_simulated_move</property>
+                    <property name="analysis">measure</property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -943,6 +948,11 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                         <property name="position">21</property>
                         <property name="name">display_simulated_move</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">ref</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1074,6 +1084,12 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <property name="nativeName">display_simulated_move</property>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">ref</property>
+                    <property name="nativeName">ref</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 Company.name as company_name,
@@ -1096,7 +1112,8 @@ AccountingReport.display_move_line_sequence_on_printing as display_move_line_seq
 AccountingReport.display_name_account_column_on_printing as display_name_account,
 AccountingReport.display_only_not_completely_lettered_move_lines,
 AccountingReport.display_cumulative_balance,
-AccountingReport.display_simulated_move as display_simulated_move
+AccountingReport.display_simulated_move as display_simulated_move,
+AccountingReport.ref
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
@@ -1411,7 +1428,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="width">1.011111111111111in</property>
                     </column>
                     <row id="3101">
-                        <cell id="3102"/>
+                        <cell id="3102">
+                            <data id="5191">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="dataSet">AccountingReportDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">accountingReport.ref</property>
+                                        <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                </list-property>
+                                <property name="resultSetColumn">accountingReport.ref</property>
+                            </data>
+                        </cell>
                         <cell id="3103">
                             <grid id="3104">
                                 <property name="textAlign">right</property>
