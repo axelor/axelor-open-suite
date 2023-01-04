@@ -71,7 +71,8 @@
     <panel name="mainPanel">
       <field name="statusSelect" showTitle="false" colSpan="8" readonly="false"
         widget="NavSelect"/>
-      <field name="$defaultBOMOnProduct" readonly="true" showTitle="false" colSpan="4">
+      <field name="$defaultBOMOnProduct" readonly="true" showIf="id" showTitle="false"
+        colSpan="4">
         <viewer depends="$defaultBillOfMaterial">
                     <![CDATA[
                         <h4 class="text-right">
@@ -93,12 +94,12 @@
         </editor>
       </field>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" onChange="action-bill-of-material-record-set-dummy-field"/>
       <field name="workshopStockLocation" canEdit="false"
         domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
         if="__config__.app.getApp('production').getManageWorkshop()"/>
       <field name="product" canEdit="false"
-        onChange="action-bill-of-material-record-product-unit"
+        onChange="action-bill-of-material-record-product-unit,action-bill-of-material-record-set-dummy-field"
         domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND self.dtype = 'Product'"
         form-view="product-form" grid-view="product-grid"/>
       <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"
