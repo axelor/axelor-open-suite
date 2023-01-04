@@ -120,6 +120,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     return saleOrder;
   }
 
+  @Override
   public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
     List<Timetable> timetableList = saleOrder.getTimetableList();
     BigDecimal totalHT = saleOrder.getExTaxTotal();
