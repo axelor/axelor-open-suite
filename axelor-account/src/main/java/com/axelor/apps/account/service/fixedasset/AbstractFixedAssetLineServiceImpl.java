@@ -256,6 +256,19 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
   }
 
   @Override
+  public void filterListByDate(List<FixedAssetLine> fixedAssetLineList, LocalDate date) {
+
+    List<FixedAssetLine> linesToRemove = new ArrayList<>();
+    if (fixedAssetLineList != null) {
+      fixedAssetLineList.stream()
+          .filter(line -> line.getDepreciationDate().isAfter(date))
+          .forEach(line -> linesToRemove.add(line));
+      fixedAssetLineList.removeIf(line -> line.getDepreciationDate().isAfter(date));
+    }
+    clear(linesToRemove);
+  }
+
+  @Override
   public FixedAssetLine computeCessionLine(FixedAsset fixedAsset, LocalDate disposalDate)
       throws AxelorException {
     FixedAssetLine correspondingFixedAssetLine;

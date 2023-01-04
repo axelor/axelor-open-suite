@@ -115,6 +115,15 @@ public interface FixedAssetLineService {
   void filterListByStatus(List<FixedAssetLine> fixedAssetLineList, int status);
 
   /**
+   * Filter list with depreciationDate after date. Filtered lines will be remove from database by
+   * calling {@link FixedAssetLineRepository#remove(FixedAssetLine)}
+   *
+   * @param fixedAssetLineList
+   * @param date
+   */
+  void filterListByDate(List<FixedAssetLine> fixedAssetLineList, LocalDate date);
+
+  /**
    * This method will compute on cession closest line from realized lines.
    *
    * @param fixedAsset

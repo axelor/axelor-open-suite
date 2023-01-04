@@ -122,7 +122,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       depreciationFixedAssetLine =
           fixedAssetLineService.generateProrataDepreciationLine(
               fixedAsset, disposalDate, previousRealizedLine, previousPlannedLine);
-      fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true);
 
     } else if (disposalAmount.compareTo(fixedAsset.getResidualValue()) != 0) {
       return null;
@@ -356,17 +355,17 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
   }
 
-  protected FixedAsset filterListsByStatus(FixedAsset fixedAsset, int status) {
+  protected FixedAsset filterListsByDates(FixedAsset fixedAsset, LocalDate date) {
     Objects.requireNonNull(fixedAsset);
-    fixedAssetLineService.filterListByStatus(fixedAsset.getFixedAssetLineList(), status);
-    fixedAssetLineService.filterListByStatus(fixedAsset.getFiscalFixedAssetLineList(), status);
-    fixedAssetLineService.filterListByStatus(fixedAsset.getIfrsFixedAssetLineList(), status);
-    fixedAssetDerogatoryLineService.filterListByStatus(
-        fixedAsset.getFixedAssetDerogatoryLineList(), status);
+    fixedAssetLineService.filterListByDate(fixedAsset.getFixedAssetLineList(), date);
+    fixedAssetLineService.filterListByDate(fixedAsset.getFiscalFixedAssetLineList(), date);
+    fixedAssetLineService.filterListByDate(fixedAsset.getIfrsFixedAssetLineList(), date);
+    fixedAssetDerogatoryLineService.filterListByDate(
+        fixedAsset.getFixedAssetDerogatoryLineList(), date);
     return fixedAsset;
   }
 
-  protected void computeCession(
+  protected FixedAssetLine computeCession(
       FixedAsset fixedAsset,
       LocalDate disposalDate,
       BigDecimal disposalAmount,
@@ -395,7 +394,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (fixedAsset
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
-      FixedAssetLineService fixedAssetLineFiscalService =
+      fixedAssetLineService =
           fixedAssetLineServiceFactory.getFixedAssetService(
               FixedAssetLineRepository.TYPE_SELECT_FISCAL);
       cession(
@@ -404,8 +403,23 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           disposalAmount,
           transferredReason,
           comments,
-          fixedAssetLineFiscalService);
+          fixedAssetLineService);
     }
+    if (fixedAsset
+        .getDepreciationPlanSelect()
+        .contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
+      fixedAssetLineService =
+          fixedAssetLineServiceFactory.getFixedAssetService(
+              FixedAssetLineRepository.TYPE_SELECT_IFRS);
+      cession(
+          fixedAsset,
+          disposalDate,
+          disposalAmount,
+          transferredReason,
+          comments,
+          fixedAssetLineService);
+    }
+    return correspondingFixedAssetLine;
   }
 
   protected FixedAssetLine cession(
@@ -421,9 +435,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
     FixedAssetLine correspondingFixedAssetLine =
         fixedAssetLineService.computeCessionLine(fixedAsset, disposalDate);
-    if (correspondingFixedAssetLine != null) {
-      fixedAssetLineMoveService.realize(correspondingFixedAssetLine, false, false);
-    }
 
     setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
     fixedAsset.setComments(comments);
@@ -492,6 +503,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       String comments)
       throws AxelorException {
     FixedAsset createdFixedAsset = null;
+    FixedAssetLine depreciationFixedAssetLine;
     if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_PARTIAL_CESSION) {
       createdFixedAsset =
           splitFixedAsset(
@@ -500,18 +512,20 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               disposalQty,
               disposalDate,
               comments);
-      computeCession(
-          createdFixedAsset,
-          disposalDate,
-          disposalAmount,
-          transferredReason,
-          createdFixedAsset.getComments());
-      filterListsByStatus(createdFixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
+      depreciationFixedAssetLine =
+          computeCession(
+              createdFixedAsset,
+              disposalDate,
+              disposalAmount,
+              transferredReason,
+              createdFixedAsset.getComments());
+      filterListsByDates(createdFixedAsset, disposalDate);
     } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {
-      computeCession(fixedAsset, disposalDate, disposalAmount, transferredReason, comments);
-      filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
+      depreciationFixedAssetLine =
+          computeCession(fixedAsset, disposalDate, disposalAmount, transferredReason, comments);
+      filterListsByDates(fixedAsset, disposalDate);
     } else {
-      FixedAssetLine depreciationFixedAssetLine =
+      depreciationFixedAssetLine =
           disposal(
               disposalDate,
               disposalAmount,
@@ -540,8 +554,21 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             fixedAssetLineServiceFactory.getFixedAssetService(
                 FixedAssetLineRepository.TYPE_SELECT_FISCAL));
       }
-      filterListsByStatus(fixedAsset, FixedAssetLineRepository.STATUS_PLANNED);
+      if (fixedAsset
+          .getDepreciationPlanSelect()
+          .contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
+        disposal(
+            disposalDate,
+            disposalAmount,
+            fixedAsset,
+            transferredReason,
+            fixedAssetLineServiceFactory.getFixedAssetService(
+                FixedAssetLineRepository.TYPE_SELECT_IFRS));
+      }
+      filterListsByDates(fixedAsset, disposalDate);
     }
+    fixedAssetGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
+    fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true);
     fixedAsset.setAssetDisposalReason(assetDisposalReason);
     fixedAssetRepo.save(fixedAsset);
     if (createdFixedAsset != null) {

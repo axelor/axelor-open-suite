@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicUpdateCo
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineFiscalComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineFiscalServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineIfrsComputationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineIfrsServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -61,6 +62,8 @@ public class FixedAssetLineServiceFactory {
         return Beans.get(FixedAssetLineEconomicServiceImpl.class);
       case FixedAssetLineRepository.TYPE_SELECT_FISCAL:
         return Beans.get(FixedAssetLineFiscalServiceImpl.class);
+      case FixedAssetLineRepository.TYPE_SELECT_IFRS:
+        return Beans.get(FixedAssetLineIfrsServiceImpl.class);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,

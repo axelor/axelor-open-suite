@@ -330,14 +330,14 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   }
 
   @Override
-  public void filterListByStatus(
-      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, int status) {
+  public void filterListByDate(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, LocalDate date) {
     List<FixedAssetDerogatoryLine> derogatoryLinesToRemove = new ArrayList<>();
     if (fixedAssetDerogatoryLineList != null) {
       fixedAssetDerogatoryLineList.stream()
-          .filter(line -> line.getStatusSelect() == status)
+          .filter(line -> line.getDepreciationDate().isAfter(date))
           .forEach(line -> derogatoryLinesToRemove.add(line));
-      fixedAssetDerogatoryLineList.removeIf(line -> line.getStatusSelect() == status);
+      fixedAssetDerogatoryLineList.removeIf(line -> line.getDepreciationDate().isAfter(date));
     }
     clear(derogatoryLinesToRemove);
   }
