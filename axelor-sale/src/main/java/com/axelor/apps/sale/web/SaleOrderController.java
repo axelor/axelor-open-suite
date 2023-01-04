@@ -57,6 +57,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -70,7 +71,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -81,7 +81,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,35 +120,30 @@ public class SaleOrderController {
   }
 
   /**
-   * Method that print the sale order as a Pdf
+   * Print the sale order as a PDF.
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
    */
-  public void showSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
-
+  public void showSaleOrder(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_PDF);
   }
 
-  /** Method that prints a proforma invoice as a PDF */
-  public void printProformaInvoice(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  /**
+   * Print a proforma invoice as a PDF.
+   *
+   * @param request
+   * @param response
+   */
+  public void printProformaInvoice(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, true, ReportSettings.FORMAT_PDF);
   }
 
-  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLSX);
   }
 
-  public void exportSaleOrderWord(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void exportSaleOrderWord(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_DOC);
   }
 
@@ -829,26 +823,27 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void seperateInNewQuotation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
-    Optional<Entry<String, Object>> SOLinesEntry =
+    Optional<Entry<String, Object>> saleOrderLineEntries =
         contextEntry.stream()
             .filter(entry -> entry.getKey().equals("saleOrderLineList"))
             .findFirst();
-    if (!SOLinesEntry.isPresent()) {
+    if (!saleOrderLineEntries.isPresent()) {
       return;
     }
 
-    Entry<String, Object> entry = SOLinesEntry.get();
+    Entry<String, Object> entry = saleOrderLineEntries.get();
     @SuppressWarnings("unchecked")
-    ArrayList<LinkedHashMap<String, Object>> SOLines =
+    ArrayList<LinkedHashMap<String, Object>> saleOrderLines =
         (ArrayList<LinkedHashMap<String, Object>>) entry.getValue();
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
-        Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, SOLines);
+        Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, saleOrderLines);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
