@@ -1,0 +1,3 @@
+---
+title: "Accounting report: Fix DAS2 proof declaration report to only display reconciled move lines and purchase moves on printing"
+type: fix

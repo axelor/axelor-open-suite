@@ -71,6 +71,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected FixedAssetLineService fixedAssetLineService;
 
   protected FixedAssetGenerationService fixedAssetGenerationService;
+  protected FixedAssetLineGenerationService fixedAssetLineGenerationService;
 
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
 
@@ -89,6 +90,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetLineService fixedAssetLineService,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
       FixedAssetGenerationService fixedAssetGenerationService,
+      FixedAssetLineGenerationService fixedAssetLineGenerationService,
       FixedAssetDateService fixedAssetDateService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
@@ -96,6 +98,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetLineServiceFactory = fixedAssetLineServiceFactory;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
+    this.fixedAssetLineGenerationService = fixedAssetLineGenerationService;
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
@@ -143,7 +146,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
       FixedAssetLine depreciationFixedAssetLine =
           fixedAssetLineService.generateProrataDepreciationLine(
-              fixedAsset, disposalDate, previousRealizedLine);
+              fixedAsset, disposalDate, previousRealizedLine, previousPlannedLine);
       fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true);
       fixedAssetLineMoveService.generateDisposalMove(
           fixedAsset,
@@ -168,7 +171,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
     fixedAssetLineService.clear(fixedAssetLineList);
 
-    setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
+    setDisposalFields(fixedAsset, disposalDate, BigDecimal.ZERO, transferredReason);
     fixedAssetRepo.save(fixedAsset);
   }
 
@@ -259,13 +262,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
       if (optFixedAssetLine.isPresent()) {
-        fixedAssetGenerationService.generateAndComputeFixedAssetLinesStartingWith(
+        fixedAssetLineGenerationService.generateAndComputeFixedAssetLinesStartingWith(
             fixedAsset, optFixedAssetLine.get());
       } else {
-        fixedAssetGenerationService.generateAndComputeFixedAssetLines(fixedAsset);
+        fixedAssetLineGenerationService.generateAndComputeFixedAssetLines(fixedAsset);
       }
 
-      fixedAssetGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
+      fixedAssetLineGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
       fixedAssetRepo.save(fixedAsset);
     }
   }

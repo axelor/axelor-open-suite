@@ -103,8 +103,10 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
             fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
       }
     }
-    fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
-    fixedAsset.setInitialPeriodicityInMonth(fixedAsset.getPeriodicityInMonth());
+    if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
+      fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
+      fixedAsset.setInitialPeriodicityInMonth(fixedAsset.getPeriodicityInMonth());
+    }
     fixedAssetRepo.save(fixedAsset);
   }
 

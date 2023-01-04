@@ -61,6 +61,12 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     invoiceTerm.setInitialPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     invoiceTerm.setPfpValidatorUser(currentUser);
+
+    if (!ObjectUtils.isEmpty(invoiceTerm.getReasonOfRefusalToPay())
+        && !ObjectUtils.isEmpty(invoiceTerm.getReasonOfRefusalToPayStr())) {
+      invoiceTerm.setReasonOfRefusalToPay(null);
+      invoiceTerm.setReasonOfRefusalToPayStr(null);
+    }
     invoiceTermRepo.save(invoiceTerm);
 
     this.checkOtherInvoiceTerms(invoiceTerm);

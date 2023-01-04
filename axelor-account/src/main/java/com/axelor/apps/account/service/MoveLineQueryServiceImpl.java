@@ -66,7 +66,9 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
 
     query += " AND self.account.id = " + moveLineQuery.getAccount().getId();
 
-    query += " AND self.partner.id = " + moveLineQuery.getPartner().getId();
+    if (ObjectUtils.notEmpty(moveLineQuery.getPartner())) {
+      query += " AND self.partner.id = " + moveLineQuery.getPartner().getId();
+    }
 
     if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_RECONCILE) {
       query += "AND self.amountRemaining != 0 ";

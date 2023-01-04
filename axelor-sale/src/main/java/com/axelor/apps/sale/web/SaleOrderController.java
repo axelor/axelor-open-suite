@@ -256,7 +256,7 @@ public class SaleOrderController {
     SaleOrder context = Beans.get(SaleOrderRepository.class).find(Long.valueOf(saleOrderId));
 
     response.setView(
-        ActionView.define("Sale order")
+        ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-form-wizard")
             .context("_idCopy", context.getId().toString())
@@ -270,7 +270,7 @@ public class SaleOrderController {
   public void generateViewTemplate(ActionRequest request, ActionResponse response) {
     SaleOrder context = request.getContext().asType(SaleOrder.class);
     response.setView(
-        ActionView.define("Template")
+        ActionView.define(I18n.get("Template"))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-template-form-wizard")
             .context("_idCopy", context.getId().toString())
@@ -282,7 +282,7 @@ public class SaleOrderController {
     Partner clientPartner = saleOrderTemplate.getClientPartner();
 
     response.setView(
-        ActionView.define("Create the quotation")
+        ActionView.define(I18n.get("Create the quotation"))
             .model(Wizard.class.getName())
             .add("form", "sale-order-template-wizard-form")
             .param("popup", "reload")

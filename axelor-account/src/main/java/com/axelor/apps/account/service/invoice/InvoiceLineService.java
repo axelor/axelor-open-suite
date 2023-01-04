@@ -104,6 +104,8 @@ public interface InvoiceLineService {
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException;
 
+  boolean checkAnalyticDistribution(InvoiceLine invoiceLine);
+
   boolean checkCutOffDates(InvoiceLine invoiceLine);
 
   boolean checkManageCutOffDates(InvoiceLine invoiceLine);

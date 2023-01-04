@@ -1079,6 +1079,20 @@ public class InvoiceController {
     }
   }
 
+  public void checkInvoiceLinesAnalyticDistribution(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+      if (!Beans.get(InvoiceService.class).checkInvoiceLinesAnalyticDistribution(invoice)) {
+        response.setError(I18n.get(AccountExceptionMessage.INVOICE_WRONG_ANALYTIC_DISTRIBUTION));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void checkInvoiceLinesCutOffDates(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);

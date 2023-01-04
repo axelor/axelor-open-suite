@@ -138,7 +138,6 @@
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
       </insert>
-      <attribute name="hideIf" value="tax != null"/>
     </extend>
   </form>
 

@@ -127,7 +127,7 @@ public class BillOfMaterialController {
     BillOfMaterial copy = Beans.get(BillOfMaterialService.class).generateNewVersion(billOfMaterial);
 
     response.setView(
-        ActionView.define("Bill of materials")
+        ActionView.define(I18n.get("Bill of materials"))
             .model(BillOfMaterial.class.getName())
             .add("form", "bill-of-material-form")
             .add("grid", "bill-of-material-grid")

@@ -1,0 +1,3 @@
+---
+title : "Fixed asset: Fix issue with prorata temporis when computation date starts on the 31st of months."
+type: fix
