@@ -1510,19 +1510,21 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void generateSelectedProposals(Mrp mrp, boolean isProposalPerSupplier)
       throws AxelorException {
 
     Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
     Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier = new HashMap<>();
-    List<MrpLine> mrpLineList = getSelectedMrpLines(mrp);
-
-    generateProposals(
-        isProposalPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLineList);
+    List<MrpLine> mrpLineList = getSelectedMrpLines(mrp, true);
+    while (!(mrpLineList = getSelectedMrpLines(mrp, false)).isEmpty()) {
+      mrp = mrpRepository.find(mrp.getId());
+      generateProposals(
+          isProposalPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLineList);
+      JPA.clear();
+    }
   }
 
-  protected List<MrpLine> getSelectedMrpLines(Mrp mrp) throws AxelorException {
+  protected List<MrpLine> getSelectedMrpLines(Mrp mrp, boolean firstLaunch) throws AxelorException {
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
@@ -1530,8 +1532,8 @@ public class MrpServiceImpl implements MrpService {
                 "self.mrp.id = ?1 AND self.proposalToProcess = true AND self.proposalGenerated = false",
                 mrp.getId())
             .order("maturityDate")
-            .fetch();
-    if (mrpLineList.isEmpty()) {
+            .fetch(1);
+    if (mrpLineList.isEmpty() && firstLaunch) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.MRP_GENERATE_PROPOSAL_NO_LINE_SELECTED));
@@ -1540,16 +1542,19 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void generateAllProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException {
     Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
     Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier = new HashMap<>();
-    List<MrpLine> mrpLineList = getAllMrpLines(mrp);
-    generateProposals(
-        isProposalsPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLineList);
+    List<MrpLine> mrpLineList = getAllMrpLines(mrp, true);
+    while (!(mrpLineList = getAllMrpLines(mrp, false)).isEmpty()) {
+      mrp = mrpRepository.find(mrp.getId());
+      generateProposals(
+          isProposalsPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLineList);
+      JPA.clear();
+    }
   }
 
-  protected List<MrpLine> getAllMrpLines(Mrp mrp) throws AxelorException {
+  protected List<MrpLine> getAllMrpLines(Mrp mrp, boolean firstLaunch) throws AxelorException {
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
@@ -1559,8 +1564,8 @@ public class MrpServiceImpl implements MrpService {
             .bind("purchaseProposal", MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)
             .bind("manufProposal", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)
             .order("maturityDate")
-            .fetch();
-    if (mrpLineList.isEmpty()) {
+            .fetch(1);
+    if (mrpLineList.isEmpty() && firstLaunch) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.MRP_GENERATE_PROPOSAL_NO_POSSIBLE_LINE));
@@ -1568,6 +1573,7 @@ public class MrpServiceImpl implements MrpService {
     return mrpLineList;
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected void generateProposals(
       boolean isProposalPerSupplier,
       Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
