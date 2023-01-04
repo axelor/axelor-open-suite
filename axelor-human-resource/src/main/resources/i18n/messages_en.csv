@@ -1067,7 +1067,7 @@
 "You must configure an account for expenses taxes (company : %s)",,,
 "You must configure an expenses account (company : %s)",,,
 "You must configure an expenses journal(company : %s)",,,
-"You now have a negative amount of leave available for the reason %s",,,
+"You now have a negative number of leaves available for the reason %s",,,
 "amount",,,
 "com.axelor.apps.hr.service.batch.HrBatchService",,,
 "hr.department","Departments",,
