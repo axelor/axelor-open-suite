@@ -1418,7 +1418,7 @@
 "Display partner sequence on printing","Afficher la référence tiers sur les impressions",,
 "Display product code on printing","Afficher code produit sur les impressions",,
 "Display tax detail on printing","Afficher le détail des taxes sur les impressions",,
-"Display the Siren of the partner on invoice printing","Afficher le numéro Siren du tiers sur les impressions",,
+"Display the SIREN number of the partner on printing","Afficher le numéro SIREN du tiers sur les impressions",,
 "Display the balances","Afficher les soldes",,
 "Display the delta between years","Afficher le delta entre les années",,
 "Display the percentage delta between years","Afficher le delta en pourcentage entre les années",,
