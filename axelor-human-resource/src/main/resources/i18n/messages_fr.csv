@@ -993,7 +993,7 @@
 "You must configure an account for expenses taxes (company : %s)","Veuillez configurer un compte pour les taxes sur les notes de frais (société : %s)",,
 "You must configure an expenses account (company : %s)","Veuillez configurer un compte pour les notes de frais (société : %s)",,
 "You must configure an expenses journal(company : %s)","Veuillez configurer un journal pour les notes de frais (société :%s)",,
-"You now have a negative amount of leave available for the reason %s","Vous avez maintenant un montant de congés disponible négatif pour le motif %s",,
+"You now have a negative number of leaves available for the reason %s","Vous avez maintenant un nombre de congés disponibles négatif pour le motif %s",,
 "amount",,,
 "com.axelor.apps.hr.service.batch.HrBatchService",,,
 "hr.department","Départements",,
