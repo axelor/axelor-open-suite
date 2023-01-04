@@ -26,10 +26,9 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
-import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
@@ -44,11 +43,13 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +71,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected FixedAssetLineService fixedAssetLineService;
 
   protected FixedAssetGenerationService fixedAssetGenerationService;
+  protected FixedAssetLineGenerationService fixedAssetLineGenerationService;
 
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
 
@@ -88,6 +90,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetLineService fixedAssetLineService,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
       FixedAssetGenerationService fixedAssetGenerationService,
+      FixedAssetLineGenerationService fixedAssetLineGenerationService,
       FixedAssetDateService fixedAssetDateService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
@@ -95,6 +98,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetLineServiceFactory = fixedAssetLineServiceFactory;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
+    this.fixedAssetLineGenerationService = fixedAssetLineGenerationService;
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
@@ -128,21 +132,21 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         && disposalDate.isAfter(previousPlannedLine.getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_2));
+          I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_2));
     }
 
     if (previousRealizedLine != null
         && !disposalDate.isAfter(previousRealizedLine.getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
+          I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
     }
 
     if (disposalAmount.compareTo(BigDecimal.ZERO) != 0) {
 
       FixedAssetLine depreciationFixedAssetLine =
           fixedAssetLineService.generateProrataDepreciationLine(
-              fixedAsset, disposalDate, previousRealizedLine);
+              fixedAsset, disposalDate, previousRealizedLine, previousPlannedLine);
       fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true);
       fixedAssetLineMoveService.generateDisposalMove(
           fixedAsset,
@@ -153,6 +157,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       if (disposalAmount.compareTo(fixedAsset.getResidualValue()) != 0) {
         return;
       }
+      fixedAssetLineMoveService.generateDisposalMove(
+          fixedAsset, null, transferredReason, disposalDate);
     }
     List<FixedAssetLine> fixedAssetLineList =
         fixedAsset.getFixedAssetLineList().stream()
@@ -165,7 +171,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
     fixedAssetLineService.clear(fixedAssetLineList);
 
-    setDisposalFields(fixedAsset, disposalDate, disposalAmount, transferredReason);
+    setDisposalFields(fixedAsset, disposalDate, BigDecimal.ZERO, transferredReason);
     fixedAssetRepo.save(fixedAsset);
   }
 
@@ -252,18 +258,17 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     }
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
     if (correctedAccountingValue != null
-        && correctedAccountingValue.signum() >= 0
         && fixedAsset
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
       if (optFixedAssetLine.isPresent()) {
-        fixedAssetGenerationService.generateAndComputeFixedAssetLinesStartingWith(
+        fixedAssetLineGenerationService.generateAndComputeFixedAssetLinesStartingWith(
             fixedAsset, optFixedAssetLine.get());
       } else {
-        fixedAssetGenerationService.generateAndComputeFixedAssetLines(fixedAsset);
+        fixedAssetLineGenerationService.generateAndComputeFixedAssetLines(fixedAsset);
       }
 
-      fixedAssetGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
+      fixedAssetLineGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
       fixedAssetRepo.save(fixedAsset);
     }
   }
@@ -314,7 +319,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     multiplyFieldsToSplit(newFixedAsset, prorata);
     multiplyFieldsToSplit(fixedAsset, remainingProrata);
 
-    String nameType = "";
     String commentsToAdd = "";
 
     // Qty or grossValue
@@ -322,28 +326,22 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       newFixedAsset.setQty(amount);
       fixedAsset.setQty(newAmount);
 
-      nameType = I18n.get("Quantity");
       commentsToAdd =
           String.format(
-              I18n.get(IExceptionMessage.SPLIT_MESSAGE_COMMENT),
+              I18n.get(AccountExceptionMessage.SPLIT_MESSAGE_COMMENT),
               amount,
               splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT) {
       newFixedAsset.setGrossValue(amount);
       fixedAsset.setGrossValue(newAmount);
 
-      nameType = I18n.get(ITranslation.FIXED_ASSET_SPLIT_AMOUNT);
       commentsToAdd =
           String.format(
-              I18n.get(IExceptionMessage.SPLIT_MESSAGE_COMMENT_AMOUNT),
+              I18n.get(AccountExceptionMessage.SPLIT_MESSAGE_COMMENT_AMOUNT),
               amount,
               fixedAsset.getCompany().getCurrency().getCode(),
               splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
-
-    // Names
-    newFixedAsset.setName(String.format("%s - %s (%.2f)", fixedAsset.getName(), nameType, amount));
-    fixedAsset.setName(String.format("%s - %s (%.2f)", fixedAsset.getName(), nameType, newAmount));
 
     // Comments
     newFixedAsset.setComments(
@@ -400,10 +398,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       int transferredReason,
       String comments)
       throws AxelorException {
-    if (disposalDate.isBefore(fixedAsset.getFirstServiceDate())) {
+    LocalDate firstServiceDate =
+        fixedAsset.getFirstServiceDate() == null
+            ? fixedAsset.getAcquisitionDate()
+            : fixedAsset.getFirstServiceDate();
+    if (disposalDate.isBefore(firstServiceDate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE));
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE));
     }
     Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineService.findOldestFixedAssetLine(
@@ -412,7 +414,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         && !disposalDate.isAfter(fixedAssetLine.get().getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED));
+          I18n.get(AccountExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_YEAR_ALREADY_ACCOUNTED));
     }
     FixedAssetLine correspondingFixedAssetLine =
         fixedAssetLineService.computeCessionLine(fixedAsset, disposalDate);
@@ -452,7 +454,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (firstPlannedDerogatoryLine == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE));
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE));
     }
     fixedAssetDerogatoryLineService.generateDerogatoryCessionMove(
         firstPlannedDerogatoryLine, lastRealizedDerogatoryLine);
@@ -502,6 +504,42 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
+  public void checkFixedAssetBeforeDisposal(
+      FixedAsset fixedAsset, LocalDate disposalDate, int disposalQtySelect, BigDecimal disposalQty)
+      throws AxelorException {
+    if (Stream.of(
+                fixedAsset.getFixedAssetLineList(),
+                fixedAsset.getFiscalFixedAssetLineList(),
+                fixedAsset.getIfrsFixedAssetLineList())
+            .flatMap(Collection::stream)
+            .anyMatch(
+                fixedAssetLine ->
+                    fixedAssetLine.getStatusSelect() != FixedAssetLineRepository.STATUS_REALIZED
+                        && fixedAssetLine.getDepreciationDate().isBefore(disposalDate))
+        || fixedAsset.getFixedAssetDerogatoryLineList().stream()
+            .anyMatch(
+                fixedAssetDerogatoryLine ->
+                    fixedAssetDerogatoryLine.getStatusSelect()
+                            != FixedAssetLineRepository.STATUS_REALIZED
+                        && fixedAssetDerogatoryLine.getDepreciationDate().isBefore(disposalDate))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage
+                  .IMMO_FIXED_ASSET_DEPRECIATIONS_NOT_ACCOUNTED_BEFORE_DISPOSAL_DATE),
+          fixedAsset.getQty().toString());
+    }
+
+    if (disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL
+        && disposalQty.compareTo(fixedAsset.getQty()) > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
+          fixedAsset.getQty().toString());
+    }
+  }
+
+  @Override
   @Transactional
   public FixedAsset splitAndSaveFixedAsset(
       FixedAsset fixedAsset,
@@ -523,11 +561,26 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       throws AxelorException {
     if (splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY) {
       this.checkFixedAssetScissionQty(amount, fixedAsset);
-    } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT
-        && (amount.signum() == 0 || amount.compareTo(fixedAsset.getGrossValue()) >= 0)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_GROSS_VALUE_GREATER_ORIGINAL));
+    } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT) {
+      if (fixedAsset.getGrossValue().signum() > 0
+          && amount.compareTo(fixedAsset.getGrossValue()) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_GROSS_VALUE_GREATER_ORIGINAL));
+      } else if (fixedAsset.getGrossValue().signum() < 0
+          && amount.compareTo(fixedAsset.getGrossValue()) < 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_GROSS_VALUE_LOWER_ORIGINAL));
+      } else if (amount.compareTo(fixedAsset.getGrossValue()) == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_GROSS_VALUE_EQUAL_ORIGINAL));
+      } else if (amount.signum() == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_GROSS_VALUE_ZERO));
+      }
     }
   }
 
@@ -598,24 +651,27 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (disposalQty.compareTo(fixedAsset.getQty()) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
           fixedAsset.getQty().toString());
     }
     if (disposalQty.compareTo(fixedAsset.getQty()) == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX),
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_ORIGINAL_MAX),
           fixedAsset.getQty().toString());
     }
     if (disposalQty.compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0));
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_EQUAL_0));
     }
   }
 
   @Override
   public boolean checkDepreciationPlans(FixedAsset fixedAsset) {
+    if (fixedAsset.getDepreciationPlanSelect() == null) {
+      return false;
+    }
     List<String> depreciationPlans =
         Arrays.asList((fixedAsset.getDepreciationPlanSelect().replace(" ", "")).split(","));
     return !fixedAsset.getIsEqualToFiscalDepreciation()

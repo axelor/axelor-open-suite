@@ -10,6 +10,7 @@
     <option value='1'>Draft</option>
     <!-- Delete #47990 <option value='2'>Waiting for deposit slip</option> -->
     <option value='2'>Confirmed</option>
+    <option value='3'>Canceled</option>
   </selection>
 
   <selection name='account.account.technical.type.select'>
@@ -86,8 +87,8 @@
     <option order="20" value="20">Fees declaration supporting file</option>
     <option order="21" value="21">Preparatory declaration DGI 2054</option>
     <option order="22" value="22">Preparatory declaration DGI 2055</option>
-    <option order="23" value="23">Personnalized report</option>
-    <option order="24" value="24">Personnalized report</option>
+    <option order="23" value="23">Invoices which are due and unpaid</option>
+    <option order="24" value="24">Invoices with payment delay</option>
     <option value="1000">Export journal entry -> Administration</option>
     <option value="1001">Export journal entry -> Acc. Soft.</option>
     <option value="1010">Export general balance -> Acc. Soft.</option>
@@ -108,6 +109,8 @@
     <option value="1">Title</option>
     <option value="2">Detail</option>
     <option value="3">Separator</option>
+    <option value="4">Group</option>
+    <option value="5">Group by account</option>
   </selection>
 
   <selection name='accounting.report.type.report.export.type.select'>
@@ -118,12 +121,16 @@
   <selection name='accounting.report.config.line.rule.type.select'>
     <option value="1">No value</option>
     <option value="2">Sum of accounts</option>
-    <option value="3">Custom rule</option>
+    <option value="4" order="3">Percentage</option>
+    <option value="3" order="4">Custom rule</option>
   </selection>
 
   <selection name='accounting.report.config.line.sum.of.account.select'>
     <option value="1">Debit - Credit</option>
     <option value="2">Credit - Debit</option>
+    <option value="3">Same as column</option>
+    <option value="4">Same as line</option>
+    <option value="5">Same as group</option>
   </selection>
 
   <selection name='iaccount.move.status.select'>
@@ -375,7 +382,6 @@
     <option value="paymentVoucher">Payment voucher</option>
     <option value="debit">Direct debit</option>
     <option value="accountingReport">Accounting reports</option>
-    <option value="customAccountingReport">Custom accounting reports</option>
     <option value="reimbursement">Reimbursements</option>
     <option value="paymentVoucherReceiptNo">Receipt N°(Payment voucher)</option>
     <option value="accountClearance">Overpayment clearance</option>
@@ -407,11 +413,7 @@
     <option value="1">No comparison</option>
     <option value="2">Previous year</option>
     <option value="3">Same period on previous year</option>
-  </selection>
-
-  <selection name="accounting.report.type.no.of.periods.select">
-    <option value="1">1</option>
-    <option value="2">2</option>
+    <option value="4">Other period</option>
   </selection>
 
   <selection name="account.fixed.type.category.computation.method.select">
@@ -463,6 +465,7 @@
   </selection>
 
   <selection name="invoiceterm.pfp.validate.status.select">
+    <option value="0">No PFP</option>
     <option value="1">Awaiting</option>
     <option value="2" order="3">PFP validated</option>
     <option value="3" order="4">Litigation</option>
@@ -793,4 +796,20 @@
     <option value="4">Deferred incomes</option>
   </selection>
 
+  <selection name="payment.mode.move.accounting.date.select">
+    <option value="1">On payment date</option>
+    <option value="2">On due date of the origin document</option>
+    <option value="3">On accounting trigger date</option>
+  </selection>
+
+  <selection name="account.move.line.query.process.select">
+    <option value="0">Reconcile</option>
+    <option value="1">Unreconcile</option>
+  </selection>
+
+  <selection name="accounting.report.analytic.config.line.type.select">
+    <option value="1">Code</option>
+    <option value="2">Range</option>
+    <option value="3">Account</option>
+  </selection>
 </object-views>

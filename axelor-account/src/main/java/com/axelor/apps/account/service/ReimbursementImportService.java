@@ -25,13 +25,15 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -58,6 +60,7 @@ public class ReimbursementImportService {
   protected RejectImportService rejectImportService;
   protected AccountConfigService accountConfigService;
   protected ReimbursementRepository reimbursementRepo;
+  protected BankDetailsService bankDetailsService;
 
   @Inject
   public ReimbursementImportService(
@@ -67,7 +70,8 @@ public class ReimbursementImportService {
       MoveLineCreateService moveLineCreateService,
       RejectImportService rejectImportService,
       AccountConfigService accountConfigService,
-      ReimbursementRepository reimbursementRepo) {
+      ReimbursementRepository reimbursementRepo,
+      BankDetailsService bankDetailsService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -76,6 +80,7 @@ public class ReimbursementImportService {
     this.rejectImportService = rejectImportService;
     this.accountConfigService = accountConfigService;
     this.reimbursementRepo = reimbursementRepo;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -145,7 +150,7 @@ public class ReimbursementImportService {
     if (reimbursement == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.REIMBURSEMENT_3),
+          I18n.get(AccountExceptionMessage.REIMBURSEMENT_3),
           refReject,
           company.getName());
     }
@@ -183,6 +188,11 @@ public class ReimbursementImportService {
 
   @Transactional(rollbackOn = {Exception.class})
   public Move createMoveReject(Company company, LocalDate date) throws AxelorException {
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, null, null);
+    }
     return moveRepo.save(
         moveCreateService.createMove(
             company.getAccountConfig().getRejectJournal(),
@@ -196,7 +206,8 @@ public class ReimbursementImportService {
             MoveRepository.TECHNICAL_ORIGIN_IMPORT,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             null,
-            null));
+            null,
+            companyBankDetails));
     // TODO determine origin
   }
 
@@ -249,7 +260,7 @@ public class ReimbursementImportService {
    * @throws AxelorException
    */
   public void testCompanyField(Company company) throws AxelorException {
-    log.debug("Test de la société {}", company.getName());
+    log.debug("Test of the company {}", company.getName());
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 

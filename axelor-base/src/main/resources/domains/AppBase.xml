@@ -9,7 +9,7 @@
 
     <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
 
-    <datetime name="today" title="Today date" tz="true"/>
+    <datetime name="todayDateT" title="Today date" tz="true"/>
     <many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language"
       title="Default Partner language"/>
     <boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
@@ -47,6 +47,8 @@
     <integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" min="0"
       max="10" default="2"/>
     <integer name="nbDecimalDigitForQty" title="Nb of digits for quantities" min="0"
+      max="10" default="2"/>
+    <integer name="nbDecimalDigitForTaxRate" title="Nb of digits for tax rate" min="0"
       max="10" default="2"/>
     <integer name="globalTrackingLogPersistence"
       title="Tracking logs persistence (in months)" min="0" default="1"/>
@@ -87,6 +89,11 @@
 
     <boolean name="generatePartnerSequence" title="Generate sequence for partners"
       default="true"/>
+
+    <boolean name="checkExistingSequenceOnGeneration"
+      title="Check existing sequence on generation" default="true"/>
+
+    <boolean name="checkRegistrationCode" title="Check registration code" default="true"/>
 
     <boolean name="manageMultiBanks" title="Manage multi banks"/>
 
@@ -168,7 +175,7 @@
     </extra-code>
 
     <track>
-      <field name="today" on="UPDATE"/>
+      <field name="todayDateT" on="UPDATE"/>
       <field name="defaultPartnerLanguage" on="UPDATE"/>
       <field name="emailAccountByUser" on="UPDATE"/>
 
@@ -203,6 +210,8 @@
       <field name="enableCalendars" on="UPDATE"/>
       <field name="passwordChangedTemplate" on="UPDATE"/>
       <field name="generatePartnerSequence" on="UPDATE"/>
+      <field name="checkExistingSequenceOnGeneration" on="UPDATE"/>
+      <field name="checkRegistrationCode" on="UPDATE"/>
       <!-- 31 fields -->
     </track>
 

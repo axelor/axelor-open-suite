@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -66,11 +68,14 @@ public class InvoiceLineController {
 
           if (!invoice.getInAti()) {
             exTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
-            inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+            inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))));
           } else {
             inTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted);
             exTaxTotal =
-                inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+                inTaxTotal.divide(
+                    taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
+                    2,
+                    BigDecimal.ROUND_HALF_UP);
           }
 
           companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
@@ -119,5 +124,24 @@ public class InvoiceLineController {
 
     response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
     response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
+  }
+
+  public void checkQty(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+
+      Beans.get(SupplierCatalogService.class)
+          .checkMinQty(
+              invoiceLine.getProduct(),
+              invoice.getPartner(),
+              invoice.getCompany(),
+              invoiceLine.getQty(),
+              request,
+              response);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

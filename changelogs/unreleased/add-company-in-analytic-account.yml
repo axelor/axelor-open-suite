@@ -1,6 +1,0 @@
----
-title: "AnalyticAccount :  add of a company field"
-type: feature
-description: |
-  Allow an analytic account to be linked to a company in order to be able either that an analytic account be shared or if not that can be assigned to a specific company. Obviously additionnal controls need to be added wherever the analytic account is used in order to take into account this specificity.
-  A control is also added at the analyticAxis level when changing the assignation of the company and depending on analyticAccounts associated to this axis and whether these are shared or not with companies.

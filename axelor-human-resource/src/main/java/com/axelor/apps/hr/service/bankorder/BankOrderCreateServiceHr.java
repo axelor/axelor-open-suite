@@ -29,8 +29,10 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -69,7 +71,12 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             .subtract(expense.getWithdrawnCash())
             .subtract(expense.getPersonalExpenseAmount());
     Currency currency = company.getCurrency();
-    LocalDate paymentDate = expense.getPaymentDate();
+    LocalDate paymentDate =
+        expense.getPaymentDate() != null
+            ? expense.getPaymentDate()
+            : Beans.get(AppBaseService.class)
+                .getTodayDate(
+                    company); // Take into consideration today's date if paymentDate is null
 
     BankOrder bankOrder =
         super.createBankOrder(

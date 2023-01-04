@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
@@ -34,16 +35,16 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -80,6 +81,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Inject protected ProductCompanyService productCompanyService;
 
+  @Inject protected TaxService taxService;
+
   @Deprecated private int sequence = 0;
 
   @Override
@@ -102,7 +105,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal taxRate = BigDecimal.ZERO;
 
     if (purchaseOrderLine.getTaxLine() != null) {
-      taxRate = purchaseOrderLine.getTaxLine().getValue();
+      taxRate = purchaseOrderLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
 
     if (!purchaseOrder.getInAti()) {
@@ -150,7 +153,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     LOG.debug(
-        "Calcul du montant HT avec une quantité de {} pour {} : {}",
+        "Computation of amount W.T. with a quantity of {} for {} : {}",
         new Object[] {quantity, price, amount});
 
     return amount;
@@ -190,7 +193,14 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   public BigDecimal getExTaxUnitPrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
       throws AxelorException {
-    return this.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine, false);
+    return supplierCatalogService.getUnitPrice(
+        purchaseOrderLine.getProduct(),
+        purchaseOrder.getSupplierPartner(),
+        purchaseOrder.getCompany(),
+        purchaseOrder.getCurrency(),
+        purchaseOrder.getOrderDate(),
+        taxLine,
+        false);
   }
 
   /**
@@ -201,58 +211,14 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   public BigDecimal getInTaxUnitPrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
       throws AxelorException {
-    return this.getUnitPrice(purchaseOrder, purchaseOrderLine, taxLine, true);
-  }
-
-  /**
-   * A function used to get the unit price of a purchase order line, either in ati or wt
-   *
-   * @param purchaseOrder the purchase order containing the purchase order line
-   * @param purchaseOrderLine
-   * @param taxLine the tax applied to the unit price
-   * @param resultInAti whether or not you want the result to be in ati
-   * @return the unit price of the purchase order line or null if the product is not available for
-   *     purchase at the supplier of the purchase order
-   * @throws AxelorException
-   */
-  private BigDecimal getUnitPrice(
-      PurchaseOrder purchaseOrder,
-      PurchaseOrderLine purchaseOrderLine,
-      TaxLine taxLine,
-      boolean resultInAti)
-      throws AxelorException {
-    BigDecimal purchasePrice = new BigDecimal(0);
-    Currency purchaseCurrency = null;
-    Product product = purchaseOrderLine.getProduct();
-    SupplierCatalog supplierCatalog =
-        supplierCatalogService.getSupplierCatalog(
-            product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
-
-    if (supplierCatalog != null) {
-      purchasePrice = supplierCatalog.getPrice();
-      purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
-    } else {
-      if (product != null) {
-        purchasePrice =
-            (BigDecimal)
-                productCompanyService.get(product, "purchasePrice", purchaseOrder.getCompany());
-        purchaseCurrency =
-            (Currency)
-                productCompanyService.get(product, "purchaseCurrency", purchaseOrder.getCompany());
-      }
-    }
-
-    Boolean inAti =
-        (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany());
-    BigDecimal price =
-        (inAti == resultInAti)
-            ? purchasePrice
-            : this.convertUnitPrice(inAti, taxLine, purchasePrice);
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            purchaseCurrency, purchaseOrder.getCurrency(), price, purchaseOrder.getOrderDate())
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return supplierCatalogService.getUnitPrice(
+        purchaseOrderLine.getProduct(),
+        purchaseOrder.getSupplierPartner(),
+        purchaseOrder.getCompany(),
+        purchaseOrder.getCurrency(),
+        purchaseOrder.getOrderDate(),
+        taxLine,
+        true);
   }
 
   public PurchaseOrderLine fill(PurchaseOrderLine line, PurchaseOrder purchaseOrder)
@@ -260,15 +226,26 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Preconditions.checkNotNull(line, I18n.get("The line cannot be null."));
     Preconditions.checkNotNull(
         purchaseOrder, I18n.get("You need a purchase order associated to line."));
-    Partner supplierPartner = purchaseOrder.getSupplierPartner();
     Product product = line.getProduct();
+    Partner supplierPartner = purchaseOrder.getSupplierPartner();
+    Company company = purchaseOrder.getCompany();
 
-    String[] productSupplierInfos = getProductSupplierInfos(purchaseOrder, line);
+    Map<String, String> productSupplierInfos =
+        supplierCatalogService.getProductSupplierInfos(supplierPartner, company, product);
     if (!line.getEnableFreezeFields()) {
-      line.setProductName(productSupplierInfos[0]);
-      line.setQty(getQty(purchaseOrder, line));
+      line.setProductName(productSupplierInfos.get("productName"));
+      line.setQty(supplierCatalogService.getQty(product, supplierPartner, company));
     }
-    line.setProductCode(productSupplierInfos[1]);
+    line.setProductCode(productSupplierInfos.get("productCode"));
+
+    if (line.getProductName() == null || line.getProductName().isEmpty()) {
+      line.setProductName(product.getName());
+    }
+
+    if (line.getProductCode() == null || line.getProductCode().isEmpty()) {
+      line.setProductCode(product.getCode());
+    }
+
     line.setUnit(getPurchaseUnit(line));
 
     if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
@@ -284,7 +261,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (price == null || inTaxPrice == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
     }
 
     TaxEquiv taxEquiv =
@@ -301,20 +278,31 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         BigDecimal discountPrice = (BigDecimal) discounts.get("price");
         if (product.getInAti()) {
           inTaxPrice = discountPrice;
-          price = this.convertUnitPrice(true, line.getTaxLine(), discountPrice);
+          price =
+              taxService.convertUnitPrice(
+                  true,
+                  line.getTaxLine(),
+                  discountPrice,
+                  appBaseService.getNbDecimalDigitForUnitPrice());
         } else {
           price = discountPrice;
-          inTaxPrice = this.convertUnitPrice(false, line.getTaxLine(), discountPrice);
+          inTaxPrice =
+              taxService.convertUnitPrice(
+                  false,
+                  line.getTaxLine(),
+                  discountPrice,
+                  appBaseService.getNbDecimalDigitForUnitPrice());
         }
       }
       if (product.getInAti() != purchaseOrder.getInAti()
           && (Integer) discounts.get("discountTypeSelect")
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         line.setDiscountAmount(
-            this.convertUnitPrice(
+            taxService.convertUnitPrice(
                 product.getInAti(),
                 line.getTaxLine(),
-                (BigDecimal) discounts.get("discountAmount")));
+                (BigDecimal) discounts.get("discountAmount"),
+                appBaseService.getNbDecimalDigitForUnitPrice()));
       } else {
         line.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
       }
@@ -379,7 +367,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       if (purchaseOrder.getInAti()
           != (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())) {
         price =
-            this.convertUnitPrice(
+            taxService.convertUnitPrice(
                 (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany()),
                 saleTaxLine,
                 ((BigDecimal)
@@ -389,7 +377,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                             ? BigDecimal.ONE
                             : product.getManagPriceCoef(),
                         appBaseService.getNbDecimalDigitForUnitPrice(),
-                        RoundingMode.HALF_UP));
+                        RoundingMode.HALF_UP),
+                AppBaseService.COMPUTATION_SCALING);
       } else {
         price =
             ((BigDecimal)
@@ -519,20 +508,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
-      throws AxelorException {
-
-    SupplierCatalog supplierCatalog = this.getSupplierCatalog(purchaseOrder, purchaseOrderLine);
-
-    if (supplierCatalog != null) {
-
-      return supplierCatalog.getMinQty();
-    }
-
-    return BigDecimal.ONE;
-  }
-
-  @Override
   public SupplierCatalog getSupplierCatalog(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 
@@ -550,21 +525,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     //		}
 
     return supplierCatalog;
-  }
-
-  @Override
-  public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price) {
-
-    if (taxLine == null) {
-      return price;
-    }
-
-    if (priceIsAti) {
-      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
-    } else {
-      price = price.add(price.multiply(taxLine.getValue()));
-    }
-    return price;
   }
 
   @Override
@@ -617,40 +577,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
-      throws AxelorException {
-    SupplierCatalog supplierCatalog = getSupplierCatalog(purchaseOrder, purchaseOrderLine);
-    return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
-  }
-
-  @Override
-  public void checkMinQty(
-      PurchaseOrder purchaseOrder,
-      PurchaseOrderLine purchaseOrderLine,
-      ActionRequest request,
-      ActionResponse response)
-      throws AxelorException {
-
-    BigDecimal minQty = this.getMinQty(purchaseOrder, purchaseOrderLine);
-
-    if (purchaseOrderLine.getQty().compareTo(minQty) < 0) {
-      String msg = String.format(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
-
-      if (request.getAction().endsWith("onchange")) {
-        response.setFlash(msg);
-      }
-
-      String title = ContextTool.formatLabel(msg, ContextTool.SPAN_CLASS_WARNING, 75);
-
-      response.setAttr("minQtyNotRespectedLabel", "title", title);
-      response.setAttr("minQtyNotRespectedLabel", "hidden", false);
-
-    } else {
-      response.setAttr("minQtyNotRespectedLabel", "hidden", true);
-    }
-  }
-
-  @Override
   public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response) {
 
     Product product = purchaseOrderLine.getProduct();
@@ -688,7 +614,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     if (supplierOnPurchaseOrder != defaultSupplierOnProduct) {
 
-      String message = String.format(I18n.get(IExceptionMessage.DIFFERENT_SUPPLIER));
+      String message = String.format(I18n.get(PurchaseExceptionMessage.DIFFERENT_SUPPLIER));
       String title =
           String.format(
               "<span class='label %s'>%s</span>", ContextTool.SPAN_CLASS_WARNING, message);
@@ -703,32 +629,39 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
       throws AxelorException {
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+
     if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
       return null;
-    } else {
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+    }
 
-        FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
-        TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
-        purchaseOrderLine.setTaxLine(taxLine);
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-        TaxEquiv taxEquiv =
-            accountManagementService.getProductTaxEquiv(
-                purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
-
-        purchaseOrderLine.setTaxEquiv(taxEquiv);
-
-        purchaseOrderLine.setInTaxTotal(
-            purchaseOrderLine
-                .getExTaxTotal()
-                .multiply(purchaseOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
-        purchaseOrderLine.setCompanyInTaxTotal(
-            purchaseOrderLine
-                .getCompanyExTaxTotal()
-                .multiply(purchaseOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
+      // Skip line update if product is not filled
+      if (purchaseOrderLine.getProduct() == null) {
+        continue;
       }
+
+      FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
+
+      TaxLine taxLine = this.getTaxLine(purchaseOrder, purchaseOrderLine);
+      purchaseOrderLine.setTaxLine(taxLine);
+
+      TaxEquiv taxEquiv =
+          accountManagementService.getProductTaxEquiv(
+              purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
+
+      purchaseOrderLine.setTaxEquiv(taxEquiv);
+
+      purchaseOrderLine.setInTaxTotal(
+          purchaseOrderLine
+              .getExTaxTotal()
+              .multiply(purchaseOrderLine.getTaxLine().getValue())
+              .setScale(2, RoundingMode.HALF_UP));
+      purchaseOrderLine.setCompanyInTaxTotal(
+          purchaseOrderLine
+              .getCompanyExTaxTotal()
+              .multiply(purchaseOrderLine.getTaxLine().getValue())
+              .setScale(2, RoundingMode.HALF_UP));
     }
     return purchaseOrderLineList;
   }

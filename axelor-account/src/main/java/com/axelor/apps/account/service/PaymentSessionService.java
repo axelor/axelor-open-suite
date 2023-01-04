@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface PaymentSessionService {
 
@@ -30,4 +34,16 @@ public interface PaymentSessionService {
   public void computeTotalPaymentSession(PaymentSession paymentSession);
 
   public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession);
+
+  List<BankDetails> getBankDetails(PaymentSession paymentSession);
+
+  List<Journal> getJournals(PaymentSession paymentSession);
+
+  public int removeMultiplePaymentSessions(List<Long> paymentSessionIds) throws AxelorException;
+
+  public void selectAll(PaymentSession paymentSession) throws AxelorException;
+
+  public void unSelectAll(PaymentSession paymentSession) throws AxelorException;
+
+  public void retrieveEligibleTerms(PaymentSession paymentSession);
 }

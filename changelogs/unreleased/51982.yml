@@ -1,3 +1,0 @@
----
-title: "Batches : Fixed createdOn time, before it was always midnight"
-type: fix

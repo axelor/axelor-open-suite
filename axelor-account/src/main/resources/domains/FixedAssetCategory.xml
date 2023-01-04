@@ -28,9 +28,6 @@
       selection="account.fixed.asset.depreciation.plan"/>
     <integer name="periodicityTypeSelect" title="Periodicity Type"
       selection="account.fixed.asset.periodicity.type" default="12"/>
-    <integer name="firstDepreciationDateInitSelect" massUpdate="true"
-      title="Reference Date for first depreciation"
-      selection="account.fixed.asset.first.depreciation.date.ref.select" default="1"/>
 
     <boolean name="isProrataTemporis" title="Prorata temporis"/>
     <boolean name="isUSProrataTemporis" title="Use US prorata temoris" default="false"/>
@@ -39,6 +36,9 @@
       required="true"/>
     <many-to-one name="chargeAccount" ref="com.axelor.apps.account.db.Account"
       title="Depreciation expense account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="approExtraordDepreciationExpenseAccount"
+      title="Account for appropriation to extraordinary depreciations"/>
     <many-to-one name="depreciationAccount" ref="com.axelor.apps.account.db.Account"
       title="Depreciation account"/>
 

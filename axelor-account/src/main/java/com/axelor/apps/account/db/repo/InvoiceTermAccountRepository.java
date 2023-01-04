@@ -1,11 +1,32 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Query;
+import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +42,8 @@ public class InvoiceTermAccountRepository extends InvoiceTermRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     if (context.containsKey("_model")
         && context.get("_model").equals(InvoicePayment.class.getName())) {
+      long id = (long) json.get("id");
+      InvoiceTerm invoiceTerm = this.find(id);
       BigDecimal amountRemaining = BigDecimal.ZERO;
 
       if (json.containsKey("applyFinancialDiscount")
@@ -33,6 +56,24 @@ public class InvoiceTermAccountRepository extends InvoiceTermRepository {
       }
 
       json.put("$amountRemaining", amountRemaining);
+    }
+
+    long id = (long) json.get("id");
+    InvoiceTerm invoiceTerm = this.find(id);
+    json.put("$originBasedPaymentDelay", 0);
+    if (json.containsKey("amountRemaining")
+        && ((BigDecimal) json.get("amountRemaining")).signum() > 0) {
+      LocalDate today = Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getCompany());
+      if (invoiceTerm.getDueDate() != null) {
+        if (invoiceTerm.getDueDate().isBefore(today)) {
+          json.put(
+              "$originBasedPaymentDelay",
+              Duration.between(invoiceTerm.getDueDate().atStartOfDay(), today.atStartOfDay())
+                  .toDays());
+        }
+      } else {
+        json.put("$originBasedPaymentDelay", invoiceTerm.getPaymentDelay());
+      }
     }
 
     json.put("$statusSelectPaymentSession", context.get("statusSelect"));

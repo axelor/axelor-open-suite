@@ -20,7 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
@@ -98,7 +98,7 @@ public class CurrencyService {
         if (currencyConversionLine == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.CURRENCY_1),
+              I18n.get(BaseExceptionMessage.CURRENCY_1),
               startCurrency.getName(),
               endCurrency.getName(),
               dateToConvert);
@@ -109,7 +109,7 @@ public class CurrencyService {
       if (exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) == 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CURRENCY_2),
+            I18n.get(BaseExceptionMessage.CURRENCY_2),
             startCurrency.getName(),
             endCurrency.getName(),
             dateToConvert);
@@ -138,10 +138,10 @@ public class CurrencyService {
 
     for (CurrencyConversionLine ccl : currencyConversionLineList) {
 
-      String cclStartCode = ccl.getStartCurrency().getCode();
-      String cclEndCode = ccl.getEndCurrency().getCode();
-      String startCode = startCurrency.getCode();
-      String endCode = endCurrency.getCode();
+      String cclStartCode = ccl.getStartCurrency().getCodeISO();
+      String cclEndCode = ccl.getEndCurrency().getCodeISO();
+      String startCode = startCurrency.getCodeISO();
+      String endCode = endCurrency.getCodeISO();
       LocalDate fromDate = ccl.getFromDate();
       LocalDate toDate = ccl.getToDate();
 
@@ -169,28 +169,13 @@ public class CurrencyService {
   public BigDecimal getAmountCurrencyConvertedAtDate(
       Currency startCurrency, Currency endCurrency, BigDecimal amount, LocalDate date)
       throws AxelorException {
-    return this.getAmountCurrencyConvertedAtDate(
-        startCurrency, endCurrency, amount, date, RoundingMode.HALF_UP, 2);
-  }
-
-  protected BigDecimal getAmountCurrencyConvertedAtDate(
-      Currency startCurrency,
-      Currency endCurrency,
-      BigDecimal amount,
-      LocalDate date,
-      RoundingMode roundingMode,
-      int scale)
-      throws AxelorException {
 
     // If the start currency is different from end currency
     // So we convert the amount
     if (startCurrency != null && endCurrency != null && !startCurrency.equals(endCurrency)) {
 
       return this.getAmountCurrencyConvertedUsingExchangeRate(
-          amount,
-          this.getCurrencyConversionRate(startCurrency, endCurrency, date),
-          roundingMode,
-          scale);
+          amount, this.getCurrencyConversionRate(startCurrency, endCurrency, date));
     }
 
     return amount;
@@ -208,19 +193,12 @@ public class CurrencyService {
    */
   public BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
       BigDecimal amount, BigDecimal exchangeRate) throws AxelorException {
-    return this.getAmountCurrencyConvertedUsingExchangeRate(
-        amount, exchangeRate, RoundingMode.HALF_UP, 2);
-  }
-
-  protected BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
-      BigDecimal amount, BigDecimal exchangeRate, RoundingMode roundingMode, int scale)
-      throws AxelorException {
 
     // If the start currency is different from end currency
     // So we convert the amount
     if (exchangeRate.compareTo(BigDecimal.ONE) != 0) {
 
-      return amount.multiply(exchangeRate).setScale(scale, roundingMode);
+      return amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_UP);
     }
 
     return amount;
@@ -246,7 +224,8 @@ public class CurrencyService {
 
     if (fromDate != null && toDate != null && fromDate.isAfter(toDate)) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.CURRENCY_4));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.CURRENCY_4));
     }
 
     for (CurrencyConversionLine existingCcl : currencyConversionLines) {
@@ -262,32 +241,17 @@ public class CurrencyService {
       if (existingToDate == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CURRENCY_3),
-            startCurrency.getCode(),
-            endCurrency.getCode(),
+            I18n.get(BaseExceptionMessage.CURRENCY_3),
+            startCurrency.getCodeISO(),
+            endCurrency.getCodeISO(),
             existingFromDate);
       } else if (DateTool.isBetween(existingFromDate, existingToDate, fromDate)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CURRENCY_11),
-            startCurrency.getCode(),
-            endCurrency.getCode());
+            I18n.get(BaseExceptionMessage.CURRENCY_11),
+            startCurrency.getCodeISO(),
+            endCurrency.getCodeISO());
       }
     }
-  }
-
-  public boolean isUnevenRounding(
-      Currency startCurrency, Currency endCurrency, BigDecimal amount, LocalDate date)
-      throws AxelorException {
-    BigDecimal downAmount =
-        this.getAmountCurrencyConvertedAtDate(
-                startCurrency, endCurrency, amount, date, RoundingMode.HALF_EVEN, 3)
-            .setScale(2, RoundingMode.HALF_DOWN);
-    BigDecimal upAmount =
-        this.getAmountCurrencyConvertedAtDate(
-                startCurrency, endCurrency, amount, date, RoundingMode.HALF_EVEN, 3)
-            .setScale(2, RoundingMode.HALF_UP);
-
-    return downAmount.compareTo(upAmount) != 0;
   }
 }

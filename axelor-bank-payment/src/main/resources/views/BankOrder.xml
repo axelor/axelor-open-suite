@@ -126,10 +126,7 @@
         onClick="action-bank-order-method-print"/>
     </toolbar>
     <panel title="Status" name="statusPanel" readonlyIf="technicalOriginSelect == 1">
-      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"
-        selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 2 || orderTypeSelect == 4"/>
-      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"
-        showIf="orderTypeSelect != 2 &amp;&amp; orderTypeSelect != 4"/>
+      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
       <field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
         <viewer depends="technicalOriginSelect">
           <![CDATA[
@@ -161,10 +158,11 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
         <field name="bankOrderSeq" css="label-bold bold" colSpan="12" readonly="true"/>
-        <field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true"
-          hideIf="isMultiDate" readonlyIf="technicalOriginSelect == 1"/>
-        <field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"
+        <field name="bankOrderDate" css="label-bold bold" colSpan="6" hideIf="isMultiDate"
           readonlyIf="technicalOriginSelect == 1"/>
+        <field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"
+          readonlyIf="technicalOriginSelect == 1"
+          onChange="action-bank-order-record-order-type-select-onchange"/>
         <field name="paymentMode" css="label-bold bold" colSpan="6" canView="false"
           domain="self.orderTypeSelect = :orderTypeSelect
                   AND (:functionalOriginSelect &lt;&gt; 1 OR self.accountingTriggerSelect &lt;&gt; 1)"
@@ -459,6 +457,26 @@
         </field>
       </panel>
     </panel>
+
+    <panel name="otherTagsPanel" sidebar="true"
+      showIf="hasBeenSentToBank || areMovesGenerated" itemSpan="12" readonly="true">
+      <field name="ptherTags" showTitle="false" readonlyIf="true">
+        <viewer depends="areMovesGenerated"><![CDATA[
+          <h4 class="text-left">
+            <span class="label label-success" ng-show="record.areMovesGenerated" x-translate>Moves generated</span>
+          </h4>
+        ]]></viewer>
+      </field>
+
+      <field name="patherTags" showTitle="false" readonlyIf="true">
+        <viewer depends="hasBeenSentToBank"><![CDATA[
+          <h4 class="text-left">
+            <span class="label label-success" ng-show="record.hasBeenSentToBank" x-translate>Sent to bank</span>
+          </h4>
+        ]]></viewer>
+      </field>
+    </panel>
+
     <panel name="actionPanel" title="Action" itemSpan="12" sidebar="true"
       hideIf="statusSelect == 4 || statusSelect == 5">
       <button name="confirmBtn" title="Confirm" showIf="statusSelect == 1"
@@ -578,7 +596,7 @@
     <attribute name="hidden" for="bankOrderLineList.furtherInformationPanel"
       expr="eval: !bankOrderFileFormat?.displayFurtherInformations"/>
     <attribute name="hidden" for="bankOrderLineList.bankOrderDate"
-      expr="eval: !bankOrderFileFormat?.isMultiDate"/>
+      expr="eval: !isMultiDate"/>
     <attribute name="hidden" for="bankOrderLineList.bankOrderCurrency"
       expr="eval: !bankOrderFileFormat?.isMultiCurrency"/>
     <attribute name="hidden" for="bankOrderLineList.bankOrder.bankOrderCurrency"
@@ -614,7 +632,7 @@
     <attribute name="hidden" for="bankOrderLineList.furtherInformationPanel"
       expr="eval: !bankOrderFileFormat?.displayFurtherInformations"/>
     <attribute name="hidden" for="bankOrderLineList.bankOrderDate"
-      expr="eval: !bankOrderFileFormat?.isMultiDate"/>
+      expr="eval: (id &amp;&amp; !isMultiDate) || (!id &amp;&amp; !bankOrderFileFormat?.isMultiDate)"/>
     <attribute name="hidden" for="bankOrderLineList.bankOrderCurrency"
       expr="eval: !bankOrderFileFormat?.isMultiCurrency"/>
     <attribute name="hidden" for="bankOrderLineList.bankOrder.bankOrderCurrency"
@@ -673,8 +691,7 @@
     <field name="orderTypeSelect" expr="eval: _orderTypeSelect" if="_orderTypeSelect != null"/>
     <field name="partnerTypeSelect" expr="eval: _partnerTypeSelect"
       if="_partnerTypeSelect != null"/>
-    <field name="bankOrderDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="bankOrderDate" expr="eval:__config__.date"/>
     <field name="senderCompany" expr="eval:__user__.activeCompany"/>
   </action-record>
 
@@ -719,6 +736,11 @@
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <field name="senderBankDetails"
       if="!bankOrderFileFormat?.allowOrderCurrDiffFromBankDetails" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-bank-order-record-order-type-select-onchange"
+    model="com.axelor.apps.bankpayment.db.BankOrder">
+    <field name="paymentMode,bankOrderFileFormat" expr="eval: null"/>
   </action-record>
 
   <!-- Actions Methods -->

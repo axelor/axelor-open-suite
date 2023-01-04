@@ -150,7 +150,9 @@ public class ImportSupplyChain {
         invoiceTermService.computeInvoiceTerms(invoice);
 
         invoiceService.validateAndVentilate(invoice);
-        purchaseOrderWorkflowService.finishPurchaseOrder(purchaseOrder);
+        if (purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_FINISHED) {
+          purchaseOrderWorkflowService.finishPurchaseOrder(purchaseOrder);
+        }
       }
 
     } catch (Exception e) {
@@ -200,7 +202,7 @@ public class ImportSupplyChain {
           if (stockMove.getStockMoveLineList() != null
               && !stockMove.getStockMoveLineList().isEmpty()) {
             stockMoveService.copyQtyToRealQty(stockMove);
-            stockMoveService.validate(stockMove);
+            stockMoveService.realize(stockMove);
             if (saleOrder.getConfirmationDateTime() != null) {
               stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
             }

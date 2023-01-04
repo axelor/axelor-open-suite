@@ -25,7 +25,7 @@ import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
@@ -68,7 +68,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     if (level > MAX_LEVEL) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS));
+          I18n.get(ProductionExceptionMessage.CONFIGURATOR_BOM_TOO_MANY_CALLS));
     }
     String name;
     Product product;
@@ -91,7 +91,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
       if (generatedProduct == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_GENERATED_PRODUCT_NULL));
+            I18n.get(ProductionExceptionMessage.CONFIGURATOR_BOM_IMPORT_GENERATED_PRODUCT_NULL));
       }
       product = generatedProduct;
     } else if (configuratorBOM.getDefProductAsFormula()) {
@@ -101,13 +101,13 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
       if (product == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_FORMULA_PRODUCT_NULL));
+            I18n.get(ProductionExceptionMessage.CONFIGURATOR_BOM_IMPORT_FORMULA_PRODUCT_NULL));
       }
     } else {
       if (configuratorBOM.getProduct() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL));
+            I18n.get(ProductionExceptionMessage.CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL));
       }
       product = configuratorBOM.getProduct();
     }
@@ -191,7 +191,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(
               String.format(
-                  IExceptionMessage.CONFIGURATOR_BOM_INCONSISTENT_CONDITION,
+                  ProductionExceptionMessage.CONFIGURATOR_BOM_INCONSISTENT_CONDITION,
                   configuratorBOM.getId())));
     }
 

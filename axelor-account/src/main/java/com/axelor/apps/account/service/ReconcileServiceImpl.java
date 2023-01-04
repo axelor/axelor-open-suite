@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -33,7 +34,8 @@ import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
@@ -46,7 +48,9 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
@@ -65,6 +69,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -148,6 +153,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param canBeZeroBalanceOk Peut être soldé?
    * @return Une reconciliation
    */
+  @Override
   @Transactional
   public Reconcile createReconcile(
       MoveLine debitMoveLine,
@@ -193,6 +199,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @return L'etat de la reconciliation
    * @throws AxelorException
    */
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public Reconcile confirmReconcile(
       Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
@@ -250,6 +257,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     reconcileGroupService.addAndValidate(reconcileGroup, reconcile);
   }
 
+  @Override
   public void reconcilePreconditions(Reconcile reconcile) throws AxelorException {
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
@@ -258,8 +266,8 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (debitMoveLine == null || creditMoveLine == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.RECONCILE_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.RECONCILE_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     // Check if move lines companies are the same as the reconcile company
@@ -271,8 +279,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(IExceptionMessage.RECONCILE_7),
-              I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              I18n.get(AccountExceptionMessage.RECONCILE_7),
+              I18n.get(BaseExceptionMessage.EXCEPTION),
               debitMoveLineCompany,
               creditMoveLineCompany,
               reconcileCompany));
@@ -281,7 +289,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     // Check if move lines accounts are the same (debit and credit)
     if (!creditMoveLine.getAccount().equals(debitMoveLine.getAccount())) {
       log.debug(
-          "Compte ligne de credit : {} , Compte ligne de debit : {}",
+          "Credit move line account : {} , Debit move line account : {}",
           creditMoveLine.getAccount(),
           debitMoveLine.getAccount());
 
@@ -292,8 +300,8 @@ public class ReconcileServiceImpl implements ReconcileService {
           .contains(creditMoveLine.getAccount())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.RECONCILE_2),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+            I18n.get(AccountExceptionMessage.RECONCILE_2),
+            I18n.get(BaseExceptionMessage.EXCEPTION));
       }
     }
 
@@ -301,8 +309,8 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (reconcile.getAmount() == null || reconcile.getAmount().compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.RECONCILE_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.RECONCILE_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           reconcile.getReconcileSeq(),
           debitMoveLine.getName(),
           debitMoveLine.getAccount().getLabel(),
@@ -320,8 +328,10 @@ public class ReconcileServiceImpl implements ReconcileService {
             > 0))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.RECONCILE_5) + " " + I18n.get(IExceptionMessage.RECONCILE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.RECONCILE_5)
+              + " "
+              + I18n.get(AccountExceptionMessage.RECONCILE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           reconcile.getReconcileSeq(),
           reconcile.getAmount(),
           debitMoveLine.getName(),
@@ -333,6 +343,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
+  @Override
   public void updatePartnerAccountingSituation(Reconcile reconcile) throws AxelorException {
 
     List<Partner> partnerList = this.getPartners(reconcile);
@@ -350,6 +361,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
+  @Override
   public List<Partner> getPartners(Reconcile reconcile) {
 
     List<Partner> partnerList = Lists.newArrayList();
@@ -396,6 +408,8 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice creditInvoice = invoiceRepository.findByMove(creditMove);
     BigDecimal amount = reconcile.getAmount();
 
+    this.checkCurrencies(debitMoveLine, creditMoveLine);
+
     this.updatePayment(
         reconcile, debitMoveLine, debitInvoice, debitMove, creditMove, amount, updateInvoiceTerms);
     this.updatePayment(
@@ -408,6 +422,21 @@ public class ReconcileServiceImpl implements ReconcileService {
         updateInvoiceTerms);
   }
 
+  protected void checkCurrencies(MoveLine debitMoveLine, MoveLine creditMoveLine)
+      throws AxelorException {
+    Currency debitCurrency = debitMoveLine.getMove().getCurrency();
+    Currency creditCurrency = creditMoveLine.getMove().getCurrency();
+    Currency companyCurrency = debitMoveLine.getMove().getCompanyCurrency();
+
+    if (!Objects.equals(debitCurrency, creditCurrency)
+        && !Objects.equals(debitCurrency, companyCurrency)
+        && !Objects.equals(creditCurrency, companyCurrency)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.RECONCILE_WRONG_CURRENCY);
+    }
+  }
+
   @Transactional(rollbackOn = {Exception.class})
   protected void updatePayment(
       Reconcile reconcile,
@@ -418,6 +447,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal amount,
       boolean updateInvoiceTerms)
       throws AxelorException {
+    amount = this.getTotal(moveLine, amount);
+
     InvoicePayment invoicePayment = null;
     if (invoice != null
         && otherMove.getFunctionalOriginSelect()
@@ -448,6 +479,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     } else if (!ObjectUtils.isEmpty(invoiceTermPaymentList)) {
       invoiceTermPaymentList.forEach(it -> invoiceTermPaymentRepo.save(it));
     }
+  }
+
+  protected BigDecimal getTotal(MoveLine moveLine, BigDecimal amount) {
+    return amount.divide(
+        moveLine.getCurrencyRate(), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   @Override
@@ -489,41 +525,43 @@ public class ReconcileServiceImpl implements ReconcileService {
             reconcile.getReconciliationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
+          I18n.get(AccountExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
     }
   }
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
       throws AxelorException {
-    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-      if (move != null
-          && move.getPaymentVoucher() != null
-          && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
-        return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
-            .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
-            .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
-            .map(PayVoucherElementToPay::getInvoiceTerm)
+    if (move != null
+        && move.getPaymentVoucher() != null
+        && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
+      return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+          .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
+          .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
+          .map(PayVoucherElementToPay::getInvoiceTerm)
+          .collect(Collectors.toList());
+    } else {
+      List<InvoiceTerm> invoiceTermsToPay = null;
+      if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+        invoiceTermsToPay = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+
+      } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+        invoiceTermsToPay = this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
+
+      } else {
+        return null;
+      }
+      if (CollectionUtils.isNotEmpty(invoiceTermsToPay)
+          && move != null
+          && move.getPaymentSession() != null) {
+        return invoiceTermsToPay.stream()
+            .filter(
+                it ->
+                    it.getPaymentSession() != null
+                        && it.getPaymentSession().equals(move.getPaymentSession()))
             .collect(Collectors.toList());
       } else {
-        List<InvoiceTerm> invoiceTermsToPay =
-            invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
-
-        if (move != null && move.getPaymentSession() != null) {
-          invoiceTermsToPay =
-              invoiceTermsToPay.stream()
-                  .filter(
-                      it ->
-                          it.getPaymentSession() != null
-                              && it.getPaymentSession().equals(move.getPaymentSession()))
-                  .collect(Collectors.toList());
-        }
-
         return invoiceTermsToPay;
       }
-    } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
-    } else {
-      return null;
     }
   }
 
@@ -558,6 +596,16 @@ public class ReconcileServiceImpl implements ReconcileService {
                     && CollectionUtils.isEmpty(it.getReconcileList())))
         .findFirst()
         .orElse(null);
+  }
+
+  /**
+   * @deprecated use {@link #updatePaymentTax(Reconcile)} instead
+   * @param reconcile
+   * @throws AxelorException
+   */
+  @Deprecated
+  protected void udpatePaymentTax(Reconcile reconcile) throws AxelorException {
+    updatePaymentTax(reconcile);
   }
 
   protected void updatePaymentTax(Reconcile reconcile) throws AxelorException {
@@ -637,6 +685,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @return L'etat de la réconciliation
    * @throws AxelorException
    */
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException {
 
@@ -662,7 +711,10 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updateInvoicePaymentsCanceled(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
-    if (invoice != null && invoice.getSubrogationRelease() != null) {
+    if (invoice != null
+        && invoice.getSubrogationRelease() != null
+        && invoice.getSubrogationRelease().getStatusSelect()
+            != SubrogationReleaseRepository.STATUS_ACCOUNTED) {
       subrogationReleaseWorkflowService.goBackToAccounted(invoice.getSubrogationRelease());
     }
     // Update reconcile group
@@ -687,8 +739,8 @@ public class ReconcileServiceImpl implements ReconcileService {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
     Move purchaseMove = reconcile.getCreditMoveLine().getMove();
-    if (purchaseMove.getJournal().getJournalType() != null
-        && !purchaseMove.getJournal().getJournalType().getCode().equals("ACH")) {
+    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")
+        || purchaseMove.getPartner() == null) {
       return;
     }
     paymentMoveLineDistributionService.generatePaymentMoveLineDistributionList(
@@ -744,13 +796,14 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param reconcile Une reconciliation
    * @throws AxelorException
    */
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void canBeZeroBalance(Reconcile reconcile) throws AxelorException {
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
 
     BigDecimal debitAmountRemaining = debitMoveLine.getAmountRemaining();
-    log.debug("Montant à payer / à lettrer au débit : {}", debitAmountRemaining);
+    log.debug("Debit amount to pay / to reconcile: {}", debitAmountRemaining);
     if (debitAmountRemaining.compareTo(BigDecimal.ZERO) > 0) {
       Company company = reconcile.getDebitMoveLine().getMove().getCompany();
 
@@ -760,7 +813,7 @@ public class ReconcileServiceImpl implements ReconcileService {
               < 0
           || reconcile.getMustBeZeroBalanceOk()) {
 
-        log.debug("Seuil respecté");
+        log.debug("Threshold respected");
 
         MoveLine creditAdjustMoveLine =
             moveAdjustementService.createAdjustmentCreditMove(debitMoveLine);
@@ -776,7 +829,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
 
     reconcile.setCanBeZeroBalanceOk(false);
-    log.debug("Fin de la gestion des écarts de règlement");
+    log.debug("End of payment difference management");
   }
 
   /**
@@ -785,10 +838,11 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param creditMoveLine
    * @throws AxelorException
    */
+  @Override
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException {
     if (creditMoveLine != null) {
       BigDecimal creditAmountRemaining = creditMoveLine.getAmountRemaining();
-      log.debug("Montant à payer / à lettrer au crédit : {}", creditAmountRemaining);
+      log.debug("Credit amount to pay / to reconcile: {}", creditAmountRemaining);
 
       if (creditAmountRemaining.compareTo(BigDecimal.ZERO) > 0) {
         AccountConfig accountConfig =
@@ -799,7 +853,7 @@ public class ReconcileServiceImpl implements ReconcileService {
                 .compareTo(accountConfig.getThresholdDistanceFromRegulation())
             < 0) {
 
-          log.debug("Seuil respecté");
+          log.debug("Threshold respected");
 
           MoveLine debitAdjustmentMoveLine =
               moveAdjustementService.createAdjustmentCreditMove(creditMoveLine);
@@ -817,6 +871,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
+  @Override
   public List<Reconcile> getReconciles(MoveLine moveLine) {
 
     List<Reconcile> debitReconcileList = moveLine.getDebitReconcileList();
@@ -831,35 +886,89 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   @Override
-  public List<Long> getAllowedMoveLines(Reconcile reconcile, boolean isDebit) {
-    MoveLine otherMoveLine = isDebit ? reconcile.getDebitMoveLine() : reconcile.getCreditMoveLine();
-    StringBuilder moveLineQueryStr =
-        new StringBuilder(
-            "self.move.statusSelect IN (2,3) AND self.move.company = :company AND self.account.reconcileOk IS TRUE");
+  public String getStringAllowedCreditMoveLines(Reconcile reconcile) {
+    return getAllowedCreditMoveLines(reconcile).stream()
+        .map(Objects::toString)
+        .collect(Collectors.joining(","));
+  }
 
-    if (isDebit) {
-      moveLineQueryStr.append(" AND self.debit > 0");
-    } else {
-      moveLineQueryStr.append(" AND self.credit > 0");
-    }
+  @Override
+  public String getStringAllowedDebitMoveLines(Reconcile reconcile) {
+    return getAllowedDebitMoveLines(reconcile).stream()
+        .map(Objects::toString)
+        .collect(Collectors.joining(","));
+  }
 
-    if (otherMoveLine != null) {
-      moveLineQueryStr.append(" AND self.partner = :partner");
-    }
+  @Override
+  public List<Long> getAllowedCreditMoveLines(Reconcile reconcile) {
+    StringBuilder moveLineQueryStr = new StringBuilder("self.credit > 0");
+    return getMoveLineIds(reconcile, moveLineQueryStr, reconcile.getDebitMoveLine());
+  }
 
-    Query<MoveLine> moveLineQuery =
-        moveLineRepo
-            .all()
-            .filter(moveLineQueryStr.toString())
-            .bind("company", reconcile.getCompany());
+  @Override
+  public List<Long> getAllowedDebitMoveLines(Reconcile reconcile) {
 
-    if (otherMoveLine != null) {
-      moveLineQuery = moveLineQuery.bind("partner", otherMoveLine.getPartner());
-    }
+    StringBuilder moveLineQueryStr = new StringBuilder("self.debit > 0");
+    return getMoveLineIds(reconcile, moveLineQueryStr, reconcile.getCreditMoveLine());
+  }
+
+  protected List<Long> getMoveLineIds(
+      Reconcile reconcile, StringBuilder moveLineQueryStr, MoveLine otherMoveLine) {
+    computeMoveLineDomain(moveLineQueryStr, otherMoveLine);
+
+    Query<MoveLine> moveLineQuery = getMoveLineQuery(reconcile, moveLineQueryStr);
+
+    moveLineQuery = setQueryBindings(moveLineQuery, otherMoveLine);
 
     return moveLineQuery.fetch().stream()
         .filter(moveLineControlService::canReconcile)
         .map(MoveLine::getId)
         .collect(Collectors.toList());
+  }
+
+  protected Query<MoveLine> getMoveLineQuery(Reconcile reconcile, StringBuilder moveLineQueryStr) {
+    return moveLineRepo
+        .all()
+        .filter(moveLineQueryStr.toString())
+        .bind("company", reconcile.getCompany());
+  }
+
+  protected void computeMoveLineDomain(StringBuilder moveLineQueryStr, MoveLine otherMoveLine) {
+
+    moveLineQueryStr.append(
+        " AND self.move.statusSelect IN (2,3) AND self.move.company = :company AND self.account.reconcileOk IS TRUE");
+
+    if (otherMoveLine == null) {
+      return;
+    }
+
+    moveLineQueryStr.append(" AND self.account = :account");
+
+    if (otherMoveLine.getAccount().getUseForPartnerBalance()
+        && otherMoveLine.getPartner() != null) {
+      moveLineQueryStr.append(" AND self.partner = :partner");
+    }
+  }
+
+  protected Query<MoveLine> setQueryBindings(
+      Query<MoveLine> moveLineQuery, MoveLine otherMoveLine) {
+
+    Account account = null;
+    Partner partner = null;
+
+    if (otherMoveLine != null) {
+      account = otherMoveLine.getAccount();
+      partner = otherMoveLine.getPartner();
+    }
+
+    if (account != null) {
+      moveLineQuery = moveLineQuery.bind("account", account);
+
+      if (account.getUseForPartnerBalance() && partner != null) {
+        moveLineQuery.bind("partner", partner);
+      }
+    }
+
+    return moveLineQuery;
   }
 }

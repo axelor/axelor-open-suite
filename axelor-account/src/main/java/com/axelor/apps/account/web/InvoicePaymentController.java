@@ -24,8 +24,9 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -36,6 +37,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -260,7 +262,7 @@ public class InvoicePaymentController {
         response.setValues(invoicePayment);
 
         if (amountError) {
-          response.setFlash(I18n.get(IExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
+          response.setFlash(I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
         }
       }
     } catch (Exception e) {
@@ -335,6 +337,15 @@ public class InvoicePaymentController {
       response.setValue(
           "applyFinancialDiscount",
           Beans.get(InvoicePaymentToolService.class).applyFinancialDiscount(invoicePayment));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setIsMultiCurrency(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+      response.setAttr("$isMultiCurrency", "value", InvoiceToolService.isMultiCurrency(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
@@ -32,7 +33,8 @@ public interface MoveLineService {
 
   public void usherProcess(MoveLine moveLine);
 
-  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList);
+  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList)
+      throws AxelorException;
 
   public void reconcileMoveLines(List<MoveLine> moveLineList);
 
@@ -57,4 +59,8 @@ public interface MoveLineService {
   void computeInvoiceTermsFinancialDiscount(MoveLine moveLine);
 
   Batch validateCutOffBatch(List<Long> recordIdList, Long batchId);
+
+  void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
+
+  List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds);
 }

@@ -47,7 +47,7 @@ public interface AnalyticMoveLineService {
       LocalDate date);
 
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company) throws AxelorException;
+      Partner partner, Product product, Company company, boolean isPurchase) throws AxelorException;
 
   public void updateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date);
@@ -71,4 +71,6 @@ public interface AnalyticMoveLineService {
 
   AnalyticMoveLine generateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
+
+  String getAnalyticAxisDomain(AnalyticMoveLine analyticMoveLine, Company company);
 }

@@ -22,10 +22,10 @@ import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.report.IReport;
+import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
 import com.axelor.apps.supplychain.service.MrpService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -33,6 +33,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class MrpController {
@@ -58,7 +60,7 @@ public class MrpController {
     MrpRepository mrpRepository = Beans.get(MrpRepository.class);
     try {
       if (mrpService.isOnGoing(mrpRepository.find(mrp.getId()))) {
-        response.setFlash(I18n.get(IExceptionMessage.MRP_ALREADY_STARTED));
+        response.setFlash(I18n.get(SupplychainExceptionMessage.MRP_ALREADY_STARTED));
         return;
       }
       mrpService.setMrp(Beans.get(MrpRepository.class).find(mrp.getId()));
@@ -82,11 +84,28 @@ public class MrpController {
       Boolean isProposalsPerSupplier =
           (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
       Beans.get(MrpService.class)
-          .generateProposals(
+          .generateAllProposals(
               Beans.get(MrpRepository.class).find(mrp.getId()),
               isProposalsPerSupplier != null && isProposalsPerSupplier);
       response.setFlash(I18n.get("Proposals have been generated successfully."));
-    } catch (AxelorException e) {
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
+  }
+
+  public void generateSelectedProposals(ActionRequest request, ActionResponse response) {
+    try {
+      Mrp mrp = request.getContext().asType(Mrp.class);
+      Boolean isProposalsPerSupplier =
+          (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
+      Beans.get(MrpService.class)
+          .generateSelectedProposals(
+              Beans.get(MrpRepository.class).find(mrp.getId()),
+              isProposalsPerSupplier != null && isProposalsPerSupplier);
+      response.setFlash(I18n.get("Proposals have been generated successfully."));
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);
@@ -153,6 +172,22 @@ public class MrpController {
 
       response.setView(ActionView.define(name).add("html", fileLink).map());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setSaleOrderLineSetDomain(ActionRequest request, ActionResponse response) {
+    Mrp mrp = request.getContext().asType(Mrp.class);
+
+    try {
+      List<Long> idList =
+          Beans.get(MrpFilterSaleOrderLineService.class)
+              .getSaleOrderLinesComplyingToMrpLineTypes(mrp);
+
+      String idListStr = idList.stream().map(Object::toString).collect(Collectors.joining(","));
+
+      response.setAttr("saleOrderLineSet", "domain", "self.id IN (" + idListStr + ")");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

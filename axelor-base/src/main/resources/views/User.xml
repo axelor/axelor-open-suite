@@ -12,7 +12,7 @@
     <field name="fullName"/>
     <field name="activeCompany" form-view="company-form" grid-view="company-grid"/>
     <field name="tradingName"
-      if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
       form-view="trading-name-form" grid-view="trading-name-grid"/>
     <field name="group" form-view="group-form" grid-view="group-grid"/>
     <field name="blocked"/>
@@ -46,7 +46,8 @@
         <field name="code" placeholder="login name" onChange="action-condition-user-validCode"
           validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admin'"/>
         <field name="group" placeholder="user group"/>
-        <field name="email" widget="Email" hidden="true"/>
+        <field name="email" widget="Email"
+          showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
         <field name="language"/>
         <field name="theme" widget="theme-select"/>
         <panel name="actionsPanel" stacked="true">
@@ -102,7 +103,7 @@
         <field name="activeCompany" onSelect="action-user-attrs-domain-active-company"
           widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         <field name="tradingName"
-          if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+          if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
           form-view="trading-name-form" grid-view="trading-name-grid"/>
         <field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid"
           onSelect="action-user-attrs-domain-active-team"/>
@@ -136,11 +137,11 @@
         widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
       <!-- <field name="timesheetPeriodConfig"/> -->
       <field name="tradingName"
-        if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
         form-view="trading-name-form" grid-view="trading-name-grid"/>
       <field name="workshopStockLocation"
         onSelect="action-user-attrs-domain-workshop-stock-location" canEdit="false"
-        if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"/>
+        if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"/>
       <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
         grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false"
         canView="false" if="__config__.app.isApp('employee')"
@@ -153,7 +154,7 @@
     <panel name="testingPanel" title="Testing" sidebar="true" hidden="true"
       showIf="stepStatusSelect == 5"
       if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
-      <field name="today"/>
+      <field name="todayDateT"/>
     </panel>
     <panel name="mainUserPanel" showIf="stepStatusSelect == 5" colSpan="12">
       <!-- from axelor-core -->
@@ -163,7 +164,8 @@
         <field name="code" placeholder="login name" onChange="action-condition-user-validCode"
           validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admin'"/>
         <field name="group" placeholder="user group"/>
-        <field name="email" widget="Email" hidden="true"/>
+        <field name="email" widget="Email"
+          showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
         <field name="language"/>
         <field name="theme" widget="theme-select"/>
         <panel name="actionsPanel" stacked="true">
@@ -248,7 +250,7 @@
         showIf="[2,5].indexOf(stepStatusSelect) > -1"
         onChange="action-user-attrs-set-pfp-validator-panel-show"/>
       <panel name="teamsPanel" title="Teams"
-        if="__config__.app.getApp('base').getTeamManagement()"
+        if="__config__.app.getApp('base')?.getTeamManagement()"
         showIf="[2,5].indexOf(stepStatusSelect) > -1">
         <field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid"
           onSelect="action-user-attrs-domain-active-team"/>
@@ -271,7 +273,7 @@
         <field name="useSignatureForPurchaseQuotations" if="__config__.app.isApp('purchase')"/>
       </panel>
       <panel-related name="emailAccountListPanel" field="emailAccountList"
-        if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12"
+        if="__config__.app.getApp('base')?.getEmailAccountByUser()" colSpan="12"
         form-view="mail-account-form" grid-view="mail-account-grid"
         showIf="[2,5].indexOf(stepStatusSelect) > -1"/>
       <panel-related name="projectSetPanel" field="projectSet" canEdit="false"
@@ -279,7 +281,7 @@
         colSpan="12"/>
       <panel name="substitutePfpValidatorTabPanel" title="PFP Validator"
         if-module="axelor-account"
-        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment()">
         <field name="isPfpValidator" widget="boolean-switch" colSpan="4"/>
         <field name="isSuperPfpUser" widget="boolean-switch" colSpan="4"/>
         <button name="pfpSupplierListBtn" title="Supplier list"
@@ -315,7 +317,7 @@
       <field name="activeCompany" onSelect="action-user-attrs-domain-active-company"
         widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
       <field name="tradingName"
-        if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
         form-view="trading-name-form" grid-view="trading-name-grid"/>
       <field name="singleTab" widget="inline-checkbox"/>
       <field name="change" title="Change password?" widget="inline-checkbox"/>
@@ -335,7 +337,7 @@
           <field name="sendEmailUponPasswordChange"/>
         </panel>
       </panel>
-      <field name="email"/>
+      <field name="email" showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
       <field name="theme" widget="theme-select"/>
       <field name="noHelp"/>
       <field name="iCalendar" canNew="true" canEdit="true" domain="self.user.id=:id"/>
@@ -347,7 +349,7 @@
       <field hideIf="receiveEmails == false" name="followedMetaModelSet" widget="TagSelect"
         colSpan="12" canNew="false" form-view="meta-model-form" grid-view="meta-model-grid"/>
       <panel-related name="emailAccountListPanel" field="emailAccountList"
-        if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12"
+        if="__config__.app.getApp('base')?.getEmailAccountByUser()" colSpan="12"
         form-view="mail-account-form" grid-view="mail-account-grid"/>
     </panel>
 
@@ -356,7 +358,7 @@
     </panel>
     <panel name="testingPanel" title="Testing" sidebar="true"
       if="com.axelor.app.AppSettings.get().get('application.mode') == 'dev'">
-      <field name="today"/>
+      <field name="todayDateT"/>
     </panel>
 
   </form>
@@ -404,7 +406,6 @@
   </action-attrs>
 
   <action-attrs name="action-user-attrs">
-    <attribute name="hidden" for="email" expr="partner"/>
     <attribute name="hidden" for="passwordPanel" expr="false"/>
     <attribute name="required" for="partner.emailAddress"
       expr="sendEmailUponPasswordChange"/>
@@ -537,25 +538,25 @@
     <attribute name="hidden"
       expr="eval: !companySet?.any{it->it.accountConfig?.isManagePassedForPayment}"
       for="substitutePfpValidatorTabPanel"
-      if="__config__.app.getApp('account') != null &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
+      if="__config__.app.getApp('account') != null &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment()"/>
   </action-attrs>
 
   <search-filters name="user-filters" model="com.axelor.auth.db.User"
     title="User filters">
     <field name="workshopStockLocation" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop())"/>
+      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop())"/>
     <field name="activeTeam" hidden="true"
-      if="!__config__.app.getApp('base').getTeamManagement()"/>
+      if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <field name="teamSet" hidden="true"
-      if="!__config__.app.getApp('base').getTeamManagement()"/>
+      if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <field name="emailAccountList" hidden="true"
-      if="!__config__.app.getApp('base').getEmailAccountByUser()"/>
+      if="!__config__.app.getApp('base')?.getEmailAccountByUser()"/>
     <field name="isPfpValidator" hidden="true"
-      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment())"/>
     <field name="isSuperPfpUser" hidden="true"
-      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment())"/>
     <field name="substitutePfpValidatorList" hidden="true"
-      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+      if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment())"/>
     <field name="employee" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="appPermissions" hidden="true" if="!__config__.app.isApp('mobile')"/>
     <field name="projectSet" hidden="true" if="!__config__.app.isApp('project')"/>

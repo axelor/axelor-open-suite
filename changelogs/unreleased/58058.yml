@@ -1,0 +1,3 @@
+---
+title: "Handled NPE while adding a new line in SaleOrderLine, StockMoveLine and PurchaseOrderLine"
+type: fix

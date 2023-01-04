@@ -94,6 +94,7 @@
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_CONFIRMED = 2;
+		public static final int STATUS_CANCELED = 3;
 
 	   	// OPERATION TYPE SELECT
 		public static final int OPERATION_TYPE_SUPPLIER_PURCHASE = 1;

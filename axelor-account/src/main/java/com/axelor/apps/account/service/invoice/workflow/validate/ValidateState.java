@@ -22,13 +22,14 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
@@ -78,8 +79,8 @@ public class ValidateState extends WorkflowInvoice {
                 == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     if (invoice.getPaymentMode() != null) {
@@ -89,7 +90,7 @@ public class ValidateState extends WorkflowInvoice {
               && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.INVOICE_VALIDATE_1));
+            I18n.get(AccountExceptionMessage.INVOICE_VALIDATE_1));
       }
     }
 
@@ -98,15 +99,14 @@ public class ValidateState extends WorkflowInvoice {
         != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
+          I18n.get(AccountExceptionMessage.INVOICE_VALIDATE_BLOCKING));
     }
 
     invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
     invoice.setValidatedByUser(userService.getUser());
     invoice.setValidatedDate(appBaseService.getTodayDate(invoice.getCompany()));
-    if (invoice.getPartnerAccount() == null) {
-      invoice.setPartnerAccount(invoiceService.getPartnerAccount(invoice, false));
-    }
+    setPartnerAccount();
+
     if (invoice.getJournal() == null) {
       invoice.setJournal(invoiceService.getJournal(invoice));
     }
@@ -121,6 +121,17 @@ public class ValidateState extends WorkflowInvoice {
     }
 
     workflowValidationService.afterValidation(invoice);
+  }
+
+  protected void setPartnerAccount() throws AxelorException {
+    if (invoice.getPartnerAccount() == null) {
+      invoice.setPartnerAccount(invoiceService.getPartnerAccount(invoice, false));
+    }
+    if (invoice.getPartnerAccount() != null && !invoice.getPartnerAccount().getHasInvoiceTerm()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
+    }
   }
 
   private void generateBudgetDistribution(Invoice invoice) {

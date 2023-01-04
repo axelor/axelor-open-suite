@@ -20,8 +20,10 @@ package com.axelor.apps.base.exceptions;
 /**
  * Interface of Exceptions.
  *
+ * @deprecated Replaced by {@link BaseExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   public static final String EXCEPTION = /*$$(*/ "Warning !" /*)*/;
@@ -92,10 +94,6 @@ public interface IExceptionMessage {
 
   String PERIOD_CLOSING_MESSAGE = /*$$(*/ "Period %s is now closed" /*)*/;
   String PERIOD_CLOSING_EXCEPTION_MESSAGE = /*$$(*/ "Error when closing period %s" /*)*/;
-
-  public static final String PERIOD_CLOSED_AND_NO_PERMISSIONS =
-      /*$$(*/ "This period is closed and you do not have the necessary permissions to create entries" /*)*/;
-
   /** Abstract batch */
   String ABSTRACT_BATCH_1 = /*$$(*/ "This batch is not runnable!" /*)*/;
 
@@ -185,6 +183,8 @@ public interface IExceptionMessage {
 
   public static final String TAX_2 = /*$$(*/ "Tax is missing" /*)*/;
 
+  public static final String TAX_DATE_MISSING = /*$$(*/ "Date is missing." /*)*/;
+
   /** Template rule service */
   public static final String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;
 
@@ -252,8 +252,6 @@ public interface IExceptionMessage {
   public static final String PARTNER_NOT_FOUND = /*$$(*/ "Partner not found" /*)*/;
   public static final String PARTNER_EMAIL_EXIST = /*$$(*/
       "Email address already linked with another partner" /*)*/;
-  public static final String PARTNER_INVALID_REGISTRATION_CODE = /*$$(*/
-      "Registration code is invalid." /*)*/;
 
   /** Product controller */
   public static final String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;

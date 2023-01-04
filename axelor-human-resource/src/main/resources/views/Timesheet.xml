@@ -15,11 +15,11 @@
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDate"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
@@ -36,11 +36,11 @@
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDate"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
@@ -56,11 +56,11 @@
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDate"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="timesheet-validate-grid" title="Timesheet"
@@ -78,12 +78,12 @@
     <hilite background="warning"
       if="$moment(todayDate).diff(sentDate,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDate"/>
     <field name="periodTotal"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
@@ -106,10 +106,10 @@
       <panel name="detailsPanel" colSpan="9">
         <panel name="headPanel" colSpan="12">
           <field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"
-            if="__config__.app.getApp('timesheet').needValidation"/>
+            if="__config__.app.getApp('timesheet')?.needValidation"/>
           <field name="showEditor" colSpan="2" title="Editor" widget="boolean-switch"
             onChange="action-timesheet-attrs-refresh-editor"
-            if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
+            if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
         </panel>
         <field name="company" colSpan="5" form-view="company-form" grid-view="company-grid"
           onChange="action-hr-record-empty-user"/>
@@ -126,9 +126,9 @@
           onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5"/>
         <field name="toDate" onChange="action-timesheet-group-to-date-onchange" colSpan="5"/>
         <button name="createBtn" title="Create" colSpan="2" hideIf="id"
-          if="__config__.app.getApp('timesheet').getTimesheetEditor()"
+          if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
           onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save"/>
-        <field name="isCompleted" if="!__config__.app.getApp('timesheet').needValidation"
+        <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"
           readonly="true"/>
         <field name="employee.user" hidden="true"/>
         <field name="employee.user.code" hidden="true"/>
@@ -137,34 +137,34 @@
       <panel name="actionsPanel" colSpan="3" itemSpan="12">
         <button name="confirmBtn" onClick="action-timesheet-group-confirm" title="Confirm"
           hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="continueBtn" onClick="action-timesheet-group-continue,close"
           title="Continue"
           showIf="statusSelect == 2 &amp;&amp; employee != null &amp;&amp; employee.user != null &amp;&amp; employee.user.code == $user"
-          icon="fa-arrow-right" if="__config__.app.getApp('timesheet').needValidation"/>
+          icon="fa-arrow-right" if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="confirmContinueBtn"
           onClick="action-timesheet-group-confirm-continue,close" title="Confirm &amp; Continue"
           hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="validateBtn" hidden="true" onClick="action-timesheet-group-validate"
           title="Validate" icon="fa-check" css="btn-success"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="refuseBtn" hidden="true" onClick="action-timesheet-group-refuse"
           title="Refuse" icon="fa-times" css="btn-danger"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="cancelBtn" hidden="true"
           onClick="save,action-timesheet-method-cancel,action-timesheet-group-buttons"
           title="Cancel" icon="fa-times-circle" css="btn-danger"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="draftBtn"
           onClick="save,action-timesheet-method-draft,action-timesheet-group-buttons"
           title="Return to draft status" showIf="statusSelect &gt; 3"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="startStopFormBtn" title="Start&amp;Stop Timer"
           onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
-          if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
+          if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"/>
         <button name="completeBtn" onClick="save,action-timesheet-method-complete"
-          title="Complete" if="!__config__.app.getApp('timesheet').needValidation"
+          title="Complete" if="!__config__.app.getApp('timesheet')?.needValidation"
           icon="fa-arrow-right"/>
       </panel>
     </panel>
@@ -215,7 +215,7 @@
         if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
       <button name="fullScreenEditorBtn" colSpan="3" title="Fullscreen Editor"
         showIf="id != null &amp;&amp; showEditor"
-        if="__config__.app.getApp('timesheet').getTimesheetEditor()"
+        if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
         onClick="save,action-timesheet-method-open-timesheet-editor"/>
       <field name="$showActivity" hidden="true" type="boolean"/>
       <field name="$enableTimesheetManufOrder" hidden="true" type="boolean"/>
@@ -228,7 +228,7 @@
       hidden="true" showIf="id &amp;&amp; employee.timesheetImputationSelect != 2"
       action="action-timesheet-view-total-hours-per-day"/>
     <panel name="validationInfoPanel" showIf="sentDate != null"
-      if="__config__.app.getApp('timesheet').needValidation">
+      if="__config__.app.getApp('timesheet')?.needValidation">
       <field name="sentDate"/>
       <field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"
         showIf="validatedBy != null"/>
@@ -332,7 +332,7 @@
     <action name="action-timesheet-record-from-period-date"/>
     <action name="action-timesheet-record-to-date" if="fromDate != null"/>
     <action name="action-timesheet-prefill-lines"
-      if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
+      if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
     <action name="action-timesheet-attrs-title-project"/>
     <action name="action-timesheet-attrs-from-date-on-new"/>
     <action name="action-timesheet-attrs-panels"/>
@@ -343,7 +343,7 @@
     <action name="action-timesheet-method-remove-after-to-date-timesheetlines"
       if="id &amp;&amp; toDate != null"/>
     <action name="action-timesheet-prefill-lines"
-      if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
+      if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
     <action name="action-timesheet-attrs-refresh-editor" if="showEditor"/>
   </action-group>
 
@@ -390,9 +390,9 @@
   <action-record name="action-timesheet-record-to-date"
     model="com.axelor.apps.hr.db.Timesheet">
     <field name="toDate" expr="eval:fromDate.with(java.time.DayOfWeek.FRIDAY)"
-      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 1"/>
+      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet')?.getDefaultEndFormat() == 1"/>
     <field name="toDate" expr="eval:fromDate.withDayOfMonth(fromDate.lengthOfMonth())"
-      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 2"/>
+      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet')?.getDefaultEndFormat() == 2"/>
   </action-record>
 
   <action-validate name="action-timesheet-validate-timesheet-selected">
@@ -416,11 +416,11 @@
 
   <action-attrs name="action-timesheet-attrs-title-project">
     <attribute name="title" for="$project"
-      expr="eval: __config__.app.getApp('project').getProjectLabel()"
-      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
     <attribute name="title" for="timesheetLineList.project"
-      expr="eval: __config__.app.getApp('project').getProjectLabel()"
-      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-domain-timesheet-select">
@@ -430,9 +430,9 @@
 
   <action-group name="action-timesheet-group-buttons">
     <action name="action-timesheet-attrs-buttons"
-      if="__config__.app.getApp('timesheet').needValidation"/>
+      if="__config__.app.getApp('timesheet')?.needValidation"/>
     <action name="action-timesheet-attrs-need-validation-false"
-      if="!__config__.app.getApp('timesheet').needValidation"/>
+      if="!__config__.app.getApp('timesheet')?.needValidation"/>
     <action name="action-timesheet-attrs-product-visibility"/>
   </action-group>
 
@@ -504,9 +504,9 @@
 
   <action-attrs name="action-timesheet-attrs-panels">
     <attribute name="hidden" for="actionsPanel" expr="eval:id == null"
-      if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
+      if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
     <attribute name="hidden" for="linesPanel" expr="eval:id == null"
-      if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
+      if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-set-show-editor">
@@ -515,7 +515,7 @@
 
   <action-attrs name="action-timesheet-attrs-enable-timesheet-manuforder">
     <attribute for="$enableTimesheetManufOrder" name="value"
-      expr="eval: __config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
+      expr="eval: __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
   </action-attrs>
 
   <action-record name="action-timesheet-record-from-period-date"
@@ -611,7 +611,8 @@
 
   <action-view name="action-timesheet-show-timesheet-line-editor"
     title="Timesheet lines">
-    <view type="html" name="hr/timesheet?timesheetId={{id}}&amp;showActivity={{$showActivity}}"/>
+    <view type="html"
+      name="hr/timesheet/?timesheetId={{id}}&amp;showActivity={{$showActivity}}"/>
   </action-view>
 
   <action-view name="action-timesheet-see-timesheet-lines" title="See timesheet lines"
@@ -639,20 +640,16 @@
   </action-method>
 
   <action-attrs name="action-hr-attrs-set-employee-domain">
+    <attribute for="$configDate" name="value" expr="eval: __config__.date"/>
     <attribute for="employee" name="domain"
       if="company &amp;&amp; __user__?.employee?.hrManager"
-      expr="eval: &quot; self.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId AND self.status != 3').bind('companyId', company.id).fetch().collect{it -> it?.employee?.id ?: 0}+[0]).join(',')}) &quot;"/>
+      expr="eval: &quot; (self.leavingDate is NULL OR self.leavingDate &gt; :$configDate) AND self.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId AND self.status != 3').bind('companyId', company.id).fetch().collect{it -> it?.employee?.id ?: 0}+[0]).join(',')}) &quot;"/>
     <attribute for="employee" name="domain"
       if="company &amp;&amp; !__user__?.employee?.hrManager"
-      expr="eval: &quot; self.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it.employee}.findAll{it -> it?.managerUser?.id == __user__.id || it?.id == __user__?.employee?.id}.collect{it -> it.id}+[0]).join(',')}) &quot;"/>
+      expr="eval: &quot; (self.leavingDate is NULL OR self.leavingDate &gt; :$configDate) AND self.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it.employee}.findAll{it -> it?.managerUser?.id == __user__.id || it?.id == __user__?.employee?.id}.collect{it -> it.id}+[0]).join(',')}) &quot;"/>
     <attribute for="employee" name="domain" if="!company"
       expr="eval: &quot; self.id IN (0) &quot;"/>
   </action-attrs>
-
-  <action-record name="action-hr-record-empty-employee"
-    model="com.axelor.apps.hr.db.Timesheet">
-    <field name="employee" expr="eval: null"/>
-  </action-record>
 
   <action-condition name="action-hr-condition-automatic-from-generation-date">
     <check
@@ -674,9 +671,9 @@
   <search-filters name="timesheet-filters" model="com.axelor.apps.hr.db.Timesheet"
     title="Timesheet filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="showEditor" hidden="true"
-      if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getTimesheetEditor())"/>
+      if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getTimesheetEditor())"/>
     <field name="employee.timesheetImputationSelect" hidden="true"
       if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>
     <field name="timesheetLineList" hidden="true"

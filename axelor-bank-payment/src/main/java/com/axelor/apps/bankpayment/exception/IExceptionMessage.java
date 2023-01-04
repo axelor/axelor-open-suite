@@ -20,8 +20,10 @@ package com.axelor.apps.bankpayment.exception;
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
+ * @deprecated Replaced by {@link BankPaymentExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Bank statement service */
@@ -143,8 +145,6 @@ public interface IExceptionMessage {
       "Please fill the receiver bank details" /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/
       "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
-  static final String BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
-      "The receiver bank details is inactive." /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
       "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/

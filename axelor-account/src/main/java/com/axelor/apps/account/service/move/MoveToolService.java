@@ -64,9 +64,8 @@ public interface MoveToolService {
    *
    * @param invoicePayment Invoice payment
    * @return
-   * @throws AxelorException
    */
-  List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment) throws AxelorException;
+  List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment);
 
   /**
    * Method that returns all the move lines of an invoice that are not completely lettered
@@ -181,7 +180,7 @@ public interface MoveToolService {
 
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
-  void setOriginAndDescriptionOnMoveLineList(Move move);
+  void setOriginOnMoveLineList(Move move);
 
   @CallMethod
   boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
@@ -191,7 +190,7 @@ public interface MoveToolService {
 
   boolean checkMoveLinesCutOffDates(Move move);
 
-  boolean checkMoveOriginIsDuplicated(Move move) throws AxelorException;
+  List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException;
 
   List<Move> findDaybookByYear(Set<Year> yearList);
 
@@ -199,4 +198,6 @@ public interface MoveToolService {
   boolean isSimulatedMovePeriodClosed(Move move);
 
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
+
+  void setDescriptionOnMoveLineList(Move move);
 }

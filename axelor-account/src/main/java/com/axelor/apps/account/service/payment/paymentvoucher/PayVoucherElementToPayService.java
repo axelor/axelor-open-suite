@@ -118,7 +118,8 @@ public class PayVoucherElementToPayService {
   public PayVoucherElementToPay updateElementToPayWithFinancialDiscount(
       PayVoucherElementToPay payVoucherElementToPay,
       PayVoucherDueElement payVoucherDueElement,
-      PaymentVoucher paymentVoucher) {
+      PaymentVoucher paymentVoucher)
+      throws AxelorException {
     if (!payVoucherDueElement.getApplyFinancialDiscount()
         || payVoucherDueElement.getFinancialDiscount() == null) {
       return payVoucherElementToPay;
@@ -144,9 +145,13 @@ public class PayVoucherElementToPayService {
     return payVoucherElementToPay;
   }
 
-  public void updateFinancialDiscount(PayVoucherElementToPay payVoucherElementToPay) {
+  public void updateFinancialDiscount(PayVoucherElementToPay payVoucherElementToPay)
+      throws AxelorException {
     if (!payVoucherElementToPay.getApplyFinancialDiscount()
-        || payVoucherElementToPay.getFinancialDiscount() == null) {
+        || payVoucherElementToPay.getFinancialDiscount() == null
+        || (payVoucherElementToPay.getInvoiceTerm() != null
+            && payVoucherElementToPay.getInvoiceTerm().getAmountRemainingAfterFinDiscount().signum()
+                == 0)) {
       return;
     }
 

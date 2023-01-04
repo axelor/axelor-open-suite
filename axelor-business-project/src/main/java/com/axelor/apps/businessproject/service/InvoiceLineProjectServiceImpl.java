@@ -25,9 +25,11 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -51,7 +53,9 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       AccountConfigService accountConfigService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
       PurchaseProductService purchaseProductService,
-      SupplierCatalogService supplierCatalogService) {
+      SupplierCatalogService supplierCatalogService,
+      TaxService taxService,
+      InternationalService internationalService) {
     super(
         currencyService,
         priceListService,
@@ -63,7 +67,9 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
         accountConfigService,
         invoiceLineAnalyticService,
         purchaseProductService,
-        supplierCatalogService);
+        supplierCatalogService,
+        taxService,
+        internationalService);
   }
 
   @Transactional

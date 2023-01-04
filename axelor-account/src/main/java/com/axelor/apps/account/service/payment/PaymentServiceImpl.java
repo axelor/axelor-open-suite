@@ -35,6 +35,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,6 +46,7 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class PaymentServiceImpl implements PaymentService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -117,27 +119,26 @@ public class PaymentServiceImpl implements PaymentService {
     if (debitMoveLines != null && creditMoveLines != null) {
 
       log.debug(
-          "Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
+          "Overpayment usage (debit move lines : {}, credit move lines : {})",
           new Object[] {debitMoveLines.size(), creditMoveLines.size()});
 
       BigDecimal debitTotalRemaining = BigDecimal.ZERO;
       BigDecimal creditTotalRemaining = BigDecimal.ZERO;
       for (MoveLine creditMoveLine : creditMoveLines) {
 
-        log.debug("Emploie du trop perçu : ligne en crédit : {})", creditMoveLine);
+        log.debug("Overpayment usage : credit move line : {})", creditMoveLine);
 
         log.debug(
-            "Emploie du trop perçu : ligne en crédit (restant à payer): {})",
+            "Overpayment usage : credit move line (remaining to pay): {})",
             creditMoveLine.getAmountRemaining());
         creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining());
       }
       for (MoveLine debitMoveLine : debitMoveLines) {
 
-        log.debug(
-            "Emploie du trop perçu : ligne en débit : {})", debitMoveLine.getAmountRemaining());
+        log.debug("Overpayment usage : debit move line : {})", debitMoveLine);
 
         log.debug(
-            "Emploie du trop perçu : ligne en débit (restant à payer): {})",
+            "Overpayment usage : debit move line (remaining to pay): {})",
             debitMoveLine.getAmountRemaining());
         debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
       }
@@ -213,7 +214,7 @@ public class PaymentServiceImpl implements PaymentService {
       debitTotalRemaining = debitTotalRemaining.subtract(amount);
       creditTotalRemaining = creditTotalRemaining.subtract(amount);
 
-      log.debug("Réconciliation : {}", reconcile);
+      log.debug("Reconcile : {}", reconcile);
     }
   }
 

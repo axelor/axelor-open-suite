@@ -25,7 +25,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
@@ -98,7 +98,7 @@ public class PaymentVoucherController {
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
 
       if (!generateAll) {
-        response.setFlash(I18n.get(IExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
+        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -137,7 +137,7 @@ public class PaymentVoucherController {
         if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {
           response.setError(
               I18n.get(
-                  "Some move amounts have been changed since the impuration. Please remake the imputation."));
+                  "Some move amounts have been changed since the imputation. Please remake the imputation."));
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);

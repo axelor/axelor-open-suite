@@ -30,11 +30,12 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.db.Model;
@@ -104,7 +105,8 @@ public class PaymentVoucherLoadService {
             + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
             + "and (self.moveLine.move.statusSelect = :statusDaybook OR self.moveLine.move.statusSelect = :statusAccounted) "
             + "and (self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName OR (self.moveLine.move.tradingName = NULL AND self.invoice.tradingName = NULL)) "
-            + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect)";
+            + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect) "
+            + "and ((self.invoice is not null and self.invoice.currency = :currency) or self.moveLine.move.currency = :currency)";
 
     if (Beans.get(AccountConfigService.class)
                 .getAccountConfig(paymentVoucher.getCompany())
@@ -114,7 +116,7 @@ public class PaymentVoucherLoadService {
         || paymentVoucher.getOperationTypeSelect()
             == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       query +=
-          "and (self.pfpValidateStatusSelect != :pfpStatusAwaiting OR self.pfpValidateStatusSelect != :pfpStatusLitigation) ";
+          "AND self.pfpValidateStatusSelect NOT IN (:pfpStatusAwaiting, :pfpStatusLitigation) ";
     }
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
@@ -135,6 +137,7 @@ public class PaymentVoucherLoadService {
             .bind("operationTypeSelect", paymentVoucher.getOperationTypeSelect())
             .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
             .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
+            .bind("currency", paymentVoucher.getCurrency())
             .fetch());
   }
 
@@ -205,8 +208,8 @@ public class PaymentVoucherLoadService {
         throw new AxelorException(
             paymentVoucher,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_LOAD_1),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+            I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_LOAD_1),
+            I18n.get(BaseExceptionMessage.EXCEPTION));
       }
 
       generateAll = this.completeElementToPay(paymentVoucher);
@@ -319,8 +322,6 @@ public class PaymentVoucherLoadService {
   }
 
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
-    paymentVoucher.getPayVoucherElementToPayList().clear();
-
     paymentVoucher.setPayVoucherDueElementList(searchDueElements(paymentVoucher));
 
     this.computeFinancialDiscount(paymentVoucher);
@@ -484,6 +485,10 @@ public class PaymentVoucherLoadService {
   protected Comparator<PayVoucherDueElement> getDueElementComparator() {
     Comparator<PayVoucherDueElement> comparator =
         Comparator.comparing(t -> t.getInvoiceTerm().getDueDate());
-    return comparator.thenComparing(t -> t.getInvoiceTerm().getInvoice().getInvoiceDate());
+    return comparator.thenComparing(
+        t ->
+            t.getInvoiceTerm().getInvoice() != null
+                ? t.getInvoiceTerm().getInvoice().getInvoiceDate()
+                : t.getInvoiceTerm().getMoveLine().getMove().getDate());
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -26,12 +27,12 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -53,6 +54,8 @@ public interface InvoiceTermService {
   public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
       throws AxelorException;
 
+  void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
+
   void computeFinancialDiscount(
       InvoiceTerm invoiceTerm,
       BigDecimal totalAmount,
@@ -67,7 +70,8 @@ public interface InvoiceTermService {
    * @return
    * @throws AxelorException
    */
-  public InvoiceTerm initCustomizedInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm);
+  public InvoiceTerm initCustomizedInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm)
+      throws AxelorException;
 
   /**
    * Method to initialize invoice terms due dates
@@ -177,7 +181,7 @@ public interface InvoiceTermService {
    * @param invoice
    * @return
    */
-  public void updateFinancialDiscount(Invoice invoice);
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 
   /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
@@ -211,7 +215,10 @@ public interface InvoiceTermService {
    */
   public boolean checkIfThereIsDeletedHoldbackInvoiceTerms(Invoice invoice);
 
-  InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm, Move move);
+  InvoiceTerm initCustomizedInvoiceTerm(MoveLine moveLine, InvoiceTerm invoiceTerm, Move move)
+      throws AxelorException;
+
+  LocalDate computeDueDate(Move move, PaymentConditionLine paymentConditionLine);
 
   /**
    * return existing moveLine related to invoiceTerm with isHoldBack = false
@@ -227,7 +234,9 @@ public interface InvoiceTermService {
       User pfpUser,
       PaymentMode paymentMode,
       LocalDate date,
-      BigDecimal amount);
+      BigDecimal amount,
+      int sequence)
+      throws AxelorException;
 
   InvoiceTerm createInvoiceTerm(
       Invoice invoice,
@@ -239,7 +248,11 @@ public interface InvoiceTermService {
       LocalDate estimatedPaymentDate,
       BigDecimal amount,
       BigDecimal percentage,
-      boolean isHoldBack);
+      int sequence,
+      boolean isHoldBack)
+      throws AxelorException;
+
+  void setPfpStatus(InvoiceTerm invoiceTerm) throws AxelorException;
 
   void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice);
 
@@ -247,13 +260,11 @@ public interface InvoiceTermService {
 
   public void computeAmountPaid(InvoiceTerm invoiceTerm);
 
-  public void retrieveEligibleTerms(PaymentSession paymentSession);
-
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
 
   BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
 
-  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm);
+  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) throws AxelorException;
 
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
 
@@ -278,4 +289,26 @@ public interface InvoiceTermService {
   public User getPfpValidatorUser(Partner partner, Company company);
 
   public String getPfpValidatorUserDomain(Partner partner, Company company);
+
+  public BigDecimal getTotalInvoiceTermsAmount(MoveLine moveLine);
+
+  BigDecimal getTotalInvoiceTermsAmount(
+      MoveLine moveLine, Account holdbackAccount, boolean holdback);
+
+  void updateFromMoveHeader(Move move, InvoiceTerm invoiceTerm);
+
+  boolean isNotReadonly(InvoiceTerm invoiceTerm);
+
+  boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm);
+
+  LocalDate getDueDate(List<InvoiceTerm> invoiceTermList, LocalDate defaultDate);
+
+  void toggle(List<InvoiceTerm> invoiceTermList, boolean value) throws AxelorException;
+
+  BigDecimal roundUpLastInvoiceTerm(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total, boolean isCompanyAmount)
+      throws AxelorException;
+
+  @CallMethod
+  boolean isMultiCurrency(InvoiceTerm invoiceTerm);
 }

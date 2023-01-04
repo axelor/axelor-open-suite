@@ -51,8 +51,6 @@ public interface InvoiceLineService {
 
   BigDecimal computeDiscount(InvoiceLine invoiceLine, Boolean inAti);
 
-  BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price);
-
   Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
       throws AxelorException;
 
@@ -106,10 +104,15 @@ public interface InvoiceLineService {
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException;
 
+  boolean checkAnalyticDistribution(InvoiceLine invoiceLine);
+
   boolean checkCutOffDates(InvoiceLine invoiceLine);
 
   boolean checkManageCutOffDates(InvoiceLine invoiceLine);
 
   void applyCutOffDates(
       InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+
+  Map<String, String> getProductDescriptionAndNameTranslation(
+      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException;
 }

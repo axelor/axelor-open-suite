@@ -37,4 +37,7 @@ public interface AnalyticMoveLineQueryService {
 
   public Map<AnalyticAxis, AnalyticAccount> getReverseRules(
       AnalyticMoveLineQuery analyticMoveLineQuery);
+
+  List<AnalyticAxis> getAvailableAnalyticAxes(
+      AnalyticMoveLineQuery analyticMoveLineQuery, boolean isReverseQuery);
 }

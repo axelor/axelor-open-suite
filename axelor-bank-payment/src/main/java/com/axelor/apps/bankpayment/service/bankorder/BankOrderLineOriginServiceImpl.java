@@ -19,24 +19,48 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginService {
 
   protected BankOrderLineOriginRepository bankOrderLineOriginRepository;
 
+  protected InvoiceTermRepository invoiceTermRepo;
+
+  protected InvoiceRepository invoiceRepository;
+
+  protected DMSFileRepository dmsFileRepository;
+
+  protected final String RELATED_MODEL_KEY = "relatedModel";
+
+  protected final String RELATED_ID_KEY = "relatedId";
+
   @Inject
   public BankOrderLineOriginServiceImpl(
-      BankOrderLineOriginRepository bankOrderLineOriginRepository) {
+      BankOrderLineOriginRepository bankOrderLineOriginRepository,
+      InvoiceTermRepository invoiceTermRepo,
+      InvoiceRepository invoiceRepository,
+      DMSFileRepository dmsFileRepository) {
     this.bankOrderLineOriginRepository = bankOrderLineOriginRepository;
+    this.invoiceTermRepo = invoiceTermRepo;
+    this.invoiceRepository = invoiceRepository;
+    this.dmsFileRepository = dmsFileRepository;
   }
 
   public BankOrderLineOrigin createBankOrderLineOrigin(Model model) {
@@ -163,5 +187,79 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
       return true;
     }
     return false;
+  }
+
+  @Override
+  public Map<String, Object> getRelatedDataMap(BankOrderLineOrigin bankOrderLineOrigin) {
+    Map<String, Object> relatedDataMap = new HashMap<>();
+    String relatedTo = bankOrderLineOrigin.getRelatedToSelect();
+    List<String> authorizedType = new ArrayList<>();
+    authorizedType.add(BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM);
+    authorizedType.add(BankOrderLineOriginRepository.RELATED_TO_INVOICE);
+
+    if (!authorizedType.contains(relatedTo)) {
+      return relatedDataMap;
+    }
+
+    if (BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM.equals(relatedTo)) {
+      relatedDataMap = getInvoiceTermDataMap(bankOrderLineOrigin, relatedDataMap);
+    }
+
+    if (BankOrderLineOriginRepository.RELATED_TO_INVOICE.equals(relatedTo)) {
+      relatedDataMap = getInvoiceDataMap(bankOrderLineOrigin, relatedDataMap);
+    }
+
+    return relatedDataMap;
+  }
+
+  protected Map<String, Object> getInvoiceDataMap(
+      BankOrderLineOrigin bankOrderLineOrigin, Map<String, Object> relatedDataMap) {
+    Invoice invoice = invoiceRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
+    if (invoice == null) {
+      return relatedDataMap;
+    }
+    setRelatedData(
+        relatedDataMap, BankOrderLineOriginRepository.RELATED_TO_INVOICE, invoice.getId());
+    return relatedDataMap;
+  }
+
+  protected Map<String, Object> getInvoiceTermDataMap(
+      BankOrderLineOrigin bankOrderLineOrigin, Map<String, Object> relatedDataMap) {
+    InvoiceTerm invoiceTerm = invoiceTermRepo.find(bankOrderLineOrigin.getRelatedToSelectId());
+    if (invoiceTerm == null) {
+      return relatedDataMap;
+    }
+
+    if (invoiceTerm.getInvoice() != null) {
+      setRelatedData(
+          relatedDataMap,
+          BankOrderLineOriginRepository.RELATED_TO_INVOICE,
+          invoiceTerm.getInvoice().getId());
+    } else if (invoiceTerm.getMoveLine() != null) {
+      setRelatedData(
+          relatedDataMap,
+          Move.class.getCanonicalName(),
+          invoiceTerm.getMoveLine().getMove().getId());
+    }
+    return relatedDataMap;
+  }
+
+  protected Map<String, Object> setRelatedData(
+      Map<String, Object> relatedDataMap, String relatedModel, Long relatedId) {
+    relatedDataMap.put(RELATED_MODEL_KEY, relatedModel);
+    relatedDataMap.put(RELATED_ID_KEY, relatedId);
+    return relatedDataMap;
+  }
+
+  public boolean dmsFilePresent(BankOrderLineOrigin bankOrderLineOrigin) {
+    Map<String, Object> relatedDataMap = getRelatedDataMap(bankOrderLineOrigin);
+    return dmsFileRepository
+            .all()
+            .filter(
+                "self.relatedModel = :relatedModel AND self.relatedId = :relatedId AND self.isDirectory = false")
+            .bind("relatedModel", relatedDataMap.get(RELATED_MODEL_KEY))
+            .bind("relatedId", relatedDataMap.get(RELATED_ID_KEY))
+            .fetchOne()
+        != null;
   }
 }

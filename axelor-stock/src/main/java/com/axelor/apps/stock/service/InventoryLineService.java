@@ -23,22 +23,43 @@ import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class InventoryLineService {
 
   protected StockConfigService stockConfigService;
+  protected InventoryLineRepository inventoryLineRepository;
+  protected StockLocationLineService stockLocationLineService;
 
   @Inject
-  public InventoryLineService(StockConfigService stockConfigService) {
+  public InventoryLineService(
+      StockConfigService stockConfigService,
+      InventoryLineRepository inventoryLineRepository,
+      StockLocationLineService stockLocationLineService) {
     this.stockConfigService = stockConfigService;
+    this.inventoryLineRepository = inventoryLineRepository;
+    this.stockLocationLineService = stockLocationLineService;
+  }
+
+  public InventoryLine createInventoryLine(
+      Inventory inventory,
+      Product product,
+      BigDecimal currentQty,
+      String rack,
+      TrackingNumber trackingNumber)
+      throws AxelorException {
+
+    return createInventoryLine(
+        inventory, product, currentQty, rack, trackingNumber, null, null, null, null);
   }
 
   public InventoryLine createInventoryLine(
@@ -47,16 +68,19 @@ public class InventoryLineService {
       BigDecimal currentQty,
       String rack,
       TrackingNumber trackingNumber,
+      BigDecimal realQty,
+      String description,
       StockLocation stockLocation,
       StockLocation detailsStockLocation)
       throws AxelorException {
-
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
     inventoryLine.setProduct(product);
     inventoryLine.setRack(rack);
     inventoryLine.setCurrentQty(currentQty);
     inventoryLine.setTrackingNumber(trackingNumber);
+    inventoryLine.setRealQty(realQty);
+    inventoryLine.setDescription(description);
     inventoryLine.setStockLocation(stockLocation);
     if (stockLocation == null) {
       inventoryLine.setStockLocation(detailsStockLocation);
@@ -73,8 +97,7 @@ public class InventoryLineService {
 
     if (product != null) {
       StockLocationLine stockLocationLine =
-          Beans.get(StockLocationLineService.class)
-              .getOrCreateStockLocationLine(stockLocation, product);
+          stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
 
       if (stockLocationLine != null) {
         inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
@@ -106,6 +129,8 @@ public class InventoryLineService {
 
     StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getStockLocationLine(stockLocation, product);
 
     if (product != null) {
       inventoryLine.setUnit(product.getUnit());
@@ -126,11 +151,20 @@ public class InventoryLineService {
               .getInventoryValuationTypeSelect();
 
       switch (inventoryValuationTypeSelect) {
+        case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
+          price = product.getAvgPrice();
+          break;
         case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
           price = product.getCostPrice();
           break;
         case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
           price = product.getSalePrice();
+          break;
+        case StockConfigRepository.VALUATION_TYPE_PURCHASE_VALUE:
+          price = product.getPurchasePrice();
+          break;
+        case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
+          price = stockLocationLine.getAvgPrice();
           break;
         default:
           price = product.getAvgPrice();
@@ -152,11 +186,45 @@ public class InventoryLineService {
 
     if (stockLocation != null && product != null) {
       StockLocationLine stockLocationLine =
-          Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
+          stockLocationLineService.getStockLocationLine(stockLocation, product);
       if (stockLocationLine != null) {
         currentQty = stockLocationLine.getCurrentQty();
       }
     }
     return currentQty;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateInventoryLine(
+      InventoryLine inventoryLine, BigDecimal realQty, String description) throws AxelorException {
+    inventoryLine.setRealQty(realQty);
+    if (description != null) {
+      inventoryLine.setDescription(description);
+    }
+    this.compute(inventoryLine, inventoryLine.getInventory());
+    inventoryLineRepository.save(inventoryLine);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public InventoryLine addLine(
+      Inventory inventory,
+      Product product,
+      TrackingNumber trackingNumber,
+      String rack,
+      BigDecimal realQty)
+      throws AxelorException {
+    InventoryLine inventoryLine =
+        createInventoryLine(
+            inventory,
+            product,
+            getCurrentQty(inventory.getStockLocation(), product),
+            rack,
+            trackingNumber,
+            null,
+            null,
+            inventory.getStockLocation(),
+            null);
+    updateInventoryLine(inventoryLine, realQty, null);
+    return inventoryLine;
   }
 }

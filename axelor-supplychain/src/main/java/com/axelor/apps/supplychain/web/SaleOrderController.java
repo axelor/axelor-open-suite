@@ -19,9 +19,11 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -30,9 +32,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
@@ -71,6 +72,7 @@ import java.util.Optional;
 public class SaleOrderController {
 
   private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
+  private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -104,9 +106,7 @@ public class SaleOrderController {
                   traceback ->
                       response.setNotify(
                           String.format(
-                              I18n.get(
-                                  com.axelor.apps.message.exception.IExceptionMessage
-                                      .SEND_EMAIL_EXCEPTION),
+                              I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
@@ -132,12 +132,11 @@ public class SaleOrderController {
                   traceback ->
                       response.setNotify(
                           String.format(
-                              I18n.get(
-                                  com.axelor.apps.message.exception.IExceptionMessage
-                                      .SEND_EMAIL_EXCEPTION),
+                              I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else {
-          response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
+          response.setFlash(
+              I18n.get(SupplychainExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
         }
       }
     } catch (Exception e) {
@@ -148,16 +147,14 @@ public class SaleOrderController {
   public void getStockLocation(ActionRequest request, ActionResponse response) {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-    if (saleOrder != null && saleOrder.getCompany() != null) {
-
+    try {
+      Company company = saleOrder.getCompany();
       StockLocation stockLocation =
-          Beans.get(StockLocationService.class)
-              .getPickupDefaultStockLocation(saleOrder.getCompany());
-
-      if (stockLocation != null) {
-        response.setValue("stockLocation", stockLocation);
-      }
+          Beans.get(SaleOrderSupplychainService.class)
+              .getStockLocation(saleOrder.getClientPartner(), company);
+      response.setValue("stockLocation", stockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -194,10 +191,10 @@ public class SaleOrderController {
           }
 
           if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-            response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+            response.setFlash(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
-                ActionView.define("SaleOrder")
+                ActionView.define(I18n.get("SaleOrder"))
                     .model(SaleOrder.class.getName())
                     .add("form", "sale-order-generate-po-select-supplierpartner-form")
                     .param("popup", "true")
@@ -271,7 +268,8 @@ public class SaleOrderController {
       values.put("isDirectOrderLocation", isDirectOrderLocation);
 
       if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-        throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+        throw new AxelorException(
+            3, I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
       }
     } else if (request.getContext().get("supplierPartnerSelect") != null) {
       supplierPartner =
@@ -315,9 +313,8 @@ public class SaleOrderController {
 
       SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
 
-      saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
-          saleOrder, amountToInvoice, isPercent);
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
+      Map<Long, BigDecimal> priceMap = new HashMap<>();
 
       List<Map<String, Object>> saleOrderLineListContext;
       saleOrderLineListContext =
@@ -329,9 +326,19 @@ public class SaleOrderController {
           if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
             Long soLineId = Long.valueOf((Integer) map.get("id"));
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
+            BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
+            priceMap.put(soLineId, priceItem);
           }
         }
       }
+
+      // Re-compute amount to invoice if invoicing partially
+      amountToInvoice =
+          saleOrderInvoiceService.computeAmountToInvoice(
+              amountToInvoice, operationSelect, saleOrder, qtyToInvoiceMap, priceMap);
+
+      saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
+          saleOrder, amountToInvoice, isPercent);
 
       // Information to send to the service to handle an invoicing on timetables
       List<Long> timetableIdList = new ArrayList<>();
@@ -382,8 +389,7 @@ public class SaleOrderController {
   public void updateAmountToBeSpreadOverTheTimetable(
       ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderServiceSupplychainImpl.class)
-        .updateAmountToBeSpreadOverTheTimetable(saleOrder);
+    Beans.get(SaleOrderSupplychainService.class).updateAmountToBeSpreadOverTheTimetable(saleOrder);
     response.setValue(
         "amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
   }
@@ -526,7 +532,7 @@ public class SaleOrderController {
     if (stockMove != null) {
       response.setNotify(
           String.format(
-              I18n.get(IExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
+              I18n.get(SupplychainExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
               stockMove.getStockMoveSeq()));
     }
   }
@@ -609,7 +615,7 @@ public class SaleOrderController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
       response.setView(
-          ActionView.define("Invoicing")
+          ActionView.define(I18n.get("Invoicing"))
               .model(SaleOrder.class.getName())
               .add("form", "sale-order-invoicing-wizard-form")
               .param("popup", "reload")
@@ -757,6 +763,19 @@ public class SaleOrderController {
       Beans.get(SaleOrderSupplychainService.class)
           .setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
       response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getToStockLocation(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      Company company = saleOrder.getCompany();
+      StockLocation toStockLocation =
+          Beans.get(SaleOrderSupplychainService.class)
+              .getToStockLocation(saleOrder.getClientPartner(), company);
+      response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

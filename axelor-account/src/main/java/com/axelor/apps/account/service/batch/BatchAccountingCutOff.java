@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -91,12 +91,15 @@ public class BatchAccountingCutOff extends BatchStrategy {
     while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
-      accountingBatchRepository.find(accountingBatch.getId());
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
+      company = accountingBatch.getCompany();
+      researchJournal = accountingBatch.getResearchJournal();
 
       for (Move move : moveList) {
         ++offset;
 
-        if (this._processMove(move, accountingBatch)) {
+        if (this._processMove(
+            moveRepo.find(move.getId()), accountingBatchRepository.find(accountingBatch.getId()))) {
           break;
         }
       }
@@ -115,7 +118,8 @@ public class BatchAccountingCutOff extends BatchStrategy {
             .collect(Collectors.toList());
 
     for (Move move : moveList) {
-      this._processMove(move, accountingBatch);
+      this._processMove(
+          moveRepo.find(move.getId()), accountingBatchRepository.find(accountingBatch.getId()));
     }
   }
 
@@ -130,6 +134,10 @@ public class BatchAccountingCutOff extends BatchStrategy {
       int cutOffMoveStatusSelect = accountingBatch.getCutOffMoveStatusSelect();
       boolean automaticReverse = accountingBatch.getAutomaticReverse();
       boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
+      String prefixOrigin =
+          accountingBatch.getPrefixOrigin() != null
+              ? accountingBatch.getPrefixOrigin()
+              : miscOpeJournal.getPrefixOrigin() != null ? miscOpeJournal.getPrefixOrigin() : "";
 
       List<Move> moveList =
           cutOffService.generateCutOffMovesFromMove(
@@ -142,7 +150,8 @@ public class BatchAccountingCutOff extends BatchStrategy {
               accountingCutOffTypeSelect,
               cutOffMoveStatusSelect,
               automaticReverse,
-              automaticReconcile);
+              automaticReconcile,
+              prefixOrigin);
 
       if (moveList != null && !moveList.isEmpty()) {
         updateAccountMove(move, true);
@@ -189,14 +198,16 @@ public class BatchAccountingCutOff extends BatchStrategy {
         new StringBuilder(
             String.format(
                 "%s\n\t* %s ",
-                I18n.get(IExceptionMessage.ACCOUNTING_CUT_OFF_GENERATION_REPORT), batch.getDone()));
+                I18n.get(AccountExceptionMessage.ACCOUNTING_CUT_OFF_GENERATION_REPORT),
+                batch.getDone()));
 
     comment.append(getProcessedMessage());
 
     comment.append(
         String.format(
             "\n\t"
-                + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
+                + I18n.get(
+                    com.axelor.apps.base.exceptions.BaseExceptionMessage.ALARM_ENGINE_BATCH_4),
             batch.getAnomaly()));
 
     super.stop();
@@ -204,6 +215,6 @@ public class BatchAccountingCutOff extends BatchStrategy {
   }
 
   protected String getProcessedMessage() {
-    return I18n.get(IExceptionMessage.ACCOUNTING_CUT_OFF_MOVE_PROCESSED);
+    return I18n.get(AccountExceptionMessage.ACCOUNTING_CUT_OFF_MOVE_PROCESSED);
   }
 }

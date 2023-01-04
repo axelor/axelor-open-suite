@@ -10,7 +10,7 @@
     <hilite color="warning" if="statusSelect == 2"/>
     <field name="expenseSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="sentDate"/>
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
@@ -38,7 +38,7 @@
     <hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
     <field name="expenseSeq" width="120"/>
     <field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="sentDate"/>
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
@@ -49,7 +49,7 @@
   <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
     onNew="action-expense-record-default,action-expense-attrs-hide-button-readonly-field,action-expense-attrs-multiple-users,action-expense-attrs-set-total-to-refund"
     onLoad="action-expense-attrs-hide-button-readonly-field,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users,action-expense-attrs-set-total-to-refund"
-    onSave="action-expense-method-validate-and-compute" canCopy="false">
+    onSave="action-expense-method-validate-and-compute">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printExpenseItem" title="Print" action="save,action-print-expense"/>
@@ -81,14 +81,16 @@
           <field name="multipleUsers" colSpan="12" hidden="true"
             onChange="action-expense-attrs-multiple-users"/>
           <field name="company" canEdit="false" form-view="company-form"
-            grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
+            grid-view="company-grid" onChange="action-expense-record-company-onchange"
+            required="true"/>
           <field name="employee" form-view="employee-form"
             onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
-            canEdit="false" canView="false" onChange="action-expense-record-employee-onchange"/>
+            canEdit="false" canView="false" onChange="action-expense-record-employee-onchange"
+            required="true"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
-            if="__config__.app.getApp('base').getManageMultiBanks()"/>
+            if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
           <field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period"
             form-view="period-form" grid-view="period-grid" canView="false"/>
           <field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb"
@@ -164,8 +166,8 @@
       <field name="refusedBy" canEdit="false" hidden="true" form-view="user-form"
         grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
       <field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
-      <field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12"
-        readonly="true"/>
+      <field name="groundForRefusal" hidden="true"
+        showIf="statusSelect == 5 || groundForRefusal != null" colSpan="12" readonly="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList"
@@ -178,7 +180,7 @@
         form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
         onChange="action-expense-group-expense-line-on-change"/>
       <panel-related name="employeeAdvanceUsageListPanel"
-        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length"
+        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length > 0"
         field="employeeAdvanceUsageList" title="Employee advance list" readonly="false"
         canNew="false" canSelect="false" canEdit="true" editable="true"
         form-view="employee-advance-usage-expense-form"
@@ -416,9 +418,9 @@
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"
     title="Expense filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="bankDetails" hidden="true"
-      if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+      if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
   </search-filters>
 
 </object-views>

@@ -1,56 +1,123 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
-import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.YearService;
+import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 
 public class FixedAssetDateServiceImpl implements FixedAssetDateService {
 
-  /**
-   * If firstDepreciationDateInitSeelct if acquisition Date THEN : -If PeriodicityTypeSelect = 12
-   * (Year) >> FirstDepreciationDate = au 31/12 of the year of fixedAsset.acquisitionDate -if
-   * PeriodicityTypeSelect = 1 (Month) >> FirstDepreciationDate = last day of the month of
-   * fixedAsset.acquisitionDate Else (== first service date) -If PeriodicityTypeSelect = 12 (Year)
-   * >> FirstDepreciationDate = au 31/12 of the year of fixedAsset.firstServiceDate -if
-   * PeriodicityTypeSelect = 1 (Month) >> FirstDepreciationDate = last day of the month of
-   * fixedAsset.firstServiceDate
-   */
+  protected PeriodService periodService;
+  protected YearService yearService;
+
+  @Inject
+  public FixedAssetDateServiceImpl(PeriodService periodService, YearService yearService) {
+    this.periodService = periodService;
+    this.yearService = yearService;
+  }
+
   @Override
   public void computeFirstDepreciationDate(FixedAsset fixedAsset) {
+    computeEconomicFirstDepreciationDate(fixedAsset);
+    computeFiscalFirstDepreciationDate(fixedAsset);
+    computeIfrsFirstDepreciationDate(fixedAsset);
+  }
 
-    FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
-    if (fixedAssetCategory == null) {
-      return;
-    }
-    Integer periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
-    Integer firstDepreciationDateInitSelect =
-        fixedAssetCategory.getFirstDepreciationDateInitSelect();
-    if (fixedAssetCategory != null
-        && periodicityTypeSelect != null
-        && firstDepreciationDateInitSelect != null) {
-      if (firstDepreciationDateInitSelect
-          == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION) {
-        fixedAsset.setFirstDepreciationDate(
-            this.computeLastDayOfPeriodicity(fixedAsset, fixedAsset.getAcquisitionDate()));
-      } else {
-        fixedAsset.setFirstDepreciationDate(
-            this.computeLastDayOfPeriodicity(fixedAsset, fixedAsset.getFirstServiceDate()));
+  @Override
+  public void computeFiscalFirstDepreciationDate(FixedAsset fixedAsset) {
+    LocalDate fiscalDate =
+        fixedAsset.getFiscalFirstDepreciationDateInitSelect()
+                    == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+                && fixedAsset.getFirstServiceDate() != null
+            ? fixedAsset.getFirstServiceDate()
+            : fixedAsset.getAcquisitionDate();
+    fixedAsset.setFiscalFirstDepreciationDate(
+        computeFirstDepreciationDate(
+            fixedAsset.getCompany(), fiscalDate, fixedAsset.getFiscalPeriodicityTypeSelect()));
+  }
+
+  @Override
+  public void computeEconomicFirstDepreciationDate(FixedAsset fixedAsset) {
+    LocalDate economicDate =
+        fixedAsset.getFirstDepreciationDateInitSelect()
+                    == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+                && fixedAsset.getFirstServiceDate() != null
+            ? fixedAsset.getFirstServiceDate()
+            : fixedAsset.getAcquisitionDate();
+
+    fixedAsset.setFirstDepreciationDate(
+        computeFirstDepreciationDate(
+            fixedAsset.getCompany(), economicDate, fixedAsset.getPeriodicityTypeSelect()));
+  }
+
+  @Override
+  public void computeIfrsFirstDepreciationDate(FixedAsset fixedAsset) {
+    LocalDate ifrsDate =
+        fixedAsset.getIfrsFirstDepreciationDateInitSelect()
+                    == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+                && fixedAsset.getFirstServiceDate() != null
+            ? fixedAsset.getFirstServiceDate()
+            : fixedAsset.getAcquisitionDate();
+
+    fixedAsset.setIfrsFirstDepreciationDate(
+        computeFirstDepreciationDate(
+            fixedAsset.getCompany(), ifrsDate, fixedAsset.getIfrsPeriodicityTypeSelect()));
+  }
+
+  protected LocalDate computeFirstDepreciationDate(
+      Company company, LocalDate date, Integer periodicityTypeSelect) {
+
+    if (periodicityTypeSelect == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
+      Period period = periodService.getPeriod(date, company, YearRepository.TYPE_FISCAL);
+      if (period == null) {
+        // Last day of the month of date
+        return computeLastDayOfPeriodicity(periodicityTypeSelect, date);
       }
+      return period.getToDate();
+    } else {
+      Year year = yearService.getYear(date, company, YearRepository.TYPE_FISCAL);
+      if (year == null) {
+        // Last day of the year of date
+        return computeLastDayOfPeriodicity(periodicityTypeSelect, date);
+      }
+      return year.getToDate();
     }
   }
 
   @Override
-  public LocalDate computeLastDayOfPeriodicity(FixedAsset fixedAsset, LocalDate date) {
-    if (fixedAsset.getPeriodicityTypeSelect() == null) {
+  public LocalDate computeLastDayOfPeriodicity(Integer periodicityType, LocalDate date) {
+    if (periodicityType == null || date == null) {
       return date;
     }
-    if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
+    if (periodicityType == FixedAssetRepository.PERIODICITY_TYPE_YEAR) {
       return LocalDate.of(date.getYear(), 12, 31);
     }
-    if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
+    if (periodicityType == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
       return date.with(TemporalAdjusters.lastDayOfMonth());
     }
     return date;

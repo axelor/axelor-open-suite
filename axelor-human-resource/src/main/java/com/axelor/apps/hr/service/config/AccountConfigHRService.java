@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -35,7 +35,7 @@ public class AccountConfigHRService extends AccountConfigService {
       throw new AxelorException(
           accountConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EXPENSE_JOURNAL),
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_JOURNAL),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getExpenseJournal();
@@ -46,7 +46,7 @@ public class AccountConfigHRService extends AccountConfigService {
       throw new AxelorException(
           accountConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EXPENSE_ACCOUNT),
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_ACCOUNT),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getEmployeeAccount();
@@ -57,7 +57,7 @@ public class AccountConfigHRService extends AccountConfigService {
       throw new AxelorException(
           accountConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EXPENSE_ACCOUNT_TAX),
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_ACCOUNT_TAX),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getExpenseTaxAccount();

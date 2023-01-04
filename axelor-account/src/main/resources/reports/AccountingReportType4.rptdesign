@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -140,6 +140,12 @@
                     <text-property name="heading">invoice_name</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">nonDue</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">nonDue</text-property>
+                    <text-property name="heading">nonDue</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">&lt;30days</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">&lt;30days</text-property>
@@ -187,6 +193,12 @@
                     <text-property name="displayName">SoldeClient</text-property>
                     <text-property name="heading">SoldeClient</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">showProvisionTitle</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">showProvisionTitle</text-property>
+                    <text-property name="heading">showProvisionTitle</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -220,47 +232,61 @@
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">&lt;30days</property>
+                        <property name="name">nonDue</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">30&lt;days&lt;60</property>
+                        <property name="name">&lt;30days</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">60&lt;days&lt;90</property>
+                        <property name="name">30&lt;days&lt;60</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">90&lt;days&lt;120</property>
+                        <property name="name">60&lt;days&lt;90</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">120&lt;days&lt;150</property>
+                        <property name="name">90&lt;days&lt;120</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">150&lt;days&lt;180</property>
+                        <property name="name">120&lt;days&lt;150</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
-                        <property name="name">180&lt;days</property>
+                        <property name="name">150&lt;days&lt;180</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
+                        <property name="name">180&lt;days</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
                         <property name="name">SoldeClient</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">showProvisionTitle</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
             <property name="rowFetchLimit">0</property>
+            <method name="onFetch"><![CDATA[if(dataSetRow["showProvisionTitle"])
+{
+	vars["showProvisionTitle"] = dataSetRow["showProvisionTitle"];
+}]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -286,130 +312,154 @@
                 </structure>
                 <structure>
                     <property name="position">4</property>
+                    <property name="name">nonDue</property>
+                    <property name="nativeName">nonDue</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
                     <property name="name">&lt;30days</property>
                     <property name="nativeName">&lt;30days</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">6</property>
                     <property name="name">30&lt;days&lt;60</property>
                     <property name="nativeName">30&lt;days&lt;60</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">7</property>
                     <property name="name">60&lt;days&lt;90</property>
                     <property name="nativeName">60&lt;days&lt;90</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">90&lt;days&lt;120</property>
                     <property name="nativeName">90&lt;days&lt;120</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">120&lt;days&lt;150</property>
                     <property name="nativeName">120&lt;days&lt;150</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">10</property>
                     <property name="name">150&lt;days&lt;180</property>
                     <property name="nativeName">150&lt;days&lt;180</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
                     <property name="name">180&lt;days</property>
                     <property name="nativeName">180&lt;days</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">12</property>
                     <property name="name">SoldeClient</property>
                     <property name="nativeName">SoldeClient</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">showProvisionTitle</property>
+                    <property name="nativeName">showProvisionTitle</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name, 
 MoveLine.partner_seq,
 COALESCE(Invoice.invoice_id,MoveLine.name) as invoice_name,
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date  <= 30
+SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 0
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
+END)
+else 0
+END) as "nonDue",
+SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 30
+	AND AccountingReport.date_val - InvoiceTerm.due_date  > 0
+then
+(CASE WHEN MoveLine.debit - MoveLine.credit < 0
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "<30days",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date > 30
-	AND AccountingReport.date_to - InvoiceTerm.due_date <= 60
+SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 30
+	AND AccountingReport.date_val - InvoiceTerm.due_date <= 60
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "30<days<60",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date > 60
-	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date <= 90
+SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 60
+	AND AccountingReport.date_val - InvoiceTerm.due_date <= 90
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "60<days<90",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date > 90
-	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date <= 120
+SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 90
+	AND AccountingReport.date_val - InvoiceTerm.due_date <= 120
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "90<days<120",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date > 120
-	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date <= 150
+SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 120
+	AND AccountingReport.date_val - InvoiceTerm.due_date <= 150
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "120<days<150",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date > 150
-	AND COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date <= 180
+SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 150
+	AND AccountingReport.date_val - InvoiceTerm.due_date <= 180
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "150<days<180",
-SUM(Case when COALESCE(AccountingReport.date_to,AccountingReport.date_val) - InvoiceTerm.due_date > 180
+SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 180
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "180<days",
 SUM(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
-as "SoldeClient"
+as "SoldeClient",
+CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle"
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_invoice_term as InvoiceTerm on (InvoiceTerm.move_line = MoveLine.id)
@@ -419,16 +469,15 @@ left outer join public.account_account as Account on (MoveLine.account  = Accoun
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 where
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.company_currency) AND
 (AccountingReport.date_from IS NULL OR InvoiceTerm.due_date >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR InvoiceTerm.due_date <= AccountingReport.date_to) AND
-InvoiceTerm.due_date <= AccountingReport.date_val and 
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 (Move.functional_origin_select = 3 or Move.functional_origin_select = 4) and
-Account.reconcile_ok = true  
-AND Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+Account.reconcile_ok = true AND InvoiceTerm.amount_remaining != 0
+AND Move.ignore_in_accounting_ok is not true AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -1005,6 +1054,29 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
         </simple-master-page>
     </page-setup>
     <body>
+        <table id="6275">
+            <property name="dataSet">MoveLineDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">true</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">showProvisionTitle</property>
+                    <text-property name="displayName">showProvisionTitle</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["showProvisionTitle"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
+            <column id="6282"/>
+            <detail>
+                <row id="6278">
+                    <cell id="6279"/>
+                </row>
+            </detail>
+        </table>
         <grid id="490">
             <property name="canShrink">true</property>
             <property name="width">11.166666666666666in</property>
@@ -1421,7 +1493,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">!row._outer["display_simulated_move"]</expression>
+                                <expression name="valueExpr" type="javascript">!vars["showProvisionTitle"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -1447,7 +1519,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"].toUpperCase()</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1507,7 +1579,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">!row._outer["display_simulated_move"]</expression>
+                                <expression name="valueExpr" type="javascript">!vars["showProvisionTitle"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -1533,7 +1605,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"].toUpperCase()</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1894,6 +1966,165 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">Sum&lt;30daysByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["&lt;30days"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum30&lt;days&lt;60ByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["30&lt;days&lt;60"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum60&lt;days&lt;90ByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["60&lt;days&lt;90"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum90&lt;days&lt;120ByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["90&lt;days&lt;120"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum120&lt;days&lt;150ByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["120&lt;days&lt;150"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum150&lt;days&lt;180ByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["150&lt;days&lt;180"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Sum180&lt;daysByInvoiceName</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["180&lt;days"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">nonDue</property>
+                                <text-property name="displayName">nonDue</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["nonDue"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">showProvisionTitle</property>
+                                <text-property name="displayName">showProvisionTitle</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["showProvisionTitle"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SumNonDueByPartner</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>PartnerGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["nonDue"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SumNonDueByInvoiceName</property>
+                                <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>InvoiceGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["nonDue"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">SumNonDue</property>
+                                <property name="dataType">decimal</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["nonDue"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1716">
@@ -1909,6 +2140,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="width">0.9270833333333334in</property>
                         </column>
                         <column id="1771">
+                            <property name="suppressDuplicates">false</property>
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -1917,27 +2149,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </list-property>
                             <property name="width">1.3229166666666667in</property>
                         </column>
-                        <column id="6305">
-                            <property name="width">0.7708333333333334in</property>
-                        </column>
-                        <column id="6298">
-                            <property name="width">1in</property>
-                        </column>
-                        <column id="1721">
-                            <property name="width">0.7708333333333334in</property>
-                        </column>
-                        <column id="1722">
-                            <property name="width">0.8333333333333334in</property>
-                        </column>
-                        <column id="1723">
-                            <property name="width">0.8958333333333334in</property>
-                        </column>
-                        <column id="1724">
-                            <property name="width">0.8333333333333334in</property>
-                        </column>
-                        <column id="1725">
-                            <property name="width">0.7708333333333334in</property>
-                        </column>
+                        <column id="6448"/>
+                        <column id="6305"/>
+                        <column id="6298"/>
+                        <column id="1721"/>
+                        <column id="1722"/>
+                        <column id="1723"/>
+                        <column id="1724"/>
+                        <column id="1725"/>
                         <header>
                             <row id="1616">
                                 <cell id="1617">
@@ -2064,7 +2283,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'AccountingReportType4.invoice'</value>
+                                                    <value type="javascript">'AccountingReportType4.termN'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2086,8 +2305,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="6299">
-                                    <property name="colSpan">7</property>
+                                <cell id="6442">
+                                    <property name="colSpan">8</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -2228,6 +2447,54 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                 <property name="dataType">string</property>
                                             </structure>
                                         </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="6443">
+                                    <property name="backgroundColor">#E6E6FA</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">bottom</property>
+                                    <text id="6330">
+                                        <property name="fontSize">8.5pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="marginLeft">2pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType4.nonDue'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -2653,6 +2920,32 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                     </cell>
+                                    <cell id="6444">
+                                        <property name="borderLeftColor">#000000</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">#000000</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopColor">#9C9C9C</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <data id="6449">
+                                            <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">###,##0.00</property>
+                                            </structure>
+                                            <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row._outer["detailed"] == true</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="resultSetColumn">SumNonDueByPartner</property>
+                                        </data>
+                                    </cell>
                                     <cell id="6301">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -2901,6 +3194,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["invoice_name"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
+                                    <cell id="6445">
+                                        <property name="borderLeftColor">#000000</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightColor">#000000</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <data id="6450">
+                                            <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Unformatted</property>
+                                            </structure>
+                                            <property name="textAlign">right</property>
+                                            <property name="resultSetColumn">SumNonDueByInvoiceName</property>
+                                        </data>
+                                    </cell>
                                     <cell id="6302">
                                         <property name="borderLeftColor">#000000</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -2908,14 +3217,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6337">
+                                        <data id="6435">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">&lt;30days</property>
+                                            <property name="resultSetColumn">Sum&lt;30daysByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="6295">
@@ -2925,14 +3230,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6338">
+                                        <data id="6436">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">30&lt;days&lt;60</property>
+                                            <property name="resultSetColumn">Sum30&lt;days&lt;60ByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="1744">
@@ -2942,14 +3243,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6339">
+                                        <data id="6437">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">60&lt;days&lt;90</property>
+                                            <property name="resultSetColumn">Sum60&lt;days&lt;90ByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="1745">
@@ -2959,14 +3256,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6340">
+                                        <data id="6438">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">90&lt;days&lt;120</property>
+                                            <property name="resultSetColumn">Sum90&lt;days&lt;120ByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="1746">
@@ -2976,14 +3269,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6341">
+                                        <data id="6439">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">120&lt;days&lt;150</property>
+                                            <property name="resultSetColumn">Sum120&lt;days&lt;150ByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="1747">
@@ -2993,14 +3282,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6342">
+                                        <data id="6440">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">150&lt;days&lt;180</property>
+                                            <property name="resultSetColumn">Sum150&lt;days&lt;180ByInvoiceName</property>
                                         </data>
                                     </cell>
                                     <cell id="1748">
@@ -3010,14 +3295,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6343">
+                                        <data id="6441">
                                             <property name="fontSize">8pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Custom</property>
-                                                <property name="pattern">###,##0.00</property>
-                                            </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">180&lt;days</property>
+                                            <property name="resultSetColumn">Sum180&lt;daysByInvoiceName</property>
                                         </data>
                                     </cell>
                                 </row>
@@ -3114,6 +3395,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
+                                </cell>
+                                <cell id="6446">
+                                    <property name="backgroundColor">#FFFFFF</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="6451">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">SumNonDue</property>
+                                    </data>
                                 </cell>
                                 <cell id="6303">
                                     <property name="backgroundColor">#FFFFFF</property>
@@ -3311,8 +3613,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
-                                <cell id="6304">
-                                    <property name="colSpan">4</property>
+                                <cell id="6447">
+                                    <property name="colSpan">5</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
@@ -3408,4 +3710,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="showProvisionTitle">
+            <expression name="value" type="javascript">false</expression>
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

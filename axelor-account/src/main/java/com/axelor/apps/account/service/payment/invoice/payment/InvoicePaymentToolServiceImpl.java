@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -241,7 +241,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         && invoicePayment.getInvoice().getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
+          I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
           invoicePayment.getInvoice().getInvoiceId());
     }
   }
@@ -313,14 +313,19 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     return invoiceTermPaymentList.stream()
         .filter(it -> it.getInvoiceTerm().getAmountRemainingAfterFinDiscount().signum() > 0)
         .map(
-            it ->
-                invoiceTermService
+            it -> {
+              try {
+                return invoiceTermService
                     .getFinancialDiscountTaxAmount(it.getInvoiceTerm())
                     .multiply(it.getPaidAmount())
                     .divide(
                         it.getInvoiceTerm().getAmountRemainingAfterFinDiscount(),
                         10,
-                        RoundingMode.HALF_UP))
+                        RoundingMode.HALF_UP);
+              } catch (Exception e) {
+                throw new RuntimeException(e);
+              }
+            })
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
         .setScale(2, RoundingMode.HALF_UP);
@@ -412,7 +417,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoicePayment.setFinancialDiscountTaxAmount(
         invoicePayment
             .getFinancialDiscountTotalAmount()
-            .multiply(taxRate)
+            .multiply(taxRate.divide(new BigDecimal(100)))
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     invoicePayment.setFinancialDiscountAmount(
         invoicePayment

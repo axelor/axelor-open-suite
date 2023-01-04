@@ -24,19 +24,25 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -44,10 +50,12 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -55,9 +63,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected int jpaLimit = 20;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
@@ -67,6 +77,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
+  protected MoveLineControlService moveLineControlService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -77,7 +88,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      MoveLineControlService moveLineControlService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -86,6 +98,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
     this.invoiceTermService = invoiceTermService;
+    this.moveLineControlService = moveLineControlService;
   }
 
   @Override
@@ -138,20 +151,21 @@ public class MoveLineServiceImpl implements MoveLineService {
    * @param moveLineList
    */
   @Override
-  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList) {
+  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList)
+      throws AxelorException {
 
-    List<MoveLine> reconciliableCreditMoveLineList =
-        moveLineToolService.getReconciliableCreditMoveLines(moveLineList);
-    List<MoveLine> reconciliableDebitMoveLineList =
-        moveLineToolService.getReconciliableDebitMoveLines(moveLineList);
+    if (moveLineList.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(AccountExceptionMessage.MOVE_LINE_RECONCILE_LINE_NO_SELECTED));
+    }
 
-    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
-
-    populateCredit(moveLineMap, reconciliableCreditMoveLineList);
-
-    populateDebit(moveLineMap, reconciliableDebitMoveLineList);
+    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap =
+        getPopulatedReconcilableMoveLineMap(moveLineList);
 
     Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
+
+    int i = 0;
 
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
@@ -161,7 +175,10 @@ public class MoveLineServiceImpl implements MoveLineService {
         TraceBackService.trace(e);
         log.debug(e.getMessage());
       } finally {
-        JPA.clear();
+        i++;
+        if (i % jpaLimit == 0) {
+          JPA.clear();
+        }
       }
     }
   }
@@ -182,16 +199,9 @@ public class MoveLineServiceImpl implements MoveLineService {
   @Override
   @Transactional
   public void reconcileMoveLines(List<MoveLine> moveLineList) {
-    List<MoveLine> reconciliableCreditMoveLineList =
-        moveLineToolService.getReconciliableCreditMoveLines(moveLineList);
-    List<MoveLine> reconciliableDebitMoveLineList =
-        moveLineToolService.getReconciliableDebitMoveLines(moveLineList);
 
-    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
-
-    populateCredit(moveLineMap, reconciliableCreditMoveLineList);
-
-    populateDebit(moveLineMap, reconciliableDebitMoveLineList);
+    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap =
+        getPopulatedReconcilableMoveLineMap(moveLineList);
 
     Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
 
@@ -203,6 +213,15 @@ public class MoveLineServiceImpl implements MoveLineService {
       paymentService.useExcessPaymentOnMoveLinesDontThrow(
           companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
     }
+  }
+
+  protected Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>>
+      getPopulatedReconcilableMoveLineMap(List<MoveLine> moveLineList) {
+
+    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
+    populateCredit(moveLineMap, moveLineToolService.getReconciliableCreditMoveLines(moveLineList));
+    populateDebit(moveLineMap, moveLineToolService.getReconciliableDebitMoveLines(moveLineList));
+    return moveLineMap;
   }
 
   @Transactional
@@ -242,7 +261,9 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       keys.add(move.getCompany());
       keys.add(moveLine.getAccount());
-      keys.add(moveLine.getPartner());
+      if (moveLine.getAccount().getUseForPartnerBalance()) {
+        keys.add(moveLine.getPartner());
+      }
 
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists = moveLineMap.get(keys);
 
@@ -294,11 +315,19 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
+    if (moveDate == null
+        || moveLine.getCutOffStartDate() == null
+        || moveLine.getCutOffEndDate() == null) {
+      return BigDecimal.ZERO;
+    }
     BigDecimal daysProrata =
         BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
     BigDecimal daysTotal =
         BigDecimal.valueOf(
             ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
+    if (daysTotal.compareTo(BigDecimal.ZERO) == 0) {
+      return BigDecimal.ZERO;
+    }
     BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
 
     return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
@@ -378,5 +407,33 @@ public class MoveLineServiceImpl implements MoveLineService {
     batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
 
     return batchAccountingCutOff.getBatch();
+  }
+
+  public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {
+    moveLineList.stream()
+        .filter(it -> Objects.equals(it.getPartner(), previousPartner))
+        .forEach(it -> it.setPartner(partner));
+  }
+
+  @Override
+  public List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds) {
+    if (moveLineIds == null) {
+      return Collections.emptyList();
+    }
+    return getMoveLinesFromIds(moveLineIds).stream()
+        .filter(moveLineControlService::canReconcile)
+        .collect(Collectors.toList());
+  }
+
+  protected List<MoveLine> getMoveLinesFromIds(List<Integer> moveLineIds) {
+    if (moveLineIds == null) {
+      return Collections.emptyList();
+    }
+    List<MoveLine> moveLineList = new ArrayList<>();
+    for (Integer id : moveLineIds) {
+      MoveLine moveLine = moveLineRepository.find(id.longValue());
+      moveLineList.add(moveLine);
+    }
+    return moveLineList;
   }
 }

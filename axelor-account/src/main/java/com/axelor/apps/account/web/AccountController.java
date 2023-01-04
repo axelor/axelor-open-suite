@@ -20,11 +20,12 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.tool.MassUpdateTool;
 import com.axelor.common.ObjectUtils;
@@ -37,6 +38,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
@@ -90,7 +92,7 @@ public class AccountController {
 
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY),
+            I18n.get(AccountExceptionMessage.ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY),
             account.getCode(),
             account.getCompany().getName());
       }
@@ -105,7 +107,7 @@ public class AccountController {
       Account account = request.getContext().asType(Account.class);
       Beans.get(AccountService.class).checkAnalyticAxis(account);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -179,13 +181,13 @@ public class AccountController {
       Object statusObj = request.getContext().get(fieldName);
 
       if (ObjectUtils.isEmpty(statusObj)) {
-        response.setError(I18n.get(IExceptionMessage.MASS_UPDATE_NO_STATUS));
+        response.setError(I18n.get(AccountExceptionMessage.MASS_UPDATE_NO_STATUS));
         return;
       }
 
       Object selectedIdObj = request.getContext().get("_selectedIds");
       if (ObjectUtils.isEmpty(selectedIdObj)) {
-        response.setError(I18n.get(IExceptionMessage.MASS_UPDATE_NO_RECORD_SELECTED));
+        response.setError(I18n.get(AccountExceptionMessage.MASS_UPDATE_NO_RECORD_SELECTED));
         return;
       }
 
@@ -197,9 +199,10 @@ public class AccountController {
           MassUpdateTool.update(modelClass, fieldName, statusSelect, selectedIds);
       String message = null;
       if (recordsUpdated > 0) {
-        message = String.format(I18n.get(IExceptionMessage.MASS_UPDATE_SUCCESSFUL), recordsUpdated);
+        message =
+            String.format(I18n.get(AccountExceptionMessage.MASS_UPDATE_SUCCESSFUL), recordsUpdated);
       } else {
-        message = I18n.get(IExceptionMessage.MASS_UPDATE_SELECTED_NO_RECORD);
+        message = I18n.get(AccountExceptionMessage.MASS_UPDATE_SELECTED_NO_RECORD);
       }
       response.setFlash(message);
       response.setCanClose(true);
@@ -216,7 +219,7 @@ public class AccountController {
       Object statusObj = request.getContext().get(fieldName);
 
       if (ObjectUtils.isEmpty(statusObj)) {
-        response.setError(I18n.get(IExceptionMessage.MASS_UPDATE_NO_STATUS));
+        response.setError(I18n.get(AccountExceptionMessage.MASS_UPDATE_NO_STATUS));
         return;
       }
 
@@ -226,9 +229,10 @@ public class AccountController {
       Integer recordsUpdated = MassUpdateTool.update(modelClass, fieldName, statusSelect, null);
       String message = null;
       if (recordsUpdated > 0) {
-        message = String.format(I18n.get(IExceptionMessage.MASS_UPDATE_SUCCESSFUL), recordsUpdated);
+        message =
+            String.format(I18n.get(AccountExceptionMessage.MASS_UPDATE_SUCCESSFUL), recordsUpdated);
       } else {
-        message = I18n.get(IExceptionMessage.MASS_UPDATE_ALL_NO_RECORD);
+        message = I18n.get(AccountExceptionMessage.MASS_UPDATE_ALL_NO_RECORD);
       }
 
       response.setFlash(message);
@@ -259,6 +263,18 @@ public class AccountController {
           account.getAnalyticDistributionTemplate());
       analyticDistributionTemplateService.validateTemplatePercentages(
           account.getAnalyticDistributionTemplate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setAmountRemainingReconciliableMoveLines(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      Beans.get(MoveLineToolService.class).setAmountRemainingReconciliableMoveLines(context);
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

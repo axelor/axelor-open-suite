@@ -30,7 +30,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -122,9 +122,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       throws AxelorException {
 
     LocalDate paymentDate = paymentMove.getDate();
-    BigDecimal amountConverted =
-        currencyService.getAmountCurrencyConvertedAtDate(
-            paymentMove.getCompanyCurrency(), paymentMove.getCurrency(), amount, paymentDate);
     int typePaymentMove = this.determineType(paymentMove);
 
     Currency currency = paymentMove.getCurrency();
@@ -142,7 +139,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
     invoicePayment =
         this.createInvoicePayment(
-            invoice, amountConverted, paymentDate, currency, paymentMode, typePaymentMove);
+            invoice, amount, paymentDate, currency, paymentMode, typePaymentMove);
 
     invoicePayment.setMove(paymentMove);
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
@@ -531,20 +528,20 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
           || !invoice.getCompany().equals(company)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
+            I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
       }
       if (invoice.getCurrency() == null
           || currency == null
           || !invoice.getCurrency().equals(currency)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
+            I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
       }
       if (isActivatePassedForPayment
           && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION));
+            I18n.get(AccountExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION));
       }
       invoiceToPay.add(invoiceId);
     }

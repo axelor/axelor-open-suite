@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -319,7 +320,9 @@ public interface InvoiceService {
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
   @CallMethod
-  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
+  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice, FinancialDiscount financialDiscount);
+
+  boolean checkInvoiceLinesAnalyticDistribution(Invoice invoice);
 
   boolean checkInvoiceLinesCutOffDates(Invoice invoice);
 

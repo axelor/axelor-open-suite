@@ -34,6 +34,8 @@ public class MapperRecord {
 
   private boolean savedRecord = false;
 
+  private boolean save = true;
+
   private String targetVariable = "rec";
 
   private StringBuilder scriptBuilder = new StringBuilder();
@@ -62,6 +64,14 @@ public class MapperRecord {
 
   public void setSavedRecord(boolean savedRecord) {
     this.savedRecord = savedRecord;
+  }
+
+  public boolean isSave() {
+    return save;
+  }
+
+  public void setSave(boolean save) {
+    this.save = save;
   }
 
   public List<MapperField> getFields() {
@@ -150,8 +160,13 @@ public class MapperRecord {
 
   public void addReturn() {
 
-    if (newRecord || savedRecord) {
-      scriptBuilder.append("return $ctx.save(" + targetVariable + ")");
+    String saveStr = "$ctx.save(" + targetVariable + ")";
+    if (!save) {
+      saveStr = targetVariable;
+    }
+
+    if (newRecord || savedRecord || save) {
+      scriptBuilder.append("return " + saveStr);
     }
   }
 }

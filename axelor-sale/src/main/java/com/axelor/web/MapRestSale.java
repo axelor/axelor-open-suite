@@ -37,6 +37,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/map")
+@Deprecated
 public class MapRestSale {
 
   @Inject MapService mapService;
@@ -46,6 +47,7 @@ public class MapRestSale {
   @Path("/geomap/turnover")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getGeoMapData() {
 
     Map<String, BigDecimal> data = new HashMap<String, BigDecimal>();
