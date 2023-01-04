@@ -47,10 +47,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsIfrsEqualToFiscalDepreciation()
-        && fixedAsset
-            .getIfrsComputationMethodSelect()
-            .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
+    if (!fixedAsset.getIsIfrsEqualToFiscalDepreciation()) {
       return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
     }
 
@@ -100,7 +97,8 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected Boolean isProrataTemporis(FixedAsset fixedAsset) {
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
+        && fixedAsset.getIfrsNbrOfPastDepreciations() > 0) {
       // This case means that prorata temporis was already computed in another software.
       return false;
     }
@@ -110,7 +108,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected BigDecimal computeInitialDegressiveDepreciation(
       FixedAsset fixedAsset, BigDecimal baseValue) {
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset) && !isProrataTemporis(fixedAsset)) {
       FixedAssetLine dummyPreviousLine = new FixedAssetLine();
       dummyPreviousLine.setAccountingValue(baseValue);
       return super.computeOnGoingDegressiveDepreciation(fixedAsset, dummyPreviousLine);

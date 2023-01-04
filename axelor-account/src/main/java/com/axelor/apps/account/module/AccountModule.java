@@ -65,6 +65,10 @@ import com.axelor.apps.account.db.repo.ReconcileManagementRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseManagementRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
+import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountCustomerServiceImpl;
+import com.axelor.apps.account.service.AccountEquivService;
+import com.axelor.apps.account.service.AccountEquivServiceImpl;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountingCloseAnnualService;
@@ -175,6 +179,14 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportServiceImpl;
+import com.axelor.apps.account.service.custom.AccountingReportValueCustomRuleService;
+import com.axelor.apps.account.service.custom.AccountingReportValueCustomRuleServiceImpl;
+import com.axelor.apps.account.service.custom.AccountingReportValueMoveLineService;
+import com.axelor.apps.account.service.custom.AccountingReportValueMoveLineServiceImpl;
+import com.axelor.apps.account.service.custom.AccountingReportValuePercentageService;
+import com.axelor.apps.account.service.custom.AccountingReportValuePercentageServiceImpl;
+import com.axelor.apps.account.service.custom.AccountingReportValueService;
+import com.axelor.apps.account.service.custom.AccountingReportValueServiceImpl;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
@@ -193,8 +205,12 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlServi
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetImportService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetImportServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicComputationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineGenerationService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineGenerationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
@@ -209,6 +225,8 @@ import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -622,5 +640,26 @@ public class AccountModule extends AxelorModule {
     bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
 
     bind(MoveLineQueryService.class).to(MoveLineQueryServiceImpl.class);
+
+    bind(InvoiceFinancialDiscountService.class).to(InvoiceFinancialDiscountServiceImpl.class);
+
+    bind(AccountingReportValueService.class).to(AccountingReportValueServiceImpl.class);
+
+    bind(AccountingReportValueCustomRuleService.class)
+        .to(AccountingReportValueCustomRuleServiceImpl.class);
+
+    bind(AccountingReportValueMoveLineService.class)
+        .to(AccountingReportValueMoveLineServiceImpl.class);
+
+    bind(AccountingReportValuePercentageService.class)
+        .to(AccountingReportValuePercentageServiceImpl.class);
+
+    bind(AccountEquivService.class).to(AccountEquivServiceImpl.class);
+
+    bind(FixedAssetImportService.class).to(FixedAssetImportServiceImpl.class);
+
+    bind(FixedAssetLineGenerationService.class).to(FixedAssetLineGenerationServiceImpl.class);
+
+    bind(AccountCustomerService.class).to(AccountCustomerServiceImpl.class);
   }
 }

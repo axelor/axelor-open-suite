@@ -19,15 +19,18 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -89,6 +92,29 @@ public class AnalyticDistributionLineController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAnalyticAxisDomain(ActionRequest request, ActionResponse response) {
+    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+    Company company = null;
+    if (analyticMoveLine.getAnalyticJournal() != null
+        && analyticMoveLine.getAnalyticJournal().getCompany() != null) {
+      company = analyticMoveLine.getAnalyticJournal().getCompany();
+    } else {
+      Context parent = request.getContext().getParent();
+      if (parent.getParent() != null && parent.getParent().get("company") != null) {
+        company = (Company) parent.get("company");
+      } else if (parent.get("move") != null && ((Move) parent.get("move")).getCompany() != null) {
+        company = ((Move) parent.get("move")).getCompany();
+      }
+    }
+    if (company != null) {
+      response.setAttr(
+          "analyticAxis",
+          "domain",
+          Beans.get(AnalyticMoveLineService.class)
+              .getAnalyticAxisDomain(analyticMoveLine, company));
     }
   }
 }

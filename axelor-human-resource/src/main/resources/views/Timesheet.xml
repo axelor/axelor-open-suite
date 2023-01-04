@@ -614,7 +614,8 @@
 
   <action-view name="action-timesheet-show-timesheet-line-editor"
     title="Timesheet lines">
-    <view type="html" name="hr/timesheet?timesheetId={{id}}&amp;showActivity={{$showActivity}}"/>
+    <view type="html"
+      name="hr/timesheet/?timesheetId={{id}}&amp;showActivity={{$showActivity}}"/>
   </action-view>
 
   <action-view name="action-timesheet-see-timesheet-lines" title="See timesheet lines"
@@ -652,11 +653,6 @@
     <attribute for="employee" name="domain" if="!company"
       expr="eval: &quot; self.id IN (0) &quot;"/>
   </action-attrs>
-
-  <action-record name="action-hr-record-empty-employee"
-    model="com.axelor.apps.hr.db.Timesheet">
-    <field name="employee" expr="eval: null"/>
-  </action-record>
 
   <action-condition name="action-hr-condition-automatic-from-generation-date">
     <check

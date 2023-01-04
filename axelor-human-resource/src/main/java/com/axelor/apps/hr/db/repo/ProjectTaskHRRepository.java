@@ -24,6 +24,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.util.Map;
 
 public class ProjectTaskHRRepository extends ProjectTaskProjectRepository {
 
@@ -70,5 +71,18 @@ public class ProjectTaskHRRepository extends ProjectTaskProjectRepository {
     task.setTotalRealHrs(null);
     task.clearProjectPlanningTimeList();
     return task;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    if (json != null
+        && json.get("id") != null
+        && Boolean.TRUE.equals(context.get("isShowTimeSpent"))) {
+      Long id = (Long) json.get("id");
+      ProjectTask projectTask = find(id);
+      json.put(
+          "$durationForCustomer", projectPlanningTimeService.getDurationForCustomer(projectTask));
+    }
+    return super.populate(json, context);
   }
 }

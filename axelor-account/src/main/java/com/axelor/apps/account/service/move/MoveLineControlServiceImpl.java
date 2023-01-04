@@ -40,6 +40,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -49,6 +50,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   protected MoveLineToolService moveLineToolService;

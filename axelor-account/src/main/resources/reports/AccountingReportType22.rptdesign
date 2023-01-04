@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806071708</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -16,6 +16,18 @@
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">4415</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">4415</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">4415</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -869,6 +881,7 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE 
 			AccountingReport.id = ?
+			AND FixedAsset.company = AccountingReport.company
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1
 			AND FixedAssetType.technical_type_select != 1
@@ -904,6 +917,7 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id 
 		WHERE 
 			AccountingReport.id = ?
+			AND FixedAsset.company = AccountingReport.company
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1
 			AND FixedAssetType.technical_type_select != 1
@@ -942,6 +956,7 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE 
 			AccountingReport.id = ?
+			AND FixedAsset.company = AccountingReport.company
 			AND FIxedAsset.status_select != 1
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1 
@@ -964,6 +979,7 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE 
 			AccountingReport.id = ?
+			AND FixedAsset.company = AccountingReport.company
 			AND FixedAsset.status_select = 4
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1 
@@ -988,6 +1004,7 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE 
 			AccountingReport.id = ?
+			AND FixedAsset.company = AccountingReport.company
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1
 			AND FixedAssetLine.depreciation_date < AccountingReport.date_from
@@ -1007,6 +1024,7 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE 
 			AccountingReport.id = ?
+			AND FixedAsset.company = AccountingReport.company
 			AND FixedAsset.status_select != 1 
 			AND FixedAsset.status_select != 4
 			AND FixedAssetLine.status_select = 2
@@ -1030,6 +1048,7 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE 
 			AccountingReport.id = ?
+			AND FixedAsset.company = AccountingReport.company
 			AND FixedAsset.status_select != 1 
 			AND FixedAsset.status_select != 4
 			AND FixedAssetLine.status_select = 2

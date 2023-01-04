@@ -220,7 +220,7 @@ public class MoveLineController {
         finalBalance = totalDebit.subtract(totalCredit);
 
         response.setView(
-            ActionView.define("Calculation")
+            ActionView.define(I18n.get("Calculation"))
                 .model(Wizard.class.getName())
                 .add("form", "account-move-line-calculation-wizard-form")
                 .param("popup", "true")
@@ -361,21 +361,23 @@ public class MoveLineController {
       if (parentContext != null) {
         Move move = parentContext.asType(Move.class);
         Account accountingAccount = moveLine.getAccount();
-        TaxLine taxLine =
-            Beans.get(MoveLoadDefaultConfigService.class)
-                .getTaxLine(move, moveLine, accountingAccount);
-        TaxEquiv taxEquiv = null;
-        FiscalPosition fiscalPosition = move.getFiscalPosition();
-        if (taxLine != null) {
-          if (fiscalPosition != null) {
-            taxEquiv =
-                Beans.get(FiscalPositionService.class)
-                    .getTaxEquiv(fiscalPosition, taxLine.getTax());
-          }
+        if (accountingAccount != null && accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
+          TaxLine taxLine =
+              Beans.get(MoveLoadDefaultConfigService.class)
+                  .getTaxLine(move, moveLine, accountingAccount);
+          TaxEquiv taxEquiv = null;
+          FiscalPosition fiscalPosition = move.getFiscalPosition();
+          if (taxLine != null) {
+            if (fiscalPosition != null) {
+              taxEquiv =
+                  Beans.get(FiscalPositionService.class)
+                      .getTaxEquiv(fiscalPosition, taxLine.getTax());
+            }
 
-          response.setValue("taxLine", taxLine);
-          if (taxEquiv != null) {
-            response.setValue("taxEquiv", taxEquiv);
+            response.setValue("taxLine", taxLine);
+            if (taxEquiv != null) {
+              response.setValue("taxEquiv", taxEquiv);
+            }
           }
         }
       }
@@ -478,7 +480,12 @@ public class MoveLineController {
   public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+
+      Move move = moveLine.getMove();
+      if (move == null) {
+        move = request.getContext().getParent().asType(Move.class);
+      }
+
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
         response.setAttr(
@@ -723,6 +730,11 @@ public class MoveLineController {
   public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      if (moveLine.getMove() == null) {
+        moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
+      }
+
       Beans.get(MoveLineInvoiceTermService.class).updateInvoiceTermsParentFields(moveLine);
       response.setValues(moveLine);
     } catch (Exception e) {

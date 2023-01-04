@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveTemplateService;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -40,6 +41,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,10 +103,15 @@ public class MoveTemplateController {
 
       if ((dataList != null && !dataList.isEmpty())
           || (moveTemplateList != null && !moveTemplateList.isEmpty())) {
+        MoveTemplateService moveTemplateService = Beans.get(MoveTemplateService.class);
         List<Long> moveList =
-            Beans.get(MoveTemplateService.class)
-                .generateMove(moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
-        if (moveList != null && !moveList.isEmpty()) {
+            moveTemplateService.generateMove(
+                moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
+        List<String> exceptionsList = moveTemplateService.getExceptionsList();
+        if (!CollectionUtils.isEmpty(exceptionsList)) {
+          response.setInfo(Joiner.on("<br>").join(exceptionsList));
+        }
+        if (!CollectionUtils.isEmpty(moveList)) {
           response.setView(
               ActionView.define(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_3))
                   .model(Move.class.getName())
@@ -118,7 +125,7 @@ public class MoveTemplateController {
         response.setInfo(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_4));
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

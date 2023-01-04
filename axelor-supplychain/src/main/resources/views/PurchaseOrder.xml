@@ -79,4 +79,9 @@
       method="updateBudgetDistributionAmountAvailable"/>
   </action-method>
 
+  <action-method name="action-purchase-order-method-get-from-stock-location">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="getFromStockLocation"/>
+  </action-method>
+
 </object-views>

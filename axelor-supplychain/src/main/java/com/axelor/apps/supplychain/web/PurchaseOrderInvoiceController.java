@@ -72,7 +72,7 @@ public class PurchaseOrderInvoiceController {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       response.setView(
-          ActionView.define("Invoicing")
+          ActionView.define(I18n.get("Invoicing"))
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-invoicing-wizard-form")
               .param("popup", "reload")

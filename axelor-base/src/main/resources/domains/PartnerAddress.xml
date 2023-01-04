@@ -9,7 +9,8 @@
     <boolean name="isInvoicingAddr" title="Invoicing address"/>
     <boolean name="isDeliveryAddr" title="Delivery address"/>
     <boolean name="isDefaultAddr" title="Default address"/>
-    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"
+      required="true"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
 
     <extra-imports>

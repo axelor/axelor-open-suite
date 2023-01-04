@@ -111,9 +111,10 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
           operationOrder, priority, bomLevel, parentCostSheetLine, previousCostSheetDate);
       return;
     }
+    BigDecimal duration =
+        BigDecimal.ZERO; // Declaring duration as BigDecimal to use it with manufOrderProducedRatio
 
     if (operationOrder.getTimesheetLineList() != null) {
-      Long duration = 0L;
       if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
               == CostSheetRepository.CALCULATION_END_OF_PRODUCTION
           || parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
@@ -124,14 +125,20 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
                     parentCostSheetLine.getCostSheet().getCalculationDate(), previousCostSheetDate)
                 : null;
         duration =
-            period != null ? Long.valueOf(period.getDays() * 24) : operationOrder.getRealDuration();
+            period != null
+                ? new BigDecimal(period.getDays() * 24)
+                : new BigDecimal(operationOrder.getRealDuration());
       } else if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
           == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
 
+        BigDecimal ratio = costSheet.getManufOrderProducedRatio();
+
+        /*
+         * Using BigDecimal value of plannedDuration and realDuration for calculation with manufOrderProducedRatio
+         */
         duration =
-            operationOrder.getRealDuration()
-                - (operationOrder.getPlannedDuration()
-                    * costSheet.getManufOrderProducedRatio().longValue());
+            (new BigDecimal(operationOrder.getRealDuration()))
+                .subtract((new BigDecimal(operationOrder.getPlannedDuration()).multiply(ratio)));
       }
 
       // TODO get the timesheet Line done when we run the calculation.

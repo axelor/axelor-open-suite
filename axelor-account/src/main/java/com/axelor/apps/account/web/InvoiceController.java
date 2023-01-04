@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -31,6 +32,7 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -347,8 +349,8 @@ public class InvoiceController {
         return;
       }
 
-      invoiceTermService.updateFinancialDiscount(invoice);
-      response.setReload(true);
+      List<InvoiceTerm> invoiceTermList = invoiceTermService.updateFinancialDiscount(invoice);
+      response.setValue("invoiceTermList", invoiceTermList);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -1077,6 +1079,20 @@ public class InvoiceController {
     }
   }
 
+  public void checkInvoiceLinesAnalyticDistribution(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+      if (!Beans.get(InvoiceService.class).checkInvoiceLinesAnalyticDistribution(invoice)) {
+        response.setError(I18n.get(AccountExceptionMessage.INVOICE_WRONG_ANALYTIC_DISTRIBUTION));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void checkInvoiceLinesCutOffDates(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
@@ -1178,6 +1194,31 @@ public class InvoiceController {
                 I18n.get(AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER),
                 partnerType.toLowerCase()));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
+
+      if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
+        Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoice);
+        response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+      }
+
+      response.setValue("financialDiscount", invoice.getFinancialDiscount());
+      response.setValue("legalNotice", invoice.getLegalNotice());
+      response.setValue("financialDiscountRate", invoice.getFinancialDiscountRate());
+      response.setValue("financialDiscountTotalAmount", invoice.getFinancialDiscountTotalAmount());
+      response.setValue(
+          "remainingAmountAfterFinDiscount", invoice.getRemainingAmountAfterFinDiscount());
+      response.setValue(
+          "financialDiscountDeadLineDate", invoice.getFinancialDiscountDeadlineDate());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

@@ -21,8 +21,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -101,9 +104,19 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
       SupplyChainConfigService supplyChainConfigService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      AppAccountService appAccountService,
+      InvoiceFinancialDiscountService invoiceFinancialDiscountService,
+      InvoiceTermService invoiceTermService) {
 
-    super(accountConfigService, invoicePaymentRepo, invoicePaymentCreateService, invoiceService);
+    super(
+        accountConfigService,
+        invoicePaymentRepo,
+        invoicePaymentCreateService,
+        invoiceService,
+        appAccountService,
+        invoiceFinancialDiscountService,
+        invoiceTermService);
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.saleOrderRepository = saleOrderRepository;
@@ -318,8 +331,18 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
         boolean invoiceIsRefund =
             stockMoveInvoiceService.isInvoiceRefundingStockMove(
                 stockMoveLine.getStockMove(), invoice);
-        stockMoveLine.setQtyInvoiced(
-            invoiceIsRefund ? BigDecimal.ZERO : stockMoveLine.getRealQty());
+
+        // This case happens if you mix into a single invoice refund and non-refund stock moves.
+        if (invoiceLine.getQty().compareTo(BigDecimal.ZERO) < 0) {
+          stockMoveLine.setQtyInvoiced(
+              invoiceIsRefund ? stockMoveLine.getRealQty() : BigDecimal.ZERO);
+        }
+        // This is the most general case
+        else {
+          stockMoveLine.setQtyInvoiced(
+              invoiceIsRefund ? BigDecimal.ZERO : stockMoveLine.getRealQty());
+        }
+
         // search in sale/purchase order lines to set split stock move lines to invoiced.
         if (stockMoveLine.getSaleOrderLine() != null) {
           stockMoveLineRepository

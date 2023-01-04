@@ -158,6 +158,7 @@
         <field name="progressSelect" widget="SelectProgress"
           onChange="action-project-task-update-planned-progress" showIf="project.isShowProgress"
           colSpan="4"/>
+        <field name="description" colSpan="12" widget="html"/>
         <field name="project.isShowProgress" hidden="true"/>
         <field name="project.isShowSection" hidden="true"/>
         <field name="project.isShowStatus" hidden="true"/>
@@ -168,10 +169,6 @@
       <field name="typeSelect" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="contentPanel" title="Description" colSpan="12">
-        <field name="description" showTitle="false" colSpan="12" widget="html"/>
-      </panel>
-
       <panel name="internalDescriptionPanel" title="Internal Description"
         if="__config__.app.isApp('business-support')" if-module="axelor-business-support">
         <field name="internalDescription" colSpan="12" widget="html"/>

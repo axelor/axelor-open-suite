@@ -116,21 +116,26 @@ public class TaxInvoiceLine extends TaxGenerator {
                                       .map(Invoice::getCompany)
                                       .orElse(null))));
     }
-    int vatSystem =
-        Beans.get(TaxAccountToolService.class)
-            .calculateVatSystem(
-                invoice.getPartner(),
-                invoice.getCompany(),
-                invoiceLine.getAccount(),
-                (invoice.getOperationTypeSelect()
-                        == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                    || invoice.getOperationTypeSelect()
-                        == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
-                (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-                    || invoice.getOperationTypeSelect()
-                        == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+
+    int vatSystem = 0;
 
     if (taxLine != null) {
+      if (taxLine.getValue().signum() != 0) {
+        vatSystem =
+            Beans.get(TaxAccountToolService.class)
+                .calculateVatSystem(
+                    invoice.getPartner(),
+                    invoice.getCompany(),
+                    invoiceLine.getAccount(),
+                    (invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                        || invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
+                    (invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+                        || invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+      }
       createOrUpdateInvoiceLineTax(invoiceLine, taxLine, vatSystem, map);
     }
     if (taxLineRC != null) {

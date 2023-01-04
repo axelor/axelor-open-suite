@@ -18,7 +18,8 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.purchase.db.PurchaseRequest;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -26,15 +27,16 @@ import com.axelor.rpc.ActionResponse;
 public class PurchaseRequestController {
 
   public void getStockLocation(ActionRequest request, ActionResponse response) {
-
     PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
-
-    if (purchaseRequest.getCompany() != null) {
-
-      response.setValue(
-          "stockLocation",
-          Beans.get(StockLocationService.class)
-              .getDefaultReceiptStockLocation(purchaseRequest.getCompany()));
+    try {
+      if (purchaseRequest.getCompany() != null) {
+        response.setValue(
+            "stockLocation",
+            Beans.get(PurchaseOrderSupplychainService.class)
+                .getStockLocation(purchaseRequest.getSupplierUser(), purchaseRequest.getCompany()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

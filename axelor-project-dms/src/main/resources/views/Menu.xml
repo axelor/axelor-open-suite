@@ -7,7 +7,7 @@
     action="project.dms.view" order="50"/>
 
   <action-view name="project.dms.view" title="Document view">
-    <view name="dms?projectIds={{_projectIds}}" type="html"/>
+    <view name="dms/?projectIds={{_projectIds}}" type="html"/>
     <context name="_projectIds"
       expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIdsString()"/>
   </action-view>

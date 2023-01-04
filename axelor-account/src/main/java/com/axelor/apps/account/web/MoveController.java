@@ -144,7 +144,7 @@ public class MoveController {
       Move newMove = Beans.get(MoveReverseService.class).generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
-            ActionView.define(I18n.get("Account move"))
+            ActionView.define(I18n.get("Account moves"))
                 .model("com.axelor.apps.account.db.Move")
                 .add("grid", "move-grid")
                 .add("form", "move-form")
@@ -185,7 +185,7 @@ public class MoveController {
                   .collect(Collectors.joining(","));
 
           response.setView(
-              ActionView.define(I18n.get("Account move"))
+              ActionView.define(I18n.get("Account moves"))
                   .model("com.axelor.apps.account.db.Move")
                   .add("grid", "move-grid")
                   .add("form", "move-form")
@@ -565,10 +565,20 @@ public class MoveController {
     }
   }
 
-  public void setOriginAndDescriptionOnLines(ActionRequest request, ActionResponse response) {
+  public void setOriginOnLines(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveToolService.class).setOriginAndDescriptionOnMoveLineList(move);
+      Beans.get(MoveToolService.class).setOriginOnMoveLineList(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDescriptionOnLines(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MoveToolService.class).setDescriptionOnMoveLineList(move);
       response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -586,11 +596,22 @@ public class MoveController {
     }
   }
 
-  public void validateOriginDescription(ActionRequest request, ActionResponse response) {
+  public void validateOrigin(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      if (move.getOrigin() == null && move.getDescription() == null) {
-        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION));
+      if (move.getOrigin() == null) {
+        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void validateDescription(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getDescription() == null) {
+        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_DESCRIPTION));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

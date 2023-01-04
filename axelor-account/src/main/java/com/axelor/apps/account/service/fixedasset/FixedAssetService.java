@@ -92,6 +92,10 @@ public interface FixedAssetService {
   void checkFixedAssetBeforeSplit(FixedAsset fixedAsset, int splitType, BigDecimal amount)
       throws AxelorException;
 
+  void checkFixedAssetBeforeDisposal(
+      FixedAsset fixedAsset, LocalDate disposalDate, int disposalQtySelect, BigDecimal disposalQty)
+      throws AxelorException;
+
   int computeTransferredReason(
       Integer disposalTypeSelect,
       Integer disposalQtySelect,

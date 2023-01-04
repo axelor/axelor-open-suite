@@ -69,7 +69,7 @@
   </action-view>
 
   <action-view name="action-baml-view-open-baml-editor" title="BAML Editor">
-    <view type="html" name="baml-editor?id={{_id}}"/>
+    <view type="html" name="baml-editor/?id={{_id}}"/>
   </action-view>
 
 
