@@ -856,7 +856,7 @@ InvoiceSet.length > 0))"
         onClick="action-invoice-group-on-validate"/>
       <button name="ventilateBtn" hidden="true" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
-        onClick="action-invoice-group-ventilate-button"
+        onClick="action-invoice-group-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-validate-and-ventilate-onclick"/>
@@ -1191,7 +1191,7 @@ InvoiceSet.length > 0))"
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
         onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
       <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2"
-        onClick="action-invoice-group-ventilate-button"
+        onClick="action-invoice-group-ventilate"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
         <button name="cancelBtn" title="Cancel"
@@ -1473,6 +1473,16 @@ InvoiceSet.length > 0))"
     </panel>
   </form>
 
+  <form name="supplier-invoice-wizard-form" title="Supplier invoice"
+    model="com.axelor.apps.account.db.Invoice"
+    onSave="action-invoice-validate-check-origin-date,action-invoice-group-ventilate-button">
+    <panel name="mainPanel">
+      <field name="supplierInvoiceNb" colOffset="4" requiredIf="!_supplierInvoiceNb"
+        showIf="!_supplierInvoiceNb"/>
+      <field name="originDate" colOffset="4" requiredIf="!_originDate" showIf="!_originDate"/>
+    </panel>
+  </form>
+
   <action-group name="action-account-invoice-onnew-group">
     <action name="action-invoice-record-default"/>
     <action name="action-invoice-method-payment-mode-condition" if="company != null"/>
@@ -1588,11 +1598,18 @@ InvoiceSet.length > 0))"
       if="reportType != null &amp;&amp; reportType == 4"/>
   </action-group>
 
+  <action-group name="action-invoice-group-ventilate">
+    <action name="action-invoice-method-set-supplier-invoice-number-and-origin-date"/>
+    <action name="action-invoice-group-ventilate-button"
+      if="(supplierInvoiceNb &amp;&amp; originDate &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)) || (operationTypeSelect == 3 || operationTypeSelect == 4)"/>
+  </action-group>
+
   <action-group name="action-invoice-group-ventilate-button">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="save"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
+    <action name="save"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
@@ -2691,5 +2708,16 @@ InvoiceSet.length > 0))"
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="showSupplierInvoiceLines"/>
   </action-method>
+
+  <action-method
+    name="action-invoice-method-set-supplier-invoice-number-and-origin-date">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setSupplierInvoiceNbAndOriginDate"/>
+  </action-method>
+
+  <action-validate name="action-invoice-validate-check-origin-date">
+    <error message="Invoice date of origin can't be in the future."
+      if="originDate?.isAfter(__config__.date)"/>
+  </action-validate>
 
 </object-views>

@@ -1,0 +1,3 @@
+---
+title: "Invoice: Ventilate add wizzard view in order to set supplierInvoiceNb and originDate if empty"
+type: fix

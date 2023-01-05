@@ -1223,4 +1223,31 @@ public class InvoiceController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void setSupplierInvoiceNbAndOriginDate(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      String supplierInvoiceNb = invoice.getSupplierInvoiceNb();
+      LocalDate originDate = invoice.getOriginDate();
+
+      if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+              || invoice.getOperationTypeSelect()
+                  == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
+          && (supplierInvoiceNb == null || originDate == null)) {
+        response.setView(
+            ActionView.define(I18n.get("Supplier invoice"))
+                .model(Invoice.class.getName())
+                .add("form", "supplier-invoice-wizard-form")
+                .param("popup", "reload")
+                .param("forceEdit", "true")
+                .param("show-toolbar", "false")
+                .context("_showRecord", invoice.getId())
+                .context("_supplierInvoiceNb", supplierInvoiceNb)
+                .context("_originDate", originDate)
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }
