@@ -1,0 +1,17 @@
+---
+name: Supplychain
+code: supplychain
+installOrder: 12
+description: |
+    Supplychain management
+image: app-supplychain.png
+modules: 
+    axelor-supplychain
+    axelor-supplier-management
+dependsOn: 
+    - account
+    - invoice
+    - sale
+    - purchase
+    - stock
+sequence: 13

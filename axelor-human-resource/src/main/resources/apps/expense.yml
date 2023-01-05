@@ -1,0 +1,14 @@
+---
+name: Expense Management
+code: expense
+installOrder: 15
+description: |
+   Expense Management
+image: app-expense.png
+modules: 
+   axelor-human-resource
+dependsOn:
+   - account
+   - project
+   - employee
+sequence: 19

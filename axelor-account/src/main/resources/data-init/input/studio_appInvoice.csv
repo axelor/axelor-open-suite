@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Invoicing";"invoice";9;"Invoicing configuration";"app-invoice.png";"axelor-account";"account";5

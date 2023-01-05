@@ -1,0 +1,12 @@
+---
+name: Accounting
+code: account
+installOrder: 8
+description: |
+   Accounting configuration
+image: app-account.png
+modules: 
+   axelor-account
+dependsOn: 
+   - base
+sequence: 6
