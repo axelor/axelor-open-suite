@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -74,12 +75,15 @@ import java.util.Set;
 public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
+  protected BankDetailsService bankDetailsService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Inject
-  public IntercoServiceImpl(PurchaseConfigService purchaseConfigService) {
+  public IntercoServiceImpl(
+      PurchaseConfigService purchaseConfigService, BankDetailsService bankDetailsService) {
     this.purchaseConfigService = purchaseConfigService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Override
@@ -373,7 +377,6 @@ public class IntercoServiceImpl implements IntercoService {
             .getDefaultPriceList(intercoPartner, priceListRepositoryType);
 
     Invoice intercoInvoice = invoiceRepository.copy(invoice, true);
-
     intercoInvoice.setOperationTypeSelect(generatedOperationTypeSelect);
     intercoInvoice.setCompany(intercoCompany);
     intercoInvoice.setPartner(intercoPartner);
@@ -407,6 +410,9 @@ public class IntercoServiceImpl implements IntercoService {
 
     invoiceService.compute(intercoInvoice);
     intercoInvoice.setExternalReference(invoice.getInvoiceId());
+    intercoInvoice.setCompanyBankDetails(
+        bankDetailsService.getDefaultCompanyBankDetails(
+            intercoCompany, intercoPaymentMode, intercoPartner, generatedOperationTypeSelect));
     intercoInvoice = invoiceRepository.save(intercoInvoice);
     if (Beans.get(AppSupplychainService.class)
         .getAppSupplychain()
