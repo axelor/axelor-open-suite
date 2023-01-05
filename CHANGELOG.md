@@ -1,3 +1,42 @@
+## [6.2.16] (2023-01-05)
+
+#### Fixed
+
+* Bank details: improve message when confirming a bank order and a receiver bank details is inactive.
+* Move: fixed an issue where description was not filled during move origin change.
+* Expense: fixed an issue where ground for refusal was hidden even if it was fill.
+* Manufacturing: fix form views for subcontractor deliveries and arrivals.
+* Analytic distribution: add filter for analytic axis, using the account config of the company.
+* Followers: Fixed a residual bug where trying to fetch a recipient would result in a exception with somes conditions
+* Followers: Fixed a residual bug where trying to fetch a recipient would result in a exception with somes conditions.
+* MRP: fixed an infinite loop issue
+
+An infinite loop occurred when, for a product, the available stock was less than the minimum quantity of its stock rule
+and this product was used in a purchase order.
+
+* MRP: fix generation proposal menu for more clarity.
+
+Generate proposal menu item now opens a wizard with 2 buttons:
+One for generating all possible proposals, one for generating proposals of only selected lines.
+
+* MRP: fixed NPE error that could happen during MRP computation if a operation order had a null planned start date.
+* Move line/analytic: fixed an issue where analytic was not generated during move line generation.
+* Invoice: reject company bank details when default bank details is not active.
+* Cost sheet: fixed wrong human cost calculation when computing a cost sheet for a in progress manufacturing order.
+* Bank reconciliation: added default account type in search query.
+* Demo data: complete demo data for permissions, roles and menus.
+* Move: currency related fields are now changed on change of company.
+* Inventory: when changing real quantity in a line, now takes the correct wap price into account when computing gap and real value.
+* Contracts: correctly apply the configuration "Nb of digits for unit prices" to price in contract lines.
+* Contracts: correctly apply the configuration "Nb of digits for quantity" to price in contract lines.
+* Accounting report type: UI form view improvements.
+* Move: fix creation of an move line when an partner has a default charge account.
+* Manufacturing Orders: during manfacturing order generation, added a more explicit message if the bill of materials has 0 quantity.
+* Timesheet line: fixed task display in grid view.
+* Sale order separation: Fix computation of miscellaneous sale order fields.
+* Accounting report: fixed an issue where 0.0 figures were wrongly displayed in title lines for PDF personnalized reports.
+* Move/Move line: Fix deletion of analytic axis and remove save popup when nothing is edited on move line.
+
 ## [6.2.15] (2022-12-16)
 
 #### Fixed
@@ -787,6 +826,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.16]: https://github.com/axelor/axelor-open-suite/compare/v6.2.15...v6.2.16
 [6.2.15]: https://github.com/axelor/axelor-open-suite/compare/v6.2.14...v6.2.15
 [6.2.14]: https://github.com/axelor/axelor-open-suite/compare/v6.2.13...v6.2.14
 [6.2.13]: https://github.com/axelor/axelor-open-suite/compare/v6.2.12...v6.2.13
