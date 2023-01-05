@@ -1,6 +1,7 @@
 ---
 name: Bank payment
 code: bank-payment
+typeSelect: standard
 installOrder: 5
 description: |
    Bank payment configuration

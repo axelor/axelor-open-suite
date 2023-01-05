@@ -1,6 +1,7 @@
 ---
 name: Helpdesk
 code: helpdesk
+typeSelect: standard
 installOrder: 29
 description: |
    Helpdesk Management

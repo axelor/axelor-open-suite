@@ -1,6 +1,7 @@
 ---
 name: Timesheet Management
 code: timesheet
+typeSelect: standard
 installOrder: 14
 description: |
    Timesheet Management

@@ -1,6 +1,7 @@
 ---
 name: Stock
 code: stock
+typeSelect: standard
 installOrder: 3
 description: |
    Stock configuration

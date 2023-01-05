@@ -1,6 +1,7 @@
 ---
 name: Maintenance
 code: maintenance
+typeSelect: standard
 installOrder: 50
 description: |
    Computerized Maintenance Management System

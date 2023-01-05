@@ -1,6 +1,7 @@
 ---
 name: Purchase
 code: purchase
+typeSelect: standard
 installOrder: 5
 description: |
    Purchase configuration
