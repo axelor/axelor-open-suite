@@ -1,6 +1,7 @@
 ---
 name: Portal
 code: portal
+typeSelect: standard
 installOrder: 27
 description: |
    Portal configuration

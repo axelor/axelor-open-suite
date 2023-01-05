@@ -1,6 +1,7 @@
 ---
 name: Employees Managment
 code: employee
+typeSelect: standard
 installOrder: 12
 description: |
    Employees Management

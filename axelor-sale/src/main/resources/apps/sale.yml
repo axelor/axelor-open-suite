@@ -2,6 +2,7 @@
 importId: 5
 name: Sale
 code: sale
+typeSelect: standard
 installOrder: 4
 description: |
    Sales configuration

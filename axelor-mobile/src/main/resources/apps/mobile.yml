@@ -1,6 +1,7 @@
 ---
 name: Axelor Mobile
 code: mobile
+typeSelect: standard
 installOrder: 32
 description: |
    Axelor Mobile Management

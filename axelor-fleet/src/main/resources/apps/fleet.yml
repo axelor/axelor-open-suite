@@ -1,6 +1,7 @@
 ---
 name: Fleet
 code: fleet
+typeSelect: standard
 installOrder: 26
 description: |
    Fleet management

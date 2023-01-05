@@ -1,6 +1,7 @@
 ---
 name: Training
 code: training
+typeSelect: standard
 installOrder: 20
 description: |
     Training

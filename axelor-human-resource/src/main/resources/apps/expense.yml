@@ -1,6 +1,7 @@
 ---
 name: Expense Management
 code: expense
+typeSelect: standard
 installOrder: 15
 description: |
    Expense Management

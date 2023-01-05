@@ -1,6 +1,7 @@
 ---
 name: Leave Management
 code: leave
+typeSelect: standard
 installOrder: 13
 description: |
    Leave Management
