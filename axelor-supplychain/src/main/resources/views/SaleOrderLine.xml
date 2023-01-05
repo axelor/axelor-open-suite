@@ -8,8 +8,7 @@
     <extend target="/">
       <attribute name="onNew"
         value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-group-manage-attrs"/>
-      <attribute name="onLoad"
-        value="action-group-sale-saleorderline-onload, action-sale-order-line-attrs-hidden-fields-for-client, action-sale-order-line-group-manage-attrs, action-sale-order-line-supplychain-method-get-invoicing-state"/>
+      <attribute name="onLoad" value="action-sale-order-line-supplychain-group-onload"/>
     </extend>
     <extend target="//panel[@name='statusPanel']">
       <insert position="inside">
@@ -193,6 +192,13 @@
   <action-group name="action-sale-order-line-group-manage-attrs">
     <action name="action-sale-order-line-attrs-hide-panel"/>
     <action name="action-sale-order-line-attrs-fill-ctx"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-supplychain-group-onload">
+    <action name="action-group-sale-saleorderline-onload"/>
+    <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
+    <action name="action-sale-order-line-group-manage-attrs"/>
+    <action name="action-sale-order-line-supplychain-method-get-invoicing-state"/>
   </action-group>
 
 </object-views>
