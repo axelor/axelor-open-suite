@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
-import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.MANY_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.ONE_TO_MANY;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;

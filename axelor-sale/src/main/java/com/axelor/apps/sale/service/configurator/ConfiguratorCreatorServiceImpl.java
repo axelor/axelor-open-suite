@@ -17,23 +17,23 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
-import static com.axelor.apps.tool.MetaJsonFieldType.BOOLEAN;
-import static com.axelor.apps.tool.MetaJsonFieldType.BUTTON;
-import static com.axelor.apps.tool.MetaJsonFieldType.DATE;
-import static com.axelor.apps.tool.MetaJsonFieldType.DATETIME;
-import static com.axelor.apps.tool.MetaJsonFieldType.DECIMAL;
-import static com.axelor.apps.tool.MetaJsonFieldType.ENUM;
-import static com.axelor.apps.tool.MetaJsonFieldType.INTEGER;
-import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_ONE;
-import static com.axelor.apps.tool.MetaJsonFieldType.JSON_ONE_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_ONE;
-import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
-import static com.axelor.apps.tool.MetaJsonFieldType.PANEL;
-import static com.axelor.apps.tool.MetaJsonFieldType.SEPARATOR;
-import static com.axelor.apps.tool.MetaJsonFieldType.STRING;
-import static com.axelor.apps.tool.MetaJsonFieldType.TIME;
+import static com.axelor.utils.MetaJsonFieldType.BOOLEAN;
+import static com.axelor.utils.MetaJsonFieldType.BUTTON;
+import static com.axelor.utils.MetaJsonFieldType.DATE;
+import static com.axelor.utils.MetaJsonFieldType.DATETIME;
+import static com.axelor.utils.MetaJsonFieldType.DECIMAL;
+import static com.axelor.utils.MetaJsonFieldType.ENUM;
+import static com.axelor.utils.MetaJsonFieldType.INTEGER;
+import static com.axelor.utils.MetaJsonFieldType.JSON_MANY_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.JSON_MANY_TO_ONE;
+import static com.axelor.utils.MetaJsonFieldType.JSON_ONE_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.MANY_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.MANY_TO_ONE;
+import static com.axelor.utils.MetaJsonFieldType.ONE_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.PANEL;
+import static com.axelor.utils.MetaJsonFieldType.SEPARATOR;
+import static com.axelor.utils.MetaJsonFieldType.STRING;
+import static com.axelor.utils.MetaJsonFieldType.TIME;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;

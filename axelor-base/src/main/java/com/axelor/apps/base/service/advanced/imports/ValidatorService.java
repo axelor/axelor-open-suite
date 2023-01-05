@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service.advanced.imports;
 
-import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
+import static com.axelor.utils.MetaJsonFieldType.MANY_TO_MANY;
 
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileField;
