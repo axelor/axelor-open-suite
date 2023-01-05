@@ -28,8 +28,8 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
-import com.axelor.apps.base.db.AppAccount;
 import com.axelor.exception.AxelorException;
+import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 

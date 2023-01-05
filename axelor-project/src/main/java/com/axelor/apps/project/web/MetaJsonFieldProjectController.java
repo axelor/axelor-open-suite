@@ -21,7 +21,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.MetaJsonFieldProjectService;
-import com.axelor.apps.tool.ModelTool;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -33,6 +32,7 @@ import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.ModelTool;
 import com.google.inject.Singleton;
 
 @Singleton
