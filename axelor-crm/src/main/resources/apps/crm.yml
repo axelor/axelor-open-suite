@@ -1,6 +1,7 @@
 ---
 name: CRM
 code: crm
+typeSelect: standard
 installOrder: 2
 description: |
    CRM configuration

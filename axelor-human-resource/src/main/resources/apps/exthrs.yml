@@ -1,6 +1,7 @@
 ---
 name: Extra hours
 code: exthrs
+typeSelect: standard
 installOrder: 16
 description: |
    Extra hours

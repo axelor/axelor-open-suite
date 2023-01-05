@@ -1,6 +1,7 @@
 ---
 name: Recruitment
 code: recruitment
+typeSelect: standard
 installOrder: 21
 description: |
     Recruitment

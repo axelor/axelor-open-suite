@@ -1,6 +1,7 @@
 ---
 name: Supplychain
 code: supplychain
+typeSelect: standard
 installOrder: 12
 description: |
     Supplychain management

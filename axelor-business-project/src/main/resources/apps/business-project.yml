@@ -1,6 +1,7 @@
 ---
 name: Job costing
 code: business-project
+typeSelect: standard
 installOrder: 17
 description: |
    Job costing

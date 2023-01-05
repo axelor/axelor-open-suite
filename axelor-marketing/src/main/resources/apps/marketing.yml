@@ -1,6 +1,7 @@
 ---
 name: Marketing Management
 code: marketing
+typeSelect: standard
 installOrder: 23
 description: |
    Marketing Management Configuration

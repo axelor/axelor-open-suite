@@ -1,6 +1,7 @@
 ---
 name: Purchase Request
 code: purchase-request
+typeSelect: standard
 installOrder: 6
 description: |
    Purchase Request Configuration

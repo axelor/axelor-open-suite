@@ -1,6 +1,7 @@
 ---
 name: Manufacturing
 code: production
+typeSelect: standard
 installOrder: 18
 description: |
    Manufacturing configuration

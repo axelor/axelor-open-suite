@@ -1,6 +1,7 @@
 ---
 name: Appraisal
 code: appraisal
+typeSelect: standard
 installOrder: 22
 description: |
     Appraisal

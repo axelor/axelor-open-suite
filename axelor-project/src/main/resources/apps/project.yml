@@ -1,6 +1,7 @@
 ---
 name: Projects
 code: project
+typeSelect: standard
 installOrder: 7
 description: |
    Project management

@@ -2,6 +2,7 @@
 importId: 1
 name: Base
 code: base
+typeSelect: standard
 installOrder: 1
 description: |
    Basic configuration
