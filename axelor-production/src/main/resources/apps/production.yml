@@ -1,0 +1,12 @@
+---
+name: Manufacturing
+code: production
+installOrder: 18
+description: |
+   Manufacturing configuration
+image: app-production.png
+modules: 
+   axelor-production
+dependsOn:
+   - supplychain
+sequence: 15

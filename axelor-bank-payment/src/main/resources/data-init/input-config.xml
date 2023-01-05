@@ -18,17 +18,6 @@
   <input file="bankpayment_bankStatementFileFormat.csv" separator=";"
     type="com.axelor.apps.bankpayment.db.BankStatementFileFormat" search="self.importId = :importId"/>
 
-  <input file="studio_appBankPayment.csv" separator=";" type="com.axelor.studio.db.App"
-    call="com.axelor.csv.script.ImportApp:importApp">
-    <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
-      eval="dependsOn.split(',') as List"/>
-  </input>
-
-  <input file="studio_appBankPayment.csv" separator=";"
-    type="com.axelor.studio.db.AppBankPayment" search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name" update="true"/>
 

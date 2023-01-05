@@ -1,0 +1,12 @@
+---
+name: Cash management
+code: cash-management
+installOrder: 19
+description: |
+   Cash management configuration
+image: app-cash-management.png
+modules: 
+   axelor-cash-management
+dependsOn:
+   - account
+sequence: 9

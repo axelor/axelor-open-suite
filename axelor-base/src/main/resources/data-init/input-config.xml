@@ -33,14 +33,6 @@
       if="templateContext != null &amp;&amp; !templateContext.empty"/>
   </input>
 
-  <input file="studio_appBase.csv" separator=";" type="com.axelor.studio.db.App"
-    search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp"/>
-
-  <input file="studio_appBase.csv" separator=";" type="com.axelor.studio.db.AppBase"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
   <input file="base_barcodeTypeConfig.csv" separator=";"
     type="com.axelor.apps.base.db.BarcodeTypeConfig" search="self.name = :name"/>
 

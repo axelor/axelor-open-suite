@@ -1,0 +1,12 @@
+---
+name: Purchase
+code: purchase
+installOrder: 5
+description: |
+   Purchase configuration
+image: app-purchase.png
+modules: 
+   axelor-purchase
+dependsOn:
+   - base
+sequence: 3

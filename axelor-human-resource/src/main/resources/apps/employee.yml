@@ -1,0 +1,12 @@
+---
+name: Employees Managment
+code: employee
+installOrder: 12
+description: |
+   Employees Management
+image: app-employee.png
+modules: 
+   axelor-human-resource
+dependsOn:
+   - account
+sequence: 17

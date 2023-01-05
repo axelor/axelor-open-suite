@@ -209,6 +209,9 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   public String getCustomStyle() {
 
     AppBase appBase = Beans.get(AppBaseRepository.class).all().fetchOne();
+    if (appBase == null) {
+      return null;
+    }
     String style = appBase.getCustomAppStyle();
     if (StringUtils.isBlank(style)) {
       return null;

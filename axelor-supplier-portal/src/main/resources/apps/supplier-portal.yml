@@ -1,0 +1,12 @@
+---
+name: Supplier Portal
+code: supplier-portal
+installOrder: 34
+description: |
+    Supplier Portal configuration
+image: app-portal.png
+modules: 
+    axelor-supplier-portal
+dependsOn: 
+    - supplychain
+sequence: 32
