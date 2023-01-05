@@ -571,7 +571,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     return true;
   }
 
-  private void createPurchaseOrderLineProduction(
+  protected void createPurchaseOrderLineProduction(
       OperationOrder operationOrder, PurchaseOrder purchaseOrder) throws AxelorException {
 
     UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
@@ -607,7 +607,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
   }
 
-  private PurchaseOrder setPurchaseOrderSupplierDetails(PurchaseOrder purchaseOrder)
+  protected PurchaseOrder setPurchaseOrderSupplierDetails(PurchaseOrder purchaseOrder)
       throws AxelorException {
     Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
