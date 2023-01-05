@@ -27,8 +27,9 @@ import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
-import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -42,23 +43,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowService {
+public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflowServiceImpl {
 
   @Inject
-  public ManufOrderWorkFlowMaintenanceService(
+  public ManufOrderWorkflowMaintenanceServiceImpl(
       OperationOrderWorkflowService operationOrderWorkflowService,
       OperationOrderRepository operationOrderRepo,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderRepository manufOrderRepo,
       ProductCompanyService productCompanyService,
-      ProductionConfigRepository productionConfigRepo) {
+      ProductionConfigRepository productionConfigRepo,
+      PurchaseOrderService purchaseOrderService) {
     super(
         operationOrderWorkflowService,
         operationOrderRepo,
         manufOrderStockMoveService,
         manufOrderRepo,
         productCompanyService,
-        productionConfigRepo);
+        productionConfigRepo,
+        purchaseOrderService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
