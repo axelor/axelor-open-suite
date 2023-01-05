@@ -205,6 +205,7 @@ public class BaseModule extends AxelorModule {
     bind(AddressRepository.class).to(AddressBaseRepository.class);
     bind(YearRepository.class).to(YearBaseRepository.class);
     bind(YearService.class).to(YearServiceImpl.class);
+    bind(UnitConversionService.class).to(UnitConversionServiceImpl.class);
     bind(AppServiceImpl.class).to(AppBaseServiceImpl.class);
     bind(AppService.class).to(AppServiceImpl.class);
     bind(BankService.class).to(BankServiceImpl.class);
