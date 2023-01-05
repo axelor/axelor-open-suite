@@ -258,7 +258,7 @@ public class TimesheetController {
     Timesheet timesheet =
         Beans.get(TimesheetRepository.class).find(Long.valueOf((Integer) timesheetMap.get("id")));
     response.setView(
-        ActionView.define("Timesheet")
+        ActionView.define(I18n.get("Timesheet"))
             .model(Timesheet.class.getName())
             .add("form", "timesheet-form")
             .param("forceEdit", "true")

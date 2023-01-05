@@ -175,6 +175,12 @@ public final class SupplychainExceptionMessage {
 
   public static final String MRP_SCHEDULER_SEQ_MISSING = /*$$(*/ "MRP sequence is missing." /*)*/;
 
+  public static final String MRP_GENERATE_PROPOSAL_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least one line to generate a proposal." /*)*/;
+
+  public static final String MRP_GENERATE_PROPOSAL_NO_POSSIBLE_LINE = /*$$(*/
+      "No proposal can be generated from these lines." /*)*/;
+
   //  Mrp Forecast
   public static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
       "Can only be confirmed from drafted forecast." /*)*/;

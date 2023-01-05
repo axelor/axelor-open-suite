@@ -239,6 +239,7 @@
           if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           onChange="action-invoice-line-group-analytic-move-line-onchange"/>
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
+        <field name="account.analyticDistributionRequiredOnInvoiceLines" hidden="true"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
       <panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain"
@@ -495,6 +496,7 @@
   </action-group>
 
   <action-group name="action-invoice-line-group-analytic-move-line-onchange">
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
     <action name="action-invoice-line-method-check-analytic-account-on-invoice-line"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
   </action-group>

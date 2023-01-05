@@ -15,8 +15,10 @@
     <panel name="generalPanel" title="General">
       <field name="substitutePfpValidatorUser" canEdit="false"
         onSelect="action-substitute-pfp-validator-attrs-domain-pfp-validator-user"/>
-      <field name="substituteStartDate"/>
-      <field name="substituteEndDate"/>
+      <field name="substituteStartDate"
+        validIf="!(substituteEndDate != null &amp;&amp; substituteStartDate != null &amp;&amp; substituteEndDate &lt; substituteStartDate)"/>
+      <field name="substituteEndDate"
+        validIf="!(substituteEndDate != null &amp;&amp; substituteStartDate != null &amp;&amp; substituteEndDate &lt; substituteStartDate)"/>
     </panel>
   </form>
 

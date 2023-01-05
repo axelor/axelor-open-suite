@@ -17,8 +17,8 @@
 
   <form name="contract-line-form" title="Contract line"
     model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-hide-consumption-line"
-    onLoad="action-contract-line-attrs-hide-consumption-line">
+    onNew="action-contract-line-attrs-hide-consumption-line,action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-hide-consumption-line,action-contract-line-attrs-scale-and-precision">
 
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -87,6 +87,13 @@
     <call class="com.axelor.apps.contract.web.ContractLineController" method="computeTotal"/>
   </action-method>
 
+  <action-attrs name="action-contract-line-attrs-scale-and-precision">
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="price"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+  </action-attrs>
+
   <grid name="additional-contract-line-grid" title="Additional benefit lines"
     model="com.axelor.apps.contract.db.ContractLine">
     <hilite if="isInvoiced" background="success"/>
@@ -103,7 +110,9 @@
   </grid>
 
   <form name="additional-contract-line-form" title="Additional benefit"
-    model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced">
+    model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced"
+    onNew="action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-scale-and-precision">
 
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -149,7 +158,9 @@
   </grid>
 
   <form name="contract-line-form-for-template" title="Contract Line"
-    model="com.axelor.apps.contract.db.ContractLine">
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
@@ -172,7 +183,9 @@
   </grid>
 
   <form name="additional-contract-line-form-for-template" title="Additional benefit"
-    model="com.axelor.apps.contract.db.ContractLine">
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>

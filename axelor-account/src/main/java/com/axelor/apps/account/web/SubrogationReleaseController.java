@@ -115,7 +115,7 @@ public class SubrogationReleaseController {
         }
       }
       response.setView(
-          ActionView.define("MoveLines")
+          ActionView.define(I18n.get("MoveLines"))
               .model(MoveLine.class.getName())
               .add("grid", "move-line-grid")
               .add("form", "move-line-form")

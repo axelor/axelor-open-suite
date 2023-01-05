@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.11.0.v202007221505</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -384,20 +384,20 @@
             <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name, 
 MoveLine.partner_seq,
 COALESCE(Invoice.invoice_id,MoveLine.name) as invoice_name,
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  < 0
+SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 0
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "nonDue",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 30
-	AND AccountingReport.date_val - InvoiceTerm.due_date  >= 0
+	AND AccountingReport.date_val - InvoiceTerm.due_date  > 0
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "<30days",
@@ -405,8 +405,8 @@ SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 30
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 60
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "30<days<60",
@@ -414,8 +414,8 @@ SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 60
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 90
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "60<days<90",
@@ -423,8 +423,8 @@ SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 90
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 120
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "90<days<120",
@@ -432,8 +432,8 @@ SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 120
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 150
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "120<days<150",
@@ -441,22 +441,22 @@ SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 150
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 180
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "150<days<180",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 180
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "180<days",
 SUM(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.amount_remaining * -1
-ELSE InvoiceTerm.amount_remaining
+THEN InvoiceTerm.company_amount_remaining * -1
+ELSE InvoiceTerm.company_amount_remaining
 END)
 as "SoldeClient",
 CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle"

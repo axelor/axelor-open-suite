@@ -260,9 +260,8 @@ public class MoveTemplateService {
           }
         }
 
-        manageAccounting(moveTemplate, move);
-
         moveLineTaxService.autoTaxLineGenerate(move);
+        manageAccounting(moveTemplate, move);
 
         moveList.add(move.getId());
       }
@@ -358,9 +357,17 @@ public class MoveTemplateService {
           }
         }
 
-        manageAccounting(moveTemplate, move);
+        if (move.getMoveLineList().stream()
+                .filter(it -> it.getPartner() != null)
+                .map(it -> it.getPartner())
+                .distinct()
+                .count()
+            == 1) {
+          move.setPartner(move.getMoveLineList().get(0).getPartner());
+        }
 
         moveLineTaxService.autoTaxLineGenerate(move);
+        manageAccounting(moveTemplate, move);
 
         moveList.add(move.getId());
       }

@@ -1087,6 +1087,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
+  public boolean checkInvoiceLinesAnalyticDistribution(Invoice invoice) {
+    return CollectionUtils.isEmpty(invoice.getInvoiceLineList())
+        || invoice.getInvoiceLineList().stream()
+            .allMatch(invoiceLineService::checkAnalyticDistribution);
+  }
+
+  @Override
   public boolean checkInvoiceLinesCutOffDates(Invoice invoice) {
     return invoice.getInvoiceLineList() == null
         || invoice.getInvoiceLineList().stream().allMatch(invoiceLineService::checkCutOffDates);

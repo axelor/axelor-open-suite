@@ -279,4 +279,8 @@ public final class ProductionExceptionMessage {
   public static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_DEST_STOCK_LOCATION =
       /*$$(*/
       "The produced product stock location is missing in the prod process" /*)*/;
+
+  public static final String GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO =
+      /*$$(*/
+      "The quantity of the bill of material %s is equal to zero." /*)*/;
 }

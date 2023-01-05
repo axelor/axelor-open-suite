@@ -145,7 +145,7 @@ public class FixedAssetController {
                   comments);
       if (createdFixedAsset != null) {
         response.setView(
-            ActionView.define("Fixed asset")
+            ActionView.define(I18n.get("Fixed asset"))
                 .model(FixedAsset.class.getName())
                 .add("form", "fixed-asset-form")
                 .context("_showRecord", createdFixedAsset.getId())
@@ -349,7 +349,7 @@ public class FixedAssetController {
       // Open in view
       if (createdFixedAsset != null) {
         response.setView(
-            ActionView.define("Fixed asset")
+            ActionView.define(I18n.get("Fixed asset"))
                 .model(FixedAsset.class.getName())
                 .add("form", "fixed-asset-form")
                 .context("_showRecord", createdFixedAsset.getId())

@@ -322,6 +322,8 @@ public interface InvoiceService {
   @CallMethod
   LocalDate getFinancialDiscountDeadlineDate(Invoice invoice, FinancialDiscount financialDiscount);
 
+  boolean checkInvoiceLinesAnalyticDistribution(Invoice invoice);
+
   boolean checkInvoiceLinesCutOffDates(Invoice invoice);
 
   boolean checkManageCutOffDates(Invoice invoice);

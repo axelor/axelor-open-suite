@@ -343,24 +343,24 @@
 
   <action-validate name="action-account-validate-check-move-tax-required">
     <info message="Accounted moves exist for the current year and they cannot be modified."
-      if="isTaxRequiredOnMoveLine &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+      if="isTaxRequiredOnMoveLine &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
   </action-validate>
 
   <action-validate name="action-account-validate-check-move-analytic-required">
     <info message="Accounted moves exist for the current year and they cannot be modified."
-      if="analyticDistributionRequiredOnMoveLines &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+      if="analyticDistributionRequiredOnMoveLines &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
   </action-validate>
 
   <action-validate
     name="action-account-validate-uncheck-analytic-distribution-authorized">
     <info message="Accounted moves exist for the current year and they cannot be modified."
-      if="!analyticDistributionAuthorized &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+      if="!analyticDistributionAuthorized &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
   </action-validate>
 
 
   <action-validate name="action-account-validate-uncheck-tax-authorized">
     <info message="Accounted moves exist for the current year and they cannot be modified."
-      if="!isTaxAuthorizedOnMoveLine &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+      if="!isTaxAuthorizedOnMoveLine &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
   </action-validate>
 
   <action-validate name="action-account-validate-check-reconcile">

@@ -180,7 +180,7 @@ public class AccountingBatchController {
       response.setReload(true);
       if (batch != null) {
         response.setView(
-            ActionView.define("Batch")
+            ActionView.define(I18n.get("Batch"))
                 .model(Batch.class.getName())
                 .add("form", "batch-form")
                 .param("popup-save", "true")

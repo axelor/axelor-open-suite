@@ -125,12 +125,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
       fileLink = accountingReportDas2Service.printPreparatoryProcessDeclaration(accountingReport);
     } else if (accountingReport.getReportType().getTypeSelect()
-        == AccountingReportRepository.REPORT_CUSTOM_STATE) {
+            == AccountingReportRepository.REPORT_CUSTOM_STATE
+        && !accountingReport.getReportType().getUseLegacyCustomReports()) {
       fileLink = accountingReportPrintService.printCustomReport(accountingReport);
     } else {
       fileLink = accountingReportPrintService.print(accountingReport);
     }
-
+    accountingReport = accountingReportRepo.find(accountingReport.getId());
     setStatus(accountingReport);
     return fileLink;
   }
@@ -240,13 +241,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect()
             != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
+
     } else if (accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect()
             == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams(
-          "((self.move.partner.das2Activity is null AND self.account.serviceType IS NOT NULL AND self.account.serviceType.isDas2Declarable is true) "
-              + " OR (self.account.serviceType is null AND self.move.partner.das2Activity IS NOT NULL ))");
+          "(self.account.serviceType is null OR (self.move.partner.das2Activity is null AND self.account.serviceType.isDas2Declarable is true))");
       this.addParams("self.amountRemaining < self.debit + self.credit");
+      this.addParams("self.reconcileGroup IS NOT null");
       JournalType journalType =
           accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
       if (journalType != null) {
@@ -762,10 +764,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty()) {
       this.addParams(
-          "(self.account in (?%d) or self.account.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
+          "(self.moveLine.account in (?%d) or self.moveLine.account.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
           accountingReport.getAccountSet());
     }
 

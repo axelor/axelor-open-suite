@@ -32,7 +32,8 @@
 
   <form title="Line rule" name="accounting-report-config-line-line-rule-form"
     model="com.axelor.apps.account.db.AccountingReportConfigLine"
-    onNew="action-accounting-report-config-line-record-line-rule">
+    onNew="action-accounting-report-config-line-group-line-onnew"
+    onLoad="action-accounting-report-config-line-group-line-onnew">
     <panel-include view="accounting-report-config-line-form"/>
   </form>
 
@@ -45,6 +46,7 @@
           form-view="accounting-report-type-form" grid-view="accounting-report-type-grid"/>
         <field name="reportTypeColumn" showIf="reportTypeColumn != null"
           form-view="accounting-report-type-form" grid-view="accounting-report-type-grid"/>
+        <field name="$legacy" hidden="true" type="boolean"/>
       </panel>
       <panel name="typePanel" stacked="true" itemSpan="12">
         <field name="typeSelect" showIf="reportTypeColumn == null" validIf="typeSelect > 0"
@@ -77,7 +79,8 @@
         <field name="resultSelect" showIf="reportType != null"
           requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5]"/>
       </panel>
-      <panel name="percentagePanel" stacked="true" showIf="[2,3,4].includes(ruleTypeSelect)">
+      <panel name="percentagePanel" stacked="true"
+        showIf="[2,3,4].includes(ruleTypeSelect) &amp;&amp; !$legacy">
         <field name="percentageTotalLine" showIf="reportType != null"/>
         <field name="percentageBaseColumn"
           showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 4"/>
@@ -85,21 +88,25 @@
       <panel name="configPanel" colSpan="12"
         showIf="typeSelect != 4 &amp;&amp; [2,3,4].includes(ruleTypeSelect)">
         <field name="hidden"/>
-        <field name="notComputedIfIntersect"/>
+        <field name="notComputedIfIntersect" hideIf="$legacy"/>
         <panel name="columnConfigPanel" colSpan="12"
-          showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2">
+          showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2 &amp;&amp; !$legacy">
           <field name="computePreviousYear" hideIf="computeOtherPeriod"/>
           <field name="computeOtherPeriod" hideIf="computePreviousYear"/>
         </panel>
-        <field name="priority" showIf="typeSelect != 4 &amp;&amp; ruleTypeSelect == 3"
+        <field name="priority"
+          showIf="typeSelect != 4 &amp;&amp; ruleTypeSelect == 3 &amp;&amp; !$legacy"
           requiredIf="typeSelect != 4 &amp;&amp; ruleTypeSelect == 3"/>
         <field name="groupsWithoutColumn"
-          showIf="reportTypeColumn != null &amp;&amp; typeSelect != 5"/>
+          showIf="reportTypeColumn != null &amp;&amp; typeSelect != 5 &amp;&amp; !$legacy"/>
       </panel>
-      <field name="computeOtherPeriod"
-        showIf="reportTypeColumn != null &amp;&amp; typeSelect == 4 &amp;&amp; ruleTypeSelect == 2"/>
+      <panel name="groupConfigPanel" showIf="typeSelect == 4" colSpan="12">
+        <field name="hidden"/>
+        <field name="computeOtherPeriod"
+          showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2"/>
+      </panel>
       <panel name="splitConfigPanel" colSpan="12" itemSpan="4"
-        showIf="ruleTypeSelect == 2 &amp;&amp; reportType != null">
+        showIf="ruleTypeSelect == 2 &amp;&amp; reportType != null &amp;&amp; !$legacy">
         <field name="detailByAccountType" hideIf="detailByAccount || detailByAnalyticAccount"/>
         <field name="detailByAccount" hideIf="detailByAccountType || detailByAnalyticAccount"/>
         <field name="detailByAnalyticAccount" hideIf="detailByAccountType || detailByAccount"/>
@@ -148,6 +155,11 @@
 
   </form>
 
+  <action-group name="action-accounting-report-config-line-group-line-onnew">
+    <action name="action-accounting-report-config-line-record-line-rule"/>
+    <action name="action-accounting-report-config-line-attrs-set-legacy"/>
+  </action-group>
+
   <action-record
     name="action-accounting-report-config-line-record-type-select-onchange"
     model="com.axelor.apps.account.db.AccountingReportConfigLine">
@@ -177,6 +189,10 @@
     <attribute for="accountSet" name="domain"
       expr="eval: &quot; self.company = ${__parent__.company?.id} &quot;"
       if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.account.db.AccountingReportType'"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-report-config-line-attrs-set-legacy">
+    <attribute name="value" for="$legacy" expr="eval: __parent__?.useLegacyCustomReports"/>
   </action-attrs>
 
   <action-view name="action-move-line-view-open-report-config-line" title="Config lines"
