@@ -1,3 +1,74 @@
+## [6.4.3] (2023-01-05)
+
+#### Fixed
+
+* Accounting report: fixed presentation in excel output for AccountingReportType15.
+* Fixed asset: fix error message when realizing a derogatory line with a category that lacks one of the derogatory depreciation accounts.
+* Sale order, stock move, purchase order: fixed an issue where a NPE error was displayed when adding a new line in sale order, sale order template, stock move, purchase order.
+* Accounting report: fixed move lines retrieval on DAS2 Proof, given das2 activity and service type.
+* Move line query: fixed filter when partner field is not filled.
+* Fixed asset category: Rename some accounts in accounting tab.
+* Bank details: improve message when confirming a bank order and a receiver bank details is inactive.
+* Invoice term: delete reason of refusal to pay when accepting PFP.
+* Payment voucher: fix generated payment move given financial discount tax amount.
+* Fixed asset: Fix wrong depreciation value computation in fixed asset line till the depreciation date for both linear and degressive depreciation plan.
+* Substitute pfp validator: added a control on dates so start date cannot be after end date.
+* Move line: take into consideration isTaxAuthorizedOnMoveLine from account for the auto completion.
+* Move: fixed an issue where description was not filled during move origin change.
+* Expense: fixed an issue where ground for refusal was hidden even if it was filled.
+* Manufacturing: fix form views for subcontractor deliveries and arrivals.
+* Move template line: Hide distribution template field if selected account does not have analytic distribution authorized.
+* Analytic distribution: add filter for analytic axis, using the account config of the company.
+* Invoice: add missing translations on tab titles.
+* Followers: Fixed a residual bug where trying to fetch a recipient would result in a exception with somes conditions
+* Followers: Fixed a residual bug where trying to fetch a recipient would result in a exception with somes conditions.
+* Fixed asset: sale move generation is now correctly based on sale account.
+* Move line: fixed an issue where base analytic distribution was readonly while the configuration allowed the modification.
+* MRP: fixed an infinite loop issue
+
+An infinite loop occurred when, for a product, the available stock was less than the minimum quantity of its stock rule
+and this product was used in a purchase order.
+
+* MRP: fix generation proposal menu for more clarity.
+
+Generate proposal menu item now opens a wizard with 2 buttons:
+One for generating all possible proposals, one for generating proposals of only selected lines.
+
+* MRP: fixed NPE error that could happen during MRP computation if a operation order had a null planned start date.
+* MRP: When generating purchase order from proposals, correctly fill desired delivery date.
+* Fixed Asset: add filter by purchase journal in purchase account move field.
+* Fixed asset category: fixed some french translation in accounting information panel.
+* Move line/analytic: fixed an issue where analytic was not generated during move line generation.
+* Invoice term: fixed the issue making the partner form blank.
+* Accounting Report: add filter by company on AccountingReportType22.
+* Invoice: reject company bank details when default bank details is not active.
+* Fixed asset: fixed disposalValue when disposing by scrapping, hide disposalValue when asset is disposed by cession.
+* Fixed asset: fixed issue with prorata temporis when computation date starts on the 31st of months.
+* MoveLineQuery: Change design of isSelected field.
+* Cost sheet: fixed wrong human cost calculation when computing a cost sheet for a in progress manufacturing order.
+* Bank reconciliation: added default account type in search query.
+* Analytic distribution: make analytic distribution required on invoice lines given the account configuration, check added on analytic move line to ensure a total of 100% by axis.
+* Demo data: complete demo data for permissions, roles and menus.
+* Move: currency related fields are now changed on change of company
+* Inventory: when changing real quantity in a line, now takes the correct wap price into account when computing gap and real value.
+* Contracts: correctly apply the configuration "Nb of digits for unit prices" to price in contract lines.
+* Contracts: correctly apply the configuration "Nb of digits for quantity" to price in contract lines.
+* Accounting report type: UI form view improvements.
+* Move: fix creation of an move line when an partner has a default charge account.
+* BPM: Add meta attrs support in view attrs and fix built in variable support.
+* Manufacturing Orders: during manfacturing order generation, added a more explicit message if the bill of materials has 0 quantity.
+* Accounting report: Fix filter by account on "vat statement received" report.
+* Timesheet line: fixed task display in grid view.
+* Aged balance report: corrected wrong currency amount displayed and corrected non due amount displayed in wrong column.
+* Sale order separation: fixed computation of miscellaneous sale order fields.
+* Accounting report: fixed an issue where 0.0 figures were wrongly displayed in title lines for PDF personnalized reports.
+* Move/Move line: fixed deletion of analytic axis and remove save popup when nothing is edited on move line.
+* Move template: add partner on the generated move when there is only one.
+* Bank reconciliation: fixed display of move description in BankReconciliation reports.
+* Accounting report: fixed different issues on ETAT PREPARATOIRE DGI 2054.
+* Fixed asset: fixed issues with prorata-temporis on depreciation plan computation of imported fixed assets.
+* Accounting report: fixed DAS2 proof declaration report to only display reconciled move lines and purchase moves on printing.
+
 ## [6.4.2] (2022-12-16)
 
 #### Features
@@ -253,6 +324,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.3]: https://github.com/axelor/axelor-open-suite/compare/v6.4.2...v6.4.3
 [6.4.2]: https://github.com/axelor/axelor-open-suite/compare/v6.4.1...v6.4.2
 [6.4.1]: https://github.com/axelor/axelor-open-suite/compare/v6.4.0...v6.4.1
 [6.4.0]: https://github.com/axelor/axelor-open-suite/compare/v6.3.5...v6.4.0

@@ -1,3 +1,0 @@
----
-title: "Move line : take into consideration isTaxAuthorizedOnMoveLine from account for the auto completion"
-type: fix
