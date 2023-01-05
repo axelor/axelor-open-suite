@@ -1,0 +1,12 @@
+---
+name: Appraisal
+code: appraisal
+installOrder: 22
+description: |
+    Appraisal
+image: app-appraisal.png
+modules: 
+    axelor-talent
+dependsOn: 
+    - employee
+sequence: 24

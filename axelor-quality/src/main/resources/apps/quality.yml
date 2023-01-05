@@ -1,0 +1,13 @@
+---
+name: Quality
+code: quality
+installOrder: 27
+description: |
+   Quality management
+image: app-quality.png
+modules: 
+   axelor-quality
+dependsOn:
+   - production
+   - employee
+sequence: 16

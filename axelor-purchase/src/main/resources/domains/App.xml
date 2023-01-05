@@ -8,8 +8,6 @@
   <entity name="App" cacheable="true">
 
     <one-to-one ref="com.axelor.studio.db.AppPurchase" name="appPurchase" mappedBy="app"/>
-    <one-to-one ref="com.axelor.studio.db.AppPurchaseRequest" name="appPurchaseRequest"
-      mappedBy="app"/>
 
   </entity>
 

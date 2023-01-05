@@ -1,0 +1,12 @@
+---
+name: Recruitment
+code: recruitment
+installOrder: 21
+description: |
+    Recruitment
+image: app-recruitment.png
+modules: 
+    axelor-talent
+dependsOn: 
+    - employee
+sequence: 22

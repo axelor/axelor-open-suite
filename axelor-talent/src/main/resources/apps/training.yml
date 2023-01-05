@@ -1,0 +1,12 @@
+---
+name: Training
+code: training
+installOrder: 20
+description: |
+    Training
+image: app-training.png
+modules: 
+    axelor-talent
+dependsOn: 
+    - employee
+sequence: 23

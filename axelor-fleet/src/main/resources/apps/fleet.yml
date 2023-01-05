@@ -1,0 +1,12 @@
+---
+name: Fleet
+code: fleet
+installOrder: 26
+description: |
+   Fleet management
+image: app-fleet.png
+modules: 
+   axelor-fleet
+dependsOn:
+   - base
+sequence: 27
