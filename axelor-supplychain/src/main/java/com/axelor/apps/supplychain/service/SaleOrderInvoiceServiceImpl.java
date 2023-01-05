@@ -958,19 +958,19 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     int invoicingState = 0;
     if (saleOrder.getAmountInvoiced().compareTo(BigDecimal.ZERO) > 0
         && saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) < 0) {
-      invoicingState = 2;
+      invoicingState = SALE_ORDER_PARTIALLY_INVOICED;
     }
     if (saleOrder.getAmountInvoiced().compareTo(BigDecimal.ZERO) > 0
             && (saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) == 0)
         || saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) > 0) {
-      invoicingState = 3;
+      invoicingState = SALE_ORDER_INVOICED;
     }
     if (saleOrder.getAmountInvoiced().compareTo(BigDecimal.ZERO) == 0) {
       if (atLeastOneInvoiceIsVentilated(saleOrder)
           && saleOrder.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
-        invoicingState = 3;
+        invoicingState = SALE_ORDER_INVOICED;
       } else {
-        invoicingState = 1;
+        invoicingState = SALE_ORDER_NOT_INVOICED;
       }
     }
 
@@ -978,7 +978,19 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   protected boolean atLeastOneInvoiceIsVentilated(SaleOrder saleOrder) {
-    return getInvoices(saleOrder).stream().anyMatch(invoice -> invoice.getStatusSelect() == 3);
+    return invoiceRepo
+            .all()
+            .filter(
+                "self.statusSelect = :statusSelect AND self.saleOrder.id = :saleOrder OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineList)))")
+            .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
+            .bind("saleOrder", saleOrder.getId())
+            .bind(
+                "saleOrderLineList",
+                saleOrder.getSaleOrderLineList().stream()
+                    .map(SaleOrderLine::getId)
+                    .collect(Collectors.toList()))
+            .count()
+        > 0;
   }
 
   public BigDecimal computeSumInvoices(List<Invoice> invoices) {

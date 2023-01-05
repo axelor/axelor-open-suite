@@ -40,6 +40,10 @@ import java.util.Map;
 
 public interface SaleOrderInvoiceService {
 
+  int SALE_ORDER_NOT_INVOICED = 1;
+  int SALE_ORDER_PARTIALLY_INVOICED = 2;
+  int SALE_ORDER_INVOICED = 3;
+
   /**
    * Generate an invoice from a sale order. call {@link
    * SaleOrderInvoiceService#createInvoice(SaleOrder)} to create the invoice.

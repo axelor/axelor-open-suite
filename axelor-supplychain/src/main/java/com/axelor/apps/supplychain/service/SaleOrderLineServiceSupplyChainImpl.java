@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -85,6 +86,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AppSupplychainService appSupplychainService;
   protected AccountConfigService accountConfigService;
+  protected InvoiceLineRepository invoiceLineRepository;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
@@ -101,7 +103,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
       PricingService pricingService,
-      TaxService taxService) {
+      TaxService taxService,
+      InvoiceLineRepository invoiceLineRepository) {
     super(
         currencyService,
         priceListService,
@@ -117,6 +120,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
+    this.invoiceLineRepository = invoiceLineRepository;
   }
 
   @Override
@@ -204,6 +208,25 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
     return saleOrderLine;
+  }
+
+  @Override
+  public int getInvoicingState(SaleOrderLine saleOrderLine) {
+    if (atLeastOneInvoiceVentilated(saleOrderLine)) {
+      return SALE_ORDER_LINE_INVOICED;
+    }
+    return SALE_ORDER_LINE_NOT_INVOICED;
+  }
+
+  protected boolean atLeastOneInvoiceVentilated(SaleOrderLine saleOrderLine) {
+    return invoiceLineRepository
+            .all()
+            .filter(
+                "self.saleOrderLine = :saleOrderLine AND self.invoice.statusSelect = :statusSelect")
+            .bind("saleOrderLine", saleOrderLine.getId())
+            .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
+            .count()
+        > 0;
   }
 
   @Override

@@ -9,7 +9,7 @@
       <attribute name="onNew"
         value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-group-manage-attrs"/>
       <attribute name="onLoad"
-        value="action-group-sale-saleorderline-onload, action-sale-order-line-attrs-hidden-fields-for-client, action-sale-order-line-group-manage-attrs"/>
+        value="action-group-sale-saleorderline-onload, action-sale-order-line-attrs-hidden-fields-for-client, action-sale-order-line-group-manage-attrs, action-sale-order-line-supplychain-method-get-invoicing-state"/>
     </extend>
     <extend target="//panel[@name='statusPanel']">
       <insert position="inside">
@@ -93,6 +93,11 @@
     name="action-sale-order-line-supplychain-method-update-reservation-date">
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
       method="updateReservationDate"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-supplychain-method-get-invoicing-state">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
+      method="getInvoicingState"/>
   </action-method>
 
   <action-record

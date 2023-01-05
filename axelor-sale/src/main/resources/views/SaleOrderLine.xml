@@ -135,14 +135,12 @@
 					]]>
               </viewer>
             </field>
-            <field name="invoiced" showTitle="false"
-              showIf="id &amp;&amp; $readonly() &amp;&amp; exTaxTotal > 0" colSpan="2"
-              if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-              <viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
+            <field name="$invoicingState" showTitle="false" showIf="id &amp;&amp; $readonly()"
+              colSpan="2" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+              <viewer depends="$invoicingState"><![CDATA[
                         <h4>
-                            <span class="label label-success" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) >= $number(record.exTaxTotal)" x-translate>Invoiced</span>
-                            <span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-                            <span class="label label-important" ng-show="record.amountInvoiced == 0" x-translate>Not invoiced</span>
+                            <span class="label label-success" ng-show="record.$invoicingState == 2" x-translate>Invoiced</span>
+                            <span class="label label-important" ng-show="record.$invoicingState == 1" x-translate>Not invoiced</span>
                         </h4>
                     ]]>
               </viewer>

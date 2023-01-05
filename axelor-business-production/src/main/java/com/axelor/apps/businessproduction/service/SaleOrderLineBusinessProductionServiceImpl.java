@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -56,7 +57,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
       PricingService pricingService,
-      TaxService taxService) {
+      TaxService taxService,
+      InvoiceLineRepository invoiceLineRepository) {
     super(
         currencyService,
         priceListService,
@@ -65,13 +67,14 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
         appSaleService,
         accountManagementService,
         saleOrderLineRepo,
+        saleOrderService,
         appAccountService,
         analyticMoveLineService,
         appSupplychainService,
         accountConfigService,
-        saleOrderService,
         pricingService,
-        taxService);
+        taxService,
+        invoiceLineRepository);
   }
 
   @Override
