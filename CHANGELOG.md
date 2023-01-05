@@ -1,3 +1,32 @@
+## [6.1.28] (2023-01-05)
+
+#### Fixed
+
+* Bank details: improve message when confirming a bank order and a receiver bank details is inactive.
+* Expense: fixed an issue where ground for refusal was hidden even if it was fill.
+* Manufacturing: fix form views for subcontractor deliveries and arrivals.
+* Followers: Fixed a residual bug where trying to fetch a recipient would result in a exception with somes conditions.
+* MRP: fixed an infinite loop issue
+
+An infinite loop occurred when, for a product, the available stock was less than the minimum quantity of its stock rule
+and this product was used in a purchase order.
+
+* MRP: fix generation proposal menu for more clarity.
+
+Generate proposal menu item now opens a wizard with 2 buttons:
+One for generating all possible proposals, one for generating proposals of only selected lines.
+
+* MRP: fixed NPE error that could happen during MRP computation if a operation order had a null planned start date.
+* Invoice: reject company bank details when default bank details is not active.
+* Cost sheet: fixed wrong human cost calculation when computing a cost sheet for a in progress manufacturing order.
+* Demo data: complete demo data for permissions, roles and menus.
+* Inventory: when changing real quantity in a line, now takes the correct wap price into account when computing gap and real value.
+* Contracts: correctly apply the configuration "Nb of digits for unit prices" to price in contract lines.
+* Contracts: correctly apply the configuration "Nb of digits for quantity" to price in contract lines.
+* Manufacturing Orders: during manfacturing order generation, added a more explicit message if the bill of materials has 0 quantity.
+* Timesheet line: fixed task display in grid view.
+* Accounting report: fixed an issue where 0.0 figures were wrongly displayed in title lines for PDF personnalized reports.
+
 ## [6.1.27] (2022-12-16)
 
 #### Fixed
@@ -903,6 +932,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.28]: https://github.com/axelor/axelor-open-suite/compare/v6.1.27...v6.1.28
 [6.1.27]: https://github.com/axelor/axelor-open-suite/compare/v6.1.26...v6.1.27
 [6.1.26]: https://github.com/axelor/axelor-open-suite/compare/v6.1.25...v6.1.26
 [6.1.25]: https://github.com/axelor/axelor-open-suite/compare/v6.1.24...v6.1.25
