@@ -1,3 +1,19 @@
+## [5.4.32] (2023-01-05)
+
+#### Fixed
+
+* Bank details: improve message when confirming a bank order and a receiver bank details is inactive.
+* Expense: fixed an issue where ground for refusal was hidden even if it was fill.
+* MRP: fixed an infinite loop issue
+
+An infinite loop occurred when, for a product, the available stock was less than the minimum quantity of its stock rule
+and this product was used in a purchase order.
+
+* Invoice: reject company bank details when default bank details is not active.
+* MRP: fixed NPE error that could happen during MRP computation if a operation order had a null planned start date.
+* Cost sheet: fixed wrong human cost calculation when computing a cost sheet for a in progress manufacturing order.
+* Manufacturing Orders: during manfacturing order generation, added a more explicit message if the bill of materials has 0 quantity.
+
 ## [5.4.31] (2022-12-16)
 
 #### Fixed
@@ -791,6 +807,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.32]: https://github.com/axelor/axelor-open-suite/compare/v5.4.31...v5.4.32
 [5.4.31]: https://github.com/axelor/axelor-open-suite/compare/v5.4.30...v5.4.31
 [5.4.30]: https://github.com/axelor/axelor-open-suite/compare/v5.4.29...v5.4.30
 [5.4.29]: https://github.com/axelor/axelor-open-suite/compare/v5.4.28...v5.4.29
