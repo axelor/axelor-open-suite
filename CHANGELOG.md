@@ -1,3 +1,52 @@
+## [6.3.8] (2023-01-05)
+
+#### Fixed
+
+* Fixed asset: fix error message when realizing a derogatory line with a category that lacks one of the derogatory depreciation accounts.
+* Sale order, stock move, purchase order: fixed an issue where a NPE error was displayed when adding a new line in sale order, sale order template, stock move, purchase order.
+* Bank details: improve message when confirming a bank order and a receiver bank details is inactive.
+* Fixed asset: Fix wrong depreciation value computation in fixed asset line till the depreciation date for both linear and degressive depreciation plan.
+* Move: fixed an issue where description was not filled during move origin change.
+* Expense: fixed an issue where ground for refusal was hidden even if it was fill.
+* Manufacturing: fix form views for subcontractor deliveries and arrivals.
+* Analytic distribution: add filter for analytic axis, using the account config of the company.
+* Followers: Fixed a residual bug where trying to fetch a recipient would result in a exception with somes conditions
+* Followers: Fixed a residual bug where trying to fetch a recipient would result in a exception with somes conditions.
+* Move line: fixed an issue where base analytic distribution was readonly while the configuration allowed the modification.
+* MRP: fixed an infinite loop issue
+
+An infinite loop occurred when, for a product, the available stock was less than the minimum quantity of its stock rule
+and this product was used in a purchase order.
+
+* MRP: fix generation proposal menu for more clarity.
+
+Generate proposal menu item now opens a wizard with 2 buttons:
+One for generating all possible proposals, one for generating proposals of only selected lines.
+
+* MRP: fixed NPE error that could happen during MRP computation if a operation order had a null planned start date.
+* MRP: When generating purchase order from proposals, correctly fill desired delivery date.
+* Fixed asset category: fixed some french translation in accounting information panel.
+* Move line/analytic: fixed an issue where analytic was not generated during move line generation.
+* Invoice: reject company bank details when default bank details is not active.
+* Fixed asset: fixed disposalValue when disposing by scrapping, hide disposalValue when asset is disposed by cession.
+* Fixed asset: fixed issue with prorata temporis when computation date starts on the 31st of months.
+* Cost sheet: fixed wrong human cost calculation when computing a cost sheet for a in progress manufacturing order.
+* Bank reconciliation: added default account type in search query.
+* Demo data: complete demo data for permissions, roles and menus.
+* Move: currency related fields are now changed on change of company.
+* Inventory: when changing real quantity in a line, now takes the correct wap price into account when computing gap and real value.
+* Contracts: correctly apply the configuration "Nb of digits for unit prices" to price in contract lines.
+* Contracts: correctly apply the configuration "Nb of digits for quantity" to price in contract lines.
+* Accounting report type: UI form view improvements.
+* Move: fix creation of an move line when an partner has a default charge account.
+* Manufacturing Orders: during manfacturing order generation, added a more explicit message if the bill of materials has 0 quantity.
+* Timesheet line: fixed task display in grid view.
+* Sale order separation: Fix computation of miscellaneous sale order fields.
+* Accounting report: fixed an issue where 0.0 figures were wrongly displayed in title lines for PDF personnalized reports.
+* Move/Move line: Fix deletion of analytic axis and remove save popup when nothing is edited on move line.
+* Accounting report: fixed different issues on ETAT PREPARATOIRE DGI 2054.
+* Fixed asset: fixed issues with prorata-temporis on depreciation plan computation of imported fixed assets.
+
 ## [6.3.7] (2022-12-16)
 
 #### Fixed
@@ -347,6 +396,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.8]: https://github.com/axelor/axelor-open-suite/compare/v6.3.7...v6.3.8
 [6.3.7]: https://github.com/axelor/axelor-open-suite/compare/v6.3.6...v6.3.7
 [6.3.6]: https://github.com/axelor/axelor-open-suite/compare/v6.3.5...v6.3.6
 [6.3.5]: https://github.com/axelor/axelor-open-suite/compare/v6.3.4...v6.3.5
