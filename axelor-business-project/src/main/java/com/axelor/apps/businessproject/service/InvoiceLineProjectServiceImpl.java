@@ -31,7 +31,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.google.inject.Inject;
@@ -52,7 +51,6 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
-      PurchaseProductService purchaseProductService,
       SupplierCatalogService supplierCatalogService,
       TaxService taxService,
       InternationalService internationalService) {
@@ -66,7 +64,6 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
         appBaseService,
         accountConfigService,
         invoiceLineAnalyticService,
-        purchaseProductService,
         supplierCatalogService,
         taxService,
         internationalService);

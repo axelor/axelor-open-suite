@@ -1,0 +1,3 @@
+---
+title: "Supplier Catalog : add boolean to take product.purchasePrice by default and minQty to 1 in supplier-catalog-form"
+type: fix

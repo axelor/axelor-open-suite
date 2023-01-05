@@ -15,18 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.purchase.script;
 
-import com.axelor.apps.base.db.Product;
+import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.util.Map;
 
-public interface PurchaseProductService {
-  /**
-   * Search for the last shipping coef in purchase order line.
-   *
-   * @param product a product
-   * @return An optional with the shippingCoef
-   */
-  BigDecimal getLastShippingCoef(Product product) throws AxelorException;
+public class ImportSupplierCatalog {
+
+  public Object importSupplierCatalog(Object bean, Map<String, Object> values)
+      throws AxelorException {
+
+    assert bean instanceof SupplierCatalog;
+
+    SupplierCatalog supplierCatalog = (SupplierCatalog) bean;
+    BigDecimal price = supplierCatalog.getPrice();
+
+    if (ObjectUtils.isEmpty(price) || price.compareTo(BigDecimal.ZERO) == 0) {
+      supplierCatalog.setIsTakingProductPurchasePrice(Boolean.TRUE);
+      supplierCatalog.setPrice(supplierCatalog.getProduct().getPurchasePrice());
+    }
+    return supplierCatalog;
+  }
 }

@@ -43,6 +43,7 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -72,6 +73,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   protected ShippingCoefService shippingCoefService;
   protected ProductCompanyService productCompanyService;
   protected BillOfMaterialService billOfMaterialService;
+  protected SupplierCatalogService supplierCatalogService;
 
   @Inject
   public CostSheetLineServiceImpl(
@@ -85,7 +87,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       CurrencyService currencyService,
       ShippingCoefService shippingCoefService,
       ProductCompanyService productCompanyService,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      SupplierCatalogService supplierCatalogService) {
     this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.costSheetGroupRepository = costSheetGroupRepository;
@@ -97,6 +100,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     this.shippingCoefService = shippingCoefService;
     this.productCompanyService = productCompanyService;
     this.billOfMaterialService = billOfMaterialService;
+    this.supplierCatalogService = supplierCatalogService;
   }
 
   public CostSheetLine createCostSheetLine(
@@ -363,14 +367,16 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             (List<SupplierCatalog>)
                 productCompanyService.get(product, "supplierCatalogList", company);
         for (SupplierCatalog supplierCatalog : supplierCatalogList) {
-          if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
+          BigDecimal purchasePrice =
+              supplierCatalogService.getPurchasePrice(supplierCatalog, company);
+          if (BigDecimal.ZERO.compareTo(purchasePrice) < 0) {
             price =
                 unitConversionService.convert(
                     product.getUnit(),
                     product.getPurchasesUnit() != null
                         ? product.getPurchasesUnit()
                         : product.getUnit(),
-                    supplierCatalog.getPrice(),
+                    purchasePrice,
                     appProductionService.getNbDecimalDigitForUnitPrice(),
                     product);
             Partner supplierPartner = supplierCatalog.getSupplierPartner();
