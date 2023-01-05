@@ -19,8 +19,8 @@ test {
 }
 
 dependencies {
-  api ("org.camunda.bpm:camunda-engine:7.17.0")
-  api ("org.camunda.bpm:camunda-engine-plugin-spin:7.17.0")
-  api ("org.camunda.spin:camunda-spin-dataformat-json-jackson:1.17.0")
+  api libs.camunda_engine
+  api libs.camunda_engine_plugin_spin
+  api libs.camunda_spin_dataformat_json_jackson
   api project(":modules:axelor-studio")
 }

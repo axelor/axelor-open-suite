@@ -18,7 +18,7 @@ dependencies {
 	api project(":modules:axelor-exception")
 
 	implementation libs.commons_net
-	implementation libs.commons_io
+	implementation libs.commons_csv
 	implementation libs.commons_lang3
 	implementation libs.pdfbox
 	implementation libs.commons_text
@@ -31,6 +31,6 @@ dependencies {
 
 	implementation libs.jaxb_impl
 	api libs.opencsv
-	implementation 'javax.xml.ws:jaxws-api:2.3.1'
-	implementation 'javax.jws:javax.jws-api:1.1'
+	implementation libs.jaxws_api
+	implementation libs.jws_api
 }
