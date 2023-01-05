@@ -113,6 +113,9 @@ public class TranslationServiceImpl implements TranslationService {
   @Override
   public String getValueTranslation(String key, String language) {
     String valueKey = VALUE_KEY_PREFIX + key;
+    if (key != null && key.startsWith(VALUE_KEY_PREFIX)) {
+      valueKey = key;
+    }
     String translation = getTranslation(valueKey, language);
     return !valueKey.equals(translation) ? translation : key;
   }
