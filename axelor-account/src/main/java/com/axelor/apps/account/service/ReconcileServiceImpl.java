@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -530,35 +531,37 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
       throws AxelorException {
-    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-      if (move != null
-          && move.getPaymentVoucher() != null
-          && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
-        return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
-            .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
-            .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
-            .map(PayVoucherElementToPay::getInvoiceTerm)
+    if (move != null
+        && move.getPaymentVoucher() != null
+        && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
+      return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+          .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
+          .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
+          .map(PayVoucherElementToPay::getInvoiceTerm)
+          .collect(Collectors.toList());
+    } else {
+      List<InvoiceTerm> invoiceTermsToPay = null;
+      if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+        invoiceTermsToPay = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+
+      } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+        invoiceTermsToPay = this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
+
+      } else {
+        return null;
+      }
+      if (CollectionUtils.isNotEmpty(invoiceTermsToPay)
+          && move != null
+          && move.getPaymentSession() != null) {
+        return invoiceTermsToPay.stream()
+            .filter(
+                it ->
+                    it.getPaymentSession() != null
+                        && it.getPaymentSession().equals(move.getPaymentSession()))
             .collect(Collectors.toList());
       } else {
-        List<InvoiceTerm> invoiceTermsToPay =
-            invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
-
-        if (move != null && move.getPaymentSession() != null) {
-          invoiceTermsToPay =
-              invoiceTermsToPay.stream()
-                  .filter(
-                      it ->
-                          it.getPaymentSession() != null
-                              && it.getPaymentSession().equals(move.getPaymentSession()))
-                  .collect(Collectors.toList());
-        }
-
         return invoiceTermsToPay;
       }
-    } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
-    } else {
-      return null;
     }
   }
 
@@ -736,8 +739,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
     Move purchaseMove = reconcile.getCreditMoveLine().getMove();
-    if ((purchaseMove.getJournal().getJournalType() != null
-            && !purchaseMove.getJournal().getJournalType().getCode().equals("ACH"))
+    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")
         || purchaseMove.getPartner() == null) {
       return;
     }
@@ -884,35 +886,89 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   @Override
-  public List<Long> getAllowedMoveLines(Reconcile reconcile, boolean isDebit) {
-    MoveLine otherMoveLine = isDebit ? reconcile.getDebitMoveLine() : reconcile.getCreditMoveLine();
-    StringBuilder moveLineQueryStr =
-        new StringBuilder(
-            "self.move.statusSelect IN (2,3) AND self.move.company = :company AND self.account.reconcileOk IS TRUE");
+  public String getStringAllowedCreditMoveLines(Reconcile reconcile) {
+    return getAllowedCreditMoveLines(reconcile).stream()
+        .map(Objects::toString)
+        .collect(Collectors.joining(","));
+  }
 
-    if (isDebit) {
-      moveLineQueryStr.append(" AND self.debit > 0");
-    } else {
-      moveLineQueryStr.append(" AND self.credit > 0");
-    }
+  @Override
+  public String getStringAllowedDebitMoveLines(Reconcile reconcile) {
+    return getAllowedDebitMoveLines(reconcile).stream()
+        .map(Objects::toString)
+        .collect(Collectors.joining(","));
+  }
 
-    if (otherMoveLine != null) {
-      moveLineQueryStr.append(" AND self.partner = :partner");
-    }
+  @Override
+  public List<Long> getAllowedCreditMoveLines(Reconcile reconcile) {
+    StringBuilder moveLineQueryStr = new StringBuilder("self.credit > 0");
+    return getMoveLineIds(reconcile, moveLineQueryStr, reconcile.getDebitMoveLine());
+  }
 
-    Query<MoveLine> moveLineQuery =
-        moveLineRepo
-            .all()
-            .filter(moveLineQueryStr.toString())
-            .bind("company", reconcile.getCompany());
+  @Override
+  public List<Long> getAllowedDebitMoveLines(Reconcile reconcile) {
 
-    if (otherMoveLine != null) {
-      moveLineQuery = moveLineQuery.bind("partner", otherMoveLine.getPartner());
-    }
+    StringBuilder moveLineQueryStr = new StringBuilder("self.debit > 0");
+    return getMoveLineIds(reconcile, moveLineQueryStr, reconcile.getCreditMoveLine());
+  }
+
+  protected List<Long> getMoveLineIds(
+      Reconcile reconcile, StringBuilder moveLineQueryStr, MoveLine otherMoveLine) {
+    computeMoveLineDomain(moveLineQueryStr, otherMoveLine);
+
+    Query<MoveLine> moveLineQuery = getMoveLineQuery(reconcile, moveLineQueryStr);
+
+    moveLineQuery = setQueryBindings(moveLineQuery, otherMoveLine);
 
     return moveLineQuery.fetch().stream()
         .filter(moveLineControlService::canReconcile)
         .map(MoveLine::getId)
         .collect(Collectors.toList());
+  }
+
+  protected Query<MoveLine> getMoveLineQuery(Reconcile reconcile, StringBuilder moveLineQueryStr) {
+    return moveLineRepo
+        .all()
+        .filter(moveLineQueryStr.toString())
+        .bind("company", reconcile.getCompany());
+  }
+
+  protected void computeMoveLineDomain(StringBuilder moveLineQueryStr, MoveLine otherMoveLine) {
+
+    moveLineQueryStr.append(
+        " AND self.move.statusSelect IN (2,3) AND self.move.company = :company AND self.account.reconcileOk IS TRUE");
+
+    if (otherMoveLine == null) {
+      return;
+    }
+
+    moveLineQueryStr.append(" AND self.account = :account");
+
+    if (otherMoveLine.getAccount().getUseForPartnerBalance()
+        && otherMoveLine.getPartner() != null) {
+      moveLineQueryStr.append(" AND self.partner = :partner");
+    }
+  }
+
+  protected Query<MoveLine> setQueryBindings(
+      Query<MoveLine> moveLineQuery, MoveLine otherMoveLine) {
+
+    Account account = null;
+    Partner partner = null;
+
+    if (otherMoveLine != null) {
+      account = otherMoveLine.getAccount();
+      partner = otherMoveLine.getPartner();
+    }
+
+    if (account != null) {
+      moveLineQuery = moveLineQuery.bind("account", account);
+
+      if (account.getUseForPartnerBalance() && partner != null) {
+        moveLineQuery.bind("partner", partner);
+      }
+    }
+
+    return moveLineQuery;
   }
 }

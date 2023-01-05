@@ -1,0 +1,3 @@
+---
+title: "ManufOrder: On generation of a manuf order, added a more explicit message if the bill of material has 0 quantity"
+type: fix

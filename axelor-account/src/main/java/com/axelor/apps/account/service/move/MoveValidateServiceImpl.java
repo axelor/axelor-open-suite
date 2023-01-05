@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
 @RequestScoped
 public class MoveValidateServiceImpl implements MoveValidateService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
+  protected int jpaLimit = 20;
   protected MoveLineControlService moveLineControlService;
   protected MoveLineToolService moveLineToolService;
   protected AccountConfigService accountConfigService;
@@ -339,8 +339,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected void checkClosurePeriod(Move move) throws AxelorException {
 
-    if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(
-        move.getPeriod(), AuthUtils.getUser())) {
+    if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED));
@@ -492,14 +491,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
-    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
-        || !daybook
-        || (daybook
-            && (move.getStatusSelect() == MoveRepository.STATUS_NEW
-                || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)
-            && (move.getTechnicalOriginSelect() == MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC)
-            && (move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
-                || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE))) {
+    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK || !daybook) {
       move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
       move.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
     } else {
@@ -592,7 +584,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     for (Integer moveId : moveIds) {
       Move move = moveRepository.find(moveId.longValue());
       try {
-        if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
+        if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, user)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(
@@ -610,7 +602,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         }
         errors = errors.concat(move.getReference());
       } finally {
-        if (++i % 20 == 0) {
+        if (++i % jpaLimit == 0) {
           JPA.clear();
         }
       }

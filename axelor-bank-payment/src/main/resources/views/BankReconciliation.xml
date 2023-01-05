@@ -37,23 +37,25 @@
         <field name="validatedByUser" colSpan="2"/>
         <field name="validatedDate" colSpan="2"/>
         <button name="validateBtn" title="Validate reconciliation"
-          readonlyIf="!(bankReconciliationLineList.length > 0)" hideIf="statusSelect == 2"
-          colSpan="2" onClick="action-group-bankreconciliation-validate-click"/>
-        <field name="name" readonlyIf="bankReconciliationLineList.length > 0"/>
+          readonlyIf="!(bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0)"
+          hideIf="statusSelect == 2" colSpan="2"
+          onClick="action-group-bankreconciliation-validate-click"/>
+        <field name="name"
+          readonlyIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0"/>
         <field name="bankStatement" colSpan="2"
-          readonlyIf="bankReconciliationLineList.length > 0"
+          readonlyIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0"
           domain="self.statusSelect = 2 AND (self.isFullyReconciled != true OR self.isFullyReconciled is null)"
           onChange="action-bank-payment-bank-reconciliation-method-on-change-bank-statement"/>
         <field name="includeOtherBankStatements" colSpan="2"/>
         <field name="company" colSpan="3" widget="SuggestBox" canEdit="false"
-          readonlyIf="bankReconciliationLineList.length > 0"
+          readonlyIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0"
           onChange="action-bank-reconciliation-group-onchange-company" required="true"
           form-view="company-form" grid-view="company-grid"/>
         <field name="currency" colSpan="3" canEdit="false" required="true"
-          readonlyIf="bankReconciliationLineList.length > 0" form-view="currency-form"
-          grid-view="currency-grid"/>
+          readonlyIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0"
+          form-view="currency-form" grid-view="currency-grid"/>
         <field name="bankDetails" canEdit="false"
-          readonlyIf="bankReconciliationLineList.length > 0"
+          readonlyIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0"
           onChange="action-bank-reconciliation-method-set-journal,action-bank-reconciliation-method-set-cash-account"
           onSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true"
           form-view="bank-details-form" grid-view="bank-details-grid" colSpan="4"/>
@@ -84,7 +86,8 @@
       </panel>
     </panel>
     <panel name="bankReconciliationPanel" title="Bank reconciliation"
-      readonlyIf="statusSelect == 2" colSpan="12" showIf="bankReconciliationLineList.length > 0">
+      readonlyIf="statusSelect == 2" colSpan="12"
+      showIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0">
       <panel name="balancePanel" title="Balance" colSpan="12">
         <field name="totalPaid" colSpan="3"/>
         <field name="totalCashed" colSpan="3"/>
@@ -122,7 +125,7 @@
         <field name="correctedUser" hidden="true"/>
       </panel>
       <panel name="mainBalancePanel" colSpan="6"
-        showIf="bankReconciliationLineList.length > 0">
+        showIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0">
         <button name="computeBalances" title="Compute balances" colSpan="12"
           onClick="save,action-bank-reconciliation-method-compute-balances"/>
         <label name="bankStatementLabel" title="Bank statement" colSpan="4"/>
@@ -139,7 +142,7 @@
           readonly="true"/>
         <field name="statementOngoingReconciledBalance" showTitle="false" colSpan="4"
           readonly="true"/>
-        <label name="balanceLabel" title="Ongoing" colSpan="4"/>
+        <label name="balanceLabel" title="BankReconciliation.ongoing" colSpan="4"/>
         <field name="movesOngoingReconciledBalance" showTitle="false" colSpan="4"
           readonly="true"/>
         <field name="statementAmountRemainingToReconcile" showTitle="false" colSpan="4"

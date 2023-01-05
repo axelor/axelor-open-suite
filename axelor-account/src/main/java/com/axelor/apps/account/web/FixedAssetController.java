@@ -124,13 +124,9 @@ public class FixedAssetController {
 
     FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
 
-    if (disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL
-        && disposalQty.compareTo(fixedAsset.getQty()) > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
-          fixedAsset.getQty().toString());
-    }
+    Beans.get(FixedAssetService.class)
+        .checkFixedAssetBeforeDisposal(fixedAsset, disposalDate, disposalQtySelect, disposalQty);
+
     try {
       int transferredReason =
           Beans.get(FixedAssetService.class)
@@ -149,7 +145,7 @@ public class FixedAssetController {
                   comments);
       if (createdFixedAsset != null) {
         response.setView(
-            ActionView.define("Fixed asset")
+            ActionView.define(I18n.get("Fixed asset"))
                 .model(FixedAsset.class.getName())
                 .add("form", "fixed-asset-form")
                 .context("_showRecord", createdFixedAsset.getId())
@@ -353,7 +349,7 @@ public class FixedAssetController {
       // Open in view
       if (createdFixedAsset != null) {
         response.setView(
-            ActionView.define("Fixed asset")
+            ActionView.define(I18n.get("Fixed asset"))
                 .model(FixedAsset.class.getName())
                 .add("form", "fixed-asset-form")
                 .context("_showRecord", createdFixedAsset.getId())

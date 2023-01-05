@@ -134,9 +134,14 @@ public class PaymentVoucherControlService {
   public boolean controlMoveAmounts(PaymentVoucher paymentVoucher) {
     if (!CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
       for (PayVoucherElementToPay elementToPay : paymentVoucher.getPayVoucherElementToPayList()) {
-        if (!elementToPay
-            .getRemainingAmount()
-            .equals(elementToPay.getMoveLine().getAmountRemaining())) {
+        BigDecimal remainingAmountToPay = elementToPay.getRemainingAmount();
+        BigDecimal remainingAmountMoveLine;
+        if (elementToPay.getFinancialDiscount() == null) {
+          remainingAmountMoveLine = elementToPay.getMoveLine().getAmountRemaining();
+        } else {
+          remainingAmountMoveLine = elementToPay.getMoveLine().getRemainingAmountAfterFinDiscount();
+        }
+        if (!remainingAmountToPay.equals(remainingAmountMoveLine)) {
           return false;
         }
       }

@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
+import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
@@ -124,12 +125,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
       fileLink = accountingReportDas2Service.printPreparatoryProcessDeclaration(accountingReport);
     } else if (accountingReport.getReportType().getTypeSelect()
-        == AccountingReportRepository.REPORT_CUSTOM_STATE) {
+            == AccountingReportRepository.REPORT_CUSTOM_STATE
+        && !accountingReport.getReportType().getUseLegacyCustomReports()) {
       fileLink = accountingReportPrintService.printCustomReport(accountingReport);
     } else {
       fileLink = accountingReportPrintService.print(accountingReport);
     }
-
+    accountingReport = accountingReportRepo.find(accountingReport.getId());
     setStatus(accountingReport);
     return fileLink;
   }
@@ -239,11 +241,19 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect()
             != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
+
     } else if (accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect()
             == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams(
-          "(self.move.partner.das2Activity is null OR self.account.serviceType is null)");
+          "(self.account.serviceType is null OR (self.move.partner.das2Activity is null AND self.account.serviceType.isDas2Declarable is true))");
+      this.addParams("self.amountRemaining < self.debit + self.credit");
+      this.addParams("self.reconcileGroup IS NOT null");
+      JournalType journalType =
+          accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
+      if (journalType != null) {
+        this.addParams("self.move.journal.journalType = ?%d", journalType);
+      }
     }
 
     if (accountingReport.getPaymentMode() != null) {
@@ -306,7 +316,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
     List<Integer> statusSelects = new ArrayList<>();
-    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
+    if (accountingReport.getReportType() != null
+        && accountingReport.getReportType().getTypeSelect()
+            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+      statusSelects.add(MoveRepository.STATUS_DAYBOOK);
+    }
     statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
     if (accountConfigService
             .getAccountConfig(accountingReport.getCompany())
@@ -750,10 +764,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty()) {
       this.addParams(
-          "(self.account in (?%d) or self.account.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
+          "(self.moveLine.account in (?%d) or self.moveLine.account.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
           accountingReport.getAccountSet());
     }
 

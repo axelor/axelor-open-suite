@@ -57,6 +57,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -90,6 +91,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.ValidationException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +110,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ProdProductRepository prodProductRepo;
   protected ProductCompanyService productCompanyService;
   protected BarcodeGeneratorService barcodeGeneratorService;
+  protected ProductStockLocationService productStockLocationService;
   protected MetaFiles metaFiles;
 
   @Inject
@@ -122,6 +125,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ProdProductRepository prodProductRepo,
       ProductCompanyService productCompanyService,
       BarcodeGeneratorService barcodeGeneratorService,
+      ProductStockLocationService productStockLocationService,
       MetaFiles metaFiles) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
@@ -133,6 +137,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.prodProductRepo = prodProductRepo;
     this.productCompanyService = productCompanyService;
     this.barcodeGeneratorService = barcodeGeneratorService;
+    this.productStockLocationService = productStockLocationService;
     this.metaFiles = metaFiles;
   }
 
@@ -155,6 +160,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     Company company = billOfMaterial.getCompany();
 
+    if (billOfMaterial.getQty().signum() == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO),
+          billOfMaterial.getName());
+    }
     BigDecimal qty =
         qtyRequested.divide(
             billOfMaterial.getQty(),
@@ -1279,5 +1290,39 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, parentSeq);
     }
     return parentMO;
+  }
+
+  @Override
+  public BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException {
+    Company company = manufOrder.getCompany();
+    BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
+
+    if (company == null
+        || billOfMaterial == null
+        || billOfMaterial.getQty().compareTo(BigDecimal.ZERO) <= 0
+        || CollectionUtils.isEmpty(billOfMaterial.getBillOfMaterialSet())) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal producibleQty = null;
+    BigDecimal bomQty = billOfMaterial.getQty();
+
+    for (BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialSet()) {
+      Product product = billOfMaterialLine.getProduct();
+      BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
+      BigDecimal qtyNeeded = billOfMaterialLine.getQty();
+      if (availableQty.compareTo(BigDecimal.ZERO) > 0 && qtyNeeded.compareTo(BigDecimal.ZERO) > 0) {
+        BigDecimal qtyToUse = availableQty.divideToIntegralValue(qtyNeeded);
+        producibleQty = producibleQty == null ? qtyToUse : producibleQty.min(qtyToUse);
+      }
+    }
+
+    producibleQty =
+        producibleQty == null
+            ? BigDecimal.ZERO
+            : producibleQty
+                .multiply(bomQty)
+                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+    return producibleQty;
   }
 }

@@ -1,0 +1,3 @@
+---
+title : "Move/MoveLine: Fix deletion of analytic axis and remove save popup when nothing is edited on move line"
+type: fix

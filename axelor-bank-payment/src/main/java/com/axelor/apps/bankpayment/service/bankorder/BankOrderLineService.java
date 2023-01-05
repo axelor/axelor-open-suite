@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -176,7 +177,8 @@ public class BankOrderLineService {
     }
 
     if (bankOrderFileFormat.getIsMultiDate()) {
-      bankOrderLine.setBankOrderDate(bankOrderDate);
+      LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(receiverCompany);
+      bankOrderLine.setBankOrderDate(bankOrderDate.isBefore(todayDate) ? todayDate : bankOrderDate);
     }
 
     bankOrderLine.setReceiverReference(receiverReference);
@@ -359,7 +361,7 @@ public class BankOrderLineService {
     }
 
     try {
-      checkBankDetails(candidateBankDetails, bankOrder);
+      checkBankDetails(candidateBankDetails, bankOrder, bankOrderLine);
     } catch (AxelorException e) {
       candidateBankDetails = null;
     }
@@ -367,7 +369,8 @@ public class BankOrderLineService {
     return candidateBankDetails;
   }
 
-  public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder)
+  public void checkBankDetails(
+      BankDetails bankDetails, BankOrder bankOrder, BankOrderLine bankOrderLine)
       throws AxelorException {
     if (bankDetails == null) {
       throw new AxelorException(
@@ -379,7 +382,8 @@ public class BankOrderLineService {
     if (!bankDetails.getActive()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE));
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE),
+          bankOrderLine.getSequence());
     }
 
     // filter on the result from bankPartner if the option is active.

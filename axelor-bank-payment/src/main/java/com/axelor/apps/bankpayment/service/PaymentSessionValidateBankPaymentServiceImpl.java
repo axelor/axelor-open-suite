@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.account.db.InvoicePayment;
@@ -183,8 +200,6 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION,
             paymentSession.getAccountingTriggerSelect());
 
-    bankOrder.setIsMultiDate(this.isMultiDate(paymentSession));
-
     if (!paymentSession.getCurrency().equals(paymentSession.getCompany().getCurrency())) {
       bankOrder.setIsMultiCurrency(true);
     }
@@ -193,13 +208,17 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   protected boolean isMultiDate(PaymentSession paymentSession) {
-    return Optional.of(paymentSession)
-            .map(PaymentSession::getPaymentMode)
-            .map(PaymentMode::getBankOrderFileFormat)
-            .map(BankOrderFileFormat::getIsMultiDate)
-            .orElse(false)
+    return this.isFileFormatMultiDate(paymentSession)
         && paymentSession.getMoveAccountingDateSelect()
             == PaymentSessionRepository.MOVE_ACCOUNTING_DATE_ORIGIN_DOCUMENT;
+  }
+
+  protected boolean isFileFormatMultiDate(PaymentSession paymentSession) {
+    return Optional.of(paymentSession)
+        .map(PaymentSession::getPaymentMode)
+        .map(PaymentMode::getBankOrderFileFormat)
+        .map(BankOrderFileFormat::getIsMultiDate)
+        .orElse(false);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -280,7 +299,14 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected void generateBankOrderLineFromInvoiceTerm(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrder bankOrder)
       throws AxelorException {
-    LocalDate bankOrderDate = this.isMultiDate(paymentSession) ? invoiceTerm.getDueDate() : null;
+    LocalDate bankOrderDate = null;
+    if (this.isFileFormatMultiDate(paymentSession)) {
+      bankOrderDate =
+          paymentSession.getMoveAccountingDateSelect()
+                  == PaymentSessionRepository.MOVE_ACCOUNTING_DATE_PAYMENT
+              ? paymentSession.getPaymentDate()
+              : invoiceTerm.getDueDate();
+    }
 
     BankOrderLine bankOrderLine =
         bankOrderLineService.createBankOrderLine(

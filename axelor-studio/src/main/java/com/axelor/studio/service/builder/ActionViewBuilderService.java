@@ -86,7 +86,16 @@ public class ActionViewBuilderService {
           addJsonCtx = false;
         }
         xml.append("\n" + INDENT + "<context name=\"" + context.getName() + "\" ");
-        xml.append("expr=\"eval:" + StringEscapeUtils.escapeXml(context.getValue()) + "\" />");
+        String contextValue = context.getValue();
+        if (contextValue.startsWith("eval:")
+            || contextValue.startsWith("call:")
+            || contextValue.startsWith("action:")
+            || contextValue.startsWith("select:")
+            || contextValue.startsWith("select[]:")) {
+          xml.append("expr=\"" + StringEscapeUtils.escapeXml(contextValue) + "\" />");
+        } else {
+          xml.append("expr=\"eval:" + StringEscapeUtils.escapeXml(contextValue) + "\" />");
+        }
       }
     }
 

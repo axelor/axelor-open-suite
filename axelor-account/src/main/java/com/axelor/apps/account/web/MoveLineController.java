@@ -68,7 +68,6 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -173,25 +172,16 @@ public class MoveLineController {
 
   public void accountingReconcile(ActionRequest request, ActionResponse response) {
 
-    List<MoveLine> moveLineList = new ArrayList<>();
-
-    @SuppressWarnings("unchecked")
-    List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-
     try {
-      if (idList != null) {
-        for (Integer it : idList) {
-          MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
-          if (Beans.get(MoveLineControlService.class).canReconcile(moveLine)) {
-            moveLineList.add(moveLine);
-          }
-        }
-      }
+      @SuppressWarnings("unchecked")
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 
-      if (!moveLineList.isEmpty()) {
-        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
-        response.setReload(true);
-      }
+      MoveLineService moveLineService = Beans.get(MoveLineService.class);
+
+      moveLineService.reconcileMoveLinesWithCacheManagement(
+          moveLineService.getReconcilableMoveLines(idList));
+
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -230,7 +220,7 @@ public class MoveLineController {
         finalBalance = totalDebit.subtract(totalCredit);
 
         response.setView(
-            ActionView.define("Calculation")
+            ActionView.define(I18n.get("Calculation"))
                 .model(Wizard.class.getName())
                 .add("form", "account-move-line-calculation-wizard-form")
                 .param("popup", "true")
@@ -371,21 +361,23 @@ public class MoveLineController {
       if (parentContext != null) {
         Move move = parentContext.asType(Move.class);
         Account accountingAccount = moveLine.getAccount();
-        TaxLine taxLine =
-            Beans.get(MoveLoadDefaultConfigService.class)
-                .getTaxLine(move, moveLine, accountingAccount);
-        TaxEquiv taxEquiv = null;
-        FiscalPosition fiscalPosition = move.getFiscalPosition();
-        if (taxLine != null) {
-          if (fiscalPosition != null) {
-            taxEquiv =
-                Beans.get(FiscalPositionService.class)
-                    .getTaxEquiv(fiscalPosition, taxLine.getTax());
-          }
+        if (accountingAccount != null && accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
+          TaxLine taxLine =
+              Beans.get(MoveLoadDefaultConfigService.class)
+                  .getTaxLine(move, moveLine, accountingAccount);
+          TaxEquiv taxEquiv = null;
+          FiscalPosition fiscalPosition = move.getFiscalPosition();
+          if (taxLine != null) {
+            if (fiscalPosition != null) {
+              taxEquiv =
+                  Beans.get(FiscalPositionService.class)
+                      .getTaxEquiv(fiscalPosition, taxLine.getTax());
+            }
 
-          response.setValue("taxLine", taxLine);
-          if (taxEquiv != null) {
-            response.setValue("taxEquiv", taxEquiv);
+            response.setValue("taxLine", taxLine);
+            if (taxEquiv != null) {
+              response.setValue("taxEquiv", taxEquiv);
+            }
           }
         }
       }
@@ -738,6 +730,11 @@ public class MoveLineController {
   public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      if (moveLine.getMove() == null) {
+        moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
+      }
+
       Beans.get(MoveLineInvoiceTermService.class).updateInvoiceTermsParentFields(moveLine);
       response.setValues(moveLine);
     } catch (Exception e) {
@@ -764,8 +761,8 @@ public class MoveLineController {
         Beans.get(MoveLineInvoiceTermService.class)
             .generateDefaultInvoiceTerm(moveLine, dueDate, false);
       }
-
       response.setValues(moveLine);
+      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

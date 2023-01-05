@@ -34,11 +34,16 @@ import java.util.Map;
 
 public class ValueMapperController {
 
+  @SuppressWarnings("unchecked")
   public void execute(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
 
     Map<String, Object> valueMapperMap = (Map<String, Object>) context.get("valueMapper");
+    if (valueMapperMap == null) {
+      return;
+    }
+
     ValueMapper mapper =
         Beans.get(ValueMapperRepository.class)
             .find(Long.parseLong(valueMapperMap.get("id").toString()));

@@ -120,7 +120,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       }
       // we did not find a bank details in accounting situation
       else {
-        if (authorizedBankDetails.size() == 1) {
+        if (authorizedBankDetails.size() == 1 && authorizedBankDetails.get(0).getActive()) {
           return authorizedBankDetails.get(0);
         }
       }

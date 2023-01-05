@@ -10,7 +10,7 @@
     <string name="code" title="Code"/>
     <string name="name" title="Name" required="true"/>
     <many-to-one name="journalType" ref="JournalType" title="Journal Type"
-      massUpdate="true"/>
+      massUpdate="true" required="true"/>
     <string name="exportCode" title="Export code" massUpdate="true"/>
     <boolean name="excessPaymentOk" title="Allow payments greater than due amount"
       massUpdate="true"/>

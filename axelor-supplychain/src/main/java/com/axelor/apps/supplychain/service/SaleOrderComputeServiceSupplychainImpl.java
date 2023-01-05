@@ -76,8 +76,7 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
       saleOrder.setAdvanceTotal(computeTotalInvoiceAdvancePayment(saleOrder));
     }
-    Beans.get(SaleOrderServiceSupplychainImpl.class)
-        .updateAmountToBeSpreadOverTheTimetable(saleOrder);
+    Beans.get(SaleOrderSupplychainService.class).updateAmountToBeSpreadOverTheTimetable(saleOrder);
   }
 
   protected BigDecimal computeTotalInvoiceAdvancePayment(SaleOrder saleOrder) {

@@ -96,7 +96,7 @@ public class ContractVersionController {
               contractVersion.getNextContract(),
               getTodayDate(contractVersion.getNextContract().getCompany()));
       response.setView(
-          ActionView.define("Contract")
+          ActionView.define(I18n.get("Contract"))
               .model(Contract.class.getName())
               .add("form", "contract-form")
               .add("grid", "contract-grid")
