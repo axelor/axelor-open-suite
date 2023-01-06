@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -149,7 +148,18 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       String lineCode,
       BigDecimal result,
       int analyticCounter) {
-    if (baseValue != null && totalValue != null && totalValue.getResult().signum() != 0) {
+    if (baseValue == null) {
+      this.addNullValue(
+          column,
+          groupColumn,
+          valuesMapByColumn,
+          valuesMapByLine,
+          configAnalyticAccount,
+          parentTitle,
+          lineCode);
+
+      return;
+    } else if (totalValue != null && totalValue.getResult().signum() != 0) {
       result =
           baseValue
               .getResult()
@@ -168,9 +178,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
         startDate,
         endDate,
         parentTitle,
-        Optional.ofNullable(baseValue)
-            .map(AccountingReportValue::getLineTitle)
-            .orElse(line.getLabel()),
+        baseValue.getLineTitle(),
         result.abs(),
         valuesMapByColumn,
         valuesMapByLine,
