@@ -8,7 +8,6 @@ import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
@@ -19,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AccountingReportValueCustomRuleServiceImpl extends AccountingReportValueAbstractService
@@ -150,9 +150,13 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     }
 
     String lineTitle = line.getLabel();
-    if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+    if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+        || (groupColumn != null
+            && groupColumn.getRuleTypeSelect()
+                == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
       lineTitle =
           valuesMap.values().stream()
+              .filter(Objects::nonNull)
               .map(AccountingReportValue::getLineTitle)
               .findAny()
               .orElse(line.getLabel());
@@ -238,7 +242,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
           configAnalyticAccount,
           parentTitle,
           lineCode);
-      TraceBackService.trace(e);
+
       return null;
     }
   }

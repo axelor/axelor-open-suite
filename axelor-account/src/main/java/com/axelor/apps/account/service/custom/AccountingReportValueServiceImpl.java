@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -468,6 +469,11 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       LocalDate endDate,
       int analyticCounter)
       throws AxelorException {
+    if (this.isValueAlreadyComputed(
+        groupColumn, column, line, valuesMapByColumn, configAnalyticAccount, parentTitle)) {
+      return;
+    }
+
     try {
       log.debug(
           String.format(
@@ -575,6 +581,29 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               groupColumn != null ? groupColumn.getCode() : "",
               column.getCode(),
               line.getCode()));
+    }
+  }
+
+  protected boolean isValueAlreadyComputed(
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      AnalyticAccount configAnalyticAccount,
+      String parentTitle) {
+    String columnCode =
+        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
+    if (valuesMapByColumn.get(columnCode).get(line.getCode()) != null) {
+      return true;
+    } else {
+      List<String> linesCodeList =
+          valuesMapByColumn.get(columnCode).keySet().stream()
+              .filter(it -> Pattern.matches(String.format("%s_[0-9]+", line.getCode()), it))
+              .collect(Collectors.toList());
+
+      return CollectionUtils.isNotEmpty(linesCodeList)
+          && linesCodeList.stream()
+              .allMatch(it -> valuesMapByColumn.get(columnCode).get(it) != null);
     }
   }
 
