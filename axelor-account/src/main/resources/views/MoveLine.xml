@@ -940,6 +940,8 @@
     <action name="action-move-line-method-create-analytic-distribution"/>
     <action name="action-move-line-method-print-analytic-account-on-move-line"/>
     <action name="action-move-line-method-set-required-analytic-accounts"/>
+    <action name="action-move-line-method-clear-analytic-move-line"
+      if="analyticDistributionTemplate == null"/>
   </action-group>
 
   <action-group name="action-move-line-group-currency-amount-rate-onchange">
