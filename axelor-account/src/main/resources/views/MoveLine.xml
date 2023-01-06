@@ -903,8 +903,12 @@
   </action-group>
 
   <action-group name="action-move-line-group-analytic-axis-onchange">
+    <action name="action-move-line-method-clear-analytic-move-line"
+      if="axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null"/>
     <action name="action-move-line-method-axis-create-analytic-line"/>
     <action name="action-move-line-method-set-required-analytic-accounts"/>
+    <action name="action-move-line-method-clear-analytic-move-line"
+      if="axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null"/>
   </action-group>
 
   <action-record name="action-move-line-record-get-creditdebit-balance"
