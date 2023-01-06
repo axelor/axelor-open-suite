@@ -680,7 +680,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (daybook) {
       move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
       moveValidateService.completeMoveLines(move);
-      moveValidateService.freezeAccountAndPartnerFieldsOnMoveLines(move);
+      moveValidateService.freezeFieldsOnMoveLines(move);
     } else {
       moveValidateService.accounting(move);
     }

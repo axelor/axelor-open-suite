@@ -165,6 +165,16 @@
     <decimal name="remainingAmountAfterFinDiscount"
       title="Remaining amount after Fin. discount"/>
 
+    <!-- Fixed information -->
+    <string name="companyCode"/>
+    <string name="companyName"/>
+    <string name="journalCode"/>
+    <string name="journalName"/>
+    <string name="currencyCode"/>
+    <string name="companyCurrencyCode"/>
+    <string name="fiscalYearCode"/>
+    <date name="accountingDate"/>
+
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>
     <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>
