@@ -267,6 +267,7 @@ public class MoveTemplateService {
   public List<Long> generateMove(LocalDate moveDate, List<HashMap<String, Object>> moveTemplateList)
       throws AxelorException {
     List<Long> moveList = new ArrayList<>();
+    Partner moveTemplatePartner = null;
 
     for (HashMap<String, Object> moveTemplateMap : moveTemplateList) {
 
@@ -286,6 +287,7 @@ public class MoveTemplateService {
                   .mapToInt(Integer::parseInt)
                   .toArray();
         }
+        moveTemplatePartner = fillPartnerWithMoveTemplate(moveTemplate);
 
         BankDetails companyBankDetails = null;
         if (moveTemplate != null
@@ -293,7 +295,10 @@ public class MoveTemplateService {
             && moveTemplate.getJournal().getCompany() != null) {
           companyBankDetails =
               bankDetailsService.getDefaultCompanyBankDetails(
-                  moveTemplate.getJournal().getCompany(), null, null, null);
+                  moveTemplate.getJournal().getCompany(),
+                  moveTemplatePartner.getOutPaymentMode(),
+                  moveTemplatePartner,
+                  null);
         }
 
         Move move =
@@ -301,15 +306,15 @@ public class MoveTemplateService {
                 moveTemplate.getJournal(),
                 moveTemplate.getJournal().getCompany(),
                 null,
-                null,
+                moveTemplatePartner,
                 moveDate,
                 moveDate,
-                null,
+                moveTemplatePartner.getOutPaymentMode(),
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 moveTemplate.getFullName(),
-                null,
+                moveTemplate.getDescription(),
                 companyBankDetails);
 
         int counter = 1;
@@ -351,15 +356,11 @@ public class MoveTemplateService {
             counter++;
           }
         }
-
-        if (move.getMoveLineList().stream()
-                .filter(it -> it.getPartner() != null)
-                .map(it -> it.getPartner())
-                .distinct()
-                .count()
-            == 1) {
-          move.setPartner(move.getMoveLineList().get(0).getPartner());
-        }
+        move.setPartnerBankDetails(
+            move.getMoveLineList().get(0).getPartner().getBankDetailsList().stream()
+                .filter(it -> it.getIsDefault() && it.getActive())
+                .findFirst()
+                .get());
 
         moveLineTaxService.autoTaxLineGenerate(move);
 
@@ -457,5 +458,19 @@ public class MoveTemplateService {
     values.put("$difference", difference);
 
     return values;
+  }
+
+  public Partner fillPartnerWithMoveTemplate(MoveTemplate moveTemplate) {
+    Partner partner = null;
+
+    if (moveTemplate.getMoveTemplateLineList().stream()
+            .filter(it -> it.getPartner() != null)
+            .map(it -> it.getPartner())
+            .distinct()
+            .count()
+        == 1) {
+      partner = moveTemplate.getMoveTemplateLineList().get(0).getPartner();
+    }
+    return partner;
   }
 }
