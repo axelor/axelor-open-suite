@@ -32,6 +32,7 @@ var deltan2 = {};
 var deltaPercentagen1 = {};
 var deltaPercentagen2 = {};
 var temp = {};]]></method>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
@@ -174,7 +175,7 @@ var temp = {};]]></method>
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData"/>               
+            <structure name="cachedMetaData"/>
             <method name="onFetch"><![CDATA[var value;
 var valuen1;
 var valuen2;
