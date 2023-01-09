@@ -1,0 +1,3 @@
+---
+title : "ManufOrder: fixed a bug where outsourced manuf orders could not be planned because 'outsourcingReceiptStockLocation' was missing in the stock config"
+type : fix
