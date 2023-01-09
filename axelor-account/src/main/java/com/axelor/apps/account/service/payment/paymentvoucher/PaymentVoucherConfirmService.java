@@ -676,14 +676,15 @@ public class PaymentVoucherConfirmService {
 
     if (financialDiscountVat
         && BigDecimal.ZERO.compareTo(payVoucherElementToPay.getFinancialDiscountTaxAmount()) != 0) {
-      AccountManagement accountManagement =
-          financialDiscountTax.getAccountManagementList().stream()
-              .filter(it -> it.getCompany().equals(company))
-              .findFirst()
-              .orElse(null);
-      if (accountManagement != null) {
-        Move moveToPay = moveLineToPay.getMove();
-        for (MoveLine moveTaxLine : moveToPay.getMoveLineList()) {
+
+      Move moveToPay = moveLineToPay.getMove();
+      for (MoveLine moveTaxLine : moveToPay.getMoveLineList()) {
+        AccountManagement accountManagement =
+            moveTaxLine.getTaxLine().getTax().getAccountManagementList().stream()
+                .filter(it -> it.getCompany().equals(company))
+                .findFirst()
+                .orElse(null);
+        if (accountManagement != null) {
           AccountType accountType = moveTaxLine.getAccount().getAccountType();
           if (accountType != null
               && AccountTypeRepository.TYPE_TAX.equals(
@@ -702,7 +703,7 @@ public class PaymentVoucherConfirmService {
                     payerPartner,
                     accountManagementAccountService.getTaxAccount(
                         accountManagement,
-                        financialDiscountTax,
+                        moveTaxLine.getTaxLine().getTax(),
                         company,
                         move.getJournal(),
                         vatSystemSelect,

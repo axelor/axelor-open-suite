@@ -441,7 +441,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
           int vatSytem = moveTaxLine.getVatSystemSelect();
           Account financialDiscountVATAccount =
               this.getFinancialDiscountVATAccount(
-                  invoice, company, move.getJournal(), vatSytem, move.getFunctionalOriginSelect());
+                  invoice,
+                  company,
+                  move.getJournal(),
+                  moveTaxLine.getTaxLine().getTax(),
+                  vatSytem,
+                  move.getFunctionalOriginSelect());
           if (financialDiscountVATAccount != null) {
             BigDecimal totalInvoicedTaxAmount =
                 moveToolService.getTotalTaxAmount(invoice.getMove());
@@ -493,13 +498,13 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   protected Account getFinancialDiscountVATAccount(
-      Invoice invoice, Company company, Journal journal, int vatSystemSelect, int functionalOrigin)
+      Invoice invoice,
+      Company company,
+      Journal journal,
+      Tax tax,
+      int vatSystemSelect,
+      int functionalOrigin)
       throws AxelorException {
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    Tax tax =
-        InvoiceToolService.isPurchase(invoice)
-            ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
-            : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
     AccountManagement accountManagement =
         tax.getAccountManagementList().stream()
             .filter(it -> it.getCompany().equals(company))
