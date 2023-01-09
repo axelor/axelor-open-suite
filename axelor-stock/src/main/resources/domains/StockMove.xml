@@ -47,7 +47,7 @@
     <boolean name="isWithReturnSurplus" title="Return surplus"/>
     <boolean name="isWithBackorder" title="Manage backorder" default="false"/>
 
-    <string name="trackingNumber" title="Tracking Number"/>
+    <string name="trackingNumber" title="Tracking number"/>
     <integer name="numOfPackages" title="Number Of Packages"/>
     <integer name="numOfPalettes" title="Number Of Palettes"/>
     <decimal name="grossMass" title="Gross Mass"/>
