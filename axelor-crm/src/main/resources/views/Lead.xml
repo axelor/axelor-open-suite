@@ -263,8 +263,8 @@
       <field name="agency" colSpan="6" form-view="agency-form" grid-view="agency-grid"
         if="__config__.app.getApp('crm').getAgenciesManagement()"/>
       <field name="contactDate" colSpan="6"/>
-      <field name="lastEventDate" readonly="true"/>
-      <field name="nextScheduledEventDate" readonly="true"/>
+      <field name="lastEventDateT" readonly="true"/>
+      <field name="nextScheduledEventDateT" readonly="true"/>
       <field name="lostReason" showIf="leadStatus.isLost" colSpan="6"/>
       <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
       <field name="leadStatus.isLost" hidden="true"/>

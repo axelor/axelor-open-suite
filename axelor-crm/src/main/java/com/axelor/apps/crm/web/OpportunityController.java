@@ -111,11 +111,11 @@ public class OpportunityController {
 
   public void fillEndDate(ActionRequest request, ActionResponse response) {
     Opportunity opportunity = request.getContext().asType(Opportunity.class);
-    LocalDate startDate = opportunity.getStartDate();
+    LocalDate recurringStartDate = opportunity.getRecurringStartDate();
     int recurringRevanue = opportunity.getExpectedDurationOfRecurringRevenue();
-    if (recurringRevanue != 0 && startDate != null) {
-      LocalDate newDate = startDate.plusMonths((long) recurringRevanue);
-      response.setValue("endDate", newDate);
+    if (recurringRevanue != 0 && recurringStartDate != null) {
+      LocalDate newDate = recurringStartDate.plusMonths((long) recurringRevanue);
+      response.setValue("recurringEndDate", newDate);
     }
   }
 }
