@@ -614,12 +614,24 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
               isPurchase,
               invoiceLine.getFixedAssets());
       invoiceLine.setAccount(account);
-      invoiceLine.setInTaxTotal(
-          invoiceLine
-              .getExTaxTotal()
-              .multiply(invoiceLine.getTaxRate().divide(new BigDecimal(100)))
-              .setScale(2, RoundingMode.HALF_UP));
-      invoiceLine.setCompanyInTaxTotal(invoiceLine.getInTaxTotal());
+
+      BigDecimal exTaxTotal = invoiceLine.getExTaxTotal();
+
+      BigDecimal companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
+
+      BigDecimal taxTotal =
+          exTaxTotal
+              .multiply(invoiceLine.getTaxRate().divide(new BigDecimal(100), RoundingMode.HALF_UP))
+              .setScale(2, RoundingMode.HALF_UP);
+
+      BigDecimal companyTaxTotal =
+          companyExTaxTotal
+              .multiply(invoiceLine.getTaxRate().divide(new BigDecimal(100), RoundingMode.HALF_UP))
+              .setScale(2, RoundingMode.HALF_UP);
+
+      invoiceLine.setInTaxTotal(exTaxTotal.add(taxTotal));
+
+      invoiceLine.setCompanyInTaxTotal(companyExTaxTotal.add(companyTaxTotal));
     }
     return invoiceLineList;
   }

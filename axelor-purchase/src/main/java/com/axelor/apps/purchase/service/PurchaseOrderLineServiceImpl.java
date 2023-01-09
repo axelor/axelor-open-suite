@@ -652,16 +652,23 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
       purchaseOrderLine.setTaxEquiv(taxEquiv);
 
-      purchaseOrderLine.setInTaxTotal(
-          purchaseOrderLine
-              .getExTaxTotal()
+      BigDecimal exTaxTotal = purchaseOrderLine.getExTaxTotal();
+
+      BigDecimal companyExTaxTotal = purchaseOrderLine.getCompanyExTaxTotal();
+
+      BigDecimal taxTotal =
+          exTaxTotal
               .multiply(purchaseOrderLine.getTaxLine().getValue())
-              .setScale(2, RoundingMode.HALF_UP));
-      purchaseOrderLine.setCompanyInTaxTotal(
-          purchaseOrderLine
-              .getCompanyExTaxTotal()
+              .setScale(2, RoundingMode.HALF_UP);
+
+      BigDecimal companyTaxTotal =
+          companyExTaxTotal
               .multiply(purchaseOrderLine.getTaxLine().getValue())
-              .setScale(2, RoundingMode.HALF_UP));
+              .setScale(2, RoundingMode.HALF_UP);
+
+      purchaseOrderLine.setInTaxTotal(exTaxTotal.add(taxTotal));
+
+      purchaseOrderLine.setCompanyInTaxTotal(companyExTaxTotal.add(companyTaxTotal));
     }
     return purchaseOrderLineList;
   }
