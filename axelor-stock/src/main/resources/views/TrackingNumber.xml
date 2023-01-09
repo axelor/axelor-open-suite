@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="tracking-number-grid" title="Tracking Number"
+  <grid name="tracking-number-grid" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber">
     <hilite
       if="$moment(perishableExpirationDate).isBefore(__config__.date) || $moment(warrantyExpirationDate).isBefore(__config__.date)"
@@ -22,7 +22,7 @@
     <field name="origin"/>
   </grid>
 
-  <form name="tracking-number-form" title="Tracking Number"
+  <form name="tracking-number-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber"
     onNew="action-tracking-number-attrs-set-scale,action-tracking-number-record-product"
     onLoad="action-tracking-number-attrs-hide-fields,action-tracking-number-attrs-set-scale">
@@ -44,7 +44,7 @@
     </panel>
   </form>
 
-  <form name="tracking-number-stock-move-line-form" title="Tracking Number"
+  <form name="tracking-number-stock-move-line-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber"
     onLoad="action-tracking-number-attrs-hide-fields,action-tracking-number-attrs-set-scale"
     onNew="action-tracking-number-attrs-product-stock-move-line,action-tracking-number-group-from-stock-move-line,action-tracking-number-attrs-set-scale">
