@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -619,21 +620,38 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
       BigDecimal companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
 
-      BigDecimal taxTotal =
-          exTaxTotal
-              .multiply(invoiceLine.getTaxRate().divide(new BigDecimal(100), RoundingMode.HALF_UP))
-              .setScale(2, RoundingMode.HALF_UP);
+      BigDecimal price = getPrice(invoice, invoiceLine);
 
-      BigDecimal companyTaxTotal =
-          companyExTaxTotal
-              .multiply(invoiceLine.getTaxRate().divide(new BigDecimal(100), RoundingMode.HALF_UP))
-              .setScale(2, RoundingMode.HALF_UP);
-
-      invoiceLine.setInTaxTotal(exTaxTotal.add(taxTotal));
-
-      invoiceLine.setCompanyInTaxTotal(companyExTaxTotal.add(companyTaxTotal));
+      invoiceLine.setInTaxTotal(
+          taxService.convertUnitPrice(
+              false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+      invoiceLine.setCompanyInTaxTotal(
+          taxService.convertUnitPrice(
+              false, taxLine, companyExTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+      invoiceLine.setInTaxPrice(
+          taxService.convertUnitPrice(
+              false, taxLine, price, appBaseService.getNbDecimalDigitForUnitPrice()));
     }
     return invoiceLineList;
+  }
+
+  protected BigDecimal getPrice(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
+    BigDecimal price = null;
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      price =
+          (BigDecimal)
+              productCompanyService.get(
+                  invoiceLine.getProduct(), "purchasePrice", invoice.getCompany());
+    }
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      price =
+          (BigDecimal)
+              productCompanyService.get(
+                  invoiceLine.getProduct(), "salePrice", invoice.getCompany());
+    }
+    return price;
   }
 
   @Override

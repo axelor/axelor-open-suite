@@ -656,19 +656,20 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
       BigDecimal companyExTaxTotal = purchaseOrderLine.getCompanyExTaxTotal();
 
-      BigDecimal taxTotal =
-          exTaxTotal
-              .multiply(purchaseOrderLine.getTaxLine().getValue())
-              .setScale(2, RoundingMode.HALF_UP);
+      BigDecimal purchasePrice =
+          (BigDecimal)
+              productCompanyService.get(
+                  purchaseOrderLine.getProduct(), "purchasePrice", purchaseOrder.getCompany());
 
-      BigDecimal companyTaxTotal =
-          companyExTaxTotal
-              .multiply(purchaseOrderLine.getTaxLine().getValue())
-              .setScale(2, RoundingMode.HALF_UP);
-
-      purchaseOrderLine.setInTaxTotal(exTaxTotal.add(taxTotal));
-
-      purchaseOrderLine.setCompanyInTaxTotal(companyExTaxTotal.add(companyTaxTotal));
+      purchaseOrderLine.setInTaxTotal(
+          taxService.convertUnitPrice(
+              false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+      purchaseOrderLine.setCompanyInTaxTotal(
+          taxService.convertUnitPrice(
+              false, taxLine, companyExTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+      purchaseOrderLine.setInTaxPrice(
+          taxService.convertUnitPrice(
+              false, taxLine, purchasePrice, appBaseService.getNbDecimalDigitForUnitPrice()));
     }
     return purchaseOrderLineList;
   }
