@@ -171,8 +171,8 @@
         readonlyIf="opportunityStatus.typeSelect != null &amp;&amp; opportunityStatus.typeSelect != 0">
         <field name="recurrentAmount"/>
         <field name="expectedDurationOfRecurringRevenue"/>
-        <field name="startDate" onChange="action-method-opportunity-fill-end-date"/>
-        <field name="endDate"/>
+        <field name="recurringStartDate" onChange="action-method-opportunity-fill-end-date"/>
+        <field name="recurringEndDate"/>
       </panel>
       <panel name="customerDescriptionPanel" title="Customer Description"
         if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">

@@ -690,8 +690,8 @@ public class EventServiceImpl implements EventService {
 
     Lead lead = event.getLead();
     if (lead != null
-        && lead.getLastEventDate() != null
-        && lead.getLastEventDate().equals(eventDateTime.toLocalDate())) {
+        && lead.getLastEventDateT() != null
+        && lead.getLastEventDateT().equals(eventDateTime)) {
       List<Event> eventList =
           lead.getEventList().stream()
               .filter(
@@ -704,7 +704,7 @@ public class EventServiceImpl implements EventService {
               .collect(Collectors.toList());
 
       if (!eventList.isEmpty()) {
-        lead.setLastEventDate(eventList.get(0).getEndDateTime().toLocalDate());
+        lead.setLastEventDateT(eventList.get(0).getEndDateTime());
         leadRepo.save(lead);
       }
     }
@@ -736,9 +736,9 @@ public class EventServiceImpl implements EventService {
     Lead lead = event.getLead();
     if (lead != null
         && event.getEndDateTime() != null
-        && (lead.getLastEventDate() == null
-            || lead.getLastEventDate().compareTo(event.getEndDateTime().toLocalDate()) <= 0)) {
-      lead.setLastEventDate(event.getEndDateTime().toLocalDate());
+        && (lead.getLastEventDateT() == null
+            || lead.getLastEventDateT().compareTo(event.getEndDateTime()) <= 0)) {
+      lead.setLastEventDateT(event.getEndDateTime());
     }
   }
 
@@ -773,10 +773,9 @@ public class EventServiceImpl implements EventService {
     if (lead != null
         && startDateTime != null
         && event.getStatusSelect() == EventRepository.STATUS_PLANNED
-        && (lead.getNextScheduledEventDate() == null
-            || lead.getNextScheduledEventDate().compareTo(event.getEndDateTime().toLocalDate())
-                > 0)) {
-      lead.setNextScheduledEventDate(startDateTime.toLocalDate());
+        && (lead.getNextScheduledEventDateT() == null
+            || lead.getNextScheduledEventDateT().compareTo(event.getEndDateTime()) > 0)) {
+      lead.setNextScheduledEventDateT(startDateTime);
     }
   }
 
@@ -818,9 +817,9 @@ public class EventServiceImpl implements EventService {
               .sorted(Comparator.comparing(Event::getStartDateTime))
               .collect(Collectors.toList());
       if (!eventList.isEmpty()) {
-        lead.setNextScheduledEventDate(eventList.get(0).getStartDateTime().toLocalDate());
+        lead.setNextScheduledEventDateT(eventList.get(0).getStartDateTime());
       } else {
-        lead.setNextScheduledEventDate(null);
+        lead.setNextScheduledEventDateT(null);
       }
       leadRepo.save(lead);
     }

@@ -39,8 +39,8 @@
     <decimal name="recurrentAmount" title="Recurrent amount"/>
     <integer name="expectedDurationOfRecurringRevenue"
       title="Expected duration of recurring revenue (in months)"/>
-    <date name="startDate" title="Start date"/>
-    <date name="endDate" title="End date"/>
+    <date name="recurringStartDate" title="Recurring start date"/>
+    <date name="recurringEndDate" title="Recurring end date"/>
     <integer name="opportunityRating" title="Opportunity scoring"
       selection="gold.rating.icon.select"/>
 
