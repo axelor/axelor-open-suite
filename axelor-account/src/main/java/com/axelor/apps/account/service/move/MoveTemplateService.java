@@ -268,6 +268,7 @@ public class MoveTemplateService {
       throws AxelorException {
     List<Long> moveList = new ArrayList<>();
     Partner moveTemplatePartner = null;
+    String taxLineDescription = "";
 
     for (HashMap<String, Object> moveTemplateMap : moveTemplateList) {
 
@@ -314,7 +315,7 @@ public class MoveTemplateService {
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 moveTemplate.getFullName(),
-                moveTemplate.getDescription(),
+                null,
                 companyBankDetails);
 
         int counter = 1;
@@ -354,6 +355,8 @@ public class MoveTemplateService {
                 moveTemplateLine.getAnalyticDistributionTemplate());
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
             counter++;
+          } else {
+            taxLineDescription = moveTemplateLine.getName();
           }
         }
         move.setPartnerBankDetails(
@@ -362,12 +365,14 @@ public class MoveTemplateService {
                 .findFirst()
                 .get());
 
+        move.setDescription(taxLineDescription);
         moveLineTaxService.autoTaxLineGenerate(move);
 
         if (moveTemplate.getAutomaticallyValidate()) {
           moveValidateService.accounting(move);
         }
 
+        move.setDescription(moveTemplate.getDescription());
         moveList.add(move.getId());
       }
     }

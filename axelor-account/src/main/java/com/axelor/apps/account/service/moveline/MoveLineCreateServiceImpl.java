@@ -777,11 +777,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
     newOrUpdatedMoveLine.setVatSystemSelect(vatSystem);
     newOrUpdatedMoveLine.setOrigin(move.getOrigin());
-    newOrUpdatedMoveLine.setDescription(move.getDescription());
-
-    newOrUpdatedMoveLine.setMove(move);
-    newOrUpdatedMoveLine.setOrigin(move.getOrigin());
-    newOrUpdatedMoveLine.setDescription(move.getDescription());
+    newOrUpdatedMoveLine.setDescription(
+        StringTool.cutTooLongString(
+            moveLineToolService.determineDescriptionMoveLine(
+                move.getJournal(), move.getOrigin(), move.getDescription())));
 
     BigDecimal taxLineValue =
         taxLineBeforeReverse != null ? taxLineBeforeReverse.getValue() : taxLine.getValue();
@@ -818,17 +817,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
       newOrUpdatedMoveLineRC.setVatSystemSelect(vatSystem);
       newOrUpdatedMoveLineRC.setOrigin(move.getOrigin());
-      newOrUpdatedMoveLineRC.setDescription(move.getDescription());
-
-      newOrUpdatedMoveLineRC.setMove(move);
-      newOrUpdatedMoveLineRC.setOrigin(move.getOrigin());
-      newOrUpdatedMoveLineRC.setDescription(move.getDescription());
+      newOrUpdatedMoveLineRC.setDescription(
+          StringTool.cutTooLongString(
+              moveLineToolService.determineDescriptionMoveLine(
+                  move.getJournal(), move.getOrigin(), move.getDescription())));
 
       newOrUpdatedMoveLineRC.setDebit(newOrUpdatedMoveLineRC.getDebit().add(newMoveLineCredit));
       newOrUpdatedMoveLineRC.setCredit(newOrUpdatedMoveLineRC.getCredit().add(newMoveLineDebit));
 
       newOrUpdatedMoveLineRC.setOriginDate(move.getOriginDate());
-      newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
 
       if (newOrUpdatedMoveLineRC.getPartner() == null) {
         newOrUpdatedMoveLineRC.setPartner(move.getPartner());
