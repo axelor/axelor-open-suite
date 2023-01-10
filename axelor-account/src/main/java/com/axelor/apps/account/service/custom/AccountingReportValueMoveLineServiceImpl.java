@@ -334,7 +334,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             column,
             line,
             moveLineList,
-            analyticAccountSet,
+            resultAnalyticAccountSet,
             this.getResultSelect(column, line, groupColumn));
 
     this.createReportValue(
