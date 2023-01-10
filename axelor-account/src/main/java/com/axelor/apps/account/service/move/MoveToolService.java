@@ -192,7 +192,7 @@ public interface MoveToolService {
 
   List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException;
 
-  List<Move> findDaybookByYear(Set<Year> yearList);
+  List<Move> findDaybookAndAccountingByYear(Set<Year> yearList);
 
   @CallMethod
   boolean isSimulatedMovePeriodClosed(Move move);
