@@ -26,8 +26,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
 import java.util.Collection;
@@ -223,11 +221,13 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     AccountingReportType accountingReportType = accountingReport.getReportType();
     this.checkAccountingReportType(accountingReportType);
 
-    boolean isAllComputed = false;
-    LocalTime startTime = LocalTime.now();
+    int nullCount = -1;
+    int previousNullCount;
 
-    while (!isAllComputed) {
-      isAllComputed =
+    while (nullCount != 0) {
+      previousNullCount = nullCount;
+
+      nullCount =
           this.createReportValues(
               accountingReport,
               valuesMapByColumn,
@@ -237,9 +237,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               endDate,
               analyticCounter);
 
-      if (!isAllComputed
-          && startTime.until(LocalTime.now(), ChronoUnit.SECONDS)
-              > appBaseService.getProcessTimeout()) {
+      if (nullCount == previousNullCount) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT,
@@ -272,15 +270,16 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     }
   }
 
-  protected boolean areAllValuesComputed(
-      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn) {
-    return valuesMapByColumn.values().stream()
-        .map(Map::values)
-        .flatMap(Collection::stream)
-        .noneMatch(Objects::isNull);
+  protected int getNullCount(Map<String, Map<String, AccountingReportValue>> valuesMapByColumn) {
+    return (int)
+        valuesMapByColumn.values().stream()
+            .map(Map::values)
+            .flatMap(Collection::stream)
+            .filter(Objects::isNull)
+            .count();
   }
 
-  protected boolean createReportValues(
+  protected int createReportValues(
       AccountingReport accountingReport,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
@@ -370,7 +369,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
           analyticCounter);
     }
 
-    return this.areAllValuesComputed(valuesMapByColumn);
+    return this.getNullCount(valuesMapByColumn);
   }
 
   protected Set<Account> getColumnGroupAccounts(AccountingReportConfigLine groupColumn) {

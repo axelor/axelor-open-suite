@@ -143,15 +143,17 @@
         showIf="ruleTypeSelect == 3" colSpan="12"/>
     </panel>
     <panel-related name="accountingReportConfigLineAccountTypeSetPanel"
-      field="accountTypeSet" colSpan="12" form-view="account-type-form"
-      grid-view="account-type-grid" showIf="typeSelect == 5 || ruleTypeSelect == 2"/>
+      field="accountTypeSet" colSpan="12" canNew="false" canEdit="false"
+      form-view="account-type-form" grid-view="account-type-grid"
+      showIf="typeSelect == 5 || ruleTypeSelect == 2"/>
     <panel-related name="accountingReportConfigLineAccountSetPanel" field="accountSet"
-      colSpan="12" form-view="account-form" grid-view="account-grid"
+      colSpan="12" canNew="false" canEdit="false" form-view="account-form" grid-view="account-grid"
       showIf="typeSelect == 5 || ruleTypeSelect == 2"
       onSelect="action-accounting-report-config-line-attrs-account-set-domain"/>
     <panel-related name="accountingReportConfigLineAnalyticAccountSetPanel"
-      field="analyticAccountSet" colSpan="12" showIf="ruleTypeSelect == 2"
-      form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+      field="analyticAccountSet" colSpan="12" canNew="false" canEdit="false"
+      form-view="analytic-account-form" grid-view="analytic-account-grid"
+      showIf="ruleTypeSelect == 2"/>
 
   </form>
 

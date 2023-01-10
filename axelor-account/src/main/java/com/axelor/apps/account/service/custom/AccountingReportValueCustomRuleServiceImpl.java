@@ -259,7 +259,11 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
 
     for (String code : valuesMap.keySet()) {
       if (valuesMap.get(code) != null) {
-        if (groupColumn != null
+        if ((groupColumn != null
+                && (groupColumn.getRuleTypeSelect()
+                        == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+                    || line.getRuleTypeSelect()
+                        != AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE))
             || (!Strings.isNullOrEmpty(parentTitle)
                 && column.getRuleTypeSelect()
                     == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)
