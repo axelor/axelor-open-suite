@@ -307,12 +307,12 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       String lineTitle,
       String lineCode,
       int analyticCounter) {
-    Set<AnalyticAccount> resultAnalyticAccountSet = new HashSet<>(analyticAccountSet);
-    this.mergeSets(
-        analyticAccountSet,
-        configAnalyticAccount == null
-            ? null
-            : new HashSet<>(Collections.singletonList(configAnalyticAccount)));
+    Set<AnalyticAccount> resultAnalyticAccountSet =
+        this.mergeSets(
+            analyticAccountSet,
+            configAnalyticAccount == null
+                ? null
+                : new HashSet<>(Collections.singletonList(configAnalyticAccount)));
 
     List<MoveLine> moveLineList =
         this.getMoveLineQuery(
