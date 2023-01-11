@@ -527,9 +527,9 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             startDate,
             endDate,
             analyticCounter);
-      } else if (line.getRuleTypeSelect()
-          == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-        accountingReportValueCustomRuleService.createValueFromCustomRule(
+      } else if (column.getRuleTypeSelect()
+          == AccountingReportConfigLineRepository.RULE_TYPE_PERCENTAGE) {
+        accountingReportValuePercentageService.createPercentageValue(
             accountingReport,
             column,
             line,
@@ -541,9 +541,9 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             endDate,
             parentTitle,
             analyticCounter);
-      } else if (column.getRuleTypeSelect()
-          == AccountingReportConfigLineRepository.RULE_TYPE_PERCENTAGE) {
-        accountingReportValuePercentageService.createPercentageValue(
+      } else if (line.getRuleTypeSelect()
+          == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+        accountingReportValueCustomRuleService.createValueFromCustomRule(
             accountingReport,
             column,
             line,
