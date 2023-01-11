@@ -1,0 +1,95 @@
+package com.axelor.apps.hr.service.expense;
+
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.extract.ExtractContextMoveService;
+import com.axelor.apps.account.service.invoice.factory.CancelFactory;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
+import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import java.time.LocalDate;
+
+public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPaymentImpl {
+
+  protected ExpenseRepository expenseRepository;
+  protected ExpenseService expenseService;
+
+  @Inject
+  public ExpenseMoveReverseServiceImpl(
+      MoveCreateService moveCreateService,
+      ReconcileService reconcileService,
+      MoveValidateService moveValidateService,
+      MoveRepository moveRepository,
+      MoveLineCreateService moveLineCreateService,
+      ExtractContextMoveService extractContextMoveService,
+      CancelFactory cancelFactory,
+      InvoicePaymentRepository invoicePaymentRepository,
+      InvoicePaymentCancelService invoicePaymentCancelService,
+      BankReconciliationService bankReconciliationService,
+      BankReconciliationLineRepository bankReconciliationLineRepository,
+      ExpenseRepository expenseRepository,
+      ExpenseService expenseService) {
+    super(
+        moveCreateService,
+        reconcileService,
+        moveValidateService,
+        moveRepository,
+        moveLineCreateService,
+        extractContextMoveService,
+        cancelFactory,
+        invoicePaymentRepository,
+        invoicePaymentCancelService,
+        bankReconciliationService,
+        bankReconciliationLineRepository);
+    this.expenseRepository = expenseRepository;
+    this.expenseService = expenseService;
+  }
+
+  @Override
+  public Move generateReverse(
+      Move move,
+      boolean isAutomaticReconcile,
+      boolean isAutomaticAccounting,
+      boolean isUnreconcileOriginalMove,
+      LocalDate dateOfReversion)
+      throws AxelorException {
+    Move reverseMove =
+        super.generateReverse(
+            move,
+            isAutomaticReconcile,
+            isAutomaticAccounting,
+            isUnreconcileOriginalMove,
+            dateOfReversion);
+    if (!Beans.get(AppService.class).isApp("employee")) {
+      return reverseMove;
+    }
+
+    Expense expense = getLinkedExpense(move);
+
+    if (expense != null) {
+      expenseService.resetExpensePaymentAfterCancellation(expense);
+    }
+    return reverseMove;
+  }
+
+  protected Expense getLinkedExpense(Move move) {
+    return expenseRepository
+        .all()
+        .filter("self.paymentMove.id = :paymentMove AND self.statusSelect = :statusSelect")
+        .bind("paymentMove", move.getId())
+        .bind("statusSelect", ExpenseRepository.STATUS_REIMBURSED)
+        .fetchOne();
+  }
+}
