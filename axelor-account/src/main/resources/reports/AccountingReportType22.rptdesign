@@ -1024,6 +1024,7 @@ FROM
 		WHERE
 			AccountingReport.id = ?
 			AND FixedAsset.company = AccountingReport.company
+			AND FixedAsset.status_select != 4
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1
 			AND FixedAssetLine.depreciation_date < AccountingReport.date_from

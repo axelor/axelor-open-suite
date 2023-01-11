@@ -51,7 +51,8 @@ public class BatchControlMovesConsistency extends BatchStrategy {
   protected void process() {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
     if (!CollectionUtils.isEmpty(accountingBatch.getYearSet())) {
-      List<Move> moveList = moveToolService.findDaybookByYear(accountingBatch.getYearSet());
+      List<Move> moveList =
+          moveToolService.findDaybookAndAccountingByYear(accountingBatch.getYearSet());
       if (!CollectionUtils.isEmpty(moveList)) {
         for (Move move : moveList) {
           try {
