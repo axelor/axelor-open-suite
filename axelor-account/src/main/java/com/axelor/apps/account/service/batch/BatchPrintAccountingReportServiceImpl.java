@@ -71,6 +71,10 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     accountingReport.setExportTypeSelect("pdf");
     accountingReport.setRef(accountingReportService.getSequence(accountingReport));
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
+
+    accountingReport.setDisplayClosingAccountingMoves(accountingBatch.getCloseYear());
+    accountingReport.setDisplayOpeningAccountingMoves(accountingBatch.getOpenYear());
+
     accountingReportService.buildQuery(accountingReport);
 
     BigDecimal debitBalance = accountingReportService.getDebitBalance();
