@@ -241,14 +241,27 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect()
             == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams(
-          "(self.account.serviceType is null OR (self.move.partner.das2Activity is null AND self.account.serviceType.isDas2Declarable is true))");
+          "(self.account.serviceType is null OR self.move.partner.das2Activity is null)");
       this.addParams("self.amountRemaining < self.debit + self.credit");
-      this.addParams("self.reconcileGroup IS NOT null");
+
       JournalType journalType =
           accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
       if (journalType != null) {
         this.addParams("self.move.journal.journalType = ?%d", journalType);
       }
+      String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
+      String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String selfReconciledQuery =
+          String.format(
+              "(self.reconcileGroup is not null AND self.reconcileGroup.dateOfLettering >= %s AND self.reconcileGroup.dateOfLettering <= %s)",
+              dateFromStr, dateToStr);
+      String otherLinedReconciledQuery =
+          String.format(
+              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.dateOfLettering >= %s AND ml.reconcileGroup.dateOfLettering <= %s AND ml.move.id = self.move.id)",
+              dateFromStr, dateToStr);
+      String reconcileQuery =
+          String.format("(%s OR %s)", selfReconciledQuery, otherLinedReconciledQuery);
+      this.addParams(reconcileQuery);
     }
 
     if (accountingReport.getPaymentMode() != null) {
