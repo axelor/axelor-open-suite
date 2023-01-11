@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806071708</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -887,9 +887,9 @@ FROM
 			AND FixedAssetType.technical_type_select != 1
 			AND (FixedAsset.status_select IN (2,3)
 			OR (FixedAsset.status_select = 4 
-			AND	((FixedAsset.disposal_date >= AccountingReport.date_from
-			AND FixedAsset.disposal_date <= AccountingReport.date_to) 
-			OR FixedAsset.disposal_date > FixedAssetLine.depreciation_date)))
+			AND	FixedAsset.disposal_date >= AccountingReport.date_from
+			AND FixedAsset.disposal_date <= AccountingReport.date_to 
+			AND FixedAsset.disposal_date > FixedAssetLine.depreciation_date))
 			AND FixedAssetLine.depreciation_date < AccountingReport.date_from
 			AND FixedAssetLine.depreciation_date > (SELECT CASE 
 					WHEN FixedAsset2.periodicity_in_month = 12 THEN 
@@ -924,9 +924,9 @@ FROM
 			AND FixedAsset.failover_date IS NOT NULL
 			AND (FixedAsset.status_select IN (2,3)
 			OR (FixedAsset.status_select = 4 
-			AND	((FixedAsset.disposal_date >= AccountingReport.date_from
-			AND FixedAsset.disposal_date <= AccountingReport.date_to) 
-			OR FixedAsset.disposal_date > FixedAssetLine.depreciation_date)))
+			AND	FixedAsset.disposal_date >= AccountingReport.date_from
+			AND FixedAsset.disposal_date <= AccountingReport.date_to 
+			AND FixedAsset.disposal_date > FixedAssetLine.depreciation_date))
 			AND FixedAsset.origin_select = 99
 			AND FixedAsset.failover_date < AccountingReport.date_from
 			AND FixedAssetLine.depreciation_date < AccountingReport.date_from
