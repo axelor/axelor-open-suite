@@ -873,6 +873,8 @@
 "Select move lines to reconciles","Sélectionner les lignes d'écritures à rapprocher",,
 "Selected bank reconciliation is under correction and can not be deleted","Le rapprochement bancaire sélectionné est en cours de correction et ne peut donc être supprimé",,
 "Selected bank reconciliation is validated and can not be deleted","Le rapprochement bancaire sélectionné est validé et ne peut donc être supprimé",,
+"Selection total for bank reconciliation lines","Montant des lignes de rappro. bancaire sélectionnées" ,,
+"Selection total for unreconciliated move lines","Montant des écritures à rapprocher sélectionnées",,
 "Send Suspension of access authorisation (SPR)","Suspension de l'autorisation d'accès (SPR)",,
 "Send a Bank Order","Envoyer un ordre bancaire",,
 "Send a bank order","Envoyer un ordre bancaire",,

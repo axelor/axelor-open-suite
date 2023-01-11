@@ -554,4 +554,20 @@ public class BankReconciliationController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void computeSelections(ActionRequest request, ActionResponse response) {
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      BankReconciliationService bankReconcialiationService =
+          Beans.get(BankReconciliationService.class);
+      response.setValue(
+          "$selectionUnreconciledMoveLines",
+          bankReconcialiationService.computeUnreconciledMoveLinesSelection(bankReconciliation));
+      response.setValue(
+          "$selectionBankReconciliationLines",
+          bankReconcialiationService.computeBankReconciliationLinesSelection(bankReconciliation));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
