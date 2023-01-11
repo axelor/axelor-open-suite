@@ -168,6 +168,8 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
                   totalValue.getResult(),
                   AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                   RoundingMode.HALF_UP);
+    } else if (StringUtils.notEmpty(line.getPercentageTotalLine())) {
+      result = BigDecimal.ZERO;
     }
 
     this.createReportValue(
@@ -179,7 +181,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
         endDate,
         parentTitle,
         baseValue.getLineTitle(),
-        result.abs(),
+        result,
         valuesMapByColumn,
         valuesMapByLine,
         configAnalyticAccount,
