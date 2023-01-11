@@ -867,7 +867,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	SUM(impairment_value_c) AS impairment_value_c
 FROM 
 	(SELECT FixedAssetType.technical_type_select AS fixed_asset_type, 
-			FixedAssetLine.cumulative_depreciation - ABS(FixedAssetLine.impairment_value) AS depreciation_a,
+			FixedAssetLine.cumulative_depreciation AS depreciation_a,
 			0 AS depreciation_b,
 			0 AS depreciation_c,
 			0 AS impairment_value_a,
@@ -888,8 +888,7 @@ FROM
 			AND (FixedAsset.status_select IN (2,3)
 			OR (FixedAsset.status_select = 4 
 			AND	FixedAsset.disposal_date >= AccountingReport.date_from
-			AND FixedAsset.disposal_date <= AccountingReport.date_to 
-			AND FixedAsset.disposal_date > FixedAssetLine.depreciation_date))
+			AND FixedAsset.disposal_date <= AccountingReport.date_to))
 			AND FixedAssetLine.depreciation_date < AccountingReport.date_from
 			AND FixedAssetLine.depreciation_date > (SELECT CASE 
 					WHEN FixedAsset2.periodicity_in_month = 12 THEN 
@@ -925,8 +924,7 @@ FROM
 			AND (FixedAsset.status_select IN (2,3)
 			OR (FixedAsset.status_select = 4 
 			AND	FixedAsset.disposal_date >= AccountingReport.date_from
-			AND FixedAsset.disposal_date <= AccountingReport.date_to 
-			AND FixedAsset.disposal_date > FixedAssetLine.depreciation_date))
+			AND FixedAsset.disposal_date <= AccountingReport.date_to))
 			AND FixedAsset.origin_select = 99
 			AND FixedAsset.failover_date < AccountingReport.date_from
 			AND FixedAssetLine.depreciation_date < AccountingReport.date_from
