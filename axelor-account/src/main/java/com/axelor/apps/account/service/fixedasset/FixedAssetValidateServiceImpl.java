@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -105,9 +105,10 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
 
         if (fixedAsset.getIsEqualToFiscalDepreciation()) {
           fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
-        } else if (fixedAsset
-            .getDepreciationPlanSelect()
-            .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
+        } else if (fixedAsset.getDepreciationPlanSelect().isEmpty()
+            || fixedAsset
+                .getDepreciationPlanSelect()
+                .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
           fixedAsset.setAccountingValue(BigDecimal.ZERO);
         } else {
           fixedAsset.setAccountingValue(

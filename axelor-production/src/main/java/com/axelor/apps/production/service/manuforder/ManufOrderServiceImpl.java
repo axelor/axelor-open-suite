@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -155,6 +155,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     Company company = billOfMaterial.getCompany();
 
+    if (billOfMaterial.getQty().signum() == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO),
+          billOfMaterial.getName());
+    }
     BigDecimal qty =
         qtyRequested.divide(
             billOfMaterial.getQty(),
@@ -388,7 +394,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         productionConfigService.getManufOrderSequence(
             productionConfig, manufOrder.getWorkshopStockLocation());
 
-    String seq = sequenceService.getSequenceNumber(sequence);
+    String seq = sequenceService.getSequenceNumber(sequence, ManufOrder.class, "manufOrderSeq");
 
     if (seq == null) {
       throw new AxelorException(
@@ -621,6 +627,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (consumedStockMoveLineList == null) {
       return;
     }
+    updateStockMoveFromManufOrder(
+        consumedStockMoveLineList, getConsumedStockMoveFromManufOrder(manufOrder));
+  }
+
+  public StockMove getConsumedStockMoveFromManufOrder(ManufOrder manufOrder)
+      throws AxelorException {
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);
     Optional<StockMove> stockMoveOpt =
@@ -634,13 +646,22 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       manufOrder.addInStockMoveListItem(stockMove);
       Beans.get(StockMoveService.class).plan(stockMove);
     }
-    updateStockMoveFromManufOrder(consumedStockMoveLineList, stockMove);
+    return stockMove;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
     List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
+    if (producedStockMoveLineList == null) {
+      return;
+    }
+    updateStockMoveFromManufOrder(
+        producedStockMoveLineList, getProducedStockMoveFromManufOrder(manufOrder));
+  }
+
+  public StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder)
+      throws AxelorException {
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);
     Optional<StockMove> stockMoveOpt =
@@ -654,8 +675,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       manufOrder.addOutStockMoveListItem(stockMove);
       Beans.get(StockMoveService.class).plan(stockMove);
     }
-
-    updateStockMoveFromManufOrder(producedStockMoveLineList, stockMove);
+    return stockMove;
   }
 
   @Override
@@ -1141,6 +1161,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     } catch (AxelorException e) {
       throw new ValidationException(e.getMessage());
     }
+  }
+
+  @Override
+  public List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder) {
+    return manufOrderRepo
+        .all()
+        .filter("self.parentMO = :manufOrder")
+        .bind("manufOrder", manufOrder)
+        .fetch();
   }
 
   @Override

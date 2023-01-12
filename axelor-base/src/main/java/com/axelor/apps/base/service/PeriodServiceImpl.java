@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -218,18 +218,12 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   @Override
-  public void checkClosedPeriod(Period period, boolean isAuthorizedToAccountOnPeriod)
-      throws AxelorException {
+  public boolean isClosedPeriod(Period period) throws AxelorException {
     List<Integer> unauthorizedStatus = new ArrayList<>();
     unauthorizedStatus.add(PeriodRepository.STATUS_TEMPORARILY_CLOSED);
     unauthorizedStatus.add(PeriodRepository.STATUS_CLOSED);
-    if (period != null
-        && !isAuthorizedToAccountOnPeriod
-        && unauthorizedStatus.contains(period.getStatusSelect())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.PERIOD_CLOSED_AND_NO_PERMISSIONS));
-    }
+
+    return period != null && unauthorizedStatus.contains(period.getStatusSelect());
   }
 
   @Override
@@ -242,14 +236,14 @@ public class PeriodServiceImpl implements PeriodService {
       resultQuery.setParameter("date", period.getFromDate().minusDays(1));
       resultQuery.setParameter("company", period.getYear().getCompany());
       if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
-        Period previousPeriod =
-            periodRepo.find(
-                Long.valueOf(resultQuery.getResultList().get(0).toString()).longValue());
-        if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_TEMPORARILY_CLOSED
-            && previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.PREVIOUS_PERIOD_NOT_TEMP_CLOSED));
+        for (Object result : resultQuery.getResultList()) {
+          Period previousPeriod = periodRepo.find(Long.valueOf(result.toString()).longValue());
+          if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_TEMPORARILY_CLOSED
+              && previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(BaseExceptionMessage.PREVIOUS_PERIOD_NOT_TEMP_CLOSED));
+          }
         }
       }
     }
@@ -269,13 +263,14 @@ public class PeriodServiceImpl implements PeriodService {
       resultQuery.setParameter("company", period.getYear().getCompany());
       resultQuery.setParameter("type", period.getYear().getTypeSelect());
       if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
-        Period previousPeriod =
-            periodRepo.find(
-                Long.valueOf(resultQuery.getResultList().get(0).toString()).longValue());
-        if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.PREVIOUS_PERIOD_NOT_CLOSED));
+
+        for (Object result : resultQuery.getResultList()) {
+          Period previousPeriod = periodRepo.find(Long.valueOf(result.toString()).longValue());
+          if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(BaseExceptionMessage.PREVIOUS_PERIOD_NOT_CLOSED));
+          }
         }
       }
     }

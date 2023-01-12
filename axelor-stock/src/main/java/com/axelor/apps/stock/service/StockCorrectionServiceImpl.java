@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,12 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.StockCorrection;
-import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.*;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
@@ -65,6 +60,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     this.stockMoveLineService = stockMoveLineService;
   }
 
+  @Inject private StockCorrectionRepository stockCorrectionRepository;
+
   @Override
   public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine) {
 
@@ -87,8 +84,19 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
     Map<String, Object> stockCorrectionQtys = new HashMap<>();
 
-    StockLocationLine stockLocationLine;
+    StockLocationLine stockLocationLine = getProductStockLocationLine(stockCorrection);
 
+    if (stockLocationLine != null) {
+      getDefaultQtys(stockLocationLine, stockCorrectionQtys);
+    } else {
+      stockCorrectionQtys.put("realQty", BigDecimal.ZERO);
+      stockCorrectionQtys.put("baseQty", BigDecimal.ZERO);
+    }
+    return stockCorrectionQtys;
+  }
+
+  protected StockLocationLine getProductStockLocationLine(StockCorrection stockCorrection) {
+    StockLocationLine stockLocationLine;
     if (stockCorrection.getTrackingNumber() == null) {
       stockLocationLine =
           stockLocationLineService.getStockLocationLine(
@@ -100,13 +108,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
               stockCorrection.getProduct(),
               stockCorrection.getTrackingNumber());
     }
-
-    if (stockLocationLine != null) {
-      getDefaultQtys(stockLocationLine, stockCorrectionQtys);
-    } else {
-      stockCorrectionQtys.put("realQty", BigDecimal.ZERO);
-    }
-    return stockCorrectionQtys;
+    return stockLocationLine;
   }
 
   @Override
@@ -233,6 +235,65 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
     stockCorrectionQtys.put("baseQty", stockLocationLine.getCurrentQty());
     stockCorrectionQtys.put("realQty", stockLocationLine.getCurrentQty());
-    stockCorrectionQtys.put("futureQty", stockLocationLine.getFutureQty());
+  }
+
+  @Override
+  @Transactional
+  public StockCorrection generateStockCorrection(
+      StockLocation stockLocation,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal realQty,
+      StockCorrectionReason reason)
+      throws Exception {
+
+    StockCorrection stockCorrection = new StockCorrection();
+    setNewStockCorrectionInformation(
+        stockLocation, product, trackingNumber, realQty, reason, stockCorrection);
+    this.stockCorrectionRepository.save(stockCorrection);
+
+    return stockCorrection;
+  }
+
+  protected void setNewStockCorrectionInformation(
+      StockLocation stockLocation,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal realQty,
+      StockCorrectionReason reason,
+      StockCorrection stockCorrection) {
+    stockCorrection.setStatusSelect(StockCorrectionRepository.STATUS_DRAFT);
+    stockCorrection.setStockLocation(stockLocation);
+    stockCorrection.setProduct(product);
+    if (product.getTrackingNumberConfiguration() != null && trackingNumber != null) {
+      stockCorrection.setTrackingNumber(trackingNumber);
+    }
+    stockCorrection.setRealQty(realQty);
+    stockCorrection.setStockCorrectionReason(reason);
+
+    stockCorrection.setBaseQty(getProductBaseQty(stockCorrection));
+  }
+
+  protected BigDecimal getProductBaseQty(StockCorrection stockCorrection) {
+    StockLocationLine stockLocationLine = getProductStockLocationLine(stockCorrection);
+    return stockLocationLine.getCurrentQty();
+  }
+
+  @Override
+  @Transactional
+  public void updateCorrectionQtys(StockCorrection stockCorrection, BigDecimal realQty) {
+    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
+      stockCorrection.setRealQty(realQty);
+      this.stockCorrectionRepository.save(stockCorrection);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void updateReason(StockCorrection stockCorrection, StockCorrectionReason reason) {
+    if (stockCorrection.getStatusSelect() != StockCorrectionRepository.STATUS_VALIDATED) {
+      stockCorrection.setStockCorrectionReason(reason);
+      this.stockCorrectionRepository.save(stockCorrection);
+    }
   }
 }

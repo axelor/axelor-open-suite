@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,6 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
 import com.axelor.apps.supplychain.service.MrpService;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -85,11 +84,28 @@ public class MrpController {
       Boolean isProposalsPerSupplier =
           (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
       Beans.get(MrpService.class)
-          .generateProposals(
+          .generateAllProposals(
               Beans.get(MrpRepository.class).find(mrp.getId()),
               isProposalsPerSupplier != null && isProposalsPerSupplier);
       response.setFlash(I18n.get("Proposals have been generated successfully."));
-    } catch (AxelorException e) {
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
+  }
+
+  public void generateSelectedProposals(ActionRequest request, ActionResponse response) {
+    try {
+      Mrp mrp = request.getContext().asType(Mrp.class);
+      Boolean isProposalsPerSupplier =
+          (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
+      Beans.get(MrpService.class)
+          .generateSelectedProposals(
+              Beans.get(MrpRepository.class).find(mrp.getId()),
+              isProposalsPerSupplier != null && isProposalsPerSupplier);
+      response.setFlash(I18n.get("Proposals have been generated successfully."));
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);

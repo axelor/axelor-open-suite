@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -47,7 +47,9 @@ public interface MoveLineCreateService {
       LocalDate originDate,
       Integer counter,
       String origin,
-      String description)
+      String description,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate)
       throws AxelorException;
 
   MoveLine createMoveLine(
@@ -85,6 +87,19 @@ public interface MoveLineCreateService {
       Account account,
       BigDecimal amount,
       boolean isDebit,
+      LocalDate date,
+      int ref,
+      String origin,
+      String description)
+      throws AxelorException;
+
+  MoveLine createMoveLine(
+      Move move,
+      Partner partner,
+      Account account,
+      BigDecimal amount,
+      boolean isDebit,
+      TaxLine taxLine,
       LocalDate date,
       int ref,
       String origin,

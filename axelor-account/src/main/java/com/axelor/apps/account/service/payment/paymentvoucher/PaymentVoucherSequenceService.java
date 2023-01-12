@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class PaymentVoucherSequenceService {
 
@@ -53,6 +54,7 @@ public class PaymentVoucherSequenceService {
     }
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   public String getReference(PaymentVoucher paymentVoucher) throws AxelorException {
 
     PaymentMode paymentMode = paymentVoucher.getPaymentMode();
@@ -60,10 +62,13 @@ public class PaymentVoucherSequenceService {
 
     return sequenceService.getSequenceNumber(
         paymentModeService.getPaymentModeSequence(
-            paymentMode, company, paymentVoucher.getCompanyBankDetails()));
+            paymentMode, company, paymentVoucher.getCompanyBankDetails()),
+        PaymentVoucher.class,
+        "ref");
   }
 
-  public void setReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal) {
+  public void setReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal)
+      throws AxelorException {
 
     if (journal.getEditReceiptOk()) {
 
@@ -71,10 +76,14 @@ public class PaymentVoucherSequenceService {
     }
   }
 
-  public String getReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal) {
+  public String getReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal)
+      throws AxelorException {
 
     return sequenceService.getSequenceNumber(
-        SequenceRepository.PAYMENT_VOUCHER_RECEIPT_NUMBER, company);
+        SequenceRepository.PAYMENT_VOUCHER_RECEIPT_NUMBER,
+        company,
+        PaymentVoucher.class,
+        "receiptNo");
   }
 
   public void checkReceipt(PaymentVoucher paymentVoucher) throws AxelorException {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -164,6 +164,8 @@ public interface ManufOrderService {
    */
   void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
+  StockMove getConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
   /**
    * On changing {@link ManufOrder#producedStockMoveLineList}, we also update the stock move.
    *
@@ -171,6 +173,8 @@ public interface ManufOrderService {
    * @throws AxelorException
    */
   void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+  StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   /**
    * Check the realized consumed stock move lines in manuf order has not changed.
@@ -265,4 +269,6 @@ public interface ManufOrderService {
    * @return
    */
   public void createBarcode(ManufOrder manufOrder);
+
+  List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
 }

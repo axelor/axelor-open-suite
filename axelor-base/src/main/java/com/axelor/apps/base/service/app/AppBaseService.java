@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,8 @@ public interface AppBaseService extends AppService {
   public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 
   public static final int DEFAULT_TRACKING_MONTHS_PERSISTENCE = 1;
+
+  public static final int COMPUTATION_SCALING = 20;
 
   public AppBase getAppBase();
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockHistoryLineManagementRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -55,18 +56,31 @@ public class StockHistoryServiceImpl implements StockHistoryService {
   protected StockMoveLineRepository stockMoveLineRepository;
   protected UnitConversionService unitConversionService;
   protected StockLocationRepository stockLocationRepository;
+  protected StockHistoryLineManagementRepository stockHistoryLineRepository;
 
   @Inject
   public StockHistoryServiceImpl(
       StockMoveLineRepository stockMoveLineRepository,
       UnitConversionService unitConversionService,
-      StockLocationRepository stockLocationRepository) {
+      StockLocationRepository stockLocationRepository,
+      StockHistoryLineManagementRepository stockHistoryLineRepository) {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.unitConversionService = unitConversionService;
     this.stockLocationRepository = stockLocationRepository;
+    this.stockHistoryLineRepository = stockHistoryLineRepository;
   }
 
-  @Transactional
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public List<StockHistoryLine> computeAndSaveStockHistoryLineList(
+      Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
+      throws AxelorException {
+
+    return stockHistoryLineRepository.save(
+        this.computeStockHistoryLineList(
+            productId, companyId, stockLocationId, beginDate, endDate));
+  }
+
   public List<StockHistoryLine> computeStockHistoryLineList(
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException {
@@ -130,6 +144,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     stockHistoryLineList.add(avgStockHistoryLine);
 
     // result lines
+
     return stockHistoryLineList;
   }
 

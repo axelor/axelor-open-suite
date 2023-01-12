@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -509,7 +509,12 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   @Override
   @Transactional
   public void init(ConfiguratorCreator creator) {
-    creator.addAuthorizedUserSetItem(AuthUtils.getUser());
+    User user = AuthUtils.getUser();
+    if (user != null) {
+      creator.addAuthorizedUserSetItem(AuthUtils.getUser());
+    } else {
+      creator.addAuthorizedUserSetItem(AuthUtils.getUser("admin"));
+    }
     addRequiredFormulas(creator);
   }
 

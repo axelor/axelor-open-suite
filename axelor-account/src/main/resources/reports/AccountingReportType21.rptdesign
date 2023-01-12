@@ -631,6 +631,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 		WHEN 
 			FixedAsset.first_service_date >= AccountingReport.date_from
 			AND FixedAsset.first_service_date <= AccountingReport.date_to
+			AND (FixedAsset.status_select = 2 OR FixedAsset.status_select = 3)
 		THEN FixedAsset.gross_value
 		ELSE 0
 	END) AS value_b,
@@ -638,7 +639,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 		WHEN 
 			FixedAsset.disposal_date >= AccountingReport.date_from
 			AND FixedAsset.disposal_date <= AccountingReport.date_to
-		THEN FixedAsset.gross_value
+			AND FixedAsset.status_select = 4
+		THEN FixedAsset.disposal_value
 		ELSE 0
 	END) AS value_c
 	
@@ -652,8 +654,9 @@ ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
 LEFT JOIN account_fixed_asset_type AS FixedAssetType
 ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 	
-WHERE 
-	AccountingReport.id = ? 
+WHERE
+    AccountingReport.id = ?
+    AND (AccountingReport.company IS NULL OR AccountingReport.company = FixedAsset.company)
 	AND FixedAsset.status_select > 1
 	AND FixedAssetType.technical_type_select > 1
 	

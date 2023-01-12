@@ -10,7 +10,7 @@
     action="action.studio.view" order="10"/>
 
   <action-view name="action.studio.view" title="Studio">
-    <view type="html" name="studio/custom-model"/>
+    <view type="html" name="studio/custom-model/"/>
   </action-view>
 
   <!-- Reporting menu -->
@@ -83,20 +83,6 @@
     <view type="grid" name="action-builder-grid"/>
     <view type="form" name="action-builder-form"/>
     <domain>self.menuAction = false</domain>
-  </action-view>
-
-  <menuitem title="Selections" name="app-builder-config-selections"
-    parent="app-builder-config" action="action.studio.meta.select.view" order="46"/>
-
-  <action-view name="action.studio.meta.select.view" title="Selections"
-    model="com.axelor.meta.db.MetaSelect">
-    <view name="studio-meta-select-grid" type="grid"
-      if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
-    <view name="studio-meta-select-disable-appbuilder-grid" type="grid"
-      if="!__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
-    <view name="meta-select-form" type="form"/>
-    <domain>self.isCustom = true</domain>
-    <context name="_fromStudio" expr="eval:true"/>
   </action-view>
 
   <menuitem title="Selection builders" name="app-builder-config-selection-builders"

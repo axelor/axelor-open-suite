@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -381,13 +381,16 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
           fixedAsset.getCompany().getName());
     }
     String seq =
-        sequenceService.getSequenceNumber(SequenceRepository.FIXED_ASSET, fixedAsset.getCompany());
+        sequenceService.getSequenceNumber(
+            SequenceRepository.FIXED_ASSET,
+            fixedAsset.getCompany(),
+            FixedAsset.class,
+            "fixedAssetSeq");
     return seq;
   }
 
   @Override
-  public FixedAsset copyFixedAsset(FixedAsset fixedAsset, BigDecimal disposalQty)
-      throws AxelorException {
+  public FixedAsset copyFixedAsset(FixedAsset fixedAsset) throws AxelorException {
     FixedAsset newFixedAsset = fixedAssetRepo.copy(fixedAsset, true);
     // Adding this copy because copy does not copy list
     fixedAssetLineService.copyFixedAssetLineList(fixedAsset, newFixedAsset);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -27,19 +26,11 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 public interface InvoiceLineService {
-
-  public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
-      InvoiceLine invoiceLine, Invoice invoice) throws AxelorException;
-
-  List<AnalyticMoveLine> computeAnalyticDistribution(InvoiceLine invoiceLine)
-      throws AxelorException;
-
-  List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine)
-      throws AxelorException;
 
   TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException;
@@ -59,8 +50,6 @@ public interface InvoiceLineService {
   PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList, BigDecimal price);
 
   BigDecimal computeDiscount(InvoiceLine invoiceLine, Boolean inAti);
-
-  BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price);
 
   Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
       throws AxelorException;
@@ -112,9 +101,18 @@ public interface InvoiceLineService {
       InvoiceLine invoiceLine, Invoice invoice, BigDecimal oldQty, BigDecimal newQty)
       throws AxelorException;
 
-  public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
-      throws AxelorException;
-
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException;
+
+  boolean checkAnalyticDistribution(InvoiceLine invoiceLine);
+
+  boolean checkCutOffDates(InvoiceLine invoiceLine);
+
+  boolean checkManageCutOffDates(InvoiceLine invoiceLine);
+
+  void applyCutOffDates(
+      InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+
+  Map<String, String> getProductDescriptionAndNameTranslation(
+      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException;
 }

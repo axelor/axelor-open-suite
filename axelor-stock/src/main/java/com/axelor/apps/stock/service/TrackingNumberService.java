@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -127,7 +127,7 @@ public class TrackingNumberService {
     Sequence sequence = trackingNumberConfiguration.getSequence();
     String seq;
     while (true) {
-      seq = sequenceService.getSequenceNumber(sequence);
+      seq = sequenceService.getSequenceNumber(sequence, TrackingNumber.class, "trackingNumberSeq");
       if (trackingNumberRepo
               .all()
               .filter("self.product = ?1 AND self.trackingNumberSeq = ?2", product, seq)
@@ -151,6 +151,18 @@ public class TrackingNumberService {
       }
     }
 
+    return trackingNumber;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public TrackingNumber generateTrackingNumber(
+      Product product, Company company, LocalDate date, String origin, String notes)
+      throws AxelorException {
+
+    TrackingNumber trackingNumber = this.createTrackingNumber(product, company, date, origin);
+    trackingNumber.setOrigin(origin);
+    trackingNumber.setNote(notes);
+    trackingNumberRepo.save(trackingNumber);
     return trackingNumber;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -144,7 +144,6 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
       List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason) {
 
     int i = 0;
-
     for (Move move : moveList) {
       try {
 
@@ -152,13 +151,16 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
             moveRepo.find(move.getId()),
             accountRepo.find(doubtfulCustomerAccount.getId()),
             debtPassReason);
-        updateInvoice(moveRepo.find(move.getId()).getInvoice());
+        Move myMove = moveRepo.find(move.getId());
+        if (myMove.getInvoice() != null) {
+          updateInvoice(myMove.getInvoice());
+          i++;
+        }
 
       } catch (AxelorException e) {
 
         TraceBackService.trace(
-            new AxelorException(
-                e, e.getCategory(), I18n.get("Invoice") + " %s", move.getInvoice().getInvoiceId()),
+            new AxelorException(e, e.getCategory(), I18n.get("Invoice") + " %s", move.getOrigin()),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
         incrementAnomaly();
@@ -166,8 +168,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
       } catch (Exception e) {
 
         TraceBackService.trace(
-            new Exception(
-                String.format(I18n.get("Invoice") + " %s", move.getInvoice().getInvoiceId()), e),
+            new Exception(String.format(I18n.get("Invoice") + " %s", move.getOrigin()), e),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
 

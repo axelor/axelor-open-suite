@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,13 +18,23 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
+import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.service.AccountingReportPrintService;
+import com.axelor.apps.account.service.AccountingReportService;
+import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
+import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
 import com.axelor.apps.base.callable.ControllerCallableTool;
+import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -149,6 +159,39 @@ public class AccountingBatchController {
     response.setReload(true);
   }
 
+  /**
+   * Throw the control of move consistency batch
+   *
+   * @param request
+   * @param response
+   */
+  public void controlMoveConsistency(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+      AccountingBatchService accountingBatchService = Beans.get(AccountingBatchService.class);
+      accountingBatchService.setBatchModel(accountingBatch);
+
+      ControllerCallableTool<Batch> batchControllerCallableTool = new ControllerCallableTool<>();
+      Batch batch =
+          batchControllerCallableTool.runInSeparateThread(accountingBatchService, response);
+      if (batch != null) {
+        response.setFlash(batch.getComments());
+      }
+      response.setReload(true);
+      if (batch != null) {
+        response.setView(
+            ActionView.define(I18n.get("Batch"))
+                .model(Batch.class.getName())
+                .add("form", "batch-form")
+                .param("popup-save", "true")
+                .context("_showRecord", batch.getId())
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   // WS
 
   /**
@@ -165,5 +208,61 @@ public class AccountingBatchController {
     Map<String, Object> mapData = new HashMap<String, Object>();
     mapData.put("anomaly", batch.getAnomaly());
     response.setData(mapData);
+  }
+
+  public void printAccountingReport(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+      if (accountingBatch != null && accountingBatch.getGenerateGeneralLedger()) {
+
+        AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
+        AccountingReport accountingReport =
+            Beans.get(BatchPrintAccountingReportService.class)
+                .createAccountingReportFromBatch(accountingBatch);
+        int typeSelect = accountingReport.getReportType().getTypeSelect();
+
+        if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
+            && typeSelect < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
+          MetaFile accessFile = accountingReportService.export(accountingReport);
+
+          if ((typeSelect == AccountingReportRepository.EXPORT_ADMINISTRATION
+                  || typeSelect == AccountingReportRepository.EXPORT_N4DS)
+              && accessFile != null) {
+
+            response.setView(
+                ActionView.define(I18n.get("Export file"))
+                    .model(App.class.getName())
+                    .add(
+                        "html",
+                        "ws/rest/com.axelor.meta.db.MetaFile/"
+                            + accessFile.getId()
+                            + "/content/download?v="
+                            + accessFile.getVersion())
+                    .param("download", "true")
+                    .map());
+          }
+        } else {
+          if (Beans.get(AccountingReportToolService.class)
+                  .isThereAlreadyDraftReportInPeriod(accountingReport)
+              && accountingReport.getReportType().getTypeSelect()
+                  == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
+            response.setError(
+                I18n.get(
+                    "There is already an ongoing accounting report of this type in draft status for this same period."));
+            return;
+          }
+          String fileLink = accountingReportService.print(accountingReport);
+          String name = Beans.get(AccountingReportPrintService.class).computeName(accountingReport);
+          response.setView(ActionView.define(name).add("html", fileLink).map());
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void actionAccountingCutOff(ActionRequest request, ActionResponse response) {
+    runBatch(AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF, request, response);
   }
 }

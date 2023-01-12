@@ -54,7 +54,8 @@
         domain="NOT EXISTS (SELECT 1 from TrainingRegister tr WHERE tr.trainingSession.id = :_trainingSessionId AND tr.employee.id = self.id)"
         canNew="false" canSelect="true" canEdit="false" target="com.axelor.apps.hr.db.Employee"
         type="one-to-many" colSpan="12"/>
-      <button name="registerBtn" readonlyIf="!employeeList" title="Register"
+      <button name="registerBtn"
+        readonlyIf="!(employeeList &amp;&amp; employeeList.length > 0)" title="Register"
         onClick="action-mass-training-register-method"/>
     </panel>
   </form>

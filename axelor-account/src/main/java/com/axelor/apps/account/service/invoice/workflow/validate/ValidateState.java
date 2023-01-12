@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -105,9 +105,8 @@ public class ValidateState extends WorkflowInvoice {
     invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
     invoice.setValidatedByUser(userService.getUser());
     invoice.setValidatedDate(appBaseService.getTodayDate(invoice.getCompany()));
-    if (invoice.getPartnerAccount() == null) {
-      invoice.setPartnerAccount(invoiceService.getPartnerAccount(invoice));
-    }
+    setPartnerAccount();
+
     if (invoice.getJournal() == null) {
       invoice.setJournal(invoiceService.getJournal(invoice));
     }
@@ -122,6 +121,17 @@ public class ValidateState extends WorkflowInvoice {
     }
 
     workflowValidationService.afterValidation(invoice);
+  }
+
+  protected void setPartnerAccount() throws AxelorException {
+    if (invoice.getPartnerAccount() == null) {
+      invoice.setPartnerAccount(invoiceService.getPartnerAccount(invoice, false));
+    }
+    if (invoice.getPartnerAccount() != null && !invoice.getPartnerAccount().getHasInvoiceTerm()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
+    }
   }
 
   private void generateBudgetDistribution(Invoice invoice) {

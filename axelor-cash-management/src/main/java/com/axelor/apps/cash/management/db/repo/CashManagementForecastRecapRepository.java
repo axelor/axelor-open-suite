@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,7 +42,11 @@ public class CashManagementForecastRecapRepository extends ForecastRecapReposito
 
         String sequence =
             Beans.get(SequenceService.class)
-                .getSequenceNumber(SequenceRepository.FORECAST_RECAP_SEQUENCE, company);
+                .getSequenceNumber(
+                    SequenceRepository.FORECAST_RECAP_SEQUENCE,
+                    company,
+                    ForecastRecap.class,
+                    "forecastRecapSeq");
 
         if (sequence == null) {
           throw new AxelorException(

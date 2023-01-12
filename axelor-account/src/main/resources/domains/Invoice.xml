@@ -49,7 +49,8 @@
 
     <!-- Dates -->
     <date name="invoiceDate" title="Invoice Date"/>
-    <date name="dueDate" title="Due Date"/>
+    <date name="dueDate" title="Due date"/>
+    <date name="nextDueDate" title="Next due date" readonly="true"/>
     <date name="originDate" title="Origin date"/>
     <date name="paymentDate" title="Payment date"/>
 
@@ -240,6 +241,11 @@
 	      id]]>
     </integer>
 
+
+    <!-- Invoice terms -->
+    <integer name="paymentProgress" title="Payment progress" default="0"/>
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
+      mappedBy="invoice" title="Invoice terms"/>
 
     <unique-constraint columns="invoiceId,company"/>
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -112,7 +112,8 @@ public class AccountController {
   public void manageAnalytic(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      if (!Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+      if (account.getCompany() == null
+          || !Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
           || !Beans.get(AccountConfigService.class)
               .getAccountConfig(account.getCompany())
               .getManageAnalyticAccounting()) {
@@ -126,13 +127,29 @@ public class AccountController {
   public void createAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      if (account.getAnalyticDistributionTemplate() == null
-          && account.getAnalyticDistributionAuthorized()) {
-        AnalyticDistributionTemplate analyticDistributionTemplate =
+      AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
+          Beans.get(AnalyticDistributionTemplateService.class)
+              .createSpecificDistributionTemplate(account.getCompany(), account.getName());
+
+      if (specificAnalyticDistributionTemplate != null) {
+        response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void personalizeAnalyticDistTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      if (account.getAnalyticDistributionTemplate() != null) {
+        AnalyticDistributionTemplate specificAnalyticDistributionTemplate =
             Beans.get(AnalyticDistributionTemplateService.class)
-                .createDistributionTemplateFromAccount(account);
-        if (analyticDistributionTemplate != null) {
-          response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+                .personalizeAnalyticDistributionTemplate(
+                    account.getAnalyticDistributionTemplate(),
+                    account.getAnalyticDistributionTemplate().getCompany());
+        if (specificAnalyticDistributionTemplate != null) {
+          response.setValue("analyticDistributionTemplate", specificAnalyticDistributionTemplate);
         }
       }
     } catch (Exception e) {
@@ -221,6 +238,31 @@ public class AccountController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fillAccountCode(ActionRequest request, ActionResponse response) {
+    Account account = request.getContext().asType(Account.class);
+    try {
+      account = Beans.get(AccountService.class).fillAccountCode(account);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setValue("code", account.getCode());
+    }
+  }
+
+  public void verifyTemplateValues(ActionRequest request, ActionResponse response) {
+    Account account = request.getContext().asType(Account.class);
+    try {
+      AnalyticDistributionTemplateService analyticDistributionTemplateService =
+          Beans.get(AnalyticDistributionTemplateService.class);
+      analyticDistributionTemplateService.verifyTemplateValues(
+          account.getAnalyticDistributionTemplate());
+      analyticDistributionTemplateService.validateTemplatePercentages(
+          account.getAnalyticDistributionTemplate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

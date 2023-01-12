@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -258,7 +258,7 @@ public class TimesheetController {
     Timesheet timesheet =
         Beans.get(TimesheetRepository.class).find(Long.valueOf((Integer) timesheetMap.get("id")));
     response.setView(
-        ActionView.define("Timesheet")
+        ActionView.define(I18n.get("Timesheet"))
             .model(Timesheet.class.getName())
             .add("form", "timesheet-form")
             .param("forceEdit", "true")
@@ -570,7 +570,7 @@ public class TimesheetController {
     Context context = request.getContext();
 
     String url =
-        "hr/timesheet?timesheetId="
+        "hr/timesheet/?timesheetId="
             + context.get("id")
             + "&showActivity="
             + context.get("showActivity");

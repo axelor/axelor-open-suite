@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -81,6 +81,11 @@ public interface ITranslation {
       "ClientSituation.dueBalance"; /*)*/
   public static final String CLIENT_SITUATION_RECOVERABLE_BALANCE = /*$$(*/
       "ClientSituation.recoverableBalance"; /*)*/
+  public static final String CLIENT_SITUATION_TERM_N = /*$$(*/ "ClientSituation.termN"; /*)*/
+  public static final String CLIENT_SITUATION_TOTAL_ATI_TERM = /*$$(*/
+      "ClientSituation.totalAtiTerm"; /*)*/
+  public static final String CLIENT_SITUATION_DUE_DATE_TERM = /*$$(*/
+      "ClientSituation.dueDateTerm"; /*)*/
 
   public static final String PRODUCT_CATALOG_SUMMARY = /*$$(*/ "ProductCatalog.summary"; /*)*/
   public static final String PRODUCT_CATALOG_REFERENCE = /*$$(*/ "ProductCatalog.reference"; /*)*/

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -101,7 +101,7 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_ORDER_BANK_DETAILS_EMPTY_IBAN = /*$$(*/
       "The Iban is mandatory for the partner %s, bank order %s" /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
-      "The bank details is inactive." /*)*/;
+      "The sender bank details is inactive." /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
       "The bank details type is not compatible with the accepted types in file format." /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
@@ -143,13 +143,15 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/
       "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
-      "The receiver bank details is inactive." /*)*/;
+      "The receiver bank details for the line %s is inactive." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
       "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
       "The receiver bank details currency is not compatible with the currency in bank order." /*)*/;
   public static final String BANK_ORDER_LINE_NO_RECEIVER_ADDRESS = /*$$(*/
       "No address has been defined in the receiver %s" /*)*/;
+  public static final String BANK_ORDER_LINE_ORIGIN_NO_DMS_FILE = /*$$(*/
+      "There is no file linked to this origin." /*)*/;
 
   /** BankOrder merge */
   public static final String BANK_ORDER_MERGE_AT_LEAST_TWO_BANK_ORDERS = /*$$(*/
@@ -275,6 +277,10 @@ public final class BankPaymentExceptionMessage {
       "Can't load while another reconciliation is open" /*)*/;
   public static final String BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL = /*$$(*/
       "The selected bank statement doesn't contain, at the lines level, any information allowing to identify which bank details it concerns. Please verify the format of the data source or the configuration of the bank details in the software and please make sure both are matching." /*)*/;
+  public static final String BANK_RECONCILIATION_CANNOT_DELETE_VALIDATED = /*$$(*/
+      "Selected bank reconciliation is validated and can not be deleted" /*)*/;
+  public static final String BANK_RECONCILIATION_CANNOT_DELETE_UNDER_CORRECTION = /*$$(*/
+      "Selected bank reconciliation is under correction and can not be deleted" /*)*/;
 
   /** Bank Statement Query */
   public static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/
@@ -294,4 +300,14 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
       "Please select a counterpart account in the bank statement rule %s" /*)*/;
+
+  /** Move Reverse */
+  public static final String MOVE_LINKED_TO_VALIDATED_BANK_RECONCILIATION = /*$$(*/
+      "The move %s can't be reversed because it is linked to a bank reconciliation with status validated" /*)*/;
+
+  public static final String MOVES_LINKED_TO_VALIDATED_BANK_RECONCILIATION = /*$$(*/
+      "The moves %s couldn't be reversed because these are linked to a bank reconciliation with status validated" /*)*/;
+
+  public static final String VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL = /*$$(*/
+      "Failed to create a move for the invoice payment." /*)*/;
 }

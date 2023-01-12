@@ -81,10 +81,12 @@
           <field name="multipleUsers" colSpan="12" hidden="true"
             onChange="action-expense-attrs-multiple-users"/>
           <field name="company" canEdit="false" form-view="company-form"
-            grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
+            grid-view="company-grid" onChange="action-expense-record-company-onchange"
+            required="true"/>
           <field name="employee" form-view="employee-form"
             onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
-            canEdit="false" canView="false" onChange="action-expense-record-employee-onchange"/>
+            canEdit="false" canView="false" onChange="action-expense-record-employee-onchange"
+            required="true"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
@@ -164,8 +166,8 @@
       <field name="refusedBy" canEdit="false" hidden="true" form-view="user-form"
         grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
       <field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
-      <field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12"
-        readonly="true"/>
+      <field name="groundForRefusal" hidden="true"
+        showIf="statusSelect == 5 || groundForRefusal != null" colSpan="12" readonly="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList"
@@ -178,7 +180,7 @@
         form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
         onChange="action-expense-group-expense-line-on-change"/>
       <panel-related name="employeeAdvanceUsageListPanel"
-        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length"
+        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length > 0"
         field="employeeAdvanceUsageList" title="Employee advance list" readonly="false"
         canNew="false" canSelect="false" canEdit="true" editable="true"
         form-view="employee-advance-usage-expense-form"

@@ -25,6 +25,7 @@
     <many-to-one name="modelAccountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Model Accounting Report"/>
 
+    <finder-method name="findByTypeSelect" using="typeSelect"/>
     <extra-code><![CDATA[
 
 	   	// Comparison

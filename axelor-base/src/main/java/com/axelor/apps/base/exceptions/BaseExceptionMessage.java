@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -157,6 +157,9 @@ public final class BaseExceptionMessage {
   public static final String APP_BASE_NO_SEQUENCE =
       "There is no configured product sequence in the app base config";
 
+  public static final String SEQUENCE_ALREADY_EXISTS =
+      /*$$(*/ "The generated sequence %s already exists. Please fix the configuration of sequence %s." /*)*/;
+
   /** Importer */
   public static final String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
 
@@ -261,6 +264,9 @@ public final class BaseExceptionMessage {
   public static final String PARTNER_NOT_FOUND = /*$$(*/ "Partner not found" /*)*/;
   public static final String PARTNER_EMAIL_EXIST = /*$$(*/
       "Email address already linked with another partner" /*)*/;
+
+  public static final String PARTNER_INVALID_REGISTRATION_CODE = /*$$(*/
+      "Registration code is invalid." /*)*/;
 
   /** Product controller */
   public static final String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
@@ -502,6 +508,8 @@ public final class BaseExceptionMessage {
       "Error: The type of the field %s does not match the type of the value %s" /*)*/;
   public static final String META_JSON_TYPE_NOT_MANAGED = /*$$(*/
       "Error: The type of the field %s is not managed by the adapter" /*)*/;
+
+  public static final String COMPANY_MISSING = /*$$(*/ "Please set a company." /*)*/;
 
   public static final String NO_ACTIVE_COMPANY = /*$$(*/ "Please set an active company." /*)*/;
 }

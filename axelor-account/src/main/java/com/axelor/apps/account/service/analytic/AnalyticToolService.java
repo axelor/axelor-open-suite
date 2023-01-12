@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,22 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface AnalyticToolService {
 
   boolean isManageAnalytic(Company company) throws AxelorException;
+
+  boolean isPositionUnderAnalyticAxisSelect(Company company, int position) throws AxelorException;
+
+  boolean isAxisAccountSumValidated(
+      List<AnalyticMoveLine> analyticMoveLineList, AnalyticAxis analyticAxis);
+
+  boolean isAnalyticAxisFilled(
+      AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList);
 }

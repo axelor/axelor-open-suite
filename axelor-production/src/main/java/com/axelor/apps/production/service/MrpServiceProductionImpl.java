@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
@@ -71,6 +72,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +87,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected BillOfMaterialService billOfMaterialService;
 
   protected AppProductionService appProductionService;
+
+  protected ProdProcessLineService prodProcessLineService;
 
   @Inject
   public MrpServiceProductionImpl(
@@ -112,7 +116,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
       BillOfMaterialService billOfMaterialService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      ProdProcessLineService prodProcessLineService) {
     super(
         mrpRepository,
         stockLocationRepository,
@@ -139,6 +144,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     this.productCompanyService = productCompanyService;
     this.billOfMaterialService = billOfMaterialService;
     this.appProductionService = appProductionService;
+    this.prodProcessLineService = prodProcessLineService;
   }
 
   @Override
@@ -207,11 +213,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     StockLocation stockLocation = manufOrder.getProdProcess().getStockLocation();
 
-    LocalDate maturityDate;
+    LocalDate maturityDate = null;
 
     if (manufOrder.getPlannedEndDateT() != null) {
       maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
-    } else {
+    } else if (manufOrder.getPlannedStartDateT() != null) {
       maturityDate = manufOrder.getPlannedStartDateT().toLocalDate();
     }
 
@@ -259,7 +265,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
             if (operationOrder.getPlannedEndDateT() != null) {
               maturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
-            } else {
+            } else if (operationOrder.getPlannedStartDateT() != null) {
               maturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
             }
 
@@ -433,6 +439,15 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       String relatedToSelectName)
       throws AxelorException {
 
+    Company company = mrp.getStockLocation().getCompany();
+    BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+
+    if (appProductionService.isApp("production")
+        && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
+        && defaultBillOfMaterial != null) {
+      maturityDate = updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty);
+    }
+
     super.createProposalMrpLine(
         mrp,
         product,
@@ -446,8 +461,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     if (!appProductionService.isApp("production")) {
       return;
     }
-    Company company = mrp.getStockLocation().getCompany();
-    BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && defaultBillOfMaterial != null) {
@@ -465,7 +478,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         Product subProduct = billOfMaterial.getProduct();
 
         if (this.isMrpProduct(subProduct)) {
-          // TODO take the time to do the Manuf order (use machine planning)
           super.createProposalMrpLine(
               mrp,
               subProduct,
@@ -480,6 +492,36 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
       }
     }
+  }
+
+  /**
+   * Update maturiy date because current currenty date do not take into account the duration of the
+   * entrire process of manuf order
+   *
+   * @param maturityDate
+   * @param defaultBillOfMaterial
+   * @param reorderQty
+   * @return
+   * @throws AxelorException
+   */
+  protected LocalDate updateMaturityDate(
+      LocalDate maturityDate, BillOfMaterial defaultBillOfMaterial, BigDecimal reorderQty)
+      throws AxelorException {
+
+    long totalDuration = 0;
+    if (defaultBillOfMaterial.getProdProcess() != null) {
+      for (ProdProcessLine prodProcessLine :
+          defaultBillOfMaterial.getProdProcess().getProdProcessLineList()) {
+        totalDuration +=
+            prodProcessLineService.computeEntireCycleDuration(prodProcessLine, reorderQty);
+      }
+    }
+    // If days should be rounded to a upper value
+    if (totalDuration != 0 && totalDuration % TimeUnit.DAYS.toSeconds(1) != 0) {
+      return maturityDate.minusDays(TimeUnit.SECONDS.toDays(totalDuration) + 1);
+    }
+
+    return maturityDate.minusDays(TimeUnit.SECONDS.toDays(totalDuration));
   }
 
   /**
