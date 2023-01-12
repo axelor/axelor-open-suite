@@ -269,7 +269,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     }
     firstPlannedDerogatoryLine.setDerogatoryDepreciationMove(
         fixedAssetDerogatoryLineMoveService.generateMove(
-            firstPlannedDerogatoryLine, creditAccount, debitAccount, amount, false));
+            firstPlannedDerogatoryLine, creditAccount, debitAccount, amount, false, true));
     firstPlannedDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
   }
 
