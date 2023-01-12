@@ -1807,7 +1807,7 @@
 "Please select 'Draft' or 'Accounted' or 'Canceled' moves",,,
 "Please select 'Draft' or 'Simulated' moves","Selecciona los movimientos ""Borrador"" o ""Simulado""",,
 "Please select a payment mode to generate the counterpart",,,
-"Please select something to validate",,,
+"Please select at least one fixed asset to validate",,,
 "Please select the invoice(s) to print.","Seleccione las facturas para imprimir.",,
 "Please set a reported balance date on fiscal year","Establezca una fecha de saldo reportado en el año fiscal",,
 "Please set up an accounting batch to block customers with late payments",,,
