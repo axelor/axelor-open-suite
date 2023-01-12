@@ -94,6 +94,9 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     accountingReport.setRef(accountingReportService.getSequence(accountingReport));
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
 
+    accountingReport.setDisplayClosingAccountingMoves(accountingBatch.getCloseYear());
+    accountingReport.setDisplayOpeningAccountingMoves(accountingBatch.getOpenYear());
+
     Set<Account> accountSet =
         initializeAccountSet(
             accountingReport.getCompany(), accountingBatch.getIncludeSpecialAccounts());
