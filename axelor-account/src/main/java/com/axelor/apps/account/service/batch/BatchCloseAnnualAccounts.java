@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.AccountingCloseAnnualService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
@@ -70,6 +71,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected AccountingCloseAnnualService accountingCloseAnnualService;
   protected AccountConfigService accountConfigService;
   protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected boolean end = false;
   protected AccountingBatch accountingBatch;
 
@@ -81,7 +83,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       AccountingBatchRepository accountingBatchRepository,
       AccountingCloseAnnualService accountingCloseAnnualService,
       AccountConfigService accountConfigService,
-      MoveCreateService moveCreateService) {
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService) {
     this.partnerRepository = partnerRepository;
     this.yearRepository = yearRepository;
     this.accountRepository = accountRepository;
@@ -89,6 +92,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     this.accountingCloseAnnualService = accountingCloseAnnualService;
     this.accountConfigService = accountConfigService;
     this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
   }
 
   @Override
@@ -453,8 +457,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
             date,
             date,
             2,
-            BigDecimal.ZERO,
             amount.abs(),
+            BigDecimal.ZERO,
             description,
             null,
             BigDecimal.ONE,
@@ -464,6 +468,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     move.addMoveLineListItem(debit);
 
     moveRepo.save(move);
+
+    moveValidateService.accounting(move);
   }
 
   class AccountByPartner {
