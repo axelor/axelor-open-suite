@@ -201,7 +201,7 @@ public class InvoiceLineController {
                               invoiceLine,
                               invoiceLine.getTaxLine(),
                               InvoiceToolService.isPurchase(invoice)));
-
+      discounts.remove("price");
       for (Entry<String, Object> entry : discounts.entrySet()) {
         response.setValue(entry.getKey(), entry.getValue());
       }
