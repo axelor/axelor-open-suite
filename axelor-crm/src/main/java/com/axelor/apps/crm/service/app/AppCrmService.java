@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.crm.service.app;
 
+import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.base.service.app.AppBaseService;
 
 public interface AppCrmService extends AppBaseService {
 
   public void generateCrmConfigurations();
+
+  public AppCrm getAppCrm();
 }

@@ -119,12 +119,16 @@
     <view type="grid" name="lead-historical-grid"/>
     <view type="form" name="lead-form"/>
     <view-param name="search-filters" value="lead-filters"/>
-    <domain>self.leadStatus.isClosed = true OR self.leadStatus.isLost = true</domain>
+    <domain>self.leadStatus.id = :_convertedLeadStatusId OR self.leadStatus.id = :_lostLeadStatusId</domain>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_convertedLeadStatusId"
+      expr="eval: __config__.app.getApp('crm')?.getConvertedLeadStatus()?.id"/>
+    <context name="_lostLeadStatusId"
+      expr="eval: __config__.app.getApp('crm')?.getLostLeadStatus()?.id"/>
   </action-view>
 
   <menuitem name="crm-root-meeting-my-calendar" parent="menu-calendar"

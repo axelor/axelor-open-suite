@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.CrmReporting;
-import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -98,7 +98,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
     }
     throw new AxelorException(
         TraceBackRepository.CATEGORY_MISSING_FIELD,
-        I18n.get(IExceptionMessage.CRM_REPORTING_TYPE_SELECT_MISSING));
+        I18n.get(CrmExceptionMessage.CRM_REPORTING_TYPE_SELECT_MISSING));
   }
 
   protected void prepareQuery(CrmReporting crmReporting, boolean isPartner, String model) {

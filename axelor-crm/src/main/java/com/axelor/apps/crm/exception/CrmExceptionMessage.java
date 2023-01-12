@@ -89,6 +89,14 @@ public final class CrmExceptionMessage {
       "Please configure all templates in CRM configuration for company %s" /*)*/;
   public static final String CRM_CONFIG_TEMPLATES_NONE = /*$$(*/
       "No template created in CRM configuration for company %s, emails have not been sent" /*)*/;
+  public static final String CRM_CLOSED_WIN_OPPORTUNITY_STATUS_MISSING = /*$$(*/
+      "Please fill closed win opportunity status in App CRM configuration." /*)*/;
+  public static final String CRM_CLOSED_LOST_OPPORTUNITY_STATUS_MISSING = /*$$(*/
+      "Please fill closed lost opportunity status in App CRM configuration." /*)*/;
+  public static final String CRM_CONVERTED_LEAD_STATUS_MISSING = /*$$(*/
+      "Please fill converted lead status in App CRM configuration." /*)*/;
+  public static final String CRM_LOST_LEAD_STATUS_MISSING = /*$$(*/
+      "Please fill lost lead status in App CRM configuration." /*)*/;
 
   /*
    * Recurrence
@@ -105,4 +113,19 @@ public final class CrmExceptionMessage {
       "The end date must be after the start date" /*)*/;
   public static final String OPPORTUNITY_1 = /*$$(*/
       "There's no configured sequence for opportunities for the company %s" /*)*/;
+
+  /** Opportunity Status */
+  public static final String OPPORTUNITY_STATUS_CLOSED_WON_LOST_NOT_DELETED =
+      /* $$( */ "%s status can't be deleted." /* ) */;
+
+  public static final String OPPORTUNITY_STATUS_CLOSED_WON_LOST_ALREADY_EXIST =
+      /* $$( */ "Opportunity status '%s' is already exist." /* ) */;
+
+  /** Lead Status */
+  public static final String CONVERTED_STATUS_DELETE = /*$$(*/
+      "Converted status can't be deleted" /*)*/;
+
+  /** CRM Reporting */
+  public static final String CRM_REPORTING_TYPE_SELECT_MISSING = /*$$(*/
+      "Crm Reporting type is missing!" /*)*/;
 }

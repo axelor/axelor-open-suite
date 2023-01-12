@@ -265,9 +265,8 @@
       <field name="contactDate" colSpan="6"/>
       <field name="lastEventDateT" readonly="true"/>
       <field name="nextScheduledEventDateT" readonly="true"/>
-      <field name="lostReason" showIf="leadStatus.isLost" colSpan="6"/>
+      <field name="lostReason" hidden="true" colSpan="6"/>
       <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
-      <field name="leadStatus.isLost" hidden="true"/>
       <field name="lostReason.freeText" hidden="true"/>
     </panel>
 
@@ -345,8 +344,10 @@
   </action-method>
 
   <action-group name="action-lead-group-lead-status-onchange">
-    <action name="save" if="!leadStatus.isLost"/>
-    <action name="action-lead-view-lose" if="leadStatus.isLost"/>
+    <action name="save"
+      if="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
+    <action name="action-lead-view-lose"
+      if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
   </action-group>
 
   <action-group name="action-group-crm-lead-onnew">
@@ -357,7 +358,13 @@
   <action-group name="action-group-crm-lead-onload">
     <action name="action-lead-method-set-social-network-url"/>
     <action name="action-crm-lead-method-check-name"/>
+    <action name="action-lead-attrs-display-lost-reason"/>
   </action-group>
+
+  <action-attrs name="action-lead-attrs-display-lost-reason">
+    <attribute name="hidden" for="lostReason"
+      expr="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
+  </action-attrs>
 
   <action-method name="action-lead-event-add-attendee">
     <call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>

@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.crm.service.app;
 
+import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.AppCrmRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.crm.db.CrmConfig;
@@ -32,6 +34,8 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
 
   @Inject private CrmConfigRepository crmConfigRepo;
 
+  @Inject private AppCrmRepository appCrmRepo;
+
   @Override
   @Transactional
   public void generateCrmConfigurations() {
@@ -43,5 +47,10 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
       crmConfig.setCompany(company);
       crmConfigRepo.save(crmConfig);
     }
+  }
+
+  @Override
+  public AppCrm getAppCrm() {
+    return appCrmRepo.all().fetchOne();
   }
 }

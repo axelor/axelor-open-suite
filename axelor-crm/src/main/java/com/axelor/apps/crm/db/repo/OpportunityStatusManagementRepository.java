@@ -18,26 +18,38 @@
 package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.base.db.AppCrm;
-import com.axelor.apps.crm.db.LeadStatus;
+import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
-public class LeadStatusManagementRepository extends LeadStatusRepository {
+public class OpportunityStatusManagementRepository extends OpportunityStatusRepository {
 
   @Override
-  public void remove(LeadStatus entity) {
+  public void remove(OpportunityStatus entity) {
     AppCrm appCrm = Beans.get(AppCrmService.class).getAppCrm();
-    if (appCrm.getConvertedLeadStatus() == null) {
+
+    if (appCrm.getClosedWinOpportunityStatus() == null) {
       throw new PersistenceException(
-          I18n.get(CrmExceptionMessage.CRM_CONVERTED_LEAD_STATUS_MISSING));
+          I18n.get(CrmExceptionMessage.CRM_CLOSED_WIN_OPPORTUNITY_STATUS_MISSING));
     }
 
-    if (entity.equals(appCrm.getConvertedLeadStatus())) {
-      throw new PersistenceException(I18n.get(CrmExceptionMessage.CONVERTED_STATUS_DELETE));
+    if (appCrm.getClosedLostOpportunityStatus() == null) {
+      throw new PersistenceException(
+          I18n.get(CrmExceptionMessage.CRM_CLOSED_LOST_OPPORTUNITY_STATUS_MISSING));
     }
+
+    if (entity.equals(appCrm.getClosedWinOpportunityStatus())
+        || entity.equals(appCrm.getClosedLostOpportunityStatus())) {
+      throw new PersistenceException(
+          I18n.get(
+              String.format(
+                  CrmExceptionMessage.OPPORTUNITY_STATUS_CLOSED_WON_LOST_NOT_DELETED,
+                  entity.getName())));
+    }
+
     super.remove(entity);
   }
 }

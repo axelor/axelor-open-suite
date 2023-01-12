@@ -8,18 +8,20 @@
     <field name="name"/>
     <field name="sequence"/>
     <field name="isOpen"/>
-    <field name="isClosed"/>
-    <field name="isLost"/>
   </grid>
 
-  <form model="com.axelor.apps.crm.db.LeadStatus" title="Lead status" name="lead-status-form">
+  <form model="com.axelor.apps.crm.db.LeadStatus" title="Lead status" name="lead-status-form"
+    onLoad="action-lead-status-attrs-set-isopen-readonly">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="sequence"/>
-      <field name="isOpen" readonlyIf="isClosed"/>
-      <field name="isClosed" readonlyIf="isOpen"/>
-      <field name="isLost"/>
+      <field name="isOpen"/>
     </panel>
   </form>
+
+  <action-attrs name="action-lead-status-attrs-set-isopen-readonly">
+    <attribute name="readonly" for="isOpen"
+      expr="eval: __this__?.id == __config__.app.getApp('crm')?.convertedLeadStatus?.id"/>
+  </action-attrs>
 
 </object-views>
