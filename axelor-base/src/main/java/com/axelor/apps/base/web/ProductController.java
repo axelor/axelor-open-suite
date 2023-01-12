@@ -18,7 +18,6 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -110,7 +109,6 @@ public class ProductController {
   public void printProductCatalog(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = Beans.get(UserService.class).getUser();
-    Company company = user.getActiveCompany();
 
     int currentYear = Beans.get(AppBaseService.class).getTodayDateTime().getYear();
     String productIds = "";
@@ -134,7 +132,9 @@ public class ProductController {
             .addParam("CurrYear", Integer.toString(currentYear))
             .addParam("ProductIds", productIds)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .addParam("Timezone", company != null ? company.getTimezone() : null)
+            .addParam(
+                "Timezone",
+                user.getActiveCompany() != null ? user.getActiveCompany().getTimezone() : null)
             .generate()
             .getFileLink();
 
@@ -148,11 +148,10 @@ public class ProductController {
     try {
       Product product = request.getContext().asType(Product.class);
       User user = Beans.get(UserService.class).getUser();
-      Company company = user.getActiveCompany();
 
       String name = I18n.get("Product") + " " + product.getCode();
 
-      if (company == null) {
+      if (user.getActiveCompany() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
@@ -161,9 +160,11 @@ public class ProductController {
       String fileLink =
           ReportFactory.createReport(IReport.PRODUCT_SHEET, name + "-${date}")
               .addParam("ProductId", product.getId())
-              .addParam("CompanyId", company != null ? company.getId() : null)
+              .addParam("CompanyId", user.getActiveCompany().getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam("Timezone", company != null ? company.getTimezone() : null)
+              .addParam(
+                  "Timezone",
+                  user.getActiveCompany() != null ? user.getActiveCompany().getTimezone() : null)
               .generate()
               .getFileLink();
 
