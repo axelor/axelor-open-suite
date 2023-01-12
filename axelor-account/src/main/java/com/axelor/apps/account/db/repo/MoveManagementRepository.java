@@ -184,7 +184,12 @@ public class MoveManagementRepository extends MoveRepository {
               && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
             if (moveLine.getInvoiceTermList().stream()
                 .allMatch(invoiceTermService::isNotReadonly)) {
-              moveLine.clearInvoiceTermList();
+              if (moveLine.getInvoiceTermList().stream()
+                      .filter(invoiceTerm -> invoiceTerm.getIsHoldBack())
+                      .count()
+                  == 0) {
+                moveLine.clearInvoiceTermList();
+              }
             } else {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_INCONSISTENCY,
