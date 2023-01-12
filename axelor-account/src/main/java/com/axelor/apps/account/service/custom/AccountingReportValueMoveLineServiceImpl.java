@@ -335,6 +335,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             line,
             moveLineList,
             resultAnalyticAccountSet,
+            startDate,
+            endDate,
             this.getResultSelect(column, line, groupColumn));
 
     this.createReportValue(
@@ -382,8 +384,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     if (column.getComputePreviousYear()) {
       startDate = startDate.minusYears(1);
       endDate = endDate.minusYears(1);
-    } else if (column.getComputeOtherPeriod()
-        || (groupColumn != null && groupColumn.getComputeOtherPeriod())) {
+    } else if (this.isComputeOnOtherPeriod(groupColumn, column)) {
       startDate = accountingReport.getOtherDateFrom();
       endDate = accountingReport.getOtherDateTo();
     }
@@ -398,6 +399,12 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         line,
         startDate,
         endDate);
+  }
+
+  protected boolean isComputeOnOtherPeriod(
+      AccountingReportConfigLine groupColumn, AccountingReportConfigLine column) {
+    return column.getComputeOtherPeriod()
+        || (groupColumn != null && groupColumn.getComputeOtherPeriod());
   }
 
   protected Query<MoveLine> buildMoveLineQuery(
@@ -522,6 +529,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReportConfigLine line,
       List<MoveLine> moveLineList,
       Set<AnalyticAccount> analyticAccountSet,
+      LocalDate startDate,
+      LocalDate endDate,
       int resultSelect) {
     String groupColumnAnalyticAccountCode =
         groupColumn != null ? groupColumn.getAnalyticAccountCode() : null;
@@ -549,6 +558,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
                     column,
                     line,
                     analyticAccountSet,
+                    startDate,
+                    endDate,
                     resultSelect))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
@@ -573,6 +584,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       Set<AnalyticAccount> analyticAccountSet,
+      LocalDate startDate,
+      LocalDate endDate,
       int resultSelect) {
     String groupColumnAnalyticAccountCode =
         groupColumn == null ? null : groupColumn.getAnalyticAccountCode();
