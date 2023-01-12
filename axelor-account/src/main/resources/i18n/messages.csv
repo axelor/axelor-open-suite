@@ -1589,7 +1589,7 @@
 "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance.",,,
 "Please select 'Draft' or 'Accounted' or 'Canceled' moves",,,
 "Please select 'Draft' or 'Simulated' moves",,,
-"Please select something to validate",,,
+"Please select at least one fixed asset to validate",,,
 "Please select the invoice(s) to print.",,,
 "Please set a reported balance date on fiscal year",,,
 "Prefix based",,,
