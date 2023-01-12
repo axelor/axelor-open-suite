@@ -219,8 +219,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetDerogatoryLine.getDepreciationDate();
     if (!isDisposal) {
-      if (fixedAsset.getFiscalPeriodicityTypeSelect()
-          == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
+      if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
         date = date.with(TemporalAdjusters.lastDayOfMonth());
       } else {
         date = date.with(TemporalAdjusters.lastDayOfYear());
