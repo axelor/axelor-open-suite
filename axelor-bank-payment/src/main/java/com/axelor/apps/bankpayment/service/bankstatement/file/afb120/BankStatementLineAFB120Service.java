@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,7 +35,9 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class BankStatementLineAFB120Service extends BankStatementLineService {
   protected BankPaymentBankStatementLineAFB120Repository
@@ -174,5 +176,27 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
         .getAssociatedUser()
         .getActiveCompany()
         .getTimezone();
+  }
+
+  public BankStatementLineAFB120 getLastBankStatementLineAFB120FromBankDetails(
+      BankDetails bankDetails) {
+    if (bankDetails != null) {
+      String predicate =
+          "self.bankDetails is not null AND self.bankDetails.id = "
+              + bankDetails.getId()
+              + " AND self.lineTypeSelect = "
+              + BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE;
+      Optional<BankStatementLineAFB120> id =
+          bankPaymentBankStatementLineAFB120Repository
+              .all()
+              .filter(predicate)
+              .fetchStream()
+              .sorted(Comparator.comparing(BankStatementLineAFB120::getOperationDate))
+              .findFirst();
+      return id.isPresent()
+          ? bankPaymentBankStatementLineAFB120Repository.find(id.get().getId())
+          : null;
+    }
+    return null;
   }
 }

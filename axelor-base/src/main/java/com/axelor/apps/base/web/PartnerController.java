@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,7 +79,9 @@ public class PartnerController {
     Partner partner = request.getContext().asType(Partner.class);
     partner = Beans.get(PartnerRepository.class).find(partner.getId());
     if (partner.getPartnerSeq() == null) {
-      String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
+      String seq =
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
       if (seq == null)
         throw new AxelorException(
             partner,
@@ -386,14 +388,27 @@ public class PartnerController {
   public void modifyRegistrationCode(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
-      String taxNbr = Beans.get(PartnerService.class).getTaxNbrFromRegistrationCode(partner);
-      String nic = Beans.get(PartnerService.class).getNicFromRegistrationCode(partner);
-      String siren = Beans.get(PartnerService.class).getSirenFromRegistrationCode(partner);
-      response.setValue("taxNbr", taxNbr);
-      response.setValue("nic", nic);
-      response.setValue("siren", siren);
+      PartnerService partnerService = Beans.get(PartnerService.class);
+      if (partnerService.isRegistrationCodeValid(partner)) {
+        String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
+        String nic = partnerService.getNicFromRegistrationCode(partner);
+        String siren = partnerService.getSirenFromRegistrationCode(partner);
+
+        response.setValue("taxNbr", taxNbr);
+        response.setValue("nic", nic);
+        response.setValue("siren", siren);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(e);
+    }
+  }
+
+  public void checkRegistrationCode(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    PartnerService partnerService = Beans.get(PartnerService.class);
+    if (!partnerService.isRegistrationCodeValid(partner)) {
+      response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }
 }

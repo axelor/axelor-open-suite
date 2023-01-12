@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,14 +23,17 @@ import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.DebtRecoveryMethod;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -52,6 +55,8 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -76,6 +81,7 @@ public class DebtRecoveryService {
   protected AccountCustomerService accountCustomerService;
   protected MoveLineRepository moveLineRepo;
   protected PaymentScheduleLineRepository paymentScheduleLineRepo;
+  protected InvoiceTermRepository invoiceTermRepo;
   protected AccountConfigService accountConfigService;
   protected DebtRecoveryRepository debtRecoveryRepo;
   protected CompanyRepository companyRepo;
@@ -96,7 +102,8 @@ public class DebtRecoveryService {
       CompanyRepository companyRepo,
       TradingNameRepository tradingNameRepo,
       AppAccountService appAccountService,
-      MessageRepository messageRepo) {
+      MessageRepository messageRepo,
+      InvoiceTermRepository invoiceTermRepo) {
 
     this.debtRecoverySessionService = debtRecoverySessionService;
     this.debtRecoveryActionService = debtRecoveryActionService;
@@ -109,6 +116,7 @@ public class DebtRecoveryService {
     this.tradingNameRepo = tradingNameRepo;
     this.appAccountService = appAccountService;
     this.messageRepo = messageRepo;
+    this.invoiceTermRepo = invoiceTermRepo;
   }
 
   public void testCompanyField(Company company) throws AxelorException {
@@ -280,9 +288,14 @@ public class DebtRecoveryService {
             }
           }
         }
-        // échéances rejetées qui ne sont pas bloqués
-        else if (move.getInvoice() == null) {
-          if (moveLine.getPaymentScheduleLine() != null
+        InvoiceTerm invoiceTerm =
+            invoiceTermRepo
+                .all()
+                .filter("self.moveLine.id = :moveLineId")
+                .bind("moveLineId", moveLine.getId())
+                .fetchOne();
+        if (move.getInvoice() == null || invoiceTerm != null) {
+          if ((moveLine.getPaymentScheduleLine() != null || invoiceTerm != null)
               && (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
               && moveLine.getDueDate() != null
               && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
@@ -305,6 +318,17 @@ public class DebtRecoveryService {
       if (moveLine.getMove().getInvoice() != null
           && !moveLine.getMove().getInvoice().getDebtRecoveryBlockingOk()) {
         invoiceList.add(moveLine.getMove().getInvoice());
+      }
+    }
+    return invoiceList;
+  }
+
+  public List<Invoice> getInvoiceListFromInvoiceTerm(List<InvoiceTerm> invoiceTermList) {
+    List<Invoice> invoiceList = new ArrayList<Invoice>();
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      if (invoiceTerm.getInvoice() != null
+          && !invoiceTerm.getInvoice().getDebtRecoveryBlockingOk()) {
+        invoiceList.add(invoiceTerm.getInvoice());
       }
     }
     return invoiceList;
@@ -357,6 +381,65 @@ public class DebtRecoveryService {
                   tradingName);
     }
     return query.fetch();
+  }
+
+  /**
+   * Recovers all move lines for a specific partner, in the scope of the activities of a company,
+   * and optionally, for a specific trading name.
+   *
+   * @param partner A partner to be concerned by the move lines
+   * @param company A company to be concerned by the move lines
+   * @param tradingName (Optional) A trading name to be concerned by the move lines
+   * @return all corresponding move lines as a List
+   * @throws AxelorException
+   */
+  public List<InvoiceTerm> getInvoiceTerms(
+      Partner partner, Company company, TradingName tradingName) throws AxelorException {
+
+    int mailTransitTime = accountConfigService.getAccountConfig(company).getMailTransitTime();
+
+    Query<InvoiceTerm> query =
+        invoiceTermRepo
+            .all()
+            .filter(
+                "(self.paymentSession IS NULL OR self.paymentSession.statusSelect != :paymentSessionStatus) "
+                    + " and self.amountRemaining > 0 "
+                    + " and self.isPaid IS FALSE "
+                    + " and self.debtRecoveryBlockingOk IS FALSE "
+                    + " and self.moveLine IS NOT NULL "
+                    + " and self.moveLine.move.company = :company "
+                    + " and self.moveLine.partner = :partner "
+                    + (tradingName != null
+                        ? " and self.moveLine.move.tradingName = :tradingName"
+                        : ""))
+            .bind("paymentSessionStatus", PaymentSessionRepository.STATUS_ONGOING)
+            .bind("company", company)
+            .bind("partner", partner);
+
+    if (tradingName != null) {
+      query.bind("tradingName", tradingName);
+    }
+
+    List<InvoiceTerm> invoiceTermList = query.fetch();
+    List<InvoiceTerm> invoiceTermWithDateCheck = Lists.newArrayList();
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      if (invoiceTerm.getDueDate() != null
+          && invoiceTerm.getMoveLine() != null
+          && invoiceTerm.getMoveLine().getMove() != null
+          && invoiceTerm.getMoveLine().getMove().getDate() != null
+          && invoiceTerm
+              .getMoveLine()
+              .getMove()
+              .getDate()
+              .plusDays(mailTransitTime)
+              .isBefore(appAccountService.getTodayDate(company))
+          && (appAccountService.getTodayDate(company).isAfter(invoiceTerm.getDueDate())
+              || appAccountService.getTodayDate(company).isEqual(invoiceTerm.getDueDate()))) {
+        invoiceTermWithDateCheck.add(invoiceTerm);
+      }
+    }
+
+    return invoiceTermWithDateCheck;
   }
 
   /**
@@ -538,11 +621,10 @@ public class DebtRecoveryService {
         debtRecovery.setCurrency(partner.getCurrency());
         debtRecovery.setBalanceDue(balanceDue);
 
-        List<MoveLine> moveLineList = this.getMoveLineDebtRecovery(partner, company, tradingName);
-
-        this.updateInvoiceDebtRecovery(debtRecovery, this.getInvoiceList(moveLineList));
-        this.updatePaymentScheduleLineDebtRecovery(
-            debtRecovery, this.getPaymentScheduleList(moveLineList, partner));
+        List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(partner, company, tradingName);
+        this.updateInvoiceTermDebtRecovery(debtRecovery, invoiceTermList);
+        this.updateInvoiceDebtRecovery(
+            debtRecovery, this.getInvoiceListFromInvoiceTerm(invoiceTermList));
 
         debtRecovery.setBalanceDueDebtRecovery(balanceDueDebtRecovery);
 
@@ -551,7 +633,10 @@ public class DebtRecoveryService {
           levelDebtRecovery = debtRecovery.getDebtRecoveryMethodLine().getSequence();
         }
 
+        LocalDate oldReferenceDate = debtRecovery.getReferenceDate();
         LocalDate referenceDate = this.getReferenceDate(debtRecovery);
+
+        boolean isReset = this.isInvoiceSetNew(debtRecovery, oldReferenceDate);
 
         if (referenceDate != null) {
           log.debug("reference date : {} ", referenceDate);
@@ -574,35 +659,19 @@ public class DebtRecoveryService {
               company.getName());
         }
         if (debtRecovery.getDebtRecoveryMethod() == null) {
-          DebtRecoveryMethod debtRecoveryMethod =
-              debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery);
-          if (debtRecoveryMethod != null) {
-            debtRecovery.setDebtRecoveryMethod(debtRecoveryMethod);
-            debtRecoverySessionService.debtRecoverySession(debtRecovery);
-          } else {
-            throw new AxelorException(
-                debtRecovery,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                "%s :\n"
-                            + I18n.get("Partner")
-                            + " %s, "
-                            + I18n.get("Company")
-                            + " %s : "
-                            + tradingName
-                        != null
-                    ? I18n.get("Trading name") + " %s : "
-                    : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
-                I18n.get(BaseExceptionMessage.EXCEPTION),
-                partner.getName(),
-                company.getName());
-          }
-        } else {
-          debtRecoverySessionService.debtRecoverySession(debtRecovery);
+          fetchDebtRecoveryMethod(partner, company, tradingName, debtRecovery);
         }
+        if (isReset) {
+          debtRecoverySessionService.reset(debtRecovery);
+        }
+        debtRecoverySessionService.debtRecoverySession(debtRecovery);
         if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
           // Si le niveau de relance a évolué
           if (debtRecovery.getDebtRecoveryMethodLine() != null
-              && debtRecovery.getDebtRecoveryMethodLine().getSequence() > levelDebtRecovery) {
+              && !debtRecovery
+                  .getDebtRecoveryMethodLine()
+                  .getSequence()
+                  .equals(levelDebtRecovery)) {
             debtRecoveryActionService.runAction(debtRecovery);
 
             DebtRecoveryHistory debtRecoveryHistory =
@@ -648,9 +717,45 @@ public class DebtRecoveryService {
     return remindedOk;
   }
 
+  protected void fetchDebtRecoveryMethod(
+      Partner partner, Company company, TradingName tradingName, DebtRecovery debtRecovery)
+      throws AxelorException {
+    DebtRecoveryMethod debtRecoveryMethod =
+        debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery);
+    if (debtRecoveryMethod != null) {
+      debtRecovery.setDebtRecoveryMethod(debtRecoveryMethod);
+    } else {
+      throw new AxelorException(
+          debtRecovery,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          "%s :\n" + I18n.get("Partner") + " %s, " + I18n.get("Company") + " %s : " + tradingName
+                  != null
+              ? I18n.get("Trading name") + " %s : "
+              : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          partner.getName(),
+          company.getName());
+    }
+  }
+
+  protected boolean isInvoiceSetNew(DebtRecovery debtRecovery, LocalDate oldReferenceDate) {
+
+    if (debtRecovery.getInvoiceDebtRecoverySet() != null && oldReferenceDate != null) {
+      return debtRecovery.getInvoiceDebtRecoverySet().stream()
+          .allMatch(invoice -> invoice.getDueDate().isAfter(oldReferenceDate));
+    }
+    return false;
+  }
+
   public void updateInvoiceDebtRecovery(DebtRecovery debtRecovery, List<Invoice> invoiceList) {
     debtRecovery.setInvoiceDebtRecoverySet(new HashSet<Invoice>());
     debtRecovery.getInvoiceDebtRecoverySet().addAll(invoiceList);
+  }
+
+  public void updateInvoiceTermDebtRecovery(
+      DebtRecovery debtRecovery, List<InvoiceTerm> invoiceTermList) {
+    debtRecovery.setInvoiceTermDebtRecoverySet(Sets.newHashSet());
+    debtRecovery.getInvoiceTermDebtRecoverySet().addAll(invoiceTermList);
   }
 
   public void updatePaymentScheduleLineDebtRecovery(

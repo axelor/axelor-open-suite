@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,9 +27,11 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -61,6 +63,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
   protected ReconcileService reconcileService;
   protected AccountService accountService;
   protected AccountRepository accountRepository;
+  protected BankDetailsService bankDetailsService;
   protected int counter = 0;
 
   @Inject
@@ -72,7 +75,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       ReconcileService reconcileService,
       AccountService accountService,
       AccountRepository accountRepository,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      BankDetailsService bankDetailsService) {
 
     this.moveCreateService = moveCreateService;
     this.accountConfigService = accountConfigService;
@@ -82,10 +86,11 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     this.accountService = accountService;
     this.accountRepository = accountRepository;
     this.moveLineCreateService = moveLineCreateService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public List<Move> generateCloseAnnualAccount(
+  public List<Move> generateCloseAndOpenAnnualAccount(
       Year year,
       Account account,
       Partner partner,
@@ -105,7 +110,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     if (closeYear) {
       closeYearMove =
-          generateCloseAnnualAccountMove(
+          generateCloseOrOpenAnnualAccountMove(
               year,
               account,
               endOfYearDate,
@@ -124,7 +129,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     if (openYear) {
       openYearMove =
-          generateCloseAnnualAccountMove(
+          generateCloseOrOpenAnnualAccountMove(
               year,
               account,
               reportedBalanceDate,
@@ -148,7 +153,85 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
-  protected Move generateCloseAnnualAccountMove(
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public List<Move> generateCloseAnnualAccount(
+      Year year,
+      Account account,
+      Partner partner,
+      LocalDate endOfYearDate,
+      LocalDate reportedBalanceDate,
+      String origin,
+      String moveDescription,
+      boolean closeYear,
+      boolean allocatePerPartner)
+      throws AxelorException {
+
+    List<Move> moveList = new ArrayList<>();
+
+    Move closeYearMove = null;
+
+    if (closeYear) {
+      closeYearMove =
+          generateCloseOrOpenAnnualAccountMove(
+              year,
+              account,
+              endOfYearDate,
+              endOfYearDate,
+              origin,
+              moveDescription,
+              partner,
+              false,
+              allocatePerPartner);
+
+      if (closeYearMove == null) {
+        return null;
+      }
+      moveList.add(closeYearMove);
+    }
+
+    return moveList;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public List<Move> generateOpenAnnualAccount(
+      Year year,
+      Account account,
+      Partner partner,
+      LocalDate endOfYearDate,
+      LocalDate reportedBalanceDate,
+      String origin,
+      String moveDescription,
+      boolean openYear,
+      boolean allocatePerPartner)
+      throws AxelorException {
+
+    List<Move> moveList = new ArrayList<>();
+
+    Move openYearMove = null;
+
+    if (openYear) {
+      openYearMove =
+          generateCloseOrOpenAnnualAccountMove(
+              year,
+              account,
+              reportedBalanceDate,
+              endOfYearDate,
+              origin,
+              moveDescription,
+              partner,
+              true,
+              allocatePerPartner);
+
+      if (openYearMove == null) {
+        return null;
+      }
+      moveList.add(openYearMove);
+    }
+
+    return moveList;
+  }
+
+  protected Move generateCloseOrOpenAnnualAccountMove(
       Year year,
       Account account,
       LocalDate moveDate,
@@ -179,6 +262,12 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       functionalOriginSelect = MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE;
     }
 
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
+
     Move move =
         moveCreateService.createMove(
             accountConfigService.getReportedBalanceJournal(accountConfig),
@@ -189,19 +278,21 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             originDate,
             null,
             partner != null ? partner.getFiscalPosition() : null,
+            null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             functionalOriginSelect,
             false,
             false,
             !isReverse,
             origin,
-            moveDescription);
+            moveDescription,
+            companyBankDetails);
     counter = 0;
 
-    this.generateCloseAnnualMoveLine(
+    this.generateCloseOrOpenAnnualMoveLine(
         move, origin, account, moveDescription, originDate, balance.negate());
 
-    this.generateCloseAnnualMoveLine(
+    this.generateCloseOrOpenAnnualMoveLine(
         move,
         origin,
         getYearClosureOrOpeningAccount(accountConfig, isReverse),
@@ -229,7 +320,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     }
   }
 
-  protected MoveLine generateCloseAnnualMoveLine(
+  protected MoveLine generateCloseOrOpenAnnualMoveLine(
       Move move,
       String origin,
       Account account,
@@ -322,7 +413,6 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     List<Long> accountIdList =
         accountService.getAllAccountsSubAccountIncluded(
             accountSet.stream().map(Account::getId).collect(Collectors.toList()));
-
     Query q =
         JPA.em()
             .createQuery(

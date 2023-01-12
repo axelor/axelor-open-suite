@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,6 +42,15 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
         if (map.containsKey(keys)) {
 
           MoveLine moveLineIt = map.get(keys);
+
+          // Check cut off dates
+          if (moveLine.getCutOffStartDate() != null
+              && moveLine.getCutOffEndDate() != null
+              && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
+                  || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
+            return null;
+          }
+
           int count = 0;
           if (moveLineIt.getAnalyticMoveLineList() == null
               && moveLine.getAnalyticMoveLineList() == null) {
@@ -110,6 +119,8 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
       keys.add(moveLine.getAccount());
       keys.add(moveLine.getTaxLine());
       keys.add(moveLine.getAnalyticDistributionTemplate());
+      keys.add(moveLine.getCutOffStartDate());
+      keys.add(moveLine.getCutOffEndDate());
 
       consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
       if (consolidateMoveLine != null) {

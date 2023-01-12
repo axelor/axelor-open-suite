@@ -19,6 +19,18 @@ L'équipe Axelor</p>
 
 <p>Best regards<br/>
 Axelor Team</p>";"$Invoice.partner.emailAddress.address$";;;2
+"Send payment notice";"PaymentSession";1;;;;"true";"invoiceTermList";"$PaymentSession.company.name$ - Payment notice";"<p>Dear Sir, Madam,</p>
+
+<p>We would like to inform you that we proceeded to a $PaymentSession.paymentMode.name$ in favour of your company $PaymentSession.partnerForEmail.name$ for the payment of the following account operations in date of $PaymentSession.paymentDate$:<br>
+$invoiceTermList : { it |<br>
+$it.name$ - $it.dueDate$ - $it.paymentAmount$$it.paymentSession.currency.code$<br>
+}$</p>
+
+<p>Vous en souhaitant bonne réception.</p>
+
+<p>Best regards, <br>
+Accounting department.<br>
+$PaymentSession.company.name$ company</p>";"$PaymentSession.partnerForEmail.emailAddress.address$";;;2
 "Releve facture";"NoteBills";2;;"34";;"true";;"Votre relevé de facture";"<p>Bonjour,</p>
 
 <p>Vous trouverez ci-joint votre relevé de facture</p>

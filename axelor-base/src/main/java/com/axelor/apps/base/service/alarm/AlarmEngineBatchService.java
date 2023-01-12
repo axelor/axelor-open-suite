@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.alarm;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.repo.AlarmRepository;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.EntityHelper;
@@ -134,5 +135,9 @@ public class AlarmEngineBatchService extends AbstractBatch {
   private <T extends Model> boolean isAssociable(Field field, T t) {
 
     return field.getType().equals(EntityHelper.getEntityClass(t));
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_ALARM_ENGINE_BATCH);
   }
 }

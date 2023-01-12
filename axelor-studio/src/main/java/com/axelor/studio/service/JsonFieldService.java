@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,18 +39,18 @@ public class JsonFieldService {
     String name = getSelectionName(metaJsonField);
 
     if (Strings.isNullOrEmpty(selectionText)) {
-      selectionBuilderService.removeSelection(name, null);
+      selectionBuilderService.removeSelectionBuilder(name);
 
       if (metaJsonField.getSelection() != null && metaJsonField.getSelection().equals(name)) {
         metaJsonField.setSelection(null);
       }
-
       return;
     }
 
     metaJsonField.setSelection(
-        selectionBuilderService.updateMetaSelectFromText(
-            selectionText, name, metaJsonField.getAppBuilder(), null));
+        selectionBuilderService
+            .createSelectionBuilder(selectionText, name, metaJsonField.getAppBuilder())
+            .getName());
   }
 
   @Transactional
@@ -59,7 +59,7 @@ public class JsonFieldService {
     String name = getSelectionName(metaJsonField);
 
     if (metaJsonField.getSelection() != null && metaJsonField.getSelection().equals(name)) {
-      selectionBuilderService.removeSelection(name, null);
+      selectionBuilderService.removeSelectionBuilder(name);
     }
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ICalendar;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -53,5 +54,9 @@ public class BatchCalendarSynchronization extends AbstractBatch {
         incrementAnomaly();
       }
     }
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BASE_BATCH);
   }
 }

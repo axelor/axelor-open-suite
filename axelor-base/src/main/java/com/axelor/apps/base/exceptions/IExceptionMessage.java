@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -146,8 +146,8 @@ public interface IExceptionMessage {
   public static final String CATEGORY_NO_SEQUENCE = /*$$(*/
       "There is no configured sequence for the category" /*)*/;
 
-  public static final String APP_BASE_NO_SEQUENCE =
-      "There is no configured product sequence in the app base config";
+  public static final String APP_BASE_NO_SEQUENCE = /*$$(*/
+      "There is no configured product sequence in the app base config" /*)*/;
 
   /** Importer */
   public static final String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
@@ -483,6 +483,25 @@ public interface IExceptionMessage {
   public static final String CITIES_IMPORT_FAILED = /*$$(*/
       "Error: Cities cannot be imported. Please see the attached error file for more details" /*)*/;
 
+  public static final String FILE_SOURCE_CONNECTOR_CONNECTION_TYPE_NULL = /*$$(*/
+      "You must select a connection type in order to create a session" /*)*/;
+
+  public static final String FILE_SOURCE_CONNECTOR_CONNECTION_MISSING_FIELDS = /*$$(*/
+      "File source connector is missing mandatory field(s) in order to create a session." /*)*/;
+
+  public static final String FILE_TRANSFERT_SESSION_NOT_STARTED = /*$$(*/
+      "The file transfert session is not started" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_NOT_CONFIGURED = /*$$(*/
+      "The file transfert session is not configured" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_DOWNLOAD_FAILED = /*$$(*/
+      "Download failed: %s" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_UPLOAD_FAILED = /*$$(*/
+      "Upload failed: %s" /*)*/;
+
+  public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
+      "Advanced import is not validated" /*)*/;
+  public static final String BATCH_ADVANCED_IMPORT_FILE_NOT_IMPORTED = /*$$(*/
+      "File %s could not be imported" /*)*/;
   public static final String META_JSON_TYPE_NO_MATCH_OBJECT_VALUE = /*$$(*/
       "Error: The type of the field %s does not match the type of the value %s" /*)*/;
   public static final String META_JSON_TYPE_NOT_MANAGED = /*$$(*/

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -43,7 +44,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -51,8 +51,6 @@ import java.util.Optional;
 
 @Singleton
 public class SaleOrderLineController {
-
-  @Inject AppBaseService appBaseService;
 
   public void compute(ActionRequest request, ActionResponse response) {
 
@@ -168,6 +166,8 @@ public class SaleOrderLineController {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    TaxService taxService = Beans.get(TaxService.class);
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
 
     SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
 
@@ -206,12 +206,20 @@ public class SaleOrderLineController {
             response.setValue("inTaxPrice", price);
             response.setValue(
                 "price",
-                saleOrderLineService.convertUnitPrice(true, saleOrderLine.getTaxLine(), price));
+                taxService.convertUnitPrice(
+                    true,
+                    saleOrderLine.getTaxLine(),
+                    price,
+                    appBaseService.getNbDecimalDigitForUnitPrice()));
           } else {
             response.setValue("price", price);
             response.setValue(
                 "inTaxPrice",
-                saleOrderLineService.convertUnitPrice(false, saleOrderLine.getTaxLine(), price));
+                taxService.convertUnitPrice(
+                    false,
+                    saleOrderLine.getTaxLine(),
+                    price,
+                    appBaseService.getNbDecimalDigitForUnitPrice()));
           }
         }
 
@@ -220,10 +228,11 @@ public class SaleOrderLineController {
                 != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
           response.setValue(
               "discountAmount",
-              saleOrderLineService.convertUnitPrice(
+              taxService.convertUnitPrice(
                   saleOrderLine.getProduct().getInAti(),
                   saleOrderLine.getTaxLine(),
-                  (BigDecimal) discounts.get("discountAmount")));
+                  (BigDecimal) discounts.get("discountAmount"),
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
           response.setValue("discountAmount", discounts.get("discountAmount"));
         }
@@ -252,7 +261,12 @@ public class SaleOrderLineController {
 
       response.setValue(
           "price",
-          Beans.get(SaleOrderLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  true,
+                  taxLine,
+                  inTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -275,7 +289,12 @@ public class SaleOrderLineController {
 
       response.setValue(
           "inTaxPrice",
-          Beans.get(SaleOrderLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  false,
+                  taxLine,
+                  exTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -299,7 +318,9 @@ public class SaleOrderLineController {
     try {
 
       BigDecimal price = saleOrderLine.getPrice();
-      BigDecimal inTaxPrice = price.add(price.multiply(saleOrderLine.getTaxLine().getValue()));
+      BigDecimal inTaxPrice =
+          price.add(
+              price.multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
 
       response.setValue("inTaxPrice", inTaxPrice);
 

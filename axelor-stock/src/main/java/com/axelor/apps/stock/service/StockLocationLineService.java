@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -256,4 +256,20 @@ public interface StockLocationLineService {
    * @param stockMoveLine the move line responsible for the WAP change.
    */
   void updateWap(StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine);
+
+  /**
+   * Same as {@link #updateWap(StockLocationLine, BigDecimal, StockMoveLine)} but date and origin
+   * can be personalized.
+   *
+   * @param stockLocationLine
+   * @param wap
+   * @param stockMoveLine
+   * @param date
+   */
+  void updateWap(
+      StockLocationLine stockLocationLine,
+      BigDecimal wap,
+      StockMoveLine stockMoveLine,
+      LocalDate date,
+      String origin);
 }

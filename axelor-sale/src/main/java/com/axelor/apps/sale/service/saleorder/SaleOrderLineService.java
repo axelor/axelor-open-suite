@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -109,19 +109,6 @@ public interface SaleOrderLineService {
    * @return the discounted price of the line, including taxes if inAti is true.
    */
   public BigDecimal computeDiscount(SaleOrderLine saleOrderLine, Boolean inAti);
-
-  /**
-   * Convert a product's unit price from incl. tax to ex. tax or the other way round.
-   *
-   * <p>If the price is ati, it will be converted to ex. tax, and if it isn't it will be converted
-   * to ati.
-   *
-   * @param priceIsAti a boolean indicating if the price is ati.
-   * @param taxLine the tax to apply.
-   * @param price the unit price to convert.
-   * @return the converted price as a BigDecimal.
-   */
-  public BigDecimal convertUnitPrice(Boolean inAti, TaxLine taxLine, BigDecimal price);
 
   public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);

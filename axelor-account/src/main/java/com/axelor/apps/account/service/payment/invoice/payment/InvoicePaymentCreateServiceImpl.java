@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,11 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -31,6 +33,7 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -42,30 +45,44 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.shiro.util.CollectionUtils;
 
+@RequestScoped
 public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateService {
 
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected CurrencyService currencyService;
   protected AppBaseService appBaseService;
+  protected InvoiceTermPaymentService invoiceTermPaymentService;
+  protected InvoiceTermService invoiceTermService;
+  protected InvoiceService invoiceService;
 
   @Inject
   public InvoicePaymentCreateServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
       CurrencyService currencyService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      InvoiceTermPaymentService invoiceTermPaymentService,
+      InvoiceTermService invoiceTermService,
+      InvoiceService invoiceService) {
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.currencyService = currencyService;
     this.appBaseService = appBaseService;
+    this.invoiceTermPaymentService = invoiceTermPaymentService;
+    this.invoiceTermService = invoiceTermService;
+    this.invoiceService = invoiceService;
   }
 
   /**
@@ -98,7 +115,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   /**
    * @param invoice
    * @param amount
-   * @param paymentDate
    * @param paymentMove
    * @return
    */
@@ -106,30 +122,35 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       throws AxelorException {
 
     LocalDate paymentDate = paymentMove.getDate();
-    BigDecimal amountConverted =
-        currencyService.getAmountCurrencyConvertedAtDate(
-            paymentMove.getCompanyCurrency(), paymentMove.getCurrency(), amount, paymentDate);
     int typePaymentMove = this.determineType(paymentMove);
+
     Currency currency = paymentMove.getCurrency();
     if (currency == null) {
       currency = paymentMove.getCompanyCurrency();
     }
-    PaymentMode paymentMode;
+
+    PaymentMode paymentMode = null;
     InvoicePayment invoicePayment;
-    if (typePaymentMove == InvoicePaymentRepository.TYPE_REFUND_INVOICE
-        || typePaymentMove == InvoicePaymentRepository.TYPE_INVOICE) {
-      paymentMode = null;
-    } else {
+
+    if (typePaymentMove != InvoicePaymentRepository.TYPE_REFUND_INVOICE
+        && typePaymentMove != InvoicePaymentRepository.TYPE_INVOICE) {
       paymentMode = paymentMove.getPaymentMode();
     }
+
     invoicePayment =
         this.createInvoicePayment(
-            invoice, amountConverted, paymentDate, currency, paymentMode, typePaymentMove);
+            invoice, amount, paymentDate, currency, paymentMode, typePaymentMove);
+
     invoicePayment.setMove(paymentMove);
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+
     PaymentVoucher paymentVoucher = paymentMove.getPaymentVoucher();
+    PaymentSession paymentSession = paymentMove.getPaymentSession();
+
     if (paymentVoucher != null) {
       invoicePayment.setCompanyBankDetails(paymentVoucher.getCompanyBankDetails());
+    } else if (paymentSession != null) {
+      invoicePayment.setCompanyBankDetails(paymentSession.getBankDetails());
     } else if (invoice.getSchedulePaymentOk() && invoice.getPaymentSchedule() != null) {
       BankDetails companyBankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
       invoicePayment.setCompanyBankDetails(companyBankDetails);
@@ -156,7 +177,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       } else {
         return InvoicePaymentRepository.TYPE_REFUND_INVOICE;
       }
-    } else if (move.getPaymentVoucher() != null) {
+    } else if (move.getPaymentVoucher() != null || move.getPaymentSession() != null) {
       return InvoicePaymentRepository.TYPE_PAYMENT;
     } else {
       return InvoicePaymentRepository.TYPE_OTHER;
@@ -303,34 +324,92 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
-    manageFinancialDiscount(invoicePayment, invoice, true);
+    invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
+    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
     return invoicePaymentRepository.save(invoicePayment);
   }
 
   @Transactional
   public InvoicePayment createInvoicePayment(
-      Invoice invoice,
+      List<InvoiceTerm> invoiceTermList,
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
       String chequeNumber,
-      boolean applyDiscount)
-      throws AxelorException {
+      PaymentSession paymentSession) {
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return null;
+    }
+
+    Invoice invoice = invoiceTermList.get(0).getInvoice();
+    Currency currency = invoice.getCurrency();
+    BigDecimal amountRemaining =
+        invoiceTermList.stream()
+            .map(InvoiceTerm::getAmountRemaining)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
     InvoicePayment invoicePayment =
         createInvoicePayment(
             invoice,
-            invoice.getInTaxTotal().subtract(invoice.getAmountPaid()),
+            amountRemaining,
             paymentDate,
-            invoice.getCurrency(),
+            currency,
             paymentMode,
             InvoicePaymentRepository.TYPE_PAYMENT);
+
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoicePayment.setBankDepositDate(bankDepositDate);
     invoicePayment.setChequeNumber(chequeNumber);
-    manageFinancialDiscount(invoicePayment, invoice, applyDiscount);
+    invoicePayment.setPaymentSession(paymentSession);
+    invoicePayment.setManualChange(true);
+    invoice.addInvoicePaymentListItem(invoicePayment);
+
+    invoiceTermPaymentService.initInvoiceTermPayments(invoicePayment, invoiceTermList);
+    invoicePaymentToolService.computeFinancialDiscount(invoicePayment);
+
+    invoicePayment.setAmount(
+        invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
 
     return invoicePaymentRepository.save(invoicePayment);
+  }
+
+  @Override
+  public InvoicePayment createInvoicePayment(
+      Invoice invoice,
+      InvoiceTerm invoiceTerm,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      LocalDate bankDepositDate,
+      String chequeNumber) {
+    return this.createInvoicePayment(
+        Collections.singletonList(invoiceTerm),
+        paymentMode,
+        companyBankDetails,
+        paymentDate,
+        bankDepositDate,
+        chequeNumber,
+        null);
+  }
+
+  @Override
+  public InvoicePayment createInvoicePayment(
+      Invoice invoice,
+      InvoiceTerm invoiceTerm,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      PaymentSession paymentSession) {
+    return this.createInvoicePayment(
+        Collections.singletonList(invoiceTerm),
+        paymentMode,
+        companyBankDetails,
+        paymentDate,
+        null,
+        null,
+        paymentSession);
   }
 
   @Override
@@ -341,47 +420,73 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       BankDetails companyBankDetails,
       LocalDate paymentDate,
       LocalDate bankDepositDate,
-      String chequeNumber,
-      boolean applyDiscount)
+      String chequeNumber)
       throws AxelorException {
-
+    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
     List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 
-    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
-
     for (Long invoiceId : invoiceList) {
-
       Invoice invoice = invoiceRepository.find(invoiceId);
-      InvoicePayment invoicePayment =
-          this.createInvoicePayment(
-              invoice,
-              paymentMode,
-              companyBankDetails,
-              paymentDate,
-              bankDepositDate,
-              chequeNumber,
-              applyDiscount);
 
-      invoicePaymentList.add(invoicePayment);
-      invoice.addInvoicePaymentListItem(invoicePayment);
+      this.createInvoicePayment(
+          invoice,
+          invoicePaymentList,
+          paymentMode,
+          companyBankDetails,
+          paymentDate,
+          bankDepositDate,
+          chequeNumber,
+          false);
+      this.createInvoicePayment(
+          invoice,
+          invoicePaymentList,
+          paymentMode,
+          companyBankDetails,
+          paymentDate,
+          bankDepositDate,
+          chequeNumber,
+          true);
+
       invoicePaymentToolService.updateAmountPaid(invoice);
     }
 
     return invoicePaymentList;
   }
 
-  private void manageFinancialDiscount(
-      InvoicePayment invoicePayment, Invoice invoice, boolean applyDiscount)
-      throws AxelorException {
-    if (Beans.get(AppAccountService.class).getAppAccount().getManageFinancialDiscount()
-        && applyDiscount) {
-      InvoiceService invoiceService = Beans.get(InvoiceService.class);
+  public void createInvoicePayment(
+      Invoice invoice,
+      List<InvoicePayment> invoicePaymentList,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      LocalDate bankDepositDate,
+      String chequeNumber,
+      boolean holdback) {
+    List<InvoiceTerm> invoiceTermList =
+        invoice.getInvoiceTermList().stream()
+            .filter(
+                it ->
+                    !it.getIsPaid()
+                        && it.getAmountRemaining().signum() > 0
+                        && it.getIsHoldBack() == holdback)
+            .collect(Collectors.toList());
 
-      Boolean apply = invoiceService.applyFinancialDiscount(invoice);
-      invoicePayment.setApplyFinancialDiscount(apply);
-      invoicePayment.setAmount(
-          invoiceService.calculateAmountRemainingInPayment(invoice, apply, BigDecimal.ZERO));
-      invoiceService.computeDatasForFinancialDiscount(invoicePayment, invoice, apply);
+    InvoicePayment invoicePayment =
+        this.createInvoicePayment(
+            invoiceTermList,
+            paymentMode,
+            companyBankDetails,
+            paymentDate,
+            bankDepositDate,
+            chequeNumber,
+            null);
+
+    if (invoicePayment != null) {
+      invoicePaymentList.add(invoicePayment);
+
+      if (!invoice.getInvoicePaymentList().contains(invoicePayment)) {
+        invoice.addInvoicePaymentListItem(invoicePayment);
+      }
     }
   }
 
@@ -405,7 +510,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
         continue;
       }
 
-      if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
+      if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0
+          || !invoiceService.checkInvoiceTerms(invoice)) {
 
         continue;
       }

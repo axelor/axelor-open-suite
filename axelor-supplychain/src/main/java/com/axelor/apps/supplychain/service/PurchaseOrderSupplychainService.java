@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -69,8 +68,6 @@ public interface PurchaseOrderSupplychainService {
 
   void applyToallBudgetDistribution(PurchaseOrder purchaseOrder);
 
-  void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException;
-
   void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder);
 
   String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException;
@@ -85,4 +82,17 @@ public interface PurchaseOrderSupplychainService {
   BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder);
 
   void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder);
+
+  /**
+   * Check if budget distributions of the purchase order lines are correctly setted.
+   *
+   * @return true if it is good, else false
+   * @param purchaseOrder
+   */
+  boolean isGoodAmountBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  StockLocation getStockLocation(Partner supplierPartner, Company company) throws AxelorException;
+
+  StockLocation getFromStockLocation(Partner supplierPartner, Company company)
+      throws AxelorException;
 }

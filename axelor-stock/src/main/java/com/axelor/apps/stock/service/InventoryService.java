@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,6 +44,7 @@ import com.axelor.apps.tool.StringHTMLListBuilder;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -189,7 +190,9 @@ public class InventoryService {
 
   public String getInventorySequence(Company company) throws AxelorException {
 
-    String ref = sequenceService.getSequenceNumber(SequenceRepository.INVENTORY, company);
+    String ref =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.INVENTORY, company, Inventory.class, "inventorySeq");
     if (ref == null)
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -451,6 +454,36 @@ public class InventoryService {
           I18n.get(StockExceptionMessage.INVENTORY_START_WRONG_STATUS));
     }
     inventory.setStatusSelect(InventoryRepository.STATUS_IN_PROGRESS);
+    inventory.getInventoryLineList().stream().forEach(this::updateCurrentQty);
+  }
+
+  protected void updateCurrentQty(InventoryLine inventoryLine) {
+    StockLocation stockLocation = inventoryLine.getStockLocation();
+    Product product = inventoryLine.getProduct();
+    TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
+
+    String query =
+        "self.product = :product AND (self.stockLocation  = :stockLocation OR self.detailsStockLocation = :stockLocation)";
+
+    Query<StockLocationLine> stockLocationLineQuery =
+        stockLocationLineRepository
+            .all()
+            .bind("product", product)
+            .bind("stockLocation", stockLocation);
+
+    if (ObjectUtils.notEmpty(trackingNumber)) {
+      query += " AND self.trackingNumber = :trackingNumber";
+      stockLocationLineQuery.bind("trackingNumber", trackingNumber);
+    }
+
+    BigDecimal currentQty =
+        stockLocationLineQuery
+            .filter(query)
+            .fetchStream()
+            .map(StockLocationLine::getCurrentQty)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    inventoryLine.setCurrentQty(currentQty);
   }
 
   @Transactional(rollbackOn = {Exception.class})

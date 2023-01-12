@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -34,8 +35,10 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.servlet.RequestScoped;
 import java.util.List;
 
+@RequestScoped
 public class AccountConfigService {
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {
@@ -399,6 +402,30 @@ public class AccountConfigService {
     return accountConfig.getYearClosureAccount();
   }
 
+  public Account getHoldBackCustomerAccount(AccountConfig accountConfig) throws AxelorException {
+
+    if (accountConfig.getHoldBackCustomerAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_HOLDBACK_CUSTOMER),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getHoldBackCustomerAccount();
+  }
+
+  public Account getHoldBackSupplierAccount(AccountConfig accountConfig) throws AxelorException {
+
+    if (accountConfig.getHoldBackSupplierAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_HOLDBACK_SUPPLIER),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getHoldBackSupplierAccount();
+  }
+
   /** ****************************** TVA ******************************************* */
   public Tax getIrrecoverableStandardRateTax(AccountConfig accountConfig) throws AxelorException {
 
@@ -627,35 +654,12 @@ public class AccountConfigService {
     return accountConfig.getDasContactPartner();
   }
 
-  public Tax getPurchFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
-    if (accountConfig.getPurchFinancialDiscountTax() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_47),
-          I18n.get(BaseExceptionMessage.EXCEPTION),
-          accountConfig.getCompany().getName());
-    }
-    return accountConfig.getPurchFinancialDiscountTax();
-  }
-
-  public Tax getSaleFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
-    if (accountConfig.getSaleFinancialDiscountTax() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_48),
-          I18n.get(BaseExceptionMessage.EXCEPTION),
-          accountConfig.getCompany().getName());
-    }
-    return accountConfig.getSaleFinancialDiscountTax();
-  }
-
   public Account getPurchFinancialDiscountAccount(AccountConfig accountConfig)
       throws AxelorException {
     if (accountConfig.getPurchFinancialDiscountAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_49),
-          I18n.get(BaseExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_ACCOUNT),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getPurchFinancialDiscountAccount();
@@ -666,10 +670,50 @@ public class AccountConfigService {
     if (accountConfig.getSaleFinancialDiscountAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_50),
-          I18n.get(BaseExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_ACCOUNT),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getSaleFinancialDiscountAccount();
+  }
+
+  public Account getPartnerAccount(AccountConfig accountConfig, int accountingCutOffTypeSelect)
+      throws AxelorException {
+    Account account = null;
+
+    if (accountingCutOffTypeSelect
+        == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
+      account = accountConfig.getPrepaidExpensesAccount();
+    } else if (accountingCutOffTypeSelect
+        == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES) {
+      account = accountConfig.getDeferredIncomesAccount();
+    }
+
+    if (account == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_PARTNER_ACCOUNT),
+          accountConfig.getCompany().getName());
+    }
+    return account;
+  }
+
+  public Tax getPurchFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getPurchFinancialDiscountTax() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_TAX),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getPurchFinancialDiscountTax();
+  }
+
+  public Tax getSaleFinancialDiscountTax(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig.getSaleFinancialDiscountTax() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_SALE_FINANCIAL_DISCOUNT_TAX),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getSaleFinancialDiscountTax();
   }
 }

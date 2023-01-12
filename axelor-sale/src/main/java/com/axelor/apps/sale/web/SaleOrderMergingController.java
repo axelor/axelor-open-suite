@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderM
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewService;
 import com.axelor.apps.tool.MapTools;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -57,7 +58,7 @@ public class SaleOrderMergingController {
         if (result.getSaleOrder() != null) {
           // Open the generated sale order in a new tab
           response.setView(
-              ActionView.define("Sale order")
+              ActionView.define(I18n.get("Sale order"))
                   .model(SaleOrder.class.getName())
                   .add("grid", "sale-order-grid")
                   .add("form", "sale-order-form")
@@ -90,7 +91,7 @@ public class SaleOrderMergingController {
         if (result.getSaleOrder() != null) {
           // Open the generated sale order in a new tab
           response.setView(
-              ActionView.define("Sale order")
+              ActionView.define(I18n.get("Sale order"))
                   .model(SaleOrder.class.getName())
                   .add("grid", "sale-order-grid")
                   .add("form", "sale-order-form")

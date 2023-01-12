@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -148,7 +148,12 @@ public interface StockMoveLineService {
       throws AxelorException;
 
   public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus)
+      StockLocation stockLocation,
+      StockMoveLine stockMoveLine,
+      int fromStatus,
+      int toStatus,
+      LocalDate date,
+      String origin)
       throws AxelorException;
 
   /**
@@ -253,7 +258,8 @@ public interface StockMoveLineService {
    */
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
 
-  public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove);
+  public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException;
 
   public void setAvailableStatus(StockMoveLine stockMoveLine);
 
@@ -267,4 +273,46 @@ public interface StockMoveLineService {
    * @param stockMoveLine a stock move line being realized.
    */
   public void fillRealizeWapPrice(StockMoveLine stockMoveLine);
+
+  /** Add a new line in a stock move (API AOS) */
+  StockMoveLine createStockMoveLine(
+      StockMove stockMove,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal qty,
+      BigDecimal realQty,
+      Unit unit,
+      Integer conformitySelect)
+      throws AxelorException;
+
+  /** To update realQty and conformity of a stock move line (API AOS) */
+  void updateStockMoveLine(StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity)
+      throws AxelorException;
+
+  /**
+   * Same as {@link #updateLocations(StockLocation, StockLocation, int, int, List, LocalDate,
+   * boolean)} But instead of creating wap history at with today date,they will be created at date
+   * specified and the origin specified. If origin is null, the behavior will be the same.
+   *
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @param fromStatus
+   * @param toStatus
+   * @param stockMoveLineList
+   * @param lastFutureStockMoveDate
+   * @param realQty
+   * @param date
+   * @throws AxelorException
+   */
+  void updateLocations(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      int fromStatus,
+      int toStatus,
+      List<StockMoveLine> stockMoveLineList,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin)
+      throws AxelorException;
 }

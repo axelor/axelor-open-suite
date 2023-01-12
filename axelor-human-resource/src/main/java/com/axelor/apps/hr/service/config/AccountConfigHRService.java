@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,9 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class AccountConfigHRService extends AccountConfigService {
 
   public Journal getExpenseJournal(AccountConfig accountConfig) throws AxelorException {

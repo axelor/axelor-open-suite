@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -83,6 +84,8 @@ public class ImportSupplyChain {
 
   @Inject protected InventoryLineService inventoryLineService;
 
+  @Inject protected InvoiceTermService invoiceTermService;
+
   @SuppressWarnings("rawtypes")
   public Object importSupplyChain(Object bean, Map values) {
 
@@ -144,6 +147,7 @@ public class ImportSupplyChain {
         }
         invoice.setInvoiceDate(date);
         invoice.setOriginDate(date.minusDays(15));
+        invoiceTermService.computeInvoiceTerms(invoice);
 
         invoiceService.validateAndVentilate(invoice);
         if (purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_FINISHED) {
@@ -189,6 +193,7 @@ public class ImportSupplyChain {
           invoice.setInvoiceDate(
               Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()));
         }
+        invoiceTermService.computeInvoiceTerms(invoice);
         invoiceService.validateAndVentilate(invoice);
 
         List<Long> idList = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);

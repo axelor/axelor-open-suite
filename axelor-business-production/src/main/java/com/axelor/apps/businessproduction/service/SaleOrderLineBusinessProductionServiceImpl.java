@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -54,7 +55,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
-      PricingService pricingService) {
+      PricingService pricingService,
+      TaxService taxService) {
     super(
         currencyService,
         priceListService,
@@ -68,7 +70,8 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
         appSupplychainService,
         accountConfigService,
         saleOrderService,
-        pricingService);
+        pricingService,
+        taxService);
   }
 
   @Override

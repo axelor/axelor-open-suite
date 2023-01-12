@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,22 +18,32 @@
 package com.axelor.apps.base.service.administration;
 
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.MetaSelectTool;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +53,7 @@ public abstract class AbstractBatch {
   public static final int FETCH_LIMIT = 10;
 
   @Inject protected AppBaseService appBaseService;
+  @Inject protected MetaSelectTool metaSelectTool;
 
   protected static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -101,6 +112,7 @@ public abstract class AbstractBatch {
     if (isRunnable(model)) {
       try {
         threadBatchId.set(batch.getId());
+        setHistoryInformation(model);
         start();
         process();
         stop();
@@ -121,6 +133,59 @@ public abstract class AbstractBatch {
   protected boolean isRunnable(Model model) {
     this.model = model;
     return !Boolean.TRUE.equals(model.getArchived());
+  }
+
+  protected void setHistoryInformation(AuditableModel model)
+      throws IllegalAccessException, InvocationTargetException {
+    setCompanyCode(model);
+    setBatchTypeSelect();
+    setActionName(model);
+  }
+
+  protected void setCompanyCode(AuditableModel model)
+      throws IllegalAccessException, InvocationTargetException {
+    Mapper modelMapper = Mapper.of(model.getClass());
+    Method companyGetter = modelMapper.getGetter("company");
+
+    if (companyGetter != null) {
+      Company company = (Company) companyGetter.invoke(model);
+
+      if (company != null) {
+        this.batch.setCompanyCode(company.getCode());
+      }
+    }
+  }
+
+  protected abstract void setBatchTypeSelect();
+
+  protected void setActionName(AuditableModel model)
+      throws IllegalAccessException, InvocationTargetException {
+    Mapper modelMapper = Mapper.of(model.getClass());
+    Method actionSelectGetter = modelMapper.getGetter("actionSelect");
+    Method codeGetter = modelMapper.getGetter("code");
+    List<String> actionNamePartList = new ArrayList<>();
+
+    if (actionSelectGetter != null) {
+      int actionSelect = (int) actionSelectGetter.invoke(model);
+      String actionSelection = modelMapper.getProperty("actionSelect").getSelection();
+      String actionTitle = metaSelectTool.getSelectTitle(actionSelection, actionSelect);
+
+      if (!StringUtils.isEmpty(actionTitle)) {
+        actionNamePartList.add(actionTitle);
+      }
+    }
+
+    if (codeGetter != null) {
+      String code = (String) codeGetter.invoke(model);
+
+      if (!StringUtils.isEmpty(code)) {
+        actionNamePartList.add(code);
+      }
+    }
+
+    if (CollectionUtils.isNotEmpty(actionNamePartList)) {
+      this.batch.setActionName(Joiner.on(" - ").join(actionNamePartList));
+    }
   }
 
   protected void start() throws IllegalAccessException {

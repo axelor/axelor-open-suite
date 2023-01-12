@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -183,6 +183,9 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/
       "Expired product(s): %s" /*)*/;
+
+  public static final String STOCK_MOVE_LINE_MISSING_QUANTITY = /*$$(*/
+      "Please indicate a new quantity." /*)*/;
 
   public static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/
       "Please configure mass units for this product packing : %s" /*)*/;

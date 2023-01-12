@@ -328,4 +328,9 @@ public class DateTool {
   public static LocalDate getTodayDate(String timeZone) {
     return getTodayDateTime(timeZone).toLocalDate();
   }
+
+  /** True if the dates are in the same month of the same year. */
+  public static boolean isInTheSameMonth(LocalDate date1, LocalDate date2) {
+    return date1.getMonth().equals(date2.getMonth()) && date1.getYear() == date2.getYear();
+  }
 }

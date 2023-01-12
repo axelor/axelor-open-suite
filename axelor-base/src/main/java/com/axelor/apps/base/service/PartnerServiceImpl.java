@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,6 +60,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,7 +153,9 @@ public class PartnerServiceImpl implements PartnerService {
 
     if (partner.getPartnerSeq() == null
         && appBaseService.getAppBase().getGeneratePartnerSequence()) {
-      String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
+      String seq =
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -509,14 +512,10 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public BankDetails getDefaultBankDetails(Partner partner) {
-
-    for (BankDetails bankDetails : partner.getBankDetailsList()) {
-      if (bankDetails.getIsDefault()) {
-        return bankDetails;
-      }
-    }
-
-    return null;
+    return partner.getBankDetailsList().stream()
+        .filter(BankDetails::getIsDefault)
+        .findFirst()
+        .orElse(null);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -773,15 +772,54 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public List<Long> getPartnerIdsByType(String type) {
-    StringBuilder query = new StringBuilder();
-    query.append("self.");
-    query.append(type);
-    query.append("=true");
-    return (!StringUtils.isEmpty(type))
-        ? partnerRepo.all().filter(query.toString()).select("id").fetch(0, 0).stream()
-            .map(m -> (long) m.get("id"))
-            .collect(Collectors.toList())
-        : new ArrayList<>();
+  public boolean isRegistrationCodeValid(Partner partner) {
+    List<PartnerAddress> addresses = partner.getPartnerAddressList();
+    String registrationCode = partner.getRegistrationCode();
+    if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
+        || Strings.isNullOrEmpty(registrationCode)
+        || CollectionUtils.isEmpty(addresses)
+        || addresses.stream()
+                .filter(
+                    address ->
+                        address.getAddress() != null
+                            && address.getAddress().getAddressL7Country() != null
+                            && "FR"
+                                .equals(address.getAddress().getAddressL7Country().getAlpha2Code()))
+                .collect(Collectors.toList())
+                .size()
+            == 0) {
+      return true;
+    }
+
+    return computeRegistrationCodeValidity(registrationCode);
+  }
+
+  protected boolean computeRegistrationCodeValidity(String registrationCode) {
+    int sum = 0;
+    boolean isOddNumber = true;
+    registrationCode = registrationCode.replace(" ", "");
+    if (registrationCode.length() != 14) {
+      return false;
+    }
+    int i = registrationCode.length() - 1;
+    while (i > -1) {
+      int number = Character.getNumericValue(registrationCode.charAt(i));
+      if (number < 0) {
+        i--;
+        continue;
+      }
+      if (!isOddNumber) {
+        number *= 2;
+      }
+      if (number < 10) {
+        sum += number;
+      } else {
+        number -= 10;
+        sum += number + 1;
+      }
+      i--;
+      isOddNumber = !isOddNumber;
+    }
+    return sum % 10 == 0;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,8 +19,12 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface MoveLineService {
@@ -29,7 +33,8 @@ public interface MoveLineService {
 
   public void usherProcess(MoveLine moveLine);
 
-  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList);
+  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList)
+      throws AxelorException;
 
   public void reconcileMoveLines(List<MoveLine> moveLineList);
 
@@ -37,7 +42,25 @@ public interface MoveLineService {
 
   public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr);
 
+  boolean checkManageCutOffDates(MoveLine moveLine);
+
+  void applyCutOffDates(
+      MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+
+  BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
+
   public boolean checkManageAnalytic(Move move) throws AxelorException;
 
+  @CallMethod
+  LocalDate getFinancialDiscountDeadlineDate(MoveLine moveLine);
+
+  void computeFinancialDiscount(MoveLine moveLine);
+
+  void computeInvoiceTermsFinancialDiscount(MoveLine moveLine);
+
+  Batch validateCutOffBatch(List<Long> recordIdList, Long batchId);
+
   void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
+
+  List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds);
 }

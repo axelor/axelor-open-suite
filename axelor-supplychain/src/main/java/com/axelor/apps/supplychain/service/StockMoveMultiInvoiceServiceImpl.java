@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -216,6 +216,15 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_INCOTERM));
       }
+
+      if ((firstDummyInvoice.getFiscalPosition() == null
+              && dummyInvoice.getFiscalPosition() != null)
+          || (firstDummyInvoice.getFiscalPosition() != null
+              && !firstDummyInvoice.getFiscalPosition().equals(dummyInvoice.getFiscalPosition()))) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_SO));
+      }
     }
   }
 
@@ -313,6 +322,15 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_INVOICE_INCOTERM));
       }
+
+      if ((firstDummyInvoice.getFiscalPosition() == null
+              && dummyInvoice.getFiscalPosition() != null)
+          || (firstDummyInvoice.getFiscalPosition() != null
+              && !firstDummyInvoice.getFiscalPosition().equals(dummyInvoice.getFiscalPosition()))) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_PO));
+      }
     }
   }
 
@@ -394,6 +412,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
     invoice.setIncoterm(dummyInvoice.getIncoterm());
+    invoice.setFiscalPosition(dummyInvoice.getFiscalPosition());
 
     StringBuilder deliveryAddressStr = new StringBuilder();
     AddressService addressService = Beans.get(AddressService.class);
@@ -506,6 +525,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     Invoice invoice = invoiceGenerator.generate();
     invoice.setAddressStr(dummyInvoice.getAddressStr());
     invoice.setIncoterm(dummyInvoice.getIncoterm());
+    invoice.setFiscalPosition(dummyInvoice.getFiscalPosition());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
@@ -552,9 +572,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     Invoice refund = new RefundInvoice(invoice).generate();
     if (refund.getInvoiceLineList() != null) {
       for (InvoiceLine invoiceLine : refund.getInvoiceLineList()) {
-        invoiceLine.setPrice(invoiceLine.getPrice().negate());
-        invoiceLine.setPriceDiscounted(invoiceLine.getPriceDiscounted().negate());
-        invoiceLine.setInTaxPrice(invoiceLine.getInTaxPrice().negate());
+        invoiceLine.setQty(invoiceLine.getQty().negate());
+        invoiceLine.setOldQty(invoiceLine.getOldQty().negate());
         invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
         invoiceLine.setInTaxTotal(invoiceLine.getInTaxTotal().negate());
         invoiceLine.setCompanyExTaxTotal(invoiceLine.getCompanyExTaxTotal().negate());
@@ -616,6 +635,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setInAti(saleOrder.getInAti());
       dummyInvoice.setGroupProductsOnPrintings(saleOrder.getGroupProductsOnPrintings());
       dummyInvoice.setIncoterm(saleOrder.getIncoterm());
+      dummyInvoice.setFiscalPosition(saleOrder.getFiscalPosition());
     } else {
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
@@ -650,10 +670,13 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setContactPartner(purchaseOrder.getContactPartner());
       dummyInvoice.setPriceList(purchaseOrder.getPriceList());
       dummyInvoice.setInAti(purchaseOrder.getInAti());
+      dummyInvoice.setFiscalPosition(purchaseOrder.getFiscalPosition());
     } else {
       if (stockMove.getOriginId() != null
           && StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-        dummyInvoice.setIncoterm(saleOrderRepository.find(stockMove.getOriginId()).getIncoterm());
+        SaleOrder saleOrder = saleOrderRepository.find(stockMove.getOriginId());
+        dummyInvoice.setIncoterm(saleOrder.getIncoterm());
+        dummyInvoice.setFiscalPosition(saleOrder.getFiscalPosition());
       }
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
@@ -789,6 +812,11 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         && !dummyInvoice.getPriceList().equals(comparedDummyInvoice.getPriceList())) {
       dummyInvoice.setPriceList(null);
     }
+
+    if (dummyInvoice.getFiscalPosition() != null
+        && !dummyInvoice.getFiscalPosition().equals(comparedDummyInvoice.getFiscalPosition())) {
+      dummyInvoice.setFiscalPosition(null);
+    }
   }
 
   /**
@@ -862,11 +890,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    * @param invoiceLine
    */
   protected void negateInvoiceLinePrice(InvoiceLine invoiceLine) {
-    // price
-    invoiceLine.setPrice(invoiceLine.getPrice().negate());
-    invoiceLine.setPriceDiscounted(invoiceLine.getPriceDiscounted().negate());
-    invoiceLine.setInTaxPrice(invoiceLine.getInTaxPrice().negate());
-    invoiceLine.setDiscountAmount(invoiceLine.getDiscountAmount().negate());
+
+    invoiceLine.setQty(invoiceLine.getQty().negate());
+    invoiceLine.setOldQty(invoiceLine.getOldQty().negate());
 
     // totals
     invoiceLine.setInTaxTotal(invoiceLine.getInTaxTotal().negate());
