@@ -28,7 +28,8 @@ import java.time.LocalDate;
 
 public interface FixedAssetLineMoveService {
 
-  void realize(FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove)
+  void realize(
+      FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove, boolean isDisposal)
       throws AxelorException;
 
   /**
@@ -98,5 +99,6 @@ public interface FixedAssetLineMoveService {
    */
   void setBatch(Batch batch);
 
-  Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated) throws AxelorException;
+  Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated, boolean isDisposal)
+      throws AxelorException;
 }

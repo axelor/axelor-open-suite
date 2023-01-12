@@ -165,7 +165,7 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
     }
 
     if (fixedAssetLine != null) {
-      fixedAssetLineMoveService.realize(fixedAssetLine, false, true);
+      fixedAssetLineMoveService.realize(fixedAssetLine, false, true, false);
     }
   }
 
@@ -256,7 +256,7 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
     }
 
     if (fixedAssetLine != null) {
-      fixedAssetLineMoveService.realize(fixedAssetLine, false, false);
+      fixedAssetLineMoveService.realize(fixedAssetLine, false, false, false);
     }
   }
 
@@ -339,7 +339,7 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
     }
 
     if (fixedAssetLine != null) {
-      fixedAssetLineMoveService.realize(fixedAssetLine, false, true);
+      fixedAssetLineMoveService.realize(fixedAssetLine, false, true, false);
     }
   }
 

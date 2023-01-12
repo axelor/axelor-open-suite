@@ -35,7 +35,8 @@ public interface FixedAssetDerogatoryLineMoveService {
       Account creditLineAccount,
       Account debitLineAccount,
       BigDecimal amount,
-      Boolean isSimulated)
+      Boolean isSimulated,
+      Boolean isDisposal)
       throws AxelorException;
 
   void simulate(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) throws AxelorException;
