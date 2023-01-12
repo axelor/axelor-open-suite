@@ -720,7 +720,10 @@
   <action-record name="action-bank-order-record-payment-mode-change"
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <field name="bankOrderFileFormat" expr="eval: paymentMode?.bankOrderFileFormat"/>
-    <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"/>
+    <field name="accountingTriggerSelect" expr="eval: 0"
+      if="paymentMode?.accountingTriggerSelect == 1"/>
+    <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"
+      if="paymentMode?.accountingTriggerSelect != 1"/>
   </action-record>
 
   <action-record name="action-bank-order-record-partner-type-select-default"
