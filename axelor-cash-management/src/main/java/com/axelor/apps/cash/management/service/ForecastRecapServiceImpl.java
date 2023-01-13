@@ -222,7 +222,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .bind("toDate", forecastRecap.getToDate())
             .bind("statusSelectList", statusSelectList)
             .bind(
-                "bankDetailsSet",
+                "bankDetails",
                 CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
                     ? null
                     : forecastRecap.getBankDetailsSet())

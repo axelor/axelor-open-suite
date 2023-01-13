@@ -902,6 +902,11 @@ public class MoveController {
     BankDetails defaultBankDetails =
         Beans.get(BankDetailsService.class)
             .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
+    if (defaultBankDetails == null
+        && !CollectionUtils.isEmpty(company.getBankDetailsList())
+        && company.getBankDetailsList().size() == 1) {
+      defaultBankDetails = company.getBankDetailsList().get(0);
+    }
     response.setValue("companyBankDetails", defaultBankDetails);
   }
 }
