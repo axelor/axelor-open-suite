@@ -22,7 +22,7 @@
     </extend>
     <extend target="//button[@name='openBtn']">
       <attribute name="onClick"
-        value="save,action-period-record-status-open,action-method-period-show-buttons,action-method-account-set-readonly"/>
+        value="save,action-method-period-status-open,action-method-period-show-buttons,action-method-account-set-readonly"/>
       <insert position="after">
         <field name="closeJournalsOnPeriod" showIf="statusSelect == 1" colSpan="12"
           onChange="action-account-period-attrs-show-journal-btn"/>
