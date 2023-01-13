@@ -469,7 +469,7 @@ left outer join public.account_account as Account on (MoveLine.account  = Accoun
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 where
-(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR InvoiceTerm.due_date >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR InvoiceTerm.due_date <= AccountingReport.date_to) AND
 Move.company = AccountingReport.company AND
