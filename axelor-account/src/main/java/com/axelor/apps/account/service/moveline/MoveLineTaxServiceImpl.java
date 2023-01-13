@@ -209,6 +209,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   public void autoTaxLineGenerate(Move move) throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
+    String oldTaxDescription = "";
 
     moveLineList.sort(
         new Comparator<MoveLine>() {
@@ -231,6 +232,11 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
       TaxLine taxLine = moveLine.getTaxLine();
       TaxLine sourceTaxLine = moveLine.getSourceTaxLine();
+      if (AccountTypeRepository.TYPE_TAX.equals(
+          moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+        oldTaxDescription = moveLine.getDescription();
+      }
+
       if (sourceTaxLine != null) {
 
         String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
@@ -251,6 +257,10 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               move, map, newMap, moveLine, taxLine, accountType);
         }
       }
+    }
+
+    for (Map.Entry<String, MoveLine> mapEntry : newMap.entrySet()) {
+      mapEntry.getValue().setDescription(oldTaxDescription);
     }
 
     moveLineList.addAll(newMap.values());
