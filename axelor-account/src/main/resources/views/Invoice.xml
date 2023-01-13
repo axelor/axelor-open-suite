@@ -2635,8 +2635,8 @@ InvoiceSet.length > 0))"
     <field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice"
       if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
-      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__)"
-      if="dueDate"/>
+      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__, financialDiscount)"
+      if="dueDate &amp;&amp; id != null &amp;&amp; financialDiscount != null"/>
     <field name="financialDiscount" expr="eval: null"
       if="!partner || !partner.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: 0"
