@@ -27,12 +27,14 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -107,7 +109,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderRepository bankOrderRepo,
       CurrencyService currencyService,
       AppAccountService appAccountService,
-      InvoicePaymentRepository invoicePaymentRepo) {
+      InvoicePaymentRepository invoicePaymentRepo,
+      MoveToolService moveToolService,
+      AccountManagementAccountService accountManagementAccountService) {
     super(
         appBaseService,
         moveCreateService,
@@ -125,7 +129,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         invoicePaymentRepo,
         accountConfigService,
         partnerService,
-        paymentModeService);
+        paymentModeService, 
+        moveToolService, 
+        accountManagementAccountService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;

@@ -19,6 +19,8 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
@@ -26,6 +28,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -35,6 +38,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -58,6 +62,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,6 +93,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected AccountConfigService accountConfigService;
   protected PartnerService partnerService;
   protected PaymentModeService paymentModeService;
+  protected MoveToolService moveToolService;
+  protected AccountManagementAccountService accountManagementAccountService;
+  
   protected int counter = 0;
 
   @Inject
@@ -108,7 +116,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoicePaymentRepository invoicePaymentRepo,
       AccountConfigService accountConfigService,
       PartnerService partnerService,
-      PaymentModeService paymentModeService) {
+      PaymentModeService paymentModeService,
+      MoveToolService moveToolService,
+      AccountManagementAccountService accountManagementAccountService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -126,6 +136,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.accountConfigService = accountConfigService;
     this.partnerService = partnerService;
     this.paymentModeService = paymentModeService;
+    this.moveToolService = moveToolService;
+    this.accountManagementAccountService = accountManagementAccountService;
   }
 
   @Override
@@ -217,7 +229,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       throws AxelorException {
     this.updateStatus(paymentSession);
     this.generateCashMoveAndLines(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
-    this.generateTaxMoveLines(moveDateMap);
     this.updateStatuses(paymentSession, moveDateMap, paymentAmountMap);
   }
 
@@ -746,6 +757,51 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         moveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
         moveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
         moveLine.setTaxCode(financialDiscountTax.getCode());
+        
+        Move moveToPay = invoiceTerm.getMoveLine().getMove();
+        for (MoveLine moveTaxLine : moveToPay.getMoveLineList()) {
+          AccountManagement accountManagement =
+        		  moveLine.getTaxLine().getTax().getAccountManagementList().stream()
+                  .filter(it -> it.getCompany().equals(paymentSession.getCompany()))
+                  .findFirst()
+                  .orElse(null);
+          if (accountManagement != null) {
+            AccountType accountType = moveTaxLine.getAccount().getAccountType();
+            if (accountType != null
+                && AccountTypeRepository.TYPE_TAX.equals(
+                    moveTaxLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+              BigDecimal totalInvoicedTaxAmount = moveToolService.getTotalTaxAmount(moveToPay);
+              BigDecimal invoicedTaxAmount = moveLine.getLineAmount();
+              BigDecimal subFinancialDiscountTaxAmount =
+            		  financialDiscountTaxAmount
+                      .multiply(invoicedTaxAmount)
+                      .divide(totalInvoicedTaxAmount, 2, RoundingMode.HALF_UP);
+              Integer vatSystemSelect = moveTaxLine.getVatSystemSelect();
+              MoveLine financialDiscountVatMoveLine =
+            		  this.generateMoveLine(
+            		            move,
+            		            null,
+            		            accountManagementAccountService.getTaxAccount(
+            	                        accountManagement,
+            	                        moveTaxLine.getTaxLine().getTax(),
+            	                        paymentSession.getCompany(),
+            	                        move.getJournal(),
+            	                        vatSystemSelect,
+            	                        move.getFunctionalOriginSelect(),
+            	                        false,
+            	                        true),
+            		            subFinancialDiscountTaxAmount,
+            		            move.getOrigin(),
+            		            move.getDescription(),
+            		            !out);
+              financialDiscountVatMoveLine.setTaxLine(moveTaxLine.getTaxLine());
+              financialDiscountVatMoveLine.setTaxRate(moveTaxLine.getTaxRate());
+              financialDiscountVatMoveLine.setTaxCode(moveTaxLine.getTaxCode());
+              financialDiscountVatMoveLine.setVatSystemSelect(vatSystemSelect);
+              move.addMoveLineListItem(financialDiscountVatMoveLine);
+            }
+          }
+        }
       }
     }
 
