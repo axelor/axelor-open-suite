@@ -122,7 +122,6 @@
     <action name="action-account-period-validate-need-confirmation"/>
     <action name="action-method-validate-close-period"/>
     <action name="action-method-period-call-service"/>
-    <action name="action-method-period-close"/>
   </action-group>
 
   <action-method name="action-method-period-show-buttons">

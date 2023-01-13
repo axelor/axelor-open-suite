@@ -69,6 +69,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     moveRemoveService.deleteMultiple(
         getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
 
+    period = periodRepo.find(period.getId());
     super.close(period);
   }
 
