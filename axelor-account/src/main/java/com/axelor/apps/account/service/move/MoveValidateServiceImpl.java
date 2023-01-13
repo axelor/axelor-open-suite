@@ -594,6 +594,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveLine.setFiscalYearCode(move.getPeriod().getYear().getCode());
     moveLine.setCurrencyCode(move.getCurrencyCode());
     moveLine.setCompanyCurrencyCode(company.getCurrency().getCode());
+    moveLine.setAdjustingMove(move.getAdjustingMove());
   }
 
   @Override
