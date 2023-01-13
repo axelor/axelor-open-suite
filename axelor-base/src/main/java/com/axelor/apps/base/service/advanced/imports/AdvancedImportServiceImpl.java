@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.common.Inflector;
@@ -93,7 +93,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     if (advancedImport.getImportFile() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_IMPORT_FILE));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_IMPORT_FILE));
     }
 
     String extension = Files.getFileExtension(advancedImport.getImportFile().getFileName());
@@ -201,19 +201,19 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         && !isConfig) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_3));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_3));
 
     } else if (isConfig
         && (!StringUtils.containsIgnoreCase(row[0], "Object")
             && (row.length > 1 && !StringUtils.contains(row[1], "Object")))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_4));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_4));
 
     } else if (isConfig) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_OBJECT),
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_OBJECT),
           fileTab.getName());
     }
 
@@ -423,7 +423,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
-                I18n.get(IExceptionMessage.ADVANCED_IMPORT_1),
+                I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_1),
                 importField,
                 mapper.getBeanClass().getSimpleName()));
       }
@@ -441,7 +441,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
-                I18n.get(IExceptionMessage.ADVANCED_IMPORT_5),
+                I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_5),
                 importField,
                 mapper.getBeanClass().getSimpleName()));
       }
@@ -462,7 +462,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(
-                  I18n.get(IExceptionMessage.ADVANCED_IMPORT_2),
+                  I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_2),
                   subFields[index],
                   parentProp.getName(),
                   model));
@@ -478,7 +478,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 String.format(
-                    I18n.get(IExceptionMessage.ADVANCED_IMPORT_5), subFields[index], model));
+                    I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_5), subFields[index], model));
           }
         }
       }
@@ -583,7 +583,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
             && !tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.ADVANCED_IMPORT_6),
+              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_6),
               fileTab.getName());
         }
         if (tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {

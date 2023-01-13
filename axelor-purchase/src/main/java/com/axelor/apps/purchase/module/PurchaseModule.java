@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,8 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
+import com.axelor.apps.purchase.service.PurchaseOrderDomainServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLinePurchaseRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -62,5 +64,6 @@ public class PurchaseModule extends AxelorModule {
     bind(PurchaseOrderLineRepository.class).to(PurchaseOrderLinePurchaseRepository.class);
     bind(PurchaseOrderWorkflowService.class).to(PurchaseOrderWorkflowServiceImpl.class);
     bind(PurchaseRequestWorkflowService.class).to(PurchaseRequestWorkflowServiceImpl.class);
+    bind(PurchaseOrderDomainService.class).to(PurchaseOrderDomainServiceImpl.class);
   }
 }

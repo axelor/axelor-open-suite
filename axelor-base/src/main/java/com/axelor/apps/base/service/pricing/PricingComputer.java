@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,9 @@ import com.axelor.apps.base.db.PricingLine;
 import com.axelor.apps.base.db.PricingRule;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRuleRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.metajsonattrs.MetaJsonAttrsBuilder;
+import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -35,6 +37,7 @@ import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -143,7 +146,7 @@ public class PricingComputer extends AbstractObservablePricing {
     for (int counter = 0; counter < MAX_ITERATION; counter++) {
 
       Optional<Pricing> optChildPricing = getNextPricing(currentPricing);
-      if (optChildPricing.flatMap(this::applyPricing).isPresent()) {
+      if (optChildPricing.isPresent() && applyPricing(optChildPricing.get()).isPresent()) {
         currentPricing = optChildPricing.get();
       } else {
         notifyFinished();
@@ -169,7 +172,7 @@ public class PricingComputer extends AbstractObservablePricing {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(IExceptionMessage.PRICING_2),
+              I18n.get(BaseExceptionMessage.PRICING_2),
               this.product.getName() + "/" + this.product.getProductCategory().getName(),
               pricing.getCompany().getName(),
               classModel.getSimpleName()));
@@ -183,8 +186,9 @@ public class PricingComputer extends AbstractObservablePricing {
    *
    * @param pricing
    * @return optional of the pricing line applied
+   * @throws AxelorException
    */
-  protected Optional<PricingLine> applyPricing(Pricing pricing) {
+  protected Optional<PricingLine> applyPricing(Pricing pricing) throws AxelorException {
     LOG.debug("Applying pricing {} with model {}", pricing, this.model);
     if (pricing.getClass1PricingRule() != null && pricing.getResult1PricingRule() != null) {
 
@@ -203,7 +207,8 @@ public class PricingComputer extends AbstractObservablePricing {
     return Optional.empty();
   }
 
-  protected void computeResultFormulaAndApply(Pricing pricing, PricingLine pricingLine) {
+  protected void computeResultFormulaAndApply(Pricing pricing, PricingLine pricingLine)
+      throws AxelorException {
     Objects.requireNonNull(pricingLine);
 
     GroovyScriptHelper scriptHelper = new GroovyScriptHelper(context);
@@ -214,24 +219,76 @@ public class PricingComputer extends AbstractObservablePricing {
     resultPricingRuleList.add(pricing.getResult3PricingRule());
     resultPricingRuleList.add(pricing.getResult4PricingRule());
 
-    resultPricingRuleList.stream()
-        .filter(Objects::nonNull)
-        .forEach(
-            resultPricingRule -> {
-              MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
-              Object result = scriptHelper.eval(resultPricingRule.getFormula());
-              if (fieldToPopulate != null) {
-                Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
-              }
-              if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
-                LOG.debug(
-                    "Adding result temp variable {} in context",
-                    resultPricingRule.getTempVarName());
-                putInContext(resultPricingRule.getTempVarName(), result);
-              }
-              notifyResultPricingRule(resultPricingRule, result);
-              notifyFieldToPopulate(fieldToPopulate);
-            });
+    for (PricingRule resultPricingRule : resultPricingRuleList) {
+      if (resultPricingRule != null) {
+        MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
+        Object result = scriptHelper.eval(resultPricingRule.getFormula());
+        notifyResultPricingRule(resultPricingRule, result);
+        notifyFieldToPopulate(fieldToPopulate);
+        String typeName = getTypeNameFieldToPopulate(resultPricingRule);
+        if (fieldToPopulate != null) {
+          if (typeName.equals("BigDecimal")) {
+            result = setScale(result, resultPricingRule.getScale());
+          }
+          if (fieldToPopulate.getJson() && resultPricingRule.getMetaJsonField() != null) {
+            String newMetaJsonAttrs = buildMetaJsonAttrs(resultPricingRule, result);
+            Mapper.of(classModel).set(model, fieldToPopulate.getName(), newMetaJsonAttrs);
+            notifyMetaJsonFieldToPopulate(resultPricingRule.getMetaJsonField());
+          } else {
+            Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
+            putInContext(fieldToPopulate.getName(), result);
+          }
+        }
+        if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
+          LOG.debug(
+              "Adding result temp variable {} in context", resultPricingRule.getTempVarName());
+          putInContext(resultPricingRule.getTempVarName(), result);
+        }
+      }
+    }
+  }
+
+  protected BigDecimal setScale(Object result, int scale) {
+    if (result instanceof BigDecimal) {
+      return ((BigDecimal) result).setScale(scale, RoundingMode.HALF_UP);
+    }
+    return null;
+  }
+
+  protected String getTypeNameFieldToPopulate(PricingRule resultPricingRule)
+      throws AxelorException {
+
+    MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
+    if (fieldToPopulate != null) {
+      if (fieldToPopulate.getJson() && resultPricingRule.getMetaJsonField() != null) {
+        return MetaTool.jsonTypeToType(resultPricingRule.getMetaJsonField().getType());
+      }
+      return fieldToPopulate.getTypeName();
+    }
+
+    return "";
+  }
+
+  protected String buildMetaJsonAttrs(PricingRule resultPricingRule, Object result)
+      throws AxelorException {
+    LOG.debug("Populating {} of {} with {}", resultPricingRule.getFieldToPopulate(), model, result);
+
+    Object attrsObject =
+        Mapper.of(classModel).get(model, resultPricingRule.getFieldToPopulate().getName());
+    String metaJsonAttrs;
+    if (attrsObject == null) {
+      metaJsonAttrs = "";
+    } else {
+      metaJsonAttrs = attrsObject.toString();
+    }
+
+    try {
+      return new MetaJsonAttrsBuilder(metaJsonAttrs)
+          .putValue(resultPricingRule.getMetaJsonField(), result)
+          .build();
+    } catch (Exception e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
   }
 
   /**
@@ -276,6 +333,9 @@ public class PricingComputer extends AbstractObservablePricing {
 
     if (classPricingRule != null) {
       Object result = scriptHelper.eval(classPricingRule.getFormula());
+      if (classPricingRule.getFieldTypeSelect() == PricingRuleRepository.FIELD_TYPE_DECIMAL) {
+        result = ((BigDecimal) result).setScale(classPricingRule.getScale(), RoundingMode.HALF_UP);
+      }
       notifyClassificationPricingRule(classPricingRule, result);
       return result;
     }

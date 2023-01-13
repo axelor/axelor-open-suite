@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,8 +26,10 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -36,15 +38,18 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
   protected AccountConfigService accountConfigService;
   protected PaymentModeService paymentModeService;
   protected AccountingSituationRepository accountingSituationRepo;
+  protected CompanyRepository companyRepo;
 
   @Inject
   public AccountingSituationServiceImpl(
       AccountConfigService accountConfigService,
       PaymentModeService paymentModeService,
-      AccountingSituationRepository accountingSituationRepo) {
+      AccountingSituationRepository accountingSituationRepo,
+      CompanyRepository companyRepo) {
     this.accountConfigService = accountConfigService;
     this.paymentModeService = paymentModeService;
     this.accountingSituationRepo = accountingSituationRepo;
+    this.companyRepo = companyRepo;
   }
 
   @Override
@@ -164,5 +169,85 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
     }
 
     return company.getDefaultBankDetails();
+  }
+
+  @Override
+  public Account getHoldBackCustomerAccount(Partner partner, Company company)
+      throws AxelorException {
+    Account account = null;
+    AccountingSituation accountingSituation = getAccountingSituation(partner, company);
+
+    if (accountingSituation != null) {
+      account = accountingSituation.getHoldBackCustomerAccount();
+    }
+
+    if (account == null) {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+      account = accountConfigService.getHoldBackCustomerAccount(accountConfig);
+    }
+
+    return account;
+  }
+
+  @Override
+  public Account getHoldBackSupplierAccount(Partner partner, Company company)
+      throws AxelorException {
+    Account account = null;
+    AccountingSituation accountingSituation = getAccountingSituation(partner, company);
+
+    if (accountingSituation != null) {
+      account = accountingSituation.getHoldBackSupplierAccount();
+    }
+
+    if (account == null) {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+      account = accountConfigService.getHoldBackSupplierAccount(accountConfig);
+    }
+
+    return account;
+  }
+
+  @Override
+  public void setHoldBackAccounts(AccountingSituation accountingSituation, Partner partner)
+      throws AxelorException {
+    try {
+      Company company = accountingSituation.getCompany();
+
+      if (company != null && partner != null) {
+        accountingSituation.setHoldBackCustomerAccount(
+            this.getHoldBackCustomerAccount(partner, company));
+        accountingSituation.setHoldBackSupplierAccount(
+            this.getHoldBackSupplierAccount(partner, company));
+      } else {
+        accountingSituation.setHoldBackCustomerAccount(null);
+        accountingSituation.setHoldBackSupplierAccount(null);
+      }
+    } catch (AxelorException e) {
+      accountingSituation.setHoldBackCustomerAccount(null);
+      accountingSituation.setHoldBackSupplierAccount(null);
+    } catch (Exception e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+    }
+  }
+
+  @Override
+  public int determineVatSystemSelect(AccountingSituation accountingSituation, int vatSystem)
+      throws AxelorException {
+    int vatSystemSelect = 0;
+    if (accountingSituation != null) {
+      if (accountingSituation.getVatSystemSelect()
+          == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+        vatSystemSelect = vatSystem;
+      } else if (accountingSituation.getVatSystemSelect()
+          == AccountingSituationRepository.VAT_DELIVERY) {
+        vatSystemSelect = 1;
+      } else {
+        vatSystemSelect = vatSystem;
+      }
+    } else {
+      vatSystemSelect = vatSystem;
+    }
+    return vatSystemSelect;
   }
 }

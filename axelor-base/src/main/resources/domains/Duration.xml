@@ -11,7 +11,8 @@
       initParam="true"/>
     <integer name="value" title="Value" initParam="true" min="0"/>
     <string name="name" title="Name"/>
-    <integer name="applicationTypeSelect" selection="base.duration.application.type.select"/>
+    <integer name="applicationTypeSelect" title="Application type"
+      selection="base.duration.application.type.select"/>
 
     <extra-code><![CDATA[
 

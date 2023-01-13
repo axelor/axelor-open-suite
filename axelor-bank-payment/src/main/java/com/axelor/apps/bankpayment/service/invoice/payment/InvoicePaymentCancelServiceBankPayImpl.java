@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.bankpayment.service.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -90,7 +90,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
         throw new AxelorException(
             invoicePayment,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANCEL));
+            I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_CANCEL));
       } else if (paymentBankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
         bankOrderService.cancelBankOrder(paymentBankOrder);
         this.updateCancelStatus(invoicePayment);

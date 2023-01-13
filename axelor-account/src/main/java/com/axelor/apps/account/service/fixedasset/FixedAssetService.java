@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -47,13 +47,6 @@ public interface FixedAssetService {
 
   void updateAnalytic(FixedAsset fixedAsset) throws AxelorException;
 
-  /**
-   * Compute first depreciation date of fixedAsset
-   *
-   * @param fixedAsset
-   */
-  void computeFirstDepreciationDate(FixedAsset fixedAsset);
-
   void updateDepreciation(FixedAsset fixedAsset) throws AxelorException;
 
   /**
@@ -64,25 +57,43 @@ public interface FixedAssetService {
    * the quantity. (DisposalQty / fixedAsset.qty)
    *
    * @param fixedAsset
-   * @param disposalQty
+   * @param splitType
+   * @param amount
    * @return The new fixed asset created from split.
    * @throws AxelorException
    */
   FixedAsset splitFixedAsset(
-      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate disposalDate, String comments)
+      FixedAsset fixedAsset,
+      int splitType,
+      BigDecimal amount,
+      LocalDate disposalDate,
+      String comments)
       throws AxelorException;
+
   /**
    * Call splitFixedAsset and save both fixed asset. (Original and created)
    *
    * @param fixedAsset
-   * @param disposalQty
+   * @param splitType
+   * @param amount
    * @param splittingDate
    * @param comments
    * @return
    * @throws AxelorException
    */
   FixedAsset splitAndSaveFixedAsset(
-      FixedAsset fixedAsset, BigDecimal disposalQty, LocalDate splittingDate, String comments)
+      FixedAsset fixedAsset,
+      int splitType,
+      BigDecimal amount,
+      LocalDate splittingDate,
+      String comments)
+      throws AxelorException;
+
+  void checkFixedAssetBeforeSplit(FixedAsset fixedAsset, int splitType, BigDecimal amount)
+      throws AxelorException;
+
+  void checkFixedAssetBeforeDisposal(
+      FixedAsset fixedAsset, LocalDate disposalDate, int disposalQtySelect, BigDecimal disposalQty)
       throws AxelorException;
 
   int computeTransferredReason(
@@ -136,4 +147,6 @@ public interface FixedAssetService {
 
   void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)
       throws AxelorException;
+
+  public boolean checkDepreciationPlans(FixedAsset fixedAsset);
 }

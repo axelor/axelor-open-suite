@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,10 +79,10 @@ public class ImportMoveLine {
     Partner partner = getPartner(partnerId);
     if (partner != null) {
       moveLine.setPartnerSeq(partner.getPartnerSeq());
-      moveLine.setPartnerFullName(partner.getFullName());
+      moveLine.setPartnerFullName(partner.getSimpleFullName());
     } else {
       moveLine.setPartnerSeq((String) values.get("partnerSeq"));
-      moveLine.setPartnerFullName((String) values.get("partnerFullName"));
+      moveLine.setPartnerFullName((String) values.get("partnerSimpleFullName"));
     }
 
     moveLineRepository.save(moveLine);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface MoveSimulateService {
   /**
@@ -29,4 +30,6 @@ public interface MoveSimulateService {
    * @throws AxelorException
    */
   void simulate(Move move) throws AxelorException;
+
+  public void simulateMultiple(List<? extends Move> moveList) throws AxelorException;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,7 +29,7 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
   @Override
   public TaxPaymentMoveLine computeTaxAmount(TaxPaymentMoveLine taxPaymentMoveLine)
       throws AxelorException {
-    BigDecimal taxRate = taxPaymentMoveLine.getTaxRate();
+    BigDecimal taxRate = taxPaymentMoveLine.getTaxRate().divide(new BigDecimal(100));
     BigDecimal base = taxPaymentMoveLine.getDetailPaymentAmount();
     taxPaymentMoveLine.setTaxAmount(base.multiply(taxRate).setScale(2, RoundingMode.HALF_UP));
     return taxPaymentMoveLine;
@@ -49,6 +49,7 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
                 .getTodayDate(taxPaymentMoveLine.getReconcile().getCompany()));
     reversetaxPaymentMoveLine = this.computeTaxAmount(reversetaxPaymentMoveLine);
     reversetaxPaymentMoveLine.setIsAlreadyReverse(true);
+    reversetaxPaymentMoveLine.setVatSystemSelect(taxPaymentMoveLine.getVatSystemSelect());
     taxPaymentMoveLine.setIsAlreadyReverse(true);
     return reversetaxPaymentMoveLine;
   }

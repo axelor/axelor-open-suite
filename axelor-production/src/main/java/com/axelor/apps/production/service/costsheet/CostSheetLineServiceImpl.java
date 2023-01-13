@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
@@ -38,7 +39,7 @@ import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -299,7 +300,14 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       Product product, int componentsValuationMethod, Company company) throws AxelorException {
 
     BigDecimal price = null;
-    Currency companyCurrency = company.getCurrency();
+    Currency companyCurrency;
+
+    if (company != null) {
+      companyCurrency = company.getCurrency();
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(BaseExceptionMessage.COMPANY_MISSING));
+    }
 
     if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE) {
       price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
@@ -338,7 +346,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       if (productCompanyService.get(product, "purchaseCurrency", company) == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MISSING_PRODUCT_PURCHASE_CURRENCY),
+            I18n.get(ProductionExceptionMessage.MISSING_PRODUCT_PURCHASE_CURRENCY),
             product.getFullName());
       }
 
@@ -583,7 +591,6 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
               null,
               null,
               parentCostSheetLine);
-      parentCostSheetLine.addCostSheetLineListItem(indirectCostSheetLine);
     }
 
     indirectCostSheetLine.setCostPrice(

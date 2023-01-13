@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,9 @@ package com.axelor.apps.project.web;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.MetaJsonFieldProjectService;
-import com.axelor.common.Inflector;
+import com.axelor.apps.tool.ModelTool;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -55,7 +55,7 @@ public class MetaJsonFieldProjectController {
     }
 
     if (modelName == null) {
-      response.setError(I18n.get(IExceptionMessage.JSON_FIELD_MODEL_INVALID));
+      response.setError(I18n.get(ProjectExceptionMessage.JSON_FIELD_MODEL_INVALID));
       return;
     }
 
@@ -98,12 +98,13 @@ public class MetaJsonFieldProjectController {
 
     MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);
 
-    if (StringUtils.isEmpty(jsonField.getTitle())) {
+    String title = jsonField.getTitle();
+    if (StringUtils.isEmpty(title)) {
       return;
     }
 
     String typeSelect = (String) request.getContext().get("typeSelect");
-    String name = Inflector.getInstance().camelize(jsonField.getTitle(), true);
+    String name = ModelTool.normalizeKeyword(title, true);
 
     if (Project.class.equals(request.getContext().getParent().getContextClass())) {
       Long projectId = request.getContext().getParent().asType(Project.class).getId();

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,12 +26,13 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.FileTool;
@@ -448,8 +449,8 @@ public class CfonbExportService {
     if (bankDetails == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          "%s :\n " + I18n.get(IExceptionMessage.CFONB_EXPORT_1) + " %s",
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          "%s :\n " + I18n.get(AccountExceptionMessage.CFONB_EXPORT_1) + " %s",
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           reimbursement.getRef());
     }
 
@@ -504,8 +505,8 @@ public class CfonbExportService {
     if (bankDetails == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName());
     }
 
@@ -684,8 +685,8 @@ public class CfonbExportService {
       throw new AxelorException(
           e.getCause(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_EXPORT_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_EXPORT_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           e);
     }
   }
@@ -791,24 +792,24 @@ public class CfonbExportService {
     if (bankDetails.getSortCode() == null || bankDetails.getSortCode().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_EXPORT_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_EXPORT_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }
     if (bankDetails.getAccountNbr() == null || bankDetails.getAccountNbr().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_EXPORT_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_EXPORT_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }
     if (bankDetails.getBankCode() == null || bankDetails.getBankCode().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_EXPORT_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_EXPORT_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }
@@ -816,8 +817,8 @@ public class CfonbExportService {
     if (bankAddress == null || bankAddress.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_EXPORT_6),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_EXPORT_6),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }

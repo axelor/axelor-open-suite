@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -47,7 +47,7 @@ import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.EntityHelper;
@@ -149,7 +149,7 @@ public class MrpLineServiceImpl implements MrpLineService {
         throw new AxelorException(
             mrpLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MRP_LINE_1),
+            I18n.get(SupplychainExceptionMessage.MRP_LINE_1),
             product.getFullName());
       }
     }
@@ -178,7 +178,7 @@ public class MrpLineServiceImpl implements MrpLineService {
                   company,
                   null,
                   supplierPartner.getCurrency(),
-                  maturityDate,
+                  null,
                   this.getPurchaseOrderOrigin(mrpLine),
                   null,
                   stockLocation,
@@ -223,6 +223,10 @@ public class MrpLineServiceImpl implements MrpLineService {
         purchaseOrderLineService.createPurchaseOrderLine(
             purchaseOrder, product, null, null, qty, unit);
     poLine.setDesiredDelivDate(maturityDate);
+    if (mrpLine.getEstimatedDeliveryMrpLine() != null) {
+      poLine.setDesiredDelivDate(mrpLine.getEstimatedDeliveryMrpLine().getMaturityDate());
+    }
+    poLine.setEstimatedDelivDate(poLine.getDesiredDelivDate());
     purchaseOrder.addPurchaseOrderLineListItem(poLine);
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);

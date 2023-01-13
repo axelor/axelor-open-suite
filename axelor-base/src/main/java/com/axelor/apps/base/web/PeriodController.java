@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -80,7 +80,20 @@ public class PeriodController {
     try {
       Beans.get(PeriodService.class).validateClosure(period);
     } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void open(ActionRequest request, ActionResponse response) {
+    Period period =
+        Beans.get(PeriodRepository.class).find(request.getContext().asType(Period.class).getId());
+    try {
+      if (period != null) {
+        Beans.get(PeriodService.class).openPeriod(period);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

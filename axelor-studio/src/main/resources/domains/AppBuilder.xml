@@ -14,6 +14,8 @@
     <integer name="sequence" title="Sequence"/>
     <many-to-one name="generatedApp" ref="com.axelor.apps.base.db.App"/>
     <string name="modules" title="Modules"/>
+    <boolean name="isInAppView" title="Add the application to the App Management"
+      default="false"/>
   </entity>
 
 </domain-models>

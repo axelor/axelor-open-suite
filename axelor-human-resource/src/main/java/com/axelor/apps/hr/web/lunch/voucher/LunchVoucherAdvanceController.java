@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
@@ -55,7 +55,7 @@ public class LunchVoucherAdvanceController {
     if (lunchVoucherAdvance.getEmployee().getMainEmploymentContract() == null) {
       response.setError(
           String.format(
-              I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
+              I18n.get(HumanResourceExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
               lunchVoucherAdvance.getEmployee().getName()));
       return;
     }
@@ -68,7 +68,7 @@ public class LunchVoucherAdvanceController {
     if (stock <= 0) {
       response.setAlert(
           String.format(
-              I18n.get(IExceptionMessage.LUNCH_VOUCHER_MIN_STOCK),
+              I18n.get(HumanResourceExceptionMessage.LUNCH_VOUCHER_MIN_STOCK),
               company.getName(),
               hrConfig.getMinStockLunchVoucher(),
               hrConfig.getAvailableStockLunchVoucher(),

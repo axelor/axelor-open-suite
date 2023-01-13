@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.message.service;
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -64,7 +64,7 @@ public class TemplateService {
     if (metaModel == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.TEMPLATE_SERVICE_1));
+          I18n.get(MessageExceptionMessage.TEMPLATE_SERVICE_1));
     }
 
     try {
@@ -73,7 +73,7 @@ public class TemplateService {
       throw new AxelorException(
           e.getCause(),
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.TEMPLATE_SERVICE_2));
+          I18n.get(MessageExceptionMessage.TEMPLATE_SERVICE_2));
     }
   }
 

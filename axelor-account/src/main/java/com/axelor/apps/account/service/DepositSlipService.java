@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,17 +18,21 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.DepositSlip;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.exception.AxelorException;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface DepositSlipService {
+
   /**
-   * Load payments into deposit slip.
+   * Get payments into deposit slip.
    *
    * @param depositSlip
    * @throws AxelorException
    */
-  void loadPayments(DepositSlip depositSlip) throws AxelorException;
+  List<PaymentVoucher> fetchPaymentVouchers(DepositSlip depositSlip);
 
   /**
    * Publish deposit slip.
@@ -38,14 +42,15 @@ public interface DepositSlipService {
    * @throws AxelorException
    * @throws IOException
    */
-  String publish(DepositSlip depositSlip) throws AxelorException;
+  LocalDate publish(DepositSlip depositSlip) throws AxelorException;
 
   /**
-   * Get report filename.
+   * Validate deposit slip using value for collection account.
    *
    * @param depositSlip
    * @return
    * @throws AxelorException
+   * @throws IOException
    */
-  String getFilename(DepositSlip depositSlip) throws AxelorException;
+  void validate(DepositSlip depositSlip) throws AxelorException;
 }

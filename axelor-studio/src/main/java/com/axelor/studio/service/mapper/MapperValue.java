@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -64,7 +64,11 @@ public class MapperValue {
       case "context":
         mapContext(stb);
         break;
+      case "query":
+        mapQuery(stb);
+        break;
       case "self":
+      case "expression":
         mapSelf(stb);
         break;
       case "source":
@@ -171,10 +175,23 @@ public class MapperValue {
     String value = getSelectedScript();
 
     if (MANY_TO_ONE_TYPE.contains(parentField.getType())) {
-      if (value != null && !value.endsWith(".id")) {
+      if (value != null && !value.endsWith(".id") && !value.equals("__id__")) {
         value += "?.id";
       }
       stb.append("$ctx.find('" + parentField.getTarget() + "'," + value + ")?.getTarget()");
+    } else {
+      stb.append(value);
+    }
+  }
+
+  protected void mapQuery(StringBuilder stb) {
+
+    String value = getSelectedScript();
+
+    if (value != null) {
+      stb.append("$ctx.filterOne" + value + "");
+      stb.append("?.getTarget()");
+
     } else {
       stb.append(value);
     }

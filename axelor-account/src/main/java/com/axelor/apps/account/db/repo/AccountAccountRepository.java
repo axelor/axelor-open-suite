@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,8 +18,12 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import java.util.Set;
 import javax.persistence.PersistenceException;
 
@@ -69,5 +73,18 @@ public class AccountAccountRepository extends AccountRepository {
     account.setName(String.format("%s (copy)", account.getName()));
     account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
     return account;
+  }
+
+  @Override
+  public void remove(Account account) {
+    if (account.getIsRegulatoryAccount()) {
+      Exception e =
+          new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.ACCOUNT_REGULATORY_REMOVE));
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e);
+    }
+    super.remove(account);
   }
 }

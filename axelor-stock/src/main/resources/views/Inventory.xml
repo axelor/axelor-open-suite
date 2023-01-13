@@ -11,7 +11,7 @@
     <field name="plannedStartDateT"/>
     <field name="plannedEndDateT"/>
     <field name="statusSelect"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory"
@@ -148,7 +148,7 @@
 
   <action-group name="action-group-stock-inventory-plan-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
     <action name="action-inventory-method-plan"/>
     <action name="action-set-inventory-seq"/>
     <action name="save"/>
@@ -156,22 +156,21 @@
 
   <action-group name="action-group-stock-inventory-start-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
     <action name="action-inventory-method-start"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-group-stock-inventory-complete-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
-    <action name="action-inventory-validate-inventory-line-list"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
     <action name="action-inventory-method-complete"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-group-stock-inventory-validate-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
     <action name="action-inventory-method-realize-stock-move"/>
   </action-group>
 
@@ -192,7 +191,7 @@
     <field name="formatSelect" expr="pdf"/>
     <field name="stockLocation" expr="eval:_location"/>
     <field name="company"
-      expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company : null"/>
+      expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company :__user__.activeCompany"/>
   </action-record>
 
   <action-method name="action-inventory-method-show-inventory">
@@ -282,7 +281,7 @@
   <search-filters name="inventories-filters"
     model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <filter title="Planned Inventories">
       <domain>self.statusSelect = 1</domain>
     </filter>
@@ -295,12 +294,7 @@
     <attribute name="value" for="stockLocation" expr="eval: null"/>
   </action-attrs>
 
-  <action-validate name="action-inventory-validate-inventory-line-list">
-    <error message="Please fill all inventory lines"
-      if="inventoryLineList.any { it?.realQty == null }"/>
-  </action-validate>
-
-  <action-method name="action-inventory-method-inventory-line-list-duplicat-product">
+  <action-method name="action-inventory-method-inventory-line-list-duplicate-product">
     <call class="com.axelor.apps.stock.web.InventoryController" method="checkDuplicateProduct"/>
   </action-method>
 

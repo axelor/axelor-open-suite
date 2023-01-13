@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -89,7 +89,7 @@ public class AlarmEngineService<T extends Model> {
                 MetaModelService.getMetaModel(klass))
             .fetch();
 
-    LOG.debug("Lancement des moteurs de type {} : {} moteurs à lancer", klass, alarmEngines.size());
+    LOG.debug("Engines launching of type {} : {} engines to launch", klass, alarmEngines.size());
 
     return get(alarmEngines, klass, params);
   }
@@ -156,7 +156,7 @@ public class AlarmEngineService<T extends Model> {
       }
     }
 
-    LOG.debug("{} objets en alarmes", map.size());
+    LOG.debug("{} objects with alarm", map.size());
 
     return map;
   }
@@ -176,7 +176,7 @@ public class AlarmEngineService<T extends Model> {
   public List<T> results(String query, Class<T> klass, T... params) {
 
     LOG.debug(
-        "Lancement de la requête {} => Objet: {}, params: {}",
+        "Execution of the query {} => Object: {}, params: {}",
         new Object[] {query, klass.getSimpleName(), params});
 
     if (params != null && params.length > 0) {

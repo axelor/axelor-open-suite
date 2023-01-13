@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,7 +33,7 @@ import com.axelor.apps.hr.db.KilometricAllowanceRule;
 import com.axelor.apps.hr.db.KilometricLog;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.KilometricLogRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.apps.tool.date.DateTool;
@@ -116,7 +116,7 @@ public class KilometricService {
     if (employee.getMainEmploymentContract() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
           employee.getName());
     }
 
@@ -130,7 +130,7 @@ public class KilometricService {
     if (year == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_CIVIL_YEAR),
+          I18n.get(HumanResourceExceptionMessage.KILOMETRIC_LOG_NO_CIVIL_YEAR),
           employee.getMainEmploymentContract().getPayCompany(),
           date);
     }
@@ -146,7 +146,7 @@ public class KilometricService {
     if (mainEmploymentContract == null || mainEmploymentContract.getPayCompany() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
           employee.getName());
     }
     Company company = mainEmploymentContract.getPayCompany();
@@ -168,7 +168,7 @@ public class KilometricService {
     if (allowance == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING),
+          I18n.get(HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING),
           expenseLine.getKilometricAllowParam() != null
               ? expenseLine.getKilometricAllowParam().getName()
               : "",
@@ -190,7 +190,7 @@ public class KilometricService {
     if (ruleList.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_NO_RULE),
+          I18n.get(HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_NO_RULE),
           allowance.getKilometricAllowParam().getName());
     }
 
@@ -282,7 +282,7 @@ public class KilometricService {
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        IExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR,
+        HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR,
         msg);
   }
 
@@ -307,7 +307,7 @@ public class KilometricService {
     if (distance.compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          IExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR,
+          HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR,
           ITranslation.NO_ROUTE);
     }
     return distance;
@@ -327,7 +327,7 @@ public class KilometricService {
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        IExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR,
+        HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR,
         msg);
   }
 
@@ -354,7 +354,7 @@ public class KilometricService {
     ub.addParameter("key", mapService.getGoogleMapsApiKey());
 
     return this.getApiResponse(
-        ub.toString(), IExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR);
+        ub.toString(), HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR);
   }
 
   /**
@@ -382,7 +382,7 @@ public class KilometricService {
             "https://router.project-osrm.org/route/v1/driving/%s;%s",
             originCoordinates, destinationCoordinates);
 
-    return this.getApiResponse(uri, IExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR);
+    return this.getApiResponse(uri, HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR);
   }
 
   /**
@@ -415,7 +415,8 @@ public class KilometricService {
     ub.addParameter("tlon", tlon);
     ub.addParameter("v", "motorcar");
     ub.addParameter("fast", "0");
-    return this.getApiResponse(ub.toString(), IExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR);
+    return this.getApiResponse(
+        ub.toString(), HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR);
   }
 
   protected Map<String, Object> getLocationMap(String location) throws AxelorException {
@@ -425,14 +426,14 @@ public class KilometricService {
     } catch (Exception e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          IExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR,
+          HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR,
           e.getMessage());
     }
 
     if (locationMap == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          IExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR,
+          HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR,
           ITranslation.NO_SUCH_PLACE);
     }
     return locationMap;

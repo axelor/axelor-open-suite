@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -151,11 +151,11 @@ public interface PartnerService {
 
   String computeCompanyStr(Partner partner);
 
-  String getPartnerDomain(Partner partner);
-
   String getTaxNbrFromRegistrationCode(Partner partner);
 
   String getNicFromRegistrationCode(Partner partner);
 
   String getSirenFromRegistrationCode(Partner partner);
+
+  boolean isRegistrationCodeValid(Partner partner);
 }

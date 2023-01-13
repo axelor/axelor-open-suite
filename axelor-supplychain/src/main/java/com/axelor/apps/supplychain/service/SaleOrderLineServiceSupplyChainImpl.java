@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -33,6 +34,7 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.PackLine;
@@ -42,6 +44,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -98,7 +101,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
-      PricingService pricingService) {
+      PricingService pricingService,
+      TaxService taxService,
+      SaleOrderMarginService saleOrderMarginService) {
     super(
         currencyService,
         priceListService,
@@ -108,7 +113,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         accountManagementService,
         saleOrderLineRepo,
         saleOrderService,
-        pricingService);
+        pricingService,
+        taxService,
+        saleOrderMarginService);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
@@ -131,16 +138,20 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   public SaleOrderLine getAndComputeAnalyticDistribution(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
-    if (accountConfigService
-            .getAccountConfig(saleOrder.getCompany())
-            .getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(saleOrder.getCompany());
+
+    if (!accountConfig.getManageAnalyticAccounting()
+        || accountConfig.getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
       return saleOrderLine;
     }
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
-            saleOrder.getClientPartner(), saleOrderLine.getProduct(), saleOrder.getCompany());
+            saleOrder.getClientPartner(),
+            saleOrderLine.getProduct(),
+            saleOrder.getCompany(),
+            false);
 
     saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

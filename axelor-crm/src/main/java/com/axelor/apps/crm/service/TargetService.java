@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.TargetConfigurationRepository;
 import com.axelor.apps.crm.db.repo.TargetRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -99,7 +99,7 @@ public class TargetService {
           throw new AxelorException(
               targetConfiguration,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.TARGET_1),
+              I18n.get(CrmExceptionMessage.TARGET_1),
               target2.getCode(),
               targetConfiguration.getCode());
         }

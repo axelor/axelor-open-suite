@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -48,7 +48,7 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
@@ -195,7 +195,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING),
           employee.getName());
     }
     WeeklyPlanning planning = employee.getWeeklyPlanning();
@@ -203,7 +203,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),
           employee.getName());
     }
     List<DayPlanning> dayPlanningList = planning.getWeekDays();
@@ -367,25 +367,25 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.TIMESHEET_FROM_DATE));
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_FROM_DATE));
     }
     if (toGenerationDate == null) {
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.TIMESHEET_TO_DATE));
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_TO_DATE));
     }
     if (product == null) {
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_PRODUCT));
     }
     if (employee.getUser() == null) {
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.NO_USER_FOR_EMPLOYEE),
+          I18n.get(HumanResourceExceptionMessage.NO_USER_FOR_EMPLOYEE),
           employee.getName());
     }
 
@@ -394,7 +394,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),
           employee.getUser().getName());
     }
     List<DayPlanning> dayPlanningList = planning.getWeekDays();
@@ -407,7 +407,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING),
           employee.getUser().getName());
     }
 
@@ -505,7 +505,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       if (user.getEmployee() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
             user.getName());
       }
 
@@ -638,7 +638,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     if (product == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_PRODUCT));
     }
     BigDecimal price =
         (BigDecimal) productCompanyService.get(product, "salePrice", invoice.getCompany());
@@ -886,19 +886,19 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.TIMESHEET_NULL_FROM_DATE));
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_NULL_FROM_DATE));
 
     } else if (toDate == null) {
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.TIMESHEET_NULL_TO_DATE));
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_NULL_TO_DATE));
 
     } else if (ObjectUtils.isEmpty(timesheetLineList)) {
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
 
     } else {
 
@@ -908,7 +908,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           throw new AxelorException(
               timesheetLine,
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.TIMESHEET_LINE_NULL_DATE),
+              I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINE_NULL_DATE),
               timesheetLineList.indexOf(timesheetLine) + 1);
         }
       }
@@ -928,14 +928,14 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       if (timesheetLineList.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
+            I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
       }
 
       LocalDate timesheetLineLastDate = timesheetLineList.get(0).getDate();
       if (timesheetLineLastDate == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.TIMESHEET_LINE_NULL_DATE),
+            I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINE_NULL_DATE),
             1);
       }
 
@@ -945,7 +945,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           throw new AxelorException(
               timesheetLine,
               TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.TIMESHEET_LINE_NULL_DATE),
+              I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINE_NULL_DATE),
               timesheetLineList.indexOf(timesheetLine) + 1);
         }
         if (timesheetLineDate.isAfter(timesheetLineLastDate)) {
@@ -1190,7 +1190,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             date,
             timesheet,
             dayValueInHours,
-            I18n.get(IExceptionMessage.TIMESHEET_HOLIDAY));
+            I18n.get(HumanResourceExceptionMessage.TIMESHEET_HOLIDAY));
 
       } else if (appTimesheet.getCreateLinesForLeaves()) {
         List<LeaveRequest> leaveList = leaveService.getLeaves(employee, date);
@@ -1208,7 +1208,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
               date,
               timesheet,
               totalLeaveHours,
-              I18n.get(IExceptionMessage.TIMESHEET_DAY_LEAVE));
+              I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAY_LEAVE));
         }
       }
     }

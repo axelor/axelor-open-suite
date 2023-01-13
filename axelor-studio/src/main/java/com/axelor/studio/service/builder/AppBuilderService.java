@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBuilder;
-import com.axelor.studio.exception.IExceptionMessage;
+import com.axelor.studio.exception.StudioExceptionMessage;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
@@ -47,6 +47,7 @@ public class AppBuilderService {
     }
 
     app.setIsCustom(true);
+    app.setIsInAppView(appBuilder.getIsInAppView());
     app.setImage(appBuilder.getImage());
     app.setDescription(appBuilder.getDescription());
     Set<App> depends = new HashSet<App>();
@@ -69,7 +70,7 @@ public class AppBuilderService {
     if (app != null && app != appBuilder.getGeneratedApp()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.APP_BUILDER_1),
+          I18n.get(StudioExceptionMessage.APP_BUILDER_1),
           appBuilder.getCode());
     }
   }

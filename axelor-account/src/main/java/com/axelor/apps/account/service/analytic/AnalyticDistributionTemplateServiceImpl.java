@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.analytic;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
@@ -26,7 +25,7 @@ import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
@@ -81,26 +80,29 @@ public class AnalyticDistributionTemplateServiceImpl
   }
 
   @Override
-  public boolean validateTemplatePercentages(
-      AnalyticDistributionTemplate analyticDistributionTemplate) {
+  public void validateTemplatePercentages(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
     List<AnalyticDistributionLine> analyticDistributionLineList =
         analyticDistributionTemplate.getAnalyticDistributionLineList();
-    List<AnalyticAxis> axisList = getAllAxis(analyticDistributionTemplate);
-    BigDecimal sum;
-    for (AnalyticAxis analyticAxis : axisList) {
-      sum = BigDecimal.ZERO;
-      for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-        sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
-      }
-      if (sum.intValue() != 100) {
-        return false;
+    if (!CollectionUtils.isEmpty(analyticDistributionLineList)) {
+      List<AnalyticAxis> axisList = getAllAxis(analyticDistributionTemplate);
+      BigDecimal sum;
+      for (AnalyticAxis analyticAxis : axisList) {
+        sum = BigDecimal.ZERO;
+        for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+          sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
+        }
+        if (sum.compareTo(new BigDecimal(100)) != 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED));
+        }
       }
     }
-    return true;
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public AnalyticDistributionTemplate personalizeAnalyticDistributionTemplate(
       AnalyticDistributionTemplate analyticDistributionTemplate, Company company)
       throws AxelorException {
@@ -129,7 +131,7 @@ public class AnalyticDistributionTemplateServiceImpl
   @Override
   public void checkAnalyticDistributionTemplateCompany(
       AnalyticDistributionTemplate analyticDistributionTemplate) throws AxelorException {
-    if (analyticDistributionTemplate.getCompany() != null) {
+    if (analyticDistributionTemplate != null) {
       List<AnalyticDistributionLine> analyticDistributionLineList =
           analyticDistributionTemplate.getAnalyticDistributionLineList();
       if (analyticDistributionTemplate.getCompany() != null
@@ -138,14 +140,17 @@ public class AnalyticDistributionTemplateServiceImpl
         boolean checkJournal = false;
         for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
           if (analyticDistributionLine.getAnalyticAxis() != null
-              && (analyticDistributionTemplate.getCompany()
-                      != analyticDistributionLine.getAnalyticAxis().getCompany()
-                  || analyticDistributionLine.getAnalyticAxis().getCompany() == null)) {
+              && analyticDistributionLine.getAnalyticAxis().getCompany() != null
+              && !analyticDistributionTemplate
+                  .getCompany()
+                  .equals(analyticDistributionLine.getAnalyticAxis().getCompany())) {
             checkAxis = true;
           }
-          if (analyticDistributionTemplate.getCompany()
-                  != analyticDistributionLine.getAnalyticJournal().getCompany()
-              || analyticDistributionLine.getAnalyticAxis().getCompany() == null) {
+          if (analyticDistributionLine.getAnalyticJournal() != null
+              && analyticDistributionLine.getAnalyticJournal().getCompany() != null
+              && !analyticDistributionTemplate
+                  .getCompany()
+                  .equals(analyticDistributionLine.getAnalyticJournal().getCompany())) {
             checkJournal = true;
           }
         }
@@ -160,28 +165,30 @@ public class AnalyticDistributionTemplateServiceImpl
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(
-              IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL));
+              AccountExceptionMessage
+                  .ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS_AND_JOURNAL));
     } else if (checkAxis) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS));
+          I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_AXIS));
     } else if (checkJournal) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL));
+          I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL));
     }
   }
 
-  public AnalyticDistributionTemplate createDistributionTemplateFromAccount(Account account)
-      throws AxelorException {
-    if (account.getCompany() != null && account.getName() != null) {
-      Company company = account.getCompany();
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public AnalyticDistributionTemplate createSpecificDistributionTemplate(
+      Company company, String name) throws AxelorException {
+    if (company != null && name != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
       AnalyticDistributionTemplate analyticDistributionTemplate =
           new AnalyticDistributionTemplate();
-      analyticDistributionTemplate.setName(account.getName());
-      analyticDistributionTemplate.setCompany(account.getCompany());
-      analyticDistributionTemplate.setArchived(true);
+      analyticDistributionTemplate.setName(name);
+      analyticDistributionTemplate.setCompany(company);
+      analyticDistributionTemplate.setIsSpecific(true);
       analyticDistributionTemplate.setAnalyticDistributionLineList(
           new ArrayList<AnalyticDistributionLine>());
       for (AnalyticAxisByCompany analyticAxisByCompany :
@@ -193,6 +200,8 @@ public class AnalyticDistributionTemplateServiceImpl
                 accountConfig.getAnalyticJournal(),
                 BigDecimal.valueOf(100)));
       }
+      analyticDistributionTemplateRepository.save(analyticDistributionTemplate);
+      analyticDistributionTemplate.setName(name + " - " + analyticDistributionTemplate.getId());
       return analyticDistributionTemplate;
     }
     return null;
@@ -209,7 +218,7 @@ public class AnalyticDistributionTemplateServiceImpl
         if (analyticDistributionLine.getAnalyticAccount() == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING));
+              I18n.get(AccountExceptionMessage.FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING));
         }
       }
     }
@@ -307,5 +316,24 @@ public class AnalyticDistributionTemplateServiceImpl
     newAnalyticDistributionTemplate.addAnalyticDistributionLineListItem(
         specificAnalyticDistributionLine);
     return specificAnalyticDistributionLine;
+  }
+
+  @Override
+  public void verifyTemplateValues(AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
+    if (analyticDistributionTemplate != null
+        && !CollectionUtils.isEmpty(
+            analyticDistributionTemplate.getAnalyticDistributionLineList())) {
+      for (AnalyticDistributionLine line :
+          analyticDistributionTemplate.getAnalyticDistributionLineList()) {
+        if (line.getAnalyticAxis() == null
+            || line.getAnalyticAccount() == null
+            || line.getAnalyticJournal() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(AccountExceptionMessage.NO_VALUES_IN_ANALYTIC_DISTRIBUTION_TEMPLATE));
+        }
+      }
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.hr.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
@@ -45,6 +46,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
+import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
 import com.axelor.apps.hr.service.app.AppTimesheetService;
@@ -59,6 +61,8 @@ import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
 import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeService;
 import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
+import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
@@ -132,5 +136,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(EmploymentAmendmentTypeService.class).to(EmploymentAmendmentTypeServiceImpl.class);
     bind(ProjectDashboardServiceImpl.class).to(ProjectDashboardHRServiceImpl.class);
     bind(ProjectActivityDashboardServiceImpl.class).to(ProjectActivityDashboardServiceHRImpl.class);
+    bind(AnalyticMoveLineGenerateRealServiceImpl.class)
+        .to(AnalyticMoveLineGenerateRealServiceHrImpl.class);
+    bind(ExpenseFetchPeriodService.class).to(ExpenseFetchPeriodServiceImpl.class);
   }
 }

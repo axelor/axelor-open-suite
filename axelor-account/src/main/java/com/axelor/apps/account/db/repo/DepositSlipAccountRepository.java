@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.DepositSlip;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -50,13 +50,17 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
   private void setDepositNumber(DepositSlip entity) throws AxelorException {
     SequenceService sequenceService = Beans.get(SequenceService.class);
     String depositNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.DEPOSIT_SLIP, entity.getCompany());
+        sequenceService.getSequenceNumber(
+            SequenceRepository.DEPOSIT_SLIP,
+            entity.getCompany(),
+            DepositSlip.class,
+            "depositNumber");
 
     if (Strings.isNullOrEmpty(depositNumber)) {
       throw new AxelorException(
           Sequence.class,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.DEPOSIT_SLIP_MISSING_SEQUENCE),
+          I18n.get(AccountExceptionMessage.DEPOSIT_SLIP_MISSING_SEQUENCE),
           entity.getCompany().getName());
     }
 
@@ -66,7 +70,7 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
   @Override
   public void remove(DepositSlip entity) {
     if (entity.getPublicationDate() != null) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.DEPOSIT_SLIP_CANNOT_DELETE));
+      throw new PersistenceException(I18n.get(AccountExceptionMessage.DEPOSIT_SLIP_CANNOT_DELETE));
     }
 
     entity.clearPaymentVoucherList();

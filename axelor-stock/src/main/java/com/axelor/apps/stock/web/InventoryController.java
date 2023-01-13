@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,12 +26,11 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
+import com.axelor.apps.stock.service.InventoryProductService;
 import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -45,8 +44,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 import java.util.List;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +122,7 @@ public class InventoryController {
 
       Path filePath = Beans.get(InventoryService.class).importFile(inventory);
       response.setFlash(
-          String.format(I18n.get(IExceptionMessage.INVENTORY_8), filePath.toString()));
+          String.format(I18n.get(StockExceptionMessage.INVENTORY_8), filePath.toString()));
 
       response.setReload(true);
     } catch (Exception e) {
@@ -206,12 +203,12 @@ public class InventoryController {
         Inventory inventory = Beans.get(InventoryRepository.class).find(inventoryId);
         Boolean succeed = Beans.get(InventoryService.class).fillInventoryLineList(inventory);
         if (succeed == null) {
-          response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
+          response.setFlash(I18n.get(StockExceptionMessage.INVENTORY_9));
         } else {
           if (succeed) {
-            response.setNotify(I18n.get(IExceptionMessage.INVENTORY_10));
+            response.setNotify(I18n.get(StockExceptionMessage.INVENTORY_10));
           } else {
-            response.setNotify(I18n.get(IExceptionMessage.INVENTORY_11));
+            response.setNotify(I18n.get(StockExceptionMessage.INVENTORY_11));
           }
         }
       }
@@ -266,24 +263,12 @@ public class InventoryController {
     }
   }
 
-  public void checkDuplicateProduct(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Inventory inventory = request.getContext().asType(Inventory.class);
-
-    Query query =
-        JPA.em()
-            .createQuery(
-                "select COUNT(*) FROM InventoryLine self WHERE self.inventory.id = :invent GROUP BY self.product, self.stockLocation, self.trackingNumber HAVING COUNT(self) > 1");
-
+  public void checkDuplicateProduct(ActionRequest request, ActionResponse response) {
     try {
-      query.setParameter("invent", inventory.getId()).getSingleResult();
-
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR));
-
-    } catch (NoResultException e) {
-      // if control came here means no duplicate product.
+      Inventory inventory = request.getContext().asType(Inventory.class);
+      Beans.get(InventoryProductService.class).checkDuplicate(inventory);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

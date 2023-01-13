@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.exception.AxelorException;
@@ -111,7 +111,7 @@ public class StockLocationController {
         }
 
         if (stockLocationService.isConfigMissing(stockLocation, Integer.parseInt(printType))) {
-          response.setNotify(I18n.get(IExceptionMessage.STOCK_CONFIGURATION_MISSING));
+          response.setNotify(I18n.get(StockExceptionMessage.STOCK_CONFIGURATION_MISSING));
         }
 
         String fileLink =
@@ -129,7 +129,7 @@ public class StockLocationController {
         response.setView(ActionView.define(title).add("html", fileLink).map());
 
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.LOCATION_2));
+        response.setFlash(I18n.get(StockExceptionMessage.LOCATION_2));
       }
       response.setCanClose(true);
     } catch (Exception e) {
@@ -154,7 +154,7 @@ public class StockLocationController {
     List<Integer> lstSelectedLocations = (List<Integer>) request.getContext().get("_ids");
 
     response.setView(
-        ActionView.define(I18n.get(IExceptionMessage.STOCK_LOCATION_PRINT_WIZARD_TITLE))
+        ActionView.define(I18n.get(StockExceptionMessage.STOCK_LOCATION_PRINT_WIZARD_TITLE))
             .model(Wizard.class.getName())
             .add("form", "stock-location-print-wizard-form")
             .param("popup", "true")

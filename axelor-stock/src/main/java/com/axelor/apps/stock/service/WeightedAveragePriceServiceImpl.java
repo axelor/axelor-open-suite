@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,11 +21,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -44,18 +42,15 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
   protected ProductRepository productRepo;
   protected AppBaseService appBaseService;
   protected ProductCompanyService productCompanyService;
-  protected CurrencyService currencyService;
 
   @Inject
   public WeightedAveragePriceServiceImpl(
       ProductRepository productRepo,
       AppBaseService appBaseService,
-      ProductCompanyService productCompanyService,
-      CurrencyService currencyService) {
+      ProductCompanyService productCompanyService) {
     this.productRepo = productRepo;
     this.appBaseService = appBaseService;
     this.productCompanyService = productCompanyService;
-    this.currencyService = currencyService;
   }
 
   @Override
@@ -109,11 +104,10 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
   }
 
   @Override
-  public BigDecimal computeAvgPriceForCompany(Product product, Company company)
-      throws AxelorException {
+  public BigDecimal computeAvgPriceForCompany(Product product, Company company) {
     Long productId = product.getId();
     String query =
-        "SELECT new list(self.id, self.avgPrice, self.currentQty, self.stockLocation) FROM StockLocationLine as self "
+        "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM StockLocationLine as self "
             + "WHERE self.product.id = "
             + productId
             + " AND self.stockLocation.typeSelect != "
@@ -133,21 +127,13 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
     for (List<Object> result : results) {
       BigDecimal avgPrice = (BigDecimal) result.get(1);
       BigDecimal qty = (BigDecimal) result.get(2);
-      StockLocation stockLocation = (StockLocation) result.get(3);
-      BigDecimal convertedPrice =
-          currencyService.getAmountCurrencyConvertedAtDate(
-              stockLocation.getCompany().getCurrency(),
-              product.getPurchaseCurrency(),
-              avgPrice.multiply(qty),
-              appBaseService.getTodayDate(company));
-      productAvgPrice = productAvgPrice.add(convertedPrice);
+      productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
       qtyTot = qtyTot.add(qty);
     }
     if (qtyTot.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
     }
     productAvgPrice = productAvgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
-
     return productAvgPrice;
   }
 }

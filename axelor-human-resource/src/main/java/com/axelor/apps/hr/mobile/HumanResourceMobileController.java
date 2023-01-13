@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,7 @@ import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
@@ -106,7 +106,7 @@ public class HumanResourceMobileController {
       if (employee == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
             user.getName());
       }
 
@@ -253,7 +253,7 @@ public class HumanResourceMobileController {
         if (employee == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
+              I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
               user.getName());
         }
 
@@ -495,7 +495,7 @@ public class HumanResourceMobileController {
     if (employee == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
+          I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
           user.getName());
     }
     if (leaveReason != null) {
@@ -515,7 +515,7 @@ public class HumanResourceMobileController {
       if (leaveLine == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_LINE),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_LINE),
             employee.getName(),
             leaveReason.getName());
       }
