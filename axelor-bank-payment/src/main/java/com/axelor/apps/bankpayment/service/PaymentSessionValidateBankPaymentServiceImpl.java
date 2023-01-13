@@ -129,8 +129,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         invoicePaymentRepo,
         accountConfigService,
         partnerService,
-        paymentModeService, 
-        moveToolService, 
+        paymentModeService,
+        moveToolService,
         accountManagementAccountService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;

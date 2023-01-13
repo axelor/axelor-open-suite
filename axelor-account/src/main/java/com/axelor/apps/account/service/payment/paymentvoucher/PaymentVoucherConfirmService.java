@@ -687,8 +687,7 @@ public class PaymentVoucherConfirmService {
         if (accountManagement != null) {
           AccountType accountType = moveTaxLine.getAccount().getAccountType();
           if (accountType != null
-              && AccountTypeRepository.TYPE_TAX.equals(
-                  moveTaxLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+              && AccountTypeRepository.TYPE_TAX.equals(accountType.getTechnicalTypeSelect())) {
             BigDecimal totalInvoicedTaxAmount = moveToolService.getTotalTaxAmount(moveToPay);
             BigDecimal invoicedTaxAmount = moveTaxLine.getLineAmount();
             BigDecimal financialDiscountTaxAmount =

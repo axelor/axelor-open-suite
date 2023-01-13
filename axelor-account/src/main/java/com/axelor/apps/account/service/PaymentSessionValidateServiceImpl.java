@@ -95,7 +95,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected PaymentModeService paymentModeService;
   protected MoveToolService moveToolService;
   protected AccountManagementAccountService accountManagementAccountService;
-  
+
   protected int counter = 0;
 
   @Inject
@@ -757,48 +757,53 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         moveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
         moveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
         moveLine.setTaxCode(financialDiscountTax.getCode());
-        
+
         Move moveToPay = invoiceTerm.getMoveLine().getMove();
         for (MoveLine moveTaxLine : moveToPay.getMoveLineList()) {
-          AccountManagement accountManagement =
-        		  moveLine.getTaxLine().getTax().getAccountManagementList().stream()
-                  .filter(it -> it.getCompany().equals(paymentSession.getCompany()))
-                  .findFirst()
-                  .orElse(null);
-          if (accountManagement != null) {
-            AccountType accountType = moveTaxLine.getAccount().getAccountType();
-            if (accountType != null
-                && AccountTypeRepository.TYPE_TAX.equals(
-                    moveTaxLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-              BigDecimal totalInvoicedTaxAmount = moveToolService.getTotalTaxAmount(moveToPay);
-              BigDecimal invoicedTaxAmount = moveLine.getLineAmount();
-              BigDecimal subFinancialDiscountTaxAmount =
-            		  financialDiscountTaxAmount
-                      .multiply(invoicedTaxAmount)
-                      .divide(totalInvoicedTaxAmount, 2, RoundingMode.HALF_UP);
-              Integer vatSystemSelect = moveTaxLine.getVatSystemSelect();
-              MoveLine financialDiscountVatMoveLine =
-            		  this.generateMoveLine(
-            		            move,
-            		            null,
-            		            accountManagementAccountService.getTaxAccount(
-            	                        accountManagement,
-            	                        moveTaxLine.getTaxLine().getTax(),
-            	                        paymentSession.getCompany(),
-            	                        move.getJournal(),
-            	                        vatSystemSelect,
-            	                        move.getFunctionalOriginSelect(),
-            	                        false,
-            	                        true),
-            		            subFinancialDiscountTaxAmount,
-            		            move.getOrigin(),
-            		            move.getDescription(),
-            		            !out);
-              financialDiscountVatMoveLine.setTaxLine(moveTaxLine.getTaxLine());
-              financialDiscountVatMoveLine.setTaxRate(moveTaxLine.getTaxRate());
-              financialDiscountVatMoveLine.setTaxCode(moveTaxLine.getTaxCode());
-              financialDiscountVatMoveLine.setVatSystemSelect(vatSystemSelect);
-              move.addMoveLineListItem(financialDiscountVatMoveLine);
+          AccountType accountType = moveTaxLine.getAccount().getAccountType();
+          if (accountType != null
+              && AccountTypeRepository.TYPE_TAX.equals(
+                  moveTaxLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+            AccountManagement accountManagement =
+                moveTaxLine.getTaxLine().getTax().getAccountManagementList().stream()
+                    .filter(it -> it.getCompany().equals(paymentSession.getCompany()))
+                    .findFirst()
+                    .orElse(null);
+            if (accountManagement != null) {
+              AccountType accountTaxType = moveTaxLine.getAccount().getAccountType();
+              if (accountTaxType != null
+                  && AccountTypeRepository.TYPE_TAX.equals(
+                      accountTaxType.getTechnicalTypeSelect())) {
+                BigDecimal totalInvoicedTaxAmount = moveToolService.getTotalTaxAmount(moveToPay);
+                BigDecimal invoicedTaxAmount = moveTaxLine.getLineAmount();
+                BigDecimal subFinancialDiscountTaxAmount =
+                    financialDiscountTaxAmount
+                        .multiply(invoicedTaxAmount)
+                        .divide(totalInvoicedTaxAmount, 2, RoundingMode.HALF_UP);
+                Integer vatSystemSelect = moveTaxLine.getVatSystemSelect();
+                MoveLine financialDiscountVatMoveLine =
+                    this.generateMoveLine(
+                        move,
+                        null,
+                        accountManagementAccountService.getTaxAccount(
+                            accountManagement,
+                            moveTaxLine.getTaxLine().getTax(),
+                            paymentSession.getCompany(),
+                            move.getJournal(),
+                            vatSystemSelect,
+                            move.getFunctionalOriginSelect(),
+                            false,
+                            true),
+                        subFinancialDiscountTaxAmount,
+                        move.getOrigin(),
+                        move.getDescription(),
+                        !out);
+                financialDiscountVatMoveLine.setTaxLine(moveTaxLine.getTaxLine());
+                financialDiscountVatMoveLine.setTaxRate(moveTaxLine.getTaxRate());
+                financialDiscountVatMoveLine.setTaxCode(moveTaxLine.getTaxCode());
+                financialDiscountVatMoveLine.setVatSystemSelect(vatSystemSelect);
+                move.addMoveLineListItem(financialDiscountVatMoveLine);
+              }
             }
           }
         }

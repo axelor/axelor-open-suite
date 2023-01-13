@@ -436,8 +436,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       for (MoveLine moveTaxLine : invoice.getMove().getMoveLineList()) {
         AccountType accountType = moveTaxLine.getAccount().getAccountType();
         if (accountType != null
-            && AccountTypeRepository.TYPE_TAX.equals(
-                moveTaxLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+            && AccountTypeRepository.TYPE_TAX.equals(accountType.getTechnicalTypeSelect())) {
           int vatSytem = moveTaxLine.getVatSystemSelect();
           Account financialDiscountVATAccount =
               this.getFinancialDiscountVATAccount(
