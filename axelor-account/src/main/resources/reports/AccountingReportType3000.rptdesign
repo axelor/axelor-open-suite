@@ -2507,9 +2507,11 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                     <extended-item extensionName="CrosstabCell" id="5990">
                                                                         <property name="content">
                                                                             <data name="period" id="5992">
+                                                                                <property name="color">white</property>
                                                                                 <property name="resultSetColumn">period</property>
                                                                             </data>
                                                                         </property>
+                                                                        <property name="backgroundColor">blue</property>
                                                                     </extended-item>
                                                                 </property>
                                                             </extended-item>
@@ -2549,9 +2551,11 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                     <extended-item extensionName="CrosstabCell" id="5981">
                                                                         <property name="content">
                                                                             <data name="group" id="5983">
+                                                                                <property name="color">white</property>
                                                                                 <property name="resultSetColumn">group</property>
                                                                             </data>
                                                                         </property>
+                                                                        <property name="backgroundColor">blue</property>
                                                                     </extended-item>
                                                                 </property>
                                                             </extended-item>
@@ -2573,9 +2577,11 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                     <extended-item extensionName="CrosstabCell" id="5849">
                                                                         <property name="content">
                                                                             <data name="column" id="5850">
+                                                                                <property name="color">white</property>
                                                                                 <property name="resultSetColumn">column</property>
                                                                             </data>
                                                                         </property>
+                                                                        <property name="backgroundColor">blue</property>
                                                                     </extended-item>
                                                                 </property>
                                                             </extended-item>
@@ -2586,16 +2592,22 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                         </property>
                                         <property name="header">
                                             <extended-item extensionName="CrosstabCell" id="6052"/>
-                                            <extended-item extensionName="CrosstabCell" id="5991"/>
+                                            <extended-item extensionName="CrosstabCell" id="5991">
+                                                <property name="backgroundColor">blue</property>
+                                            </extended-item>
                                             <extended-item extensionName="CrosstabCell" id="6051"/>
-                                            <extended-item extensionName="CrosstabCell" id="5982"/>
+                                            <extended-item extensionName="CrosstabCell" id="5982">
+                                                <property name="backgroundColor">blue</property>
+                                            </extended-item>
                                             <extended-item extensionName="CrosstabCell" id="6050"/>
                                             <extended-item extensionName="CrosstabCell" id="5856">
                                                 <property name="content">
                                                     <data id="6001">
+                                                        <property name="color">white</property>
                                                         <property name="resultSetColumn">Column Binding</property>
                                                     </data>
                                                 </property>
+                                                <property name="backgroundColor">blue</property>
                                             </extended-item>
                                             <extended-item extensionName="CrosstabCell" id="6049">
                                                 <property name="content">
@@ -2615,6 +2627,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                 </simple-property-list>
                                             </filter-condition-element>
                                         </property>
+                                        <property name="pageBreakAfter">always</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
                                                 <property name="name">line</property>
