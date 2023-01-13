@@ -18,12 +18,12 @@
 package com.axelor.apps.crm.message;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
@@ -89,7 +89,8 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.NO_ACTIVE_COMPANY));
+          I18n.get(CrmExceptionMessage.EVENT_USER_NO_ACTIVE_COMPANY),
+          event.getUser().getName());
     }
 
     Message message = Beans.get(TemplateMessageService.class).generateMessage(event, template);
