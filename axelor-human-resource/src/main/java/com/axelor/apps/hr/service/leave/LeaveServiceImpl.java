@@ -215,6 +215,7 @@ public class LeaveServiceImpl implements LeaveService {
     BigDecimal duration = BigDecimal.ZERO;
     WeeklyPlanning weeklyPlanning = getWeeklyPlanning(leave, employee);
     EventsPlanning holidayPlanning = getPublicHolidayEventsPlanning(leave, employee);
+    EventsPlanning imposedDayEventsPlanning = employee.getImposedDayEventsPlanning();
 
     // If the leave request is only for 1 day
     if (fromDate.isEqual(toDate)) {
@@ -264,6 +265,13 @@ public class LeaveServiceImpl implements LeaveService {
           duration.subtract(
               publicHolidayHrService.computePublicHolidayDays(
                   fromDate, toDate, weeklyPlanning, holidayPlanning));
+    }
+
+    if (imposedDayEventsPlanning != null) {
+      duration =
+          duration.subtract(
+              publicHolidayHrService.computePublicHolidayDays(
+                  fromDate, toDate, weeklyPlanning, imposedDayEventsPlanning));
     }
 
     return duration;
