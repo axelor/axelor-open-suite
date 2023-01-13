@@ -25,10 +25,7 @@ import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.*;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -510,9 +507,18 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
+  @Transactional
   public void setDescriptionOnMoveLineList(Move move) {
+    Move defaultMove = null;
+    if (move.getId() != null) {
+      defaultMove = Beans.get(MoveRepository.class).find(move.getId());
+    }
+
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine != null) {
+      if (moveLine != null
+          && ObjectUtils.notEmpty(defaultMove)
+          && defaultMove.getDescription() != null
+          && defaultMove.getDescription().equals(moveLine.getDescription())) {
         moveLine.setDescription(move.getDescription());
       }
     }

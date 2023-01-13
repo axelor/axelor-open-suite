@@ -640,6 +640,7 @@
   <action-group name="action-account-move-group-set-description-on-lines">
     <action name="action-account-move-method-description-is-empty"/>
     <action name="action-account-move-method-set-description-on-lines"/>
+    <action name="save"/>
   </action-group>
 
   <action-group name="action-account-move-group-set-origin">
