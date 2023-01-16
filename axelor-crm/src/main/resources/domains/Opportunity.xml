@@ -48,10 +48,12 @@
       <field name="name"/>
       <field name="opportunityStatus"/>
       <message if="true" on="CREATE">Opportunity created</message>
-      <message if="opportunityStatus.typeSelect == 1" fields="opportunityStatus"
-        tag="success">Opportunity won</message>
-      <message if="opportunityStatus.typeSelect == 2" fields="opportunityStatus"
-        tag="warning">Opportunity lost</message>
+      <message
+        if="opportunityStatus.id == __config__.app.getApp('crm')?.closedWinOpportunityStatus?.id"
+        fields="opportunityStatus" tag="success">Opportunity won</message>
+      <message
+        if="opportunityStatus.id == __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"
+        fields="opportunityStatus" tag="warning">Opportunity lost</message>
     </track>
 
   </entity>

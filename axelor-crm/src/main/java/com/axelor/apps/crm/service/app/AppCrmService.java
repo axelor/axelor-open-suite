@@ -17,9 +17,23 @@
  */
 package com.axelor.apps.crm.service.app;
 
+import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.crm.db.LeadStatus;
+import com.axelor.apps.crm.db.OpportunityStatus;
+import com.axelor.exception.AxelorException;
 
 public interface AppCrmService extends AppBaseService {
 
   public void generateCrmConfigurations();
+
+  public AppCrm getAppCrm();
+
+  LeadStatus getLostLeadStatus() throws AxelorException;
+
+  LeadStatus getConvertedLeadStatus() throws AxelorException;
+
+  OpportunityStatus getClosedWinOpportunityStatus() throws AxelorException;
+
+  OpportunityStatus getClosedLostOpportunityStatus() throws AxelorException;
 }

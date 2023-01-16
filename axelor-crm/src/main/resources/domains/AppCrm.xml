@@ -18,6 +18,16 @@
     <integer name="defaultRecurringDuration" title="Default recurring duration (in months)"/>
     <boolean name="isManageCatalogs" title="Manage catalogs" default="false"/>
     <boolean name="agenciesManagement" title="Agencies management"/>
+    <many-to-one name="closedWinOpportunityStatus"
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed win opportunity status"
+      required="true"/>
+    <many-to-one name="closedLostOpportunityStatus"
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed lost opportunity status"
+      required="true"/>
+    <many-to-one name="convertedLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
+      title="Converted lead status"/>
+    <many-to-one name="lostLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
+      title="Lost lead status"/>
 
     <track>
       <field name="assignableUsers" on="UPDATE"/>

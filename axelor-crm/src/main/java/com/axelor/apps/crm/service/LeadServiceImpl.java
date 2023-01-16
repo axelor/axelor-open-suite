@@ -32,6 +32,7 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.LeadStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.message.db.MultiRelated;
 import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.auth.AuthUtils;
@@ -39,7 +40,6 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -57,6 +57,7 @@ public class LeadServiceImpl implements LeadService {
   protected EventRepository eventRepo;
   protected MultiRelatedRepository multiRelatedRepository;
   protected LeadStatusRepository leadStatusRepo;
+  protected AppCrmService appCrmService;
 
   @Inject
   public LeadServiceImpl(
@@ -66,7 +67,8 @@ public class LeadServiceImpl implements LeadService {
       LeadRepository leadRepo,
       EventRepository eventRepo,
       MultiRelatedRepository multiRelatedRepository,
-      LeadStatusRepository leadStatusRepo) {
+      LeadStatusRepository leadStatusRepo,
+      AppCrmService appCrmService) {
     this.sequenceService = sequenceService;
     this.userService = userService;
     this.partnerRepo = partnerRepo;
@@ -74,6 +76,7 @@ public class LeadServiceImpl implements LeadService {
     this.eventRepo = eventRepo;
     this.multiRelatedRepository = multiRelatedRepository;
     this.leadStatusRepo = leadStatusRepo;
+    this.appCrmService = appCrmService;
   }
 
   /**
@@ -87,8 +90,11 @@ public class LeadServiceImpl implements LeadService {
   public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
       throws AxelorException {
 
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+    LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
+
     LeadStatus leadStatus = lead.getLeadStatus();
-    if (leadStatus == null || (leadStatus != null && leadStatus.getIsLost())) {
+    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_CONVERT_WRONG_STATUS));
@@ -136,8 +142,7 @@ public class LeadServiceImpl implements LeadService {
       eventRepo.save(event);
     }
     lead.setIsConverted(true);
-    lead.setLeadStatus(
-        Beans.get(LeadStatusRepository.class).all().filter("self.isClosed = ?", true).fetchOne());
+    lead.setLeadStatus(convertedLeadStatus);
     return leadRepo.save(lead);
   }
 
@@ -256,7 +261,10 @@ public class LeadServiceImpl implements LeadService {
   @Override
   public void assignToMeLead(Lead lead) throws AxelorException {
     LeadStatus leadStatus = lead.getLeadStatus();
-    if (leadStatus == null || (leadStatus != null && leadStatus.getIsLost())) {
+
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+
+    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_ASSIGN_TO_ME_WRONG_STATUS));
@@ -277,13 +285,15 @@ public class LeadServiceImpl implements LeadService {
   public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
       throws AxelorException {
     LeadStatus leadStatus = lead.getLeadStatus();
-    if (leadStatus == null || (leadStatus != null && leadStatus.getIsLost())) {
+
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+
+    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_LOSE_WRONG_STATUS));
     }
-    lead.setLeadStatus(
-        Beans.get(LeadStatusRepository.class).all().filter("self.isLost = ?", true).fetchOne());
+    lead.setLeadStatus(lostLeadStatus);
     lead.setLostReason(lostReason);
     lead.setLostReasonStr(lostReasonStr);
   }

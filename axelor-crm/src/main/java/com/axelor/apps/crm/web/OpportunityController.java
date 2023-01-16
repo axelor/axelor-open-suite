@@ -21,7 +21,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
-import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -78,10 +77,10 @@ public class OpportunityController {
   public void setStageClosedWon(ActionRequest request, ActionResponse response) {
     try {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
+
       Beans.get(OpportunityService.class)
-          .setStatusByTypeSelect(
-              Beans.get(OpportunityRepository.class).find(opportunity.getId()),
-              OpportunityStatusRepository.STATUS_TYPE_CLOSED_WON);
+          .setOpportunityStatus(
+              Beans.get(OpportunityRepository.class).find(opportunity.getId()), true);
       response.setReload(true);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -91,10 +90,10 @@ public class OpportunityController {
   public void setStageClosedLost(ActionRequest request, ActionResponse response) {
     try {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
+
       Beans.get(OpportunityService.class)
-          .setStatusByTypeSelect(
-              Beans.get(OpportunityRepository.class).find(opportunity.getId()),
-              OpportunityStatusRepository.STATUS_TYPE_CLOSED_LOST);
+          .setOpportunityStatus(
+              Beans.get(OpportunityRepository.class).find(opportunity.getId()), false);
       response.setReload(true);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

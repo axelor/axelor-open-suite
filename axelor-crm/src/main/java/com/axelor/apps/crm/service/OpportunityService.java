@@ -20,7 +20,9 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public interface OpportunityService {
 
@@ -31,8 +33,11 @@ public interface OpportunityService {
 
   public OpportunityStatus getDefaultOpportunityStatus();
 
-  public void setStatusByTypeSelect(Opportunity opportunity, Integer typeSelect)
+  public void setOpportunityStatus(Opportunity opportunity, boolean isStagedClosedWon)
       throws AxelorException;
 
   public void setOpportunityStatusNextStage(Opportunity opportunity);
+
+  @CallMethod
+  public List<Long> getClosedOpportunityStatusIdList();
 }
