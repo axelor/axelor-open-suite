@@ -98,14 +98,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       if (batch.getAccountingBatch().getGenerateResultMove()) {
         this.generateResultMove(batch.getAccountingBatch(), resultMoveAmount);
       }
-    } catch (AxelorException e) {
-      TraceBackService.trace(
-          new AxelorException(e, e.getCategory(), ""),
-          ExceptionOriginRepository.REPORTED_BALANCE,
-          batch.getId());
-      incrementAnomaly();
-      end = true;
-    } catch (PersistenceException e) {
+    } catch (AxelorException | PersistenceException e) {
       TraceBackService.trace(e, ExceptionOriginRepository.REPORTED_BALANCE, batch.getId());
       incrementAnomaly();
       end = true;
