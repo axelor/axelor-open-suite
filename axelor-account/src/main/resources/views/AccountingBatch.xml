@@ -128,7 +128,7 @@
         <field name="openYear" colSpan="3"/>
         <field name="year.reportedBalanceDate" showIf="openYear" hidden="true" colSpan="3"/>
         <field name="year"
-          domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)"
+          domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false) AND ((now() &gt; self.fromDate AND now() &lt; self.toDate) OR (:lastYearDate &gt; self.fromDate AND :lastYearDate &lt; self.toDate))"
           canEdit="false" requiredIf="actionSelect == 21"/>
         <field name="allocatePerPartner" colSpan="3"/>
         <field name="simulateGeneratedMoves"

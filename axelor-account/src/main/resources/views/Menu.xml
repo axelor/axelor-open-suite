@@ -760,6 +760,7 @@
     <view type="grid" name="accounting-batch-grid"/>
     <view type="form" name="accounting-batch-form"/>
     <view-param name="search-filters" value="accounting-batch-filters"/>
+    <context name="lastYearDate" expr="eval: __date__.minusYears(1)"/>
   </action-view>
 
   <!-- Top Menus -->
