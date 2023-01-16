@@ -165,7 +165,7 @@
           widget="NavSelect"/>
         <field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1"
           onChange="action-manuf-order-group-onchange"
-          domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)"
+          domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 1"
           grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3"
           canEdit="false"/>
         <field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange"
@@ -176,8 +176,9 @@
         <field name="product" canEdit="false" required="true"
           readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form"
           grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
-        <field name="qty" readonlyIf="statusSelect &gt; 1 || typeSelect == 2"
-          validIf="typeSelect == 2 || qty > 0" colSpan="3"/>
+        <field name="qty" hideIf="typeSelect != 1"
+          readonlyIf="statusSelect &gt; 1 || typeSelect == 2" validIf="typeSelect == 2 || qty > 0"
+          colSpan="3"/>
         <field name="product.economicManufOrderQty" colSpan="3"/>
         <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
@@ -835,10 +836,10 @@
 
   <action-attrs name="action-manuf-order-attrs-filter-prodProcess">
     <attribute name="domain" for="prodProcess"
-      expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) &quot;"
+      expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION} &quot;"
       if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
     <attribute name="domain" for="prodProcess"
-      expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) &quot;"
+      expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION} &quot;"
       if="billOfMaterial == null"/>
   </action-attrs>
 
