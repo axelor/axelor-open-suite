@@ -2050,6 +2050,11 @@ InvoiceSet.length > 0))"
          (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
   </action-attrs>
 
+  <action-attrs name="action-invoice-attrs-domain-company-bank-details">
+    <attribute name="domain" for="companyBankDetails"
+      expr="eval: &quot;self.company.id = ${company.id} AND self.active = true&quot;"/>
+  </action-attrs>
+
   <!-- ACTION VALIDATE -->
 
   <action-validate name="action-validate-invoice-check-selection">

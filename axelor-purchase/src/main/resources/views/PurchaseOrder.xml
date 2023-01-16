@@ -393,9 +393,9 @@
         form-view="payment-condition-form" grid-view="payment-condition-grid"
         if="__config__.app.isApp('supplychain')" colSpan="6"/>
       <field name="companyBankDetails" widget="SuggestBox"
-        onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form"
-        grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
-        if-module="axelor-cash-management"/>
+        onSelect="action-purchase-order-attrs-domain-company-bank-details"
+        form-view="bank-details-form" grid-view="bank-details-grid"
+        if="__config__.app.getApp('base')?.getManageMultiBanks()" if-module="axelor-cash-management"/>
     </panel>
     <panel name="internalNotePanel" title="Internal note" sidebar="true">
       <field name="internalNote" colSpan="12" x-lite="true" widget="html" showTitle="false"/>
@@ -662,6 +662,11 @@
 
   <action-attrs name="action-purchase-order-attrs-stock-location-address">
     <attribute name="value" for="stockLocation.address" expr="eval: stockLocation.address"/>
+  </action-attrs>
+
+  <action-attrs name="action-purchase-order-attrs-domain-company-bank-details">
+    <attribute name="domain" for="companyBankDetails"
+      expr="eval: &quot;self.company.id = ${company.id} AND self.active = true&quot;"/>
   </action-attrs>
 
   <action-record name="action-purchase-order-record-load-trading-name-config"
