@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.crm.service;
 
-import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -91,24 +90,11 @@ public class LeadServiceImpl implements LeadService {
   public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
       throws AxelorException {
 
-    AppCrm appCrm = appCrmService.getAppCrm();
-    LeadStatus lostLeadStatus = appCrm.getLostLeadStatus();
-    LeadStatus convertedLeadStatus = appCrm.getConvertedLeadStatus();
-
-    if (convertedLeadStatus == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.CRM_CONVERTED_LEAD_STATUS_MISSING));
-    }
-
-    if (lostLeadStatus == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.CRM_LOST_LEAD_STATUS_MISSING));
-    }
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+    LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
 
     LeadStatus leadStatus = lead.getLeadStatus();
-    if (leadStatus == null || (leadStatus != null && leadStatus.equals(lostLeadStatus))) {
+    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_CONVERT_WRONG_STATUS));
@@ -276,15 +262,9 @@ public class LeadServiceImpl implements LeadService {
   public void assignToMeLead(Lead lead) throws AxelorException {
     LeadStatus leadStatus = lead.getLeadStatus();
 
-    AppCrm appCrm = appCrmService.getAppCrm();
-    LeadStatus lostLeadStatus = appCrm.getLostLeadStatus();
-    if (lostLeadStatus == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.CRM_LOST_LEAD_STATUS_MISSING));
-    }
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
 
-    if (leadStatus == null || (leadStatus != null && leadStatus.equals(lostLeadStatus))) {
+    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_ASSIGN_TO_ME_WRONG_STATUS));
@@ -306,15 +286,9 @@ public class LeadServiceImpl implements LeadService {
       throws AxelorException {
     LeadStatus leadStatus = lead.getLeadStatus();
 
-    AppCrm appCrm = appCrmService.getAppCrm();
-    LeadStatus lostLeadStatus = appCrm.getLostLeadStatus();
-    if (lostLeadStatus == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.CRM_LOST_LEAD_STATUS_MISSING));
-    }
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
 
-    if (leadStatus == null || (leadStatus != null && leadStatus.equals(lostLeadStatus))) {
+    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_LOSE_WRONG_STATUS));

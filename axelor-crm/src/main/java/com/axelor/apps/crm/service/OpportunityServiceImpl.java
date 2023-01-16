@@ -22,12 +22,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -42,18 +42,18 @@ public class OpportunityServiceImpl implements OpportunityService {
   protected OpportunityRepository opportunityRepo;
   protected AddressService addressService;
   protected OpportunityStatusRepository opportunityStatusRepo;
-  protected AppBaseService appBaseService;
+  protected AppCrmService appCrmService;
 
   @Inject
   public OpportunityServiceImpl(
       OpportunityRepository opportunityRepo,
       AddressService addressService,
       OpportunityStatusRepository opportunityStatusRepo,
-      AppBaseService appBaseService) {
+      AppCrmService appCrmService) {
     this.opportunityRepo = opportunityRepo;
     this.addressService = addressService;
     this.opportunityStatusRepo = opportunityStatusRepo;
-    this.appBaseService = appBaseService;
+    this.appCrmService = appCrmService;
   }
 
   @Transactional
@@ -86,27 +86,10 @@ public class OpportunityServiceImpl implements OpportunityService {
   public void setOpportunityStatus(Opportunity opportunity, boolean isStagedClosedWon)
       throws AxelorException {
 
-    AppCrm appCrm = (AppCrm) appBaseService.getApp("crm");
-
-    OpportunityStatus closedWinOpportunityStatus = appCrm.getClosedWinOpportunityStatus();
-    OpportunityStatus closedLostOpportunityStatus = appCrm.getClosedLostOpportunityStatus();
-
     if (isStagedClosedWon) {
-      if (closedWinOpportunityStatus == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(CrmExceptionMessage.CRM_CLOSED_WIN_OPPORTUNITY_STATUS_MISSING));
-      }
-
-      opportunity.setOpportunityStatus(closedWinOpportunityStatus);
+      opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
     } else {
-      if (closedLostOpportunityStatus == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(CrmExceptionMessage.CRM_CLOSED_LOST_OPPORTUNITY_STATUS_MISSING));
-      }
-
-      opportunity.setOpportunityStatus(closedLostOpportunityStatus);
+      opportunity.setOpportunityStatus(appCrmService.getClosedLostOpportunityStatus());
     }
 
     saveOpportunity(opportunity);
@@ -124,7 +107,7 @@ public class OpportunityServiceImpl implements OpportunityService {
   public List<Long> getClosedOpportunityStatusIdList() {
     List<Long> closedOpportunityStatusIdList = new ArrayList<>();
 
-    AppCrm appCrm = (AppCrm) appBaseService.getApp("crm");
+    AppCrm appCrm = appCrmService.getAppCrm();
 
     OpportunityStatus closedWinOpportunityStatus = appCrm.getClosedWinOpportunityStatus();
     OpportunityStatus closedLostOpportunityStatus = appCrm.getClosedLostOpportunityStatus();

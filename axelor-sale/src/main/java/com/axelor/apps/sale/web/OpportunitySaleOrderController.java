@@ -17,11 +17,9 @@
  */
 package com.axelor.apps.sale.web;
 
-import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
-import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.crm.translation.ITranslation;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -29,7 +27,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -63,13 +60,8 @@ public class OpportunitySaleOrderController {
     try {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
       SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
-      AppCrm appCrm = Beans.get(AppCrmService.class).getAppCrm();
-      OpportunityStatus closedLostOpportunityStatus = appCrm.getClosedLostOpportunityStatus();
-      if (closedLostOpportunityStatus == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(CrmExceptionMessage.CRM_CLOSED_LOST_OPPORTUNITY_STATUS_MISSING));
-      }
+      OpportunityStatus closedLostOpportunityStatus =
+          Beans.get(AppCrmService.class).getClosedLostOpportunityStatus();
 
       if (opportunity.getOpportunityStatus().equals(closedLostOpportunityStatus)) {
         List<SaleOrder> saleOrderList = opportunity.getSaleOrderList();
