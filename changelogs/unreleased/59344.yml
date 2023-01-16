@@ -1,0 +1,3 @@
+---
+title: "ANALYTIC / MOVELINE : forbid moveline validation if all the axis are not filled"
+type: fix
