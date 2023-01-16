@@ -974,6 +974,46 @@ public class BankReconciliationService {
   }
 
   @Transactional
+  public void mergeSplitedReconciliationLines(BankReconciliation bankReconciliation) {
+    List<BankReconciliationLine> bankReconciliationLineList =
+        bankReconciliationLineRepository
+            .all()
+            .filter("self.bankReconciliation = :br AND self.moveLine IS NULL")
+            .bind("br", bankReconciliation)
+            .order("id")
+            .fetch();
+    List<BankReconciliationLine> alreadyMergedBankReconciliationLineList =
+        new ArrayList<BankReconciliationLine>();
+    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLineList) {
+      BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+      List<BankReconciliationLine> splitedBankReconciliationLines =
+          bankReconciliationLineRepository
+              .all()
+              .filter(
+                  "self.bankReconciliation = :br AND self.moveLine IS NULL AND self.bankStatementLine = :bankStatement AND self.id != :id")
+              .bind("br", bankReconciliation)
+              .bind("bankStatement", bankStatementLine)
+              .bind("id", bankReconciliationLine.getId())
+              .fetch();
+      if (!splitedBankReconciliationLines.isEmpty()
+          && !alreadyMergedBankReconciliationLineList.contains(bankReconciliationLine)) {
+        for (BankReconciliationLine bankReconciliationLineToMerge :
+            splitedBankReconciliationLines) {
+          bankReconciliation.removeBankReconciliationLineListItem(bankReconciliationLineToMerge);
+          bankReconciliationLineRepository.remove(bankReconciliationLineToMerge);
+          alreadyMergedBankReconciliationLineList.add(bankReconciliationLineToMerge);
+        }
+        if (bankReconciliationLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+          bankReconciliationLine.setCredit(bankStatementLine.getAmountRemainToReconcile());
+        } else {
+          bankReconciliationLine.setDebit(bankStatementLine.getAmountRemainToReconcile());
+        }
+        bankReconciliationLineRepository.save(bankReconciliationLine);
+      }
+    }
+  }
+
+  @Transactional
   public BankReconciliation computeInitialBalance(BankReconciliation bankReconciliation) {
     BankDetails bankDetails = bankReconciliation.getBankDetails();
     BankReconciliation previousBankReconciliation =

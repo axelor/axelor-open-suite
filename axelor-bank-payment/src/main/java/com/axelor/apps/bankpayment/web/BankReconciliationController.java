@@ -79,6 +79,7 @@ public class BankReconciliationController {
         BankReconciliationService bankReconciliationService =
             Beans.get(BankReconciliationService.class);
         bankReconciliationService.unreconcileLines(bankReconciliationLines);
+        bankReconciliationService.mergeSplitedReconciliationLines(br);
         bankReconciliationService.computeBalances(br);
         response.setReload(true);
       }
