@@ -261,6 +261,7 @@
   <!-- ACTION GROUP -->
   <action-group name="action-accounting-batch-group-close-annual-accounts">
     <action name="action-accounting-batch-validate-batchlist-not-empty"/>
+    <action name="action-accounting-batch-validate-options-close-annual-accounts"/>
     <action name="action-accounting-batch-method-action-close-annual-accounts"/>
     <action name="action-accounting-batch-method-print-report"/>
   </action-group>
@@ -437,6 +438,13 @@
     <alert
       message="The batch to close the annual accounts has already ran. Are you sure you want to continue?"
       if="eval: batchList &amp;&amp; !batchList?.empty"/>
+  </action-validate>
+
+  <action-validate
+    name="action-accounting-batch-validate-options-close-annual-accounts">
+    <error
+      message="Please select at least to close or open annual accounts before start the batch"
+      if="eval: !closeYear &amp;&amp; !openYear"/>
   </action-validate>
 
   <action-validate name="action-accounting-batch-validate-realized-fixed-date">
