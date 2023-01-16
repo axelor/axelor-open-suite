@@ -2052,7 +2052,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-attrs-domain-company-bank-details">
     <attribute name="domain" for="companyBankDetails"
-      expr="eval: &quot;self.company.id = ${company.id} AND self.active = true&quot;"/>
+      expr="eval: &quot;self.company.id = ${company?.id} AND self.active = true&quot;"/>
   </action-attrs>
 
   <!-- ACTION VALIDATE -->

@@ -666,7 +666,7 @@
 
   <action-attrs name="action-purchase-order-attrs-domain-company-bank-details">
     <attribute name="domain" for="companyBankDetails"
-      expr="eval: &quot;self.company.id = ${company.id} AND self.active = true&quot;"/>
+      expr="eval: &quot;self.company.id = ${company?.id} AND self.active = true&quot;"/>
   </action-attrs>
 
   <action-record name="action-purchase-order-record-load-trading-name-config"
