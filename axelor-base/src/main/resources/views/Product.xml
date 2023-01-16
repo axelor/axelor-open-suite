@@ -901,7 +901,7 @@
 
   <action-attrs name="action-product-attrs-set-required-procurement-method-select">
     <attribute name="required" for="procurementMethodSelect"
-      expr="eval: productTypeSelect == 'storable' &amp;&amp; (!__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet() || __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.isEmpty())"/>
+      expr="eval: productTypeSelect == 'storable' &amp;&amp; (!__config__.app.getApp('base')?.getCompanySpecificProductFieldsList() || __config__.app.getApp('base')?.getCompanySpecificProductFieldsList()?.isEmpty())"/>
   </action-attrs>
 
 </object-views>
