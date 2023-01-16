@@ -259,6 +259,10 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       }
     }
 
+    if ("".equals(oldTaxDescription)) {
+      oldTaxDescription = move.getDescription();
+    }
+
     for (Map.Entry<String, MoveLine> mapEntry : newMap.entrySet()) {
       mapEntry.getValue().setDescription(oldTaxDescription);
     }
