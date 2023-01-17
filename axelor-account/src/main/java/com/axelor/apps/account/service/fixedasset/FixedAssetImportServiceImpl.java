@@ -29,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,12 +56,28 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
   }
 
   @Override
+  public void realizeFirstLine(FixedAsset fixedAsset) throws AxelorException {
+    if (isImported(fixedAsset) && fixedAsset.getDisposalDate() == null) {
+      LocalDate failoverDate = fixedAsset.getFailoverDate();
+      FixedAssetLine fixedAssetLine = null;
+      if (isFirstDepreciationOnFailoverDate(fixedAsset.getFixedAssetLineList(), failoverDate)) {
+        fixedAssetLine = getFirstLine(fixedAsset.getFixedAssetLineList());
+      } else if (isFirstDepreciationOnFailoverDate(
+          fixedAsset.getFiscalFixedAssetLineList(), failoverDate)) {
+        fixedAssetLine = getFirstLine(fixedAsset.getFiscalFixedAssetLineList());
+      } else if (isFirstDepreciationOnFailoverDate(
+          fixedAsset.getIfrsFixedAssetLineList(), failoverDate)) {
+        fixedAssetLine = getFirstLine(fixedAsset.getIfrsFixedAssetLineList());
+      }
+      fixedAssetLineMoveService.realize(fixedAssetLine, false, false, false);
+    }
+  }
+
+  @Override
   @Transactional
   public FixedAsset generateAndComputeLines(
       FixedAsset fixedAsset, FixedAssetRepository fixedAssetRepository) throws AxelorException {
-    if (fixedAsset.getOriginSelect() == FixedAssetRepository.ORIGINAL_SELECT_IMPORT
-        && fixedAsset.getImportId() != null
-        && fixedAsset.getFailoverDate() != null) {
+    if (isImported(fixedAsset)) {
 
       if (fixedAsset.getDisposalDate() == null) {
         BigDecimal grossValue = fixedAsset.getGrossValue();
@@ -376,5 +393,21 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)
         && CollectionUtils.isEmpty(fixedAsset.getIfrsFixedAssetLineList());
+  }
+
+  protected boolean isImported(FixedAsset fixedAsset) {
+    return fixedAsset.getOriginSelect() == FixedAssetRepository.ORIGINAL_SELECT_IMPORT
+        && fixedAsset.getImportId() != null
+        && fixedAsset.getFailoverDate() != null;
+  }
+
+  protected boolean isFirstDepreciationOnFailoverDate(
+      List<FixedAssetLine> fixedAssetLineList, LocalDate failoverDate) {
+    return fixedAssetLineList.size() > 0
+        && fixedAssetLineList.get(0).getDepreciationDate().equals(failoverDate);
+  }
+
+  protected FixedAssetLine getFirstLine(List<FixedAssetLine> fixedAssetLineList) {
+    return fixedAssetLineList.get(0);
   }
 }

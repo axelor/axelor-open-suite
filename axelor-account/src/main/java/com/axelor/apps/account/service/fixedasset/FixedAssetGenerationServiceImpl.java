@@ -112,6 +112,8 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       fixedAssetLineGenerationService.generateAndComputeIfrsFixedAssetLines(fixedAsset);
     }
 
+    fixedAssetImportService.realizeFirstLine(fixedAsset);
+
     return fixedAssetRepo.save(fixedAsset);
   }
 
