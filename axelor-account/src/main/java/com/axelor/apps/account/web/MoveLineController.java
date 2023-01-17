@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -816,6 +817,17 @@ public class MoveLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      if (moveLine != null && moveLine.getAccount() != null) {
+        Beans.get(AccountService.class).checkAnalyticAxis(moveLine.getAccount());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

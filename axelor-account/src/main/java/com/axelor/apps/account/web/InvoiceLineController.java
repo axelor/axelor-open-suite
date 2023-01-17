@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -623,6 +624,18 @@ public class InvoiceLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
+    try {
+      Context parentContext = request.getContext().getParent();
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      if (invoiceLine != null && invoiceLine.getAccount() != null) {
+        Beans.get(AccountService.class).checkAnalyticAxis(invoiceLine.getAccount());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

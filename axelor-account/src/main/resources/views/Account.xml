@@ -132,6 +132,7 @@
           <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized"
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
             canEdit="false" canNew="false" onChange="action-account-method-personalize-template"
+            onSelect="action-on-change-distribution-template-account"
             domain="self.company = :company AND self.isSpecific = false"/>
           <button name="personalizeBtn" title="Create personalized analytic template"
             colSpan="3"
