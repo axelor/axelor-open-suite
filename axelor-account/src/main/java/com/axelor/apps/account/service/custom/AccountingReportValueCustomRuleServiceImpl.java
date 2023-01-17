@@ -307,6 +307,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
             == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       return groupColumn.getRule();
     } else if (column.getRuleTypeSelect()
+            == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+        && line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+      return column.getPriority() > line.getPriority() ? column.getRule() : line.getRule();
+    } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       return column.getRule();
     } else {

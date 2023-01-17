@@ -7,6 +7,7 @@ import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.common.StringUtils;
@@ -84,6 +85,12 @@ public abstract class AccountingReportValueAbstractService {
             columnNumber,
             lineNumber + AccountingReportValueServiceImpl.getLineOffset(),
             analyticCounter,
+            this.getStyleSelect(groupColumn, column, line),
+            groupColumn == null
+                ? AccountingReportConfigLineRepository.STYLE_NO_STYLE
+                : groupColumn.getStyleSelect(),
+            this.getColumnStyleSelect(groupColumn, column),
+            line.getStyleSelect(),
             result,
             lineTitle,
             parentTitle,
@@ -125,6 +132,41 @@ public abstract class AccountingReportValueAbstractService {
     }
 
     return String.join("__", columnCodeTokens);
+  }
+
+  protected int getStyleSelect(
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line) {
+    if (groupColumn != null
+        && this.isThisConfigLineStylePriorityHighest(groupColumn, column, line)) {
+      return groupColumn.getStyleSelect();
+    } else if (this.isThisConfigLineStylePriorityHighest(column, groupColumn, line)) {
+      return column.getStyleSelect();
+    } else {
+      return line.getStyleSelect();
+    }
+  }
+
+  protected boolean isThisConfigLineStylePriorityHighest(
+      AccountingReportConfigLine mainConfigLine,
+      AccountingReportConfigLine secondaryConfigLine,
+      AccountingReportConfigLine tertiaryConfigLine) {
+    return mainConfigLine.getStyleSelect() != AccountingReportConfigLineRepository.STYLE_NO_STYLE
+        && (secondaryConfigLine == null
+            || mainConfigLine.getStylePriority() >= secondaryConfigLine.getStylePriority())
+        && mainConfigLine.getStyleSelect() >= tertiaryConfigLine.getStylePriority();
+  }
+
+  protected int getColumnStyleSelect(
+      AccountingReportConfigLine groupColumn, AccountingReportConfigLine column) {
+    if (groupColumn != null
+        && groupColumn.getStyleSelect() == AccountingReportConfigLineRepository.STYLE_NO_STYLE
+        && groupColumn.getPriority() >= column.getPriority()) {
+      return groupColumn.getStyleSelect();
+    } else {
+      return column.getStyleSelect();
+    }
   }
 
   protected List<String> getAccountFilters(
