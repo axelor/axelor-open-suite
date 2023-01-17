@@ -420,7 +420,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     BillOfMaterial billOfMaterial = null;
-    if (originalProduct != null && company != null) {
+    if (originalProduct != null) {
       billOfMaterial =
           (BillOfMaterial)
               productCompanyService.get(originalProduct, "defaultBillOfMaterial", company);
