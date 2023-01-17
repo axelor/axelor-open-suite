@@ -57,7 +57,6 @@
   <selection name='product.product.type.select'>
     <option value='service'>Service</option>
     <option value='storable'>ProductType.product</option>
-    <option value="formation">Formation</option>
   </selection>
 
   <selection name='product.procurement.method.select'>
