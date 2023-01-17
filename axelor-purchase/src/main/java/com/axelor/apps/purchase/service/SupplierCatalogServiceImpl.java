@@ -238,7 +238,8 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
 
     if (qty.compareTo(minQty) < 0) {
       String msg =
-          String.format(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
+          String.format(
+              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty.intValue());
 
       if (request.getAction().endsWith("onchange")) {
         response.setFlash(msg);
