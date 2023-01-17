@@ -69,4 +69,9 @@ public class FixedAssetLineIfrsServiceImpl extends AbstractFixedAssetLineService
   protected int getTypeSelect() {
     return FixedAssetLineRepository.TYPE_SELECT_IFRS;
   }
+
+  @Override
+  protected int getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return fixedAsset.getIfrsNumberOfDepreciation();
+  }
 }

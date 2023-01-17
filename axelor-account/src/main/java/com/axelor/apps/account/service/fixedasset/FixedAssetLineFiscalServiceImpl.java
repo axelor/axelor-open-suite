@@ -69,4 +69,9 @@ public class FixedAssetLineFiscalServiceImpl extends AbstractFixedAssetLineServi
   protected int getTypeSelect() {
     return FixedAssetLineRepository.TYPE_SELECT_FISCAL;
   }
+
+  @Override
+  protected int getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return fixedAsset.getFiscalNumberOfDepreciation();
+  }
 }

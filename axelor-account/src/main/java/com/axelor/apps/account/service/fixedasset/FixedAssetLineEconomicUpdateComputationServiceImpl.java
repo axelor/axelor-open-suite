@@ -190,7 +190,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
 
     Optional<FixedAssetLine> optFixedAssetLine =
         fixedAssetLineService.findOldestFixedAssetLine(
-            fixedAsset, FixedAssetLineRepository.STATUS_PLANNED, 0);
+            fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_PLANNED, 0);
 
     if (!optFixedAssetLine.isPresent()) {
       throw new AxelorException(

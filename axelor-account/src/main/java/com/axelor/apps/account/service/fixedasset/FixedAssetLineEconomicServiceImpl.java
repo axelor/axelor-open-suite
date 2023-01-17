@@ -69,4 +69,9 @@ public class FixedAssetLineEconomicServiceImpl extends AbstractFixedAssetLineSer
   protected int getTypeSelect() {
     return FixedAssetLineRepository.TYPE_SELECT_ECONOMIC;
   }
+
+  @Override
+  protected int getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return fixedAsset.getNumberOfDepreciation();
+  }
 }
