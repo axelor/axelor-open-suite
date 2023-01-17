@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -39,6 +40,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -169,10 +171,16 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     // When calling this fonction, incomeDepreciationAmount and derogatoryAmount are not supposed to
     // be both different to 0.
     // Because when computed, only one of theses values is filled. But they can be both equals to 0.
+    BigDecimal amount;
     if (fixedAssetDerogatoryLine.getIncomeDepreciationAmount().signum() != 0) {
-      return fixedAssetDerogatoryLine.getIncomeDepreciationAmount().abs();
+      amount = fixedAssetDerogatoryLine.getIncomeDepreciationAmount().abs();
+    } else {
+      amount = fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
     }
-    return fixedAssetDerogatoryLine.getDerogatoryAmount().abs();
+    if (fixedAssetDerogatoryLine.getFixedAsset().getGrossValue().signum() < 0) {
+      amount = amount.negate();
+    }
+    return amount;
   }
 
   protected Account computeDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
@@ -247,10 +255,24 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       List<MoveLine> moveLines = new ArrayList<>();
 
       if (creditLineAccount == null || debitLineAccount == null) {
+        List<String> missingAccounts = new ArrayList<>();
+        FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+        if (fixedAssetCategory.getCapitalDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
+        if (fixedAssetCategory.getExpenseDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.EXPENSE_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
+        if (fixedAssetCategory.getIncomeDepreciationDerogatoryAccount() == null) {
+          missingAccounts.add(
+              I18n.get(AccountExceptionMessage.INCOME_DEPRECIATION_DEROGATORY_ACCOUNT));
+        }
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
-            I18n.get(AccountExceptionMessage.CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT));
+            Joiner.on(", ").join(missingAccounts));
       }
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(

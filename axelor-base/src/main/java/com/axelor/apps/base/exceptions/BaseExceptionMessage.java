@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -510,4 +510,7 @@ public final class BaseExceptionMessage {
       "Error: The type of the field %s is not managed by the adapter" /*)*/;
 
   public static final String COMPANY_MISSING = /*$$(*/ "Please set a company." /*)*/;
+
+  public static final String PRICING_INVALID_DATES = /*$$(*/
+      "The start date cannot be later than the end date." /*)*/;
 }

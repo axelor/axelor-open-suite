@@ -25,6 +25,7 @@
     <integer name="noOfPeriods" title="Number of periods" default="1" min="1"/>
     <many-to-one name="modelAccountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Model Accounting Report"/>
+    <boolean name="useLegacyCustomReports" title="Use legacy custom reports"/>
 
     <finder-method name="findByTypeSelect" using="typeSelect"/>
     <extra-code><![CDATA[

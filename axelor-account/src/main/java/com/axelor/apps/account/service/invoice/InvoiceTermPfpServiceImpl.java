@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -61,6 +61,12 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     invoiceTerm.setInitialPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     invoiceTerm.setPfpValidatorUser(currentUser);
+
+    if (!ObjectUtils.isEmpty(invoiceTerm.getReasonOfRefusalToPay())
+        && !ObjectUtils.isEmpty(invoiceTerm.getReasonOfRefusalToPayStr())) {
+      invoiceTerm.setReasonOfRefusalToPay(null);
+      invoiceTerm.setReasonOfRefusalToPayStr(null);
+    }
     invoiceTermRepo.save(invoiceTerm);
 
     this.checkOtherInvoiceTerms(invoiceTerm);

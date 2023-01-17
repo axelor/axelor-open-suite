@@ -39,6 +39,7 @@
     <string name="rule" title="Rule" large="true"/>
     <string name="accountCode" title="Account code"/>
     <string name="analyticAccountCode" title="Analytic account code"/>
+    <string name="groupsWithoutColumn" title="Groups without this column"/>
     <many-to-many ref="com.axelor.apps.account.db.AnalyticAccount"
       name="analyticAccountSet" title="Analytic accounts"/>
 
@@ -62,6 +63,7 @@
       public static final int RESULT_CREDIT_MINUS_DEBIT = 2;
       public static final int RESULT_SAME_AS_COLUMN = 3;
       public static final int RESULT_SAME_AS_LINE = 4;
+      public static final int RESULT_SAME_AS_GROUP = 5;
 
 	  ]]></extra-code>
 

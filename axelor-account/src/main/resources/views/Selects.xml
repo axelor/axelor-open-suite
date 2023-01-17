@@ -130,6 +130,7 @@
     <option value="2">Credit - Debit</option>
     <option value="3">Same as column</option>
     <option value="4">Same as line</option>
+    <option value="5">Same as group</option>
   </selection>
 
   <selection name='iaccount.move.status.select'>

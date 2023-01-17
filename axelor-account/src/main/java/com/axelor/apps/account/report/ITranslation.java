@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -143,6 +143,12 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_1_PAYMENT_MODE = /*$$(*/
       "AccountingReportType1.paymentMode"; /*)*/
   public static final String ACCOUNTING_REPORT_1_DATE = /*$$(*/ "AccountingReportType1.date"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_ORIGIN_DATE = /*$$(*/
+      "AccountingReportType1.originDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_ORIGIN = /*$$(*/
+      "AccountingReportType1.origin"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_ORIGIN_GROUP = /*$$(*/
+      "AccountingReportType1.originGroup"; /*)*/
 
   public static final String ACCOUNTING_REPORT_1_CODE = /*$$(*/ "AccountingReportType1.code"; /*)*/
 

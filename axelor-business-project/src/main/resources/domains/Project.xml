@@ -12,18 +12,9 @@
     <integer name="invoicingSequenceSelect" title="Invoicing sequence"
       selection="business.project.invoicing.sequence.select"/>
     <string name="invoicingComment" title="Invoicing comment" large="true"/>
-    <decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
-    <decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
-    <decimal name="totalSaleOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
       title="Price list"/>
 
-    <decimal name="totalPurchaseOrdersFinalized" title="Finalized Orders Total"
-      readonly="true"/>
-    <decimal name="totalPurchaseOrdersConfirmed" title="Confirmed Orders Total"
-      readonly="true"/>
-    <decimal name="totalPurchaseOrdersInvoiced" title="Invoiced Orders Total"
-      readonly="true"/>
 
     <decimal name="totalTimesPlanned" title="Planned Times Total" readonly="true"/>
     <decimal name="totalTimesRealised" title="Realised Times Total" readonly="true"/>

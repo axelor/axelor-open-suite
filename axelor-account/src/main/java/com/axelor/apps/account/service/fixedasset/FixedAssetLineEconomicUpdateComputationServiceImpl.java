@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -236,27 +236,25 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
       FixedAssetLine firstPlannedFixedAssetLine,
       BigDecimal correctedAccountingValue) {
     firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
-    firstPlannedFixedAssetLine.setImpairmentValue(
+    BigDecimal impairmentValue =
         firstPlannedFixedAssetLine
             .getAccountingValue()
-            .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue()));
+            .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue());
+    firstPlannedFixedAssetLine.setImpairmentValue(impairmentValue);
+    BigDecimal depreciation = firstPlannedFixedAssetLine.getDepreciation();
     Optional<FixedAssetLine> previousLastRealizedFAL =
         fixedAssetLineService.findNewestFixedAssetLine(
             fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
-    BigDecimal impairmentValue = firstPlannedFixedAssetLine.getImpairmentValue().abs();
-    if (correctedAccountingValue.signum() < 0) {
-      impairmentValue = impairmentValue.negate();
-    }
     if (previousLastRealizedFAL.isPresent()) {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
           previousLastRealizedFAL
               .get()
               .getCumulativeDepreciation()
-              .add(firstPlannedFixedAssetLine.getDepreciation())
+              .add(depreciation)
               .add(impairmentValue));
     } else {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
-          BigDecimal.ZERO.add(firstPlannedFixedAssetLine.getDepreciation()).add(impairmentValue));
+          BigDecimal.ZERO.add(depreciation).add(impairmentValue));
     }
   }
 

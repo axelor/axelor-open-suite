@@ -666,7 +666,7 @@
             form-view="invoice-form" grid-view="invoice-grid"/>
           <panel-related name="refundInvoiceListPanel" field="refundInvoiceList"
             readonly="true"
-            showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12"
+            showIf="refundInvoiceList != null &amp;&amp; refundInvoiceList.length > 0" colSpan="12"
             form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
         </panel>
         <field name="paymentDelayReason" canNew="false" canEdit="false"
@@ -1664,6 +1664,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
+    <action name="action-invoice-method-check-invoice-lines-analytic-distribution"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-ventilate"/>
     <action name="save"/>
@@ -1674,6 +1675,7 @@ InvoiceSet.length > 0))"
     <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
+    <action name="action-invoice-method-check-invoice-lines-analytic-distribution"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-validate-and-ventilate"/>
   </action-group>
@@ -2249,6 +2251,12 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-fiscal-position-on-change">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateLinesAfterFiscalPositionChange"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-method-check-invoice-lines-analytic-distribution">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="checkInvoiceLinesAnalyticDistribution"/>
   </action-method>
 
   <action-method name="action-invoice-method-check-invoice-lines-cut-off-dates">

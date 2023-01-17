@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
@@ -27,6 +28,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -278,6 +280,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             : fixedAsset.getReference();
     BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
     BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
+    BigDecimal accountingValue = fixedAssetLine.getAccountingValue();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
@@ -324,7 +327,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         Account debitLineAccount;
         Account creditLineAccount;
         BigDecimal amount;
-        if (impairmentValue.compareTo(BigDecimal.ZERO) > 0) {
+        if ((impairmentValue.signum() > 0 && accountingValue.signum() > 0)
+            || (impairmentValue.signum() < 0 && accountingValue.signum() < 0)) {
           if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
               || fixedAssetCategory.getAppProvisionTangibleFixedAssetAccount() == null) {
             throw new AxelorException(
@@ -350,6 +354,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
         }
         amount = impairmentValue.abs();
+        if (accountingValue.signum() < 0) {
+          amount = amount.negate();
+        }
 
         MoveLine debitMoveLine =
             moveLineCreateService.createMoveLine(
@@ -392,7 +399,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
+  @Override
+  public Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
 
@@ -681,7 +689,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
       Account creditAccountOne =
           fixedAsset.getFixedAssetCategory().getRealisedAssetsIncomeAccount();
-      List<Account> creditAccountTwoList =
+      List<AccountManagement> creditAccountTwoList =
           taxLine.getTax().getAccountManagementList().stream()
               .filter(
                   accountManagement ->
@@ -689,10 +697,18 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                           .getCompany()
                           .getName()
                           .equals(fixedAsset.getCompany().getName()))
-              .map(accountManagement -> accountManagement.getSaleAccount())
               .collect(Collectors.toList());
       Account creditAccountTwo =
-          !CollectionUtils.isEmpty(creditAccountTwoList) ? creditAccountTwoList.get(0) : null;
+          !CollectionUtils.isEmpty(creditAccountTwoList)
+              ? creditAccountTwoList.get(0).getSaleAccount()
+              : null;
+      if (creditAccountTwo != null) {
+        if (creditAccountTwo.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_GOODS) {
+          creditAccountTwo = creditAccountTwoList.get(0).getSaleTaxVatSystem1Account();
+        } else if (creditAccountTwo.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_SERVICE) {
+          creditAccountTwo = creditAccountTwoList.get(0).getSaleTaxVatSystem2Account();
+        }
+      }
       BigDecimal creditAmountTwo =
           disposalAmount
               .multiply(taxLine.getValue().divide(new BigDecimal(100)))

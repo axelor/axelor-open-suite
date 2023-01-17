@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -361,7 +361,7 @@ public class BankOrderLineService {
     }
 
     try {
-      checkBankDetails(candidateBankDetails, bankOrder);
+      checkBankDetails(candidateBankDetails, bankOrder, bankOrderLine);
     } catch (AxelorException e) {
       candidateBankDetails = null;
     }
@@ -369,7 +369,8 @@ public class BankOrderLineService {
     return candidateBankDetails;
   }
 
-  public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder)
+  public void checkBankDetails(
+      BankDetails bankDetails, BankOrder bankOrder, BankOrderLine bankOrderLine)
       throws AxelorException {
     if (bankDetails == null) {
       throw new AxelorException(
@@ -381,7 +382,8 @@ public class BankOrderLineService {
     if (!bankDetails.getActive()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE));
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE),
+          bankOrderLine.getSequence());
     }
 
     // filter on the result from bankPartner if the option is active.

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,9 @@ import java.util.Map;
 
 public class SelectionBuilderController {
 
+  private static final String SELECTION_TEXT = "selectionText";
+  private static final String SELECTION_OPTION_LIST = "$selectOptionList";
+
   public void fillSelectionText(ActionRequest request, ActionResponse response) {
 
     MetaSelect metaSelect = (MetaSelect) request.getContext().get("metaSelect");
@@ -42,12 +45,12 @@ public class SelectionBuilderController {
       String selectionText =
           Beans.get(SelectionBuilderService.class).generateSelectionText(selectOptions);
 
-      response.setValue("selectionText", selectionText);
-      response.setValue("$selectOptionList", selectOptions);
+      response.setValue(SELECTION_TEXT, selectionText);
+      response.setValue(SELECTION_OPTION_LIST, selectOptions);
       response.setValue("name", name);
     } else {
-      response.setValue("$selectOptionList", null);
-      response.setValue("selectionText", null);
+      response.setValue(SELECTION_TEXT, null);
+      response.setValue(SELECTION_OPTION_LIST, null);
       response.setValue("name", null);
     }
   }
@@ -61,7 +64,7 @@ public class SelectionBuilderController {
       String selectionText =
           Beans.get(SelectionBuilderService.class).generateSelectionText(selectOptions);
 
-      response.setValue("selectionText", selectionText);
+      response.setValue(SELECTION_TEXT, selectionText);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -80,7 +83,7 @@ public class SelectionBuilderController {
           Beans.get(SelectionBuilderService.class)
               .getSelectOptions(selectionBuilder.getSelectionText());
 
-      response.setValue("$selectOptionList", selectOptions);
+      response.setValue(SELECTION_OPTION_LIST, selectOptions);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -110,7 +110,7 @@ public class ExtraHoursController {
     ExtraHours extraHours =
         Beans.get(ExtraHoursRepository.class).find(new Long((Integer) extraHoursMap.get("id")));
     response.setView(
-        ActionView.define("Extra hours")
+        ActionView.define(I18n.get("Extra hours"))
             .model(ExtraHours.class.getName())
             .add("form", "extra-hours-form")
             .param("forceEdit", "true")

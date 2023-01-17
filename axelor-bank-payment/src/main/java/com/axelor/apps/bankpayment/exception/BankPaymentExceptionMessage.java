@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -101,7 +101,7 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_ORDER_BANK_DETAILS_EMPTY_IBAN = /*$$(*/
       "The Iban is mandatory for the partner %s, bank order %s" /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
-      "The bank details is inactive." /*)*/;
+      "The sender bank details is inactive." /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
       "The bank details type is not compatible with the accepted types in file format." /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
@@ -143,7 +143,7 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/
       "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
-      "The receiver bank details is inactive." /*)*/;
+      "The receiver bank details for the line %s is inactive." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
       "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/

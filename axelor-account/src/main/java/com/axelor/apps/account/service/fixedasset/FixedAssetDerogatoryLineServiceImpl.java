@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -151,7 +151,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
     // If fiscal depreciation is greater than economic depreciation then we fill
     // derogatoryAmount, else incomeDepreciation.
-    if (fiscalDepreciationAmount.compareTo(depreciationAmount) > 0) {
+    if (fiscalDepreciationAmount.abs().compareTo(depreciationAmount.abs()) > 0) {
       derogatoryAmount = fiscalDepreciationAmount.subtract(depreciationAmount);
     } else {
       incomeDepreciationAmount = depreciationAmount.subtract(fiscalDepreciationAmount);

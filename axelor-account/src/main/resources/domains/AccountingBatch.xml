@@ -69,6 +69,8 @@
     <many-to-many name="openingAccountSet" ref="com.axelor.apps.account.db.Account"
       title="Opening accounts"/>
     <boolean name="generateResultMove" title="Generate result move"/>
+    <boolean name="includeSpecialAccounts" title="Include special accounts"/>
+
     <string name="resultMoveDescription" title="Result move description"/>
     <boolean name="simulateGeneratedMoves" title="Generate simulated moves"
       help="Please make sure that the journal configured for annual closure and openning, does support simulated moves."/>

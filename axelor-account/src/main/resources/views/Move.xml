@@ -129,7 +129,7 @@
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
-            onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+            onChange="action-account-move-group-set-description-on-lines"/>
           <field name="origin" colSpan="3" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-origin" requiredIf="journal.hasRequiredOrigin"/>
           <field name="$validatePeriod" hidden="true" type="boolean"/>
@@ -383,7 +383,7 @@
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
-          onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+          onChange="action-account-move-group-set-description-on-lines"/>
         <field name="origin" colSpan="3" requiredIf="journal.hasRequiredOrigin"
           onChange="action-account-move-group-set-origin"/>
         <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
@@ -572,13 +572,13 @@
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
     <action name="action-attrs-move-hide-trading-name"/>
     <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-attrs-check-period-and-status"/>
     <action name="action-move-attrs-set-functional-origin-select-domain"/>
     <action name="action-move-attrs-set-functional-origin-select"/>
     <action name="action-move-attrs-manage-bank-details"/>
     <action name="action-move-method-check-period-permissions"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-group name="action-account-move-group-onload">
@@ -590,7 +590,6 @@
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
     <action name="action-attrs-move-hide-trading-name"/>
     <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-attrs-check-related-cut-off-moves"
@@ -601,6 +600,7 @@
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-move-attrs-hide-move-line-partner"/>
     <action name="action-move-attrs-manage-bank-details"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-group name="action-account-move-group-onsave">
@@ -637,17 +637,17 @@
     <action name="action-move-method-accounting"/>
   </action-group>
 
-  <action-group name="action-account-move-group-set-origin-and-description-on-lines">
-    <action name="action-account-move-method-origin-description-is-empty"/>
-    <action name="action-account-move-method-set-origin-description-on-lines"/>
+  <action-group name="action-account-move-group-set-description-on-lines">
+    <action name="action-account-move-method-description-is-empty"/>
+    <action name="action-account-move-method-set-description-on-lines"/>
   </action-group>
 
   <action-group name="action-account-move-group-set-origin">
+    <action name="action-account-move-method-origin-is-empty"/>
     <action name="action-account-move-method-check-duplicated-move-origin"
       if="journal.hasDuplicateDetectionOnOrigin"/>
-    <action name="action-account-move-group-set-origin-and-description-on-lines"/>
+    <action name="action-account-move-method-set-origin-on-lines"/>
   </action-group>
-
 
   <action-group name="action-move-account-group-simulate">
     <action name="action-account-move-group-onsave"/>
@@ -658,8 +658,9 @@
     <action name="action-move-record-journal"/>
     <action name="action-group-move-date-onchange"/>
     <action name="action-move-attrs-validate-button-title"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-move-method-fill-company-bank-details"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action name="default-move-record-currency"/>
   </action-group>
 
   <action-group name="action-group-move-date-onchange">
@@ -695,8 +696,8 @@
 
   <action-group name="action-move-group-move-line-list-onchange">
     <action name="action-account-move-method-compute-totals"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-group name="action-move-group-payment-condition-onchange">
@@ -730,8 +731,12 @@
       message="By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?"/>
   </action-validate>
 
-  <action-method name="action-account-move-method-origin-description-is-empty">
-    <call class="com.axelor.apps.account.web.MoveController" method="validateOriginDescription"/>
+  <action-method name="action-account-move-method-origin-is-empty">
+    <call class="com.axelor.apps.account.web.MoveController" method="validateOrigin"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-description-is-empty">
+    <call class="com.axelor.apps.account.web.MoveController" method="validateDescription"/>
   </action-method>
 
   <action-method name="action-account-move-method-check-duplicated-move-origin">
@@ -954,9 +959,12 @@
       method="isHiddenMoveLineListViewer"/>
   </action-method>
 
-  <action-method name="action-account-move-method-set-origin-description-on-lines">
-    <call class="com.axelor.apps.account.web.MoveController"
-      method="setOriginAndDescriptionOnLines"/>
+  <action-method name="action-account-move-method-set-origin-on-lines">
+    <call class="com.axelor.apps.account.web.MoveController" method="setOriginOnLines"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-set-description-on-lines">
+    <call class="com.axelor.apps.account.web.MoveController" method="setDescriptionOnLines"/>
   </action-method>
 
   <action-method name="action-move-method-set-moveline-dates">
@@ -1136,7 +1144,6 @@
   </search-filters>
   <action-method name="action-method-hide-axis-analytic-account-move-line">
     <call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
-
   </action-method>
 
   <action-method name="action-move-method-journal-on-change">
