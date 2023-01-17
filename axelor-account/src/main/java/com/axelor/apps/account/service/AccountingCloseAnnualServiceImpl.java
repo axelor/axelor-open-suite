@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -318,6 +319,10 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     List<Long> accountIdList =
         accountService.getAllAccountsSubAccountIncluded(
             accountSet.stream().map(Account::getId).collect(Collectors.toList()));
+
+    if (CollectionUtils.isEmpty(accountIdList)) {
+      return new ArrayList<>();
+    }
 
     Query q =
         JPA.em()
