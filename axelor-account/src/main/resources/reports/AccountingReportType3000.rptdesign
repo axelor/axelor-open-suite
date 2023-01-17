@@ -2517,7 +2517,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                     </structure>
                                                                     <structure>
                                                                         <property name="operator">eq</property>
-                                                                        <property name="backgroundColor">#FFFF00</property>
+                                                                        <property name="backgroundColor">#ED8B17</property>
                                                                         <expression name="testExpr" type="javascript">data["style"]</expression>
                                                                         <simple-property-list name="value1">
                                                                             <value type="javascript">3</value>
@@ -2625,7 +2625,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                                     </structure>
                                                                                     <structure>
                                                                                         <property name="operator">eq</property>
-                                                                                        <property name="backgroundColor">#FFFF00</property>
+                                                                                        <property name="backgroundColor">#ED8B17</property>
                                                                                         <expression name="testExpr" type="javascript">data["lineStyle"]</expression>
                                                                                         <simple-property-list name="value1">
                                                                                             <value type="javascript">3</value>
@@ -2719,10 +2719,11 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                         <property name="content">
                                                                             <data name="period" id="5992">
                                                                                 <property name="color">white</property>
+                                                                                <property name="textAlign">center</property>
                                                                                 <property name="resultSetColumn">period</property>
                                                                             </data>
                                                                         </property>
-                                                                        <property name="backgroundColor">blue</property>
+                                                                        <property name="backgroundColor">#0A6FB5</property>
                                                                     </extended-item>
                                                                 </property>
                                                             </extended-item>
@@ -2763,6 +2764,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                         <property name="content">
                                                                             <data name="group" id="5983">
                                                                                 <property name="color">white</property>
+                                                                                <property name="textAlign">center</property>
                                                                                 <list-property name="highlightRules">
                                                                                     <structure>
                                                                                         <property name="operator">eq</property>
@@ -2782,7 +2784,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                                     </structure>
                                                                                     <structure>
                                                                                         <property name="operator">eq</property>
-                                                                                        <property name="backgroundColor">#FFFF00</property>
+                                                                                        <property name="backgroundColor">#ED8B17</property>
                                                                                         <expression name="testExpr" type="javascript">data["groupStyle"]</expression>
                                                                                         <simple-property-list name="value1">
                                                                                             <value type="javascript">3</value>
@@ -2824,7 +2826,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                                 <property name="resultSetColumn">group</property>
                                                                             </data>
                                                                         </property>
-                                                                        <property name="backgroundColor">blue</property>
+                                                                        <property name="backgroundColor">#0A6FB5</property>
                                                                     </extended-item>
                                                                 </property>
                                                             </extended-item>
@@ -2847,10 +2849,69 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                         <property name="content">
                                                                             <data name="column" id="5850">
                                                                                 <property name="color">white</property>
+                                                                                <property name="textAlign">center</property>
+                                                                                <list-property name="highlightRules">
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontWeight">bold</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">1</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontStyle">italic</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">2</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="backgroundColor">#ED8B17</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">3</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="color">#FF0000</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">4</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">small</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">5</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">medium</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">6</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">larger</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">7</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                </list-property>
                                                                                 <property name="resultSetColumn">column</property>
                                                                             </data>
                                                                         </property>
-                                                                        <property name="backgroundColor">blue</property>
+                                                                        <property name="backgroundColor">#0A6FB5</property>
                                                                         <list-property name="highlightRules">
                                                                             <structure>
                                                                                 <property name="operator">eq</property>
@@ -2920,21 +2981,22 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                         <property name="header">
                                             <extended-item extensionName="CrosstabCell" id="6052"/>
                                             <extended-item extensionName="CrosstabCell" id="5991">
-                                                <property name="backgroundColor">blue</property>
+                                                <property name="backgroundColor">#0A6FB5</property>
                                             </extended-item>
                                             <extended-item extensionName="CrosstabCell" id="6051"/>
                                             <extended-item extensionName="CrosstabCell" id="5982">
-                                                <property name="backgroundColor">blue</property>
+                                                <property name="backgroundColor">#0A6FB5</property>
                                             </extended-item>
                                             <extended-item extensionName="CrosstabCell" id="6050"/>
                                             <extended-item extensionName="CrosstabCell" id="5856">
                                                 <property name="content">
                                                     <data id="6001">
                                                         <property name="color">white</property>
+                                                        <property name="textAlign">center</property>
                                                         <property name="resultSetColumn">Column Binding</property>
                                                     </data>
                                                 </property>
-                                                <property name="backgroundColor">blue</property>
+                                                <property name="backgroundColor">#0A6FB5</property>
                                             </extended-item>
                                             <extended-item extensionName="CrosstabCell" id="6049">
                                                 <property name="content">
