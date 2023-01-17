@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -25,9 +26,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     implements AccountingReportValueCustomRuleService {
   @Inject
   public AccountingReportValueCustomRuleServiceImpl(
+      AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo) {
-    super(accountingReportValueRepo, analyticAccountRepo);
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
   }
 
   @Override

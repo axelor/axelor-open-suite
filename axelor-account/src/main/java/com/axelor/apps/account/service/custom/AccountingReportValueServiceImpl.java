@@ -50,27 +50,25 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AccountingReportValuePercentageService accountingReportValuePercentageService;
   protected AppBaseService appBaseService;
   protected AccountingReportValueRepository accountingReportValueRepo;
-  protected AccountRepository accountRepo;
 
   protected static int lineOffset = 0;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public AccountingReportValueServiceImpl(
+      AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
       AccountingReportValueCustomRuleService accountingReportValueCustomRuleService,
       AccountingReportValueMoveLineService accountingReportValueMoveLineService,
       AccountingReportValuePercentageService accountingReportValuePercentageService,
       AppBaseService appBaseService,
-      AnalyticAccountRepository analyticAccountRepo,
-      AccountRepository accountRepo) {
-    super(accountingReportValueRepo, analyticAccountRepo);
+      AnalyticAccountRepository analyticAccountRepo) {
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
     this.accountingReportValueCustomRuleService = accountingReportValueCustomRuleService;
     this.accountingReportValueMoveLineService = accountingReportValueMoveLineService;
     this.accountingReportValuePercentageService = accountingReportValuePercentageService;
     this.appBaseService = appBaseService;
     this.accountingReportValueRepo = accountingReportValueRepo;
-    this.accountRepo = accountRepo;
   }
 
   public static synchronized void incrementLineOffset() {

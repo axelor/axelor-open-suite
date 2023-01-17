@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -26,6 +27,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportValueMoveLineServiceImpl extends AccountingReportValueAbstractService
@@ -44,10 +47,11 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
 
   @Inject
   public AccountingReportValueMoveLineServiceImpl(
+      AccountRepository accountRepository,
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo,
       MoveLineRepository moveLineRepo) {
-    super(accountingReportValueRepo, analyticAccountRepo);
+    super(accountRepository, accountingReportValueRepo, analyticAccountRepo);
     this.moveLineRepo = moveLineRepo;
   }
 
@@ -89,12 +93,18 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     if (accountingReport.getDisplayDetails() && line.getDetailByAccount()) {
       int counter = 1;
 
+      if (CollectionUtils.isNotEmpty(accountTypeSet)) {
+        accountSet = this.mergeWithAccountTypes(accountSet, accountTypeSet);
+        accountTypeSet = new HashSet<>();
+      }
+
       for (Account account : accountSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
         if (!valuesMapByLine.containsKey(lineCode)) {
           valuesMapByLine.put(lineCode, new HashMap<>());
         }
+
         account = JPA.find(Account.class, account.getId());
         accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
         line = JPA.find(AccountingReportConfigLine.class, line.getId());
@@ -107,6 +117,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             configAnalyticAccount != null
                 ? JPA.find(AnalyticAccount.class, configAnalyticAccount.getId())
                 : null;
+
         this.createValueFromMoveLine(
             accountingReport,
             groupColumn,
@@ -288,6 +299,17 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       finalSet.retainAll(set2);
       return finalSet;
     }
+  }
+
+  protected Set<Account> mergeWithAccountTypes(
+      Set<Account> accountSet, Set<AccountType> accountTypeSet) {
+    Set<Account> tempSet =
+        accountTypeSet.stream()
+            .map(it -> accountRepo.findByAccountType(it).fetch())
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
+
+    return this.mergeSets(accountSet, tempSet);
   }
 
   protected void createValueFromMoveLine(

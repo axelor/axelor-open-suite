@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.common.StringUtils;
@@ -26,13 +27,16 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public abstract class AccountingReportValueAbstractService {
+  protected AccountRepository accountRepo;
   protected AccountingReportValueRepository accountingReportValueRepo;
   protected AnalyticAccountRepository analyticAccountRepo;
 
   @Inject
   public AccountingReportValueAbstractService(
+      AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo) {
+    this.accountRepo = accountRepo;
     this.accountingReportValueRepo = accountingReportValueRepo;
     this.analyticAccountRepo = analyticAccountRepo;
   }
