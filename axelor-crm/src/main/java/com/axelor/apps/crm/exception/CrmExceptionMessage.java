@@ -105,4 +105,7 @@ public final class CrmExceptionMessage {
       "The end date must be after the start date" /*)*/;
   public static final String OPPORTUNITY_1 = /*$$(*/
       "There's no configured sequence for opportunities for the company %s" /*)*/;
+
+  public static final String EVENT_USER_NO_ACTIVE_COMPANY = /*$$(*/
+      "Please set an active company for user %s" /*)*/;
 }
