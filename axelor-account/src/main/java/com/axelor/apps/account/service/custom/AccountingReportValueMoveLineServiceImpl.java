@@ -35,7 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportValueMoveLineServiceImpl extends AccountingReportValueAbstractService
@@ -96,6 +98,18 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       if (CollectionUtils.isNotEmpty(accountTypeSet)) {
         accountSet = this.mergeWithAccountTypes(accountSet, accountTypeSet);
         accountTypeSet = new HashSet<>();
+      }
+
+      if (StringUtils.notEmpty(line.getAccountCode())) {
+        accountSet = this.mergeWithAccountCode(accountSet, line.getAccountCode());
+      }
+
+      if (StringUtils.notEmpty(column.getAccountCode())) {
+        accountSet = this.mergeWithAccountCode(accountSet, column.getAccountCode());
+      }
+
+      if (groupColumn != null && StringUtils.notEmpty(groupColumn.getAccountCode())) {
+        accountSet = this.mergeWithAccountCode(accountSet, groupColumn.getAccountCode());
       }
 
       for (Account account : accountSet) {
@@ -308,12 +322,26 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   protected Set<Account> mergeWithAccountTypes(
       Set<Account> accountSet, Set<AccountType> accountTypeSet) {
     Set<Account> tempSet =
-        accountTypeSet.stream()
-            .map(it -> accountRepo.findByAccountType(it).fetch())
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
+        this.getSetFromStream(
+            accountTypeSet.stream(),
+            accountType -> accountRepo.findByAccountType(accountType).fetch());
 
     return this.mergeSets(accountSet, tempSet);
+  }
+
+  protected Set<Account> mergeWithAccountCode(Set<Account> accountSet, String accountCode) {
+    Set<Account> tempSet =
+        this.getSetFromStream(
+            Arrays.stream(accountCode.split(",")),
+            accountCodeToken ->
+                accountRepo.all().filter("self.code LIKE ?", accountCodeToken).fetch());
+
+    return this.mergeSets(accountSet, tempSet);
+  }
+
+  protected <T> Set<Account> getSetFromStream(
+      Stream<T> stream, Function<T, List<Account>> function) {
+    return stream.map(function).flatMap(Collection::stream).collect(Collectors.toSet());
   }
 
   protected Set<AccountType> mergeWithAccounts(
