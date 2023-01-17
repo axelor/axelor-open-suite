@@ -473,13 +473,29 @@
   </action-view>
 
   <menuitem name="account-root-accounting-conf-report-types"
-    parent="account-conf-reporting" title="Report types"
-    action="account.conf.reporting.accounting.report.types"/>
+    parent="account-conf-reporting" title="Report/Export types"/>
 
-  <action-view name="account.conf.reporting.accounting.report.types"
+
+  <menuitem name="account-root-accounting-conf-report-types-report"
+    action="account.conf.reporting.accounting.report.types.report"
+    parent="account-root-accounting-conf-report-types" title="Report types"/>
+
+  <menuitem name="account-root-accounting-conf-report-types-export"
+    action="account.conf.reporting.accounting.report.types.export"
+    parent="account-root-accounting-conf-report-types" title="Export types"/>
+
+  <action-view name="account.conf.reporting.accounting.report.types.report"
     title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
     <view type="grid" name="accounting-report-type-grid"/>
     <view type="form" name="accounting-report-type-form"/>
+    <domain>self.reportExportTypeSelect = 1</domain>
+  </action-view>
+
+  <action-view name="account.conf.reporting.accounting.report.types.export"
+    title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
+    <view type="grid" name="accounting-report-type-grid"/>
+    <view type="form" name="accounting-report-type-form"/>
+    <domain>self.reportExportTypeSelect = 2</domain>
   </action-view>
 
   <menuitem name="account-root-budget-management" parent="account-root"
