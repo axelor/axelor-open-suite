@@ -27,6 +27,8 @@
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
+    <date name="cutOffStartDate" title="From date"/>
+    <date name="cutOffEndDate" title="To date"/>
 
     <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
     <integer name="discountTypeSelect" title="Discount type"
@@ -47,6 +49,17 @@
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
+    <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis2AnalyticAccount" title="Cpte Ana. AXIS2"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis3AnalyticAccount" title="Cpte Ana. AXIS3"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis4AnalyticAccount" title="Cpte Ana. AXIS4"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+
     <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
     <one-to-many name="budgetDistributionList"
       ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution"
@@ -61,7 +74,7 @@
 
     <integer name="typeSelect" title="Type" selection="line.type.select"/>
 
-    <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
+    <decimal name="taxRate" scale="10" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
     <string name="name" title="Name" search="invoice,productName">
             <![CDATA[

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service.imports;
 
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -83,7 +83,7 @@ public class ConvertDemoDataFileServiceImpl implements ConvertDemoDataFileServic
         if (entries.contains(csvFile.getName())) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.DUPLICATE_CSV_FILE_NAME_EXISTS));
+              I18n.get(BaseExceptionMessage.DUPLICATE_CSV_FILE_NAME_EXISTS));
         }
         entries.add(csvFile.getName());
 
@@ -125,12 +125,12 @@ public class ConvertDemoDataFileServiceImpl implements ConvertDemoDataFileServic
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.CSV_FILE_NAME_NOT_EXISTS));
+            I18n.get(BaseExceptionMessage.CSV_FILE_NAME_NOT_EXISTS));
       }
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.EXCEL_FILE_FORMAT_ERROR));
+          I18n.get(BaseExceptionMessage.EXCEL_FILE_FORMAT_ERROR));
     }
     return fileName;
   }

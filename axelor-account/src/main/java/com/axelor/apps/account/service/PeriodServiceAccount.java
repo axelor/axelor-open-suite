@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,24 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Period;
+import com.axelor.auth.db.User;
 import com.axelor.db.Query;
+import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 
 public interface PeriodServiceAccount {
 
-  public Query<Move> getMoveListToValidateQuery(Period period);
+  public Query<Move> getMoveListByPeriodAndStatusQuery(Period period, int status);
+
+  @CallMethod
+  public boolean isManageClosedPeriod(Period period, User user) throws AxelorException;
+
+  @CallMethod
+  public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
+
+  @CallMethod
+  public boolean isAuthorizedToAccountOnPeriod(Period period, User user) throws AxelorException;
+
+  @CallMethod
+  public boolean isAuthorizedToAccountOnPeriod(Move move, User user) throws AxelorException;
 }

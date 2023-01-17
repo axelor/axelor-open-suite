@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,10 +26,11 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
@@ -53,10 +54,11 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       AccountConfigService accountConfigService,
       PaymentModeService paymentModeService,
       AccountingSituationRepository accountingSituationRepo,
+      CompanyRepository companyRepo,
       AppAccountService appAccountService,
       SaleOrderRepository saleOrderRepository,
       InvoicePaymentRepository invoicePaymentRepository) {
-    super(accountConfigService, paymentModeService, accountingSituationRepo);
+    super(accountConfigService, paymentModeService, accountingSituationRepo, companyRepo);
     this.appAccountService = appAccountService;
     this.saleOrderRepository = saleOrderRepository;
     this.invoicePaymentRepository = invoicePaymentRepository;
@@ -129,7 +131,8 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
             if (Strings.isNullOrEmpty(message)) {
               message =
                   String.format(
-                      I18n.get(IExceptionMessage.SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT),
+                      I18n.get(
+                          SupplychainExceptionMessage.SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT),
                       partner.getFullName(),
                       saleOrder.getSaleOrderSeq());
             }
@@ -159,9 +162,10 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
     }
     // subtract the amount of payments if there is no move created for
     // invoice payments
-    if (!accountConfigService
-        .getAccountConfig(accountingSituation.getCompany())
-        .getGenerateMoveForInvoicePayment()) {
+    if (accountingSituation.getCompany() != null
+        && !accountConfigService
+            .getAccountConfig(accountingSituation.getCompany())
+            .getGenerateMoveForInvoicePayment()) {
       List<InvoicePayment> invoicePaymentList =
           invoicePaymentRepository
               .all()

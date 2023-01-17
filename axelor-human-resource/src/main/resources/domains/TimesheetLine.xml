@@ -10,8 +10,7 @@
     <integer name="sequence" title="Sequence" readonly="true"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
-    <many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true"
-      column="user_id"/>
+    <many-to-one name="employee" title="Employee" ref="Employee" readonly="true"/>
     <date name="date" column="date_val" required="true"/>
     <many-to-one name="timesheet" ref="com.axelor.apps.hr.db.Timesheet"
       title="Time Sheet" readonly="true"/>
@@ -22,7 +21,7 @@
     <boolean name="toInvoice"/>
     <boolean name="invoiced" title="Invoiced" readonly="true"/>
     <string name="fullName" namecolumn="true"></string>
-    <boolean name="enableEditor" title="Enable editor" nullable="true"/>
+    <boolean name="enableEditor" title="Allow updates via editor" nullable="true"/>
 
     <many-to-one name="projectPlanningTime"
       ref="com.axelor.apps.project.db.ProjectPlanningTime"/>

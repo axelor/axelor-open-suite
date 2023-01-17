@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,11 +20,13 @@ package com.axelor.apps.base.service.advanced.imports;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
+import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.apps.tool.service.TranslationService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
 import com.axelor.data.XStreamUtils;
@@ -128,7 +130,7 @@ public class DataImportServiceImpl implements DataImportService {
   @Inject private MetaSelectRepository metaSelectRepo;
 
   @Override
-  public MetaFile importData(AdvancedImport advancedImport)
+  public ImportHistory importData(AdvancedImport advancedImport)
       throws IOException, AxelorException, ClassNotFoundException {
 
     adapterMap = new HashMap<String, DataAdapter>();
@@ -149,7 +151,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     MetaFile logFile = this.importData(inputs);
     FileUtils.forceDelete(dataDir);
-    return logFile;
+    return addImportHistory(advancedImport, logFile);
   }
 
   private List<CSVInput> process(DataReaderService reader, AdvancedImport advancedImport)
@@ -348,7 +350,7 @@ public class DataImportServiceImpl implements DataImportService {
     Property parentProp = mapper.getProperty(fileField.getImportField().getName());
 
     if (Strings.isNullOrEmpty(fileField.getSubImportField())) {
-      if (!Strings.isNullOrEmpty(parentProp.getSelection())) {
+      if (parentProp != null && !Strings.isNullOrEmpty(parentProp.getSelection())) {
         this.writeSelectionData(
             parentProp.getSelection(), dataCell, fileField.getForSelectUse(), dataList);
 
@@ -959,5 +961,13 @@ public class DataImportServiceImpl implements DataImportService {
     _map.put("context", context);
     _map.put("jsonContext", jsonContext);
     return _map;
+  }
+
+  protected ImportHistory addImportHistory(AdvancedImport advancedImport, MetaFile logFile) {
+    ImportHistory importHistory =
+        new ImportHistory(AuthUtils.getUser(), advancedImport.getImportFile());
+    importHistory.setLogMetaFile(logFile);
+    importHistory.setAdvanceImport(advancedImport);
+    return importHistory;
   }
 }

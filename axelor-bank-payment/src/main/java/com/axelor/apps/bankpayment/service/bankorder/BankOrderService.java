@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,7 +65,7 @@ public interface BankOrderService {
   public void validatePayment(BankOrder bankOrder) throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
-  public void cancelPayment(BankOrder bankOrder) throws AxelorException;
+  public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
   public void cancelBankOrder(BankOrder bankOrder) throws AxelorException;

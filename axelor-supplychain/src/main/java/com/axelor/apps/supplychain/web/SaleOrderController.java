@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,17 +17,13 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -36,11 +32,9 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
-import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
@@ -57,11 +51,9 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
@@ -80,6 +72,7 @@ import java.util.Optional;
 public class SaleOrderController {
 
   private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
+  private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -113,9 +106,7 @@ public class SaleOrderController {
                   traceback ->
                       response.setNotify(
                           String.format(
-                              I18n.get(
-                                  com.axelor.apps.message.exception.IExceptionMessage
-                                      .SEND_EMAIL_EXCEPTION),
+                              I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
@@ -141,12 +132,11 @@ public class SaleOrderController {
                   traceback ->
                       response.setNotify(
                           String.format(
-                              I18n.get(
-                                  com.axelor.apps.message.exception.IExceptionMessage
-                                      .SEND_EMAIL_EXCEPTION),
+                              I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else {
-          response.setFlash(I18n.get(IExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
+          response.setFlash(
+              I18n.get(SupplychainExceptionMessage.SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE));
         }
       }
     } catch (Exception e) {
@@ -157,16 +147,14 @@ public class SaleOrderController {
   public void getStockLocation(ActionRequest request, ActionResponse response) {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-    if (saleOrder != null && saleOrder.getCompany() != null) {
-
+    try {
+      Company company = saleOrder.getCompany();
       StockLocation stockLocation =
-          Beans.get(StockLocationService.class)
-              .getPickupDefaultStockLocation(saleOrder.getCompany());
-
-      if (stockLocation != null) {
-        response.setValue("stockLocation", stockLocation);
-      }
+          Beans.get(SaleOrderSupplychainService.class)
+              .getStockLocation(saleOrder.getClientPartner(), company);
+      response.setValue("stockLocation", stockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -180,7 +168,7 @@ public class SaleOrderController {
       if (saleOrder.getId() != null) {
 
         Partner supplierPartner = null;
-        List<Long> saleOrderLineIdSelected = new ArrayList<>();
+        List<Long> saleOrderLineIdSelected;
         Boolean isDirectOrderLocation = false;
         Boolean noProduct = true;
         Map<String, Object> values = getSelectedId(request, response, saleOrder);
@@ -203,10 +191,10 @@ public class SaleOrderController {
           }
 
           if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-            response.setFlash(I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+            response.setFlash(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
-                ActionView.define("SaleOrder")
+                ActionView.define(I18n.get("SaleOrder"))
                     .model(SaleOrder.class.getName())
                     .add("form", "sale-order-generate-po-select-supplierpartner-form")
                     .param("popup", "true")
@@ -257,7 +245,7 @@ public class SaleOrderController {
       ActionRequest request, ActionResponse response, SaleOrder saleOrder) throws AxelorException {
     Partner supplierPartner = null;
     List<Long> saleOrderLineIdSelected = new ArrayList<>();
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
     Boolean isDirectOrderLocation = false;
     Boolean noProduct = true;
 
@@ -280,14 +268,15 @@ public class SaleOrderController {
       values.put("isDirectOrderLocation", isDirectOrderLocation);
 
       if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-        throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+        throw new AxelorException(
+            3, I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
       }
     } else if (request.getContext().get("supplierPartnerSelect") != null) {
       supplierPartner =
           JPA.em()
               .find(
                   Partner.class,
-                  new Long(
+                  Long.valueOf(
                       (Integer)
                           ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
       values.put("supplierPartner", supplierPartner);
@@ -295,7 +284,7 @@ public class SaleOrderController {
           (String) request.getContext().get("saleOrderLineIdSelected");
 
       for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
-        saleOrderLineIdSelected.add(new Long(saleOrderId));
+        saleOrderLineIdSelected.add(Long.valueOf(saleOrderId));
       }
       values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
       values.put("isDirectOrderLocation", isDirectOrderLocation);
@@ -324,9 +313,8 @@ public class SaleOrderController {
 
       SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
 
-      saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
-          saleOrder, amountToInvoice, isPercent);
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
+      Map<Long, BigDecimal> priceMap = new HashMap<>();
 
       List<Map<String, Object>> saleOrderLineListContext;
       saleOrderLineListContext =
@@ -338,9 +326,19 @@ public class SaleOrderController {
           if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
             Long soLineId = Long.valueOf((Integer) map.get("id"));
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
+            BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
+            priceMap.put(soLineId, priceItem);
           }
         }
       }
+
+      // Re-compute amount to invoice if invoicing partially
+      amountToInvoice =
+          saleOrderInvoiceService.computeAmountToInvoice(
+              amountToInvoice, operationSelect, saleOrder, qtyToInvoiceMap, priceMap);
+
+      saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
+          saleOrder, amountToInvoice, isPercent);
 
       // Information to send to the service to handle an invoicing on timetables
       List<Long> timetableIdList = new ArrayList<>();
@@ -388,269 +386,10 @@ public class SaleOrderController {
     }
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  public void mergeSaleOrder(ActionRequest request, ActionResponse response) {
-    List<SaleOrder> saleOrderList = new ArrayList<>();
-    List<Long> saleOrderIdList = new ArrayList<>();
-    boolean fromPopup = false;
-    String lineToMerge;
-    if (request.getContext().get("saleQuotationToMerge") != null) {
-      lineToMerge = "saleQuotationToMerge";
-    } else {
-      lineToMerge = "saleOrderToMerge";
-    }
-
-    if (request.getContext().get(lineToMerge) != null) {
-
-      if (request.getContext().get(lineToMerge) instanceof List) {
-        // No confirmation popup, sale orders are content in a parameter list
-        List<Map> saleOrderMap = (List<Map>) request.getContext().get(lineToMerge);
-        for (Map map : saleOrderMap) {
-          saleOrderIdList.add(new Long((Integer) map.get("id")));
-        }
-      } else {
-        // After confirmation popup, sale order's id are in a string separated by ","
-        String saleOrderIdListStr = (String) request.getContext().get(lineToMerge);
-        for (String saleOrderId : saleOrderIdListStr.split(",")) {
-          saleOrderIdList.add(new Long(saleOrderId));
-        }
-        fromPopup = true;
-      }
-    }
-    // Check if currency, clientPartner and company are the same for all selected
-    // sale orders
-    Currency commonCurrency = null;
-    Partner commonClientPartner = null;
-    Company commonCompany = null;
-    Partner commonContactPartner = null;
-    TaxNumber commonTaxNumber = null;
-    // Useful to determine if a difference exists between tax number of all sale orders
-    boolean existTaxNumberDiff = false;
-    FiscalPosition commonFiscalPosition = null;
-    // Useful to determine if a difference exists between fiscal positions of all sale orders
-    boolean existFiscalPositionDiff = false;
-    Team commonTeam = null;
-    // Useful to determine if a difference exists between teams of all sale orders
-    boolean existTeamDiff = false;
-    // Useful to determine if a difference exists between contact partners of all
-    // sale orders
-    boolean existContactPartnerDiff = false;
-    PriceList commonPriceList = null;
-    // Useful to determine if a difference exists between price lists of all sale
-    // orders
-    boolean existPriceListDiff = false;
-    StockLocation commonLocation = null;
-    // Useful to determine if a difference exists between stock locations of all
-    // sale orders
-    boolean existLocationDiff = false;
-
-    SaleOrder saleOrderTemp;
-    int count = 1;
-    for (Long saleOrderId : saleOrderIdList) {
-      saleOrderTemp = JPA.em().find(SaleOrder.class, saleOrderId);
-      saleOrderList.add(saleOrderTemp);
-      if (count == 1) {
-        commonCurrency = saleOrderTemp.getCurrency();
-        commonClientPartner = saleOrderTemp.getClientPartner();
-        commonCompany = saleOrderTemp.getCompany();
-        commonContactPartner = saleOrderTemp.getContactPartner();
-        commonTeam = saleOrderTemp.getTeam();
-        commonPriceList = saleOrderTemp.getPriceList();
-        commonLocation = saleOrderTemp.getStockLocation();
-        commonTaxNumber = saleOrderTemp.getTaxNumber();
-        commonFiscalPosition = saleOrderTemp.getFiscalPosition();
-      } else {
-        if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
-          commonCurrency = null;
-        }
-        if (commonClientPartner != null
-            && !commonClientPartner.equals(saleOrderTemp.getClientPartner())) {
-          commonClientPartner = null;
-        }
-        if (commonCompany != null && !commonCompany.equals(saleOrderTemp.getCompany())) {
-          commonCompany = null;
-        }
-        if (commonContactPartner != null
-            && !commonContactPartner.equals(saleOrderTemp.getContactPartner())) {
-          commonContactPartner = null;
-          existContactPartnerDiff = true;
-        }
-        if (commonTeam != null && !commonTeam.equals(saleOrderTemp.getTeam())) {
-          commonTeam = null;
-          existTeamDiff = true;
-        }
-        if (commonPriceList != null && !commonPriceList.equals(saleOrderTemp.getPriceList())) {
-          commonPriceList = null;
-          existPriceListDiff = true;
-        }
-        if (commonLocation != null && !commonLocation.equals(saleOrderTemp.getStockLocation())) {
-          commonLocation = null;
-          existLocationDiff = true;
-        }
-        if ((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null)
-            || (commonTaxNumber != saleOrderTemp.getTaxNumber()
-                && !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
-          commonTaxNumber = null;
-          existTaxNumberDiff = true;
-        }
-        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null)
-            || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
-                && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
-          commonFiscalPosition = null;
-          existFiscalPositionDiff = true;
-        }
-      }
-      count++;
-    }
-
-    StringBuilder fieldErrors = new StringBuilder();
-    if (commonCurrency == null) {
-      fieldErrors.append(
-          I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
-    }
-    if (commonClientPartner == null) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(
-          I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage
-                  .SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
-    }
-    if (commonCompany == null) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(
-          I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
-    }
-
-    if (existTaxNumberDiff) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(
-          I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
-    }
-
-    if (existFiscalPositionDiff) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(
-          I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage
-                  .SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
-    }
-
-    if (fieldErrors.length() > 0) {
-      response.setFlash(fieldErrors.toString());
-      return;
-    }
-
-    // Check if priceList or contactPartner are content in parameters
-    if (request.getContext().get("priceList") != null) {
-      commonPriceList =
-          JPA.em()
-              .find(
-                  PriceList.class,
-                  new Long((Integer) ((Map) request.getContext().get("priceList")).get("id")));
-    }
-    if (request.getContext().get("contactPartner") != null) {
-      commonContactPartner =
-          JPA.em()
-              .find(
-                  Partner.class,
-                  new Long((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
-    }
-    if (request.getContext().get("team") != null) {
-      commonTeam =
-          JPA.em()
-              .find(
-                  Team.class,
-                  new Long((Integer) ((Map) request.getContext().get("team")).get("id")));
-    }
-    if (request.getContext().get("stockLocation") != null) {
-      commonLocation =
-          JPA.em()
-              .find(
-                  StockLocation.class,
-                  new Long((Integer) ((Map) request.getContext().get("stockLocation")).get("id")));
-    }
-
-    if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existTeamDiff)) {
-      // Need to display intermediate screen to select some values
-      ActionViewBuilder confirmView =
-          ActionView.define("Confirm merge sale order")
-              .model(Wizard.class.getName())
-              .add("form", "sale-order-merge-confirm-form")
-              .param("popup", "true")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("popup-save", "false")
-              .param("forceEdit", "true");
-
-      if (existPriceListDiff) {
-        confirmView.context("contextPriceListToCheck", "true");
-      }
-      if (existContactPartnerDiff) {
-        confirmView.context("contextContactPartnerToCheck", "true");
-        confirmView.context("contextPartnerId", commonClientPartner.getId().toString());
-      }
-      if (existTeamDiff) {
-        confirmView.context("contextTeamToCheck", "true");
-      }
-      if (existLocationDiff) {
-        confirmView.context("contextLocationToCheck", "true");
-      }
-
-      confirmView.context(lineToMerge, Joiner.on(",").join(saleOrderIdList));
-
-      response.setView(confirmView.map());
-
-      return;
-    }
-
-    try {
-      SaleOrder saleOrder =
-          Beans.get(SaleOrderCreateServiceSupplychainImpl.class)
-              .mergeSaleOrders(
-                  saleOrderList,
-                  commonCurrency,
-                  commonClientPartner,
-                  commonCompany,
-                  commonLocation,
-                  commonContactPartner,
-                  commonPriceList,
-                  commonTeam,
-                  commonTaxNumber,
-                  commonFiscalPosition);
-      if (saleOrder != null) {
-        // Open the generated sale order in a new tab
-        response.setView(
-            ActionView.define("Sale order")
-                .model(SaleOrder.class.getName())
-                .add("grid", "sale-order-grid")
-                .add("form", "sale-order-form")
-                .param("search-filters", "sale-order-filters")
-                .param("forceEdit", "true")
-                .context("_showRecord", String.valueOf(saleOrder.getId()))
-                .map());
-        response.setCanClose(true);
-      }
-    } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
-    }
-  }
-
   public void updateAmountToBeSpreadOverTheTimetable(
       ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderServiceSupplychainImpl.class)
-        .updateAmountToBeSpreadOverTheTimetable(saleOrder);
+    Beans.get(SaleOrderSupplychainService.class).updateAmountToBeSpreadOverTheTimetable(saleOrder);
     response.setValue(
         "amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
   }
@@ -793,7 +532,7 @@ public class SaleOrderController {
     if (stockMove != null) {
       response.setNotify(
           String.format(
-              I18n.get(IExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
+              I18n.get(SupplychainExceptionMessage.SALE_ORDER_STOCK_MOVE_CREATED),
               stockMove.getStockMoveSeq()));
     }
   }
@@ -876,7 +615,7 @@ public class SaleOrderController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
       response.setView(
-          ActionView.define("Invoicing")
+          ActionView.define(I18n.get("Invoicing"))
               .model(SaleOrder.class.getName())
               .add("form", "sale-order-invoicing-wizard-form")
               .param("popup", "reload")
@@ -1024,6 +763,19 @@ public class SaleOrderController {
       Beans.get(SaleOrderSupplychainService.class)
           .setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
       response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getToStockLocation(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      Company company = saleOrder.getCompany();
+      StockLocation toStockLocation =
+          Beans.get(SaleOrderSupplychainService.class)
+              .getToStockLocation(saleOrder.getClientPartner(), company);
+      response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

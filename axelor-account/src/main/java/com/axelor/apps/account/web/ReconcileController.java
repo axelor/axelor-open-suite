@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -50,8 +51,52 @@ public class ReconcileController {
 
     try {
       Beans.get(ReconcileService.class)
-          .confirmReconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()), true);
+          .confirmReconcile(
+              Beans.get(ReconcileRepository.class).find(reconcile.getId()), true, true);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkReconcile(ActionRequest request, ActionResponse response) {
+    Reconcile reconcile = request.getContext().asType(Reconcile.class);
+
+    try {
+      Beans.get(ReconcileService.class)
+          .checkReconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setCreditMoveLineDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Reconcile reconcile = request.getContext().asType(Reconcile.class);
+
+      String moveLineIds =
+          Beans.get(ReconcileService.class).getStringAllowedCreditMoveLines(reconcile);
+
+      response.setAttr(
+          "creditMoveLine",
+          "domain",
+          String.format("self.id IN (%s)", moveLineIds.isEmpty() ? "0" : moveLineIds));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDebitMoveLineDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Reconcile reconcile = request.getContext().asType(Reconcile.class);
+
+      String moveLineIds =
+          Beans.get(ReconcileService.class).getStringAllowedDebitMoveLines(reconcile);
+
+      response.setAttr(
+          "debitMoveLine",
+          "domain",
+          String.format("self.id IN (%s)", moveLineIds.isEmpty() ? "0" : moveLineIds));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

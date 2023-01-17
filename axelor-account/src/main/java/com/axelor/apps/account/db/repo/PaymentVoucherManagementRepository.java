@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
@@ -73,7 +73,7 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PAYMENT_VOUCHER_REMOVE_NOT_OK));
+            I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_REMOVE_NOT_OK));
       } catch (AxelorException e) {
         throw new PersistenceException(e.getMessage(), e);
       }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -86,7 +86,16 @@ public class ActionViewBuilderService {
           addJsonCtx = false;
         }
         xml.append("\n" + INDENT + "<context name=\"" + context.getName() + "\" ");
-        xml.append("expr=\"eval:" + StringEscapeUtils.escapeXml(context.getValue()) + "\" />");
+        String contextValue = context.getValue();
+        if (contextValue.startsWith("eval:")
+            || contextValue.startsWith("call:")
+            || contextValue.startsWith("action:")
+            || contextValue.startsWith("select:")
+            || contextValue.startsWith("select[]:")) {
+          xml.append("expr=\"" + StringEscapeUtils.escapeXml(contextValue) + "\" />");
+        } else {
+          xml.append("expr=\"eval:" + StringEscapeUtils.escapeXml(contextValue) + "\" />");
+        }
       }
     }
 

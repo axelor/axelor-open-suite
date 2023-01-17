@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.base.exceptions;
 
+/** @deprecated Replaced by {@link AdminExceptionMessage} */
+@Deprecated
 public interface IExceptionMessages {
 
   public static final String NO_CONFIG_REQUIRED = /*$$(*/ "No configuration required" /*)*/;

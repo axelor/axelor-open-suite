@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,6 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.PayVoucherElementToPay;
-import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherElementToPayService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -33,12 +32,26 @@ public class PayVoucherElementToPayController {
     try {
       PayVoucherElementToPay elementToPayContext =
           request.getContext().asType(PayVoucherElementToPay.class);
-      PayVoucherElementToPay elementToPay =
-          Beans.get(PayVoucherElementToPayRepository.class).find(elementToPayContext.getId());
 
-      Beans.get(PayVoucherElementToPayService.class).updateAmountToPayCurrency(elementToPay);
+      Beans.get(PayVoucherElementToPayService.class).updateAmountToPayCurrency(elementToPayContext);
 
-      response.setReload(true);
+      response.setValue("amountToPayCurrency", elementToPayContext.getAmountToPayCurrency());
+      response.setValue(
+          "remainingAmountAfterPayment", elementToPayContext.getRemainingAmountAfterPayment());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      PayVoucherElementToPay payVoucherElementToPay =
+          request.getContext().asType(PayVoucherElementToPay.class);
+
+      Beans.get(PayVoucherElementToPayService.class)
+          .updateFinancialDiscount(payVoucherElementToPay);
+
+      response.setValues(payVoucherElementToPay);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

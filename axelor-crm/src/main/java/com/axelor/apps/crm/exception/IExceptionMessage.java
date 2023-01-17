@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,11 @@
 /** */
 package com.axelor.apps.crm.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link CrmExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Target service */

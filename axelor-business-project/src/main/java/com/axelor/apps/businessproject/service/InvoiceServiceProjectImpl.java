@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,10 +24,12 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
@@ -69,6 +71,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceLineRepository invoiceLineRepo,
+      InvoiceTermService invoiceTermService,
+      InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
       IntercoService intercoService,
       TaxService taxService,
@@ -85,6 +89,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         accountConfigService,
         moveToolService,
         invoiceLineRepo,
+        invoiceTermService,
+        invoiceTermPfpService,
         appBaseService,
         intercoService,
         taxService,
@@ -98,7 +104,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           String.format(
-              I18n.get(IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
+              I18n.get(AccountExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
               invoice.getInvoiceId()),
           invoice);
     }

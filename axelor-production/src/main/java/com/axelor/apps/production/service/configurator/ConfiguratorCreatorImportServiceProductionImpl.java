@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.production.db.ConfiguratorProdProcess;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.ConfiguratorProdProduct;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
@@ -90,7 +90,7 @@ public class ConfiguratorCreatorImportServiceProductionImpl
     if (counter > MAX_DEPTH) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_TOO_MANY_CALLS));
+          I18n.get(ProductionExceptionMessage.CONFIGURATOR_BOM_IMPORT_TOO_MANY_CALLS));
     }
     updateAllFormulaFields(configuratorBom, oldName, newName);
     ConfiguratorProdProcess configuratorProdProcess = configuratorBom.getConfiguratorProdProcess();

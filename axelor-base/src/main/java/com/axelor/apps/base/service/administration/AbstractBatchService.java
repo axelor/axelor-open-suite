@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,7 @@
 package com.axelor.apps.base.service.administration;
 
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
@@ -68,7 +68,7 @@ public abstract class AbstractBatchService implements Callable<Batch> {
     if (model == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BASE_BATCH_2),
+          I18n.get(BaseExceptionMessage.BASE_BATCH_2),
           code);
     }
 
@@ -100,7 +100,7 @@ public abstract class AbstractBatchService implements Callable<Batch> {
             .sendNotification(
                 AuthUtils.getUser(),
                 String.format(
-                    I18n.get(IExceptionMessage.ABSTRACT_BATCH_FINISHED_SUBJECT), batch.getId()),
+                    I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_FINISHED_SUBJECT), batch.getId()),
                 batch.getComments(),
                 batch.getId(),
                 batch.getClass());
@@ -109,9 +109,9 @@ public abstract class AbstractBatchService implements Callable<Batch> {
             .sendNotification(
                 AuthUtils.getUser(),
                 String.format(
-                    I18n.get(IExceptionMessage.ABSTRACT_BATCH_FINISHED_SUBJECT),
+                    I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_FINISHED_SUBJECT),
                     batchModel.getId()),
-                I18n.get(IExceptionMessage.ABSTRACT_BATCH_FINISHED_DEFAULT_MESSAGE),
+                I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_FINISHED_DEFAULT_MESSAGE),
                 batchModel.getId(),
                 batchModel.getClass());
       }
@@ -128,7 +128,7 @@ public abstract class AbstractBatchService implements Callable<Batch> {
     Beans.get(MailMessageService.class)
         .sendNotification(
             AuthUtils.getUser(),
-            I18n.get(IExceptionMessage.ABSTRACT_BATCH_MESSAGE_ON_EXCEPTION),
+            I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_MESSAGE_ON_EXCEPTION),
             e.getMessage(),
             batchModel.getId(),
             batchModel.getClass());

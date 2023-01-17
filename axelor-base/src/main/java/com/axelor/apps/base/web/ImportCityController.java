@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.CityRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.translation.ITranslation;
 import com.axelor.exception.service.TraceBackService;
@@ -79,7 +79,7 @@ public class ImportCityController {
         importHistoryList = (List<ImportHistory>) importCityMap.get("importHistoryList");
         errorFile = (MetaFile) importCityMap.get("errorFile");
         if (errorFile != null) {
-          response.setFlash(I18n.get(IExceptionMessage.CITIES_IMPORT_FAILED));
+          response.setFlash(I18n.get(BaseExceptionMessage.CITIES_IMPORT_FAILED));
           response.setAttr("errorFile", "hidden", false);
           response.setValue("errorFile", errorFile);
         } else {

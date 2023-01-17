@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ import java.util.Map;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.Activity;
 import org.camunda.bpm.model.bpmn.instance.CatchEvent;
+import org.camunda.bpm.model.bpmn.instance.ConditionalEventDefinition;
 import org.camunda.bpm.model.bpmn.instance.EndEvent;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
@@ -121,6 +122,18 @@ public class WkfNodeService {
         (WkfTaskConfig)
             Beans.get(WkfCommonService.class)
                 .addProperties(WkfPropertyMapper.FIELD_MAP, config, activity);
+
+    Collection<ConditionalEventDefinition> childConditionalEvents =
+        activity.getChildElementsByType(ConditionalEventDefinition.class);
+    if (childConditionalEvents != null && !childConditionalEvents.isEmpty()) {
+      ConditionalEventDefinition conditionalEventDefinition =
+          childConditionalEvents.iterator().next();
+      String variable = conditionalEventDefinition.getCamundaVariableName();
+      if (variable != null) {
+        config.setButton(variable);
+      }
+    }
+
     ExtensionElements extensionElements = activity.getExtensionElements();
     if (extensionElements != null) {
       for (ModelElementInstance modelElementInstance : extensionElements.getElements()) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.tool.date.DurationTool;
@@ -61,7 +61,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.NO_TIMESHEET_CREATED),
+          I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_CREATED),
           timer);
     }
   }
@@ -78,7 +78,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   }
 
   @Transactional
-  public TimesheetLine generateTimesheetLine(TSTimer timer) {
+  public TimesheetLine generateTimesheetLine(TSTimer timer) throws AxelorException {
 
     BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());
     Timesheet timesheet = Beans.get(TimesheetService.class).getCurrentOrCreateTimesheet();
@@ -91,7 +91,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
             .createTimesheetLine(
                 timer.getProject(),
                 timer.getProduct(),
-                timer.getUser(),
+                timer.getEmployee(),
                 startDateTime,
                 timesheet,
                 durationHours,
@@ -117,7 +117,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   public TSTimer getCurrentTSTimer() {
     return Beans.get(TSTimerRepository.class)
         .all()
-        .filter("self.user = ?1", AuthUtils.getUser())
+        .filter("self.employee.user.id = ?1", AuthUtils.getUser().getId())
         .fetchOne();
   }
 }

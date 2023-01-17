@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,8 +30,10 @@ import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
@@ -59,7 +61,9 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       TemplateMessageService templateMessageService,
       PaymentModeService paymentModeService,
       PeriodRepository periodRepository,
-      MoveLineConsolidateService moveLineConsolidateService) {
+      MoveLineConsolidateService moveLineConsolidateService,
+      KilometricService kilometricService,
+      BankDetailsService bankDetailsService) {
     super(
         moveCreateService,
         moveValidateService,
@@ -75,7 +79,9 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
         templateMessageService,
         paymentModeService,
         periodRepository,
-        moveLineConsolidateService);
+        moveLineConsolidateService,
+        kilometricService,
+        bankDetailsService);
   }
 
   @Override

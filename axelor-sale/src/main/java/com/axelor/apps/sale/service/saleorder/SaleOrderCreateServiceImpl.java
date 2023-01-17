@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -104,7 +104,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       throws AxelorException {
 
     logger.debug(
-        "Création d'un devis client : Société = {},  Reference externe = {}, Client = {}",
+        "Creation of a sale order: Company = {},  External reference = {}, Supplier partner = {}",
         company,
         externalReference,
         clientPartner.getFullName());

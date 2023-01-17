@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
@@ -124,7 +124,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCTION_ORDER_2));
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_2));
     }
   }
 }

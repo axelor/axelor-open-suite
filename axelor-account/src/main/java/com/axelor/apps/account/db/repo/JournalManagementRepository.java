@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,8 @@ public class JournalManagementRepository extends JournalRepository {
 
     Journal copy = super.copy(entity, deep);
 
+    copy.setCode(String.format("%s (copy)", entity.getCode()));
+    copy.setName(String.format("%s (copy)", entity.getName()));
     copy.setStatusSelect(JournalRepository.STATUS_INACTIVE);
     copy.setSequence(null);
 

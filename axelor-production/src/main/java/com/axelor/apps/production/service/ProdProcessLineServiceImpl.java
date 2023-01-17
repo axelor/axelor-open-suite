@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,14 +17,21 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
+import com.axelor.apps.production.db.repo.WorkCenterRepository;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
@@ -67,5 +74,57 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
     prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
     return prodProcessLineRepo.save(prodProcessLine);
+  }
+
+  @Override
+  public long computeEntireCycleDuration(ProdProcessLine prodProcessLine, BigDecimal qty)
+      throws AxelorException {
+    WorkCenter workCenter = prodProcessLine.getWorkCenter();
+
+    long duration = 0;
+    if (prodProcessLine.getWorkCenter() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          prodProcessLine.getProdProcess() != null
+              ? prodProcessLine.getProdProcess().getCode()
+              : "null",
+          prodProcessLine.getName());
+    }
+
+    BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
+
+    BigDecimal nbCycles;
+    if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
+      nbCycles = qty;
+    } else {
+      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
+    }
+
+    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
+
+    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+        || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
+      Machine machine = workCenter.getMachine();
+      if (machine == null) {
+        throw new AxelorException(
+            workCenter,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
+            workCenter.getName());
+      }
+      duration += machine.getStartingDuration();
+      duration += machine.getEndingDuration();
+      duration +=
+          nbCycles
+              .subtract(new BigDecimal(1))
+              .multiply(new BigDecimal(machine.getSetupDuration()))
+              .longValue();
+    }
+
+    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
+    duration += nbCycles.multiply(durationPerCycle).longValue();
+
+    return duration;
   }
 }

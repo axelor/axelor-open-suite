@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,9 +20,10 @@ package com.axelor.apps.account.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -137,22 +138,22 @@ public class BatchMoveLineExport extends BatchStrategy {
     if (accountingBatch.getCompany() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.BATCH_MOVELINE_EXPORT_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountingBatch.getCode());
     }
     if (accountingBatch.getEndDate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.BATCH_MOVELINE_EXPORT_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountingBatch.getCode());
     }
     if (accountingBatch.getMoveLineExportTypeSelect() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.BATCH_MOVELINE_EXPORT_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountingBatch.getCode());
     }
   }
@@ -164,10 +165,10 @@ public class BatchMoveLineExport extends BatchStrategy {
   @Override
   protected void stop() {
 
-    String comment = I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_4) + "\n";
+    String comment = I18n.get(AccountExceptionMessage.BATCH_MOVELINE_EXPORT_4) + "\n";
     comment +=
         String.format(
-            "\t* %s (%s)" + I18n.get(IExceptionMessage.BATCH_MOVELINE_EXPORT_5) + "\n",
+            "\t* %s (%s)" + I18n.get(AccountExceptionMessage.BATCH_MOVELINE_EXPORT_5) + "\n",
             moveLineDone,
             moveDone);
     comment += String.format("\t* " + I18n.get("Debit") + " : %s\n", debit);
@@ -175,8 +176,7 @@ public class BatchMoveLineExport extends BatchStrategy {
     comment += String.format("\t* " + I18n.get("Balance") + " : %s\n", balance);
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.service.CipherService;
 import com.axelor.exception.AxelorException;
@@ -108,7 +108,7 @@ public class MailAccountServiceImpl implements MailAccountService {
       if (count > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MAIL_ACCOUNT_5));
+            I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
       }
     }
   }
@@ -164,13 +164,13 @@ public class MailAccountServiceImpl implements MailAccountService {
           e,
           mailAccount,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MAIL_ACCOUNT_1));
+          I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_1));
     } catch (NoSuchProviderException e) {
       throw new AxelorException(
           e,
           mailAccount,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MAIL_ACCOUNT_2));
+          I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_2));
     }
   }
 

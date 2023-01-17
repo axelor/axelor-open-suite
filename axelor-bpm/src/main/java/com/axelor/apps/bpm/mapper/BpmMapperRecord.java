@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -61,11 +61,16 @@ public class BpmMapperRecord extends MapperRecord {
 
     StringBuilder scriptBuilder = getScriptBuilder();
 
+    String saveStr = "$ctx.save(" + getTargetVariable() + ")";
+    if (!isSave()) {
+      saveStr = getTargetVariable();
+    }
+
     if (createVariable) {
-      scriptBuilder.append(
-          "$ctx.createVariable($ctx.save(" + getTargetVariable() + "), execution)");
-    } else if (isSavedRecord() || isNewRecord()) {
-      scriptBuilder.append("return $ctx.save(" + getTargetVariable() + ")");
+      scriptBuilder.append("$ctx.createVariable(" + saveStr + ", execution)");
+
+    } else if (isNewRecord() || isSavedRecord() || isSave()) {
+      scriptBuilder.append("return " + saveStr);
     }
   }
 

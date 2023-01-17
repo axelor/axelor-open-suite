@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,10 +22,14 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -37,7 +41,9 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.Map;
 
 public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceImpl {
 
@@ -87,5 +93,34 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
     }
 
     return invoiceLine;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Invoice createInvoiceFromSaleOrder(
+      StockMove stockMove, SaleOrder saleOrder, Map<Long, BigDecimal> qtyToInvoiceMap)
+      throws AxelorException {
+    Invoice invoice = super.createInvoiceFromSaleOrder(stockMove, saleOrder, qtyToInvoiceMap);
+    Project project = saleOrder.getProject();
+    if (project != null) {
+      invoice.setProject(project);
+    }
+    invoiceRepository.save(invoice);
+    return invoice;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Invoice createInvoiceFromPurchaseOrder(
+      StockMove stockMove, PurchaseOrder purchaseOrder, Map<Long, BigDecimal> qtyToInvoiceMap)
+      throws AxelorException {
+    Invoice invoice =
+        super.createInvoiceFromPurchaseOrder(stockMove, purchaseOrder, qtyToInvoiceMap);
+    Project project = purchaseOrder.getProject();
+    if (project != null) {
+      invoice.setProject(project);
+    }
+    invoiceRepository.save(invoice);
+    return invoice;
   }
 }

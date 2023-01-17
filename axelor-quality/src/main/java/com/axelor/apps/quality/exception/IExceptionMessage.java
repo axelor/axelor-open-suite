@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,11 @@
 /** */
 package com.axelor.apps.quality.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link QualityExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String QUALITY_CONTROL_MISSING_PRINTING_SETTINGS = /*$$(*/

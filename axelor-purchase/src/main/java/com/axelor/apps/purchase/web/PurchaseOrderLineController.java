@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,16 +19,23 @@ package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -121,6 +128,8 @@ public class PurchaseOrderLineController {
 
     Context context = request.getContext();
 
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+
     PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
 
     PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
@@ -131,6 +140,7 @@ public class PurchaseOrderLineController {
 
     try {
       PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
+      TaxService taxService = Beans.get(TaxService.class);
 
       BigDecimal price =
           purchaseOrderLine.getProduct().getInAti()
@@ -184,10 +194,11 @@ public class PurchaseOrderLineController {
                 != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
           response.setValue(
               "discountAmount",
-              purchaseOrderLineService.convertUnitPrice(
+              taxService.convertUnitPrice(
                   purchaseOrderLine.getProduct().getInAti(),
                   purchaseOrderLine.getTaxLine(),
-                  (BigDecimal) discounts.get("discountAmount")));
+                  (BigDecimal) discounts.get("discountAmount"),
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
           response.setValue("discountAmount", discounts.get("discountAmount"));
         }
@@ -203,14 +214,20 @@ public class PurchaseOrderLineController {
           response.setValue("inTaxPrice", price);
           response.setValue(
               "price",
-              purchaseOrderLineService.convertUnitPrice(
-                  true, purchaseOrderLine.getTaxLine(), price));
+              taxService.convertUnitPrice(
+                  true,
+                  purchaseOrderLine.getTaxLine(),
+                  price,
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         } else {
           response.setValue("price", price);
           response.setValue(
               "inTaxPrice",
-              purchaseOrderLineService.convertUnitPrice(
-                  false, purchaseOrderLine.getTaxLine(), price));
+              taxService.convertUnitPrice(
+                  false,
+                  purchaseOrderLine.getTaxLine(),
+                  price,
+                  appBaseService.getNbDecimalDigitForUnitPrice()));
         }
       }
 
@@ -236,7 +253,12 @@ public class PurchaseOrderLineController {
 
       response.setValue(
           "price",
-          Beans.get(PurchaseOrderLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  true,
+                  taxLine,
+                  inTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -259,7 +281,12 @@ public class PurchaseOrderLineController {
 
       response.setValue(
           "inTaxPrice",
-          Beans.get(PurchaseOrderLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  false,
+                  taxLine,
+                  exTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -283,7 +310,10 @@ public class PurchaseOrderLineController {
 
     try {
       BigDecimal price = purchaseOrderLine.getPrice();
-      BigDecimal inTaxPrice = price.add(price.multiply(purchaseOrderLine.getTaxLine().getValue()));
+      BigDecimal inTaxPrice =
+          price.add(
+              price.multiply(
+                  purchaseOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
 
       response.setValue("inTaxPrice", inTaxPrice);
 
@@ -336,10 +366,16 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = getPurchaseOrder(context);
-      PurchaseOrderLineService service = Beans.get(PurchaseOrderLineService.class);
 
-      service.checkMinQty(purchaseOrder, purchaseOrderLine, request, response);
-      service.checkMultipleQty(purchaseOrderLine, response);
+      Beans.get(SupplierCatalogService.class)
+          .checkMinQty(
+              purchaseOrderLine.getProduct(),
+              purchaseOrder.getSupplierPartner(),
+              purchaseOrder.getCompany(),
+              purchaseOrderLine.getQty(),
+              request,
+              response);
+      Beans.get(PurchaseOrderLineService.class).checkMultipleQty(purchaseOrderLine, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -400,6 +436,42 @@ public class PurchaseOrderLineController {
       PurchaseOrderLineService service = Beans.get(PurchaseOrderLineService.class);
 
       service.checkDifferentSupplier(purchaseOrder, purchaseOrderLine, response);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InternationalService internationalService = Beans.get(InternationalService.class);
+      PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      PurchaseOrder parent = this.getPurchaseOrder(context);
+      Partner partner = parent.getSupplierPartner();
+      Company company = parent.getCompany();
+      String userLanguage = AuthUtils.getUser().getLanguage();
+      Product product = purchaseOrderLine.getProduct();
+
+      SupplierCatalog supplierCatalog =
+          Beans.get(SupplierCatalogService.class).getSupplierCatalog(product, partner, company);
+
+      if (supplierCatalog == null && product != null) {
+        Map<String, String> translation =
+            internationalService.getProductDescriptionAndNameTranslation(
+                product, partner, userLanguage);
+
+        String description = translation.get("description");
+        String productName = translation.get("productName");
+
+        if (description != null
+            && !description.isEmpty()
+            && productName != null
+            && !productName.isEmpty()) {
+          response.setValue("description", description);
+          response.setValue("productName", productName);
+        }
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

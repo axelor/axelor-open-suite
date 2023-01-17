@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,15 +21,18 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.PurchaseProductService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -43,24 +46,30 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       CurrencyService currencyService,
       PriceListService priceListService,
       AppAccountService appAccountService,
-      AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
-      PurchaseProductService purchaseProductService,
       ProductCompanyService productCompanyService,
       InvoiceLineRepository invoiceLineRepo,
       AppBaseService appBaseService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      InvoiceLineAnalyticService invoiceLineAnalyticService,
+      PurchaseProductService purchaseProductService,
+      SupplierCatalogService supplierCatalogService,
+      TaxService taxService,
+      InternationalService internationalService) {
     super(
         currencyService,
         priceListService,
         appAccountService,
-        analyticMoveLineService,
         accountManagementAccountService,
-        purchaseProductService,
         productCompanyService,
         invoiceLineRepo,
         appBaseService,
-        accountConfigService);
+        accountConfigService,
+        invoiceLineAnalyticService,
+        purchaseProductService,
+        supplierCatalogService,
+        taxService,
+        internationalService);
   }
 
   @Transactional
@@ -82,7 +91,7 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
   @Override
   public List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
     List<AnalyticMoveLine> analyticMoveLineList =
-        super.createAnalyticDistributionWithTemplate(invoiceLine);
+        invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
 
     if (invoiceLine.getProject() != null && analyticMoveLineList != null) {
       analyticMoveLineList.forEach(

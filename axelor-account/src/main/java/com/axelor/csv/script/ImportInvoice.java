@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.csv.script;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -34,6 +35,8 @@ public class ImportInvoice {
 
   @Inject private InvoiceRepository invoiceRepo;
 
+  @Inject private InvoiceTermService invoiceTermService;
+
   @Transactional(rollbackOn = {Exception.class})
   public Object importInvoice(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof Invoice;
@@ -46,6 +49,13 @@ public class ImportInvoice {
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT) {
       invoiceService.setDraftSequence(invoice);
     }
+    if (invoice.getStatusSelect() < InvoiceRepository.STATUS_VENTILATED
+        && invoice.getPaymentMode() != null
+        && invoice.getInTaxTotal() != null
+        && !invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+      invoice = invoiceTermService.computeInvoiceTerms(invoice);
+    }
+
     return invoice;
   }
 }

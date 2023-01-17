@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,10 +21,14 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl;
-import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
+import com.axelor.apps.account.service.fixedasset.FixedAssetImportService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineGenerationService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -37,21 +41,29 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
+public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServiceImpl {
 
   @Inject
   public FixedAssetServiceSupplyChainImpl(
-      FixedAssetRepository fixedAssetRepo,
-      FixedAssetLineMoveService fixedAssetLineMoveService,
-      FixedAssetLineComputationService fixedAssetLineComputationService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      AccountConfigService accountConfigService) {
+      FixedAssetLineGenerationService fixedAssetLineGenerationService,
+      FixedAssetImportService fixedAssetImportService,
+      FixedAssetDateService fixedAssetDateService,
+      FixedAssetLineService fixedAssetLineService,
+      FixedAssetRepository fixedAssetRepository,
+      SequenceService sequenceService,
+      AccountConfigService accountConfigService,
+      AppBaseService appBaseService,
+      FixedAssetValidateService fixedAssetValidateService) {
     super(
-        fixedAssetRepo,
-        fixedAssetLineMoveService,
-        fixedAssetLineComputationService,
-        moveLineComputeAnalyticService,
-        accountConfigService);
+        fixedAssetLineGenerationService,
+        fixedAssetImportService,
+        fixedAssetDateService,
+        fixedAssetLineService,
+        fixedAssetRepository,
+        sequenceService,
+        accountConfigService,
+        appBaseService,
+        fixedAssetValidateService);
   }
 
   @Transactional

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -38,7 +38,7 @@ public class SubrogationReleaseWorkflowServiceImpl implements SubrogationRelease
         || !authorizedStatus.contains(subrogationRelease.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_BACK_TO_ACCOUNTED_WRONG_STATUS));
+          I18n.get(AccountExceptionMessage.SUBROGATION_RELEASE_BACK_TO_ACCOUNTED_WRONG_STATUS));
     }
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);
   }
