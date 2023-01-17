@@ -143,6 +143,10 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         && accountTypeSet != null) {
       int counter = 1;
 
+      if (CollectionUtils.isNotEmpty(accountSet)) {
+        accountTypeSet = this.mergeWithAccounts(accountTypeSet, accountSet);
+      }
+
       for (AccountType accountType : accountTypeSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
@@ -310,6 +314,14 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             .collect(Collectors.toSet());
 
     return this.mergeSets(accountSet, tempSet);
+  }
+
+  protected Set<AccountType> mergeWithAccounts(
+      Set<AccountType> accountTypeSet, Set<Account> accountSet) {
+    Set<AccountType> tempSet =
+        accountSet.stream().map(Account::getAccountType).collect(Collectors.toSet());
+
+    return this.mergeSets(accountTypeSet, tempSet);
   }
 
   protected void createValueFromMoveLine(
