@@ -11,9 +11,8 @@
 
   <form name="account-config-form" title="Account configuration"
     model="com.axelor.apps.account.db.AccountConfig"
-    onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new,action-account-config-attrs-set-required-fields"
-    onSave="action-account-config-group-on-save"
-    onLoad="action-attrs-account-config-set-is-can-new,action-account-config-attrs-set-required-fields"
+    onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new"
+    onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new"
     width="large">
 
     <panel name="mainPanel">
@@ -514,9 +513,4 @@
       method="checkChangesInAnalytic"/>
   </action-method>
 
-  <action-attrs name="action-account-config-attrs-set-required-fields">
-    <attribute name="required"
-      for="purchFinancialDiscountAccount,saleFinancialDiscountAccount,purchFinancialDiscountTax,saleFinancialDiscountTax"
-      expr="eval: __config__.app.getApp('account')?.manageFinancialDiscount"/>
-  </action-attrs>
 </object-views>
