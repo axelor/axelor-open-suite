@@ -216,7 +216,12 @@ public class AccountingBatchController {
       AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
       if (accountingBatch != null && accountingBatch.getGenerateGeneralLedger()) {
 
+        if (Beans.get(AccountingBatchService.class).checkIfAnomalyInBatch(accountingBatch)) {
+          return;
+        }
+
         AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
+
         AccountingReport accountingReport =
             Beans.get(BatchPrintAccountingReportService.class)
                 .createAccountingReportFromBatch(accountingBatch);
