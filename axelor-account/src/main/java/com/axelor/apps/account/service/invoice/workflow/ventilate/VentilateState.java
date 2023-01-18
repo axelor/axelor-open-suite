@@ -130,7 +130,8 @@ public class VentilateState extends WorkflowInvoice {
     if (invoice.getPartnerAccount() == null) {
       Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice);
 
-      if (account == null) {
+      if (account == null
+          && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.VENTILATE_STATE_5));
