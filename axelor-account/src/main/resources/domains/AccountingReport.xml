@@ -110,6 +110,9 @@
       name="accountingReportAnalyticConfigLineList" title="Analytic rules"
       mappedBy="accountingReport"/>
 
+    <boolean name="excludeViewAccount" default="false"/>
+    <boolean name="excludeCommitmentSpecialAccount" default="false"/>
+
     <unique-constraint columns="ref,company"/>
 
     <extra-code><![CDATA[
