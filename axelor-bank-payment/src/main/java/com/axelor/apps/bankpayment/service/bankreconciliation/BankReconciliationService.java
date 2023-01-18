@@ -782,12 +782,12 @@ public class BankReconciliationService {
 
   public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
-            "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
-                    + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
-                    + " AND self.move.statusSelect != :statusSelect"
-                    + " AND self.move.company = :company"
-                    + " AND self.account.accountType.technicalTypeSelect = :accountType"
-                    + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount";
+        "(self.date >= :fromDate OR self.dueDate >= :fromDate)"
+            + " AND (self.date <= :toDate OR self.dueDate <= :toDate)"
+            + " AND self.move.statusSelect != :statusSelect"
+            + " AND self.move.company = :company"
+            + " AND self.account.accountType.technicalTypeSelect = :accountType"
+            + " AND self.currencyAmount > 0 AND self.bankReconciledAmount < self.currencyAmount";
 
     if (!bankReconciliation.getIncludeOtherBankStatements()) {
       query =
@@ -795,7 +795,6 @@ public class BankReconciliationService {
               + " AND (self.date >= :fromDate OR self.dueDate >= :fromDate)"
               + " AND (self.date <= :toDate OR self.dueDate <= :toDate)";
     }
-
 
     if (bankReconciliation.getJournal() != null) {
       query = query + " AND self.move.journal = :journal";
