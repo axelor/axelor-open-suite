@@ -131,8 +131,8 @@
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized"
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-            canEdit="false" canNew="false" onChange="action-account-method-personalize-template"
-            onSelect="action-on-change-distribution-template-account"
+            canEdit="false" canNew="false"
+            onChange="action-account-group-analytic-distribution-onChange"
             domain="self.company = :company AND self.isSpecific = false"/>
           <button name="personalizeBtn" title="Create personalized analytic template"
             colSpan="3"
@@ -307,6 +307,11 @@
   <action-group name="action-account-group-company-onChange">
     <action name="action-account-record-clean-analytic"/>
     <action name="action-account-validate"/>
+  </action-group>
+
+  <action-group name="action-account-group-analytic-distribution-onChange">
+    <action name="action-on-change-distribution-template-account"/>
+    <action name="action-account-method-personalize-template"/>
   </action-group>
 
   <action-record name="action-account-record-new"

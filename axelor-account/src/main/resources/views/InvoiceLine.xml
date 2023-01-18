@@ -200,7 +200,6 @@
           if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form"
-          onSelect="action-invoice-line-group-set-analytic-distribution-template-onselect"
           onChange="action-invoice-line-group-analytic-distribution-template-onchange"
           readonlyIf="!account || !account.analyticDistributionAuthorized"
           requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines"/>
@@ -489,6 +488,7 @@
 
   <action-group
     name="action-invoice-line-group-analytic-distribution-template-onchange">
+    <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-invoice-line-method-clear-analytic-invoice-line"/>
     <action name="action-invoice-line-method-check-analytic-on-invoice-line"/>
     <action name="action-invoice-line-method-create-distribution"/>
@@ -501,11 +501,6 @@
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
   </action-group>
 
-  <action-group
-    name="action-invoice-line-group-set-analytic-distribution-template-onselect">
-    <action name="action-invoice-line-on-select-distribution-template-account"/>
-    <action name="action-invoice-line-attrs-set-domain-analytic-distribution-template"/>
-  </action-group>
   <!-- ACTION RECORDS -->
 
   <action-record name="action-invoice-line-record-new"
@@ -626,7 +621,7 @@
       method="checkAnalyticMoveLineForAxis"/>
   </action-method>
 
-  <action-method name="action-invoice-line-on-select-distribution-template-account">
+  <action-method name="action-invoice-line-check-distribution-template-account">
     <call class="com.axelor.apps.account.web.InvoiceLineController"
       method="checkAnalyticAccount"/>
   </action-method>

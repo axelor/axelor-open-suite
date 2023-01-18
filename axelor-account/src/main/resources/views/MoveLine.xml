@@ -935,6 +935,7 @@
   </action-group>
 
   <action-group name="action-move-line-group-analytic-distribution-template-onchange">
+    <action name="action-move-line-check-distribution-template-account"/>
     <action name="action-move-line-method-clear-analytic-move-line"/>
     <action name="action-move-line-method-check-analytic-on-move-line"/>
     <action name="action-move-line-method-create-analytic-distribution"/>
@@ -947,12 +948,6 @@
   <action-group name="action-move-line-group-currency-amount-rate-onchange">
     <action name="action-move-line-record-set-debitcredit"/>
     <action name="action-move-line-method-generate-invoice-terms"/>
-  </action-group>
-
-  <action-group
-    name="action-move-line-group-set-analytic-distribution-template-onselect">
-    <action name="action-move-line-on-select-distribution-template-account"/>
-    <action name="action-move-line-attrs-set-domain-analytic-distribution-template"/>
   </action-group>
 
   <action-method name="action-move-line-method-compute-analytic-distribution">
@@ -986,7 +981,7 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="getValidatePeriod"/>
   </action-method>
 
-  <action-method name="action-move-line-on-select-distribution-template-account">
+  <action-method name="action-move-line-check-distribution-template-account">
     <call class="com.axelor.apps.account.web.MoveLineController" method="checkAnalyticAccount"/>
   </action-method>
 
