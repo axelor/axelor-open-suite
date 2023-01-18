@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -171,6 +171,10 @@
                     <text-property name="heading">parent_account_id</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">showProvisionTitle</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
                     <property name="columnName">debit</property>
                     <property name="alias">debit</property>
                     <property name="analysis">measure</property>
@@ -264,48 +268,56 @@
                     <property name="name">account_id</property>
                     <property name="nativeName">account_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">account_code</property>
                     <property name="nativeName">account_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">account_name</property>
                     <property name="nativeName">account_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">parent_account_id</property>
                     <property name="nativeName">parent_account_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">showProvisionTitle</property>
                     <property name="nativeName">showProvisionTitle</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">balance</property>
                     <property name="nativeName">balance</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Account.id as account_id, MoveLine.account_code as account_code, MoveLine.account_name as account_name, Account.parent_account as parent_account_id,
@@ -317,6 +329,7 @@ from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
+left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id )
 
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
@@ -341,6 +354,9 @@ Move.company = AccountingReport.company AND
 or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
 or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
 or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
+
+AND ((AccountingReport.exclude_view_account is true AND AccountType.technical_type_select != 'view') OR AccountingReport.exclude_view_account is false)
+AND ((AccountingReport.exclude_commitment_special_account is true AND AccountType.technical_type_select != 'commitment' AND AccountType.technical_type_select != 'special') OR AccountingReport.exclude_commitment_special_account is false)
 
 AND
 
@@ -1209,7 +1225,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         </list-property>
                         <column id="4233"/>
                         <detail>
-                            <row id="4229">
+                            <row id="4236">
                                 <cell id="4230"/>
                             </row>
                         </detail>
