@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -130,7 +129,7 @@ public class InvoiceLineController {
       Invoice invoice = request.getContext().getParent().asType(Invoice.class);
 
       Beans.get(InvoiceLineSupplychainService.class)
-              .checkMinQty(invoice, invoiceLine, request, response);
+          .checkMinQty(invoice, invoiceLine, request, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
