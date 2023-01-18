@@ -13,7 +13,7 @@
 "%d invoices treated successfully,","%d factures traitées avec succès.",,
 "%d move(s) has/have been removed successfully","%d écriture(s) a(ont) été supprimée(s) avec succès",,
 "%d moves couldn't be deleted or archived, please check the logs.","%d écriture(s) n'a(ont) pas pu être supprimée(s) ou archivée(s), veuillez vérifier les logs.",,
-"%d objects are linked to this payment condition, the modifications will be applied these objects.",,,
+"%d objects are linked to this payment condition, the modifications will be applied these objects.","%d objets sont liés à cette condition de paiement, les modifications seront répercutées sur ceux-ci.",,
 "%d reimbursement created successfully,","%d remboursement créé avec succès,",,
 "%d reimbursements created successfully,","%d remboursements créés avec succès.",,
 "%s - Invoice date can't be in the future.","%s - La date de facture ne peut pas être dans le futur.",,
