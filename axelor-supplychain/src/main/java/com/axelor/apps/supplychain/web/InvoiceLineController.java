@@ -129,14 +129,8 @@ public class InvoiceLineController {
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
       Invoice invoice = request.getContext().getParent().asType(Invoice.class);
 
-      Beans.get(SupplierCatalogService.class)
-          .checkMinQty(
-              invoiceLine.getProduct(),
-              invoice.getPartner(),
-              invoice.getCompany(),
-              invoiceLine.getQty(),
-              request,
-              response);
+      Beans.get(InvoiceLineSupplychainService.class)
+              .checkMinQty(invoice, invoiceLine, request, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
