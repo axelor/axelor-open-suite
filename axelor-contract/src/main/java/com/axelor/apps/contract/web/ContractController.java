@@ -20,6 +20,7 @@ package com.axelor.apps.contract.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -263,6 +264,19 @@ public class ContractController {
                   PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fillInvoicedPartner(ActionRequest request, ActionResponse response) {
+    try {
+      Contract contract = request.getContext().asType(Contract.class);
+      Partner partner =
+          Beans.get(PartnerSupplychainLinkService.class).getPartnerIfOnlyOne(contract.getPartner());
+      if (partner != null) {
+        response.setValue("invoicedPartner", partner);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

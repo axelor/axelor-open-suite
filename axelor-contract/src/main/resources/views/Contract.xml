@@ -44,8 +44,8 @@
         <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
         <field name="partner" colSpan="4" onSelect="action-contract-attrs-domains-partner"
           showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
-          onChange="action-contract-attrs-partner-payment-config" required="true"
-          form-view="partner-form"/>
+          onChange="action-contract-group-partner-onchange"
+          required="true" form-view="partner-form"/>
         <field name="invoicedPartner" showIf="targetTypeSelect == 1 &amp;&amp; partner"
           canEdit="false" form-view="partner-form" readonlyIf="statusSelect >= 2" required="true"
           colSpan="4" onSelect="action-contract-method-set-invoiced-partner-domain"/>
@@ -521,6 +521,10 @@
     <call class="com.axelor.apps.contract.web.ContractController" method="isValid"/>
   </action-method>
 
+  <action-method name="action-contract-method-fill-invoiced-partner-if-only-one">
+    <call class="com.axelor.apps.contract.web.ContractController" method="fillInvoicedPartner"/>
+  </action-method>
+
   <action-validate name="action-contract-validate-on-going">
     <alert
       message="Attention the contract will have as starting date the provisional activation
@@ -562,6 +566,11 @@
     <attribute name="domain" for="paymentMode" expr="self.inOutSelect = 2"
       if="__parent__?.targetTypeSelect == 2"/>
   </action-attrs>
+
+  <action-group name="action-contract-group-partner-onchange">
+    <action name="action-contract-attrs-partner-payment-config"/>
+    <action name="action-contract-method-fill-invoiced-partner-if-only-one"/>
+  </action-group>
 
   <search-filters name="contract-filters"
     model="com.axelor.apps.contract.db.Contract" title="Contract filters">
