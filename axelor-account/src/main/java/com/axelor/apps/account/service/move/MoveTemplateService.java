@@ -267,7 +267,6 @@ public class MoveTemplateService {
   public List<Long> generateMove(LocalDate moveDate, List<HashMap<String, Object>> moveTemplateList)
       throws AxelorException {
     List<Long> moveList = new ArrayList<>();
-    Partner moveTemplatePartner = null;
     String taxLineDescription = "";
 
     for (HashMap<String, Object> moveTemplateMap : moveTemplateList) {
@@ -288,7 +287,7 @@ public class MoveTemplateService {
                   .mapToInt(Integer::parseInt)
                   .toArray();
         }
-        moveTemplatePartner = fillPartnerWithMoveTemplate(moveTemplate);
+        Partner moveTemplatePartner = fillPartnerWithMoveTemplate(moveTemplate);
 
         BankDetails companyBankDetails = null;
         if (moveTemplate != null
@@ -297,7 +296,9 @@ public class MoveTemplateService {
           companyBankDetails =
               bankDetailsService.getDefaultCompanyBankDetails(
                   moveTemplate.getJournal().getCompany(),
-                  moveTemplatePartner.getOutPaymentMode(),
+                  moveTemplatePartner == null || moveTemplatePartner.getOutPaymentMode() == null
+                      ? null
+                      : moveTemplatePartner.getOutPaymentMode(),
                   moveTemplatePartner,
                   null);
         }
@@ -310,7 +311,9 @@ public class MoveTemplateService {
                 moveTemplatePartner,
                 moveDate,
                 moveDate,
-                moveTemplatePartner.getOutPaymentMode(),
+                moveTemplatePartner == null || moveTemplatePartner.getOutPaymentMode() == null
+                    ? null
+                    : moveTemplatePartner.getOutPaymentMode(),
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
@@ -359,11 +362,11 @@ public class MoveTemplateService {
             taxLineDescription = moveTemplateLine.getName();
           }
         }
-        move.setPartnerBankDetails(
-            move.getMoveLineList().get(0).getPartner().getBankDetailsList().stream()
-                .filter(it -> it.getIsDefault() && it.getActive())
-                .findFirst()
-                .get());
+
+        move.getMoveLineList().get(0).getPartner().getBankDetailsList().stream()
+            .filter(it -> it.getIsDefault() && it.getActive())
+            .findFirst()
+            .ifPresent(move::setPartnerBankDetails);
 
         move.setDescription(taxLineDescription);
         moveLineTaxService.autoTaxLineGenerate(move);
