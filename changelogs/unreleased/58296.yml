@@ -1,3 +1,0 @@
----
-title: "Invoice: Fixed a bug where the lines of a advance payment could be dupplicated from a purchase order with reversed charge tax line"
-type: fix
