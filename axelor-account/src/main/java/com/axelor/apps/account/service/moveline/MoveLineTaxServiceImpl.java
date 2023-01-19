@@ -35,6 +35,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -259,7 +260,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       }
     }
 
-    if ("".equals(oldTaxDescription)) {
+    if (Strings.isNullOrEmpty(oldTaxDescription)) {
       oldTaxDescription = move.getDescription();
     }
 
