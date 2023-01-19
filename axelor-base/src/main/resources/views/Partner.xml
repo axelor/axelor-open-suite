@@ -182,7 +182,7 @@
       <panel name="imagePanel" colSpan="2">
         <field name="picture" showTitle="false" widget="Image" colSpan="12">
           <viewer>
-						<![CDATA[
+            <![CDATA[
 					    <div>
 			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
           					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect != 2" src="img/company-default.jpg" />
@@ -241,7 +241,8 @@
             title="Balance" colSpan="3" icon="fa-balance-scale"
             onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
           <field name="$balance" hidden="true"/>
-          <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+          <static name="duplicatePartnerText" hidden="true" colSpan="12">
+            <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
         </panel>
         <field name="isProspect" colSpan="2" widget="InlineCheckbox"
           hideIf="isContact || $readonly()"
@@ -271,7 +272,7 @@
           colSpan="12">
           <viewer
             depends="isProspect,isEmployee,isCustomer,isSupplier,isSubcontractor,isFactor,isCarrier">
-						<![CDATA[
+            <![CDATA[
 							<h4 style="text-align: right;">
 								<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
 								<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
@@ -388,7 +389,8 @@
         </panel>
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">
-          <static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
+          <static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12">
+            <![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
           <field name="partnerAddressList" colSpan="12" form-view="partner-address-form"
             grid-view="partner-address-grid">
             <editor x-show-titles="false" onNew="action-partner-address-attrs-set-canselect">
@@ -481,8 +483,7 @@
       <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
         if="__config__.app.isApp('account')"/>
       <panel name="activitiesPanel" title="Activities" showIf="id != null"
-        if-module="axelor-crm" onTabSelect="action-partner-method-view-emails" hideIf="isEmployee"
-        if="__config__.app.isApp('crm')">
+        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')">
         <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
           icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-partner-form"/>
@@ -490,9 +491,8 @@
           if="__config__.app.isApp('sale')"/>
         <panel-include if-module="axelor-purchase" view="incl-purchases-partner-form"
           if="__config__.app.isApp('purchase')"/>
-        <field name="$emailsList" colSpan="12" type="many-to-many"
-          target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
-          canSelect="false" canRemove="false"/>
+        <panel-dashlet name="emailsPanel" title="Emails" colSpan="12" height="550"
+          action="action-partner-view-partner-emails"/>
         <panel-dashlet name="marketingCampaignsPanel"
           action="action-partner-view-marketing-campaigns" if-module="axelor-marketing"
           if="__config__.app.isApp('marketing')" colSpan="12"/>
@@ -619,7 +619,7 @@
       <panel name="imagePanel" colSpan="3">
         <field name="picture" widget="Image" showTitle="false" colSpan="12">
           <viewer>
-						<![CDATA[
+            <![CDATA[
 					    <div>
 			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
           					<img width="80%" ng-show="!record.picture && record.titleSelect == 1" src="img/partner-m-default.png" />
@@ -657,11 +657,12 @@
               onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
           </editor>
         </field>
-        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
+        <static name="duplicatePartnerText" hidden="true" colSpan="12">
+          <![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
         <field name="$duplicatePartnerInArchiveText" hidden="true" type="string"
           showTitle="false" readonly="true">
           <viewer depends="$duplicatePartnerInArchiveText">
-					<![CDATA[
+            <![CDATA[
 						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>There is an archived partner with this name.</span> ({{record.$duplicatePartnerInArchiveText}})</span>
 					]]>
           </viewer>
@@ -698,16 +699,14 @@
         <field name="timeSlot" colSpan="12"/>
       </panel>
       <panel name="activitiesPanel" title="Activities" showIf="id != null"
-        if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact"
-        if="__config__.app.isApp('crm')">
+        if-module="axelor-crm" if="__config__.app.isApp('crm')">
         <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
           icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-contact-form"/>
         <panel-include if-module="axelor-supplychain" view="incl-sales-contact-form"
           if="__config__.app.isApp('supplychain')"/>
-        <field name="$emailsList" colSpan="12" type="many-to-many"
-          target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
-          canSelect="false" canRemove="false"/>
+        <panel-dashlet name="emailsPanel" title="Emails" colSpan="12" height="550"
+          action="action-partner-view-contact-emails"/>
       </panel>
       <panel-dashlet name="contactPartnerPanel"
         action="action-contact-partner-dashlet" title="Partners"/>
@@ -1069,7 +1068,8 @@
           onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
         <field name="firstName" showTitle="false" css="highlight" placeholder="First name"
           onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
-        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+        <static name="duplicatePartnerText" hidden="true" colSpan="12">
+          <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
             domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
@@ -1097,14 +1097,12 @@
           grid-view="address-grid"/>
       </panel>
       <panel name="activitiesPanel" title="Activities" showIf="id != null"
-        if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact"
-        if="__config__.app.isApp('crm')">
+        if-module="axelor-crm" if="__config__.app.isApp('crm')">
         <panel-include view="incl-activities-contact-form"/>
         <panel-include if-module="axelor-supplychain" view="incl-sales-contact-form"
           if="__config__.app.isApp('supplychain')"/>
-        <field name="$emailsList" colSpan="12" type="many-to-many"
-          target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
-          canSelect="false" canRemove="false"/>
+        <panel-dashlet name="emailsPanel" title="Emails" colSpan="12" height="550"
+          action="action-partner-view-contact-emails"/>
       </panel>
       <panel-dashlet name="contactPartnerDetailsPanel"
         action="action-contact-partner-dashlet" title="Partners"/>
@@ -1541,14 +1539,6 @@
     <call class="com.axelor.apps.base.web.PartnerController" method="printContactPhonebook"/>
   </action-method>
 
-  <action-method name="action-partner-method-view-emails">
-    <call class="com.axelor.apps.base.web.PartnerController" method="findPartnerMails"/>
-  </action-method>
-
-  <action-method name="action-partner-method-view-emails-contact">
-    <call class="com.axelor.apps.base.web.PartnerController" method="findContactMails"/>
-  </action-method>
-
   <action-method name="action-partner-iban-check-on-save">
     <call class="com.axelor.apps.base.web.PartnerController" method="checkIbanValidity"/>
   </action-method>
@@ -1624,6 +1614,49 @@
     <view type="grid" name="partner-grid"/>
     <view type="form" name="partner-form"/>
     <domain>self.parentPartner = :id</domain>
+  </action-view>
+
+  <action-view name="action-partner-view-partner-emails" title="Emails"
+    model="com.axelor.apps.message.db.Message">
+    <view type="cards" name="message-cards"/>
+    <domain>
+      self.mediaTypeSelect = 2
+      AND (self IN (
+      SELECT mr.message
+      FROM MultiRelated mr
+      WHERE
+      mr.relatedToSelect = 'com.axelor.apps.base.db.Partner'
+      AND (mr.relatedToSelectId = :id OR
+      mr.relatedToSelectId IN :contactIds))
+      OR self.fromEmailAddress.id = :emailAddressId
+      OR
+      self.fromEmailAddress.id IN :contactEmailAddressIds)
+    </domain>
+    <context name="id" expr="eval: id == null ? 0 : id"/>
+    <context name="contactIds"
+      expr="eval: contactPartnerSet == null ? [0] : contactPartnerSet.collect{it -> it.id}"/>
+    <context name="emailAddressId"
+      expr="eval: emailAddress?.id == null ? 0 : emailAddress?.id"/>
+    <context name="contactEmailAddressIds"
+      expr="eval: contactPartnerSet == null ? [0] : contactPartnerSet.collect{it -> it.emailAddress?.id}"/>
+  </action-view>
+
+  <action-view name="action-partner-view-contact-emails" title="Emails"
+    model="com.axelor.apps.message.db.Message">
+    <view type="cards" name="message-cards"/>
+    <domain>
+      self.mediaTypeSelect = 2 AND self IN (
+      SELECT mr.message
+      FROM MultiRelated mr
+      WHERE
+      mr.relatedToSelect = 'com.axelor.apps.base.db.Partner'
+      AND mr.relatedToSelectId = :id)
+      OR
+      (self.fromEmailAddress.id = :emailAddressId)
+    </domain>
+    <context name="id" expr="eval: id == null ? 0 : id"/>
+    <context name="emailAddressId"
+      expr="eval: emailAddress?.id == null ? 0 : emailAddress?.id"/>
   </action-view>
 
   <action-record name="action-record-base-partner-set-business-card"
