@@ -693,7 +693,7 @@ LEFT JOIN account_account_config Config ON (Config.company = AccountingReport.co
 left join account_service_type ServiceType ON (Account.service_type = ServiceType.id)
 
 WHERE (AccountingReport.company IS NULL OR AccountingReport.company = Move.company)
-AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.company_currency)
+AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
 AND (AccountingReport.date_from IS NULL OR AccountingReport.date_from <= MoveLine.date_val)
 AND (AccountingReport.date_to IS NULL OR AccountingReport.date_to >= MoveLine.date_val)
 AND (AccountingReport.date_val IS NULL OR AccountingReport.date_val >= MoveLine.date_val)
