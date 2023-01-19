@@ -92,7 +92,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       analyticAccountSet = this.mergeSets(groupColumn.getAnalyticAccountSet(), analyticAccountSet);
     }
 
-    if (accountingReport.getDisplayDetails() && line.getDetailByAccount()) {
+    if (accountingReport.getDisplayDetails()
+        && line.getDetailBySelect() == AccountingReportConfigLineRepository.DETAIL_BY_ACCOUNT) {
       int counter = 1;
 
       if (CollectionUtils.isNotEmpty(accountTypeSet)) {
@@ -153,7 +154,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         AccountingReportValueServiceImpl.incrementLineOffset();
       }
     } else if (accountingReport.getDisplayDetails()
-        && line.getDetailByAccountType()
+        && line.getDetailBySelect() == AccountingReportConfigLineRepository.DETAIL_BY_ACCOUNT_TYPE
         && accountTypeSet != null) {
       int counter = 1;
 
@@ -200,7 +201,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         AccountingReportValueServiceImpl.incrementLineOffset();
       }
     } else if (accountingReport.getDisplayDetails()
-        && line.getDetailByAnalyticAccount()
+        && line.getDetailBySelect()
+            == AccountingReportConfigLineRepository.DETAIL_BY_ANALYTIC_ACCOUNT
         && analyticAccountSet != null) {
       int counter = 1;
 

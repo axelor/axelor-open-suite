@@ -46,9 +46,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       LocalDate endDate,
       int analyticCounter) {
     if (accountingReport.getDisplayDetails()
-        && (line.getDetailByAccount()
-            || line.getDetailByAccountType()
-            || line.getDetailByAnalyticAccount())) {
+        && line.getDetailBySelect() != AccountingReportConfigLineRepository.DETAIL_BY_NOTHING) {
       for (String lineCode :
           valuesMapByLine.keySet().stream()
               .filter(it -> it.matches(String.format("%s_[0-9]+", line.getCode())))
