@@ -82,6 +82,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             .all()
             .filter(
                 "self.company = :company AND self.partner.factorizedCustomer = TRUE "
+                    + "AND self.operationTypeSelect in (:clientRefund, :clientSale) "
                     + "AND self.statusSelect = :invoiceStatusVentilated "
                     + "AND self.id not in ("
                     + "		select Invoices.id "
@@ -98,6 +99,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             .order("dueDate")
             .order("invoiceId");
     query.bind("company", company);
+    query.bind("clientRefund", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+    query.bind("clientSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
     query.bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED);
     query.bind(
         "subrogationReleaseStatusTransmitted", SubrogationReleaseRepository.STATUS_TRANSMITTED);

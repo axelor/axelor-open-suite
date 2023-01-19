@@ -276,4 +276,18 @@ public class NotificationServiceImpl implements NotificationService {
     }
     return null;
   }
+
+  @Override
+  public List<Long> getMoveLines(Notification notification) {
+    List<Long> moveLineIdList = new ArrayList<Long>();
+    for (NotificationItem notificationItem : notification.getNotificationItemList()) {
+      if (notificationItem.getMove() == null) {
+        continue;
+      }
+      for (MoveLine moveLine : notificationItem.getMove().getMoveLineList()) {
+        moveLineIdList.add(moveLine.getId());
+      }
+    }
+    return moveLineIdList;
+  }
 }
