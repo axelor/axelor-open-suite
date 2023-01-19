@@ -1,3 +1,15 @@
+## [5.4.33] (2023-01-19)
+
+#### Fixed
+
+* Stock move: fixed a regression were it was impossible to select any product on internal move.
+* Contracts: fixed an issue where, when filling a product in a contract line, "missing configuration" errors were not shown to the user.
+* Accounting batch: fixed "PersistenceException" error preventing the execution of the batch when the list of opening account was empty.
+* Accounting reports: UI improvement for the form view (hide "global" and "global by date" fields for General balance and Partner balance).
+* Quality measuring point: set a minimum of 1 for the coefficient.
+* Invoice: when generating an interco invoice, the generated supplier invoice now takes the correct company bank details.
+* Address: fix UI issue where changing the zip code was emptying the city.
+
 ## [5.4.32] (2023-01-05)
 
 #### Fixed
@@ -807,6 +819,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.33]: https://github.com/axelor/axelor-open-suite/compare/v5.4.32...v5.4.33
 [5.4.32]: https://github.com/axelor/axelor-open-suite/compare/v5.4.31...v5.4.32
 [5.4.31]: https://github.com/axelor/axelor-open-suite/compare/v5.4.30...v5.4.31
 [5.4.30]: https://github.com/axelor/axelor-open-suite/compare/v5.4.29...v5.4.30
