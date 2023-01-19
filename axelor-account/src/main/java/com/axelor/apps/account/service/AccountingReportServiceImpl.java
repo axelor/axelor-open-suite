@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -596,7 +595,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       Integer typeSelect = accountingReport.getReportType().getTypeSelect();
       long count = 0;
       if (typeSelect > 0 && typeSelect <= AccountingReportRepository.REPORT_GENERAL_LEDGER2) {
-    	  count =
+        count =
             Beans.get(MoveLineRepository.class)
                 .all()
                 .filter(this.getMoveLineList(accountingReport))
