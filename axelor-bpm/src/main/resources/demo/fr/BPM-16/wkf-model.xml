@@ -47,9 +47,10 @@
             <camunda:property name="modelType" value="metaModel" />
             <camunda:property name="view" value="expense-form" />
             <camunda:property name="viewLabel" value="Expense" />
-            <camunda:property name="item" value="generalExpenseLineList" />
+            <camunda:property name="itemType" value="one-to-many" />
             <camunda:property name="itemLabel" value="General expense lines" />
             <camunda:property name="permanent" value="false" />
+            <camunda:property name="item" value="generalExpenseLineList" />
             <camunda:property name="readonly" value="false" />
           </camunda:properties>
         </bpmn2:extensionElements>
