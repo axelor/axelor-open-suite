@@ -876,9 +876,11 @@ AND MoveLine.tax_line is not null
 AND (((AccountType.technical_type_select not like 'tax' 
 		and ((Move.functional_origin_select = 3 
 				and (CompanyAccountingSituation.vat_system_select = 2 
+						or (CompanyAccountingSituation IS NULL and Account.vat_system_select = 2)
 						or (CompanyAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1)))
 			or  (Move.functional_origin_select = 4 
 				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
+						or (CompanyAccountingSituation IS NULL and Account.vat_system_select = 2)
 						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1) ))))) 
 	or ((AccountType.technical_type_select like 'tax' 
 		and ((Move.functional_origin_select = 3 

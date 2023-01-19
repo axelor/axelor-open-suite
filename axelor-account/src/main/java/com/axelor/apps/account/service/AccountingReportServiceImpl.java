@@ -319,14 +319,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         accountingReport, AccountingReportRepository.REPORT_VAT_STATEMENT_INVOICE)) {
       this.addParams("self.taxLine is not null");
 
-      this.addParams(
-          "(self.vatSystemSelect = "
-              + MoveLineRepository.VAT_CASH_PAYMENTS
-              + " OR (self.account.accountType.technicalTypeSelect = '"
-              + AccountTypeRepository.TYPE_INCOME
-              + "' AND self.account.vatSystemSelect = "
-              + MoveLineRepository.VAT_CASH_PAYMENTS
-              + "))");
+      this.addParams("self.vatSystemSelect = ?%d", MoveLineRepository.VAT_CASH_PAYMENTS);
     }
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
@@ -603,7 +596,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       Integer typeSelect = accountingReport.getReportType().getTypeSelect();
       long count = 0;
       if (typeSelect > 0 && typeSelect <= AccountingReportRepository.REPORT_GENERAL_LEDGER2) {
-        count =
+    	  count =
             Beans.get(MoveLineRepository.class)
                 .all()
                 .filter(this.getMoveLineList(accountingReport))
