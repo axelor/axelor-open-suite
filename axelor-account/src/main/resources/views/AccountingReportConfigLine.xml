@@ -130,7 +130,7 @@
 						<p ng-show="record.ruleTypeSelect == 3">
 							<span x-translate>This state allows to create a custom rule to be shown in the report.</span><br>
 							<span x-translate>Any Groovy expression can be written and the computed result will be displayed, but there must be only one line.</span><br>
-							<span x-translate>A previous result can be used with its code, but it can only be elements of the same type.</span>
+							<span x-translate>A previous result can be used with its code, but it can only be elements of the same type.</span><br>
 							<span x-translate>Priority will define which rule to use when computation encounters multiple ones.</span>
 						</p>
 					]]>
