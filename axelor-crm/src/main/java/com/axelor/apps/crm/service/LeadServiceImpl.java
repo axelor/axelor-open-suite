@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.LostReason;
@@ -33,7 +32,6 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.LeadStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.apps.message.db.MultiRelated;
 import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -77,73 +75,6 @@ public class LeadServiceImpl implements LeadService {
     this.multiRelatedRepository = multiRelatedRepository;
     this.leadStatusRepo = leadStatusRepo;
     this.appCrmService = appCrmService;
-  }
-
-  /**
-   * Convert lead into a partner
-   *
-   * @param lead
-   * @return
-   * @throws AxelorException
-   */
-  @Transactional(rollbackOn = {Exception.class})
-  public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
-      throws AxelorException {
-
-    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
-    LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
-
-    LeadStatus leadStatus = lead.getLeadStatus();
-    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.LEAD_CONVERT_WRONG_STATUS));
-    }
-
-    if (partner != null && contactPartner != null) {
-      contactPartner = partnerRepo.save(contactPartner);
-      if (partner.getContactPartnerSet() == null) {
-        partner.setContactPartnerSet(new HashSet<>());
-      }
-      partner.getContactPartnerSet().add(contactPartner);
-      contactPartner.setMainPartner(partner);
-    }
-
-    if (partner != null) {
-      partner = partnerRepo.save(partner);
-      lead.setPartner(partner);
-
-      List<MultiRelated> multiRelateds =
-          multiRelatedRepository
-              .all()
-              .filter(
-                  "self.relatedToSelect = ?1 and self.relatedToSelectId = ?2",
-                  Lead.class.getName(),
-                  lead.getId())
-              .fetch();
-
-      for (MultiRelated multiRelated : multiRelateds) {
-        multiRelated.setRelatedToSelect(Partner.class.getName());
-        multiRelated.setRelatedToSelectId(partner.getId());
-        multiRelatedRepository.save(multiRelated);
-        if (contactPartner != null) {
-          MultiRelated contactMultiRelated = new MultiRelated();
-          contactMultiRelated.setRelatedToSelect(Partner.class.getName());
-          contactMultiRelated.setRelatedToSelectId(contactPartner.getId());
-          contactMultiRelated.setMessage(multiRelated.getMessage());
-          multiRelatedRepository.save(contactMultiRelated);
-        }
-      }
-    }
-
-    for (Event event : lead.getEventList()) {
-      event.setPartner(partner);
-      event.setContactPartner(contactPartner);
-      eventRepo.save(event);
-    }
-    lead.setIsConverted(true);
-    lead.setLeadStatus(convertedLeadStatus);
-    return leadRepo.save(lead);
   }
 
   /**
