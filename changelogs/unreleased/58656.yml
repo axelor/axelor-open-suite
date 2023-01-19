@@ -1,3 +1,0 @@
----
-title: "Invoice: fix an issue which removed the product name when changing the quantity in a line"
-type: fix

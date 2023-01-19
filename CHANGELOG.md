@@ -1,3 +1,24 @@
+## [6.3.9] (2023-01-19)
+
+#### Fixed
+
+* Inventory: Reversed Gap computation on inventory lines. Previously, the gap value was negative when the quantity found in the inventory was greater than the expected quantity. It is now positive in this case and negative if we have less quantity than expected.
+* Stock move: fixed a regression were it was impossible to select any product on internal move.
+* Contracts: fixed an issue where, when filling a product in a contract line, "missing configuration" errors were not shown to the user.
+* Manufacturing order: fixed a bug where outsourced manufacturing orders could not be planned because 'outsourcing receipt stock location' was missing in the stock config.
+* TranslationService: fixed an issue happening when using a translatable field, when the translation key is equal to the value, the wrong translation was displayed.
+* Company: add explicit error message if the current user active company is not set and needed.
+* Accounting batch: fixed "PersistenceException" error preventing the execution of the batch when the list of opening account was empty.
+* Accounting reports: UI improvement for the form view (hide "global" and "global by date" fields for General balance and Partner balance).
+* Bank reconciliation: fixed a UI issue where clicking "Unselected" with a selected move line breaks the alignement of the blue buttons in the move line grid.
+* Quality measuring point: set a minimum of 1 for the coefficient.
+* Fixed asset: fix typos in french translation that appeared in the popup when using "Tools" in grid view.
+* Complementary products: fixed an issue where the quantity of complementary products were multiplied by the quantity of the main product (when using the configuration "manage multiple sale quantity").
+* Invoice: fixed an issue which removed the product name when changing the quantity in a line.
+* Invoice: fixed a bug where the lines of a advance payment could be duplicated from a purchase order with reversed charge tax line.
+* Invoice: when generating an interco invoice, the generated supplier invoice now takes the correct company bank details.
+* Address: fixed an UI issue where changing the zip code was emptying the city.
+
 ## [6.3.8] (2023-01-05)
 
 #### Fixed
@@ -396,6 +417,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.9]: https://github.com/axelor/axelor-open-suite/compare/v6.3.8...v6.3.9
 [6.3.8]: https://github.com/axelor/axelor-open-suite/compare/v6.3.7...v6.3.8
 [6.3.7]: https://github.com/axelor/axelor-open-suite/compare/v6.3.6...v6.3.7
 [6.3.6]: https://github.com/axelor/axelor-open-suite/compare/v6.3.5...v6.3.6
