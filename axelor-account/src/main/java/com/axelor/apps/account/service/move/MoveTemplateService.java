@@ -363,10 +363,14 @@ public class MoveTemplateService {
           }
         }
 
-        move.getMoveLineList().get(0).getPartner().getBankDetailsList().stream()
-            .filter(it -> it.getIsDefault() && it.getActive())
-            .findFirst()
-            .ifPresent(move::setPartnerBankDetails);
+        if (ObjectUtils.notEmpty(move)
+            && ObjectUtils.notEmpty(move.getMoveLineList())
+            && ObjectUtils.notEmpty(move.getMoveLineList().get(0).getPartner())) {
+          move.getMoveLineList().get(0).getPartner().getBankDetailsList().stream()
+              .filter(it -> it.getIsDefault() && it.getActive())
+              .findFirst()
+              .ifPresent(move::setPartnerBankDetails);
+        }
 
         move.setDescription(taxLineDescription);
         moveLineTaxService.autoTaxLineGenerate(move);
