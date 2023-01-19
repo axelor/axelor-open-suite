@@ -606,7 +606,7 @@
   <action-view name="account.conf.financial.account.management"
     title="Financial Accounts Management" model="com.axelor.apps.account.db.AccountManagement">
     <view type="grid" name="account-management-grid"/>
-    <view type="form" name="account-management-form"/>
+    <view type="form" name="account-management-form-menu"/>
     <view-param name="search-filters" value="account-management-filters"/>
   </action-view>
 

@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="account-management-grid" title="Account management list"
-    model="com.axelor.apps.account.db.AccountManagement" canNew="false">
+    model="com.axelor.apps.account.db.AccountManagement" canNew="false" canEdit="false" edit-icon="false">
     <field name="typeSelect"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
@@ -47,8 +47,13 @@
       form-view="analytic-distribution-template-form" canNew="true"/>
   </grid>
 
-
-
+  <form name="account-management-form-menu" title="Account management"
+    model="com.axelor.apps.account.db.AccountManagement"
+    canNew="false" canEdit="false" onLoad="action-account-management-group-on-load"
+    width="large">
+    <panel-include view="account-management-form"/>
+  </form>
+  
   <form name="account-management-form" title="Account management"
     model="com.axelor.apps.account.db.AccountManagement"
     onNew="action-account-management-group-onNew" onLoad="action-account-management-group-on-load"
