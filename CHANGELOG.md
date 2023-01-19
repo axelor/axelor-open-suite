@@ -1,3 +1,20 @@
+## [6.1.29] (2023-01-19)
+
+#### Fixed
+
+* Inventory: Reversed Gap computation on inventory lines. Previously, the gap value was negative when the quantity found in the inventory was greater than the expected quantity. It is now positive in this case and negative if we have less quantity than expected.
+* Stock move: fixed a regression were it was impossible to select any product on internal move.
+* Contracts: fixed an issue where, when filling a product in a contract line, "missing configuration" errors were not shown to the user.
+* Manufacturing order: fixed a bug where outsourced manufacturing orders could not be planned because 'outsourcing receipt stock location' was missing in the stock config.
+* Accounting batch: fixed "PersistenceException" error preventing the execution of the batch when the list of opening account was empty.
+* Accounting reports: UI improvement for the form view (hide "global" and "global by date" fields for General balance and Partner balance).
+* Quality measuring point: set a minimum of 1 for the coefficient.
+* Fixed asset: fix typos in french translation that appeared in the popup when using "Tools" in grid view.
+* Complementary products: fixed an issue where the quantity of complementary products were multiplied by the quantity of the main product (when using the configuration "manage multiple sale quantity").
+* Invoice: fixed an issue which removed the product name when changing the quantity in a line.
+* Invoice: when generating an interco invoice, the generated supplier invoice now takes the correct company bank details.
+* Address: fix UI issue where changing the zip code was emptying the city.
+
 ## [6.1.28] (2023-01-05)
 
 #### Fixed
@@ -932,6 +949,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.29]: https://github.com/axelor/axelor-open-suite/compare/v6.1.28...v6.1.29
 [6.1.28]: https://github.com/axelor/axelor-open-suite/compare/v6.1.27...v6.1.28
 [6.1.27]: https://github.com/axelor/axelor-open-suite/compare/v6.1.26...v6.1.27
 [6.1.26]: https://github.com/axelor/axelor-open-suite/compare/v6.1.25...v6.1.26
