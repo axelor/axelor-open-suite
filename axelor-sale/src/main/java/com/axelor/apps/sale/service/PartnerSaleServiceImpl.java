@@ -42,6 +42,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     super(partnerRepo, appBaseService);
   }
 
+  @Deprecated
   @Override
   public List<Long> findPartnerMails(Partner partner) {
 
@@ -65,6 +66,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     return idList;
   }
 
+  @Deprecated
   @Override
   public List<Long> findContactMails(Partner partner) {
 
@@ -80,6 +82,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     return idList;
   }
 
+  @Deprecated
   @SuppressWarnings("unchecked")
   public List<Long> findMailsFromSaleOrder(Partner partner) {
     String query =
@@ -91,6 +94,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     return JPA.em().createQuery(query).getResultList();
   }
 
+  @Deprecated
   @SuppressWarnings("unchecked")
   public List<Long> findMailsFromSaleOrderContact(Partner partner) {
     String query =

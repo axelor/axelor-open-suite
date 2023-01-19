@@ -51,4 +51,65 @@
     <call class="com.axelor.apps.sale.web.PartnerSaleController" method="displayValues"/>
   </action-method>
 
+  <action-view id="sale-action-partner-view-partner-emails"
+    name="action-partner-view-partner-emails" title="Emails"
+    model="com.axelor.apps.message.db.Message">
+    <view type="cards" name="message-cards"/>
+    <domain>
+      self.mediaTypeSelect = 2
+      AND (self IN (
+      SELECT mr.message
+      FROM MultiRelated mr
+      WHERE
+      mr.relatedToSelect = 'com.axelor.apps.base.db.Partner'
+      AND (mr.relatedToSelectId = :id OR
+      mr.relatedToSelectId IN :contactIds))
+      OR self IN (
+      SELECT mr.message
+      FROM MultiRelated mr,
+      SaleOrder as so
+      WHERE (so.clientPartner = :id OR so.contactPartner IN :contactIds)
+      AND
+      mr.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder'
+      AND mr.relatedToSelectId = so.id)
+      OR
+      self.fromEmailAddress.id = :emailAddressId
+      OR self.fromEmailAddress.id IN
+      :contactEmailAddressIds)
+    </domain>
+    <context name="id" expr="eval: id == null ? 0 : id"/>
+    <context name="contactIds"
+      expr="eval: contactPartnerSet == null ? [0] : contactPartnerSet.collect{it -> it.id}"/>
+    <context name="emailAddressId" expr="eval: emailAddress == null ? 0 : emailAddress.id"/>
+    <context name="contactEmailAddressIds"
+      expr="eval: contactPartnerSet == null ? [0] : contactPartnerSet.collect{it -> it.emailAddress?.id}"/>
+  </action-view>
+
+  <action-view id="sale-action-partner-view-contact-emails"
+    name="action-partner-view-contact-emails" title="Emails"
+    model="com.axelor.apps.message.db.Message">
+    <view type="cards" name="message-cards"/>
+    <domain>
+      self.mediaTypeSelect = 2
+      AND (self IN (
+      SELECT mr.message
+      FROM MultiRelated mr
+      WHERE
+      mr.relatedToSelect = 'com.axelor.apps.base.db.Partner'
+      AND mr.relatedToSelectId = :id)
+      OR self
+      IN (
+      SELECT mr.message
+      FROM MultiRelated mr, SaleOrder so
+      WHERE so.contactPartner = :id
+      AND
+      mr.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder'
+      AND mr.relatedToSelectId = so.id)
+      OR
+      (self.fromEmailAddress.id = :emailAddressId))
+    </domain>
+    <context name="id" expr="eval: id == null ? 0 : id"/>
+    <context name="emailAddressId" expr="eval: emailAddress == null ? 0 : emailAddress?.id"/>
+  </action-view>
+
 </object-views>
