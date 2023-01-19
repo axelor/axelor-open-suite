@@ -1,3 +1,22 @@
+## [6.2.17] (2023-01-19)
+
+#### Fixed
+
+* Inventory: Reversed Gap computation on inventory lines. Previously, the gap value was negative when the quantity found in the inventory was greater than the expected quantity. It is now positive in this case and negative if we have less quantity than expected.
+* Stock move: fixed a regression were it was impossible to select any product on internal move.
+* Contracts: fixed an issue where, when filling a product in a contract line, "missing configuration" errors were not shown to the user.
+* Manufacturing order: fixed a bug where outsourced manufacturing orders could not be planned because 'outsourcing receipt stock location' was missing in the stock config.
+* Accounting batch : fix PersistenceException when openingAccountSet is empty
+* Accounting reports: UI improvement for the form view (hide "global" and "global by date" fields for General balance and Partner balance).
+* Bank reconciliation: fixed a UI issue where clicking "Unselected" with a selected move line breaks the alignement of the blue buttons in the move line grid.
+* Quality measuring point: set a minimum of 1 for the coefficient.
+* Fixed asset: fix typos in french translation that appeared in the popup when using "Tools" in grid view.
+* Complementary products: fixed an issue where the quantity of complementary products were multiplied by the quantity of the main product (when using the configuration "manage multiple sale quantity").
+* Invoice: fixed an issue which removed the product name when changing the quantity in a line.
+* Invoice: fixed a bug where the lines of a advance payment could be duplicated from a purchase order with reversed charge tax line.
+* Invoice: when generating an interco invoice, the generated supplier invoice now takes the correct company bank details.
+* Address: fixed an UI issue where changing the zip code was emptying the city.
+
 ## [6.2.16] (2023-01-05)
 
 #### Fixed
@@ -826,6 +845,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.17]: https://github.com/axelor/axelor-open-suite/compare/v6.2.16...v6.2.17
 [6.2.16]: https://github.com/axelor/axelor-open-suite/compare/v6.2.15...v6.2.16
 [6.2.15]: https://github.com/axelor/axelor-open-suite/compare/v6.2.14...v6.2.15
 [6.2.14]: https://github.com/axelor/axelor-open-suite/compare/v6.2.13...v6.2.14

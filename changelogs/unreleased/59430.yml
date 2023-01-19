@@ -1,3 +1,0 @@
----
-title : "Accounting batch : fix PersistenceException when openingAccountSet is empty"
-type: fix
