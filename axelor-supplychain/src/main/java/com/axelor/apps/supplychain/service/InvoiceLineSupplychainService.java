@@ -42,6 +42,8 @@ import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -120,7 +122,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         if (catalogInfo.get("price") != null) {
           price = (BigDecimal) catalogInfo.get("price");
         }
-        discounts.put("productName", catalogInfo.get("productName"));
       }
     }
 
@@ -155,7 +156,31 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       return super.fillProductInformation(invoice, invoiceLine);
     }
 
-    Map<String, Object> productInformation = new HashMap<>();
+    Map<String, Object> productInformation =
+        new HashMap<>(super.fillProductInformation(invoice, invoiceLine));
+    computeSequence(invoice, invoiceLine);
+
+    productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
+    invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_NORMAL);
+    setSupplierCatalogInfo(invoice, invoiceLine, productInformation);
+
+    return productInformation;
+  }
+
+  protected void setSupplierCatalogInfo(
+      Invoice invoice, InvoiceLine invoiceLine, Map<String, Object> productInformation)
+      throws AxelorException {
+    Integer operationType = invoice.getOperationTypeSelect();
+    if ((operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
+        && supplierCatalogService.getSupplierCatalog(
+                invoiceLine.getProduct(), invoice.getPartner(), invoice.getCompany())
+            != null) {
+      setSupplierCatalogProductInfo(productInformation, invoice, invoiceLine);
+    }
+  }
+
+  protected void computeSequence(Invoice invoice, InvoiceLine invoiceLine) {
     Integer sequence = invoiceLine.getSequence();
     if (sequence == null) {
       sequence = 0;
@@ -164,19 +189,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       sequence = invoice.getInvoiceLineList().size();
       invoiceLine.setSequence(sequence);
     }
-
-    productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
-    invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_NORMAL);
-
-    if (supplierCatalogService.getSupplierCatalog(
-            invoiceLine.getProduct(), invoice.getPartner(), invoice.getCompany())
-        != null) {
-      setSupplierCatalogProductInfo(invoice, invoiceLine);
-    }
-
-    productInformation.putAll(super.fillProductInformation(invoice, invoiceLine));
-
-    return productInformation;
   }
 
   public void computeBudgetDistributionSumAmount(InvoiceLine invoiceLine, Invoice invoice) {
@@ -201,7 +213,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
     invoiceLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
   }
 
-  protected void setSupplierCatalogProductInfo(Invoice invoice, InvoiceLine invoiceLine)
+  protected void setSupplierCatalogProductInfo(
+      Map<String, Object> productInformation, Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
     Product product = invoiceLine.getProduct();
     Partner supplierPartner = invoice.getPartner();
@@ -209,14 +222,17 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
     Map<String, String> productSupplierInfos =
         supplierCatalogService.getProductSupplierInfos(supplierPartner, company, product);
-    if (!productSupplierInfos.get("productName").isEmpty()) {
-      invoiceLine.setProductName(productSupplierInfos.get("productName"));
+    if (productSupplierInfos.get("productName") != null
+        && !productSupplierInfos.get("productName").isEmpty()) {
+      productInformation.put("productName", productSupplierInfos.get("productName"));
     }
-    if (!productSupplierInfos.get("productCode").isEmpty()) {
-      invoiceLine.setProductCode(productSupplierInfos.get("productCode"));
+    if (productSupplierInfos.get("productCode") != null
+        && !productSupplierInfos.get("productCode").isEmpty()) {
+      productInformation.put("productCode", productSupplierInfos.get("productCode"));
     }
-    invoiceLine.setQty(supplierCatalogService.getQty(product, supplierPartner, company));
-    invoiceLine.setPrice(
+    productInformation.put("qty", supplierCatalogService.getQty(product, supplierPartner, company));
+    productInformation.put(
+        "price",
         supplierCatalogService.getUnitPrice(
             product,
             supplierPartner,
@@ -225,7 +241,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
             invoice.getInvoiceDate(),
             invoiceLine.getTaxLine(),
             false));
-    invoiceLine.setInTaxPrice(
+    productInformation.put(
+        "inTaxPrice",
         supplierCatalogService.getUnitPrice(
             product,
             supplierPartner,
@@ -234,5 +251,21 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
             invoice.getInvoiceDate(),
             invoiceLine.getTaxLine(),
             true));
+  }
+
+  public void checkMinQty(
+      Invoice invoice, InvoiceLine invoiceLine, ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Integer operationType = invoice.getOperationTypeSelect();
+    if (operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || operationType == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      supplierCatalogService.checkMinQty(
+          invoiceLine.getProduct(),
+          invoice.getPartner(),
+          invoice.getCompany(),
+          invoiceLine.getQty(),
+          request,
+          response);
+    }
   }
 }
