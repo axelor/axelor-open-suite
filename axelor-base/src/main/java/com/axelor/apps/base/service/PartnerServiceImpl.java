@@ -335,6 +335,7 @@ public class PartnerServiceImpl implements PartnerService {
     return urlMap;
   }
 
+  @Deprecated
   @Override
   public List<Long> findPartnerMails(Partner partner) {
     List<Long> idList = new ArrayList<Long>();
@@ -350,6 +351,7 @@ public class PartnerServiceImpl implements PartnerService {
     return idList;
   }
 
+  @Deprecated
   @Override
   public List<Long> findContactMails(Partner partner) {
     List<Long> idList = new ArrayList<Long>();
@@ -359,6 +361,7 @@ public class PartnerServiceImpl implements PartnerService {
     return idList;
   }
 
+  @Deprecated
   @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner) {

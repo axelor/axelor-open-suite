@@ -237,6 +237,7 @@ public class PartnerController {
     response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
+  @Deprecated
   public void findPartnerMails(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     List<Long> idList = Beans.get(PartnerService.class).findPartnerMails(partner);
@@ -271,6 +272,7 @@ public class PartnerController {
     }
   }
 
+  @Deprecated
   public void findContactMails(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     List<Long> idList = Beans.get(PartnerService.class).findContactMails(partner);
