@@ -108,7 +108,8 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
         priceListSet.stream()
             .filter(
                 priceList ->
-                    (priceList.getApplicationBeginDate() == null
+                    priceList.getIsActive()
+                        && (priceList.getApplicationBeginDate() == null
                             || priceList
                                     .getApplicationBeginDate()
                                     .compareTo(
@@ -116,7 +117,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
                                             Optional.ofNullable(AuthUtils.getUser())
                                                 .map(User::getActiveCompany)
                                                 .orElse(null)))
-                                <= 0)
+                                < 0)
                         && (priceList.getApplicationEndDate() == null
                             || priceList
                                     .getApplicationEndDate()
@@ -125,7 +126,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
                                             Optional.ofNullable(AuthUtils.getUser())
                                                 .map(User::getActiveCompany)
                                                 .orElse(null)))
-                                >= 0))
+                                > 0))
             .collect(Collectors.toList());
     if (priceLists.size() == 1) {
       return priceLists.get(0);
@@ -167,7 +168,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
                                             Optional.ofNullable(AuthUtils.getUser())
                                                 .map(User::getActiveCompany)
                                                 .orElse(null)))
-                                <= 0)
+                                < 0)
                         && (priceList.getApplicationEndDate() == null
                             || priceList
                                     .getApplicationEndDate()
@@ -176,7 +177,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
                                             Optional.ofNullable(AuthUtils.getUser())
                                                 .map(User::getActiveCompany)
                                                 .orElse(null)))
-                                >= 0))
+                                > 0))
             .collect(Collectors.toList());
     return "self.id IN (" + StringTool.getIdListString(priceLists) + ")";
   }
