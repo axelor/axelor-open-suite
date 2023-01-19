@@ -1,0 +1,6 @@
+---
+title: "Bank order: fix payment mode selection and set accounting move trigger select required"
+type: fix
+description: |
+  Payment mode with Immediate move generation trigger settings can be chosen in a bank order.
+  Accounting trigger move select is now required and not automatically filled when creating a new bank order.
