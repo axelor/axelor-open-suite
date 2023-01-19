@@ -182,8 +182,11 @@ public class MoveManagementRepository extends MoveRepository {
 
           if (!moveLine.getAccount().getHasInvoiceTerm()
               && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-            if (moveLine.getInvoiceTermList().stream()
-                .allMatch(invoiceTermService::isNotReadonly)) {
+            if (moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)
+                && moveLine.getInvoiceTermList().stream()
+                        .filter(invoiceTerm -> invoiceTerm.getIsHoldBack())
+                        .count()
+                    == 0) {
               moveLine.clearInvoiceTermList();
             } else {
               throw new AxelorException(

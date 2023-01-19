@@ -298,6 +298,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
             acquisitionDate,
             depreciationDate);
 
+    BigDecimal maxNbDaysOfPeriod =
+        BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
+            .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal nbDaysOfPeriod;
     if (nextDate != null) {
       nbDaysOfPeriod =
@@ -305,10 +308,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
               fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
               acquisitionDate,
               nextDate);
+      if (nbDaysOfPeriod.compareTo(maxNbDaysOfPeriod) > 0) {
+        nbDaysOfPeriod = maxNbDaysOfPeriod;
+      }
     } else {
-      nbDaysOfPeriod =
-          BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
-              .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
+      nbDaysOfPeriod = maxNbDaysOfPeriod;
     }
 
     prorataTemporis =

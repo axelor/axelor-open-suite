@@ -17,28 +17,20 @@
  */
 package com.axelor.apps.account.service.batch;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.apache.commons.collections.CollectionUtils;
 
 public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccountingReportService {
 
@@ -97,12 +89,9 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     accountingReport.setDisplayClosingAccountingMoves(accountingBatch.getCloseYear());
     accountingReport.setDisplayOpeningAccountingMoves(accountingBatch.getOpenYear());
 
-    Set<Account> accountSet =
-        initializeAccountSet(
-            accountingReport.getCompany(), accountingBatch.getIncludeSpecialAccounts());
-    if (!CollectionUtils.isEmpty(accountSet)) {
-      accountingReport.setAccountSet(accountSet);
-    }
+    accountingReport.setExcludeViewAccount(true);
+    accountingReport.setExcludeCommitmentSpecialAccount(
+        !accountingBatch.getIncludeSpecialAccounts());
 
     accountingReportService.buildQuery(accountingReport);
 
@@ -113,25 +102,5 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     accountingReport.setTotalCredit(creditBalance);
     accountingReport.setBalance(debitBalance.subtract(creditBalance));
     return accountingReportRepo.save(accountingReport);
-  }
-
-  @Override
-  public Set<Account> initializeAccountSet(Company company, boolean includeSpecialAccounts) {
-    List<String> technicalTypeToExclude = new ArrayList();
-    technicalTypeToExclude.add(AccountTypeRepository.TYPE_VIEW);
-    if (!includeSpecialAccounts) {
-      technicalTypeToExclude.add(AccountTypeRepository.TYPE_COMMITMENT);
-      technicalTypeToExclude.add(AccountTypeRepository.TYPE_SPECIAL);
-    }
-
-    return new HashSet<>(
-        accountRepository
-            .all()
-            .filter(
-                "self.statusSelect = :statusActive AND self.company.id = :companyId AND self.accountType.technicalTypeSelect NOT IN :technicalTypes")
-            .bind("statusActive", AccountRepository.STATUS_ACTIVE)
-            .bind("companyId", company != null && company.getId() != null ? company.getId() : 0)
-            .bind("technicalTypes", technicalTypeToExclude)
-            .fetch());
   }
 }

@@ -17,17 +17,12 @@
  */
 package com.axelor.apps.account.service.batch;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
-import java.util.Set;
 
 public interface BatchPrintAccountingReportService {
 
   AccountingReport createAccountingReportFromBatch(AccountingBatch accountingBatch)
       throws AxelorException;
-
-  Set<Account> initializeAccountSet(Company company, boolean includeSpecialAccounts);
 }
