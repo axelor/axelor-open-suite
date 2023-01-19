@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -318,7 +319,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         accountingReport, AccountingReportRepository.REPORT_VAT_STATEMENT_INVOICE)) {
       this.addParams("self.taxLine is not null");
 
-      this.addParams("self.vatSystemSelect = ?%d", MoveLineRepository.VAT_CASH_PAYMENTS);
+      this.addParams(
+          "(self.vatSystemSelect = "
+              + MoveLineRepository.VAT_CASH_PAYMENTS
+              + " OR (self.account.accountType.technicalTypeSelect = '"
+              + AccountTypeRepository.TYPE_INCOME
+              + "' AND self.account.vatSystemSelect = "
+              + MoveLineRepository.VAT_CASH_PAYMENTS
+              + "))");
     }
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
