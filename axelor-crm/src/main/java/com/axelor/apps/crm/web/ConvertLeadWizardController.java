@@ -25,7 +25,6 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
-import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
 import com.axelor.apps.tool.service.ConvertBinaryToMetafileService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -56,11 +55,6 @@ public class ConvertLeadWizardController {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(CrmExceptionMessage.CONVERT_LEAD_ERROR));
-      }
-
-      if (context.containsKey("isCreateOpportunity")
-          && (Boolean) context.get("isCreateOpportunity")) {
-        this.createOpportunity(context, lead.getPartner());
       }
 
       openPartner(response, lead);
@@ -196,12 +190,6 @@ public class ConvertLeadWizardController {
     } catch (AxelorException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  protected void createOpportunity(Context context, Partner partner) throws AxelorException {
-    Beans.get(ConvertWizardOpportunityService.class)
-        .createOpportunity((Map<String, Object>) context.get("opportunity"), partner);
   }
 
   protected Lead findLead(ActionRequest request) throws AxelorException {

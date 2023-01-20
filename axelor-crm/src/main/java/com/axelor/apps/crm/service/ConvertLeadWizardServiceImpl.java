@@ -14,6 +14,7 @@ import com.axelor.apps.base.service.wizard.ConvertWizardService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LeadStatus;
+import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
@@ -53,6 +54,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
   protected MultiRelatedRepository multiRelatedRepository;
 
+  protected ConvertWizardOpportunityService convertWizardOpportunityService;
+
   @Inject
   public ConvertLeadWizardServiceImpl(
       LeadService leadService,
@@ -62,7 +65,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       CountryRepository countryRepo,
       AppBaseService appBaseService,
       AppCrmService appCrmService,
-      MultiRelatedRepository multiRelatedRepository) {
+      MultiRelatedRepository multiRelatedRepository,
+      ConvertWizardOpportunityService convertWizardOpportunityService) {
     super();
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
@@ -72,6 +76,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.appBaseService = appBaseService;
     this.appCrmService = appCrmService;
     this.multiRelatedRepository = multiRelatedRepository;
+    this.convertWizardOpportunityService = convertWizardOpportunityService;
   }
 
   /**
@@ -233,6 +238,17 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     Lead lead = Beans.get(LeadRepository.class).find(((Integer) leadContext.get("id")).longValue());
     Integer leadToPartnerSelect = (Integer) context.get("leadToPartnerSelect");
     Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
+    Opportunity opportunity = null;
+    if (context.containsKey("isCreateOpportunity")
+        && (Boolean) context.get("isCreateOpportunity")) {
+      opportunity =
+          (Opportunity)
+              convertWizardService.createObject(
+                  (Map<String, Object>) context.get("opportunity"),
+                  Mapper.toBean(Opportunity.class, null),
+                  Mapper.of(Opportunity.class));
+    }
+
     Partner partner = null;
     Partner contactPartner = null;
 
@@ -267,18 +283,19 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     }
 
     lead =
-        this.generateDataAndConvertLead(
-            lead, leadToPartnerSelect, leadToContactSelect, partner, contactPartner);
+        this.generateDataAndConvertLeadAndGenerateOpportunity(
+            lead, leadToPartnerSelect, leadToContactSelect, partner, contactPartner, opportunity);
     return lead;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected Lead generateDataAndConvertLead(
+  protected Lead generateDataAndConvertLeadAndGenerateOpportunity(
       Lead lead,
       Integer leadToPartnerSelect,
       Integer leadToContactSelect,
       Partner partner,
-      Partner contactPartner)
+      Partner contactPartner,
+      Opportunity opportunity)
       throws AxelorException {
 
     partner = createPartnerData(leadToPartnerSelect, partner, lead);
@@ -288,6 +305,9 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     }
 
     lead = this.convertLead(lead, partner, contactPartner);
+    if (opportunity != null) {
+      convertWizardOpportunityService.createOpportunity(opportunity, partner);
+    }
     return lead;
   }
 
