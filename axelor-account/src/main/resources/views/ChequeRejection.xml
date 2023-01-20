@@ -83,10 +83,10 @@
 
   <action-attrs name="action-cheque-rejection-attrs-domain-payment-voucher">
     <attribute name="domain" for="paymentVoucher"
-      expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode != null and self.paymentMode.typeSelect = 7 and self.statusSelect = 3 and self.partner.id = ${partner?.id}&quot;"
+      expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode != null and self.paymentMode.typeSelect = 7 and self.statusSelect = 2 and self.partner.id = ${partner?.id}&quot;"
       if="partner != null"/>
     <attribute name="domain" for="paymentVoucher"
-      expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode != null and self.paymentMode.typeSelect = 7 and self.statusSelect = 3 &quot;"
+      expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode != null and self.paymentMode.typeSelect = 7 and self.statusSelect = 2 &quot;"
       if="partner == null"/>
 
   </action-attrs>
