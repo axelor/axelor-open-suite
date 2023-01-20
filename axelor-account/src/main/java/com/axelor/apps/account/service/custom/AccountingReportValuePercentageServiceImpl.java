@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -15,7 +16,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -24,9 +24,10 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
     implements AccountingReportValuePercentageService {
   @Inject
   public AccountingReportValuePercentageServiceImpl(
+      AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo) {
-    super(accountingReportValueRepo, analyticAccountRepo);
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
   }
 
   @Override
@@ -50,12 +51,12 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
     if (valuesMap == null) {
       this.addNullValue(
           column,
-          line,
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
           configAnalyticAccount,
-          parentTitle);
+          parentTitle,
+          line.getCode());
     } else {
       this.createPercentageValue(
           accountingReport,
@@ -102,12 +103,12 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
         if (CollectionUtils.isEmpty(linesCodeList)) {
           this.addNullValue(
               column,
-              line,
               groupColumn,
               valuesMapByColumn,
               valuesMapByLine,
               configAnalyticAccount,
-              parentTitle);
+              parentTitle,
+              line.getCode());
           return;
         }
       }
@@ -149,7 +150,18 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       String lineCode,
       BigDecimal result,
       int analyticCounter) {
-    if (baseValue != null && totalValue != null && totalValue.getResult().signum() != 0) {
+    if (baseValue == null) {
+      this.addNullValue(
+          column,
+          groupColumn,
+          valuesMapByColumn,
+          valuesMapByLine,
+          configAnalyticAccount,
+          parentTitle,
+          lineCode);
+
+      return;
+    } else if (totalValue != null && totalValue.getResult().signum() != 0) {
       result =
           baseValue
               .getResult()
@@ -158,6 +170,8 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
                   totalValue.getResult(),
                   AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                   RoundingMode.HALF_UP);
+    } else if (StringUtils.notEmpty(line.getPercentageTotalLine())) {
+      result = BigDecimal.ZERO;
     }
 
     this.createReportValue(
@@ -168,10 +182,8 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
         startDate,
         endDate,
         parentTitle,
-        Optional.ofNullable(baseValue)
-            .map(AccountingReportValue::getLineTitle)
-            .orElse(line.getLabel()),
-        result.abs(),
+        baseValue.getLineTitle(),
+        result,
         valuesMapByColumn,
         valuesMapByLine,
         configAnalyticAccount,

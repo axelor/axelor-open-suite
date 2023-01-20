@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -239,7 +239,10 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
 
     if (qty.compareTo(minQty) < 0) {
       String msg =
-          String.format(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY), minQty);
+          String.format(
+              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY),
+              minQty.setScale(
+                  appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 
       if (request.getAction().endsWith("onchange")) {
         response.setInfo(msg);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,7 +37,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -111,10 +110,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
           previousRealizedLine != null
               ? previousRealizedLine.getDepreciationDate()
               : firstServiceDate;
-      if (nextPlannedDate != null
-          && ChronoUnit.DAYS.between(firstServiceDate, nextPlannedDate) >= 360) {
-        nextPlannedDate = null;
-      }
+
       BigDecimal prorataTemporis =
           Beans.get(FixedAssetLineEconomicComputationServiceImpl.class)
               .computeProrataBetween(

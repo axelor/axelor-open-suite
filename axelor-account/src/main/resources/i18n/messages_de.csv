@@ -2010,7 +2010,7 @@
 "Please select 'Draft' or 'Accounted' or 'Canceled' moves",,,
 "Please select 'Draft' or 'Simulated' moves","Bitte wählen Sie'Entwurf' oder'Simulierte' Züge.",,
 "Please select a payment mode to generate the counterpart",,,
-"Please select something to validate",,,
+"Please select at least one fixed asset to validate",,,
 "Please select the invoice(s) to print.","Bitte wählen Sie die zu druckende(n) Rechnung(en) aus.",,
 "Please set a reported balance date on fiscal year",,,
 "Please set up an accounting batch to block customers with late payments",,,

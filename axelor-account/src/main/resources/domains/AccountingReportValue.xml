@@ -10,6 +10,10 @@
     <integer name="columnNumber" initParam="true"/>
     <integer name="lineNumber" initParam="true"/>
     <integer name="analyticOrder" initParam="true"/>
+    <integer name="styleSelect" initParam="true"/>
+    <integer name="groupStyleSelect" initParam="true"/>
+    <integer name="columnStyleSelect" initParam="true"/>
+    <integer name="lineStyleSelect" initParam="true"/>
     <decimal name="result" initParam="true"/>
     <string name="lineTitle" initParam="true"/>
     <string name="parentTitle" initParam="true"/>

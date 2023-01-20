@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -138,8 +138,8 @@ public class InventoryLineService {
       BigDecimal gap =
           inventoryLine.getRealQty() != null
               ? inventoryLine
-                  .getCurrentQty()
-                  .subtract(inventoryLine.getRealQty())
+                  .getRealQty()
+                  .subtract(inventoryLine.getCurrentQty())
                   .setScale(2, RoundingMode.HALF_UP)
               : BigDecimal.ZERO;
       inventoryLine.setGap(gap);
@@ -150,9 +150,11 @@ public class InventoryLineService {
               .getStockConfig(stockLocation.getCompany())
               .getInventoryValuationTypeSelect();
 
+      BigDecimal productAvgPrice = product.getAvgPrice();
+
       switch (inventoryValuationTypeSelect) {
         case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
-          price = product.getAvgPrice();
+          price = productAvgPrice;
           break;
         case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
           price = product.getCostPrice();
@@ -164,7 +166,11 @@ public class InventoryLineService {
           price = product.getPurchasePrice();
           break;
         case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
-          price = stockLocationLine.getAvgPrice();
+          if (stockLocationLine != null) {
+            price = stockLocationLine.getAvgPrice();
+          } else {
+            price = productAvgPrice;
+          }
           break;
         default:
           price = product.getAvgPrice();

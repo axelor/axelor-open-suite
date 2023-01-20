@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -60,6 +61,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,6 +142,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public MetaFile export(AccountingReport accountingReport) throws AxelorException, IOException {
 
     int typeSelect = accountingReport.getReportType().getTypeSelect();
+
     if (typeSelect == AccountingReportRepository.EXPORT_N4DS) {
       return accountingReportDas2Service.exportN4DSFile(accountingReport);
     } else {
@@ -200,7 +203,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getCurrency() != null) {
-      this.addParams("self.move.companyCurrency = ?%d", accountingReport.getCurrency());
+      this.addParams("self.move.currency = ?%d", accountingReport.getCurrency());
     }
 
     if (accountingReport.getDateFrom() != null) {
@@ -232,6 +235,23 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           accountingReport.getAccountSet());
     }
 
+    List<String> technicalTypeToExclude = new ArrayList<>();
+    if (accountingReport.getExcludeViewAccount()) {
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_VIEW + "'");
+    }
+    if (accountingReport.getExcludeCommitmentSpecialAccount()) {
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_COMMITMENT + "'");
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_SPECIAL + "'");
+    }
+    if (!CollectionUtils.isEmpty(technicalTypeToExclude)) {
+      this.addParams(
+          String.format(
+              "self.account.accountType.technicalTypeSelect not in (%s)",
+              technicalTypeToExclude.stream()
+                  .map(String::valueOf)
+                  .collect(Collectors.joining(","))));
+    }
+
     if (accountingReport.getPartnerSet() != null && !accountingReport.getPartnerSet().isEmpty()) {
       this.addParams("self.partner in (?%d)", accountingReport.getPartnerSet());
     }
@@ -246,14 +266,27 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect()
             == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams(
-          "(self.account.serviceType is null OR (self.move.partner.das2Activity is null AND self.account.serviceType.isDas2Declarable is true))");
+          "(self.account.serviceType is null OR self.move.partner.das2Activity is null)");
       this.addParams("self.amountRemaining < self.debit + self.credit");
-      this.addParams("self.reconcileGroup IS NOT null");
+
       JournalType journalType =
           accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
       if (journalType != null) {
         this.addParams("self.move.journal.journalType = ?%d", journalType);
       }
+      String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
+      String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String selfReconciledQuery =
+          String.format(
+              "(self.reconcileGroup is not null AND self.reconcileGroup.dateOfLettering >= %s AND self.reconcileGroup.dateOfLettering <= %s)",
+              dateFromStr, dateToStr);
+      String otherLinedReconciledQuery =
+          String.format(
+              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.dateOfLettering >= %s AND ml.reconcileGroup.dateOfLettering <= %s AND ml.move.id = self.move.id)",
+              dateFromStr, dateToStr);
+      String reconcileQuery =
+          String.format("(%s OR %s)", selfReconciledQuery, otherLinedReconciledQuery);
+      this.addParams(reconcileQuery);
     }
 
     if (accountingReport.getPaymentMode() != null) {

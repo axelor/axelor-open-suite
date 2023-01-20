@@ -20,7 +20,10 @@
       help="Field to define if this query is to be used for accounting or reconcile during automatic proccesses. For the auto reconcile, a sequence must be defined."/>
     <integer name="resultSelect" title="Result" default="1"
       selection="accounting.report.config.line.sum.of.account.select"/>
+    <integer name="styleSelect" title="Style" default="0"
+      selection="accounting.report.config.line.style.select"/>
     <integer name="priority" title="Priority" min="0"/>
+    <integer name="stylePriority" title="Priority" min="0"/>
     <boolean name="hidden" title="Hidden"/>
     <boolean name="notComputedIfIntersect" title="Do not compute intersection"/>
     <boolean name="computePreviousYear" title="Compute previous year"/>
@@ -52,8 +55,7 @@
       public static final int RULE_TYPE_PERCENTAGE = 4;
 
       // TYPE SELECT
-      public static final int TYPE_TITLE = 1;
-      public static final int TYPE_DETAIL = 2;
+      public static final int TYPE_VALUE = 1;
       public static final int TYPE_SEPARATOR = 3;
       public static final int TYPE_GROUP = 4;
       public static final int TYPE_GROUP_BY_ACCOUNT = 5;
@@ -64,6 +66,9 @@
       public static final int RESULT_SAME_AS_COLUMN = 3;
       public static final int RESULT_SAME_AS_LINE = 4;
       public static final int RESULT_SAME_AS_GROUP = 5;
+
+      // STYLE SELECT
+      public static final int STYLE_NO_STYLE = 0;
 
 	  ]]></extra-code>
 

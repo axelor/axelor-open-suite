@@ -26,8 +26,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -51,27 +50,25 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AccountingReportValuePercentageService accountingReportValuePercentageService;
   protected AppBaseService appBaseService;
   protected AccountingReportValueRepository accountingReportValueRepo;
-  protected AccountRepository accountRepo;
 
   protected static int lineOffset = 0;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public AccountingReportValueServiceImpl(
+      AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
       AccountingReportValueCustomRuleService accountingReportValueCustomRuleService,
       AccountingReportValueMoveLineService accountingReportValueMoveLineService,
       AccountingReportValuePercentageService accountingReportValuePercentageService,
       AppBaseService appBaseService,
-      AnalyticAccountRepository analyticAccountRepo,
-      AccountRepository accountRepo) {
-    super(accountingReportValueRepo, analyticAccountRepo);
+      AnalyticAccountRepository analyticAccountRepo) {
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
     this.accountingReportValueCustomRuleService = accountingReportValueCustomRuleService;
     this.accountingReportValueMoveLineService = accountingReportValueMoveLineService;
     this.accountingReportValuePercentageService = accountingReportValuePercentageService;
     this.appBaseService = appBaseService;
     this.accountingReportValueRepo = accountingReportValueRepo;
-    this.accountRepo = accountRepo;
   }
 
   public static synchronized void incrementLineOffset() {
@@ -222,11 +219,13 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     AccountingReportType accountingReportType = accountingReport.getReportType();
     this.checkAccountingReportType(accountingReportType);
 
-    boolean isAllComputed = false;
-    LocalTime startTime = LocalTime.now();
+    int nullCount = -1;
+    int previousNullCount;
 
-    while (!isAllComputed) {
-      isAllComputed =
+    while (nullCount != 0) {
+      previousNullCount = nullCount;
+
+      nullCount =
           this.createReportValues(
               accountingReport,
               valuesMapByColumn,
@@ -236,9 +235,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               endDate,
               analyticCounter);
 
-      if (!isAllComputed
-          && startTime.until(LocalTime.now(), ChronoUnit.SECONDS)
-              > appBaseService.getProcessTimeout()) {
+      if (nullCount == previousNullCount) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT,
@@ -271,15 +268,16 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     }
   }
 
-  protected boolean areAllValuesComputed(
-      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn) {
-    return valuesMapByColumn.values().stream()
-        .map(Map::values)
-        .flatMap(Collection::stream)
-        .noneMatch(Objects::isNull);
+  protected int getNullCount(Map<String, Map<String, AccountingReportValue>> valuesMapByColumn) {
+    return (int)
+        valuesMapByColumn.values().stream()
+            .map(Map::values)
+            .flatMap(Collection::stream)
+            .filter(Objects::isNull)
+            .count();
   }
 
-  protected boolean createReportValues(
+  protected int createReportValues(
       AccountingReport accountingReport,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
@@ -369,7 +367,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
           analyticCounter);
     }
 
-    return this.areAllValuesComputed(valuesMapByColumn);
+    return this.getNullCount(valuesMapByColumn);
   }
 
   protected Set<Account> getColumnGroupAccounts(AccountingReportConfigLine groupColumn) {
@@ -468,6 +466,11 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       LocalDate endDate,
       int analyticCounter)
       throws AxelorException {
+    if (this.isValueAlreadyComputed(
+        groupColumn, column, line, valuesMapByColumn, configAnalyticAccount, parentTitle)) {
+      return;
+    }
+
     try {
       log.debug(
           String.format(
@@ -478,17 +481,17 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
           && column.getRuleTypeSelect()
               != AccountingReportConfigLineRepository.RULE_TYPE_PERCENTAGE) {
-        accountingReportValueCustomRuleService.createValueFromCustomRule(
+        accountingReportValueCustomRuleService.createValueFromCustomRuleForColumn(
             accountingReport,
+            groupColumn,
             column,
             line,
-            groupColumn,
             valuesMapByColumn,
             valuesMapByLine,
             configAnalyticAccount,
+            parentTitle,
             startDate,
             endDate,
-            parentTitle,
             analyticCounter);
       } else if ((column.getNotComputedIfIntersect() && line.getNotComputedIfIntersect())
           || column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
@@ -510,45 +513,21 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             analyticCounter);
       } else if (column.getRuleTypeSelect()
           == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-        if (accountingReport.getDisplayDetails()
-            && (line.getDetailByAccount()
-                || line.getDetailByAccountType()
-                || line.getDetailByAnalyticAccount())) {
-          for (String lineCode :
-              valuesMapByLine.keySet().stream()
-                  .filter(it -> it.matches(String.format("%s_[0-9]+", line.getCode())))
-                  .collect(Collectors.toList())) {
-            accountingReportValueCustomRuleService.createValueFromCustomRule(
-                accountingReport,
-                column,
-                line,
-                groupColumn,
-                valuesMapByColumn,
-                valuesMapByLine,
-                configAnalyticAccount,
-                startDate,
-                endDate,
-                parentTitle,
-                lineCode,
-                analyticCounter);
-          }
-        } else {
-          accountingReportValueCustomRuleService.createValueFromCustomRule(
-              accountingReport,
-              column,
-              line,
-              groupColumn,
-              valuesMapByColumn,
-              valuesMapByLine,
-              configAnalyticAccount,
-              startDate,
-              endDate,
-              parentTitle,
-              analyticCounter);
-        }
-      } else if (line.getRuleTypeSelect()
-          == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-        accountingReportValueCustomRuleService.createValueFromCustomRule(
+        accountingReportValueCustomRuleService.createValueFromCustomRuleForColumn(
+            accountingReport,
+            groupColumn,
+            column,
+            line,
+            valuesMapByColumn,
+            valuesMapByLine,
+            configAnalyticAccount,
+            parentTitle,
+            startDate,
+            endDate,
+            analyticCounter);
+      } else if (column.getRuleTypeSelect()
+          == AccountingReportConfigLineRepository.RULE_TYPE_PERCENTAGE) {
+        accountingReportValuePercentageService.createPercentageValue(
             accountingReport,
             column,
             line,
@@ -560,9 +539,9 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             endDate,
             parentTitle,
             analyticCounter);
-      } else if (column.getRuleTypeSelect()
-          == AccountingReportConfigLineRepository.RULE_TYPE_PERCENTAGE) {
-        accountingReportValuePercentageService.createPercentageValue(
+      } else if (line.getRuleTypeSelect()
+          == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+        accountingReportValueCustomRuleService.createValueFromCustomRule(
             accountingReport,
             column,
             line,
@@ -599,6 +578,29 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               groupColumn != null ? groupColumn.getCode() : "",
               column.getCode(),
               line.getCode()));
+    }
+  }
+
+  protected boolean isValueAlreadyComputed(
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      AnalyticAccount configAnalyticAccount,
+      String parentTitle) {
+    String columnCode =
+        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
+    if (valuesMapByColumn.get(columnCode).get(line.getCode()) != null) {
+      return true;
+    } else {
+      List<String> linesCodeList =
+          valuesMapByColumn.get(columnCode).keySet().stream()
+              .filter(it -> Pattern.matches(String.format("%s_[0-9]+", line.getCode()), it))
+              .collect(Collectors.toList());
+
+      return CollectionUtils.isNotEmpty(linesCodeList)
+          && linesCodeList.stream()
+              .allMatch(it -> valuesMapByColumn.get(columnCode).get(it) != null);
     }
   }
 
