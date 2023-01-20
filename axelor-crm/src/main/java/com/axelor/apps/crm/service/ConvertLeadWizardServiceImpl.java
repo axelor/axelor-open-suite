@@ -64,7 +64,6 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       AppCrmService appCrmService,
       MultiRelatedRepository multiRelatedRepository,
       ConvertWizardOpportunityService convertWizardOpportunityService) {
-    super();
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
     this.addressService = addressService;

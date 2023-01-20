@@ -16,7 +16,6 @@ public class ConvertWizardOpportunityServiceImpl implements ConvertWizardOpportu
   @Inject
   public ConvertWizardOpportunityServiceImpl(
       OpportunityService opportunityService, ConvertWizardService convertWizardService) {
-    super();
     this.opportunityService = opportunityService;
     this.convertWizardService = convertWizardService;
   }
