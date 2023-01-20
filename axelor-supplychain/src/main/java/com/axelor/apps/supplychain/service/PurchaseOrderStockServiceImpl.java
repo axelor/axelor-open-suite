@@ -438,6 +438,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     }
 
     return stockMoveLineServiceSupplychain.createStockMoveLine(
+        purchaseOrderLine.getSequence(),
         product,
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
@@ -459,6 +460,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       PurchaseOrderLine purchaseOrderLine, StockMove stockMove) throws AxelorException {
 
     return stockMoveLineServiceSupplychain.createStockMoveLine(
+        purchaseOrderLine.getSequence(),
         purchaseOrderLine.getProduct(),
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
