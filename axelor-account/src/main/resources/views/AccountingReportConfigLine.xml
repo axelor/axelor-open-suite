@@ -69,10 +69,10 @@
           showIf="reportTypeColumn != null &amp;&amp; typeSelect == 4" requiredIf="typeSelect == 4"
           validIf="typeSelect != 4 || ruleTypeSelect > 0" selection-in="[2,3]"/>
       </panel>
-      <field name="label" showIf="[1,2,4].includes(typeSelect)"
-        requiredIf="[1,2,4].includes(typeSelect)"/>
-      <field name="code" showIf="[1,2,4].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"
-        requiredIf="[1,2,4].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"/>
+      <panel name="infoPanel" colSpan="12" showIf="[1,2,4].includes(typeSelect)">
+        <field name="label" requiredIf="[1,2,4].includes(typeSelect)"/>
+        <field name="code" requiredIf="[1,2,4].includes(typeSelect)"/>
+      </panel>
       <panel name="resultPanel" stacked="true" showIf="ruleTypeSelect == 2">
         <field name="resultSelect" showIf="reportTypeColumn != null"
           requiredIf="ruleTypeSelect == 2" selection-in="[1,2,4,5]"/>
