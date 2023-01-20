@@ -56,23 +56,28 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
           if (list1.size() == list2.size()) {
             for (AnalyticMoveLine analyticDistributionLine : list2) {
               for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
-                if (analyticDistributionLine
+                if (analyticDistributionLine.getAnalyticAxis() != null
+                    && analyticDistributionLine
                         .getAnalyticAxis()
                         .equals(analyticDistributionLineIt.getAnalyticAxis())
+                    && analyticDistributionLine.getAnalyticAccount() != null
                     && analyticDistributionLine
                         .getAnalyticAccount()
                         .equals(analyticDistributionLineIt.getAnalyticAccount())
+                    && analyticDistributionLine.getAccount() != null
                     && analyticDistributionLine
                         .getAccount()
                         .equals(analyticDistributionLineIt.getAccount())
+                    && analyticDistributionLine.getPercentage() != null
                     && analyticDistributionLine
                         .getPercentage()
                         .equals(analyticDistributionLineIt.getPercentage())
                     && ((analyticDistributionLine.getAnalyticJournal() == null
                             && analyticDistributionLineIt.getAnalyticJournal() == null)
-                        || analyticDistributionLine
-                            .getAnalyticJournal()
-                            .equals(analyticDistributionLineIt.getAnalyticJournal()))) {
+                        || (analyticDistributionLine.getAnalyticJournal() != null
+                            && analyticDistributionLine
+                                .getAnalyticJournal()
+                                .equals(analyticDistributionLineIt.getAnalyticJournal())))) {
                   copyList.remove(analyticDistributionLineIt);
                   count++;
                   break;
@@ -147,23 +152,28 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
           for (AnalyticMoveLine analyticDistributionLine :
               consolidateMoveLine.getAnalyticMoveLineList()) {
             for (AnalyticMoveLine analyticDistributionLineIt : moveLine.getAnalyticMoveLineList()) {
-              if (analyticDistributionLine
+              if (analyticDistributionLine.getAnalyticAxis() != null
+                  && analyticDistributionLine
                       .getAnalyticAxis()
                       .equals(analyticDistributionLineIt.getAnalyticAxis())
+                  && analyticDistributionLine.getAnalyticAccount() != null
                   && analyticDistributionLine
                       .getAnalyticAccount()
                       .equals(analyticDistributionLineIt.getAnalyticAccount())
+                  && analyticDistributionLine.getAccount() != null
                   && analyticDistributionLine
                       .getAccount()
                       .equals(analyticDistributionLineIt.getAccount())
+                  && analyticDistributionLine.getPercentage() != null
                   && analyticDistributionLine
                       .getPercentage()
                       .equals(analyticDistributionLineIt.getPercentage())
                   && ((analyticDistributionLine.getAnalyticJournal() == null
                           && analyticDistributionLineIt.getAnalyticJournal() == null)
-                      || analyticDistributionLine
-                          .getAnalyticJournal()
-                          .equals(analyticDistributionLineIt.getAnalyticJournal()))) {
+                      || (analyticDistributionLine.getAnalyticJournal() != null
+                          && analyticDistributionLine
+                              .getAnalyticJournal()
+                              .equals(analyticDistributionLineIt.getAnalyticJournal())))) {
                 analyticDistributionLine.setAmount(
                     analyticDistributionLine
                         .getAmount()
