@@ -464,8 +464,8 @@
             showIf="[1,3].includes(pfpValidateStatusSelect)" css="btn-success"
             onClick="save,action-invoice-term-group-validate-pfp"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
-            showIf="pfpValidateStatusSelect == 1" css="btn-warning"
-            onClick="save,action-invoice-term-group-partial-pfp"/>
+            showIf="pfpValidateStatusSelect == 1 &amp;&amp; !pfpfPartialValidationOk"
+            css="btn-warning" onClick="save,action-invoice-term-group-partial-pfp"/>
           <button name="refusalToPayBtn" title="Refuse to pay"
             showIf="[1,2,4].includes(pfpValidateStatusSelect)" css="btn-danger"
             onClick="save,action-invoice-term-group-refusal-to-pay,save"/>
@@ -490,6 +490,7 @@
           <field name="$isValidPfpValidatorUser" type="boolean" hidden="true"/>
           <field name="$isSelectedPfpValidatorEqualsPartnerPfpValidator" type="boolean"
             hidden="true"/>
+          <field name="pfpfPartialValidationOk" hidden="true"/>
         </panel>
       </panel>
       <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
@@ -785,7 +786,6 @@
   </action-group>
 
   <action-group name="action-invoice-term-group-partial-pfp">
-    <action name="action-invoice-term-validate-before-pfp"/>
     <action name="action-invoice-term-view-pfp-partial-reason-wizard"/>
   </action-group>
 
@@ -833,15 +833,6 @@
     <alert
       message="At least one stock move is in litigation, do you really want to validate passed for payment ?"
       if="invoice &amp;&amp; __repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice).fetch()?.size &gt;= 1"/>
-  </action-validate>
-
-  <action-validate name="action-invoice-term-validate-before-pfp">
-    <alert
-      message="All the invoice's unsaved modifications will be lost, do you wish to continue ? Also you will need to manually refresh the invoice when the process is done."
-      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
-    <alert
-      message="All the move's unsaved modifications will be lost, do you wish to continue ? Also you will need to manually refresh the move when the process is done."
-      if="__parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
   </action-validate>
 
   <action-record name="action-invoice-term-record-update-customized"

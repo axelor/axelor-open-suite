@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
@@ -1221,6 +1222,21 @@ public class InvoiceController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void generatePfpPartialTerms(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+      if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        Beans.get(InvoiceTermPfpService.class).generateInvoiceTermsAfterPfpPartial(invoice);
+      }
+      response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

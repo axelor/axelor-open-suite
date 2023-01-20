@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.db.CancelReason;
@@ -42,4 +43,9 @@ public interface InvoiceTermPfpService {
       BigDecimal grantedAmount,
       PfpPartialReason partialReason)
       throws AxelorException;
+
+  void initPftPartialValidation(
+      InvoiceTerm originalInvoiceTerm, BigDecimal grantedAmount, PfpPartialReason partialReason);
+
+  void generateInvoiceTermsAfterPfpPartial(Invoice originalInvoice) throws AxelorException;
 }

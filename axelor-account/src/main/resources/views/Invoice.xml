@@ -597,9 +597,8 @@
           onClick="save,action-invoice-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
         <panel-related name="invoiceTermListPanel" field="invoiceTermList"
-          onChange="action-invoice-attrs-is-all-invoice-term-status-awaiting,action-invoice-record-due-dates"
-          colSpan="12" form-view="invoice-term-invoice-form"
-          grid-view="invoice-term-move-line-invoice-grid"/>
+          onChange="action-group-account-invoice-invoice-term-list-onchange" colSpan="12"
+          form-view="invoice-term-invoice-form" grid-view="invoice-term-move-line-invoice-grid"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 "
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()">
@@ -1520,6 +1519,13 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-set-payment-visibility"/>
   </action-group>
 
+  <action-group name="action-group-account-invoice-invoice-term-list-onchange">
+    <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
+    <action name="action-invoice-record-due-dates"/>
+    <action name="save"/>
+    <action name="action-invoice-method-generate-pfp-partial-terms"/>
+  </action-group>
+
   <action-group name="action-group-account-invoice-operationtype-onchange">
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-record-partner-change"/>
@@ -1655,6 +1661,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-due-date"/>
     <action name="action-invoice-method-update-unpaid-invoice-terms" if="statusSelect == 3"/>
     <action name="save"/>
+    <action name="action-invoice-method-generate-pfp-partial-terms" if="statusSelect == 3"/>
     <action name="action-invoice-method-round-invoice-term-percentages"/>
   </action-group>
 
@@ -2304,6 +2311,11 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-update-invoice-term-payment-mode">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateInvoiceTermPaymentMode"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-generate-pfp-partial-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="generatePfpPartialTerms"/>
   </action-method>
 
   <action-method name="action-invoice-method-check-multi-currency">

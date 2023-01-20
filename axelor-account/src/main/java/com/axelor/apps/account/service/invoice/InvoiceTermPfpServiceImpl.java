@@ -36,6 +36,8 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermService invoiceTermService;
@@ -309,6 +311,36 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       return InvoiceTermRepository.PFP_STATUS_VALIDATED;
     } else {
       return invoiceTerm.getPfpValidateStatusSelect();
+    }
+  }
+
+  @Override
+  @Transactional
+  public void initPftPartialValidation(
+      InvoiceTerm originalInvoiceTerm, BigDecimal grantedAmount, PfpPartialReason partialReason) {
+    originalInvoiceTerm.setPfpfPartialValidationOk(true);
+    originalInvoiceTerm.setPfpPartialValidationAmount(grantedAmount);
+    originalInvoiceTerm.setPfpPartialReason(partialReason);
+
+    invoiceTermRepo.save(originalInvoiceTerm);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void generateInvoiceTermsAfterPfpPartial(Invoice originalInvoice) throws AxelorException {
+    List<InvoiceTerm> itList =
+        originalInvoice.getInvoiceTermList().stream()
+            .filter(InvoiceTerm::getPfpfPartialValidationOk)
+            .collect(Collectors.toList());
+    if (!CollectionUtils.isEmpty(itList)) {
+      for (InvoiceTerm it : itList) {
+        it = invoiceTermRepo.find(it.getId());
+        generateInvoiceTerm(
+            it, it.getAmount(), it.getPfpPartialValidationAmount(), it.getPfpPartialReason());
+        it.setPfpfPartialValidationOk(false);
+        it.setPfpPartialValidationAmount(BigDecimal.ZERO);
+        invoiceTermRepo.save(it);
+      }
     }
   }
 }
