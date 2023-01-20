@@ -46,6 +46,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -188,6 +189,16 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
             initialFiscalFixedAssetLine.get(),
             fixedAsset.getIfrsFixedAssetLineList(),
             fixedAssetLineComputationService);
+
+        if (fixedAsset.getFixedAssetCategory() != null
+            && fixedAsset.getFixedAssetCategory().getPeriodicityTypeSelect() != null
+            && fixedAsset.getFixedAssetCategory().getPeriodicityTypeSelect() == 1) {
+          initialFiscalFixedAssetLine
+              .get()
+              .setDepreciationDate(
+                  fixedAsset.getFirstServiceDate().with(TemporalAdjusters.lastDayOfMonth()));
+          fixedAsset.getFixedAssetLineList().set(0, initialFiscalFixedAssetLine.get());
+        }
       }
     }
   }
@@ -218,6 +229,16 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
             initialFiscalFixedAssetLine.get(),
             fixedAsset.getFiscalFixedAssetLineList(),
             fixedAssetLineComputationService);
+
+        if (fixedAsset.getFixedAssetCategory() != null
+            && fixedAsset.getFixedAssetCategory().getPeriodicityTypeSelect() != null
+            && fixedAsset.getFixedAssetCategory().getPeriodicityTypeSelect() == 1) {
+          initialFiscalFixedAssetLine
+              .get()
+              .setDepreciationDate(
+                  fixedAsset.getFirstServiceDate().with(TemporalAdjusters.lastDayOfMonth()));
+          fixedAsset.getFixedAssetLineList().set(0, initialFiscalFixedAssetLine.get());
+        }
       }
     }
   }
@@ -246,6 +267,16 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
             initialFixedAssetLine.get(),
             fixedAsset.getFixedAssetLineList(),
             fixedAssetLineComputationService);
+
+        if (fixedAsset.getFixedAssetCategory() != null
+            && fixedAsset.getFixedAssetCategory().getPeriodicityTypeSelect() != null
+            && fixedAsset.getFixedAssetCategory().getPeriodicityTypeSelect() == 1) {
+          initialFixedAssetLine
+              .get()
+              .setDepreciationDate(
+                  fixedAsset.getFirstServiceDate().with(TemporalAdjusters.lastDayOfMonth()));
+          fixedAsset.getFixedAssetLineList().set(0, initialFixedAssetLine.get());
+        }
       }
     }
   }
