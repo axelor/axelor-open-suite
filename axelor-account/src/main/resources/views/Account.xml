@@ -57,7 +57,7 @@
       <button name="activeStatusBtn" title="Set Active"
         onClick="save,account-account-method-toggle-status-active,action-attrs-account-account-status-show-title"
         colSpan="3"
-        readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
+        readonlyIf="$popup() || (accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount)"/>
     </panel>
     <panel name="mainPanel">
       <panel name="accountDetailsPanel" colSpan="8"

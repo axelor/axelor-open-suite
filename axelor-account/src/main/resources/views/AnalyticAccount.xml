@@ -43,7 +43,7 @@
         colSpan="8"/>
       <button name="activeStatusBtn" title="Set Active"
         onClick="save,account-analytic-account-method-toggle-status-active,action-attrs-account-analytic-account-status-show-title"
-        colSpan="3"/>
+        colSpan="3" readonlyIf="$popup()"/>
     </panel>
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>

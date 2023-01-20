@@ -24,7 +24,8 @@
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
         colSpan="9"/>
       <button name="activeStatusBtn" title="Set Active"
-        onClick="action-journal-group-on-click-active-status-actions" colSpan="2"/>
+        onClick="action-journal-group-on-click-active-status-actions" colSpan="2"
+        readonlyIf="$popup()"/>
     </panel>
     <panel name="mainPanel">
       <field name="name" readonlyIf="$isReadOnly"/>

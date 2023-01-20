@@ -27,7 +27,7 @@
         colSpan="8"/>
       <button name="activeStatusBtn" title="Set Active"
         onClick="save,account-analytic-journal-method-toggle-status-active,action-attrs-account-analytic-journal-status-show-title"
-        colSpan="3"/>
+        colSpan="3" readonlyIf="$popup()"/>
     </panel>
     <panel name="mainPanel">
       <field name="name"/>
