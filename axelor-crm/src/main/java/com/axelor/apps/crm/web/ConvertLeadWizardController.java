@@ -20,6 +20,7 @@ package com.axelor.apps.crm.web;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
@@ -49,13 +50,54 @@ public class ConvertLeadWizardController {
     try {
       Context context = request.getContext();
 
-      Lead lead = Beans.get(ConvertLeadWizardService.class).convertLeadWithContext(context);
+      Map<String, Object> leadMap = (Map<String, Object>) context.get("_lead");
+      Map<String, Object> opportunityMap = null;
+      Map<String, Object> partnerMap = null;
+      Map<String, Object> contactPartnerMap = null;
 
-      if (lead.getPartner() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(CrmExceptionMessage.CONVERT_LEAD_ERROR));
+      Lead lead = Beans.get(LeadRepository.class).find(((Integer) leadMap.get("id")).longValue());
+      Integer leadToPartnerSelect = (Integer) context.get("leadToPartnerSelect");
+      Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
+
+      if (context.containsKey("isCreateOpportunity")
+          && (Boolean) context.get("isCreateOpportunity")) {
+        opportunityMap = (Map<String, Object>) context.get("opportunity");
       }
+
+      Partner partner = null;
+      Partner contactPartner = null;
+
+      if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
+        partnerMap = (Map<String, Object>) context.get("partner");
+      } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
+        Map<String, Object> selectPartnerContext =
+            (Map<String, Object>) context.get("selectPartner");
+        partner =
+            Beans.get(PartnerRepository.class)
+                .find(((Integer) selectPartnerContext.get("id")).longValue());
+      }
+
+      if (leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT) {
+        contactPartnerMap = (Map<String, Object>) context.get("contactPartner");
+      } else if (leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT) {
+        Map<String, Object> selectContactContext =
+            (Map<String, Object>) context.get("selectContact");
+        contactPartner =
+            Beans.get(PartnerRepository.class)
+                .find(((Integer) selectContactContext.get("id")).longValue());
+      }
+
+      lead =
+          Beans.get(ConvertLeadWizardService.class)
+              .generateDataAndConvertLeadAndGenerateOpportunity(
+                  lead,
+                  leadToPartnerSelect,
+                  leadToContactSelect,
+                  partner,
+                  partnerMap,
+                  contactPartner,
+                  contactPartnerMap,
+                  opportunityMap);
 
       openPartner(response, lead);
     } catch (Exception e) {

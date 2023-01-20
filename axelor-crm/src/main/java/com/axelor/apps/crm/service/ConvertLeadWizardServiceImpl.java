@@ -14,8 +14,6 @@ import com.axelor.apps.base.service.wizard.ConvertWizardService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LeadStatus;
-import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.message.db.EmailAddress;
@@ -28,7 +26,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
@@ -230,93 +227,46 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     return lead;
   }
 
-  @Override
-  @SuppressWarnings("unchecked")
-  public Lead convertLeadWithContext(Context context) throws AxelorException {
-    Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
-
-    Lead lead = Beans.get(LeadRepository.class).find(((Integer) leadContext.get("id")).longValue());
-    Integer leadToPartnerSelect = (Integer) context.get("leadToPartnerSelect");
-    Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
-    Opportunity opportunity = null;
-    if (context.containsKey("isCreateOpportunity")
-        && (Boolean) context.get("isCreateOpportunity")) {
-      opportunity =
-          (Opportunity)
-              convertWizardService.createObject(
-                  (Map<String, Object>) context.get("opportunity"),
-                  Mapper.toBean(Opportunity.class, null),
-                  Mapper.of(Opportunity.class));
-    }
-
-    Partner partner = null;
-    Partner contactPartner = null;
-
-    if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
-      partner =
-          (Partner)
-              convertWizardService.createObject(
-                  (Map<String, Object>) context.get("partner"),
-                  Mapper.toBean(Partner.class, null),
-                  Mapper.of(Partner.class));
-    } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
-      Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
-      partner =
-          Beans.get(PartnerRepository.class)
-              .find(((Integer) selectPartnerContext.get("id")).longValue());
-    }
-
-    if (leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT
-        && partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
-      contactPartner =
-          (Partner)
-              convertWizardService.createObject(
-                  (Map<String, Object>) context.get("contactPartner"),
-                  Mapper.toBean(Partner.class, null),
-                  Mapper.of(Partner.class));
-    } else if (leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT
-        && partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
-      Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
-      contactPartner =
-          Beans.get(PartnerRepository.class)
-              .find(((Integer) selectContactContext.get("id")).longValue());
-    }
-
-    lead =
-        this.generateDataAndConvertLeadAndGenerateOpportunity(
-            lead, leadToPartnerSelect, leadToContactSelect, partner, contactPartner, opportunity);
-    return lead;
-  }
-
   @Transactional(rollbackOn = {Exception.class})
-  protected Lead generateDataAndConvertLeadAndGenerateOpportunity(
+  public Lead generateDataAndConvertLeadAndGenerateOpportunity(
       Lead lead,
       Integer leadToPartnerSelect,
       Integer leadToContactSelect,
       Partner partner,
+      Map<String, Object> partnerMap,
       Partner contactPartner,
-      Opportunity opportunity)
+      Map<String, Object> contactPartnerMap,
+      Map<String, Object> opportunityMap)
       throws AxelorException {
 
-    partner = createPartnerData(leadToPartnerSelect, partner, lead);
+    partner = createPartnerData(leadToPartnerSelect, partner, partnerMap, lead);
 
-    if (partner != null) {
-      contactPartner = createContactData(leadToContactSelect, lead, partner, contactPartner);
+    if (partner != null
+        && partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+      contactPartner =
+          createContactData(leadToContactSelect, lead, partner, contactPartner, contactPartnerMap);
     }
 
     lead = this.convertLead(lead, partner, contactPartner);
-    if (opportunity != null) {
-      convertWizardOpportunityService.createOpportunity(opportunity, partner);
+
+    if (lead.getPartner() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.CONVERT_LEAD_ERROR));
+    }
+    if (opportunityMap != null) {
+      convertWizardOpportunityService.createOpportunity(opportunityMap, partner);
     }
     return lead;
   }
 
   @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
-  protected Partner createPartnerData(Integer leadToPartnerSelect, Partner partner, Lead lead)
+  protected Partner createPartnerData(
+      Integer leadToPartnerSelect, Partner partner, Map<String, Object> partnerMap, Lead lead)
       throws AxelorException {
 
-    if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
+    if (partnerMap != null) {
       Address primaryAddress = this.createPrimaryAddress(lead);
       if (primaryAddress != null
           && (primaryAddress.getAddressL6() == null
@@ -325,9 +275,14 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(CrmExceptionMessage.LEAD_PARTNER_MISSING_ADDRESS));
       }
+
+      partner =
+          (Partner)
+              convertWizardService.createObject(
+                  partnerMap, Mapper.toBean(Partner.class, null), Mapper.of(Partner.class));
       partner = this.createPartner(partner, primaryAddress);
       // TODO check all required fields...
-    } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
+    } else if (partner != null) {
       if (!partner.getIsCustomer()) {
         partner.setIsProspect(true);
       }
@@ -338,11 +293,14 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
   protected Partner createContactData(
-      Integer leadToContactSelect, Lead lead, Partner partner, Partner contactPartner)
+      Integer leadToContactSelect,
+      Lead lead,
+      Partner partner,
+      Partner contactPartner,
+      Map<String, Object> contactPartnerMap)
       throws AxelorException {
 
-    if (leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT
-        && partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+    if (contactPartnerMap != null) {
       Address primaryAddress = this.createPrimaryAddress(lead);
       if (primaryAddress != null
           && (primaryAddress.getAddressL6() == null
@@ -351,15 +309,15 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(CrmExceptionMessage.LEAD_CONTACT_MISSING_ADDRESS));
       }
+      contactPartner =
+          (Partner)
+              convertWizardService.createObject(
+                  contactPartnerMap, Mapper.toBean(Partner.class, null), Mapper.of(Partner.class));
 
       contactPartner = this.createPartner(contactPartner, primaryAddress);
       contactPartner.setIsContact(true);
       // TODO check all required fields...
-    } else if (leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT
-        && partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
-
     }
-
     return contactPartner;
   }
 }

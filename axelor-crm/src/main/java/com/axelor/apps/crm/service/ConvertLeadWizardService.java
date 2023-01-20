@@ -17,11 +17,21 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
+import java.util.Map;
 
 public interface ConvertLeadWizardService {
 
-  public Lead convertLeadWithContext(Context context) throws AxelorException;
+  public Lead generateDataAndConvertLeadAndGenerateOpportunity(
+      Lead lead,
+      Integer leadToPartnerSelect,
+      Integer leadToContactSelect,
+      Partner partner,
+      Map<String, Object> partnerMap,
+      Partner contactPartner,
+      Map<String, Object> contactPartnerMap,
+      Map<String, Object> opportunityMap)
+      throws AxelorException;
 }

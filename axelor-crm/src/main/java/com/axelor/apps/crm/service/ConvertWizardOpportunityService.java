@@ -18,10 +18,11 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.exception.AxelorException;
+import java.util.Map;
 
 public interface ConvertWizardOpportunityService {
 
-  public void createOpportunity(Opportunity opportunity, Partner partner) throws AxelorException;
+  public void createOpportunity(Map<String, Object> opportunityMa, Partner partner)
+      throws AxelorException;
 }
