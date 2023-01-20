@@ -449,6 +449,18 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         .fetch();
   }
 
+  protected BillOfMaterial getAnyBOM(Product originalProduct, Company company) {
+    return billOfMaterialRepo
+        .all()
+        .filter(
+            "self.product = ?1 AND self.company = ?2 AND self.statusSelect = ?3",
+            originalProduct,
+            company,
+            BillOfMaterialRepository.STATUS_APPLICABLE)
+        .order("id")
+        .fetchOne();
+  }
+
   @Override
   public BillOfMaterial getBOM(Product originalProduct, Company company) throws AxelorException {
 
@@ -458,19 +470,18 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     BillOfMaterial billOfMaterial = null;
     if (originalProduct != null) {
-      Object obj =
-          productCompanyService.getWithNoDefault(originalProduct, "defaultBillOfMaterial", company);
 
-      if (obj != null) {
-        billOfMaterial =
-            (BillOfMaterial)
-                productCompanyService.getWithNoDefault(
-                    originalProduct, "defaultBillOfMaterial", company);
-      }
+      // Get any BOM with product and company.
+      billOfMaterial = getAnyBOM(originalProduct, company);
 
       if (billOfMaterial == null) {
-        billOfMaterial =
-            getAlternativesBOM(originalProduct, company).stream().findAny().orElse(null);
+        Object obj =
+            productCompanyService.getWithNoDefault(
+                originalProduct, "defaultBillOfMaterial", company);
+
+        if (obj != null) {
+          billOfMaterial = (BillOfMaterial) obj;
+        }
       }
 
       if (billOfMaterial == null) {
