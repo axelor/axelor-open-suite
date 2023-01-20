@@ -5,16 +5,18 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="DataBackupConfigAnonymizeLine">
+  <entity name="AnonymizerLine">
+    <many-to-one name="anonymizer" ref="com.axelor.apps.base.db.Anonymizer"
+      title="Anonymizer"/>
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"
       title="Model to anonymize" required="true"/>
     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField"
-      title="Field to anonymize"/>
-    <many-to-one name="dataBackup" ref="com.axelor.apps.base.db.DataBackup"
-      title="Data backup"/>
+      title="Field to anonymize" required="true"/>
     <boolean name="useFakeData" title="Use fake data"/>
     <many-to-one name="fakerApiField" ref="com.axelor.apps.base.db.FakerApiField"
       title="Faker API field"/>
+    <many-to-one ref="com.axelor.meta.db.MetaJsonField" name="metaJsonField"
+      title="Meta Json Field"/>
   </entity>
 
 </domain-models>
