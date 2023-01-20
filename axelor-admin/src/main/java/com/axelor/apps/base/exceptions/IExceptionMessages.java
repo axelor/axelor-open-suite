@@ -62,7 +62,4 @@ public interface IExceptionMessages {
 
   public static final String FAKER_METHOD_ERROR = /*$$(*/
       "An error occured while executing '%s'." /*)*/;
-
-  public static final String JSON_FIELD_CAN_NOT_BE_ANONYMIZED = /*$$(*/
-      "Json field can not be anonymized" /*)*/;
 }
