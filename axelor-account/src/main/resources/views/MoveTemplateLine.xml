@@ -35,7 +35,8 @@
     model="com.axelor.apps.account.db.MoveTemplateLine">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
+        domain="self.isContact = false"/>
       <field name="debit" readonlyIf="credit > 0"
         onChange="action-move-template-line-record-update-need-to-check-validity" required="true"/>
       <field name="credit" readonlyIf="debit > 0"
