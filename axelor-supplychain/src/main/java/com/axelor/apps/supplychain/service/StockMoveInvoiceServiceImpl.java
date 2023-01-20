@@ -431,13 +431,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
     PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
 
-    if (saleOrderLine != null) {
-      sequence = saleOrderLine.getSequence();
-    } else if (purchaseOrderLine != null) {
-      if (purchaseOrderLine.getIsTitleLine()) {
-        isTitleLine = true;
-      }
-      sequence = purchaseOrderLine.getSequence();
+    sequence = stockMoveLine.getSequence();
+    if (purchaseOrderLine != null && purchaseOrderLine.getIsTitleLine()) {
+      isTitleLine = true;
     }
 
     // do not create lines with no qties

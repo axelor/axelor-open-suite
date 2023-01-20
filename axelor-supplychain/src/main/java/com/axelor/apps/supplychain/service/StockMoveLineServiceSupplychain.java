@@ -52,6 +52,7 @@ public interface StockMoveLineServiceSupplychain {
    * @throws AxelorException
    */
   public StockMoveLine createStockMoveLine(
+      Integer sequence,
       Product product,
       String productName,
       String description,

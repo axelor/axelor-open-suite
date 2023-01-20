@@ -441,6 +441,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       StockMoveLine stockMoveLine =
           stockMoveLineSupplychainService.createStockMoveLine(
+              saleOrderLine.getSequence(),
               saleOrderLine.getProduct(),
               saleOrderLine.getProductName(),
               saleOrderLine.getDescription(),
