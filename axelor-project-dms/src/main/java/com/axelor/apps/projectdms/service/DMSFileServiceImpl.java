@@ -91,7 +91,7 @@ public class DMSFileServiceImpl implements DMSFileService {
     messageService.sendByEmail(message);
   }
 
-  private EmailAddress getEmailAddress(User user) throws AxelorException {
+  protected EmailAddress getEmailAddress(User user) throws AxelorException {
 
     EmailAddress emailAddress = null;
 

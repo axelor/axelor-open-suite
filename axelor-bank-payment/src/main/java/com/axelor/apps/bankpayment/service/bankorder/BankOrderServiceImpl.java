@@ -508,7 +508,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
   }
 
-  private void setNbOfLines(BankOrder bankOrder) {
+  protected void setNbOfLines(BankOrder bankOrder) {
 
     if (bankOrder.getBankOrderLineList() == null) {
       return;
@@ -819,7 +819,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     resetBankDetails(bankOrder);
   }
 
-  private void resetPartners(BankOrder bankOrder) {
+  protected void resetPartners(BankOrder bankOrder) {
     if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
       for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
         bankOrderLine.setPartner(null);
@@ -858,7 +858,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
   }
 
-  private void resetBankDetails(BankOrder bankOrder) {
+  protected void resetBankDetails(BankOrder bankOrder) {
     for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
       if (bankOrderLine.getReceiverBankDetails() == null) {
         continue;

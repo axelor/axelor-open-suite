@@ -172,7 +172,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     return wkfInstanceRepository.save(instance);
   }
 
-  private void addRelatedProcessInstanceId(Model model) throws AxelorException {
+  protected void addRelatedProcessInstanceId(Model model) throws AxelorException {
 
     WkfProcessConfig wkfProcessConfig = wkfService.findCurrentProcessConfig(model);
 
@@ -194,7 +194,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     }
   }
 
-  private boolean addRelatedInstance(Model model, WkfProcessConfig wkfProcessConfig)
+  protected boolean addRelatedInstance(Model model, WkfProcessConfig wkfProcessConfig)
       throws AxelorException {
 
     log.debug(
@@ -223,7 +223,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     }
   }
 
-  private ProcessInstance findProcessInstance(
+  protected ProcessInstance findProcessInstance(
       String processInstanceId, RuntimeService runTimeService) {
 
     ProcessInstance processInstance =
@@ -579,7 +579,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     }
   }
 
-  private void addChildProcessInstanceId(
+  protected void addChildProcessInstanceId(
       String processInstanceId, FullContext modelCtx, Map<String, Object> ctxMap) {
 
     RuntimeService runtimeService = engineService.getEngine().getRuntimeService();

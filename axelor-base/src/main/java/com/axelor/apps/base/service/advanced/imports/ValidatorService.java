@@ -191,7 +191,8 @@ public class ValidatorService {
     return isLog;
   }
 
-  private void validateTab(String[] sheets, AdvancedImport advancedImport) throws AxelorException {
+  protected void validateTab(String[] sheets, AdvancedImport advancedImport)
+      throws AxelorException {
     if (sheets == null) {
       return;
     }
@@ -208,7 +209,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateModel(FileTab fileTab) throws IOException, AxelorException {
+  protected void validateModel(FileTab fileTab) throws IOException, AxelorException {
     if (fileTab.getMetaModel() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -217,7 +218,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateObject(String[] row, FileTab fileTab, Boolean isTabConfig)
+  protected void validateObject(String[] row, FileTab fileTab, Boolean isTabConfig)
       throws IOException, AxelorException {
 
     int rowIndex = isTabConfig ? 1 : 0;
@@ -241,7 +242,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateObjectRequiredFields(FileTab fileTab)
+  protected void validateObjectRequiredFields(FileTab fileTab)
       throws ClassNotFoundException, IOException, AxelorException {
 
     if (CollectionUtils.isEmpty(fileTab.getFileFieldList())) {
@@ -287,7 +288,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateFieldAndData(
+  protected void validateFieldAndData(
       DataReaderService reader,
       String sheet,
       FileTab fileTab,
@@ -341,7 +342,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateFields(int line, boolean isConfig, FileTab fileTab)
+  protected void validateFields(int line, boolean isConfig, FileTab fileTab)
       throws IOException, ClassNotFoundException {
 
     List<String> relationalFieldList =
@@ -388,7 +389,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateDateField(int line, FileField fileField) throws IOException {
+  protected void validateDateField(int line, FileField fileField) throws IOException {
 
     String type = fileField.getTargetType();
     Integer rowNum = fileField.getIsMatchWithFile() ? line : null;
@@ -408,7 +409,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateImportRequiredField(
+  protected void validateImportRequiredField(
       int line,
       Class<?> model,
       String fieldName,
@@ -445,7 +446,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateData(String[] dataRow, int line, boolean isConfig, FileTab fileTab)
+  protected void validateData(String[] dataRow, int line, boolean isConfig, FileTab fileTab)
       throws IOException, ClassNotFoundException {
 
     Map<String, Object> map = isConfig ? fieldMap : titleMap;
@@ -530,7 +531,7 @@ public class ValidatorService {
     }
   }
 
-  private boolean validateDataRequiredField(
+  protected boolean validateDataRequiredField(
       String row[], int cell, int line, Class<?> model, String fieldName, FileField fileField)
       throws IOException, ClassNotFoundException {
 
@@ -555,7 +556,7 @@ public class ValidatorService {
     return flag;
   }
 
-  private Property getAndValidateSubField(
+  protected Property getAndValidateSubField(
       int line, Property parentProp, FileField fileField, boolean isLog)
       throws IOException, ClassNotFoundException {
 
@@ -603,8 +604,8 @@ public class ValidatorService {
     return subProperty;
   }
 
-  private void validateDataType(String[] row, int cell, int line, String type, FileField fileField)
-      throws IOException {
+  protected void validateDataType(
+      String[] row, int cell, int line, String type, FileField fileField) throws IOException {
 
     if (Strings.isNullOrEmpty(row[cell])) {
       return;
@@ -649,7 +650,8 @@ public class ValidatorService {
     }
   }
 
-  private void checkNumeric(String value, int line, String field, String type) throws IOException {
+  protected void checkNumeric(String value, int line, String field, String type)
+      throws IOException {
 
     switch (type) {
       case INTEGER:
@@ -681,7 +683,7 @@ public class ValidatorService {
     }
   }
 
-  private void checkDateTime(String value, int line, String type, FileField fileField)
+  protected void checkDateTime(String value, int line, String type, FileField fileField)
       throws IOException {
 
     if (!Strings.isNullOrEmpty(fileField.getDateFormat())
@@ -717,7 +719,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateActions(FileTab fileTab) {
+  protected void validateActions(FileTab fileTab) {
     String actions = fileTab.getActions();
     if (StringUtils.isBlank(actions)) {
       return;
@@ -730,7 +732,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateSearchCall(FileTab fileTab) {
+  protected void validateSearchCall(FileTab fileTab) {
     String searchCall = fileTab.getSearchCall();
     if (!searchCallService.validate(searchCall)) {
       logService.addLog(
@@ -830,7 +832,7 @@ public class ValidatorService {
     metaJsonFieldRepo.save(jsonField);
   }
 
-  private void validateSearch(FileTab fileTab) throws AxelorException {
+  protected void validateSearch(FileTab fileTab) throws AxelorException {
     if (fileTab.getImportType() != FileFieldRepository.IMPORT_TYPE_NEW) {
       if (CollectionUtils.isEmpty(fileTab.getSearchFieldSet())
           && StringUtils.isBlank(fileTab.getSearchCall())) {

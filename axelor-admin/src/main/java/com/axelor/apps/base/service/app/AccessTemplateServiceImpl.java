@@ -105,14 +105,14 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     }
   }
 
-  private void getMenusPerApp() {
+  protected void getMenusPerApp() {
 
     List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null").order("id").fetch();
 
     processMenu(menus.iterator());
   }
 
-  private void processMenu(Iterator<MetaMenu> menuIter) {
+  protected void processMenu(Iterator<MetaMenu> menuIter) {
 
     if (!menuIter.hasNext()) {
       return;
@@ -137,7 +137,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     processMenu(menuIter);
   }
 
-  private boolean validModel(String model) {
+  protected boolean validModel(String model) {
 
     if (model == null) {
       return false;
@@ -150,7 +150,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     return !model.equals(MetaJsonRecord.class.getName());
   }
 
-  private String getObjMenu(MetaMenu menu) {
+  protected String getObjMenu(MetaMenu menu) {
 
     if (appMenus.contains(menu.getName())) {
       return menu.getName();
@@ -177,7 +177,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     return null;
   }
 
-  private String getApp(MetaMenu menu) {
+  protected String getApp(MetaMenu menu) {
 
     String appCode = null;
     String condition = menu.getConditionToCheck();
@@ -217,7 +217,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     return appCode;
   }
 
-  private MetaFile createExcel() throws IOException {
+  protected MetaFile createExcel() throws IOException {
 
     XSSFWorkbook workBook = new XSSFWorkbook();
 
@@ -271,7 +271,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     writeRow(sheet, new String[] {obj, usersRights, "rwcde"});
   }
 
-  private void writeMenuSheet(XSSFWorkbook workBook, String menu, String app) {
+  protected void writeMenuSheet(XSSFWorkbook workBook, String menu, String app) {
     XSSFSheet sheet = workBook.getSheet(app + "-menu");
     if (sheet == null) {
       sheet = workBook.createSheet(app + "-menu");
@@ -282,7 +282,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     appMenus.remove(menu);
   }
 
-  private void writeRow(XSSFSheet sheet, String[] values) {
+  protected void writeRow(XSSFSheet sheet, String[] values) {
 
     XSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
 
@@ -292,7 +292,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     }
   }
 
-  private void updateNoMenuObjects() {
+  protected void updateNoMenuObjects() {
 
     List<MetaModel> metaModels =
         metaModelRepo.all().filter("self.fullName not in ?1", objMenu.keySet()).fetch();
@@ -317,7 +317,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
     }
   }
 
-  private boolean addObject(MetaModel model) {
+  protected boolean addObject(MetaModel model) {
 
     for (Entry<String, String> entry : objMenu.entrySet()) {
       if (model.getFullName().contains(entry.getKey())) {

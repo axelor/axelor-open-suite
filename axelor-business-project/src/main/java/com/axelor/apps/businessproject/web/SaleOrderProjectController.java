@@ -124,7 +124,7 @@ public class SaleOrderProjectController {
     }
   }
 
-  private LocalDateTime getElementStartDate(Context context) {
+  protected LocalDateTime getElementStartDate(Context context) {
     LocalDateTime date;
     String stringStartDate = (String) context.get("_elementStartDate");
     if (!Strings.isNullOrEmpty(stringStartDate)) {

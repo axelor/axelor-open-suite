@@ -64,7 +64,7 @@ public class LogisticalFormLineController {
     }
   }
 
-  private LogisticalFormLine getLogisticalFormLine(ActionRequest request) {
+  protected LogisticalFormLine getLogisticalFormLine(ActionRequest request) {
     LogisticalFormLine logisticalFormLine = request.getContext().asType(LogisticalFormLine.class);
 
     if (logisticalFormLine.getLogisticalForm() == null) {

@@ -100,7 +100,7 @@ public class ActionScriptBuilderService {
         builder.getName(), "action-script", xml, null, builder.getXmlId());
   }
 
-  private String generateScriptCode(ActionBuilder builder) {
+  protected String generateScriptCode(ActionBuilder builder) {
 
     StringBuilder stb = new StringBuilder();
     fbuilder = new ArrayList<>();
@@ -142,7 +142,7 @@ public class ActionScriptBuilderService {
     return stb.toString();
   }
 
-  private void addCreateCode(boolean isJson, StringBuilder stb, int level, String targetModel) {
+  protected void addCreateCode(boolean isJson, StringBuilder stb, int level, String targetModel) {
 
     if (isJson) {
       stb.append(format("var target = $json.create('" + targetModel + "');", level));
@@ -155,7 +155,7 @@ public class ActionScriptBuilderService {
     }
   }
 
-  private void addOpenRecord(boolean isJson, StringBuilder stb, int level, String targetModel) {
+  protected void addOpenRecord(boolean isJson, StringBuilder stb, int level, String targetModel) {
 
     stb.append("\n");
 
@@ -186,7 +186,7 @@ public class ActionScriptBuilderService {
     }
   }
 
-  private void addUpdateCode(boolean isJson, StringBuilder stb, int level, String targetModel) {
+  protected void addUpdateCode(boolean isJson, StringBuilder stb, int level, String targetModel) {
 
     if (isJson) {
       stb.append(format("var target = {};", level));
@@ -198,7 +198,7 @@ public class ActionScriptBuilderService {
     stb.append(format("$response.setValues(target);", level));
   }
 
-  private void addRootFunction(ActionBuilder builder, StringBuilder stb, int level) {
+  protected void addRootFunction(ActionBuilder builder, StringBuilder stb, int level) {
 
     stb.append(format("function setVar0($$, $, _$){", level));
     String bindings = addFieldsBinding("target", builder.getLines(), level + 1);
@@ -207,12 +207,12 @@ public class ActionScriptBuilderService {
     stb.append(format("}", level));
   }
 
-  private String format(String line, int level) {
+  protected String format(String line, int level) {
 
     return "\n" + Strings.repeat(INDENT, level) + line;
   }
 
-  private String addFieldsBinding(String target, List<ActionBuilderLine> lines, int level) {
+  protected String addFieldsBinding(String target, List<ActionBuilderLine> lines, int level) {
 
     StringBuilder stb = new StringBuilder();
 
@@ -275,7 +275,7 @@ public class ActionScriptBuilderService {
     return stb.toString();
   }
 
-  private String addRelationalBinding(ActionBuilderLine line, String target, boolean json) {
+  protected String addRelationalBinding(ActionBuilderLine line, String target, boolean json) {
 
     line = builderLineRepo.find(line.getId());
     String subCode = null;
@@ -314,7 +314,7 @@ public class ActionScriptBuilderService {
     return subCode + "($," + line.getValue() + ", _$)";
   }
 
-  private String getTargetModel(ActionBuilderLine line) {
+  protected String getTargetModel(ActionBuilderLine line) {
 
     MetaJsonField jsonField = line.getMetaJsonField();
 
@@ -331,7 +331,7 @@ public class ActionScriptBuilderService {
     return targetModel;
   }
 
-  private String getTargetJsonModel(ActionBuilderLine line) {
+  protected String getTargetJsonModel(ActionBuilderLine line) {
 
     MetaJsonField jsonField = line.getMetaJsonField();
 
@@ -342,7 +342,7 @@ public class ActionScriptBuilderService {
     return "";
   }
 
-  private String getRootSourceModel(ActionBuilderLine line) {
+  protected String getRootSourceModel(ActionBuilderLine line) {
 
     if (line.getActionBuilder() != null) {
       return line.getActionBuilder().getModel();
@@ -351,7 +351,7 @@ public class ActionScriptBuilderService {
     return null;
   }
 
-  private String getSourceModel(ActionBuilderLine line) {
+  protected String getSourceModel(ActionBuilderLine line) {
 
     MetaJsonField jsonField = line.getValueJson();
 
@@ -402,7 +402,7 @@ public class ActionScriptBuilderService {
     return sourceModel;
   }
 
-  private String addM2OBinding(ActionBuilderLine line, boolean search, boolean filter) {
+  protected String addM2OBinding(ActionBuilderLine line, boolean search, boolean filter) {
 
     String fname = "setVar" + varCount;
     varCount += 1;
@@ -454,7 +454,7 @@ public class ActionScriptBuilderService {
     return fname;
   }
 
-  private String addM2MBinding(ActionBuilderLine line) {
+  protected String addM2MBinding(ActionBuilderLine line) {
 
     String fname = "setVar" + varCount;
     varCount += 1;
@@ -481,7 +481,7 @@ public class ActionScriptBuilderService {
     return fname;
   }
 
-  private String addO2MBinding(ActionBuilderLine line, String target) {
+  protected String addO2MBinding(ActionBuilderLine line, String target) {
 
     String fname = "setVar" + varCount;
     varCount += 1;
@@ -504,7 +504,7 @@ public class ActionScriptBuilderService {
     return fname;
   }
 
-  private String addJsonM2OBinding(ActionBuilderLine line, boolean search, boolean filter) {
+  protected String addJsonM2OBinding(ActionBuilderLine line, boolean search, boolean filter) {
 
     String fname = "setVar" + varCount;
     varCount += 1;
@@ -545,7 +545,7 @@ public class ActionScriptBuilderService {
     return fname;
   }
 
-  private String addJsonM2MBinding(ActionBuilderLine line) {
+  protected String addJsonM2MBinding(ActionBuilderLine line) {
 
     String fname = "setVar" + varCount;
     varCount += 1;
@@ -570,7 +570,7 @@ public class ActionScriptBuilderService {
     return fname;
   }
 
-  private String addJsonO2MBinding(ActionBuilderLine line) {
+  protected String addJsonO2MBinding(ActionBuilderLine line) {
 
     String fname = "setVar" + varCount;
     varCount += 1;
@@ -590,7 +590,7 @@ public class ActionScriptBuilderService {
     return fname;
   }
 
-  private String getQuery(String model, String filter, boolean json, boolean all) {
+  protected String getQuery(String model, String filter, boolean json, boolean all) {
 
     if (model.contains(".")) {
       model = model.substring(model.lastIndexOf('.') + 1);
@@ -618,7 +618,7 @@ public class ActionScriptBuilderService {
     return query;
   }
 
-  private String getSum(String value, String filter) {
+  protected String getSum(String value, String filter) {
 
     value = value.substring(0, value.length() - 1);
     String[] expr = value.split("\\.sum\\(");

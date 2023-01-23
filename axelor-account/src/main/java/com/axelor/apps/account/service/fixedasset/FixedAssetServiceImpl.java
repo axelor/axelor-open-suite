@@ -172,7 +172,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAssetRepo.save(fixedAsset);
   }
 
-  private void setDisposalFields(
+  protected void setDisposalFields(
       FixedAsset fixedAsset,
       LocalDate disposalDate,
       BigDecimal disposalAmount,
@@ -349,7 +349,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return newFixedAsset;
   }
 
-  private void multiplyFieldsToSplit(FixedAsset fixedAsset, BigDecimal prorata) {
+  protected void multiplyFieldsToSplit(FixedAsset fixedAsset, BigDecimal prorata) {
 
     if (fixedAsset.getGrossValue() != null) {
       fixedAsset.setGrossValue(

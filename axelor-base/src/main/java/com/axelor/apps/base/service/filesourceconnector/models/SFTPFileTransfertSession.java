@@ -141,7 +141,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
     }
   }
 
-  private SftpProgressMonitor createMonitor() {
+  protected SftpProgressMonitor createMonitor() {
 
     SftpProgressMonitor monitor =
         new SftpProgressMonitor() {

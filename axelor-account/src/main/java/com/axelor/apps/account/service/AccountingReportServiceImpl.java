@@ -142,7 +142,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
   }
 
-  private Boolean compareReportType(AccountingReport accountingReport, int type) {
+  protected Boolean compareReportType(AccountingReport accountingReport, int type) {
     return accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect() == type;
   }
