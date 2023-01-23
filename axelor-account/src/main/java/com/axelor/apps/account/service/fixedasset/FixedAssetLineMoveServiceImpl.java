@@ -90,6 +90,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected BankDetailsService bankDetailsService;
 
+  protected FixedAssetDateService fixedAssetDateService;
+
   private Batch batch;
 
   @Inject
@@ -105,9 +107,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       MoveValidateService moveValidateService,
       MoveLineCreateService moveLineCreateService,
       BatchRepository batchRepository,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      FixedAssetDateService fixedAssetDateService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
-    this.fixedAssetRepo = fixedAssetRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
     this.moveLineRepo = moveLineRepo;
@@ -119,6 +121,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     this.fixedAssetRepo = fixedAssetRepo;
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
+    this.fixedAssetDateService = fixedAssetDateService;
   }
 
   @Override
@@ -412,10 +415,12 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     LocalDate date = fixedAssetLine.getDepreciationDate();
 
     if (!isDisposal) {
-      if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
+      int periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
+      if (periodicityTypeSelect == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
         date = date.with(TemporalAdjusters.lastDayOfMonth());
       } else {
-        date = date.with(TemporalAdjusters.lastDayOfYear());
+        date =
+            fixedAssetDateService.computeLastDayOfFiscalYear(company, date, periodicityTypeSelect);
       }
     }
 
