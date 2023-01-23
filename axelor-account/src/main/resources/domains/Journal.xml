@@ -35,7 +35,7 @@
     <string name="compatiblePartnerTypeSelect" title="Compatible partner"
       selection="account.journal.compatible.partner.type.select"/>
     <boolean name="authorizeSimulatedMove" title="Authorize simulated move?"/>
-    <boolean name="allowAccountingDaybook" title="Allow accounting daybook"/>
+    <boolean name="allowAccountingDaybook" title="Allow accounting daybook?"/>
     <string name="authorizedFunctionalOriginSelect" title="Authorized functional origin"
       selection="iaccount.move.functional.origin.select"/>
 
