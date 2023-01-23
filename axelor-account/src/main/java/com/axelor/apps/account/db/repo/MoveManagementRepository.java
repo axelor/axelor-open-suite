@@ -131,6 +131,9 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setIsSelectedOnPaymentSession(false);
     invoiceTerm.setDebtRecoveryBlockingOk(false);
     invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+    invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getCompanyAmount());
+    invoiceTerm.setAmountRemainingAfterFinDiscount(
+        invoiceTerm.getRemainingAmountAfterFinDiscount());
     invoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
     invoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
