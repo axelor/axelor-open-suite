@@ -891,8 +891,8 @@ InvoiceSet.length > 0))"
         onChange="action-group-account-invoice-company-onchange" form-view="company-form"
         grid-view="company-grid" readonlyIf="statusSelect != 1"/>
       <field name="companyBankDetails" canEdit="false" widget="SuggestBox"
-        onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form"
-        grid-view="bank-details-grid"/>
+        onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
+        form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="currency" canEdit="false"
         onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"
         form-view="currency-form" grid-view="currency-grid"/>
