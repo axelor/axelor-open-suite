@@ -15,15 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.payment.paymentsession;
 
 import com.axelor.apps.account.db.PaymentSession;
-import com.axelor.exception.AxelorException;
-import java.io.IOException;
-import wslite.json.JSONException;
 
-public interface PaymentSessionEmailService {
-  public int sendEmails(PaymentSession paymentSession)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, JSONException;
+public interface PaymentSessionCancelService {
+  public void cancelPaymentSession(PaymentSession paymentSession);
 }
