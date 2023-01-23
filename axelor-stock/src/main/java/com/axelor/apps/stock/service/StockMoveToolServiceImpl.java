@@ -78,11 +78,11 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
         exTaxTotal =
-            exTaxTotal.add(
-                stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()));
+                exTaxTotal.add(
+                        stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()).setScale(2, RoundingMode.HALF_UP));
       }
     }
-    return exTaxTotal.setScale(2, RoundingMode.HALF_UP);
+    return exTaxTotal;
   }
 
   /**
