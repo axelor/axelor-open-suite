@@ -21,6 +21,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -88,6 +89,17 @@ public class ContractLineController {
         && contractLine.getFromDate() != null
         && contractVersion.getSupposedActivationDate().isAfter(contractLine.getFromDate())) {
       response.setValue("fromDate", contractVersion.getSupposedActivationDate());
+    }
+  }
+
+  public void hideDatePanel(ActionRequest request, ActionResponse response) {
+    try {
+      ContractVersion contract = request.getContext().getParent().asType(ContractVersion.class);
+      if (!contract.getIsPeriodicInvoicing()) {
+        response.setAttr("datePanel", "hidden", true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

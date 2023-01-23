@@ -120,6 +120,8 @@ public interface ContractService {
   @Transactional(rollbackOn = {Exception.class})
   Invoice invoicingContract(Contract contract) throws AxelorException;
 
+  Invoice invoicingContracts(List<Contract> contractList) throws AxelorException;
+
   /**
    * Renew a contract
    *

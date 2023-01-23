@@ -71,7 +71,6 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
       invoice.setOperationSubTypeSelect(
           InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE);
     }
-    invoice.addContract(contract);
     if (contract.getInvoicingDate() != null) {
       invoice.setInvoiceDate(contract.getInvoicingDate());
     } else {
