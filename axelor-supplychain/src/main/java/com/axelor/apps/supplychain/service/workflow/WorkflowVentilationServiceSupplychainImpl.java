@@ -154,7 +154,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private void saleOrderProcess(Invoice invoice) throws AxelorException {
+  protected void saleOrderProcess(Invoice invoice) throws AxelorException {
 
     // Get all different saleOrders from invoice
     Set<SaleOrder> saleOrderSet = new HashSet<>();
@@ -182,7 +182,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private SaleOrder saleOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
+  protected SaleOrder saleOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
 
     SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
@@ -217,7 +217,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     return saleOrder;
   }
 
-  private void purchaseOrderProcess(Invoice invoice) throws AxelorException {
+  protected void purchaseOrderProcess(Invoice invoice) throws AxelorException {
 
     // Get all different purchaseOrders from invoice
     Set<PurchaseOrder> purchaseOrderSet = new HashSet<>();
@@ -240,7 +240,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private PurchaseOrder purchaseOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
+  protected PurchaseOrder purchaseOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
 
     PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
@@ -276,7 +276,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     return purchaseOrder;
   }
 
-  private void stockMoveProcess(Invoice invoice) throws AxelorException {
+  protected void stockMoveProcess(Invoice invoice) throws AxelorException {
     // update qty invoiced in stock move line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       StockMoveLine stockMoveLine = invoiceLine.getStockMoveLine();
@@ -366,7 +366,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private boolean isStockMoveInvoicingPartiallyActivated(
+  protected boolean isStockMoveInvoicingPartiallyActivated(
       Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
     SupplyChainConfig supplyChainConfig =
         supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());

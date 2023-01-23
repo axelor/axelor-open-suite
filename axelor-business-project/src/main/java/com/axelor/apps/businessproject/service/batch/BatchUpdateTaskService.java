@@ -82,7 +82,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     }
   }
 
-  private void updateTasks() {
+  protected void updateTasks() {
     QueryBuilder<ProjectTask> taskQueryBuilder =
         projectTaskBusinessProjectService.getTaskInvoicingFilter();
 
@@ -113,7 +113,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     }
   }
 
-  private void updateTaskToInvoice(
+  protected void updateTaskToInvoice(
       Map<String, Object> contextValues, AppBusinessProject appBusinessProject) {
 
     QueryBuilder<ProjectTask> taskQueryBuilder =
@@ -162,7 +162,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
         batch, updatedTaskList, "updatedTaskSet", contextValues);
   }
 
-  private void updateTimesheetLines(Map<String, Object> contextValues) {
+  protected void updateTimesheetLines(Map<String, Object> contextValues) {
 
     List<Object> updatedTimesheetLineList = new ArrayList<Object>();
 

@@ -435,7 +435,7 @@ public class InvoiceController {
     }
   }
 
-  private String buildMassMessage(int doneCount, int errorCount) {
+  protected String buildMassMessage(int doneCount, int errorCount) {
     StringBuilder sb = new StringBuilder();
     sb.append(
         String.format(
@@ -455,7 +455,7 @@ public class InvoiceController {
     return sb.toString();
   }
 
-  private void massProcess(
+  protected void massProcess(
       ActionRequest request,
       ActionResponse response,
       Function<Collection<? extends Number>, Pair<Integer, Integer>> function) {

@@ -212,7 +212,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
    * @return the unit price of the invoice line
    * @throws AxelorException
    */
-  private BigDecimal getUnitPrice(
+  protected BigDecimal getUnitPrice(
       Invoice invoice,
       InvoiceLine invoiceLine,
       TaxLine taxLine,
@@ -587,7 +587,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     return this.computeAnalyticDistributionWithUpdatedQty(invoiceLine);
   }
 
-  private InvoiceLine computeAnalyticDistributionWithUpdatedQty(InvoiceLine invoiceLine) {
+  protected InvoiceLine computeAnalyticDistributionWithUpdatedQty(InvoiceLine invoiceLine) {
 
     if (appAccountService.getAppAccount().getManageAnalyticAccounting()) {
       List<AnalyticMoveLine> analyticMoveLineList = this.computeAnalyticDistribution(invoiceLine);

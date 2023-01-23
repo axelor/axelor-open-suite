@@ -191,7 +191,7 @@ public class ProductServiceImpl implements ProductService {
     }
   }
 
-  private void updateSalePriceOfVariant(Product product) throws AxelorException {
+  protected void updateSalePriceOfVariant(Product product) throws AxelorException {
 
     List<? extends Product> productVariantList =
         productRepo

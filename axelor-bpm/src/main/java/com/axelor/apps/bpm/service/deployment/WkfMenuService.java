@@ -107,7 +107,7 @@ public class WkfMenuService {
     metaMenuRepository.save(metaMenu);
   }
 
-  private MetaMenu findOrCreateMenu(String name) {
+  protected MetaMenu findOrCreateMenu(String name) {
 
     MetaMenu menu = metaMenuRepository.findByName(name);
     if (menu == null) {
@@ -220,7 +220,7 @@ public class WkfMenuService {
     return viewMap;
   }
 
-  private String createQuery(WkfTaskConfig wkfTaskConfig, boolean userMenu, boolean isJson) {
+  protected String createQuery(WkfTaskConfig wkfTaskConfig, boolean userMenu, boolean isJson) {
 
     Property property = null;
     String query = "self.processInstanceId in (:processInstanceIds)";
@@ -258,7 +258,7 @@ public class WkfMenuService {
     return query;
   }
 
-  private String getViewPrefix(WkfTaskConfig wkfTaskConfig, boolean isJson) {
+  protected String getViewPrefix(WkfTaskConfig wkfTaskConfig, boolean isJson) {
 
     if (isJson) {
       return "custom-model-" + wkfTaskConfig.getJsonModelName();

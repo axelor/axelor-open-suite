@@ -785,7 +785,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         .fetch();
   }
 
-  private BigDecimal getAmountVentilated(
+  protected BigDecimal getAmountVentilated(
       SaleOrder saleOrder,
       Long currentInvoiceId,
       boolean excludeCurrentInvoice,

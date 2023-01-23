@@ -286,7 +286,7 @@ public class WkfModelServiceImpl implements WkfModelService {
     }
   }
 
-  private File translateNodeName(File importFile, String sourceLanguage, String targetLanguage)
+  protected File translateNodeName(File importFile, String sourceLanguage, String targetLanguage)
       throws Exception {
 
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

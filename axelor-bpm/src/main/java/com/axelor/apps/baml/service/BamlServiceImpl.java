@@ -81,7 +81,7 @@ public class BamlServiceImpl implements BamlService {
     return codeBuilder.toString();
   }
 
-  private void generateCode(StringBuilder codeBuilder, ProcessActionNode processActionNode) {
+  protected void generateCode(StringBuilder codeBuilder, ProcessActionNode processActionNode) {
 
     String returnType = "void";
     String returnVar = "";

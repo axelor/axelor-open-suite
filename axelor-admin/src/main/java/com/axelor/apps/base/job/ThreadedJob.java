@@ -70,14 +70,14 @@ public abstract class ThreadedJob implements Job {
 
   public abstract void executeInThread(JobExecutionContext context);
 
-  private void executeInThreadedRequestScope(JobExecutionContext context) {
+  protected void executeInThreadedRequestScope(JobExecutionContext context) {
     RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
     try (RequestScoper.CloseableScope ignored = scope.open()) {
       executeInThread(context);
     }
   }
 
-  private boolean isRunning(JobExecutionContext context) {
+  protected boolean isRunning(JobExecutionContext context) {
     try {
       return context.getScheduler().getCurrentlyExecutingJobs().stream()
           .anyMatch(

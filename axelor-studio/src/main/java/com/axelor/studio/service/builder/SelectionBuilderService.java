@@ -118,7 +118,7 @@ public class SelectionBuilderService {
     return name;
   }
 
-  private MetaSelect updateSelectItems(String selectionText, String name, String xmlId) {
+  protected MetaSelect updateSelectItems(String selectionText, String name, String xmlId) {
 
     String[] selection = selectionText.trim().split("\n");
 
@@ -163,7 +163,7 @@ public class SelectionBuilderService {
     return metaSelect;
   }
 
-  private MetaSelectItem updateItem(
+  protected MetaSelectItem updateItem(
       Map<String, MetaSelectItem> itemMap, int order, final String title, final String value) {
 
     MetaSelectItem metaSelectItem = itemMap.get(value);
@@ -178,7 +178,7 @@ public class SelectionBuilderService {
     return metaSelectItem;
   }
 
-  private MetaSelect findMetaSelectByName(String name) {
+  protected MetaSelect findMetaSelectByName(String name) {
 
     return metaSelectRepository
         .all()
@@ -186,7 +186,7 @@ public class SelectionBuilderService {
         .fetchOne();
   }
 
-  private MetaSelect findMetaSelectById(String xmlId) {
+  protected MetaSelect findMetaSelectById(String xmlId) {
 
     return metaSelectRepository
         .all()
@@ -194,7 +194,7 @@ public class SelectionBuilderService {
         .fetchOne();
   }
 
-  private Integer getPriority(String name, String xmlId) {
+  protected Integer getPriority(String name, String xmlId) {
 
     MetaSelect metaSelect =
         metaSelectRepository

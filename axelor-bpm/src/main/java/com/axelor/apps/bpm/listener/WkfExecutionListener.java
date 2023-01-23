@@ -71,7 +71,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private void checkDMNValue(DelegateExecution execution) throws AxelorException {
+  protected void checkDMNValue(DelegateExecution execution) throws AxelorException {
 
     String compulsory =
         execution
@@ -94,7 +94,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private void createWkfInstance(DelegateExecution execution) {
+  protected void createWkfInstance(DelegateExecution execution) {
 
     String instanceId = execution.getProcessInstanceId();
     WkfInstanceRepository instanceRepo = Beans.get(WkfInstanceRepository.class);
@@ -108,7 +108,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private void processNodeStart(DelegateExecution execution) {
+  protected void processNodeStart(DelegateExecution execution) {
 
     FlowElement flowElement = execution.getBpmnModelElementInstance();
     if (flowElement == null) {
@@ -131,7 +131,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private void sendMessage(FlowElement flowElement, DelegateExecution execution) {
+  protected void sendMessage(FlowElement flowElement, DelegateExecution execution) {
 
     Collection<MessageEventDefinition> messageDefinitions =
         flowElement.getChildElementsByType(MessageEventDefinition.class);
@@ -173,7 +173,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private String getProcessKey(DelegateExecution execution, String processDefinitionId) {
+  protected String getProcessKey(DelegateExecution execution, String processDefinitionId) {
 
     return execution
         .getProcessEngineServices()
@@ -199,7 +199,7 @@ public class WkfExecutionListener implements ExecutionListener {
     instanceRepo.save(wkfInstance);
   }
 
-  private void onNodeActivation(DelegateExecution execution) {
+  protected void onNodeActivation(DelegateExecution execution) {
 
     WkfTaskConfig wkfTaskConfig =
         Beans.get(WkfTaskConfigRepository.class)
@@ -219,7 +219,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private boolean blockingNode(String type) {
+  protected boolean blockingNode(String type) {
 
     boolean blockinNode = false;
     switch (type) {

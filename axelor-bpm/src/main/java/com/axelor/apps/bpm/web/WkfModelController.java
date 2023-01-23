@@ -271,7 +271,7 @@ public class WkfModelController {
   }
 
   @SuppressWarnings("unchecked")
-  private void openRecordView(
+  protected void openRecordView(
       ActionRequest request,
       ActionResponse response,
       String statusKey,
@@ -352,7 +352,7 @@ public class WkfModelController {
     }
   }
 
-  private ActionViewBuilder viewNewRecord(String modelName, boolean isMetaModel) {
+  protected ActionViewBuilder viewNewRecord(String modelName, boolean isMetaModel) {
     ActionViewBuilder actionViewBuilder = null;
     if (isMetaModel) {
       MetaModel metaModel = Beans.get(MetaModelRepository.class).findByName(modelName);

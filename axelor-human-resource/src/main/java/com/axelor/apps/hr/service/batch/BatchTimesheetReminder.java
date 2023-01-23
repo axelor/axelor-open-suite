@@ -119,7 +119,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
     return employees;
   }
 
-  private boolean hasRecentTimesheet(LocalDate now, long daysBeforeReminder, Employee employee) {
+  protected boolean hasRecentTimesheet(LocalDate now, long daysBeforeReminder, Employee employee) {
     Timesheet timesheet = getRecentEmployeeTimesheet(employee);
     return timesheet != null && timesheet.getToDate().plusDays(daysBeforeReminder).isAfter(now);
   }

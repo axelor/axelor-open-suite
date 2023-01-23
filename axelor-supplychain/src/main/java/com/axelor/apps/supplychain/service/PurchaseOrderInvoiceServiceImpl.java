@@ -271,7 +271,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     return invoicedAmount;
   }
 
-  private BigDecimal getAmountVentilated(
+  protected BigDecimal getAmountVentilated(
       PurchaseOrder purchaseOrder,
       Long currentInvoiceId,
       boolean excludeCurrentInvoice,

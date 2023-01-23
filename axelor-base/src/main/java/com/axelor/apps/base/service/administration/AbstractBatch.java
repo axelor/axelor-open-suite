@@ -197,11 +197,11 @@ public abstract class AbstractBatch {
     }
   }
 
-  private Long getDuring() {
+  protected Long getDuring() {
     return ChronoUnit.SECONDS.between(batch.getStartDate(), batch.getEndDate());
   }
 
-  private void associateModel() throws IllegalAccessException {
+  protected void associateModel() throws IllegalAccessException {
     LOG.debug("ASSOCIATE batch:{} TO model:{}", batch, model);
 
     for (Field field : batch.getClass().getDeclaredFields()) {
@@ -222,7 +222,7 @@ public abstract class AbstractBatch {
     }
   }
 
-  private boolean isAssociable(Field field) {
+  protected boolean isAssociable(Field field) {
     return field.getType().equals(EntityHelper.getEntityClass(model));
   }
 

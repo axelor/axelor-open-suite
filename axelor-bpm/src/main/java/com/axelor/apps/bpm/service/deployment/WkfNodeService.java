@@ -84,7 +84,7 @@ public class WkfNodeService {
     return metaAttrsList;
   }
 
-  private Process findProcess(FlowNode activity) {
+  protected Process findProcess(FlowNode activity) {
 
     ModelElementInstance modelElementInstance = activity.getParentElement();
 
@@ -146,7 +146,7 @@ public class WkfNodeService {
     return config;
   }
 
-  private void updateMenus(WkfTaskConfig taskConfig, boolean remove) {
+  protected void updateMenus(WkfTaskConfig taskConfig, boolean remove) {
 
     if (!remove && taskConfig.getNewMenu()) {
       wkfMenuService.createOrUpdateMenu(taskConfig);

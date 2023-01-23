@@ -170,7 +170,7 @@ public class WkfEmailServiceImpl implements WkfEmailService {
     return url;
   }
 
-  private String getAction(String formName) {
+  protected String getAction(String formName) {
 
     MetaAction metaAction =
         metaActionRepository.all().filter("self.xml like '%\"" + formName + "\"%'").fetchOne();

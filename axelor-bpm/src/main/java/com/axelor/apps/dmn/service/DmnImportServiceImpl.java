@@ -130,14 +130,14 @@ public class DmnImportServiceImpl implements DmnImportService {
     dmnModelRepo.save(dmnModel);
   }
 
-  private DecisionTable getDecisionTable(String sheet, DmnModelInstance dmnModelInstance) {
+  protected DecisionTable getDecisionTable(String sheet, DmnModelInstance dmnModelInstance) {
     return dmnModelInstance.getModelElementsByType(DecisionTable.class).stream()
         .filter(tbl -> tbl.getParentElement().getAttributeValue("id").equals(sheet))
         .findAny()
         .orElse(null);
   }
 
-  private Object checkEntry(
+  protected Object checkEntry(
       String[] headerRow, int cellIndex, DecisionTable table, DataReaderService reader)
       throws AxelorException {
 
@@ -179,7 +179,7 @@ public class DmnImportServiceImpl implements DmnImportService {
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, BpmExceptionMessage.INVALID_HEADER);
   }
 
-  private Rule createEntries(
+  protected Rule createEntries(
       Object entryObj,
       String value,
       int j,
