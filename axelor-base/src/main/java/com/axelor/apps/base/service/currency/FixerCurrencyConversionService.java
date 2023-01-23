@@ -289,7 +289,7 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
     return url;
   }
 
-  private HTTPResponse callApiBaseEuru(Currency currencyFrom, Currency currencyTo, LocalDate date)
+  protected HTTPResponse callApiBaseEuru(Currency currencyFrom, Currency currencyTo, LocalDate date)
       throws MalformedURLException {
     HTTPClient httpclient = new HTTPClient();
     HTTPRequest request = new HTTPRequest();

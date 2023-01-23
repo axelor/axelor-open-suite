@@ -305,7 +305,7 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
         .fetch();
   }
 
-  private String getUnit(String unitType) {
+  protected String getUnit(String unitType) {
     switch (unitType) {
       case "hours":
         return "(60 * 60)";
@@ -318,7 +318,7 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
     }
   }
 
-  private void computeAvgTimePerUser(
+  protected void computeAvgTimePerUser(
       Query query, Model record, String userPath, Map<Long, List<BigDecimal>> userTimeMap) {
 
     query.setParameter("instanceId", record.getProcessInstanceId());
@@ -406,7 +406,7 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
     return dataMapList;
   }
 
-  private void computeTaskDonePerUser(
+  protected void computeTaskDonePerUser(
       Query query, Model record, String userPath, Map<Long, BigInteger> userMap) {
 
     query.setParameter("instanceId", record.getProcessInstanceId());

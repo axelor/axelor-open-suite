@@ -529,7 +529,7 @@ public class InvoicingProjectService {
     reportSettings.toAttach(invoicingProject).generate();
   }
 
-  private String getTimezone(InvoicingProject invoicingProject) {
+  protected String getTimezone(InvoicingProject invoicingProject) {
     if (invoicingProject.getProject() == null
         || invoicingProject.getProject().getCompany() == null) {
       return null;

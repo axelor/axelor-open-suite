@@ -167,7 +167,7 @@ public class TemplateMaker {
     return st.fromText(template).make(ctx).render();
   }
 
-  private Object escapeIfString(Object value) {
+  protected Object escapeIfString(Object value) {
     return value instanceof String ? StringEscapeUtils.escapeXml11(value.toString()) : value;
   }
 }

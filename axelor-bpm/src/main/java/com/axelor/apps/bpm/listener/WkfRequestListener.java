@@ -63,7 +63,7 @@ public class WkfRequestListener {
     processDeleted(event, tenantId);
   }
 
-  private void processUpdated(BeforeTransactionComplete event, String tenantId)
+  protected void processUpdated(BeforeTransactionComplete event, String tenantId)
       throws AxelorException {
 
     Set<? extends Model> updated = new HashSet<Model>(event.getUpdated());
