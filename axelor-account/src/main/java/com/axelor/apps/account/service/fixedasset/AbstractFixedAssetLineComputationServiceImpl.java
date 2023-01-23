@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -298,6 +298,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
             acquisitionDate,
             depreciationDate);
 
+    BigDecimal maxNbDaysOfPeriod =
+        BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
+            .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal nbDaysOfPeriod;
     if (nextDate != null) {
       nbDaysOfPeriod =
@@ -305,10 +308,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
               fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
               acquisitionDate,
               nextDate);
+      if (nbDaysOfPeriod.compareTo(maxNbDaysOfPeriod) > 0) {
+        nbDaysOfPeriod = maxNbDaysOfPeriod;
+      }
     } else {
-      nbDaysOfPeriod =
-          BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
-              .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
+      nbDaysOfPeriod = maxNbDaysOfPeriod;
     }
 
     prorataTemporis =

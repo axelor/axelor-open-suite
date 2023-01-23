@@ -4,11 +4,11 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
@@ -19,14 +19,68 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class AccountingReportValueCustomRuleServiceImpl extends AccountingReportValueAbstractService
     implements AccountingReportValueCustomRuleService {
   @Inject
   public AccountingReportValueCustomRuleServiceImpl(
+      AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo) {
-    super(accountingReportValueRepo, analyticAccountRepo);
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
+  }
+
+  @Override
+  public void createValueFromCustomRuleForColumn(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
+      Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      AnalyticAccount configAnalyticAccount,
+      String parentTitle,
+      LocalDate startDate,
+      LocalDate endDate,
+      int analyticCounter) {
+    if (accountingReport.getDisplayDetails()
+        && (line.getDetailByAccount()
+            || line.getDetailByAccountType()
+            || line.getDetailByAnalyticAccount())) {
+      for (String lineCode :
+          valuesMapByLine.keySet().stream()
+              .filter(it -> it.matches(String.format("%s_[0-9]+", line.getCode())))
+              .collect(Collectors.toList())) {
+        this.createValueFromCustomRule(
+            accountingReport,
+            column,
+            line,
+            groupColumn,
+            valuesMapByColumn,
+            valuesMapByLine,
+            configAnalyticAccount,
+            startDate,
+            endDate,
+            parentTitle,
+            lineCode,
+            analyticCounter);
+      }
+    } else {
+      this.createValueFromCustomRule(
+          accountingReport,
+          column,
+          line,
+          groupColumn,
+          valuesMapByColumn,
+          valuesMapByLine,
+          configAnalyticAccount,
+          startDate,
+          endDate,
+          parentTitle,
+          analyticCounter);
+    }
   }
 
   @Override
@@ -57,8 +111,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
         analyticCounter);
   }
 
-  @Override
-  public void createValueFromCustomRule(
+  protected void createValueFromCustomRule(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
@@ -91,12 +144,21 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
             valuesMapByColumn,
             valuesMapByLine,
             configAnalyticAccount,
-            parentTitle);
+            parentTitle,
+            lineCode);
+
+    if (result == null) {
+      return;
+    }
 
     String lineTitle = line.getLabel();
-    if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+    if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+        || (groupColumn != null
+            && groupColumn.getRuleTypeSelect()
+                == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
       lineTitle =
           valuesMap.values().stream()
+              .filter(Objects::nonNull)
               .map(AccountingReportValue::getLineTitle)
               .findAny()
               .orElse(line.getLabel());
@@ -161,7 +223,8 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       AnalyticAccount configAnalyticAccount,
-      String parentTitle) {
+      String parentTitle,
+      String lineCode) {
     String rule = this.getRule(column, line, groupColumn);
     Map<String, Object> contextMap =
         this.createRuleContextMap(
@@ -175,13 +238,13 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     } catch (Exception e) {
       this.addNullValue(
           column,
-          line,
           groupColumn,
           valuesMapByColumn,
           valuesMapByLine,
           configAnalyticAccount,
-          parentTitle);
-      TraceBackService.trace(e);
+          parentTitle,
+          lineCode);
+
       return null;
     }
   }
@@ -198,7 +261,11 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
 
     for (String code : valuesMap.keySet()) {
       if (valuesMap.get(code) != null) {
-        if (groupColumn != null
+        if ((groupColumn != null
+                && (groupColumn.getRuleTypeSelect()
+                        == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+                    || line.getRuleTypeSelect()
+                        != AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE))
             || (!Strings.isNullOrEmpty(parentTitle)
                 && column.getRuleTypeSelect()
                     == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)
@@ -239,6 +306,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
         && groupColumn.getRuleTypeSelect()
             == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       return groupColumn.getRule();
+    } else if (column.getRuleTypeSelect()
+            == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+        && line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+      return column.getPriority() > line.getPriority() ? column.getRule() : line.getRule();
     } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       return column.getRule();

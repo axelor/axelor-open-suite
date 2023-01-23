@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,7 +43,7 @@ public interface SaleOrderCreateService {
    *     active company.
    * @param contactPartner Customer contact to assign to the user, might be <code>null</code>.
    * @param currency Order's currency, should not be <code>null</code>.
-   * @param deliveryDate Expected delivery date for order (might be <code>null</code>).
+   * @param estimatedShippingDate Expected shipping date for order (might be <code>null</code>).
    * @param internalReference Unused (…)
    * @param externalReference Client reference for order, if any
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
@@ -59,7 +59,7 @@ public interface SaleOrderCreateService {
       Company company,
       Partner contactPartner,
       Currency currency,
-      LocalDate deliveryDate,
+      LocalDate estimatedShippingDate,
       String internalReference,
       String externalReference,
       PriceList priceList,
@@ -73,7 +73,7 @@ public interface SaleOrderCreateService {
         company,
         contactPartner,
         currency,
-        deliveryDate,
+        estimatedShippingDate,
         internalReference,
         externalReference,
         priceList,
@@ -93,7 +93,7 @@ public interface SaleOrderCreateService {
    *     active company.
    * @param contactPartner Customer contact to assign to the user, might be <code>null</code>.
    * @param currency Order's currency, should not be <code>null</code>.
-   * @param deliveryDate Expected delivery date for order (might be <code>null</code>).
+   * @param estimatedShippingDate Expected shipping date for order (might be <code>null</code>).
    * @param internalReference Unused (…)
    * @param externalReference Client reference for order, if any
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
@@ -110,7 +110,7 @@ public interface SaleOrderCreateService {
       Company company,
       Partner contactPartner,
       Currency currency,
-      LocalDate deliveryDate,
+      LocalDate estimatedShippingDate,
       String internalReference,
       String externalReference,
       PriceList priceList,

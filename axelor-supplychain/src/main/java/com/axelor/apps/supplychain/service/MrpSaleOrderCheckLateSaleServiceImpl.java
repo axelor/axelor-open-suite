@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,9 +36,9 @@ public class MrpSaleOrderCheckLateSaleServiceImpl implements MrpSaleOrderCheckLa
   @Override
   public boolean checkLateSalesParameter(SaleOrderLine saleOrderLine, MrpLineType mrpLineType) {
     // Determine deliveryDate
-    LocalDate deliveryDate = saleOrderLine.getEstimatedDelivDate();
+    LocalDate deliveryDate = saleOrderLine.getEstimatedShippingDate();
     if (deliveryDate == null) {
-      deliveryDate = saleOrderLine.getSaleOrder().getDeliveryDate();
+      deliveryDate = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
     }
     if (deliveryDate == null) {
       deliveryDate = saleOrderLine.getDesiredDelivDate();

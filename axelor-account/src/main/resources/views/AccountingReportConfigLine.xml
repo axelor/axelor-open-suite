@@ -85,6 +85,9 @@
         <field name="percentageBaseColumn"
           showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 4"/>
       </panel>
+      <field name="styleSelect"
+        onChange="action-accounting-report-config-line-record-reset-style-priority"/>
+      <field name="stylePriority" showIf="styleSelect > 0"/>
       <panel name="configPanel" colSpan="12"
         showIf="typeSelect != 4 &amp;&amp; [2,3,4].includes(ruleTypeSelect)">
         <field name="hidden"/>
@@ -143,15 +146,17 @@
         showIf="ruleTypeSelect == 3" colSpan="12"/>
     </panel>
     <panel-related name="accountingReportConfigLineAccountTypeSetPanel"
-      field="accountTypeSet" colSpan="12" form-view="account-type-form"
-      grid-view="account-type-grid" showIf="typeSelect == 5 || ruleTypeSelect == 2"/>
+      field="accountTypeSet" colSpan="12" canNew="false" canEdit="false"
+      form-view="account-type-form" grid-view="account-type-grid"
+      showIf="typeSelect == 5 || ruleTypeSelect == 2"/>
     <panel-related name="accountingReportConfigLineAccountSetPanel" field="accountSet"
-      colSpan="12" form-view="account-form" grid-view="account-grid"
+      colSpan="12" canNew="false" canEdit="false" form-view="account-form" grid-view="account-grid"
       showIf="typeSelect == 5 || ruleTypeSelect == 2"
       onSelect="action-accounting-report-config-line-attrs-account-set-domain"/>
     <panel-related name="accountingReportConfigLineAnalyticAccountSetPanel"
-      field="analyticAccountSet" colSpan="12" showIf="ruleTypeSelect == 2"
-      form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+      field="analyticAccountSet" colSpan="12" canNew="false" canEdit="false"
+      form-view="analytic-account-form" grid-view="analytic-account-grid"
+      showIf="ruleTypeSelect == 2"/>
 
   </form>
 
@@ -183,6 +188,12 @@
   <action-record name="action-accounting-report-config-line-record-line-rule"
     model="com.axelor.apps.account.db.AccountingReportConfigLine">
     <field name="reportType" expr="eval: __parent__"/>
+  </action-record>
+
+  <action-record
+    name="action-accounting-report-config-line-record-reset-style-priority"
+    model="com.axelor.apps.account.db.AccountingReportConfigLine">
+    <field name="stylePriority" expr="eval: 0" if="styleSelect == 0"/>
   </action-record>
 
   <action-attrs name="action-accounting-report-config-line-attrs-account-set-domain">

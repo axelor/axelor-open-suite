@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,8 @@ import java.time.LocalDate;
 
 public interface FixedAssetLineMoveService {
 
-  void realize(FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove)
+  void realize(
+      FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove, boolean isDisposal)
       throws AxelorException;
 
   /**
@@ -98,5 +99,6 @@ public interface FixedAssetLineMoveService {
    */
   void setBatch(Batch batch);
 
-  Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated) throws AxelorException;
+  Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated, boolean isDisposal)
+      throws AxelorException;
 }

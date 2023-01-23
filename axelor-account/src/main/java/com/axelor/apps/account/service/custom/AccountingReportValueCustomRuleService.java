@@ -8,17 +8,17 @@ import java.time.LocalDate;
 import java.util.Map;
 
 public interface AccountingReportValueCustomRuleService {
-  void createValueFromCustomRule(
+  void createValueFromCustomRuleForColumn(
       AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
-      AccountingReportConfigLine groupColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       AnalyticAccount configAnalyticAccount,
+      String parentTitle,
       LocalDate startDate,
       LocalDate endDate,
-      String parentTitle,
       int analyticCounter);
 
   void createValueFromCustomRule(
@@ -32,6 +32,5 @@ public interface AccountingReportValueCustomRuleService {
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle,
-      String lineCode,
       int analyticCounter);
 }

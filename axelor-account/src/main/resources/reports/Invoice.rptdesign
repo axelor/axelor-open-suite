@@ -683,6 +683,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="displayName">products_type</text-property>
                     <text-property name="heading">products_type</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">display_siren</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_siren</text-property>
+                    <text-property name="heading">display_siren</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -1025,9 +1031,14 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">65</property>
+                        <property name="position">66</property>
                         <property name="name">products_type</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">67</property>
+                        <property name="name">display_siren</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1489,11 +1500,18 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">65</property>
+                    <property name="position">66</property>
                     <property name="name">products_type</property>
                     <property name="nativeName">products_type</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">67</property>
+                    <property name="name">display_siren</property>
+                    <property name="nativeName">display_siren</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select distinct Invoice.id as inv_id, 
@@ -1573,7 +1591,8 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 		)
 	END
 	FROM account_invoice_line AS ail left join base_product AS bp on ail.product = bp.id
-	WHERE ail.invoice = Invoice.id) as "products_type"
+	WHERE ail.invoice = Invoice.id) as "products_type",
+	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_app_sale as AppSale on true
@@ -4449,6 +4468,18 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">products_type</property>
+                    <text-property name="displayName">products_type</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["products_type"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">display_siren</property>
+                    <text-property name="displayName">display_siren</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_siren"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
   function(n) {
@@ -4942,7 +4973,7 @@ else {
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">params["Locale"].value != 'fr'|| !row["siren"]</expression>
+                                    <expression name="valueExpr" type="javascript">!row["siren"] || row["display_siren"] == 0</expression>
                                 </structure>
                             </list-property>
                             <cell id="5972">
@@ -10208,7 +10239,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                 <cell id="5935"/>
                                 <cell id="5936"/>
                             </row>
-                            <row id="5971">
+                            <row id="5982">
                                 <property name="height">0.609cm</property>
                                 <list-property name="visibility">
                                     <structure>
@@ -10216,7 +10247,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                         <expression name="valueExpr" type="javascript">row["operation_type_select"] != 3 || params["Locale"].value != 'fr'</expression>
                                     </structure>
                                 </list-property>
-                                <cell id="5972">
+                                <cell id="5983">
                                     <property name="colSpan">8</property>
                                     <property name="rowSpan">1</property>
                                     <text id="5981">
