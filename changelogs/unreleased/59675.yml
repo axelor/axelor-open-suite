@@ -1,0 +1,3 @@
+---
+title: "Stock Move : exTaxTotal rounding is now realized on stock move lines and not on stock move anymore"
+type: anomaly
