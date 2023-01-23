@@ -27,7 +27,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
