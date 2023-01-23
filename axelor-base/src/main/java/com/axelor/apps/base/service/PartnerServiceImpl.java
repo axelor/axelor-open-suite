@@ -375,7 +375,7 @@ public class PartnerServiceImpl implements PartnerService {
     return q.getResultList();
   }
 
-  private PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
+  protected PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
 
     PartnerAddress partnerAddress = new PartnerAddress();
     partnerAddress.setAddress(address);

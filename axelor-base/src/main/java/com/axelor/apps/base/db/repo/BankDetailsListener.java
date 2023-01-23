@@ -27,7 +27,7 @@ import javax.persistence.PostUpdate;
 
 public class BankDetailsListener {
   @PostUpdate
-  private void onPostUpdate(BankDetails bankDetails) throws AxelorException {
+  protected void onPostUpdate(BankDetails bankDetails) throws AxelorException {
     if (bankDetails.getActive()) {
       Company company = bankDetails.getCompany();
 

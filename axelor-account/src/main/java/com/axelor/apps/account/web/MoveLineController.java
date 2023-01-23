@@ -778,7 +778,7 @@ public class MoveLineController {
     }
   }
 
-  private LocalDate extractDueDate(ActionRequest request) {
+  protected LocalDate extractDueDate(ActionRequest request) {
     Context parentContext = request.getContext().getParent();
 
     if (parentContext == null) {

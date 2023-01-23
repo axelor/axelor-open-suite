@@ -119,7 +119,7 @@ public class BatchEventReminder extends BatchStrategy {
     }
   }
 
-  private boolean isExpired(EventReminder eventReminder) {
+  protected boolean isExpired(EventReminder eventReminder) {
 
     LocalDateTime startDateTime = eventReminder.getEvent().getStartDateTime();
 

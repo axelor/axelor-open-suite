@@ -833,7 +833,7 @@ public class MoveController {
     }
   }
 
-  private LocalDate extractDueDate(ActionRequest request) {
+  protected LocalDate extractDueDate(ActionRequest request) {
     if (!request.getContext().containsKey("dueDate")
         || request.getContext().get("dueDate") == null) {
       return null;
