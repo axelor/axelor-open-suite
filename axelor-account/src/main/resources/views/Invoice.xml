@@ -1106,8 +1106,8 @@ InvoiceSet.length > 0))"
         onChange="action-group-account-invoice-company-onchange" form-view="company-form"
         grid-view="company-grid" readonlyIf="statusSelect != 1"/>
       <field name="companyBankDetails" canEdit="false" widget="SuggestBox"
-        onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form"
-        grid-view="bank-details-grid"/>
+        onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
+        form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="fiscalPosition" grid-view="fiscal-position-grid"
         form-view="fiscal-position-form" canNew="false" canEdit="false"
         onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
