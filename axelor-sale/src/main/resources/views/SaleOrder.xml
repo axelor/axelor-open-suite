@@ -1104,15 +1104,15 @@
     <panel>
       <panel showFrame="false" colSpan="12">
         <field name="advancePaymentAmountNeeded" readonly="true"/>
-        <field name="isPercent" title="Is amount in % ?" type="boolean"/>
+        <field name="$isPercent" title="Is amount in % ?" type="boolean"/>
       </panel>
       <panel name="amountToInvoicePanel" showFrame="false">
-        <field name="amountToInvoice" title="Adv. payment amount" type="decimal"
+        <field name="$amountToInvoice" title="Adv. payment amount" type="decimal"
           onChange="action-sale-order-attrs-amount-to-invoice" colSpan="12"/>
       </panel>
       <spacer/>
       <panel name="amountToInvoiceHiddenPanel" hidden="true" showFrame="false">
-        <field name="amountToInvoice" title="Adv. payment amount" colSpan="12"
+        <field name="$amountToInvoice" title="Adv. payment amount" colSpan="12"
           css="font-orange" type="decimal" onChange="action-sale-order-attrs-amount-to-invoice"/>
       </panel>
     </panel>
