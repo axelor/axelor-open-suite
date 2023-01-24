@@ -98,7 +98,6 @@
       <field name="serviceType"/>
       <field name="vatSystemSelect"/>
     </track>
-
     <finder-method name="findByAccountType" using="accountType" all="true"/>
 
   </entity>
