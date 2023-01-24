@@ -51,13 +51,13 @@ public class BatchContractInvoicing extends AbstractBatch {
     Array array = null;
     List<List<Contract>> contractListsList = new ArrayList<>();
     try {
-      Connection connection = DBHelper.getConnection();
-      ResultSet resultSet = connection.createStatement().executeQuery(query);
-      while (resultSet.next()) {
-        array = resultSet.getArray("list");
-        contractListsList.add(findContracts(array));
+      try (Connection connection = DBHelper.getConnection()) {
+        ResultSet resultSet = connection.createStatement().executeQuery(query);
+        while (resultSet.next()) {
+          array = resultSet.getArray("list");
+          contractListsList.add(findContracts(array));
+        }
       }
-      connection.close();
     } catch (SQLException | NamingException e) {
       e.printStackTrace();
     }
