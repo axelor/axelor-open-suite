@@ -106,11 +106,20 @@
   </selection>
 
   <selection name='accounting.report.config.line.type.select'>
-    <option value="1">Title</option>
-    <option value="2">Detail</option>
-    <option value="3">Separator</option>
+    <option value="1">Value</option>
     <option value="4">Group</option>
     <option value="5">Group by account</option>
+  </selection>
+
+  <selection name="accounting.report.config.line.style.select">
+    <option value="0">No style</option>
+    <option value="1">Bold</option>
+    <option value="2">Italic</option>
+    <option value="3">Highlighted</option>
+    <option value="4">Important</option>
+    <option value="5">Small</option>
+    <option value="6">Medium</option>
+    <option value="7">Large</option>
   </selection>
 
   <selection name='accounting.report.type.report.export.type.select'>
@@ -123,6 +132,13 @@
     <option value="2">Sum of accounts</option>
     <option value="4" order="3">Percentage</option>
     <option value="3" order="4">Custom rule</option>
+  </selection>
+
+  <selection name="accounting.report.config.line.detail.by.select">
+    <option value="0">Don't detail</option>
+    <option value="1">Detail by account type</option>
+    <option value="2">Detail by account</option>
+    <option value="3">Detail by analytic account</option>
   </selection>
 
   <selection name='accounting.report.config.line.sum.of.account.select'>

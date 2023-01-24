@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -953,6 +953,7 @@ public class BankReconciliationService {
     List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
     for (MoveLine moveLine : moveLines) {
       moveLineService.removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+      moveLine.setIsSelectedBankReconciliation(false);
     }
     boolean isUnderCorrection =
         bankReconciliationLine.getBankReconciliation().getStatusSelect()
@@ -1352,5 +1353,28 @@ public class BankReconciliationService {
     bankReconciliation.setHasBeenCorrected(true);
     bankReconciliation.setCorrectedDateTime(LocalDateTime.now());
     bankReconciliation.setCorrectedUser(user);
+  }
+
+  public BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation) {
+    return bankReconciliation.getBankReconciliationLineList().stream()
+        .filter(BankReconciliationLine::getIsSelectedBankReconciliation)
+        .map(it -> it.getCredit().subtract(it.getDebit()))
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  public BigDecimal computeUnreconciledMoveLinesSelection(BankReconciliation bankReconciliation)
+      throws AxelorException {
+    String filter = getRequestMoveLines(bankReconciliation);
+    filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
+    List<MoveLine> unreconciledMoveLines =
+        moveLineRepository
+            .all()
+            .filter(filter)
+            .bind(getBindRequestMoveLine(bankReconciliation))
+            .fetch();
+    return unreconciledMoveLines.stream()
+        .filter(MoveLine::getIsSelectedBankReconciliation)
+        .map(it -> it.getDebit().subtract(it.getCredit()))
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }

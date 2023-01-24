@@ -546,7 +546,7 @@ left outer join public.account_account_config as AccountConfig on (AccountConfig
 left outer join public.base_period as Period on (Move.period = Period.id) 
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
 where 
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND

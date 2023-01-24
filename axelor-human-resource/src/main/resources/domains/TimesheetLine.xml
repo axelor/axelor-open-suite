@@ -29,7 +29,8 @@
     <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
       title="Task"/>
 
-    <unique-constraint columns="timesheet,project,product,date,enableEditor"/>
+    <unique-constraint
+      columns="timesheet,project,product,date,enableEditor,projectTask"/>
 
     <track>
       <field name="duration"/>

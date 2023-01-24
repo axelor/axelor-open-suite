@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,6 +53,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -575,14 +576,16 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Move> findDaybookByYear(Set<Year> yearList) {
+  public List<Move> findDaybookAndAccountingByYear(Set<Year> yearList) {
     List<Long> idList = new ArrayList<>();
     yearList.forEach(y -> idList.add(y.getId()));
     if (!CollectionUtils.isEmpty(idList)) {
+      List<Integer> status =
+          Arrays.asList(MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
       return Query.of(Move.class)
-          .filter("self.period.year.id in :years AND self.statusSelect = :statusSelect")
+          .filter("self.period.year.id in :years AND self.statusSelect IN :statusSelect")
           .bind("years", idList)
-          .bind("statusSelect", MoveRepository.STATUS_DAYBOOK)
+          .bind("statusSelect", status)
           .fetch();
     }
     return new ArrayList<Move>();

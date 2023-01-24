@@ -873,6 +873,8 @@
 "Select move lines to reconciles",,,
 "Selected bank reconciliation is under correction and can not be deleted",,,
 "Selected bank reconciliation is validated and can not be deleted",,,
+"Selection total for bank reconciliation lines",,,
+"Selection total for unreconciliated move lines",,,
 "Send Suspension of access authorisation (SPR)",,,
 "Send a Bank Order",,,
 "Send a bank order",,,

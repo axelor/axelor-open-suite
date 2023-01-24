@@ -1592,7 +1592,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 	END
 	FROM account_invoice_line AS ail left join base_product AS bp on ail.product = bp.id
 	WHERE ail.invoice = Invoice.id) as "products_type",
-	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company) as "display_siren"
+	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_app_sale as AppSale on true
