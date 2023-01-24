@@ -427,11 +427,11 @@ public class SaleOrderController {
     List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
     response.setAttr(
-        "operationSelect",
+        "$operationSelect",
         "value",
         operationSelectValues.stream().min(Integer::compareTo).orElse(null));
 
-    response.setAttr("operationSelect", "selection-in", operationSelectValues);
+    response.setAttr("$operationSelect", "selection-in", operationSelectValues);
   }
 
   /**
@@ -493,7 +493,7 @@ public class SaleOrderController {
         saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
         saleOrderLineList.add(saleOrderLineMap);
       }
-      response.setValue("amountToInvoice", BigDecimal.ZERO);
+      response.setValue("$amountToInvoice", BigDecimal.ZERO);
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

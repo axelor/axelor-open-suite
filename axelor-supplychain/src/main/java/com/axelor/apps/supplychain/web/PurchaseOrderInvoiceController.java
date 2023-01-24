@@ -125,7 +125,7 @@ public class PurchaseOrderInvoiceController {
 
   public void setWizardDefaultValues(ActionRequest request, ActionResponse response) {
     try {
-      response.setAttr("operationSelect", "value", "1");
+      response.setAttr("$operationSelect", "value", "1");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
