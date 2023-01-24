@@ -295,8 +295,11 @@
   </action-attrs>
 
   <action-attrs name="action-account-management-attrs-display-tax-panel">
-    <attribute name="hidden" expr="eval: typeSelect != 2 " for="taxPanel"/>
+    <attribute name="hidden"
+      expr="eval:__parent__?._model == 'com.axelor.apps.account.db.Tax' || typeSelect != 2"
+      for="taxPanel"/>
   </action-attrs>
+
   <action-attrs name="action-account-management-attrs-load-fields">
     <attribute name="value" for="productFamily" expr="eval:__parent__"
       if="__self__ == null &amp;&amp; __parent__?._model == 'com.axelor.apps.base.db.ProductFamily'"/>
