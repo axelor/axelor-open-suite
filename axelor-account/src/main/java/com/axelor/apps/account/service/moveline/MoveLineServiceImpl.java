@@ -320,8 +320,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       return BigDecimal.ZERO;
     }
     BigDecimal daysProrata =
-        BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()))
-            .add(BigDecimal.ONE);
+        BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
     BigDecimal daysTotal =
         BigDecimal.valueOf(
                 ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()))
