@@ -744,7 +744,7 @@ InvoiceSet.length > 0))"
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel name="invoiceProductStatementPanel" title="Invoice Product Statement"
           colSpan="12" showIf="company.accountConfig.displayItemsCategoriesOnPrinting">
-          <field name="invoiceProductStatement" readonly="true" showTitle="false"/>
+          <field name="invoiceProductStatement" readonly="true" showTitle="false" colSpan="12"/>
         </panel>
       </panel>
       <panel name="automaticMailPanel" title="Automatic mail"
