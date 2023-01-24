@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceProductStatement;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.base.db.Product;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,8 +25,11 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
 
   @Override
   public String getInvoiceProductStatement(Invoice invoice) {
+    AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-    if (invoiceLineList == null || invoiceLineList.isEmpty()) {
+    if (invoiceLineList == null
+        || invoiceLineList.isEmpty()
+        || !accountConfig.getDisplayItemsCategoriesOnPrinting()) {
       return "";
     }
 
@@ -33,7 +37,7 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
     return getStatement(invoice, productTypes);
   }
 
-  private String getStatement(Invoice invoice, Set<String> productTypes) {
+  protected String getStatement(Invoice invoice, Set<String> productTypes) {
     if (!productTypes.isEmpty()) {
       Set<InvoiceProductStatement> invoiceProductStatementList =
           getInvoiceProductStatements(invoice);
@@ -107,7 +111,10 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
   protected Set<String> getProductTypes(List<InvoiceLine> invoiceLineList) {
     Set<String> productTypes = new HashSet<>();
     for (InvoiceLine invoiceLine : invoiceLineList) {
-      productTypes.add(invoiceLine.getProduct().getProductTypeSelect());
+      Product product = invoiceLine.getProduct();
+      if (product != null) {
+        productTypes.add(product.getProductTypeSelect());
+      }
     }
     return productTypes;
   }

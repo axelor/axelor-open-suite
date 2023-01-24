@@ -741,8 +741,9 @@ InvoiceSet.length > 0))"
           <field name="legalNotice" requiredIf="financialDiscount" widget="html" colSpan="12"
             showTitle="false"/>
         </panel>
+        <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel name="invoiceProductStatementPanel" title="Invoice Product Statement"
-          colSpan="12" if="__user__.activeCompany?.accountConfig?.displayItemsCategoriesOnPrinting">
+          colSpan="12" showIf="company.accountConfig.displayItemsCategoriesOnPrinting">
           <field name="invoiceProductStatement" readonly="true" showTitle="false"/>
         </panel>
       </panel>
@@ -1173,8 +1174,7 @@ InvoiceSet.length > 0))"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
           readonlyIf="statusSelect == 3 || partner == null" colSpan="12"
           form-view="invoice-line-client-form" grid-view="invoice-line-grid"
-          onChange="action-invoice-method-get-invoice-product-statement,action-invoice-method-compute"
-          canMove="true" orderBy="sequence"/>
+          onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
@@ -1626,7 +1626,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
-    <action name="action-invoice-method-get-invoice-product-statement"/>
   </action-group>
 
   <action-group name="action-invoice-group-on-validate">
@@ -2698,13 +2697,7 @@ InvoiceSet.length > 0))"
       method="showSupplierInvoiceLines"/>
   </action-method>
 
-  <action-method name="action-invoice-method-get-invoice-product-statement">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="getInvoiceProductStatement"/>
-  </action-method>
-
   <action-group name="action-invoice-group-report-button">
-    <action name="action-invoice-method-get-invoice-product-statement"/>
     <action name="save"/>
     <action name="action-invoice-view-reports-wizard"/>
   </action-group>
