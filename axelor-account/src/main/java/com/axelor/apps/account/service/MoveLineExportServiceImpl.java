@@ -444,11 +444,15 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         if (reconcileGroup != null
             && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_FINAL) {
           items[13] = reconcileGroup.getCode();
-          items[14] =
-              reconcileGroup
-                  .getDateOfLettering()
-                  .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD))
-                  .toString();
+          if (reconcileGroup.getDateOfLettering() != null) {
+            items[14] =
+                reconcileGroup
+                    .getDateOfLettering()
+                    .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD))
+                    .toString();
+          } else {
+            items[14] = "";
+          }
         } else {
           items[13] = "";
           items[14] = "";
