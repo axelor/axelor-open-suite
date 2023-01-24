@@ -46,4 +46,10 @@ public final class ContractExceptionMessage {
       "Can only activate waiting contract." /*)*/;
   public static final String CONTRACT_TERMINATE_WRONG_STATUS = /*$$(*/
       "Can only terminate ongoing contract." /*)*/;
+
+  public static final String CONTRACT_LINE_DATE_BEFORE_SUPPOSED_ACTIVATION_DATE = /*$$(*/
+      "You can not put a date before the supposed activation date." /*)*/;
+
+  public static final String SUPPOSED_ACTIVATION_DATE_BEFORE_CONTRACT_LINE_DATE = /*$$(*/
+      "One of the contract line has a date superior to this date." /*)*/;
 }

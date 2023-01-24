@@ -77,6 +77,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  public static final String DATE_FORMAT = "dd/MM/yyyy";
+
   protected AppBaseService appBaseService;
   protected ContractVersionService versionService;
   protected ContractLineService contractLineService;
@@ -578,7 +580,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   public Invoice generateInvoice(Contract contract) throws AxelorException {
     InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
     Invoice invoice = invoiceGenerator.generate();
-    invoice.addContract(contract);
+    invoice.addContractSetItem(contract);
 
     return invoice;
   }
@@ -590,7 +592,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoice.setInternalReference(firstContract.getContractId());
     for (Contract contract : contractList) {
       String contractId = contract.getContractId();
-      invoice.addContract(contract);
+      invoice.addContractSetItem(contract);
       if (!invoice.getInternalReference().contains(contractId)) {
         invoice.setInternalReference(invoice.getInternalReference() + ", " + contractId);
       }
@@ -647,40 +649,27 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getTaxLine(),
             line.getPrice(),
             appBaseService.getNbDecimalDigitForUnitPrice());
-    LocalDate startDate = null, endDate = null;
+    LocalDate startDate = null;
+    LocalDate endDate = null;
     String description = line.getDescription();
-    if (line.getContractVersion() != null
-        && line.getContractVersion().getContract() != null
-        && line.getContractVersion().getIsTimeProratedInvoice()) {
-      endDate =
-          line.getContractVersion().getEndDate() == null
-                  || (line.getContractVersion().getEndDate() != null
-                      && line.getContractVersion()
-                          .getContract()
-                          .getInvoicePeriodEndDate()
-                          .isBefore(line.getContractVersion().getEndDate()))
-              ? line.getContractVersion().getContract().getInvoicePeriodEndDate()
-              : line.getContractVersion().getEndDate();
-      startDate =
-          line.getFromDate() != null
-                  && line.getFromDate()
-                      .isAfter(line.getContractVersion().getContract().getInvoicePeriodStartDate())
-              ? line.getFromDate()
-              : line.getContractVersion()
-                      .getActivationDate()
-                      .isBefore(line.getContractVersion().getContract().getInvoicePeriodStartDate())
-                  ? line.getContractVersion().getContract().getInvoicePeriodStartDate()
-                  : line.getContractVersion().getActivationDate();
+    ContractVersion contractVersion = line.getContractVersion();
+    if (contractVersion != null
+        && contractVersion.getContract() != null
+        && contractVersion.getIsTimeProratedInvoice()) {
+
+      endDate = getEndDate(contractVersion);
+      startDate = getStartDate(line, contractVersion);
+
       description =
           line.getDescription()
               + "<br>"
               + I18n.get("From")
               + " "
-              + startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+              + startDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT))
               + " "
               + I18n.get("to")
               + " "
-              + endDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+              + endDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
@@ -745,6 +734,33 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoice.addInvoiceLineListItem(invoiceLine);
 
     return Beans.get(InvoiceLineRepository.class).save(invoiceLine);
+  }
+
+  protected LocalDate getEndDate(ContractVersion contractVersion) {
+    return contractVersion.getEndDate() == null
+            || contractVersion
+                .getContract()
+                .getInvoicePeriodEndDate()
+                .isBefore(contractVersion.getEndDate())
+        ? contractVersion.getContract().getInvoicePeriodEndDate()
+        : contractVersion.getEndDate();
+  }
+
+  protected LocalDate getStartDate(ContractLine line, ContractVersion contractVersion) {
+    LocalDate startDate;
+    if (line.getFromDate() != null
+        && line.getFromDate().isAfter(contractVersion.getContract().getInvoicePeriodStartDate())) {
+      startDate = line.getFromDate();
+    } else {
+      if (contractVersion
+          .getActivationDate()
+          .isBefore(contractVersion.getContract().getInvoicePeriodStartDate())) {
+        startDate = contractVersion.getContract().getInvoicePeriodStartDate();
+      } else {
+        startDate = contractVersion.getActivationDate();
+      }
+    }
+    return startDate;
   }
 
   public void copyAnalyticMoveLines(

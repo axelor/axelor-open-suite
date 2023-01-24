@@ -43,8 +43,6 @@ public interface ContractLineService {
 
   ContractLine fillDefault(ContractLine contractLine, ContractVersion contractVersion);
 
-  void updateContractLinesFromContractVersion(ContractVersion contractVersion);
-
   /**
    * Compute price and tax of Product to ContractLine.
    *
@@ -84,4 +82,7 @@ public interface ContractLineService {
    * @return ContractLine filled with analytic move lines
    */
   ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine, Contract contract);
+
+  void checkFromDate(ContractVersion contractVersion, ContractLine contractLine)
+      throws AxelorException;
 }

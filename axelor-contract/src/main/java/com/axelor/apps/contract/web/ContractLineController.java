@@ -17,11 +17,12 @@
  */
 package com.axelor.apps.contract.web;
 
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.service.ContractLineService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -63,41 +64,38 @@ public class ContractLineController {
   }
 
   public void fillDefault(ActionRequest request, ActionResponse response) {
-    ContractLineService contractLineService = Beans.get(ContractLineService.class);
-    ContractLine contractLine = new ContractLine();
-
     try {
-      contractLine = request.getContext().asType(ContractLine.class);
-
+      ContractLineService contractLineService = Beans.get(ContractLineService.class);
+      ContractLine contractLine = request.getContext().asType(ContractLine.class);
       ContractVersion contractVersion =
           request.getContext().getParent().asType(ContractVersion.class);
+
       if (contractVersion != null) {
         contractLine = contractLineService.fillDefault(contractLine, contractVersion);
+        response.setValues(contractLine);
+      } else {
+        response.setValues(contractLineService.reset(contractLine));
       }
-      response.setValues(contractLine);
     } catch (Exception e) {
-      response.setValues(contractLineService.reset(contractLine));
+      TraceBackService.trace(response, e);
     }
   }
 
   public void checkFromDate(ActionRequest request, ActionResponse response) {
-    ContractLine contractLine = request.getContext().asType(ContractLine.class);
-    ContractVersion contractVersion =
-        request.getContext().getParent().asType(ContractVersion.class);
-    if (contractVersion != null
-        && contractVersion.getSupposedActivationDate() != null
-        && contractLine.getFromDate() != null
-        && contractVersion.getSupposedActivationDate().isAfter(contractLine.getFromDate())) {
-      response.setValue("fromDate", contractVersion.getSupposedActivationDate());
+    try {
+      ContractLine contractLine = request.getContext().asType(ContractLine.class);
+      ContractVersion contractVersion =
+          request.getContext().getParent().asType(ContractVersion.class);
+      Beans.get(ContractLineService.class).checkFromDate(contractVersion, contractLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
   public void hideDatePanel(ActionRequest request, ActionResponse response) {
     try {
       ContractVersion contract = request.getContext().getParent().asType(ContractVersion.class);
-      if (!contract.getIsPeriodicInvoicing()) {
-        response.setAttr("datePanel", "hidden", true);
-      }
+      response.setAttr("datePanel", "hidden", !contract.getIsPeriodicInvoicing());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

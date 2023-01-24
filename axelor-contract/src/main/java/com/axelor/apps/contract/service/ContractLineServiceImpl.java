@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -41,9 +42,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ContractLineServiceImpl implements ContractLineService {
@@ -201,13 +202,14 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  @Transactional
-  public void updateContractLinesFromContractVersion(ContractVersion contractVersion) {
-    for (ContractLine line : contractVersion.getContractLineList()) {
-      if (line.getFromDate() == null) {
-        line.setFromDate(contractVersion.getSupposedActivationDate());
-      }
+  public void checkFromDate(ContractVersion contractVersion, ContractLine contractLine)
+      throws AxelorException {
+    LocalDate supposedActivationDate = contractVersion.getSupposedActivationDate();
+    if (supposedActivationDate != null
+        && contractLine.getFromDate().isBefore(supposedActivationDate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ContractExceptionMessage.CONTRACT_LINE_DATE_BEFORE_SUPPOSED_ACTIVATION_DATE));
     }
-    contractVersionRepo.save(contractVersion);
   }
 }

@@ -101,4 +101,6 @@ public interface ContractVersionService {
     }
     return null;
   }
+
+  void checkSupposedActivationDate(ContractVersion contractVersion) throws AxelorException;
 }

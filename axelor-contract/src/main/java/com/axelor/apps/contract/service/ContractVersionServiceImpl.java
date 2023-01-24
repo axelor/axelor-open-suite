@@ -174,4 +174,17 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   public ContractVersion newDraft(Contract contract) {
     return copy(contract);
   }
+
+  @Override
+  public void checkSupposedActivationDate(ContractVersion contractVersion) throws AxelorException {
+    LocalDate date = contractVersion.getSupposedActivationDate();
+    if (date != null
+        && contractVersion.getContractLineList() != null
+        && contractVersion.getContractLineList().stream()
+            .anyMatch(it -> it.getFromDate() != null && date.isBefore(it.getFromDate()))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ContractExceptionMessage.SUPPOSED_ACTIVATION_DATE_BEFORE_CONTRACT_LINE_DATE));
+    }
+  }
 }
