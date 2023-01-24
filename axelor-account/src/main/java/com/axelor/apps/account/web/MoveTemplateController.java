@@ -147,4 +147,16 @@ public class MoveTemplateController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void filterPartner(ActionRequest request, ActionResponse response) {
+    try {
+      MoveTemplate moveTemplate = request.getContext().getParent().asType(MoveTemplate.class);
+      if (moveTemplate != null) {
+        String domain = Beans.get(MoveTemplateService.class).filterPartner(moveTemplate);
+        response.setAttr("partner", "domain", domain);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

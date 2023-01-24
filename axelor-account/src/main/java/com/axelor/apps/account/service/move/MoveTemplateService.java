@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -430,6 +431,25 @@ public class MoveTemplateService {
     } else {
       return false;
     }
+  }
+
+  public String filterPartner(MoveTemplate moveTemplate) {
+    Long companyId = moveTemplate.getCompany().getId();
+    String domain = "self.isContact = false AND " + companyId + " member of self.companySet";
+    if (moveTemplate.getJournal() != null
+        && !Strings.isNullOrEmpty(moveTemplate.getJournal().getCompatiblePartnerTypeSelect())) {
+      domain += " AND (";
+      String[] partnerSet = moveTemplate.getJournal().getCompatiblePartnerTypeSelect().split(", ");
+      String lastPartner = partnerSet[partnerSet.length - 1];
+      for (String partner : partnerSet) {
+        domain += "self." + partner + " = true";
+        if (!partner.equals(lastPartner)) {
+          domain += " OR ";
+        }
+      }
+      domain += ")";
+    }
+    return domain;
   }
 
   public Map<String, Object> computeTotals(MoveTemplate moveTemplate) {

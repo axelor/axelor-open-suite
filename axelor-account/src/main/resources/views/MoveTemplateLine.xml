@@ -36,7 +36,7 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
-        domain="self.isContact = false"/>
+        onSelect="action-method-move-template-line-set-partner-domain"/>
       <field name="debit" readonlyIf="credit > 0"
         onChange="action-move-template-line-record-update-need-to-check-validity" required="true"/>
       <field name="credit" readonlyIf="debit > 0"
@@ -130,5 +130,9 @@
     <field name="analyticDistributionTemplate"
       expr="eval: account?.analyticDistributionTemplate "/>
   </action-record>
+
+  <action-method name="action-method-move-template-line-set-partner-domain">
+    <call class="com.axelor.apps.account.web.MoveTemplateController" method="filterPartner"/>
+  </action-method>
 
 </object-views>
