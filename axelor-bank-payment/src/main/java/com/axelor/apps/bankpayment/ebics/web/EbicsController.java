@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -158,7 +158,7 @@ public class EbicsController {
     try {
       EbicsBank bank = user.getEbicsPartner().getEbicsBank();
       response.setView(
-          ActionView.define("Confirm certificates")
+          ActionView.define(I18n.get("Confirm certificates"))
               .model("com.axelor.apps.bankpayment.db.EbicsCertificate")
               .add("form", "ebics-certificate-confirmation-form")
               .param("show-toolbar", "false")

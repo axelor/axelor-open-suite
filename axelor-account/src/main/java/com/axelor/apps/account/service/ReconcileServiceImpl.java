@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -531,35 +531,37 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
       throws AxelorException {
-    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-      if (move != null
-          && move.getPaymentVoucher() != null
-          && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
-        return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
-            .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
-            .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
-            .map(PayVoucherElementToPay::getInvoiceTerm)
+    if (move != null
+        && move.getPaymentVoucher() != null
+        && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
+      return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+          .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
+          .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
+          .map(PayVoucherElementToPay::getInvoiceTerm)
+          .collect(Collectors.toList());
+    } else {
+      List<InvoiceTerm> invoiceTermsToPay = null;
+      if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+        invoiceTermsToPay = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
+
+      } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+        invoiceTermsToPay = this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
+
+      } else {
+        return null;
+      }
+      if (CollectionUtils.isNotEmpty(invoiceTermsToPay)
+          && move != null
+          && move.getPaymentSession() != null) {
+        return invoiceTermsToPay.stream()
+            .filter(
+                it ->
+                    it.getPaymentSession() != null
+                        && it.getPaymentSession().equals(move.getPaymentSession()))
             .collect(Collectors.toList());
       } else {
-        List<InvoiceTerm> invoiceTermsToPay =
-            invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
-
-        if (move != null && move.getPaymentSession() != null) {
-          invoiceTermsToPay =
-              invoiceTermsToPay.stream()
-                  .filter(
-                      it ->
-                          it.getPaymentSession() != null
-                              && it.getPaymentSession().equals(move.getPaymentSession()))
-                  .collect(Collectors.toList());
-        }
-
         return invoiceTermsToPay;
       }
-    } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      return this.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
-    } else {
-      return null;
     }
   }
 
@@ -737,8 +739,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
     Move purchaseMove = reconcile.getCreditMoveLine().getMove();
-    if ((purchaseMove.getJournal().getJournalType() != null
-            && !purchaseMove.getJournal().getJournalType().getCode().equals("ACH"))
+    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")
         || purchaseMove.getPartner() == null) {
       return;
     }

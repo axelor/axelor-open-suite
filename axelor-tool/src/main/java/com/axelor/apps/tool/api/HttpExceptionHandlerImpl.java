@@ -1,7 +1,24 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.tool.api;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import javax.ws.rs.BadRequestException;
@@ -20,7 +37,7 @@ public class HttpExceptionHandlerImpl implements MethodInterceptor {
       if (Boolean.parseBoolean(AppSettings.get().get("aos.api.enable"))) {
         return invocation.proceed();
       } else {
-        throw new ForbiddenException(I18n.get(IExceptionMessage.API_DISABLED));
+        throw new ForbiddenException(I18n.get(ToolExceptionMessage.API_DISABLED));
       }
     } catch (BadRequestException e) {
       return ResponseConstructor.build(Response.Status.BAD_REQUEST, e.getMessage());

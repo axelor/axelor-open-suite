@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -197,6 +197,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoice.setAdvancePaymentInvoiceSet(invoiceService.getDefaultAdvancePaymentInvoice(invoice));
     }
+
+    invoice.setHideDiscount(saleOrder.getHideDiscount());
 
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
 

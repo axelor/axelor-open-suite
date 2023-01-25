@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.supplychain.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
-import com.axelor.apps.account.service.AccountCustomerService;
+import com.axelor.apps.account.service.AccountCustomerServiceImpl;
 import com.axelor.apps.account.service.AccountingCutOffServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
@@ -87,7 +87,7 @@ import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchSupplychainRepository;
 import com.axelor.apps.supplychain.rest.StockProductRestServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.AccountCustomerServiceSupplyChain;
+import com.axelor.apps.supplychain.service.AccountCustomerServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.AccountingBatchSupplyChainService;
 import com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainService;
 import com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainServiceImpl;
@@ -233,7 +233,7 @@ public class SupplychainModule extends AxelorModule {
     bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
     bind(AppSupplychainService.class).to(AppSupplychainServiceImpl.class);
     bind(SupplychainSaleConfigService.class).to(SupplychainSaleConfigServiceImpl.class);
-    bind(AccountCustomerService.class).to(AccountCustomerServiceSupplyChain.class);
+    bind(AccountCustomerServiceImpl.class).to(AccountCustomerServiceSupplyChainImpl.class);
     bind(AccountingSituationServiceImpl.class).to(AccountingSituationSupplychainServiceImpl.class);
     bind(AccountingSituationSupplychainService.class)
         .to(AccountingSituationSupplychainServiceImpl.class);

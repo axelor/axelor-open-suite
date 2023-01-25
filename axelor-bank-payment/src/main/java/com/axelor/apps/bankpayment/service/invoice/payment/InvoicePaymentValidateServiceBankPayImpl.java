@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -57,7 +57,6 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderService bankOrderService;
   protected InvoiceTermService invoiceTermService;
-  protected InvoicePaymentToolService invoicePaymentToolService;
 
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
@@ -85,11 +84,11 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         invoicePaymentRepository,
         reconcileService,
         appAccountService,
-        accountManagementAccountService);
+        accountManagementAccountService,
+        invoicePaymentToolService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
     this.invoiceTermService = invoiceTermService;
-    this.invoicePaymentToolService = invoicePaymentToolService;
   }
 
   @Override
@@ -148,6 +147,11 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
       invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
+      if (invoicePayment == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BankPaymentExceptionMessage.VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL));
+      }
     } else {
       Beans.get(AccountingSituationService.class)
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());

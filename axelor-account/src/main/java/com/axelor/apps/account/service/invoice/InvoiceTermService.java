@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -182,7 +181,7 @@ public interface InvoiceTermService {
    * @param invoice
    * @return
    */
-  public void updateFinancialDiscount(Invoice invoice);
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 
   /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
@@ -260,8 +259,6 @@ public interface InvoiceTermService {
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
 
   public void computeAmountPaid(InvoiceTerm invoiceTerm);
-
-  public void retrieveEligibleTerms(PaymentSession paymentSession);
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
 

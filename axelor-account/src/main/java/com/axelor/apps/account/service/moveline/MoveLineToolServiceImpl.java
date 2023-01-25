@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,18 +28,24 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Query;
 
+@RequestScoped
 public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected static final int RETURNED_SCALE = 2;
   protected static final int CURRENCY_RATE_SCALE = 5;
@@ -355,5 +361,25 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
             I18n.get(AccountExceptionMessage.DATE_NOT_IN_PERIOD_MOVE_WITHOUT_ACCOUNT));
       }
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setAmountRemainingReconciliableMoveLines(Context context) {
+    Long accountId = Long.valueOf(context.get("_accountId").toString());
+    String startDate = (String) context.get("startDate");
+
+    Query update =
+        JPA.em()
+            .createQuery(
+                "UPDATE MoveLine self SET self.amountRemaining = GREATEST(self.credit, self.debit) "
+                    + "WHERE self.id IN (SELECT self.id FROM MoveLine self WHERE self.accountId = :accountId"
+                    + (startDate == null ? ")" : " AND self.move.date >= :startDate)"));
+    update.setParameter("accountId", accountId);
+
+    if (startDate != null) {
+      update.setParameter("startDate", LocalDate.parse(startDate));
+    }
+    update.executeUpdate();
   }
 }

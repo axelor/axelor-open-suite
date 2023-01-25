@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -466,7 +467,7 @@ public class StockMoveController {
         response.setCanClose(true);
 
         response.setView(
-            ActionView.define("Stock move")
+            ActionView.define(I18n.get("Stock move"))
                 .model(StockMove.class.getName())
                 .add("grid", "stock-move-grid")
                 .add("form", "stock-move-form")
@@ -653,6 +654,28 @@ public class StockMoveController {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       Beans.get(StockMoveService.class).updateProductNetMass(stockMove);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getFromStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    try {
+      StockLocation fromStockLocation =
+          Beans.get(StockMoveService.class).getFromStockLocation(stockMove);
+      response.setValue("fromStockLocation", fromStockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getToStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    try {
+      StockLocation toStockLocation =
+          Beans.get(StockMoveService.class).getToStockLocation(stockMove);
+      response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

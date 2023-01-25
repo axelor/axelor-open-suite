@@ -34,13 +34,13 @@
       <field name="processSelect"/>
       <field name="account" required="true"
         domain="self.company = :company AND self.reconcileOk = true AND self.statusSelect = 1"/>
-      <field name="partner" required="true"
+      <field name="partner"
         domain=":company MEMBER OF self.companySet OR self.companySet IS EMPTY"/>
     </panel>
     <panel name="btnPanel" itemSpan="4">
       <button name="filterMoveLineBtn" title="Filter move lines"
         onClick="action-move-line-query-group-filter-move-lines"
-        readonlyIf="!company || !fromDate || !toDate || !account || !partner"/>
+        readonlyIf="!company || !fromDate || !toDate || !account"/>
     </panel>
     <panel name="moveLineQueryLinesPanel">
       <panel-related field="moveLineQueryLineList"

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -249,7 +249,7 @@ public class DuplicateObjectsController {
     String criteria = getCriteria(request, (Class<? extends Model>) JPA.model(request.getModel()));
 
     response.setView(
-        ActionView.define("Check duplicate")
+        ActionView.define(I18n.get("Check duplicate"))
             .model(Wizard.class.getName())
             .add("form", "wizard-check-duplicate-form")
             .param("popup", "true")

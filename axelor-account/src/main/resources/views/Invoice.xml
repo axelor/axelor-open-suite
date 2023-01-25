@@ -666,7 +666,7 @@
             form-view="invoice-form" grid-view="invoice-grid"/>
           <panel-related name="refundInvoiceListPanel" field="refundInvoiceList"
             readonly="true"
-            showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12"
+            showIf="refundInvoiceList != null &amp;&amp; refundInvoiceList.length > 0" colSpan="12"
             form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
         </panel>
         <field name="paymentDelayReason" canNew="false" canEdit="false"
@@ -1597,7 +1597,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-ventilate"/>
-    <action name="action-invoice-group-financial-discount"/>
     <action name="save"/>
   </action-group>
 
@@ -1621,8 +1620,6 @@ InvoiceSet.length > 0))"
       if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-group-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
   </action-group>
 
@@ -1637,8 +1634,6 @@ InvoiceSet.length > 0))"
     <action name="save"/>
     <action name="action-invoice-method-validate"/>
     <action name="action-record-invoice-set-discount-values"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-invoice-group-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
@@ -1669,9 +1664,9 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
+    <action name="action-invoice-method-check-invoice-lines-analytic-distribution"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-ventilate"/>
-    <action name="action-invoice-group-financial-discount"/>
     <action name="save"/>
   </action-group>
 
@@ -1680,6 +1675,7 @@ InvoiceSet.length > 0))"
     <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
+    <action name="action-invoice-method-check-invoice-lines-analytic-distribution"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-validate-and-ventilate"/>
   </action-group>
@@ -1691,10 +1687,13 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-group-financial-discount">
-    <action name="action-record-invoice-set-financial-discount-informations"/>
-    <action name="save"/>
-    <action name="action-method-invoice-financial-discount-update-invoice-terms"/>
+    <action name="action-invoice-method-update-final-discount"/>
   </action-group>
+
+  <action-method name="action-invoice-method-update-final-discount">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateFinancialDiscount"/>
+  </action-method>
 
   <action-group name="action-invoice-group-partner-onchange">
     <action name="action-group-account-invoice-partner-onchange"/>
@@ -2254,6 +2253,12 @@ InvoiceSet.length > 0))"
       method="updateLinesAfterFiscalPositionChange"/>
   </action-method>
 
+  <action-method
+    name="action-invoice-method-check-invoice-lines-analytic-distribution">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="checkInvoiceLinesAnalyticDistribution"/>
+  </action-method>
+
   <action-method name="action-invoice-method-check-invoice-lines-cut-off-dates">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="checkInvoiceLinesCutOffDates"/>
@@ -2643,31 +2648,6 @@ InvoiceSet.length > 0))"
     <field name="legalNotice" expr="eval: null" if="!partner || !partner.financialDiscount"/>
   </action-record>
 
-  <action-record name="action-record-invoice-set-financial-discount-informations"
-    model="com.axelor.apps.account.db.Invoice">
-    <field name="legalNotice" expr="eval: financialDiscount.legalNotice"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
-    <field name="financialDiscountRate" expr="eval: financialDiscount.discountRate"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
-    <field name="financialDiscountTotalAmount"
-      expr="eval: financialDiscount.discountRate * inTaxTotal / 100"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
-    <field name="remainingAmountAfterFinDiscount"
-      expr="eval: inTaxTotal - (financialDiscount.discountRate * inTaxTotal / 100)"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; financialDiscount"/>
-    <field name="legalNotice" expr="eval: null"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
-    <field name="financialDiscountRate" expr="eval: BigDecimal.ZERO"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
-    <field name="financialDiscountTotalAmount" expr="eval: BigDecimal.ZERO"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
-    <field name="remainingAmountAfterFinDiscount" expr="eval: BigDecimal.ZERO"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; !financialDiscount"/>
-    <field name="financialDiscountDeadlineDate"
-      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__, financialDiscount)"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; dueDate &amp;&amp; financialDiscount"/>
-  </action-record>
-
   <action-method
     name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden">
     <call class="com.axelor.apps.account.web.InvoiceController" method="checkDuplicateInvoice"/>
@@ -2690,6 +2670,16 @@ InvoiceSet.length > 0))"
     <view type="form" name="invoice-term-invoice-form"/>
     <domain>self.invoice.id = :_invoiceId</domain>
     <context name="_invoiceId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-invoice-view-show-related-invoice-terms-by-reason"
+    title="Invoice term in dispute" model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-move-line-invoice-grid"/>
+    <view type="form" name="invoice-term-invoice-form"/>
+    <domain>self.reasonOfRefusalToPayStr = :_reasonOfRefusalToPayName AND (:_company is null OR
+      self.company = :_company)</domain>
+    <context name="_reasonOfRefusalToPayName" expr="eval: reasonOfRefusalToPayName"/>
+    <context name="_company" expr="eval: _company"/>
   </action-view>
 
   <action-method name="action-customer-invoice-line-menu">

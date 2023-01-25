@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -139,23 +139,13 @@ public class ManufOrderStockMoveService {
                 stockConfig, manufOrder.getProdProcess().getOutsourcing());
 
     StockLocation fromStockLocation =
-        manufOrder.getOutsourcing()
-            ? company.getStockConfig().getOutsourcingReceiptStockLocation()
-            : getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
+        getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
 
     if (fromStockLocation == null) {
-      if (manufOrder.getOutsourcing()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(
-                ProductionExceptionMessage
-                    .MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_SOURCE_STOCK_LOCATION));
-      } else {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(
-                ProductionExceptionMessage.MANUF_ORDER_STOCK_MOVE_MISSING_SOURCE_STOCK_LOCATION));
-      }
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              ProductionExceptionMessage.MANUF_ORDER_STOCK_MOVE_MISSING_SOURCE_STOCK_LOCATION));
     }
 
     if (virtualStockLocation == null && manufOrder.getOutsourcing()) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -69,6 +69,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     moveRemoveService.deleteMultiple(
         getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
 
+    period = periodRepo.find(period.getId());
     super.close(period);
   }
 
@@ -76,7 +77,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     return moveRepository
         .all()
         .filter(
-            "self.period.id = ?1 AND self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)))",
+            "self.period.id = ?1 AND self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)",
             period.getId(),
             status)
         .order("date")

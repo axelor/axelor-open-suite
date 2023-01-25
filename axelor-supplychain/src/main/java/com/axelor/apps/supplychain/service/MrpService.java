@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,7 +36,10 @@ public interface MrpService extends Callable<Mrp> {
 
   public void runCalculation(Mrp mrp) throws AxelorException;
 
-  public void generateProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException;
+  public void generateSelectedProposals(Mrp mrp, boolean isProposalsPerSupplier)
+      throws AxelorException;
+
+  void generateAllProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException;
 
   public void reset(Mrp mrp);
 

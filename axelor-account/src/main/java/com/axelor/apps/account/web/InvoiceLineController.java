@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,9 +43,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.translation.ITranslation;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
@@ -203,7 +201,7 @@ public class InvoiceLineController {
                               invoiceLine,
                               invoiceLine.getTaxLine(),
                               InvoiceToolService.isPurchase(invoice)));
-
+      discounts.remove("price");
       for (Entry<String, Object> entry : discounts.entrySet()) {
         response.setValue(entry.getKey(), entry.getValue());
       }
@@ -554,28 +552,24 @@ public class InvoiceLineController {
   public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
-      InternationalService internationalService = Beans.get(InternationalService.class);
+      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
       Invoice parent = this.getInvoice(context);
-      Partner partner = parent.getPartner();
       String userLanguage = AuthUtils.getUser().getLanguage();
-      Product product = invoiceLine.getProduct();
 
-      if (product != null) {
-        Map<String, String> translation =
-            internationalService.getProductDescriptionAndNameTranslation(
-                product, partner, userLanguage);
+      Map<String, String> translation =
+          invoiceLineService.getProductDescriptionAndNameTranslation(
+              parent, invoiceLine, userLanguage);
 
-        String description = translation.get("description");
-        String productName = translation.get("productName");
+      String description = translation.get("description");
+      String productName = translation.get("productName");
 
-        if (description != null
-            && !description.isEmpty()
-            && productName != null
-            && !productName.isEmpty()) {
-          response.setValue("description", description);
-          response.setValue("productName", productName);
-        }
+      if (description != null
+          && !description.isEmpty()
+          && productName != null
+          && !productName.isEmpty()) {
+        response.setValue("description", description);
+        response.setValue("productName", productName);
       }
 
     } catch (Exception e) {

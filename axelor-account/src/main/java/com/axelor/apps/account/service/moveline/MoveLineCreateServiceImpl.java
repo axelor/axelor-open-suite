@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -221,7 +221,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       String description)
       throws AxelorException {
 
-    amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+    if (amountInSpecificMoveCurrency != null) {
+      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+    }
 
     log.debug(
         "Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",
@@ -258,7 +260,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (currencyRate == null) {
-      if (amountInSpecificMoveCurrency.compareTo(BigDecimal.ZERO) == 0) {
+      if (amountInSpecificMoveCurrency == null
+          || amountInSpecificMoveCurrency.compareTo(BigDecimal.ZERO) == 0) {
         currencyRate = BigDecimal.ONE;
       } else {
         currencyRate =
@@ -270,22 +273,30 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       originDate = date;
     }
 
-    return new MoveLine(
-        move,
-        partner,
-        account,
-        date,
-        dueDate,
-        counter,
-        debit,
-        credit,
-        StringTool.cutTooLongString(
-            moveLineToolService.determineDescriptionMoveLine(
-                move.getJournal(), origin, description)),
-        origin,
-        currencyRate.setScale(5, RoundingMode.HALF_UP),
-        amountInSpecificMoveCurrency,
-        originDate);
+    MoveLine moveLine =
+        new MoveLine(
+            move,
+            partner,
+            account,
+            date,
+            dueDate,
+            counter,
+            debit,
+            credit,
+            StringTool.cutTooLongString(
+                moveLineToolService.determineDescriptionMoveLine(
+                    move.getJournal(), origin, description)),
+            origin,
+            currencyRate.setScale(5, RoundingMode.HALF_UP),
+            amountInSpecificMoveCurrency,
+            originDate);
+
+    moveLine.setIsOtherCurrency(!move.getCurrency().equals(move.getCompanyCurrency()));
+
+    analyticMoveLineGenerateRealService.computeAnalyticDistribution(
+        move, moveLine, credit.add(debit));
+
+    return moveLine;
   }
 
   /**
@@ -582,6 +593,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       String origin)
       throws AxelorException {
     int moveLineId = 1;
+    BigDecimal totalCompanyAmount = BigDecimal.ZERO;
     List<MoveLine> moveLines = new ArrayList<MoveLine>();
     Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     MoveLine moveLine = null;
@@ -594,10 +606,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       companyAmount =
-          invoice
-              .getCompanyInTaxTotal()
-              .multiply(invoiceTerm.getPercentage())
-              .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
+          invoiceTerm.equals(
+                  invoice.getInvoiceTermList().get(invoice.getInvoiceTermList().size() - 1))
+              ? (invoice.getCompanyInTaxTotal().subtract(totalCompanyAmount))
+              : invoiceTerm.getCompanyAmount();
+      totalCompanyAmount = totalCompanyAmount.add(invoiceTerm.getCompanyAmount());
 
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
@@ -733,7 +746,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
-    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId();
+    Integer vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+    String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
     if (taxLineRC != null) {
       newAccountRC =
           this.getTaxAccount(taxLineRC, company, accountType, move.getJournal(), partner, moveLine);
@@ -741,7 +755,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newSourceTaxLineRCKey = newAccountRC.getCode() + taxLineRC.getId();
       }
     }
-    Integer vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
     MoveLine newOrUpdatedMoveLine = new MoveLine();
     MoveLine newOrUpdatedMoveLineRC = null;
 
@@ -767,11 +780,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
     newOrUpdatedMoveLine.setVatSystemSelect(vatSystem);
     newOrUpdatedMoveLine.setOrigin(move.getOrigin());
-    newOrUpdatedMoveLine.setDescription(move.getDescription());
-
-    newOrUpdatedMoveLine.setMove(move);
-    newOrUpdatedMoveLine.setOrigin(move.getOrigin());
-    newOrUpdatedMoveLine.setDescription(move.getDescription());
+    newOrUpdatedMoveLine.setDescription(
+        StringTool.cutTooLongString(
+            moveLineToolService.determineDescriptionMoveLine(
+                move.getJournal(), move.getOrigin(), move.getDescription())));
 
     BigDecimal taxLineValue =
         taxLineBeforeReverse != null ? taxLineBeforeReverse.getValue() : taxLine.getValue();
@@ -808,17 +820,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
       newOrUpdatedMoveLineRC.setVatSystemSelect(vatSystem);
       newOrUpdatedMoveLineRC.setOrigin(move.getOrigin());
-      newOrUpdatedMoveLineRC.setDescription(move.getDescription());
-
-      newOrUpdatedMoveLineRC.setMove(move);
-      newOrUpdatedMoveLineRC.setOrigin(move.getOrigin());
-      newOrUpdatedMoveLineRC.setDescription(move.getDescription());
+      newOrUpdatedMoveLineRC.setDescription(
+          StringTool.cutTooLongString(
+              moveLineToolService.determineDescriptionMoveLine(
+                  move.getJournal(), move.getOrigin(), move.getDescription())));
 
       newOrUpdatedMoveLineRC.setDebit(newOrUpdatedMoveLineRC.getDebit().add(newMoveLineCredit));
       newOrUpdatedMoveLineRC.setCredit(newOrUpdatedMoveLineRC.getCredit().add(newMoveLineDebit));
 
       newOrUpdatedMoveLineRC.setOriginDate(move.getOriginDate());
-      newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
 
       if (newOrUpdatedMoveLineRC.getPartner() == null) {
         newOrUpdatedMoveLineRC.setPartner(move.getPartner());

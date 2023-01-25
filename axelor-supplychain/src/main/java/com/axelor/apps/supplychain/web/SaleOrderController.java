@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
@@ -31,7 +32,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
@@ -147,16 +147,14 @@ public class SaleOrderController {
   public void getStockLocation(ActionRequest request, ActionResponse response) {
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
-    if (saleOrder != null && saleOrder.getCompany() != null) {
-
+    try {
+      Company company = saleOrder.getCompany();
       StockLocation stockLocation =
-          Beans.get(StockLocationService.class)
-              .getPickupDefaultStockLocation(saleOrder.getCompany());
-
-      if (stockLocation != null) {
-        response.setValue("stockLocation", stockLocation);
-      }
+          Beans.get(SaleOrderSupplychainService.class)
+              .getStockLocation(saleOrder.getClientPartner(), company);
+      response.setValue("stockLocation", stockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -196,7 +194,7 @@ public class SaleOrderController {
             response.setFlash(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
           } else {
             response.setView(
-                ActionView.define("SaleOrder")
+                ActionView.define(I18n.get("SaleOrder"))
                     .model(SaleOrder.class.getName())
                     .add("form", "sale-order-generate-po-select-supplierpartner-form")
                     .param("popup", "true")
@@ -391,8 +389,7 @@ public class SaleOrderController {
   public void updateAmountToBeSpreadOverTheTimetable(
       ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderServiceSupplychainImpl.class)
-        .updateAmountToBeSpreadOverTheTimetable(saleOrder);
+    Beans.get(SaleOrderSupplychainService.class).updateAmountToBeSpreadOverTheTimetable(saleOrder);
     response.setValue(
         "amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
   }
@@ -512,7 +509,7 @@ public class SaleOrderController {
         Integer deliveryState = saleOrderLine.getDeliveryState();
         if (!deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED)
             && !deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED)) {
-          saleOrderLine.setEstimatedDelivDate(saleOrder.getDeliveryDate());
+          saleOrderLine.setEstimatedShippingDate(saleOrder.getEstimatedShippingDate());
         }
       }
     }
@@ -618,7 +615,7 @@ public class SaleOrderController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
       response.setView(
-          ActionView.define("Invoicing")
+          ActionView.define(I18n.get("Invoicing"))
               .model(SaleOrder.class.getName())
               .add("form", "sale-order-invoicing-wizard-form")
               .param("popup", "reload")
@@ -766,6 +763,19 @@ public class SaleOrderController {
       Beans.get(SaleOrderSupplychainService.class)
           .setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
       response.setValues(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getToStockLocation(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      Company company = saleOrder.getCompany();
+      StockLocation toStockLocation =
+          Beans.get(SaleOrderSupplychainService.class)
+              .getToStockLocation(saleOrder.getClientPartner(), company);
+      response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

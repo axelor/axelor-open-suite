@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,6 +79,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected ReconcileService reconcileService;
   protected AppAccountService appAccountService;
   protected AccountManagementAccountService accountManagementAccountService;
+  protected InvoicePaymentToolService invoicePaymentToolService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -91,7 +92,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
       AppAccountService appAccountService,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      InvoicePaymentToolService invoicePaymentToolService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -103,6 +105,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.reconcileService = reconcileService;
     this.appAccountService = appAccountService;
     this.accountManagementAccountService = accountManagementAccountService;
+    this.invoicePaymentToolService = invoicePaymentToolService;
   }
 
   /**
@@ -132,6 +135,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     setInvoicePaymentStatus(invoicePayment);
     createInvoicePaymentMove(invoicePayment);
+    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
 
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
@@ -246,16 +250,23 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());
 
-    BigDecimal maxAmount =
-        invoiceMoveLines.stream()
-            .map(MoveLine::getAmountRemaining)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
+    BigDecimal maxAmount;
+    if (CollectionUtils.isEmpty(invoiceMoveLines)) {
+      // using null value to indicate we do not use a maxAmount
+      maxAmount = null;
+    } else {
+      maxAmount =
+          invoiceMoveLines.stream()
+              .map(MoveLine::getAmountRemaining)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+    }
+
     move = this.fillMove(invoicePayment, move, customerAccount, maxAmount);
     moveValidateService.accounting(move);
 
     for (MoveLine moveline : move.getMoveLineList()) {
-      if (moveline.getAccount() == customerAccount) {
+      if (customerAccount.equals(moveline.getAccount())) {
         customerMoveLine = moveline;
       }
     }
@@ -336,8 +347,10 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         invoicePayment.getInvoiceTermPaymentList().stream()
             .map(InvoiceTermPayment::getCompanyPaidAmount)
             .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO)
-            .min(maxAmount);
+            .orElse(BigDecimal.ZERO);
+    if (maxAmount != null) {
+      companyPaymentAmount = companyPaymentAmount.min(maxAmount);
+    }
     BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
 
     move.addMoveLineListItem(
