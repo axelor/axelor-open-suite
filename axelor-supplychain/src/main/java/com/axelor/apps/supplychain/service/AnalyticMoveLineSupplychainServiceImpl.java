@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
@@ -23,6 +24,7 @@ public class AnalyticMoveLineSupplychainServiceImpl extends AnalyticMoveLineServ
       AppAccountService appAccountService,
       AccountManagementServiceAccountImpl accountManagementServiceAccountImpl,
       AccountConfigService accountConfigService,
+      AccountConfigRepository accountConfigRepository,
       AccountRepository accountRepository,
       AppBaseService appBaseService) {
     super(
@@ -30,6 +32,7 @@ public class AnalyticMoveLineSupplychainServiceImpl extends AnalyticMoveLineServ
         appAccountService,
         accountManagementServiceAccountImpl,
         accountConfigService,
+        accountConfigRepository,
         accountRepository,
         appBaseService);
   }
