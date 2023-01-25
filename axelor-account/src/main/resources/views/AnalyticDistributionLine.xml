@@ -19,7 +19,7 @@
     editable="true" onNew="action-group-analytic-distribution-line-set-on-new">
     <field name="analyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form" required="true"
-      onSelect="action-attrs-domain-account-distribution-line"
+      onSelect="action-method-domain-account-distribution-line"
       onChange="action-analytic-distribution-account-on-change"/>
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
       hidden="true"/>
@@ -33,7 +33,7 @@
     groupBy="analyticAxis">
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
     <field name="analyticAccount" required="true" grid-view="analytic-account-grid"
-      form-view="analytic-account-form" onSelect="action-attrs-domain-account-distribution-line"
+      form-view="analytic-account-form" onSelect="action-method-domain-account-distribution-line"
       onChange="action-analytic-distribution-account-on-change"/>
     <field name="percentage"/>
     <field name="analyticJournal" grid-view="analytic-journal-grid"
@@ -46,7 +46,7 @@
     <panel name="mainPanel">
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
-        required="true" onSelect="action-attrs-domain-account-distribution-line"/>
+        required="true" onSelect="action-method-domain-account-distribution-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onSelect="action-attrs-domain-axis-distribution-line"
         onChange="action-axis-change-remove-account" required="true"/>
@@ -64,7 +64,7 @@
     <panel name="mainPanel">
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
-        required="true" onSelect="action-attrs-domain-account-distribution-line"/>
+        required="true" onSelect="action-method-domain-account-distribution-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onSelect="action-attrs-domain-axis-distribution-line"
         onChange="action-axis-change-remove-account" required="true" readonly="true"/>
@@ -97,26 +97,10 @@
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
   </action-attrs>
 
-  <action-attrs name="action-attrs-domain-account-distribution-line">
-    <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id}) AND self.analyticAxis.id = ${__this__?.analyticAxis.id}&quot;"
-      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; analyticAxis"/>
-    <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id})
-      	AND self.analyticAxis.id in (${__repo__(AccountConfig).findByCompany(__parent__.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
-      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; !analyticAxis"/>
-    <attribute name="domain" for="analyticAccount" expr="eval: null"
-      if="!(__parent__ &amp;&amp; __parent__.company)"/>
-    <attribute name="domain" for="analyticAccountSet"
-      expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id}) AND self.analyticAxis.id = ${__this__?.analyticAxis.id}&quot;"
-      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; analyticAxis"/>
-    <attribute name="domain" for="analyticAccountSet"
-      expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id})
-      	AND self.analyticAxis.id in (${__repo__(AccountConfig).findByCompany(__parent__.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
-      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; !analyticAxis"/>
-    <attribute name="domain" for="analyticAccountSet" expr="eval: null"
-      if="!(__parent__ &amp;&amp; __parent__.company)"/>
-  </action-attrs>
+  <action-method name="action-method-domain-account-distribution-line">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+      method="setAnalyticAccountDomain"/>
+  </action-method>
 
   <action-attrs name="action-attrs-domain-journal-distribution-line">
     <attribute name="domain" for="analyticJournal"

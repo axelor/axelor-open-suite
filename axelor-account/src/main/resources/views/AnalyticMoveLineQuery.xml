@@ -41,7 +41,7 @@
               onChange="action-analytic-move-line-search-query-attrs-axis-onchange"/>
             <field name="analyticAccountSet" grid-view="analytic-account-grid"
               form-view="analytic-account-info-form"
-              onSelect="action-attrs-domain-account-distribution-line" widget="TagSelect"/>
+              onSelect="action-method-domain-account-distribution-line" widget="TagSelect"/>
           </editor>
         </field>
       </panel>
@@ -58,7 +58,7 @@
               onChange="action-analytic-move-line-reverse-query-attrs-axis-onchange"/>
             <field name="analyticAccount" grid-view="analytic-account-grid"
               form-view="analytic-account-info-form"
-              onSelect="action-attrs-domain-account-distribution-line"/>
+              onSelect="action-method-domain-account-distribution-line"/>
           </editor>
         </field>
       </panel>

@@ -310,8 +310,8 @@
   </action-group>
 
   <action-group name="action-account-group-analytic-distribution-onChange">
-    <action name="action-on-change-distribution-template-account"/>
     <action name="action-account-method-personalize-template"/>
+    <action name="action-on-change-distribution-template-account"/>
   </action-group>
 
   <action-record name="action-account-record-new"

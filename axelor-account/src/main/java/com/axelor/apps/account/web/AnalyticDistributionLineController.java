@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -31,7 +31,12 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AnalyticDistributionLineController {
@@ -116,5 +121,71 @@ public class AnalyticDistributionLineController {
           Beans.get(AnalyticMoveLineService.class)
               .getAnalyticAxisDomain(analyticMoveLine, company));
     }
+  }
+
+  public void setAnalyticAccountDomain(ActionRequest request, ActionResponse response) {
+    String domain = "null";
+    List<Long> analyticAccountIdList = new ArrayList<>();
+    AnalyticDistributionLine analyticDistributionLine =
+        request.getContext().asType(AnalyticDistributionLine.class);
+    Context parentContext = request.getContext().getParent();
+    Context grandParentContext = null;
+
+    if (parentContext != null) {
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          parentContext.asType(AnalyticDistributionTemplate.class);
+
+      if (analyticDistributionTemplate != null
+          && analyticDistributionTemplate.getCompany() != null) {
+        domain =
+            "(self.company is null OR self.company.id = "
+                + analyticDistributionTemplate.getCompany().getId()
+                + ") AND self.analyticAxis.id ";
+        if (analyticDistributionLine.getAnalyticAxis() != null) {
+          domain += "= " + analyticDistributionLine.getAnalyticAxis().getId();
+        } else {
+          domain +=
+              "in ("
+                  + Beans.get(AccountConfigRepository.class)
+                      .findByCompany(analyticDistributionTemplate.getCompany())
+                      .getAnalyticAxisByCompanyList().stream()
+                      .map(it -> it.getAnalyticAxis().getId().toString())
+                      .collect(Collectors.toList())
+                  + ")";
+        }
+
+        grandParentContext = request.getContext().getParent().getParent();
+        if (grandParentContext != null) {
+          Account account = grandParentContext.asType(Account.class);
+          if (Beans.get(AccountAnalyticRulesRepository.class)
+                  .all()
+                  .filter(
+                      "self.fromAccount < "
+                          + account.getId()
+                          + " AND self.toAccount > "
+                          + account.getId())
+                  .count()
+              != 0) {
+            List<AnalyticAccount> analyticAccountList =
+                Beans.get(AccountAnalyticRulesRepository.class)
+                    .findAnalyticAccountByAccounts(account);
+            if (CollectionUtils.isNotEmpty(analyticAccountList)) {
+              for (AnalyticAccount analyticAccount : analyticAccountList) {
+                analyticAccountIdList.add(analyticAccount.getId());
+              }
+
+              domain += " AND self.id in (";
+              String idList = Joiner.on(",").join(analyticAccountIdList);
+              domain += idList + ")";
+            } else {
+              domain += " AND self.id in (0)";
+            }
+          }
+        }
+      }
+    }
+
+    response.setAttr("analyticAccount", "domain", domain);
+    response.setAttr("analyticAccountSet", "domain", domain);
   }
 }
