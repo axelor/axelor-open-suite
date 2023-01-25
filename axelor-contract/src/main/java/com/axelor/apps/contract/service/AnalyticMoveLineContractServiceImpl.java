@@ -32,7 +32,6 @@ public class AnalyticMoveLineContractServiceImpl extends AnalyticMoveLineSupplyc
         accountConfigService,
         accountRepository,
         appBaseService);
-    // TODO Auto-generated constructor stub
   }
 
   @Override

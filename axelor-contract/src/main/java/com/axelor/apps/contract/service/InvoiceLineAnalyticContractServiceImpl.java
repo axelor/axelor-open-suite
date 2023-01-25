@@ -33,7 +33,6 @@ public class InvoiceLineAnalyticContractServiceImpl
         accountConfigService,
         listToolService,
         appAccountService);
-    // TODO Auto-generated constructor stub
   }
 
   @Override

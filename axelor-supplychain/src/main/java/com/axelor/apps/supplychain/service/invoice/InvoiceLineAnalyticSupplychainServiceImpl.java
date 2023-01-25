@@ -32,7 +32,6 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
         accountConfigService,
         listToolService,
         appAccountService);
-    // TODO Auto-generated constructor stub
   }
 
   @Override
