@@ -223,6 +223,19 @@ public class PriceListService {
     return unitPrice;
   }
 
+  public BigDecimal computeDiscountWithoutScaling(
+      BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount) {
+    if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
+      return unitPrice.subtract(discountAmount);
+    } else if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
+      return unitPrice
+          .multiply(new BigDecimal(100).subtract(discountAmount))
+          .divide(new BigDecimal(100), RoundingMode.HALF_UP);
+    }
+
+    return unitPrice;
+  }
+
   public Map<String, Object> getReplacedPriceAndDiscounts(
       PriceList priceList, PriceListLine priceListLine, BigDecimal price) {
     int discountTypeSelect = 0;

@@ -95,6 +95,9 @@ public interface SaleOrderLineService {
   public BigDecimal getAmountInCompanyCurrency(BigDecimal exTaxTotal, SaleOrder saleOrder)
       throws AxelorException;
 
+  BigDecimal getAmountInCompanyCurrencyWithoutScaling(BigDecimal exTaxTotal, SaleOrder saleOrder)
+      throws AxelorException;
+
   public BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
@@ -109,6 +112,8 @@ public interface SaleOrderLineService {
    * @return the discounted price of the line, including taxes if inAti is true.
    */
   public BigDecimal computeDiscount(SaleOrderLine saleOrderLine, Boolean inAti);
+
+  BigDecimal computeDiscountWithoutScaling(SaleOrderLine saleOrderLine, Boolean inAti);
 
   public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);

@@ -27,6 +27,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -39,13 +40,17 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
 
   protected SaleOrderLineService saleOrderLineService;
   protected SaleOrderLineTaxService saleOrderLineTaxService;
+  protected SaleOrderToolService saleOrderToolService;
 
   @Inject
   public SaleOrderComputeServiceImpl(
-      SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService) {
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderLineTaxService saleOrderLineTaxService,
+      SaleOrderToolService saleOrderToolService) {
 
     this.saleOrderLineService = saleOrderLineService;
     this.saleOrderLineTaxService = saleOrderLineTaxService;
+    this.saleOrderToolService = saleOrderToolService;
   }
 
   @Override
@@ -128,15 +133,21 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
       if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
         continue;
       }
-      saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add(saleOrderLine.getExTaxTotal()));
+
+      BigDecimal exTaxTotal = computeExTaxTotal(saleOrder, saleOrderLine);
+
+      saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add(exTaxTotal));
 
       // In the company accounting currency
       saleOrder.setCompanyExTaxTotal(
-          saleOrder.getCompanyExTaxTotal().add(saleOrderLine.getCompanyExTaxTotal()));
+          saleOrder
+              .getCompanyExTaxTotal()
+              .add(
+                  saleOrderLineService.getAmountInCompanyCurrencyWithoutScaling(
+                      exTaxTotal, saleOrder)));
     }
 
     for (SaleOrderLineTax saleOrderLineVat : saleOrder.getSaleOrderLineTaxList()) {
-
       // In the sale order currency
       saleOrder.setTaxTotal(saleOrder.getTaxTotal().add(saleOrderLineVat.getTaxTotal()));
     }
@@ -144,10 +155,32 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
     saleOrder.setAdvanceTotal(computeTotalAdvancePayment(saleOrder));
     logger.debug(
-        "Invoice's total: W.T.T. = {},  W.T. = {}, Tax = {}, A.T.I. = {}",
+        "Sale order's total: W.T.T. = {},  W.T. = {}, Tax = {}, A.T.I. = {}",
         new Object[] {
           saleOrder.getExTaxTotal(), saleOrder.getTaxTotal(), saleOrder.getInTaxTotal()
         });
+  }
+
+  protected BigDecimal computeExTaxTotal(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    BigDecimal qty = saleOrderLine.getQty();
+    BigDecimal exTaxTotal;
+    BigDecimal inTaxTotal;
+    BigDecimal taxRate = BigDecimal.ZERO;
+    BigDecimal priceDiscounted =
+        saleOrderLineService.computeDiscountWithoutScaling(saleOrderLine, saleOrder.getInAti());
+    if (saleOrderLine.getTaxLine() != null) {
+      taxRate =
+          saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100), RoundingMode.HALF_UP);
+    }
+
+    if (!saleOrder.getInAti()) {
+      exTaxTotal = saleOrderToolService.computeAmount(qty, priceDiscounted);
+    } else {
+      inTaxTotal = saleOrderToolService.computeAmount(qty, priceDiscounted);
+      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), RoundingMode.HALF_UP);
+    }
+
+    return exTaxTotal;
   }
 
   protected BigDecimal computeTotalAdvancePayment(SaleOrder saleOrder) {

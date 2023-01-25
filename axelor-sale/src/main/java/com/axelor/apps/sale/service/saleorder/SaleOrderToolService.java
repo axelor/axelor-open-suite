@@ -43,10 +43,7 @@ public class SaleOrderToolService {
    */
   public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
-    BigDecimal amount =
-        quantity
-            .multiply(price)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    BigDecimal amount = quantity.multiply(price);
 
     LOG.debug(
         "Computation of W.T. amount with a quantity of {} for {} : {}",

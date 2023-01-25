@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderToolService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -42,9 +43,10 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
 
   @Inject
   public SaleOrderComputeServiceSupplychainImpl(
-      SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService) {
-
-    super(saleOrderLineService, saleOrderLineTaxService);
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderLineTaxService saleOrderLineTaxService,
+      SaleOrderToolService saleOrderToolService) {
+    super(saleOrderLineService, saleOrderLineTaxService, saleOrderToolService);
   }
 
   @Override

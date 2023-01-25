@@ -511,6 +511,17 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
+  public BigDecimal getAmountInCompanyCurrencyWithoutScaling(
+      BigDecimal exTaxTotal, SaleOrder saleOrder) throws AxelorException {
+
+    return currencyService.getAmountCurrencyConvertedAtDate(
+        saleOrder.getCurrency(),
+        saleOrder.getCompany().getCurrency(),
+        exTaxTotal,
+        saleOrder.getCreationDate());
+  }
+
+  @Override
   public BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
@@ -540,6 +551,15 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal price = inAti ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
 
     return priceListService.computeDiscount(
+        price, saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getDiscountAmount());
+  }
+
+  @Override
+  public BigDecimal computeDiscountWithoutScaling(SaleOrderLine saleOrderLine, Boolean inAti) {
+
+    BigDecimal price = inAti ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
+
+    return priceListService.computeDiscountWithoutScaling(
         price, saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getDiscountAmount());
   }
 
