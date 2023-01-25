@@ -81,14 +81,10 @@
               domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
           </panel>
           <panel name="discountPanel" title="Discount Accounts" colSpan="12">
-            <field name="purchFinancialDiscountAccount" domain="self.company = :company"
-              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
-            <field name="saleFinancialDiscountAccount" domain="self.company = :company"
-              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
-            <field name="purchFinancialDiscountTax"
-              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
-            <field name="saleFinancialDiscountTax"
-              requiredIf="__config__.app.getApp('account')?.manageFinancialDiscount"/>
+            <field name="purchFinancialDiscountAccount" domain="self.company = :company"/>
+            <field name="saleFinancialDiscountAccount" domain="self.company = :company"/>
+            <field name="purchFinancialDiscountTax"/>
+            <field name="saleFinancialDiscountTax"/>
           </panel>
           <panel title="AccountConfig.Employees" colSpan="12">
             <field name="employeeAccount" domain="self.company = :company"
