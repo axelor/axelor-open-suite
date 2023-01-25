@@ -321,6 +321,8 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setPfpfPartialValidationOk(true);
     originalInvoiceTerm.setPfpPartialValidationAmount(grantedAmount);
     originalInvoiceTerm.setPfpPartialReason(partialReason);
+    originalInvoiceTerm.setPfpValidateStatusSelect(
+        InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
 
     invoiceTermRepo.save(originalInvoiceTerm);
   }
