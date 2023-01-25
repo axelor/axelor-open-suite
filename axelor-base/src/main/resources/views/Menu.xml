@@ -705,6 +705,24 @@
     <view type="form" name="birt-template-form"/>
   </action-view>
 
+  <menuitem name="mail-conf-template-rules" parent="mail-conf" title="Template Rules"
+    action="admin.root.templating.template.rules" order="10"/>
+
+  <action-view name="admin.root.templating.template.rules" title="Template Rules"
+    model="com.axelor.apps.base.db.TemplateRule">
+    <view type="grid" name="template-rule-grid"/>
+    <view type="form" name="template-rule-form"/>
+  </action-view>
+
+  <menuitem name="mail-root-email-conf-routing" parent="mail-conf" title="Routings"
+    action="mail.root.email.conf.routing" order="30"/>
+
+  <action-view name="mail.root.email.conf.routing" title="Routings"
+    model="com.axelor.apps.base.db.Routing">
+    <view type="grid"/>
+    <view type="form"/>
+  </action-view>
+
   <menuitem name="admin-root-maintenance-trace-back" parent="admin-root-maintenance"
     title="Tracebacks" action="admin.root.maintenance.trace.back"/>
 
