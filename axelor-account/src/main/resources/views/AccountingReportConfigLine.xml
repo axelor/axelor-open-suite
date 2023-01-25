@@ -71,10 +71,10 @@
           validIf="typeSelect != 4 || ruleTypeSelect > 0" selection-in="[2,3]"
           onChange="action-accounting-report-config-lone-record-rule-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
       </panel>
-      <field name="label" showIf="[1,2,4].includes(typeSelect)"
-        requiredIf="[1,2,4].includes(typeSelect)"/>
-      <field name="code" showIf="[1,2,4].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"
-        requiredIf="[1,2,4].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"/>
+      <panel name="infoPanel" colSpan="12" showIf="[1;2;4].includes(typeSelect)">
+        <field name="label" requiredIf="[1,2,4].includes(typeSelect)"/>
+        <field name="code" requiredIf="[1,2,4].includes(typeSelect)"/>
+      </panel>
       <panel name="specificConfigPanel" stacked="true" showIf="!$legacy">
         <panel name="specificConfigLinePanel" showIf="reportType != null" colSpan="12">
           <field name="percentageTotalLine"
