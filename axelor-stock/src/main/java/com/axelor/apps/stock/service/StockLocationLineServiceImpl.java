@@ -832,7 +832,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
             .map(StockMove::getStockMoveSeq)
             .orElse("");
     stockLocationLine.setAvgPrice(wap);
-    wapHistoryService.saveWapHistory(stockLocationLine, stockMoveLine);
     stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, "");
   }
 
