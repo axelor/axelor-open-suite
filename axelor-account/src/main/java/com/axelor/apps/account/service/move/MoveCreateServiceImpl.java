@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -283,7 +284,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       move.setCurrencyCode(currency.getCodeISO());
     }
     move.setOrigin(origin);
-    move.setDescription(description);
+    move.setDescription(StringTool.cutTooLongString(description));
     move.setPartner(partner);
     move.setPaymentMode(paymentMode);
     move.setFiscalPosition(fiscalPosition);

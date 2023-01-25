@@ -1,0 +1,3 @@
+---
+title: "Move : truncate too long move description to avoid database issues"
+type: fix
