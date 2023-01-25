@@ -26,7 +26,8 @@
 
   <form title="Column rule" name="accounting-report-config-line-column-rule-form"
     model="com.axelor.apps.account.db.AccountingReportConfigLine"
-    onNew="action-accounting-report-config-line-record-column-rule">
+    onNew="action-accounting-report-config-line-group-column-onnew"
+    onLoad="action-accounting-report-config-line-attrs-set-active-tab">
     <panel-include view="accounting-report-config-line-form"/>
   </form>
 
@@ -51,124 +52,135 @@
       <panel name="typePanel" stacked="true" itemSpan="12">
         <field name="typeSelect" showIf="reportTypeColumn == null" validIf="typeSelect > 0"
           selection-in="[1,2,3]"
-          onChange="action-accounting-report-config-line-record-type-select-onchange"/>
+          onChange="action-accounting-report-config-line-record-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
         <field name="typeSelect" showIf="reportTypeColumn != null" validIf="typeSelect > 0"
-          onChange="action-accounting-report-config-line-record-type-select-onchange"/>
+          onChange="action-accounting-report-config-line-record-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
       </panel>
       <panel name="ruleTypePanel" stacked="true" itemSpan="12" hideIf="typeSelect == 5">
         <field name="ruleTypeSelect" showIf="reportTypeColumn == null"
           requiredIf="typeSelect != 4" validIf="[4,5].includes(typeSelect) || ruleTypeSelect > 0"
           readonlyIf="typeSelect == 3" selection-in="[1,2,3]"
-          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange"/>
+          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
         <field name="ruleTypeSelect"
           showIf="reportTypeColumn != null &amp;&amp; typeSelect != 4"
           requiredIf="![4,5].includes(typeSelect)" validIf="typeSelect >= 4 || ruleTypeSelect > 0"
           readonlyIf="typeSelect == 3"
-          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange"/>
+          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
         <field name="ruleTypeSelect"
           showIf="reportTypeColumn != null &amp;&amp; typeSelect == 4" requiredIf="typeSelect == 4"
-          validIf="typeSelect != 4 || ruleTypeSelect > 0" selection-in="[2,3]"/>
+          validIf="typeSelect != 4 || ruleTypeSelect > 0" selection-in="[2,3]"
+          onChange="action-accounting-report-config-lone-record-rule-type-select-onchange,action-accounting-report-config-line-attrs-set-active-tab"/>
       </panel>
-      <panel name="infoPanel" colSpan="12" showIf="[1,2,4].includes(typeSelect)">
+      <panel name="infoPanel" colSpan="12" showIf="[1;2;4].includes(typeSelect)">
         <field name="label" requiredIf="[1,2,4].includes(typeSelect)"/>
         <field name="code" requiredIf="[1,2,4].includes(typeSelect)"/>
       </panel>
-      <panel name="resultPanel" stacked="true" showIf="ruleTypeSelect == 2">
-        <field name="resultSelect" showIf="reportTypeColumn != null"
-          requiredIf="ruleTypeSelect == 2" selection-in="[1,2,4,5]"/>
-        <field name="resultSelect" showIf="reportType != null"
-          requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5]"/>
-      </panel>
-      <panel name="percentagePanel" stacked="true"
-        showIf="[2,3,4].includes(ruleTypeSelect) &amp;&amp; !$legacy">
-        <field name="percentageTotalLine" showIf="reportType != null"/>
-        <field name="percentageBaseColumn"
-          showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 4"/>
-      </panel>
-      <field name="styleSelect"
-        onChange="action-accounting-report-config-line-record-reset-style-priority"/>
-      <field name="stylePriority" showIf="styleSelect > 0"/>
-      <panel name="configPanel" colSpan="12"
-        showIf="typeSelect != 4 &amp;&amp; [2,3,4].includes(ruleTypeSelect)">
-        <field name="hidden"/>
-        <field name="notComputedIfIntersect" hideIf="$legacy"/>
-        <panel name="columnConfigPanel" colSpan="12"
-          showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2 &amp;&amp; !$legacy">
-          <field name="computePreviousYear" hideIf="computeOtherPeriod"/>
-          <field name="computeOtherPeriod" hideIf="computePreviousYear"/>
+      <panel name="specificConfigPanel" stacked="true" showIf="!$legacy">
+        <panel name="specificConfigLinePanel" showIf="reportType != null" colSpan="12">
+          <field name="percentageTotalLine"
+            showIf="[2,3,4].includes(ruleTypeSelect) &amp;&amp; !$legacy"
+            help="If the current line is computed in a percentage type column, the given line will be used to divide the current value."/>
+          <field name="detailBySelect" showIf="ruleTypeSelect == 2 &amp;&amp; !$legacy"/>
         </panel>
-        <field name="priority"
-          showIf="typeSelect != 4 &amp;&amp; ruleTypeSelect == 3 &amp;&amp; !$legacy"
-          requiredIf="typeSelect != 4 &amp;&amp; ruleTypeSelect == 3"/>
-        <field name="groupsWithoutColumn"
-          showIf="reportTypeColumn != null &amp;&amp; typeSelect != 5 &amp;&amp; !$legacy"/>
+        <field name="percentageBaseColumn"
+          showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 4"
+          help="Percentages will be computed based on the given column values."/>
       </panel>
-      <panel name="groupConfigPanel" showIf="typeSelect == 4" colSpan="12">
-        <field name="hidden"/>
-        <field name="computeOtherPeriod"
-          showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2"/>
-      </panel>
-      <panel name="splitConfigPanel" colSpan="12" itemSpan="4"
-        showIf="ruleTypeSelect == 2 &amp;&amp; reportType != null &amp;&amp; !$legacy">
-        <field name="detailByAccountType" hideIf="detailByAccount || detailByAnalyticAccount"/>
-        <field name="detailByAccount" hideIf="detailByAccountType || detailByAnalyticAccount"/>
-        <field name="detailByAnalyticAccount" hideIf="detailByAccountType || detailByAccount"/>
-      </panel>
-      <field name="$helpCode" title="Account code" readonly="true"
-        showIf="typeSelect == 5 || ruleTypeSelect == 2" colSpan="12">
-        <viewer depends="typeSelect,ruleTypeSelect">
-					<![CDATA[
+    </panel>
+    <panel-tabs name="mainPanelTabs">
+      <panel name="accountPanel" title="Accounts"
+        showIf="typeSelect == 5 || ruleTypeSelect == 2" itemSpan="12">
+        <field name="$helpCode" title="Account code" readonly="true">
+          <viewer depends="typeSelect,ruleTypeSelect">
+            <![CDATA[
 						<p ng-show="record.typeSelect == 5 || record.ruleTypeSelect == 2">
 							<span x-translate>The account code field allows to add every account whose code will fulfill the given regular expression.</span><br>
-							<span x-translate>This regular expression must be of the SQL syntax. The most useful terms are :</span><br>
-							<span x-translate>% to match any character</span><br>
-							<span x-translate>[] to match any character in the brackets</span><br>
-							<span x-translate>[^] to match any character not listed in the brackets</span><br>
+							<span x-translate>This regular expression must use SQL syntax. The most useful terms are :</span><br>
+							<span x-translate>_ to match any character (only one)</span><br>
+							<span x-translate>% to match any character (one or more)</span><br>
+							<span x-translate>, to separate multiple expressions with an "OR" logic</span><br>
 						</p>
 					]]>
-        </viewer>
-      </field>
-      <field name="accountCode" showIf="typeSelect == 5 || ruleTypeSelect == 2" colSpan="12"/>
-      <field name="analyticAccountCode" showIf="ruleTypeSelect == 2" colSpan="12"/>
-      <field name="$helpRule" title="Rule" readonly="true" showIf="ruleTypeSelect == 3"
-        colSpan="12">
-        <viewer depends="ruleTypeSelect">
-					<![CDATA[
+          </viewer>
+        </field>
+        <panel name="resultPanel" stacked="true" showIf="ruleTypeSelect == 2" colSpan="6">
+          <field name="resultSelect" showIf="reportTypeColumn != null"
+            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,4,5]"/>
+          <field name="resultSelect" showIf="reportType != null"
+            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5]"/>
+        </panel>
+        <field name="accountCode"/>
+        <field name="analyticAccountCode" showIf="ruleTypeSelect == 2"/>
+        <panel-related name="accountingReportConfigLineAccountTypeSetPanel"
+          field="accountTypeSet" canNew="false" canEdit="false" form-view="account-type-form"
+          grid-view="account-type-grid"/>
+        <panel-related name="accountingReportConfigLineAccountSetPanel"
+          field="accountSet" canNew="false" canEdit="false" form-view="account-form"
+          grid-view="account-grid"
+          onSelect="action-accounting-report-config-line-attrs-account-set-domain"/>
+        <panel-related name="accountingReportConfigLineAnalyticAccountSetPanel"
+          field="analyticAccountSet" canNew="false" canEdit="false"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"
+          showIf="ruleTypeSelect == 2"/>
+      </panel>
+      <panel name="rulePanel" title="Rule" showIf="ruleTypeSelect == 3" itemSpan="12">
+        <field name="$helpRule" title="Rule" readonly="true">
+          <viewer depends="ruleTypeSelect">
+            <![CDATA[
 						<p ng-show="record.ruleTypeSelect == 3">
 							<span x-translate>This state allows to create a custom rule to be shown in the report.</span><br>
-							<span x-translate>Any Javascript operation can be written and the computed result will be displayed, but there must be only one line.</span><br>
-							<span x-translate>A previous result can be used with the following syntax : rules["code"] where code is the "code" field of a previous config line.</span>
+							<span x-translate>Any Groovy expression can be written and the computed result will be displayed, but there must be only one line.</span><br>
+							<span x-translate>A previous result can be used with its code, but it can only be elements of the same type.</span><br>
+							<span x-translate>Priority will define which rule to use when computation encounters multiple ones.</span>
 						</p>
 					]]>
-        </viewer>
-      </field>
-      <field name="rule" showTitle="false" widget="code-editor" x-code-syntax="javascript"
-        showIf="ruleTypeSelect == 3" colSpan="12"/>
-    </panel>
-    <panel-related name="accountingReportConfigLineAccountTypeSetPanel"
-      field="accountTypeSet" colSpan="12" canNew="false" canEdit="false"
-      form-view="account-type-form" grid-view="account-type-grid"
-      showIf="typeSelect == 5 || ruleTypeSelect == 2"/>
-    <panel-related name="accountingReportConfigLineAccountSetPanel" field="accountSet"
-      colSpan="12" canNew="false" canEdit="false" form-view="account-form" grid-view="account-grid"
-      showIf="typeSelect == 5 || ruleTypeSelect == 2"
-      onSelect="action-accounting-report-config-line-attrs-account-set-domain"/>
-    <panel-related name="accountingReportConfigLineAnalyticAccountSetPanel"
-      field="analyticAccountSet" colSpan="12" canNew="false" canEdit="false"
-      form-view="analytic-account-form" grid-view="analytic-account-grid"
-      showIf="ruleTypeSelect == 2"/>
-
+          </viewer>
+        </field>
+        <field name="priority" colSpan="6" showIf="typeSelect != 4 &amp;&amp; !$legacy"
+          requiredIf="typeSelect != 4 &amp;&amp; ruleTypeSelect == 3"/>
+        <field name="rule" showTitle="false" widget="code-editor" x-code-syntax="javascript"/>
+      </panel>
+      <panel name="configPanel" title="Configs">
+        <field name="styleSelect"
+          onChange="action-accounting-report-config-line-record-reset-style-priority"/>
+        <field name="stylePriority" showIf="styleSelect > 0"/>
+        <panel name="configPanel" colSpan="12"
+          showIf="typeSelect != 4 &amp;&amp; [2,3,4].includes(ruleTypeSelect)">
+          <field name="hidden"/>
+          <field name="notComputedIfIntersect" hideIf="$legacy"/>
+          <panel name="columnConfigPanel" colSpan="12"
+            showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2 &amp;&amp; !$legacy">
+            <field name="computePreviousYear" hideIf="computeOtherPeriod"/>
+            <field name="computeOtherPeriod" hideIf="computePreviousYear"/>
+          </panel>
+          <field name="groupsWithoutColumn"
+            showIf="reportTypeColumn != null &amp;&amp; typeSelect != 5 &amp;&amp; !$legacy"/>
+        </panel>
+        <panel name="groupConfigPanel" showIf="typeSelect == 4" colSpan="12">
+          <field name="hidden"/>
+          <field name="computeOtherPeriod"
+            showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2"/>
+        </panel>
+      </panel>
+    </panel-tabs>
   </form>
 
   <action-group name="action-accounting-report-config-line-group-line-onnew">
     <action name="action-accounting-report-config-line-record-line-rule"/>
     <action name="action-accounting-report-config-line-attrs-set-legacy"/>
+    <action name="action-accounting-report-config-line-attrs-set-active-tab"/>
+  </action-group>
+
+  <action-group name="action-accounting-report-config-line-group-column-onnew">
+    <action name="action-accounting-report-config-line-record-column-rule"/>
+    <action name="action-accounting-report-config-line-attrs-set-active-tab"/>
   </action-group>
 
   <action-record
     name="action-accounting-report-config-line-record-type-select-onchange"
     model="com.axelor.apps.account.db.AccountingReportConfigLine">
-    <field name="ruleTypeSelect" expr="1" if="typeSelect == 3"/>
+    <field name="ruleTypeSelect" expr="1"
+      if="typeSelect == 3 || (typeSelect > 3 &amp;&amp; ruleTypeSelect == 4)"/>
     <field name="code" expr="eval: null" if="typeSelect == 3"/>
     <field name="label" expr="eval: null" if="typeSelect == 3"/>
   </action-record>
@@ -204,6 +216,11 @@
 
   <action-attrs name="action-accounting-report-config-line-attrs-set-legacy">
     <attribute name="value" for="$legacy" expr="eval: __parent__?.useLegacyCustomReports"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-report-config-line-attrs-set-active-tab">
+    <attribute name="active" for="accountPanel" expr="eval: true" if="ruleTypeSelect == 2"/>
+    <attribute name="active" for="rulePanel" expr="eval: true" if="ruleTypeSelect == 3"/>
   </action-attrs>
 
   <action-view name="action-move-line-view-open-report-config-line" title="Config lines"

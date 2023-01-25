@@ -36,9 +36,9 @@ public class MrpSaleOrderCheckLateSaleServiceImpl implements MrpSaleOrderCheckLa
   @Override
   public boolean checkLateSalesParameter(SaleOrderLine saleOrderLine, MrpLineType mrpLineType) {
     // Determine deliveryDate
-    LocalDate deliveryDate = saleOrderLine.getEstimatedDelivDate();
+    LocalDate deliveryDate = saleOrderLine.getEstimatedShippingDate();
     if (deliveryDate == null) {
-      deliveryDate = saleOrderLine.getSaleOrder().getDeliveryDate();
+      deliveryDate = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
     }
     if (deliveryDate == null) {
       deliveryDate = saleOrderLine.getDesiredDelivDate();

@@ -957,10 +957,10 @@ public class MrpServiceImpl implements MrpService {
       return;
     }
 
-    LocalDate maturityDate = saleOrderLine.getEstimatedDelivDate();
+    LocalDate maturityDate = saleOrderLine.getEstimatedShippingDate();
 
     if (maturityDate == null) {
-      maturityDate = saleOrder.getDeliveryDate();
+      maturityDate = saleOrder.getEstimatedShippingDate();
     }
     if (maturityDate == null) {
       maturityDate = saleOrderLine.getDesiredDelivDate();

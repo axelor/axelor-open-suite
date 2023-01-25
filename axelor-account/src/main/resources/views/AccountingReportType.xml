@@ -46,7 +46,6 @@
             onChange="action-accounting-report-type-attrs-comparison-onchange"/>
         </panel>
         <field name="noOfPeriods" showIf="[2,3].includes(comparison)"/>
-        <field name="useLegacyCustomReports"/>
         <panel-related
           name="accountingReportTypeAccountingReportConfigLineColumnListPanel"
           field="accountingReportConfigLineColumnList" height="15" x-row-height="29"
@@ -58,8 +57,10 @@
           grid-view="accounting-report-config-line-grid"/>
       </panel>
     </panel>
-    <panel sidebar="true">
+    <panel sidebar="true" itemSpan="12">
       <field name="template" widget="binary-link"/>
+      <field name="useLegacyCustomReports"
+        help="To use legacy custom reports, you have to put the old rptdesign file as a template"/>
     </panel>
   </form>
 
