@@ -3063,7 +3063,6 @@
 "The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
 "The sale order must be the same for all invoices",,,
 "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account.",,,
-"The selected cut off move status is incompatible with this misc. operation journal",,,
 "The selected date is out of the accounting period.",,,
 "The selected moves have been successfully, if activated set to daybook, or else accounted.",,,
 "The sum of all invoice terms in company currency is not equal to the move line amount",,,
