@@ -448,7 +448,7 @@
   <action-validate name="action-accounting-batch-validate-cut-off-move-status">
     <error
       message="The selected cut off move status is incompatible with this misc. operation journal"
-      if="eval: (!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; cutOffMoveStatusSelect == 5) || (!miscOpeJournal?.allowAccountingDaybook &amp;&amp; cutOffMoveStatusSelect == 2)"/>
+      if="(!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; cutOffMoveStatusSelect == 5) || (!miscOpeJournal?.allowAccountingDaybook &amp;&amp; cutOffMoveStatusSelect == 2)"/>
   </action-validate>
 
   <!-- ACTION ATTRS -->
