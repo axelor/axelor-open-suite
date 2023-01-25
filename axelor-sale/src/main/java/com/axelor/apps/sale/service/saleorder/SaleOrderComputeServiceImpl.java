@@ -40,17 +40,13 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
 
   protected SaleOrderLineService saleOrderLineService;
   protected SaleOrderLineTaxService saleOrderLineTaxService;
-  protected SaleOrderToolService saleOrderToolService;
 
   @Inject
   public SaleOrderComputeServiceImpl(
-      SaleOrderLineService saleOrderLineService,
-      SaleOrderLineTaxService saleOrderLineTaxService,
-      SaleOrderToolService saleOrderToolService) {
+      SaleOrderLineService saleOrderLineService, SaleOrderLineTaxService saleOrderLineTaxService) {
 
     this.saleOrderLineService = saleOrderLineService;
     this.saleOrderLineTaxService = saleOrderLineTaxService;
-    this.saleOrderToolService = saleOrderToolService;
   }
 
   @Override
@@ -174,9 +170,9 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     }
 
     if (!saleOrder.getInAti()) {
-      exTaxTotal = saleOrderToolService.computeAmount(qty, priceDiscounted);
+      exTaxTotal = qty.multiply(priceDiscounted);
     } else {
-      inTaxTotal = saleOrderToolService.computeAmount(qty, priceDiscounted);
+      inTaxTotal = qty.multiply(priceDiscounted);
       exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), RoundingMode.HALF_UP);
     }
 

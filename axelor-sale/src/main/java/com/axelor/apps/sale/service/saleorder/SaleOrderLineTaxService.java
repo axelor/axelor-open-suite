@@ -24,9 +24,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,9 +39,6 @@ import org.slf4j.LoggerFactory;
 public class SaleOrderLineTaxService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @Inject private SaleOrderService saleOrderService;
-  @Inject private SaleOrderToolService saleOrderToolService;
 
   /**
    * Créer les lignes de TVA du devis. La création des lignes de TVA se basent sur les lignes de
@@ -65,55 +62,36 @@ public class SaleOrderLineTaxService {
       customerSpecificNote = fiscalPosition.getCustomerSpecificNote();
     }
 
-    if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
+    createVatLines(saleOrder, saleOrderLineList, map, specificNotes, customerSpecificNote);
+    computeTaxes(saleOrderLineTaxList, map);
+    setSpecificNotes(saleOrder, specificNotes, customerSpecificNote);
 
-      LOG.debug("Creation of VAT lines for sale order lines.");
+    return saleOrderLineTaxList;
+  }
 
-      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-
-        TaxLine taxLine = saleOrderLine.getTaxLine();
-
-        if (taxLine != null) {
-
-          LOG.debug("Tax {}", taxLine);
-
-          if (map.containsKey(taxLine)) {
-
-            SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
-
-            saleOrderLineTax.setExTaxBase(
-                saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal()));
-
-          } else {
-
-            SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
-            saleOrderLineTax.setSaleOrder(saleOrder);
-
-            saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
-
-            saleOrderLineTax.setTaxLine(taxLine);
-            map.put(taxLine, saleOrderLineTax);
-          }
-        }
-
-        if (!customerSpecificNote) {
-          TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
-          if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
-            specificNotes.add(taxEquiv.getSpecificNote());
-          }
-        }
-      }
+  protected void setSpecificNotes(
+      SaleOrder saleOrder, Set<String> specificNotes, boolean customerSpecificNote) {
+    if (!customerSpecificNote) {
+      saleOrder.setSpecificNotes(Joiner.on('\n').join(specificNotes));
+    } else {
+      saleOrder.setSpecificNotes(saleOrder.getClientPartner().getSpecificTaxNote());
     }
+  }
 
+  protected void computeTaxes(
+      List<SaleOrderLineTax> saleOrderLineTaxList, Map<TaxLine, SaleOrderLineTax> map) {
     for (SaleOrderLineTax saleOrderLineTax : map.values()) {
 
       // Dans la devise de la facture
       BigDecimal exTaxBase = saleOrderLineTax.getExTaxBase();
       BigDecimal taxTotal = BigDecimal.ZERO;
       if (saleOrderLineTax.getTaxLine() != null) {
-        taxTotal =
-            saleOrderToolService.computeAmount(
-                exTaxBase, saleOrderLineTax.getTaxLine().getValue().divide(new BigDecimal(100)));
+        BigDecimal taxValue =
+            saleOrderLineTax
+                .getTaxLine()
+                .getValue()
+                .divide(new BigDecimal(100), RoundingMode.HALF_UP);
+        taxTotal = exTaxBase.multiply(taxValue);
         saleOrderLineTax.setTaxTotal(taxTotal);
       }
       saleOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
@@ -123,13 +101,55 @@ public class SaleOrderLineTaxService {
           "VAT line : VAT total => {}, W.T. total => {}",
           new Object[] {saleOrderLineTax.getTaxTotal(), saleOrderLineTax.getInTaxTotal()});
     }
+  }
 
-    if (!customerSpecificNote) {
-      saleOrder.setSpecificNotes(Joiner.on('\n').join(specificNotes));
-    } else {
-      saleOrder.setSpecificNotes(saleOrder.getClientPartner().getSpecificTaxNote());
+  protected void createVatLines(
+      SaleOrder saleOrder,
+      List<SaleOrderLine> saleOrderLineList,
+      Map<TaxLine, SaleOrderLineTax> map,
+      Set<String> specificNotes,
+      boolean customerSpecificNote) {
+    if (saleOrderLineList == null && saleOrderLineList.isEmpty()) {
+      return;
     }
+    LOG.debug("Creation of VAT lines for sale order lines.");
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      TaxLine taxLine = saleOrderLine.getTaxLine();
+      setDefaultValues(saleOrder, map, saleOrderLine, taxLine);
+      addCustomerSpecificNotes(specificNotes, customerSpecificNote, saleOrderLine);
+    }
+  }
 
-    return saleOrderLineTaxList;
+  protected void addCustomerSpecificNotes(
+      Set<String> specificNotes, boolean customerSpecificNote, SaleOrderLine saleOrderLine) {
+    if (customerSpecificNote) {
+      return;
+    }
+    TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
+    if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
+      specificNotes.add(taxEquiv.getSpecificNote());
+    }
+  }
+
+  protected void setDefaultValues(
+      SaleOrder saleOrder,
+      Map<TaxLine, SaleOrderLineTax> map,
+      SaleOrderLine saleOrderLine,
+      TaxLine taxLine) {
+    if (taxLine == null) {
+      return;
+    }
+    LOG.debug("Tax {}", taxLine);
+    if (map.containsKey(taxLine)) {
+      SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
+      saleOrderLineTax.setExTaxBase(
+          saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal()));
+    } else {
+      SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
+      saleOrderLineTax.setSaleOrder(saleOrder);
+      saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
+      saleOrderLineTax.setTaxLine(taxLine);
+      map.put(taxLine, saleOrderLineTax);
+    }
   }
 }
