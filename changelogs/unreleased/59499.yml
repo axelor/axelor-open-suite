@@ -1,3 +1,3 @@
 ---
-title : "Fixed Asset: Set first deprecation date do end of month when periodicity is in months"
+title : "Fixed Asset: Set first deprecation date to end of month when periodicity is in months"
 type: fix
