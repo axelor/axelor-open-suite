@@ -22,22 +22,10 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.LostReason;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 
 public interface LeadService {
-
-  /**
-   * Convert lead into a partner
-   *
-   * @param lead
-   * @return
-   * @throws AxelorException
-   */
-  @Transactional(rollbackOn = {Exception.class})
-  public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
-      throws AxelorException;
 
   /**
    * Get sequence for partner
