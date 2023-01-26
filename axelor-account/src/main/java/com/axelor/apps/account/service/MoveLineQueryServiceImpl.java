@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -66,7 +66,9 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
 
     query += " AND self.account.id = " + moveLineQuery.getAccount().getId();
 
-    query += " AND self.partner.id = " + moveLineQuery.getPartner().getId();
+    if (ObjectUtils.notEmpty(moveLineQuery.getPartner())) {
+      query += " AND self.partner.id = " + moveLineQuery.getPartner().getId();
+    }
 
     if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_RECONCILE) {
       query += "AND self.amountRemaining != 0 ";

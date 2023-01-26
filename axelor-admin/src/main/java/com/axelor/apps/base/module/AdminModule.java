@@ -34,6 +34,8 @@ import com.axelor.apps.base.service.app.AnonymizeService;
 import com.axelor.apps.base.service.app.AnonymizeServiceImpl;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.app.AppServiceImpl;
+import com.axelor.apps.base.service.app.DataBackupAnonymizeService;
+import com.axelor.apps.base.service.app.DataBackupAnonymizeServiceImpl;
 import com.axelor.apps.base.service.app.DataBackupService;
 import com.axelor.apps.base.service.app.DataBackupServiceImpl;
 import com.axelor.apps.base.service.app.FakerService;
@@ -54,5 +56,6 @@ public class AdminModule extends AxelorModule {
     bind(AnonymizeService.class).to(AnonymizeServiceImpl.class);
     bind(FakerService.class).to(FakerServiceImpl.class);
     bind(DataBackupRepository.class).to(DataBackupManagementRepository.class);
+    bind(DataBackupAnonymizeService.class).to(DataBackupAnonymizeServiceImpl.class);
   }
 }

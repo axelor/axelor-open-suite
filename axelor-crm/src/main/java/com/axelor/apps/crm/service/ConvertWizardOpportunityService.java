@@ -18,32 +18,11 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.wizard.ConvertWizardService;
-import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.google.inject.Inject;
 import java.util.Map;
 
-public class ConvertWizardOpportunityService {
+public interface ConvertWizardOpportunityService {
 
-  protected ConvertWizardService convertWizardService;
-  protected OpportunityService opportunityService;
-
-  @Inject
-  public ConvertWizardOpportunityService(
-      ConvertWizardService convertWizardService, OpportunityService opportunityService) {
-    this.convertWizardService = convertWizardService;
-    this.opportunityService = opportunityService;
-  }
-
-  public void createOpportunity(Map<String, Object> context, Partner partner)
-      throws AxelorException {
-    Opportunity opportunity =
-        (Opportunity)
-            convertWizardService.createObject(
-                context, Mapper.toBean(Opportunity.class, null), Mapper.of(Opportunity.class));
-    opportunity.setPartner(partner);
-    opportunityService.saveOpportunity(opportunity);
-  }
+  public void createOpportunity(Map<String, Object> opportunityMa, Partner partner)
+      throws AxelorException;
 }

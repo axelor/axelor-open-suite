@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -354,28 +354,24 @@ public class PartnerServiceImpl implements PartnerService {
                 + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
             partner.getId());
 
-    if (partner.getEmailAddress() != null) {
-      if (emailType == MessageRepository.TYPE_RECEIVED) {
-        query =
-            query.substring(0, query.length() - 1)
-                + " OR (email.fromEmailAddress.address = '"
-                + partner.getEmailAddress().getAddress()
-                + "'))";
-
-      } else {
-        query =
-            query.substring(0, query.length() - 1)
-                + " OR (:emailAddress IN (SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet)))";
-        return JPA.em()
-            .createQuery(query)
-            .setParameter("emailAddress", partner.getEmailAddress().getAddress())
-            .getResultList();
-      }
+    String emailAddress =
+        (partner.getEmailAddress() != null) ? partner.getEmailAddress().getAddress() : null;
+    if (emailAddress != null) {
+      query +=
+          " OR (:emailAddress IN ("
+              + ((emailType == MessageRepository.TYPE_RECEIVED)
+                  ? "email.fromEmailAddress.address"
+                  : "SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet")
+              + "))";
     } else {
       query += " AND email.typeSelect = " + emailType;
     }
+    javax.persistence.Query q = JPA.em().createQuery(query);
+    if (emailAddress != null) {
+      q.setParameter("emailAddress", emailAddress);
+    }
 
-    return JPA.em().createQuery(query).getResultList();
+    return q.getResultList();
   }
 
   private PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {

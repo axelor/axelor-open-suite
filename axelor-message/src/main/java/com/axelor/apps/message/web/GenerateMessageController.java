@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,7 +32,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -61,20 +60,42 @@ public class GenerateMessageController {
         Beans.get(TemplateRepository.class)
             .all()
             .filter("self.metaModel.fullName = ?1 AND self.isSystem != true", model);
+
     try {
+
       long templateNumber = templateQuery.count();
 
       LOG.debug("Template number : {} ", templateNumber);
 
-      if (templateNumber > 1 || templateNumber == 0) {
-        ActionViewBuilder builder =
-            getActionView(templateNumber, context, model, simpleModel, null);
-        response.setView(builder.map());
+      if (templateNumber == 0) {
+
+        response.setView(
+            ActionView.define(I18n.get(MessageExceptionMessage.MESSAGE_3))
+                .model(Message.class.getName())
+                .add("form", "message-form")
+                .param("forceEdit", "true")
+                .context("_mediaTypeSelect", MessageRepository.MEDIA_TYPE_EMAIL)
+                .context("_templateContextModel", model)
+                .context("_objectId", context.getId().toString())
+                .map());
+
+      } else if (templateNumber > 1) {
+
+        response.setView(
+            ActionView.define(I18n.get(MessageExceptionMessage.MESSAGE_2))
+                .model(Wizard.class.getName())
+                .add("form", "generate-message-wizard-form")
+                .param("show-confirm", "false")
+                .context("_objectId", context.getId().toString())
+                .context("_templateContextModel", model)
+                .context("_tag", simpleModel)
+                .map());
 
       } else {
         response.setView(
             generateMessage(context.getId(), model, simpleModel, templateQuery.fetchOne()));
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -115,8 +136,7 @@ public class GenerateMessageController {
     Message message = null;
     if (template != null) {
       message =
-          Beans.get(TemplateMessageService.class)
-              .generateMessage(objectId, model, tag, template, false);
+          Beans.get(TemplateMessageService.class).generateMessage(objectId, model, tag, template);
     } else {
       message =
           Beans.get(MessageService.class)
@@ -134,43 +154,14 @@ public class GenerateMessageController {
                   null,
                   MessageRepository.MEDIA_TYPE_EMAIL,
                   null,
-                  null,
-                  false);
+                  null);
     }
 
-    ActionViewBuilder builder = getActionView(1, null, model, null, message);
-    return builder.map();
-  }
-
-  public ActionViewBuilder getActionView(
-      long templateNumber, Model context, String model, String simpleModel, Message message) {
-
-    if (templateNumber > 1) {
-      return ActionView.define(I18n.get(MessageExceptionMessage.MESSAGE_2))
-          .model(Wizard.class.getName())
-          .add("form", "generate-message-wizard-form")
-          .param("show-confirm", "false")
-          .context("_objectId", context.getId().toString())
-          .context("_templateContextModel", model)
-          .context("_tag", simpleModel);
-
-    } else {
-      ActionViewBuilder builder =
-          ActionView.define(I18n.get(MessageExceptionMessage.MESSAGE_3))
-              .model(Message.class.getName())
-              .add("form", "message-form")
-              .param("forceEdit", "true");
-
-      if (templateNumber == 0) {
-        builder
-            .context("_mediaTypeSelect", MessageRepository.MEDIA_TYPE_EMAIL)
-            .context("_templateContextModel", model)
-            .context("_objectId", context.getId().toString());
-
-      } else {
-        builder.context("_showRecord", message.getId() != null ? message.getId().toString() : null);
-      }
-      return builder;
-    }
+    return ActionView.define(I18n.get(MessageExceptionMessage.MESSAGE_3))
+        .model(Message.class.getName())
+        .add("form", "message-form")
+        .param("forceEdit", "true")
+        .context("_showRecord", message.getId().toString())
+        .map();
   }
 }

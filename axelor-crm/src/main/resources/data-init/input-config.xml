@@ -12,6 +12,9 @@
     <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
   </input>
 
+  <input file="crm_opportunityStatus.csv" separator=";"
+    type="com.axelor.apps.crm.db.OpportunityStatus" search="self.importId = :importId"/>
+
   <input file="base_appCrm.csv" separator=";" type="com.axelor.apps.base.db.App"
     call="com.axelor.csv.script.ImportApp:importApp">
     <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
@@ -25,9 +28,6 @@
 
   <input file="crm_eventCategory.csv" separator=";"
     type="com.axelor.apps.crm.db.EventCategory" search="self.importId = :importId"/>
-
-  <input file="crm_opportunityStatus.csv" separator=";"
-    type="com.axelor.apps.crm.db.OpportunityStatus" search="self.importId = :importId"/>
 
   <input file="base_importConfiguration.csv" separator=";"
     type="com.axelor.apps.base.db.ImportConfiguration"

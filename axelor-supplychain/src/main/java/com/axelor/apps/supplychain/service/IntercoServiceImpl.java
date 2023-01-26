@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -58,7 +59,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
@@ -80,12 +80,15 @@ import java.util.Set;
 public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
+  protected BankDetailsService bankDetailsService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Inject
-  public IntercoServiceImpl(PurchaseConfigService purchaseConfigService) {
+  public IntercoServiceImpl(
+      PurchaseConfigService purchaseConfigService, BankDetailsService bankDetailsService) {
     this.purchaseConfigService = purchaseConfigService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Override
@@ -125,13 +128,13 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrder.setPaymentCondition(purchaseOrder.getPaymentCondition());
 
     // copy delivery info
-    saleOrder.setDeliveryDate(purchaseOrder.getDeliveryDate());
     saleOrder.setShipmentMode(purchaseOrder.getShipmentMode());
     saleOrder.setFreightCarrierMode(purchaseOrder.getFreightCarrierMode());
 
     // get stock location
     saleOrder.setStockLocation(
-        Beans.get(StockLocationService.class).getPickupDefaultStockLocation(intercoCompany));
+        Beans.get(SaleOrderSupplychainService.class)
+            .getStockLocation(purchaseOrder.getCompany().getPartner(), intercoCompany));
 
     // copy timetable info
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
@@ -175,7 +178,6 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setCompany(intercoCompany);
     purchaseOrder.setContactPartner(saleOrder.getContactPartner());
     purchaseOrder.setCurrency(saleOrder.getCurrency());
-    purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setOrderDate(saleOrder.getCreationDate());
     purchaseOrder.setPriceList(saleOrder.getPriceList());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
@@ -202,9 +204,9 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setPaymentCondition(saleOrder.getPaymentCondition());
 
     // copy delivery info
-    purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setStockLocation(
-        Beans.get(StockLocationService.class).getDefaultReceiptStockLocation(intercoCompany));
+        Beans.get(PurchaseOrderSupplychainService.class)
+            .getStockLocation(saleOrder.getCompany().getPartner(), intercoCompany));
     purchaseOrder.setShipmentMode(saleOrder.getShipmentMode());
     purchaseOrder.setFreightCarrierMode(saleOrder.getFreightCarrierMode());
 
@@ -261,7 +263,7 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderLine.setDiscountAmount(saleOrderLine.getDiscountAmount());
 
     // delivery
-    purchaseOrderLine.setEstimatedDelivDate(saleOrderLine.getEstimatedDelivDate());
+    purchaseOrderLine.setEstimatedDelivDate(saleOrderLine.getDesiredDelivDate());
 
     // compute price discounted
     BigDecimal priceDiscounted =
@@ -312,7 +314,7 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setPriceDiscounted(priceDiscounted);
 
     // delivery
-    saleOrderLine.setEstimatedDelivDate(purchaseOrderLine.getEstimatedDelivDate());
+    saleOrderLine.setDesiredDelivDate(purchaseOrderLine.getDesiredDelivDate());
 
     // tax
     saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());
@@ -382,7 +384,6 @@ public class IntercoServiceImpl implements IntercoService {
             .getDefaultPriceList(intercoPartner, priceListRepositoryType);
 
     Invoice intercoInvoice = invoiceRepository.copy(invoice, true);
-
     intercoInvoice.setOperationTypeSelect(generatedOperationTypeSelect);
     intercoInvoice.setCompany(intercoCompany);
     intercoInvoice.setPartner(intercoPartner);
@@ -421,6 +422,9 @@ public class IntercoServiceImpl implements IntercoService {
 
     invoiceService.compute(intercoInvoice);
     intercoInvoice.setExternalReference(invoice.getInvoiceId());
+    intercoInvoice.setCompanyBankDetails(
+        bankDetailsService.getDefaultCompanyBankDetails(
+            intercoCompany, intercoPaymentMode, intercoPartner, generatedOperationTypeSelect));
     intercoInvoice = invoiceRepository.save(intercoInvoice);
 
     // the interco invoice needs to be saved before we can attach files to it

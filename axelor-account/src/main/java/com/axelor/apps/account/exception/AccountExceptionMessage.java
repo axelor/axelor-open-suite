@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,8 @@ public final class AccountExceptionMessage {
       /*$$(*/ "An invoice with the same number (%s) already exists for this supplier %s and the year %s." /*)*/;
   public static final String IMMO_FIXED_ASSET_CAN_NOT_SIMULATE =
       /*$$(*/ "The line can not be simulated because there is no journal or it does not authorize simulated move" /*)*/;
+  public static final String IMMO_FIXED_ASSET_DEPRECIATIONS_NOT_ACCOUNTED_BEFORE_DISPOSAL_DATE =
+      /*$$(*/ "The fixed asset can't be disposed at the moment as there are still depreciations that remains to be accounted before input disposal date. Please proceed to the realization of those depreciations before proceeding to the disposal of the asset on that date." /*)*/;
   public static final String IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL =
       /*$$(*/ "Disposal quantity can not be greater than the fixed asset quantity (%s)" /*)*/;
 
@@ -44,13 +46,13 @@ public final class AccountExceptionMessage {
   public static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: Disposal move could not be generated because the following account setting : '%s' is missing on the associated fixed asset category." /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: fixed asset category is missing one of theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: fixed asset category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
       /*$$(*/ "Fixed asset is missing a derogatory line at status planned" /*)*/;
   public static final String IMMO_FIXED_ASSET_CESSION_BEFORE_FIRST_SERVICE_DATE =
@@ -1004,6 +1006,9 @@ public final class AccountExceptionMessage {
       INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
 
+  public static final String INVOICE_WRONG_ANALYTIC_DISTRIBUTION = /*$$(*/
+      "Some invoice lines analytic distributions are not correct, please correct them." /*)*/;
+
   public static final String INVOICE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management" /*)*/;
 
@@ -1183,8 +1188,11 @@ public final class AccountExceptionMessage {
   public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL = /*$$(*/
       "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
 
-  public static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
-      "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+  public static final String MOVE_CHECK_ORIGIN = /*$$(*/
+      "The move field origin is empty, do you wish to continue ?" /*)*/;
+
+  public static final String MOVE_CHECK_DESCRIPTION = /*$$(*/
+      "The move field description is empty, do you wish to continue ?" /*)*/;
 
   public static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
@@ -1354,6 +1362,10 @@ public final class AccountExceptionMessage {
   public static final String MASS_UPDATE_NO_STATUS = /*$$(*/ "Please select a status." /*)*/;
   public static final String CAPITAL_DEPRECIATION_DEROGATORY_ACCOUNT = /*$$(*/
       "Capital Depreciation Derogatory Account" /*)*/;
+  public static final String EXPENSE_DEPRECIATION_DEROGATORY_ACCOUNT = /*$$(*/
+      "Expense Depreciation Derogatory Account" /*)*/;
+  public static final String INCOME_DEPRECIATION_DEROGATORY_ACCOUNT = /*$$(*/
+      "Income Depreciation Derogatory Account" /*)*/;
 
   public static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
       "No partner account was found for company %s." /*)*/;
@@ -1501,9 +1513,9 @@ public final class AccountExceptionMessage {
   public static final String REPORT_TYPE_NO_RESULT_SELECT = /*$$(*/
       "Report type %s has intersecting column %s and line %s with no defined computation method." /*)*/;
 
-  public static final String REPORT_TYPE_INTERSECT_CUSTOM_RULE = /*$$(*/
-      "Report type %s has intersecting column %s and line %s with custom rules." /*)*/;
-
   public static final String REPORT_TYPE_MULTIPLE_GROUPS = /*$$(*/
       "Report type %s has group columns of different types." /*)*/;
+
+  public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
+      "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
 }

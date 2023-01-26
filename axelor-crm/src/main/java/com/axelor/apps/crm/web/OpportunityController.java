@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,20 +20,15 @@ package com.axelor.apps.crm.web;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
-import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -81,9 +76,12 @@ public class OpportunityController {
 
   public void setStageClosedWon(ActionRequest request, ActionResponse response) {
     try {
-      OpportunityStatus status =
-          findStatusByTypeSelect(OpportunityStatusRepository.STATUS_TYPE_CLOSED_WON);
-      response.setValue("opportunityStatus", status);
+      Opportunity opportunity = request.getContext().asType(Opportunity.class);
+
+      Beans.get(OpportunityService.class)
+          .setOpportunityStatus(
+              Beans.get(OpportunityRepository.class).find(opportunity.getId()), true);
+      response.setReload(true);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -91,35 +89,32 @@ public class OpportunityController {
 
   public void setStageClosedLost(ActionRequest request, ActionResponse response) {
     try {
-      OpportunityStatus status =
-          findStatusByTypeSelect(OpportunityStatusRepository.STATUS_TYPE_CLOSED_LOST);
-      response.setValue("opportunityStatus", status);
+      Opportunity opportunity = request.getContext().asType(Opportunity.class);
+
+      Beans.get(OpportunityService.class)
+          .setOpportunityStatus(
+              Beans.get(OpportunityRepository.class).find(opportunity.getId()), false);
+      response.setReload(true);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
-  private OpportunityStatus findStatusByTypeSelect(Integer typeSelect) throws AxelorException {
-    final String selectionName = "crm.opportunity.status.type.select";
-    OpportunityStatus status =
-        Beans.get(OpportunityStatusRepository.class).findByTypeSelect(typeSelect);
-    if (status == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.OPPORTUNITY_STATUS_NOT_FOUND),
-          MetaStore.getSelectionItem(selectionName, Integer.toString(typeSelect))
-              .getLocalizedTitle());
-    }
-    return status;
+  public void setNextStage(ActionRequest request, ActionResponse response) {
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    Beans.get(OpportunityService.class)
+        .setOpportunityStatusNextStage(
+            Beans.get(OpportunityRepository.class).find(opportunity.getId()));
+    response.setReload(true);
   }
 
   public void fillEndDate(ActionRequest request, ActionResponse response) {
     Opportunity opportunity = request.getContext().asType(Opportunity.class);
-    LocalDate startDate = opportunity.getStartDate();
+    LocalDate recurringStartDate = opportunity.getRecurringStartDate();
     int recurringRevanue = opportunity.getExpectedDurationOfRecurringRevenue();
-    if (recurringRevanue != 0 && startDate != null) {
-      LocalDate newDate = startDate.plusMonths((long) recurringRevanue);
-      response.setValue("endDate", newDate);
+    if (recurringRevanue != 0 && recurringStartDate != null) {
+      LocalDate newDate = recurringStartDate.plusMonths((long) recurringRevanue);
+      response.setValue("recurringEndDate", newDate);
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -981,7 +981,7 @@ public interface IExceptionMessage {
       "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
 
   static final String MOVE_CHECK_ORIGIN_AND_DESCRIPTION = /*$$(*/
-      "The move fields origin and description are empty, do you wish to continue ?" /*)*/;
+      "The move field origin is empty, do you wish to continue ?" /*)*/;
 
   static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;

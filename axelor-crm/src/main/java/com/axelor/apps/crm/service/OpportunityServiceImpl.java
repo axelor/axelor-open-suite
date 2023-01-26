@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -27,27 +27,33 @@ import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OpportunityServiceImpl implements OpportunityService {
 
   protected OpportunityRepository opportunityRepo;
   protected AddressService addressService;
   protected OpportunityStatusRepository opportunityStatusRepo;
+  protected AppCrmService appCrmService;
 
   @Inject
   public OpportunityServiceImpl(
       OpportunityRepository opportunityRepo,
       AddressService addressService,
-      OpportunityStatusRepository opportunityStatusRepo) {
+      OpportunityStatusRepository opportunityStatusRepo,
+      AppCrmService appCrmService) {
     this.opportunityRepo = opportunityRepo;
     this.addressService = addressService;
     this.opportunityStatusRepo = opportunityStatusRepo;
+    this.appCrmService = appCrmService;
   }
 
   @Transactional
@@ -72,20 +78,48 @@ public class OpportunityServiceImpl implements OpportunityService {
   }
 
   @Override
-  public String computeAndGetName(Opportunity opportunity) {
-    Partner partner = opportunity.getPartner();
-    Partner contact = opportunity.getContact();
-    if (partner != null) {
-      return partner.getFullName();
-
-    } else if (contact != null) {
-      return contact.getFullName();
-    }
-    return null;
+  public OpportunityStatus getDefaultOpportunityStatus() {
+    return opportunityStatusRepo.getDefaultStatus();
   }
 
   @Override
-  public OpportunityStatus getDefaultOpportunityStatus() {
-    return opportunityStatusRepo.getDefaultStatus();
+  public void setOpportunityStatus(Opportunity opportunity, boolean isStagedClosedWon)
+      throws AxelorException {
+
+    if (isStagedClosedWon) {
+      opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
+    } else {
+      opportunity.setOpportunityStatus(appCrmService.getClosedLostOpportunityStatus());
+    }
+
+    saveOpportunity(opportunity);
+  }
+
+  @Override
+  public void setOpportunityStatusNextStage(Opportunity opportunity) {
+    OpportunityStatus status = opportunity.getOpportunityStatus();
+    status = Beans.get(OpportunityStatusRepository.class).findByNextSequence(status.getSequence());
+    opportunity.setOpportunityStatus(status);
+    saveOpportunity(opportunity);
+  }
+
+  @Override
+  public List<Long> getClosedOpportunityStatusIdList() {
+    List<Long> closedOpportunityStatusIdList = new ArrayList<>();
+
+    AppCrm appCrm = appCrmService.getAppCrm();
+
+    OpportunityStatus closedWinOpportunityStatus = appCrm.getClosedWinOpportunityStatus();
+    OpportunityStatus closedLostOpportunityStatus = appCrm.getClosedLostOpportunityStatus();
+
+    if (closedWinOpportunityStatus != null) {
+      closedOpportunityStatusIdList.add(closedWinOpportunityStatus.getId());
+    }
+
+    if (closedLostOpportunityStatus != null) {
+      closedOpportunityStatusIdList.add(closedLostOpportunityStatus.getId());
+    }
+
+    return closedOpportunityStatusIdList;
   }
 }

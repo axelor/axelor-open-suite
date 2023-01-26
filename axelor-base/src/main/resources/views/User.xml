@@ -46,7 +46,8 @@
         <field name="code" placeholder="login name" onChange="action-condition-user-validCode"
           validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admin'"/>
         <field name="group" placeholder="user group"/>
-        <field name="email" widget="Email" hidden="true"/>
+        <field name="email" widget="Email"
+          showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
         <field name="language"/>
         <field name="theme" widget="theme-select"/>
         <panel name="actionsPanel" stacked="true">
@@ -162,7 +163,8 @@
         <field name="code" placeholder="login name" onChange="action-condition-user-validCode"
           validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admin'"/>
         <field name="group" placeholder="user group"/>
-        <field name="email" widget="Email" hidden="true"/>
+        <field name="email" widget="Email"
+          showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
         <field name="language"/>
         <field name="theme" widget="theme-select"/>
         <panel name="actionsPanel" stacked="true">
@@ -333,7 +335,7 @@
           <field name="sendEmailUponPasswordChange"/>
         </panel>
       </panel>
-      <field name="email"/>
+      <field name="email" showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
       <field name="theme" widget="theme-select"/>
       <field name="noHelp"/>
       <field name="iCalendar" canNew="true" canEdit="true" domain="self.user.id=:id"/>
@@ -402,7 +404,6 @@
   </action-attrs>
 
   <action-attrs name="action-user-attrs">
-    <attribute name="hidden" for="email" expr="partner"/>
     <attribute name="hidden" for="passwordPanel" expr="false"/>
     <attribute name="required" for="partner.emailAddress"
       expr="sendEmailUponPasswordChange"/>

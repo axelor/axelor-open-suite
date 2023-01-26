@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,9 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public interface OpportunityService {
 
@@ -29,7 +31,13 @@ public interface OpportunityService {
 
   public void setSequence(Opportunity opportunity) throws AxelorException;
 
-  public String computeAndGetName(Opportunity opportunity);
-
   public OpportunityStatus getDefaultOpportunityStatus();
+
+  public void setOpportunityStatus(Opportunity opportunity, boolean isStagedClosedWon)
+      throws AxelorException;
+
+  public void setOpportunityStatusNextStage(Opportunity opportunity);
+
+  @CallMethod
+  public List<Long> getClosedOpportunityStatusIdList();
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -610,22 +610,25 @@ public class EventServiceImpl implements EventService {
         && event.getPartner().getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
 
       Partner partner = partnerRepo.find(event.getPartner().getId());
-      if (partner.getEmailAddress() != null)
+      if (partner.getEmailAddress() != null) {
         emailAddress = emailAddressRepo.find(partner.getEmailAddress().getId());
+      }
 
     } else if (event.getContactPartner() != null) {
 
       Partner contactPartner = partnerRepo.find(event.getContactPartner().getId());
-      if (contactPartner.getEmailAddress() != null)
+      if (contactPartner.getEmailAddress() != null) {
         emailAddress = emailAddressRepo.find(contactPartner.getEmailAddress().getId());
+      }
 
     } else if (event.getPartner() == null
         && event.getContactPartner() == null
         && event.getLead() != null) {
 
       Lead lead = leadRepo.find(event.getLead().getId());
-      if (lead.getEmailAddress() != null)
+      if (lead.getEmailAddress() != null) {
         emailAddress = emailAddressRepo.find(lead.getEmailAddress().getId());
+      }
     }
     return emailAddress;
   }
@@ -691,11 +694,21 @@ public class EventServiceImpl implements EventService {
 
     Lead lead = event.getLead();
     if (lead != null
-        && lead.getLastEventDate() != null
-        && lead.getLastEventDate().equals(eventDateTime.toLocalDate())) {
-      LocalDate endDate = this.fetchLatestEventEndDate(event, lead.getEventList());
-      if (endDate != null) {
-        lead.setLastEventDate(endDate);
+        && lead.getLastEventDateT() != null
+        && lead.getLastEventDateT().equals(eventDateTime)) {
+      List<Event> eventList =
+          lead.getEventList().stream()
+              .filter(
+                  e ->
+                      e != event
+                          && e.getEndDateTime() != null
+                          && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
+                          && e.getEndDateTime().compareTo(eventDateTime) <= 0)
+              .sorted(Comparator.comparing(Event::getEndDateTime).reversed())
+              .collect(Collectors.toList());
+
+      if (!eventList.isEmpty()) {
+        lead.setLastEventDateT(eventList.get(0).getEndDateTime());
         leadRepo.save(lead);
       }
     }
@@ -734,9 +747,9 @@ public class EventServiceImpl implements EventService {
     Lead lead = event.getLead();
     if (lead != null
         && event.getEndDateTime() != null
-        && (lead.getLastEventDate() == null
-            || lead.getLastEventDate().compareTo(event.getEndDateTime().toLocalDate()) <= 0)) {
-      lead.setLastEventDate(event.getEndDateTime().toLocalDate());
+        && (lead.getLastEventDateT() == null
+            || !lead.getLastEventDateT().isAfter(event.getEndDateTime()))) {
+      lead.setLastEventDateT(event.getEndDateTime());
     }
   }
 
@@ -746,7 +759,7 @@ public class EventServiceImpl implements EventService {
     if (partner != null
         && event.getEndDateTime() != null
         && (partner.getLastEventDate() == null
-            || partner.getLastEventDate().compareTo(event.getEndDateTime().toLocalDate()) <= 0)) {
+            || !partner.getLastEventDate().isAfter(event.getEndDateTime().toLocalDate()))) {
       partner.setLastEventDate(event.getEndDateTime().toLocalDate());
     }
   }
@@ -759,7 +772,7 @@ public class EventServiceImpl implements EventService {
         && startDateTime != null
         && event.getStatusSelect() == EventRepository.STATUS_PLANNED
         && (partner.getScheduledEventDate() == null
-            || partner.getScheduledEventDate().compareTo(startDateTime.toLocalDate()) > 0)) {
+            || partner.getScheduledEventDate().isAfter(startDateTime.toLocalDate()))) {
       partner.setScheduledEventDate(startDateTime.toLocalDate());
     }
   }
@@ -771,10 +784,9 @@ public class EventServiceImpl implements EventService {
     if (lead != null
         && startDateTime != null
         && event.getStatusSelect() == EventRepository.STATUS_PLANNED
-        && (lead.getNextScheduledEventDate() == null
-            || lead.getNextScheduledEventDate().compareTo(event.getEndDateTime().toLocalDate())
-                > 0)) {
-      lead.setNextScheduledEventDate(startDateTime.toLocalDate());
+        && (lead.getNextScheduledEventDateT() == null
+            || lead.getNextScheduledEventDateT().isAfter(event.getEndDateTime()))) {
+      lead.setNextScheduledEventDateT(startDateTime);
     }
   }
 
@@ -782,10 +794,9 @@ public class EventServiceImpl implements EventService {
   protected void updatePartnerScheduledEventDateAfterRealized(Event event) {
     Partner partner = event.getPartner();
     if (partner != null && event.getStartDateTime() != null) {
-      LocalDate startDate =
-          this.fetchNextEventStartDate(
-              event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch());
-      partner.setScheduledEventDate(startDate);
+      this.fetchNextEventStartDateT(
+              event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
+          .ifPresent(startDateT -> partner.setScheduledEventDate(startDateT.toLocalDate()));
       partnerRepo.save(partner);
     }
   }
@@ -794,23 +805,21 @@ public class EventServiceImpl implements EventService {
   protected void updateLeadScheduledEventDateAfterRealized(Event event) {
     Lead lead = event.getLead();
     if (lead != null && event.getStartDateTime() != null && !lead.getEventList().isEmpty()) {
-      LocalDate startDate = this.fetchNextEventStartDate(event, lead.getEventList());
-      lead.setNextScheduledEventDate(startDate);
+      this.fetchNextEventStartDateT(event, lead.getEventList())
+          .ifPresent(lead::setNextScheduledEventDateT);
       leadRepo.save(lead);
     }
   }
 
-  public LocalDate fetchNextEventStartDate(Event event, List<Event> eventList) {
-    Optional<Event> optEvent =
-        eventList.stream()
-            .filter(
-                e ->
-                    e != event
-                        && e.getStartDateTime() != null
-                        && e.getStatusSelect().equals(EventRepository.STATUS_PLANNED)
-                        && e.getStartDateTime().compareTo(event.getStartDateTime()) > 0)
-            .sorted(Comparator.comparing(Event::getStartDateTime))
-            .findFirst();
-    return (optEvent.isPresent()) ? optEvent.get().getStartDateTime().toLocalDate() : null;
+  public Optional<LocalDateTime> fetchNextEventStartDateT(Event event, List<Event> eventList) {
+    return eventList.stream()
+        .filter(
+            e ->
+                e != event
+                    && e.getStartDateTime() != null
+                    && e.getStatusSelect() == EventRepository.STATUS_PLANNED
+                    && e.getStartDateTime().isAfter(event.getStartDateTime()))
+        .min(Comparator.comparing(Event::getStartDateTime))
+        .map(Event::getStartDateTime);
   }
 }

@@ -20,11 +20,6 @@
     <option value="4">Urgent</option>
   </selection>
 
-  <selection name="crm.opportunity.status.type.select">
-    <option value="1">Closed won</option>
-    <option value="2">Closed lost</option>
-  </selection>
-
   <selection id="crm.icalendar.event.type.select" name="icalendar.event.type.select">
     <option value="5">Note</option>
   </selection>

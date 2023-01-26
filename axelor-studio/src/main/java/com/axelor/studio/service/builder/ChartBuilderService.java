@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.studio.service.builder;
+
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_ONE;
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_ONE;
+import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_ONE;
 
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
@@ -519,7 +523,8 @@ public class ChartBuilderService {
   @CallMethod
   public String getDefaultTarget(MetaJsonField metaJsonField) {
 
-    if (!"many-to-one,one-to-one,json-many-to-one".contains(metaJsonField.getType())) {
+    if (!Arrays.asList(MANY_TO_ONE, ONE_TO_ONE, JSON_MANY_TO_ONE)
+        .contains(metaJsonField.getType())) {
       return metaJsonField.getName();
     }
 

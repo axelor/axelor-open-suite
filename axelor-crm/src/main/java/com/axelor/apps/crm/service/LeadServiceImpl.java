@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.LostReason;
@@ -32,14 +31,13 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.LeadStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
-import com.axelor.apps.message.db.MultiRelated;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -57,6 +55,7 @@ public class LeadServiceImpl implements LeadService {
   protected EventRepository eventRepo;
   protected MultiRelatedRepository multiRelatedRepository;
   protected LeadStatusRepository leadStatusRepo;
+  protected AppCrmService appCrmService;
 
   @Inject
   public LeadServiceImpl(
@@ -66,7 +65,8 @@ public class LeadServiceImpl implements LeadService {
       LeadRepository leadRepo,
       EventRepository eventRepo,
       MultiRelatedRepository multiRelatedRepository,
-      LeadStatusRepository leadStatusRepo) {
+      LeadStatusRepository leadStatusRepo,
+      AppCrmService appCrmService) {
     this.sequenceService = sequenceService;
     this.userService = userService;
     this.partnerRepo = partnerRepo;
@@ -74,71 +74,7 @@ public class LeadServiceImpl implements LeadService {
     this.eventRepo = eventRepo;
     this.multiRelatedRepository = multiRelatedRepository;
     this.leadStatusRepo = leadStatusRepo;
-  }
-
-  /**
-   * Convert lead into a partner
-   *
-   * @param lead
-   * @return
-   * @throws AxelorException
-   */
-  @Transactional(rollbackOn = {Exception.class})
-  public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
-      throws AxelorException {
-
-    LeadStatus leadStatus = lead.getLeadStatus();
-    if (leadStatus == null || (leadStatus != null && leadStatus.getIsLost())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.LEAD_CONVERT_WRONG_STATUS));
-    }
-
-    if (partner != null && contactPartner != null) {
-      contactPartner = partnerRepo.save(contactPartner);
-      if (partner.getContactPartnerSet() == null) {
-        partner.setContactPartnerSet(new HashSet<>());
-      }
-      partner.getContactPartnerSet().add(contactPartner);
-      contactPartner.setMainPartner(partner);
-    }
-
-    if (partner != null) {
-      partner = partnerRepo.save(partner);
-      lead.setPartner(partner);
-
-      List<MultiRelated> multiRelateds =
-          multiRelatedRepository
-              .all()
-              .filter(
-                  "self.relatedToSelect = ?1 and self.relatedToSelectId = ?2",
-                  Lead.class.getName(),
-                  lead.getId())
-              .fetch();
-
-      for (MultiRelated multiRelated : multiRelateds) {
-        multiRelated.setRelatedToSelect(Partner.class.getName());
-        multiRelated.setRelatedToSelectId(partner.getId());
-        multiRelatedRepository.save(multiRelated);
-        if (contactPartner != null) {
-          MultiRelated contactMultiRelated = new MultiRelated();
-          contactMultiRelated.setRelatedToSelect(Partner.class.getName());
-          contactMultiRelated.setRelatedToSelectId(contactPartner.getId());
-          contactMultiRelated.setMessage(multiRelated.getMessage());
-          multiRelatedRepository.save(contactMultiRelated);
-        }
-      }
-    }
-
-    for (Event event : lead.getEventList()) {
-      event.setPartner(partner);
-      event.setContactPartner(contactPartner);
-      eventRepo.save(event);
-    }
-    lead.setIsConverted(true);
-    lead.setLeadStatus(
-        Beans.get(LeadStatusRepository.class).all().filter("self.isClosed = ?", true).fetchOne());
-    return leadRepo.save(lead);
+    this.appCrmService = appCrmService;
   }
 
   /**
@@ -256,7 +192,10 @@ public class LeadServiceImpl implements LeadService {
   @Override
   public void assignToMeLead(Lead lead) throws AxelorException {
     LeadStatus leadStatus = lead.getLeadStatus();
-    if (leadStatus == null || (leadStatus != null && leadStatus.getIsLost())) {
+
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+
+    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_ASSIGN_TO_ME_WRONG_STATUS));
@@ -277,13 +216,15 @@ public class LeadServiceImpl implements LeadService {
   public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
       throws AxelorException {
     LeadStatus leadStatus = lead.getLeadStatus();
-    if (leadStatus == null || (leadStatus != null && leadStatus.getIsLost())) {
+
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+
+    if (leadStatus == null || leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_LOSE_WRONG_STATUS));
     }
-    lead.setLeadStatus(
-        Beans.get(LeadStatusRepository.class).all().filter("self.isLost = ?", true).fetchOne());
+    lead.setLeadStatus(lostLeadStatus);
     lead.setLostReason(lostReason);
     lead.setLostReasonStr(lostReasonStr);
   }

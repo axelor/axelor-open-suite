@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
@@ -44,7 +45,7 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
@@ -64,6 +65,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,11 +74,11 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected InvoiceServiceSupplychainImpl invoiceService;
+  protected InvoiceServiceSupplychain invoiceServiceSupplychain;
+  protected InvoiceService invoiceService;
   protected InvoiceRepository invoiceRepo;
   protected TimetableRepository timetableRepo;
   protected AppSupplychainService appSupplychainService;
-
   protected AccountConfigService accountConfigService;
   protected CommonInvoiceService commonInvoiceService;
   protected AddressService addressService;
@@ -84,7 +86,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   @Inject
   public PurchaseOrderInvoiceServiceImpl(
-      InvoiceServiceSupplychainImpl invoiceService,
+      InvoiceServiceSupplychain invoiceServiceSupplychain,
+      InvoiceService invoiceService,
       InvoiceRepository invoiceRepo,
       TimetableRepository timetableRepo,
       AppSupplychainService appSupplychainService,
@@ -92,6 +95,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       CommonInvoiceService commonInvoiceService,
       AddressService addressService,
       InvoiceLineOrderService invoiceLineOrderService) {
+    this.invoiceServiceSupplychain = invoiceServiceSupplychain;
     this.invoiceService = invoiceService;
     this.invoiceRepo = invoiceRepo;
     this.timetableRepo = timetableRepo;
@@ -105,7 +109,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
-
     Invoice invoice = this.createInvoice(purchaseOrder);
     invoice = invoiceRepo.save(invoice);
     invoiceService.setDraftSequence(invoice);
@@ -517,7 +520,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
       invoiceMerged.setPurchaseOrder(null);
       invoiceRepo.save(invoiceMerged);
-      invoiceService.swapStockMoveInvoices(invoiceList, invoiceMerged);
+      invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
     } else {
@@ -536,7 +539,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
               fiscalPosition,
               supplierInvoiceNb,
               originDate);
-      invoiceService.swapStockMoveInvoices(invoiceList, invoiceMerged);
+      invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
     }
@@ -617,7 +620,12 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     List<InvoiceLine> invoiceLinesList =
         (taxLineList != null && !taxLineList.isEmpty())
             ? this.createInvoiceLinesFromTax(
-                invoice, taxLineList, invoicingProduct, percentToInvoice)
+                invoice,
+                taxLineList.stream()
+                    .filter(polt -> !polt.getReverseCharged())
+                    .collect(Collectors.toList()),
+                invoicingProduct,
+                percentToInvoice)
             : commonInvoiceService.createInvoiceLinesFromOrder(
                 invoice, purchaseOrder.getInTaxTotal(), invoicingProduct, percentToInvoice);
 

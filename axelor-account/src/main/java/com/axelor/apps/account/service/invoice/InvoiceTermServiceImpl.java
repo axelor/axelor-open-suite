@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -376,6 +376,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
       findInvoiceTermsInInvoice(invoice.getMove().getMoveLineList(), invoiceTerm, invoice);
     }
+    invoiceTerm.setSequence(initInvoiceTermsSequence(invoice, invoiceTerm));
 
     return invoiceTerm;
   }
@@ -527,7 +528,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected int initInvoiceTermsSequence(MoveLine moveLine) {
-    if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+    if (moveLine == null || CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
       return 1;
     }
     return moveLine.getInvoiceTermList().stream()
@@ -535,6 +536,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .get()
             .getSequence()
         + 1;
+  }
+
+  protected int initInvoiceTermsSequence(Invoice invoice, InvoiceTerm invoiceTerm) {
+
+    if (invoiceTerm == null
+        || invoice == null
+        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return 1;
+    } else {
+      return invoice.getInvoiceTermList().stream()
+              .max(Comparator.comparing(InvoiceTerm::getSequence))
+              .get()
+              .getSequence()
+          + 1;
+    }
   }
 
   @Override
@@ -1260,6 +1276,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected boolean isUnevenRounding(InvoiceTerm invoiceTerm, BigDecimal total) {
+    if (total.compareTo(BigDecimal.ZERO) == 0) {
+      return false;
+    }
+
     BigDecimal percentageUp =
         invoiceTerm
             .getAmount()

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,10 +21,12 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.custom.AccountingReportValueService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -109,11 +111,23 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
 
   @Override
   public String printCustomReport(AccountingReport accountingReport) throws AxelorException {
-    accountingReportValueService.computeReportValues(accountingReport);
+    String fileLink;
+    accountingReportValueService.clearReportValues(accountingReport);
 
-    String fileLink = this.print(accountingReport);
+    try {
+      accountingReportValueService.computeReportValues(accountingReport);
+      accountingReport = accountingReportRepository.find(accountingReport.getId());
+
+      fileLink = this.print(accountingReport);
+    } catch (Exception e) {
+      accountingReport = accountingReportRepository.find(accountingReport.getId());
+      accountingReportValueService.clearReportValues(accountingReport);
+
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
 
     accountingReportValueService.clearReportValues(accountingReport);
+    accountingReport = accountingReportRepository.find(accountingReport.getId());
 
     return fileLink;
   }

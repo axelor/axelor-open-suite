@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,12 +29,14 @@ import com.axelor.apps.crm.db.repo.EventManagementRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadManagementRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
-import com.axelor.apps.crm.db.repo.LeadStatusManagementRepository;
-import com.axelor.apps.crm.db.repo.LeadStatusRepository;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.CalendarService;
+import com.axelor.apps.crm.service.ConvertLeadWizardService;
+import com.axelor.apps.crm.service.ConvertLeadWizardServiceImpl;
+import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
+import com.axelor.apps.crm.service.ConvertWizardOpportunityServiceImpl;
 import com.axelor.apps.crm.service.CrmReportingService;
 import com.axelor.apps.crm.service.CrmReportingServiceImpl;
 import com.axelor.apps.crm.service.EventService;
@@ -45,8 +47,6 @@ import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.crm.service.app.AppCrmServiceImpl;
-import com.axelor.apps.crm.web.CrmGenerateMessageController;
-import com.axelor.apps.message.web.GenerateMessageController;
 
 public class CrmModule extends AxelorModule {
 
@@ -63,8 +63,8 @@ public class CrmModule extends AxelorModule {
     bind(LeadService.class).to(LeadServiceImpl.class);
     ICalendarEventFactory.register(ICalendarRepository.CRM_SYNCHRO, Event::new);
     bind(MessageServiceBaseImpl.class).to(MessageServiceCrmImpl.class);
-    bind(GenerateMessageController.class).to(CrmGenerateMessageController.class);
-    bind(LeadStatusRepository.class).to(LeadStatusManagementRepository.class);
     bind(CrmReportingService.class).to(CrmReportingServiceImpl.class);
+    bind(ConvertLeadWizardService.class).to(ConvertLeadWizardServiceImpl.class);
+    bind(ConvertWizardOpportunityService.class).to(ConvertWizardOpportunityServiceImpl.class);
   }
 }

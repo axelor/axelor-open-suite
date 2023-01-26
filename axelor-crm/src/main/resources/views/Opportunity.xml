@@ -11,8 +11,8 @@
         onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
       <!-- <button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
     </toolbar>
-    <hilite background="success" if="$get('opportunityStatus.typeSelect') == 1"/>
-    <hilite background="danger" if="$get('opportunityStatus.typeSelect') == 2"/>
+    <hilite background="success" if="$get('opportunityStatus.id') == $closedWonId"/>
+    <hilite background="danger" if="$get('opportunityStatus.id') == $closedLostId"/>
     <field name="opportunitySeq"/>
     <field name="name" required="true"/>
     <field name="createdOn" hidden="true"/>
@@ -22,30 +22,31 @@
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="opportunityStatus"/>
-    <field name="opportunityStatus.typeSelect" hidden="true"/>
     <field name="amount" aggregate="sum"/>
     <field name="probability" aggregate="avg" widget="Progress"/>
     <field name="expectedCloseDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="$closedWonId" hidden="true"/>
+    <field name="$closedLostId" hidden="true"/>
     <button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge"
       onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"
       hideIf="user.id == _internalUserId"/>
     <button name="next-stage-gridBtn" icon="fa-chevron-circle-right" help="Next stage"
-      onClick="action-group-crm-opportunity-nextstage-click"
-      hideIf="$get('opportunityStatus.typeSelect') != 0"/>
+      onClick="action-method-opportunity-set-next-stage"
+      hideIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"/>
     <button name=" closed-wonBtn " icon="fa-check-circle" help="Closed won"
       onClick="action-group-crm-opportunity-closedwon-click"
-      hideIf="$get('opportunityStatus.typeSelect') == 1"/>
+      hideIf="$get('opportunityStatus.id') == $closedWonId"/>
     <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
       onClick="action-group-crm-opportunity-closedlost-click"
-      hideIf="$get('opportunityStatus.typeSelect') == 2"/>
+      hideIf="$get('opportunityStatus.id') == $closedLostId"/>
   </grid>
 
   <grid name="my-opportunity-grid" title="My Opportunities"
     model="com.axelor.apps.crm.db.Opportunity"
     orderBy="opportunityStatus.sequence,expectedCloseDate">
-    <hilite background="success" if="$get('opportunityStatus.typeSelect') == 1"/>
-    <hilite background="danger" if="$get('opportunityStatus.typeSelect') == 2"/>
+    <hilite background="success" if="$get('opportunityStatus.id') == $closedWonId"/>
+    <hilite background="danger" if="$get('opportunityStatus.id') == $closedLostId"/>
     <field name="opportunitySeq"/>
     <field name="name" width="300"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
@@ -55,19 +56,20 @@
     <field name="createdOn" hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="opportunityStatus"/>
-    <field name="opportunityStatus.typeSelect" hidden="true"/>
     <field name="amount" aggregate="sum"/>
     <field name="probability" aggregate="avg" widget="Progress"/>
     <field name="expectedCloseDate"/>
+    <field name="$closedWonId" hidden="true"/>
+    <field name="$closedLostId" hidden="true"/>
     <button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage"
-      onClick="action-group-crm-opportunity-nextstage-click"
-      hideIf="$get('opportunityStatus.typeSelect') != 0"/>
+      onClick="action-method-opportunity-set-next-stage"
+      hideIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"/>
     <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won"
       onClick="action-group-crm-opportunity-closedwon-click"
-      hideIf="$get('opportunityStatus.typeSelect') == 1"/>
+      hideIf="$get('opportunityStatus.id') == $closedWonId"/>
     <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
       onClick="action-group-crm-opportunity-closedlost-click"
-      hideIf="$get('opportunityStatus.typeSelect') == 2"/>
+      hideIf="$get('opportunityStatus.id') == $closedLostId"/>
   </grid>
 
   <grid name="opportunity-grid-group" title="Opportunities"
@@ -123,7 +125,8 @@
         <item title="Schedule Event" action="save,action-opportunity-view-schedule-event"/>
       </menu>
     </menubar>
-    <panel name="mainPanel" readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0">
+    <panel name="mainPanel"
+      readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId">
       <field name="opportunityStatus" colSpan="12" widget="NavSelect" x-order="sequence"
         showTitle="false" onChange="action-opportunity-group-status-onchange"/>
       <field name="opportunitySeq" showTitle="false" colSpan="2">
@@ -148,12 +151,14 @@
       <field name="source" colSpan="4" canEdit="false" form-view="source-form"
         grid-view="source-grid"/>
       <field name="expectedCloseDate" colSpan="4"
-        readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0"/>
+        readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"/>
       <field name="probability" colSpan="4"
-        readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0" widget="Progress"/>
+        readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
+        widget="Progress"/>
       <field name="currency" colSpan="4" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
-      <panel name="caseDetailsPanel" readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0"
+      <panel name="caseDetailsPanel"
+        readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
         colSpan="12">
         <field name="amount" colSpan="4"/>
         <field name="bestCase" colSpan="4"/>
@@ -164,15 +169,16 @@
     <panel-tabs name="mainPanelTab">
       <panel name="descriptionPanel" title="Description">
         <field name="description" showTitle="false"
-          readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0" colSpan="12" widget="html"/>
+          readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
+          colSpan="12" widget="html"/>
       </panel>
       <panel name="recurrentPanel" title="Recurrent"
         if="__config__.app.getApp('crm')?.isManageRecurrent" colSpan="12"
-        readonlyIf="opportunityStatus.typeSelect != null &amp;&amp; opportunityStatus.typeSelect != 0">
+        readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId">
         <field name="recurrentAmount"/>
         <field name="expectedDurationOfRecurringRevenue"/>
-        <field name="startDate" onChange="action-method-opportunity-fill-end-date"/>
-        <field name="endDate"/>
+        <field name="recurringStartDate" onChange="action-method-opportunity-fill-end-date"/>
+        <field name="recurringEndDate"/>
       </panel>
       <panel name="customerDescriptionPanel" title="Customer Description"
         if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
@@ -184,9 +190,11 @@
     </panel-tabs>
 
     <panel name="otherDetailsPanel" sidebar="true">
-      <field name="opportunityStatus.typeSelect" hidden="true"/>
+      <field name="$closedWonId" hidden="true"/>
+      <field name="$closedLostId" hidden="true"/>
       <panel name="followUpPanel" title="Follow-up"
-        readonlyIf="$get('opportunityStatus.typeSelect') &gt; 0" canCollapse="true">
+        readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
+        canCollapse="true">
         <field name="user" canNew="false" canView="false" canEdit="false"
           form-view="user-form" grid-view="user-grid"/>
         <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
@@ -210,12 +218,12 @@
       </panel>
       <panel name="referencePanel" title="Reference" canCollapse="true">
         <field name="partner" canEdit="false" requiredIf="contact == null"
-          readonlyIf="opportunityStatus.typeSelect != null &amp;&amp; opportunityStatus.typeSelect != 0"
+          readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           domain="self.isContact = false AND :company member of self.companySet"
           form-view="partner-form" grid-view="partner-grid"
           onChange="action-opportunity-record-set-name"/>
         <field name="contact" canEdit="false" requiredIf="partner == null"
-          readonlyIf="opportunityStatus.typeSelect != null &amp;&amp; opportunityStatus.typeSelect != 0"
+          readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           domain="self.isContact = true AND :company member of self.companySet"
           form-view="partner-contact-form" grid-view="partner-contact-grid"
           onChange="action-opportunity-record-set-name"/>
@@ -300,13 +308,15 @@
     <field name="opportunityRating"/>
     <field name="description"/>
     <field name="opportunityType"/>
+    <field name="$closedWonId" hidden="true"/>
+    <field name="$closedLostId" hidden="true"/>
     <template><![CDATA[
 			<div>
 			  <div class="span12">
 			  	<div class="span4">
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.opportunityStatus.typeSelect == 0">{{record.opportunityStatus.name}}</span>
-					<span class="label label-success" ng-show="record.opportunityStatus.typeSelect == 1">{{record.opportunityStatus.name}}</span>
-					<span class="label label-important" ng-show="record.opportunityStatus.typeSelect == 2">{{record.opportunityStatus.name}}</span>
+					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.opportunityStatus.id != record.$closedWonId && record.opportunityStatus.id != record.$closedLostId">{{record.opportunityStatus.name}}</span>
+					<span class="label label-success" ng-show="record.opportunityStatus.id == record.$closedWonId">{{record.opportunityStatus.name}}</span>
+					<span class="label label-important" ng-show="record.opportunityStatus.id == record.$closedLostId">{{record.opportunityStatus.name}}</span>
 				</div>
 				<br/><br/>
 			  	<span>
@@ -491,6 +501,10 @@
     <call method="setStageClosedLost" class="com.axelor.apps.crm.web.OpportunityController"/>
   </action-method>
 
+  <action-method name="action-method-opportunity-set-next-stage">
+    <call method="setNextStage" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
   <action-method name="action-method-opportunity-fill-end-date">
     <call method="fillEndDate" class="com.axelor.apps.crm.web.OpportunityController"/>
   </action-method>
@@ -504,7 +518,7 @@
   <action-group name="action-opportunity-group-status-onchange">
     <action name="save"/>
     <action name="action-opportunity-view-opportunity-lost-popup-view"
-      if="opportunityStatus.typeSelect == __repo__(OpportunityStatus).STATUS_TYPE_CLOSED_LOST"/>
+      if="opportunityStatus.id == __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
   </action-group>
 
 </object-views>

@@ -73,7 +73,7 @@
   </action-attrs>
 
   <action-view name="action-wkf-dmn-view-open-editor" title="DMN Editor">
-    <view type="html" name="wkf-editor?type=dmn&amp;id={{_id}}"/>
+    <view type="html" name="wkf-editor/?type=dmn&amp;id={{_id}}"/>
   </action-view>
 
   <action-view name="action-wkf-dmn-view-wizard" title="Select DMN"

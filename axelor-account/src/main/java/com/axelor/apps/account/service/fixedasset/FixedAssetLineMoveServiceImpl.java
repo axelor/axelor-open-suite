@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
@@ -27,6 +28,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -51,6 +53,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -87,6 +90,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected BankDetailsService bankDetailsService;
 
+  protected FixedAssetDateService fixedAssetDateService;
+
   private Batch batch;
 
   @Inject
@@ -102,9 +107,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       MoveValidateService moveValidateService,
       MoveLineCreateService moveLineCreateService,
       BatchRepository batchRepository,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      FixedAssetDateService fixedAssetDateService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
-    this.fixedAssetRepo = fixedAssetRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
     this.moveLineRepo = moveLineRepo;
@@ -116,11 +121,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     this.fixedAssetRepo = fixedAssetRepo;
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
+    this.fixedAssetDateService = fixedAssetDateService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void realize(FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove)
+  public void realize(
+      FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove, boolean isDisposal)
       throws AxelorException {
 
     if (fixedAssetLine == null
@@ -139,7 +146,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
     if (fixedAssetLine.getTypeSelect() != FixedAssetLineRepository.TYPE_SELECT_FISCAL) {
       if (generateMove) {
-        Move depreciationAccountMove = generateMove(fixedAssetLine, false);
+        Move depreciationAccountMove = generateMove(fixedAssetLine, false, isDisposal);
         if (fixedAssetLine.getIsSimulated() && depreciationAccountMove != null) {
           this.moveValidateService.accounting(depreciationAccountMove);
         }
@@ -228,10 +235,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               .findAny()
               .orElse(null);
       if (economicFixedAssetLine != null) {
-        realize(economicFixedAssetLine, isBatch, generateMove);
+        realize(economicFixedAssetLine, isBatch, generateMove, false);
       }
       if (fiscalFixedAssetLine != null) {
-        realize(fiscalFixedAssetLine, isBatch, generateMove);
+        realize(fiscalFixedAssetLine, isBatch, generateMove, false);
       }
 
       if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
@@ -257,7 +264,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 .findAny()
                 .orElse(null);
         if (ifrsFixedAssetLine != null) {
-          realize(ifrsFixedAssetLine, isBatch, generateMove);
+          realize(ifrsFixedAssetLine, isBatch, generateMove, false);
         }
       }
     }
@@ -278,6 +285,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             : fixedAsset.getReference();
     BigDecimal correctedAccountingValue = fixedAssetLine.getCorrectedAccountingValue();
     BigDecimal impairmentValue = fixedAssetLine.getImpairmentValue();
+    BigDecimal accountingValue = fixedAssetLine.getAccountingValue();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
@@ -324,7 +332,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         Account debitLineAccount;
         Account creditLineAccount;
         BigDecimal amount;
-        if (impairmentValue.compareTo(BigDecimal.ZERO) > 0) {
+        if ((impairmentValue.signum() > 0 && accountingValue.signum() > 0)
+            || (impairmentValue.signum() < 0 && accountingValue.signum() < 0)) {
           if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
               || fixedAssetCategory.getAppProvisionTangibleFixedAssetAccount() == null) {
             throw new AxelorException(
@@ -350,6 +359,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
         }
         amount = impairmentValue.abs();
+        if (accountingValue.signum() < 0) {
+          amount = amount.negate();
+        }
 
         MoveLine debitMoveLine =
             moveLineCreateService.createMoveLine(
@@ -392,7 +404,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
+  @Override
+  public Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated, boolean isDisposal)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
 
@@ -400,6 +413,17 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
+
+    if (!isDisposal) {
+      int periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
+      if (periodicityTypeSelect == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
+        date = date.with(TemporalAdjusters.lastDayOfMonth());
+      } else {
+        date =
+            fixedAssetDateService.computeLastDayOfFiscalYear(company, date, periodicityTypeSelect);
+      }
+    }
+
     String origin =
         fixedAsset.getFixedAssetSeq() != null
             ? fixedAsset.getFixedAssetSeq()
@@ -681,7 +705,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
       Account creditAccountOne =
           fixedAsset.getFixedAssetCategory().getRealisedAssetsIncomeAccount();
-      List<Account> creditAccountTwoList =
+      List<AccountManagement> creditAccountTwoList =
           taxLine.getTax().getAccountManagementList().stream()
               .filter(
                   accountManagement ->
@@ -689,10 +713,18 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                           .getCompany()
                           .getName()
                           .equals(fixedAsset.getCompany().getName()))
-              .map(accountManagement -> accountManagement.getSaleAccount())
               .collect(Collectors.toList());
       Account creditAccountTwo =
-          !CollectionUtils.isEmpty(creditAccountTwoList) ? creditAccountTwoList.get(0) : null;
+          !CollectionUtils.isEmpty(creditAccountTwoList)
+              ? creditAccountTwoList.get(0).getSaleAccount()
+              : null;
+      if (creditAccountTwo != null) {
+        if (creditAccountTwo.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_GOODS) {
+          creditAccountTwo = creditAccountTwoList.get(0).getSaleTaxVatSystem1Account();
+        } else if (creditAccountTwo.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_SERVICE) {
+          creditAccountTwo = creditAccountTwoList.get(0).getSaleTaxVatSystem2Account();
+        }
+      }
       BigDecimal creditAmountTwo =
           disposalAmount
               .multiply(taxLine.getValue().divide(new BigDecimal(100)))
@@ -702,7 +734,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       Account debitAccount = fixedAsset.getFixedAssetCategory().getDebtReceivableAccount();
       BigDecimal debitAmount = disposalAmount.add(creditAmountTwo);
 
-      if (creditAccountOne == null || creditAccountTwo == null || debitAccount == null) {
+      if (creditAccountOne == null
+          || (creditAccountTwo == null && creditAmountTwo.compareTo(BigDecimal.ZERO) > 0)
+          || debitAccount == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(
@@ -726,6 +760,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               1,
               origin,
               fixedAsset.getName());
+      creditMoveLine1.setTaxLine(taxLine);
       moveLines.add(creditMoveLine1);
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine1);
@@ -741,6 +776,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 1,
                 origin,
                 fixedAsset.getName());
+        creditMoveLine2.setTaxLine(taxLine);
         moveLines.add(creditMoveLine2);
 
         this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine2);
@@ -779,7 +815,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       Move impairementAccountMove = generateImpairementAccountMove(fixedAssetLine, true);
       fixedAssetLine.setImpairmentAccountMove(impairementAccountMove);
       if (impairementAccountMove == null) {
-        fixedAssetLine.setDepreciationAccountMove(generateMove(fixedAssetLine, true));
+        fixedAssetLine.setDepreciationAccountMove(generateMove(fixedAssetLine, true, false));
       }
     }
 

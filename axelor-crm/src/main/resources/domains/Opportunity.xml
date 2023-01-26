@@ -39,8 +39,8 @@
     <decimal name="recurrentAmount" title="Recurrent amount"/>
     <integer name="expectedDurationOfRecurringRevenue"
       title="Expected duration of recurring revenue (in months)"/>
-    <date name="startDate" title="Start date"/>
-    <date name="endDate" title="End date"/>
+    <date name="recurringStartDate" title="Recurring start date"/>
+    <date name="recurringEndDate" title="Recurring end date"/>
     <integer name="opportunityRating" title="Opportunity scoring"
       selection="gold.rating.icon.select"/>
 
@@ -48,10 +48,12 @@
       <field name="name"/>
       <field name="opportunityStatus"/>
       <message if="true" on="CREATE">Opportunity created</message>
-      <message if="opportunityStatus.typeSelect == 1" fields="opportunityStatus"
-        tag="success">Opportunity won</message>
-      <message if="opportunityStatus.typeSelect == 2" fields="opportunityStatus"
-        tag="warning">Opportunity lost</message>
+      <message
+        if="opportunityStatus.id == __config__.app.getApp('crm')?.closedWinOpportunityStatus?.id"
+        fields="opportunityStatus" tag="success">Opportunity won</message>
+      <message
+        if="opportunityStatus.id == __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"
+        fields="opportunityStatus" tag="warning">Opportunity lost</message>
     </track>
 
   </entity>

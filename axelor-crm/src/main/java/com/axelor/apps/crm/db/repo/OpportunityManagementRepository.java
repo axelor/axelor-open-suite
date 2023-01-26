@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,14 @@
  */
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class OpportunityManagementRepository extends OpportunityRepository {
@@ -47,13 +50,32 @@ public class OpportunityManagementRepository extends OpportunityRepository {
       if (opportunity.getOpportunityStatus() == null) {
         opportunity.setOpportunityStatus(opportunityService.getDefaultOpportunityStatus());
       }
-      // will be added later
-      // opportunity.setName(Beans.get(OpportunityService.class).computeAndGetName(opportunity));
 
       return super.save(opportunity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    try {
+      final String closedWonId = "$closedWonId";
+      final String closedLostId = "$closedLostId";
+
+      AppCrm appCrm = Beans.get(AppCrmService.class).getAppCrm();
+
+      if (appCrm.getClosedWinOpportunityStatus() != null) {
+        json.put(closedWonId, appCrm.getClosedWinOpportunityStatus().getId());
+      }
+
+      if (appCrm.getClosedLostOpportunityStatus() != null) {
+        json.put(closedLostId, appCrm.getClosedLostOpportunityStatus().getId());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+    return super.populate(json, context);
   }
 }

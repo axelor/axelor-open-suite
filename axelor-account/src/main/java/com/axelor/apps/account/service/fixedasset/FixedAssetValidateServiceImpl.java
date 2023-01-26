@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,8 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -27,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class FixedAssetValidateServiceImpl implements FixedAssetValidateService {
 
@@ -91,7 +94,12 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
         fixedAsset.setNumberOfDepreciation(fixedAsset.getNumberOfDepreciation() - 1);
       }
 
-      if (fixedAsset.getIsEqualToFiscalDepreciation()) {
+      Optional<FixedAssetLine> lastRealizedLine =
+          fixedAssetLineService.findNewestFixedAssetLine(
+              fixedAsset.getFixedAssetLineList(), FixedAssetLineRepository.STATUS_REALIZED, 0);
+      if (lastRealizedLine.isPresent()) {
+        fixedAsset.setAccountingValue(lastRealizedLine.get().getAccountingValue());
+      } else if (fixedAsset.getIsEqualToFiscalDepreciation()) {
         fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
       } else if (fixedAsset.getDepreciationPlanSelect().isEmpty()
           || fixedAsset
@@ -103,8 +111,10 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
             fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
       }
     }
-    fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
-    fixedAsset.setInitialPeriodicityInMonth(fixedAsset.getPeriodicityInMonth());
+    if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
+      fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
+      fixedAsset.setInitialPeriodicityInMonth(fixedAsset.getPeriodicityInMonth());
+    }
     fixedAssetRepo.save(fixedAsset);
   }
 

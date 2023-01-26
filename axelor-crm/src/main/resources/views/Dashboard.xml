@@ -7,8 +7,10 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect in (1,2)</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
 
@@ -16,16 +18,20 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect = 0</domain>
+    <domain>self.opportunityStatus.id NOT IN :_opportunityStatusIdList</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.unassigned.opportunities" title="Unassigned Opportunities"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="my-opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.user is null and self.opportunityStatus.typeSelect = 0</domain>
+    <domain>self.user is null and self.opportunityStatus.id NOT IN :_opportunityStatusIdList</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
 
@@ -33,23 +39,26 @@
     title="My Team Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="my-opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect in (1,2) AND self.team = :active_team</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList AND self.team =
+      :active_team</domain>
     <context name="active_team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.team.open.opportunities" title="My Team Open Opportunities"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="my-opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect = 0 AND self.team = :active_team</domain>
+    <domain>self.opportunityStatus.id NOT IN :_opportunityStatusIdList AND self.team = :active_team</domain>
     <context name="active_team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
-
-
 
   <action-view name="dashlet.opportunities.won.by.partner"
     title="Opportunities By Partner" model="com.axelor.apps.crm.db.Opportunity">
@@ -63,52 +72,64 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-top-deal-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect != 2</domain>
+    <domain>self.opportunityStatus.id != :_closedLostOpportunityStatusId</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_closedLostOpportunityStatusId"
+      expr="eval: __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.my.top.deals" title="My Best Open Deals"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-top-deal-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect = 0 and self.user =:__user__</domain>
+    <domain>self.opportunityStatus.id NOT IN :_opportunityStatusIdList and self.user =:__user__</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.my.team.top.deals"
     title="My Team Best Open Deals" model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-top-deal-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect = 0 and self.team =:active_team</domain>
+    <domain>self.opportunityStatus.id NOT IN :_opportunityStatusIdList and self.team =:active_team</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="active_team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.key.account" title="Key accounts"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-key-account-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect in (1,2)</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.my.key.account" title="My Key accounts"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-key-account-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect in (1,2) and self.user =:__user__</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList and self.user =:__user__</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.my.team.key.account"
     title="My Team Key accounts" model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-key-account-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect in (1,2) and self.team =:active_team</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList and self.team =:active_team</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="active_team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.recent.opps"
@@ -123,23 +144,31 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.updatedOn &gt; date(now())-30 and self.opportunityStatus.typeSelect = 2</domain>
+    <domain>self.updatedOn &gt; date(now())-30 and self.opportunityStatus.id =
+      :_closedLostOpportunityStatusId</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_closedLostOpportunityStatusId"
+      expr="eval: __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
   </action-view>
+
   <action-view title="My Closed Opportunities"
     model="com.axelor.apps.crm.db.Opportunity" name="dashlet.my.closed.opportunities">
     <view type="grid" name="my-opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect in (1,2) AND self.user =:__user__</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList AND self.user =:__user__</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view title="My Open Opportunities" model="com.axelor.apps.crm.db.Opportunity"
     name="dashlet.my.open.opportunities">
     <view type="grid" name="my-opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.typeSelect = 0 AND self.user =:__user__</domain>
+    <domain>self.opportunityStatus.id NOT IN :_opportunityStatusIdList AND self.user =:__user__</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
 

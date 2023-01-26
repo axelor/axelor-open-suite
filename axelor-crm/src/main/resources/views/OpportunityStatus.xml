@@ -10,21 +10,19 @@
 
   <form name="opportunity-status-form" title="Opportunity status"
     model="com.axelor.apps.crm.db.OpportunityStatus"
-    onNew="action-opportunity-status-method-set-attrs-on-new"
-    onLoad="action-opportunity-status-method-set-attrs-on-new">
+    onLoad="action-opportunity-status-attrs-display-label">
     <panel name="mainPanel">
       <label colSpan="12"
         title="These statuses are essential to the operation of the process, they can be renamed but cannot be deleted."
-        showIf="typeSelect == 1 || typeSelect == 2" hidden="true" css="label-bold"
-        name="opportunityStatusEssentialLabel"/>
+        hidden="true" css="label-bold" name="opportunityStatusEssentialLabel"/>
       <field name="name"/>
       <field name="sequence"/>
-      <field name="typeSelect"/>
     </panel>
   </form>
 
-  <action-method name="action-opportunity-status-method-set-attrs-on-new">
-    <call class="com.axelor.apps.crm.web.OpportunityStatusController" method="setAttrs"/>
-  </action-method>
+  <action-attrs name="action-opportunity-status-attrs-display-label">
+    <attribute name="hidden" for="opportunityStatusEssentialLabel"
+      expr="eval: __this__?.id != __config__.app.getApp('crm')?.closedWinOpportunityStatus?.id &amp;&amp; __this__?.id != __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
+  </action-attrs>
 
 </object-views>
