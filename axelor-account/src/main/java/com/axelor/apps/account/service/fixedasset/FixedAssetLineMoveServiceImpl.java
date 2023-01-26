@@ -696,11 +696,14 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           !CollectionUtils.isEmpty(creditAccountTwoList)
               ? creditAccountTwoList.get(0).getSaleAccount()
               : null;
+      String missingAccount = "Sale account of tax config";
       if (creditAccountTwo != null) {
         if (creditAccountTwo.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_GOODS) {
           creditAccountTwo = creditAccountTwoList.get(0).getSaleTaxVatSystem1Account();
+          missingAccount = "Sale account on deliveries/invoice";
         } else if (creditAccountTwo.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_SERVICE) {
           creditAccountTwo = creditAccountTwoList.get(0).getSaleTaxVatSystem2Account();
+          missingAccount = "Sale account on payments";
         }
       }
       BigDecimal creditAmountTwo =
@@ -724,7 +727,10 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 + " / "
                 + I18n.get("Debt Receivable Account")
                 + " / "
-                + I18n.get("Sale account of tax config"));
+                + I18n.get(missingAccount)
+                + " ("
+                + taxLine.getTax().getName()
+                + ")");
       }
 
       MoveLine creditMoveLine1 =
