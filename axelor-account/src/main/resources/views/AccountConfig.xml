@@ -189,7 +189,8 @@
           <field name="defPaymentCondition" grid-view="payment-condition-grid"
             form-view="payment-condition-form"/>
         </panel>
-        <panel name="paymentSessionPanel" title="Payment sessions" showIf="accountingDaybook">
+        <panel name="paymentSessionPanel" title="Payment sessions" showIf="accountingDaybook"
+          colSpan="12">
           <field name="retrieveDaybookMovesInPaymentSession" showIf="accountingDaybook"/>
         </panel>
         <panel name="expensePanel" title="Expense" colSpan="12">
