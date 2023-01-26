@@ -232,7 +232,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .all()
             .filter(retrieveEligibleTermsQuery())
             .bind("company", paymentSession.getCompany())
-            .bind("paymentModeTypeSelect", paymentSession.getPaymentMode().getTypeSelect())
+            .bind("paymentMode", paymentSession.getPaymentMode())
             .bind(
                 "paymentDatePlusMargin",
                 paymentSession
@@ -269,7 +269,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.dueDate <= :paymentDatePlusMargin "
             + " AND self.moveLine.move.currency = :currency "
             + " AND self.bankDetails IS NOT NULL "
-            + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
+            + " AND self.paymentMode = :paymentMode"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
     String termsMoveLineCondition =
         " AND ((self.moveLine.partner.isCustomer = TRUE "
