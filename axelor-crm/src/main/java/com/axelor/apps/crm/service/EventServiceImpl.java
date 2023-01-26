@@ -20,7 +20,6 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
@@ -31,13 +30,10 @@ import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,29 +59,30 @@ public class EventServiceImpl implements EventService {
 
   private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("dd/MM");
 
-  private PartnerService partnerService;
+  protected PartnerService partnerService;
 
-  private EventRepository eventRepo;
+  protected EventRepository eventRepo;
 
-  @Inject private EmailAddressRepository emailAddressRepo;
+  protected EmailAddressRepository emailAddressRepo;
 
-  @Inject private PartnerRepository partnerRepo;
+  protected PartnerRepository partnerRepo;
 
-  @Inject private LeadRepository leadRepo;
+  protected LeadRepository leadRepo;
 
   private static final int ITERATION_LIMIT = 1000;
 
   @Inject
   public EventServiceImpl(
-      EventAttendeeService eventAttendeeService,
       PartnerService partnerService,
-      EventRepository eventRepository,
-      MailFollowerRepository mailFollowerRepo,
-      ICalendarService iCalendarService,
-      MessageService messageService,
-      TemplateMessageService templateMessageService) {
+      EventRepository eventRepo,
+      EmailAddressRepository emailAddressRepo,
+      PartnerRepository partnerRepo,
+      LeadRepository leadRepo) {
     this.partnerService = partnerService;
-    this.eventRepo = eventRepository;
+    this.eventRepo = eventRepo;
+    this.emailAddressRepo = emailAddressRepo;
+    this.partnerRepo = partnerRepo;
+    this.leadRepo = leadRepo;
   }
 
   @Override
@@ -702,8 +699,8 @@ public class EventServiceImpl implements EventService {
                   e ->
                       e != event
                           && e.getEndDateTime() != null
-                          && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
-                          && e.getEndDateTime().compareTo(eventDateTime) <= 0)
+                          && e.getStatusSelect() == EventRepository.STATUS_REALIZED
+                          && !e.getEndDateTime().isAfter(eventDateTime))
               .sorted(Comparator.comparing(Event::getEndDateTime).reversed())
               .collect(Collectors.toList());
 
@@ -717,29 +714,10 @@ public class EventServiceImpl implements EventService {
     if (partner != null
         && partner.getLastEventDate() != null
         && partner.getLastEventDate().equals(eventDateTime.toLocalDate())) {
-      LocalDate endDate =
-          this.fetchLatestEventEndDate(
-              event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch());
-      if (endDate != null) {
-        partner.setLastEventDate(endDate);
-        partnerRepo.save(partner);
-      }
+      this.fetchLatestEventEndDateT(
+              event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
+          .ifPresent(localDateTime -> partner.setLastEventDate(localDateTime.toLocalDate()));
     }
-  }
-
-  public LocalDate fetchLatestEventEndDate(Event event, List<Event> eventList) {
-    Optional<Event> optEvent =
-        eventList.stream()
-            .filter(
-                e ->
-                    e != event
-                        && e.getEndDateTime() != null
-                        && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
-                        && e.getEndDateTime().compareTo(event.getEndDateTime()) <= 0)
-            .sorted(Comparator.comparing(Event::getEndDateTime).reversed())
-            .findFirst();
-
-    return (optEvent.isPresent()) ? optEvent.get().getEndDateTime().toLocalDate() : null;
   }
 
   @Transactional
@@ -797,7 +775,6 @@ public class EventServiceImpl implements EventService {
       this.fetchNextEventStartDateT(
               event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
           .ifPresent(startDateT -> partner.setScheduledEventDate(startDateT.toLocalDate()));
-      partnerRepo.save(partner);
     }
   }
 
@@ -811,7 +788,7 @@ public class EventServiceImpl implements EventService {
     }
   }
 
-  public Optional<LocalDateTime> fetchNextEventStartDateT(Event event, List<Event> eventList) {
+  protected Optional<LocalDateTime> fetchNextEventStartDateT(Event event, List<Event> eventList) {
     return eventList.stream()
         .filter(
             e ->
@@ -821,5 +798,19 @@ public class EventServiceImpl implements EventService {
                     && e.getStartDateTime().isAfter(event.getStartDateTime()))
         .min(Comparator.comparing(Event::getStartDateTime))
         .map(Event::getStartDateTime);
+  }
+
+  protected Optional<LocalDateTime> fetchLatestEventEndDateT(Event event, List<Event> eventList) {
+    Optional<Event> optEvent =
+        eventList.stream()
+            .filter(
+                e ->
+                    e != event
+                        && e.getEndDateTime() != null
+                        && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
+                        && !e.getEndDateTime().isAfter(event.getEndDateTime()))
+            .max(Comparator.comparing(Event::getEndDateTime));
+
+    return optEvent.map(Event::getEndDateTime);
   }
 }
