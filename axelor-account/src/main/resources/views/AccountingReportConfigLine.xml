@@ -75,7 +75,7 @@
         requiredIf="[1,2,4].includes(typeSelect)"/>
       <field name="code" showIf="[1,2,4].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"
         requiredIf="[1,2,4].includes(typeSelect) &amp;&amp; ruleTypeSelect != 1"/>
-      <panel name="specificConfigPanel" stacked="true" showIf="!$legacy">
+      <panel name="specificConfigPanel" stacked="true" showIf="!$legacy" colSpan="12">
         <panel name="specificConfigLinePanel" showIf="reportType != null" colSpan="12">
           <field name="percentageTotalLine"
             showIf="[2,3,4].includes(ruleTypeSelect) &amp;&amp; !$legacy"
@@ -105,10 +105,11 @@
         </field>
         <panel name="resultPanel" stacked="true" showIf="ruleTypeSelect == 2" colSpan="6">
           <field name="resultSelect" showIf="reportTypeColumn != null"
-            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,4,5]"/>
+            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,4,5,6]"/>
           <field name="resultSelect" showIf="reportType != null"
-            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5]"/>
+            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5,6]"/>
         </panel>
+        <field name="negateValue" colSpan="6" showIf="[1,2,6].includes(resultSelect)"/>
         <field name="accountCode"/>
         <field name="analyticAccountCode" showIf="ruleTypeSelect == 2"/>
         <panel-related name="accountingReportConfigLineAccountTypeSetPanel"

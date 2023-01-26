@@ -273,8 +273,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       throws AxelorException {
     List<Integer> basicResultSelectList =
         Arrays.asList(
-            AccountingReportConfigLineRepository.RESULT_CREDIT_MINUS_DEBIT,
-            AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT);
+            AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT,
+            AccountingReportConfigLineRepository.RESULT_DEBIT,
+            AccountingReportConfigLineRepository.RESULT_CREDIT);
 
     boolean isBasicResultSelect =
         basicResultSelectList.contains(column.getResultSelect())
@@ -661,11 +662,21 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       return this.getAnalyticAmount(moveLine, analyticAccountSet);
     }
 
-    BigDecimal value = moveLine.getDebit().subtract(moveLine.getCredit());
+    BigDecimal value = moveLine.getDebit();
 
-    return resultSelect == AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT
-        ? value
-        : value.negate();
+    if (resultSelect == AccountingReportConfigLineRepository.RESULT_CREDIT) {
+      value = moveLine.getCredit();
+    } else if (resultSelect == AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT) {
+      value = value.subtract(moveLine.getCredit());
+    }
+
+    if ((groupColumn != null && groupColumn.getNegateValue())
+        || column.getNegateValue()
+        || line.getNegateValue()) {
+      value = value.negate();
+    }
+
+    return value;
   }
 
   protected BigDecimal getAnalyticAmount(
