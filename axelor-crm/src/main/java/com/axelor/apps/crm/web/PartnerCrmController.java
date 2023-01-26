@@ -17,31 +17,30 @@
  */
 package com.axelor.apps.crm.web;
 
-import com.axelor.apps.crm.db.Target;
-import com.axelor.apps.crm.db.repo.TargetRepository;
-import com.axelor.apps.crm.service.TargetService;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
 
-@Singleton
-public class TargetController {
+public class PartnerCrmController {
 
-  public void update(ActionRequest request, ActionResponse response) {
-
-    Target target = request.getContext().asType(Target.class);
+  public void getSubsidiaryPartnersCount(ActionRequest request, ActionResponse response) {
 
     try {
-      Beans.get(TargetService.class).update(Beans.get(TargetRepository.class).find(target.getId()));
-      response.setValue("opportunityAmountWon", target.getOpportunityAmountWon());
-      response.setValue("opportunityCreatedNumber", target.getOpportunityCreatedNumber());
-      response.setValue("opportunityCreatedWon", target.getOpportunityCreatedWon());
-      response.setValue("callEmittedNumber", target.getCallEmittedNumber());
-      response.setValue("meetingNumber", target.getMeetingNumber());
+      Partner partner = request.getContext().asType(Partner.class);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      long count =
+          Beans.get(PartnerRepository.class)
+              .all()
+              .filter("self.parentPartner = :id")
+              .bind("id", partner.getId())
+              .count();
+      response.setValue("$subsidiaryCount", count);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

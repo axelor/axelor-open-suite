@@ -5,12 +5,12 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="OpportunityType" lang="java">
+  <entity name="LeadStatus" lang="java">
+    <string name="name" title="Name"/>
+    <integer name="sequence" title="Sequence"/>
+    <boolean name="isOpen" title="Open"/>
 
-    <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" required="true"/>
-
-
+    <finder-method name="getDefaultStatus" using="" orderBy="sequence" filter="1 = 1"/>
   </entity>
 
 </domain-models>

@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
@@ -53,34 +54,36 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
+      AppCrmService appCrmService,
       UserService userService,
       SaleOrderLineService saleOrderLineService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
-      ProductionOrderSaleOrderService productionOrderSaleOrderService,
-      AppProductionService appProductionService,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
       PartnerSupplychainService partnerSupplychainService,
       SaleConfigService saleConfigService,
-      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService) {
+      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService,
+      ProductionOrderSaleOrderService productionOrderSaleOrderService,
+      AppProductionService appProductionService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     super(
         sequenceService,
         partnerRepo,
         saleOrderRepo,
         appSaleService,
+        appCrmService,
         userService,
         saleOrderLineService,
         saleOrderStockService,
         saleOrderPurchaseService,
         appSupplychainService,
         accountingSituationSupplychainService,
-        productionOrderSaleOrderService,
-        appProductionService,
         partnerSupplychainService,
         saleConfigService,
-        saleOrderCheckAnalyticService);
+        saleOrderCheckAnalyticService,
+        productionOrderSaleOrderService,
+        appProductionService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 

@@ -1,0 +1,7 @@
+---
+title: "CRM Reporting : add new object 'CRM reporting'"
+type: feature
+description: |
+  Create new object 'Agency'.
+  Add agency field in User, Partner and Lead.
+  Create CrmReporting object for filter lead/partner. 

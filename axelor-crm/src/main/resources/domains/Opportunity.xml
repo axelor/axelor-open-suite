@@ -8,26 +8,24 @@
   <entity name="Opportunity" lang="java">
 
     <string name="name" title="Name" required="true"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"
+      title="Customer / Prospect"/>
+    <many-to-one name="contact" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <date name="expectedCloseDate" title="Expected close date"/>
     <decimal name="amount" title="Amount"/>
-    <many-to-one name="opportunityType" ref="com.axelor.apps.crm.db.OpportunityType"
-      title="Type of need"/>
+    <string name="opportunityType" title="Type of need"/>
     <decimal name="bestCase" title="Best case"/>
     <decimal name="worstCase" title="Worst case"/>
-    <integer name="salesStageSelect" title="Sales stage"
-      selection="crm.opportunity.sales.stage.select"/>
+    <many-to-one name="opportunityStatus" title="Sales stage"
+      ref="com.axelor.apps.crm.db.OpportunityStatus"/>
     <decimal name="probability" title="Probability (%)"/>
-    <string name="nextStep" title="Next step"/>
     <string name="description" large="true" title="Description"/>
     <string name="customerDescription" large="true" title="Customer Description"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <integer name="orderByState"/>
     <string name="memo" large="true"/>
-
-    <many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
 
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       title="Assigned to"/>
@@ -38,24 +36,24 @@
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
     <string name="opportunitySeq" title="Reference" readonly="true" unique="true"/>
 
-    <extra-code>
-		<![CDATA[
-		// Stage SELECT
-			public static final int SALES_STAGE_NEW = 1;
-			public static final int SALES_STAGE_QUALIFICATION = 2;
-			public static final int SALES_STAGE_PROPOSITION = 3;
-			public static final int SALES_STAGE_NEGOTIATION = 4;
-			public static final int SALES_STAGE_CLOSED_WON = 5;
-			public static final int SALES_STAGE_CLOSED_LOST = 6;
-		]]>
-    </extra-code>
-
+    <decimal name="recurrentAmount" title="Recurrent amount"/>
+    <integer name="expectedDurationOfRecurringRevenue"
+      title="Expected duration of recurring revenue (in months)"/>
+    <date name="recurringStartDate" title="Recurring start date"/>
+    <date name="recurringEndDate" title="Recurring end date"/>
+    <integer name="opportunityRating" title="Opportunity scoring"
+      selection="gold.rating.icon.select"/>
 
     <track>
       <field name="name"/>
+      <field name="opportunityStatus"/>
       <message if="true" on="CREATE">Opportunity created</message>
-      <message if="salesStageSelect == 5" fields="salesStageSelect" tag="success">Opportunity won</message>
-      <message if="salesStageSelect == 6" fields="salesStageSelect" tag="warning">Opportunity lost</message>
+      <message
+        if="opportunityStatus.id == __config__.app.getApp('crm')?.closedWinOpportunityStatus?.id"
+        fields="opportunityStatus" tag="success">Opportunity won</message>
+      <message
+        if="opportunityStatus.id == __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"
+        fields="opportunityStatus" tag="warning">Opportunity lost</message>
     </track>
 
   </entity>
