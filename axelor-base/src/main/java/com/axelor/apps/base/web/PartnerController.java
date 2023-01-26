@@ -236,7 +236,7 @@ public class PartnerController {
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
   }
 
-  public void findPartnerSentMails(ActionRequest request, ActionResponse response) {
+  public void findSentMails(ActionRequest request, ActionResponse response) {
     try {
       this.findMails(request, response, MessageRepository.TYPE_SENT);
     } catch (Exception e) {
@@ -244,7 +244,7 @@ public class PartnerController {
     }
   }
 
-  public void findPartnerReceivedMails(ActionRequest request, ActionResponse response) {
+  public void findReceivedMails(ActionRequest request, ActionResponse response) {
     try {
       this.findMails(request, response, MessageRepository.TYPE_RECEIVED);
     } catch (Exception e) {
