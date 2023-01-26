@@ -4190,7 +4190,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["posted_nbr"]==null &amp;&amp; !row["is_posted"]</expression>
+                                                    <expression name="valueExpr" type="javascript">(row["posted_nbr"]==null || row["posted_nbr"]=="") &amp;&amp; !row["is_posted"]</expression>
                                                 </structure>
                                             </list-property>
                                             <cell id="7326">
@@ -4741,7 +4741,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                     <expression name="value" type="javascript">dataSetRow["debit"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <expression name="filterExpr" type="javascript">dataSetRow["posted_nbr"] != null || dataSetRow["is_posted"] == true</expression>
+                                            <expression name="filterExpr" type="javascript">(dataSetRow["posted_nbr"] != null &amp;&amp; dataSetRow["posted_nbr"] != "") || dataSetRow["is_posted"] == true</expression>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
@@ -4754,7 +4754,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                     <expression name="value" type="javascript">dataSetRow["credit"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <expression name="filterExpr" type="javascript">dataSetRow["posted_nbr"] != null || dataSetRow["is_posted"] == true</expression>
+                                            <expression name="filterExpr" type="javascript">(dataSetRow["posted_nbr"] != null &amp;&amp; dataSetRow["posted_nbr"] != "") || dataSetRow["is_posted"] == true</expression>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
@@ -7334,7 +7334,7 @@ else {0};</expression>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["posted_nbr"]!=null || row["is_posted"]</expression>
+                                                    <expression name="valueExpr" type="javascript">(row["posted_nbr"]!="" &amp;&amp; row["posted_nbr"]!=null) || row["is_posted"]</expression>
                                                 </structure>
                                             </list-property>
                                             <cell id="6921">
@@ -7847,7 +7847,7 @@ else {0};</expression>
                                                     <expression name="value" type="javascript">dataSetRow["debit"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <expression name="filterExpr" type="javascript">dataSetRow["is_posted"] == false &amp;&amp; dataSetRow["posted_nbr"] == null</expression>
+                                            <expression name="filterExpr" type="javascript">dataSetRow["is_posted"] == false &amp;&amp; (dataSetRow["posted_nbr"] == null || dataSetRow["posted_nbr"] == "")</expression>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
@@ -7860,7 +7860,7 @@ else {0};</expression>
                                                     <expression name="value" type="javascript">dataSetRow["credit"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <expression name="filterExpr" type="javascript">dataSetRow["is_posted"] == false &amp;&amp; dataSetRow["posted_nbr"] == null</expression>
+                                            <expression name="filterExpr" type="javascript">dataSetRow["is_posted"] == false &amp;&amp; (dataSetRow["posted_nbr"] == null || dataSetRow["posted_nbr"] == "")</expression>
                                             <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
