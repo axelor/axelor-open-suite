@@ -21,19 +21,21 @@
       <spacer/>
       <field name="accountChart" readonlyIf="hasChartImported" form-view="account-chart-form"
         grid-view="account-chart-grid" canNew="true" colSpan="3"/>
-      <field name="hasAccountCodeFixedNbrChar" colSpan="3" readonlyIf="hasChartImported"/>
+      <field name="hasAccountCodeFixedNbrChar" colSpan="3" readonlyIf="hasChartImported"
+        widget="boolean-switch"/>
       <field name="accountCodeNbrCharSelect" colSpan="3" showIf="hasAccountCodeFixedNbrChar"
         readonlyIf="hasChartImported"/>
       <button name="installTemplateBtn" title="Import a chart"
         readonlyIf="hasChartImported || company == null || accountChart == null || accountCodeNbrCharSelect == 0"
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
-      <field name="hasChartImported"/>
-      <field name="generateMoveForAdvancePayment" colSpan="3"/>
-      <field name="isActivateSimulatedMove" colSpan="3"/>
+      <field name="hasChartImported" widget="boolean-switch"/>
+      <field name="generateMoveForAdvancePayment" colSpan="3" widget="boolean-switch"/>
+      <field name="isActivateSimulatedMove" colSpan="3" widget="boolean-switch"/>
       <field name="accountingDaybook" colSpan="3"
-        onChange="action-account-config-attrs-accounting-daybook-onchange"/>
-      <field name="accountAtPayment" colSpan="3" showIf="accountingDaybook"/>
+        onChange="action-account-config-attrs-accounting-daybook-onchange" widget="boolean-switch"/>
+      <field name="accountAtPayment" colSpan="3" showIf="accountingDaybook"
+        widget="boolean-switch"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -154,8 +156,8 @@
         </panel>
         <panel name="authorizeAutoReconcilePanel" title="Authorize auto reconcile"
           colSpan="12">
-          <field name="autoReconcileOnInvoice"/>
-          <field name="autoReconcileOnPayment"/>
+          <field name="autoReconcileOnInvoice" widget="boolean-switch"/>
+          <field name="autoReconcileOnPayment" widget="boolean-switch"/>
         </panel>
         <panel name="exportsPanel" title="Exports" colSpan="12">
           <field name="exportPath"/>
@@ -191,7 +193,8 @@
         </panel>
         <panel name="paymentSessionPanel" title="Payment sessions" showIf="accountingDaybook"
           colSpan="12">
-          <field name="retrieveDaybookMovesInPaymentSession" showIf="accountingDaybook"/>
+          <field name="retrieveDaybookMovesInPaymentSession" showIf="accountingDaybook"
+            widget="boolean-switch"/>
         </panel>
         <panel name="expensePanel" title="Expense" colSpan="12">
           <field name="expenseTaxAccount"
@@ -356,7 +359,7 @@
         </panel>
       </panel>
       <panel name="receivablesRecoveryPanel" title="Receivables recovery">
-        <field name="hasLatePaymentAccountBlocking"/>
+        <field name="hasLatePaymentAccountBlocking" widget="boolean-switch"/>
         <field name="numberOfDaysBeforeAccountBlocking" showIf="hasLatePaymentAccountBlocking"/>
         <field name="factorPartner"
           domain="self.isFactor = TRUE AND :company member of self.companySet"
@@ -417,7 +420,7 @@
       <panel name="analyticPanel"
         if="__config__.app.getApp('account')?.getManageAnalyticAccounting()" title="Analytic">
         <field name="manageAnalyticAccounting"
-          onChange="action-attrs-account-config-set-is-can-new"/>
+          onChange="action-attrs-account-config-set-is-can-new" widget="boolean-switch"/>
         <field name="nbrOfAnalyticAxisSelect" showIf="manageAnalyticAccounting"
           requiredIf="manageAnalyticAccounting"
           onChange="action-attrs-account-config-set-is-can-new"/>
