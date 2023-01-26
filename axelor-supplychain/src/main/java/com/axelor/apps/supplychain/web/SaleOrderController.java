@@ -335,7 +335,7 @@ public class SaleOrderController {
       // Re-compute amount to invoice if invoicing partially
       amountToInvoice =
           saleOrderInvoiceService.computeAmountToInvoice(
-              amountToInvoice, operationSelect, saleOrder, qtyToInvoiceMap, priceMap);
+              amountToInvoice, operationSelect, saleOrder, qtyToInvoiceMap, priceMap, isPercent);
 
       saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
           saleOrder, amountToInvoice, isPercent);
