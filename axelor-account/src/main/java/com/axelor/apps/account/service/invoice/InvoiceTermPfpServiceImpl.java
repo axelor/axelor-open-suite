@@ -323,6 +323,8 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setPfpPartialReason(partialReason);
     originalInvoiceTerm.setPfpValidateStatusSelect(
         InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
+    originalInvoiceTerm.setAmountRemaining(
+        originalInvoiceTerm.getAmountRemaining().subtract(grantedAmount));
 
     invoiceTermRepo.save(originalInvoiceTerm);
   }
@@ -337,6 +339,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     if (!CollectionUtils.isEmpty(itList)) {
       for (InvoiceTerm it : itList) {
         it = invoiceTermRepo.find(it.getId());
+        it.setAmountRemaining(it.getAmountRemaining().add(it.getPfpPartialValidationAmount()));
         generateInvoiceTerm(
             it, it.getAmount(), it.getPfpPartialValidationAmount(), it.getPfpPartialReason());
         it.setPfpfPartialValidationOk(false);
