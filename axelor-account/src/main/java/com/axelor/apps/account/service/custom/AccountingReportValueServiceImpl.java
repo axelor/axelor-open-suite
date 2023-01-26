@@ -25,6 +25,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
@@ -493,9 +494,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             startDate,
             endDate,
             analyticCounter);
-      } else if ((column.getNotComputedIfIntersect() && line.getNotComputedIfIntersect())
-          || column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
-          || line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE) {
+      } else if (this.isNotCompute(column, line)) {
         this.createReportValue(
             accountingReport,
             column,
@@ -505,7 +504,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             endDate,
             parentTitle,
             line.getLabel(),
-            null,
+            BigDecimal.ZERO,
             valuesMapByColumn,
             valuesMapByLine,
             configAnalyticAccount,
@@ -579,6 +578,13 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               column.getCode(),
               line.getCode()));
     }
+  }
+
+  protected boolean isNotCompute(
+      AccountingReportConfigLine column, AccountingReportConfigLine line) {
+    return (column.getNotComputedIfIntersect() && line.getNotComputedIfIntersect())
+        || column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
+        || line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE;
   }
 
   protected boolean isValueAlreadyComputed(
