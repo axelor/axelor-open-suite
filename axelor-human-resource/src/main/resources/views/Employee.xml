@@ -81,7 +81,6 @@
             <field name="fixedPhone" widget="phone" colSpan="4"
               x-placeholder-number-type="FIXED_LINE"/>
             <field name="mobilePhone" widget="phone" colSpan="4"/>
-            <field name="fax" widget="phone" colSpan="4"/>
           </panel>
         </editor>
       </field>
@@ -126,7 +125,7 @@
           form-view="user-form" grid-view="user-grid"/>
         <field name="exportCode" colSpan="4"/>
         <field name="bankDetails" colSpan="4" form-view="bank-details-form"
-          grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"
+          grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
           if-module="axelor-cash-management" widget="SuggestBox"
           onSelect="action-employee-attrs-bank-details-on-select"/>
       </panel>
@@ -268,7 +267,6 @@
               <field name="fixedPhone" widget="phone" colSpan="4"
                 x-placeholder-number-type="FIXED_LINE"/>
               <field name="mobilePhone" widget="phone" colSpan="4"/>
-              <field name="fax" widget="phone" colSpan="4"/>
             </panel>
           </editor>
         </field>
@@ -327,7 +325,8 @@
               colSpan="4" form-view="user-form" grid-view="user-grid"/>
             <field name="exportCode" colSpan="4"/>
             <field name="bankDetails" colSpan="4" form-view="bank-details-form"
-              grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()"
+              grid-view="bank-details-grid"
+              if="__config__.app.getApp('base')?.getManageMultiBanks()"
               if-module="axelor-cash-management" widget="SuggestBox"
               onSelect="action-employee-attrs-bank-details-on-select"/>
           </panel>
@@ -403,7 +402,7 @@
       </panel>
 
       <panel name="lunchVoucherPanel" title="Lunch vouchers"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher()">
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher()">
         <field name="lunchVoucherFormatSelect" colSpan="3"/>
 
         <panel-dashlet name="lunchVouchersDashletPanel" title="Lunch vouchers"
@@ -424,7 +423,7 @@
         <panel-related name="employeeAdvanceListPanel" title="Employee advances"
           field="employeeAdvanceList" colSpan="12" form-view="employee-advance-employee-form"
           grid-view="employee-advance-employee-grid"
-          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement()"
+          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getAdvanceManagement()"
           readonly="false"/>
       </panel>
 
@@ -452,7 +451,7 @@
 
       <panel-dashlet name="employeeBonusDashletPanel" title="Bonuses"
         action="employee.dashlet.employee.bonus" colSpan="12"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getEmployeeBonus()"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getEmployeeBonus()"
         readonly="true"/>
 
       <panel-include if-module="axelor-talent" view="talent-employee-form"/>
@@ -633,10 +632,11 @@
   <action-record name="action-employee-record-default"
     model="com.axelor.apps.hr.db.Employee">
     <field name="timeLoggingPreferenceSelect"
-      expr="eval:__config__.app.getApp('base').getTimeLoggingPreferenceSelect()"/>
-    <field name="dailyWorkHours" expr="eval:__config__.app.getApp('base').getDailyWorkHours()"/>
+      expr="eval:__config__.app.getApp('base')?.getTimeLoggingPreferenceSelect()"/>
+    <field name="dailyWorkHours"
+      expr="eval:__config__.app.getApp('base')?.getDailyWorkHours()"/>
     <field name="negativeValueLeave"
-      expr="eval:__config__.app.getApp('leave').getAllowNegativeLeaveEmployees()"
+      expr="eval:__config__.app.getApp('leave')?.getAllowNegativeLeaveEmployees()"
       if="__config__.app.isApp('leave')"/>
     <field name="publicHolidayEventsPlanning"
       expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayEventsPlanning"/>
@@ -727,15 +727,15 @@
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
     title="Employee filters">
     <field name="bankDetails" hidden="true"
-      if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+      if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="timesheetImputationSelect" hidden="true"
       if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder())"/>
     <field name="lunchVoucherFormatSelect" hidden="true"
-      if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher())"/>
+      if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher())"/>
     <field name="lunchVoucherAdvanceList" hidden="true"
-      if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher())"/>
+      if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher())"/>
     <field name="employeeAdvanceList" hidden="true"
-      if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement())"/>
+      if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getAdvanceManagement())"/>
     <field name="leaveLineList" hidden="true" if="!__config__.app.isApp('leave')"/>
     <field name="negativeValueLeave" hidden="true" if="!__config__.app.isApp('leave')"/>
     <field name="timeLoggingPreferenceSelect" hidden="true"

@@ -9,7 +9,7 @@
     <field name="typeSelect" hidden="true"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
       canEdit="false" onSelect="action-account-management-attrs-bank-details-domain"
       onChange="action-account-management-attrs-bank-details-on-change"/>
@@ -29,7 +29,7 @@
     <field name="typeSelect" hidden="true"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="purchaseTaxVatSystem1Account"
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       if-module="axelor-account" form-view="account-form" grid-view="account-grid"
@@ -49,17 +49,19 @@
       canEdit="false"/>
     <field name="obtainedFinDiscountTaxVatSystem1Account" if-module="axelor-account"
       form-view="account-form" grid-view="account-grid"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFinancialDiscount()"
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
   </grid>
 
   <grid name="account-management-editable-grid" title="Account management list"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
-    groupBy="company,bankDetails">
+    groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management">
     <field name="company"/>
     <field name="bankDetails"/>
-    <field name="journal" domain="self.statusSelect = 1"/>
+    <field name="journal"
+      domain="self.statusSelect = 1 AND (:company IS NULL OR self.company = :company)"
+      onChange="action-account-management-fill-company"/>
     <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"/>
     <field name="paymentMode"/>
   </grid>
@@ -136,7 +138,6 @@
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
       </insert>
-      <attribute name="hideIf" value="tax != null"/>
     </extend>
   </form>
 
@@ -183,5 +184,15 @@
     <attribute for="bankDetails" name="value" expr="eval: company?.defaultBankDetails"
       if="company?.defaultBankDetails?.active"/>
   </action-attrs>
+
+  <action-record name="action-account-management-fill-company"
+    model="com.axelor.apps.account.db.AccountManagement">
+    <field name="company" expr="eval: journal.company" if="journal != null"/>
+  </action-record>
+
+  <action-record name="action-record-account-management-new-account-management"
+    model="com.axelor.apps.account.db.AccountManagement">
+    <field name="typeSelect" expr="eval: 3"/>
+  </action-record>
 
 </object-views>

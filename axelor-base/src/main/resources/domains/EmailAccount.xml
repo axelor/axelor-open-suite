@@ -8,6 +8,7 @@
   <entity name="EmailAccount" lang="java">
 
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 
   </entity>
 

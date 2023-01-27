@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.Role;
@@ -39,6 +40,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -48,6 +50,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   protected MoveLineToolService moveLineToolService;
@@ -127,37 +130,60 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE),
             moveLine.getAccount().getCode());
       } else {
-        BigDecimal total =
-            invoiceAttached == null
-                ? moveLine.getDebit().max(moveLine.getCredit())
-                : invoiceAttached.getInTaxTotal();
-        total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        BigDecimal invoiceTermTotal =
-            invoiceTermList.stream()
-                .map(InvoiceTerm::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if (invoiceTermTotal.compareTo(total) != 0) {
-          invoiceTermTotal = invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total);
-
-          if (invoiceAttached == null) {
-            moveLineService.computeFinancialDiscount(moveLine);
-          } else {
-            invoiceTermList.forEach(
-                it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
-          }
-
-          if (invoiceTermTotal.compareTo(total) != 0) {
-            throw new AxelorException(
-                moveLine,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
-                moveLine.getAccount().getCode());
-          }
-        }
+        this.checkTotal(invoiceTermList, invoiceAttached, moveLine, false);
+        this.checkTotal(invoiceTermList, invoiceAttached, moveLine, true);
       }
     }
     controlAccountingAccount(moveLine);
+  }
+
+  protected void checkTotal(
+      List<InvoiceTerm> invoiceTermList,
+      Invoice invoiceAttached,
+      MoveLine moveLine,
+      boolean isCompanyAmount)
+      throws AxelorException {
+    BigDecimal total;
+
+    if (isCompanyAmount) {
+      total =
+          invoiceAttached == null
+              ? moveLine.getDebit().max(moveLine.getCredit())
+              : invoiceAttached.getCompanyInTaxTotal();
+    } else {
+      total =
+          invoiceAttached == null ? moveLine.getCurrencyAmount() : invoiceAttached.getInTaxTotal();
+    }
+
+    total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    BigDecimal invoiceTermTotal =
+        invoiceTermList.stream()
+            .map(it -> isCompanyAmount ? it.getCompanyAmount() : it.getAmount())
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    if (invoiceTermTotal.compareTo(total) != 0) {
+      invoiceTermTotal =
+          invoiceTermService.roundUpLastInvoiceTerm(invoiceTermList, total, isCompanyAmount);
+
+      if (!isCompanyAmount) {
+        if (invoiceAttached == null) {
+          moveLineService.computeFinancialDiscount(moveLine);
+        } else {
+          invoiceTermList.forEach(
+              it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
+        }
+      }
+
+      if (invoiceTermTotal.compareTo(total) != 0) {
+        throw new AxelorException(
+            moveLine,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(
+                isCompanyAmount
+                    ? AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT
+                    : AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT));
+      }
+    }
   }
 
   public boolean isInvoiceTermReadonly(MoveLine moveLine, User user) {
@@ -268,5 +294,22 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         && (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
             || moveLine.getInvoiceTermList().stream()
                 .allMatch(invoiceTermService::isNotAwaitingPayment));
+  }
+
+  @Override
+  public void checkPartner(MoveLine moveLine) throws AxelorException {
+    Optional<Partner> optMovePartner =
+        Optional.ofNullable(moveLine.getMove()).map(Move::getPartner);
+    Optional<Partner> optMoveLinePartner = Optional.ofNullable(moveLine.getPartner());
+
+    if (optMovePartner.isPresent()
+        && optMoveLinePartner.isPresent()
+        && !optMovePartner.equals(optMoveLinePartner)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER),
+          optMoveLinePartner.get().getName(),
+          optMovePartner.get().getName());
+    }
   }
 }

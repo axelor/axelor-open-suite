@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -313,14 +313,19 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     return invoiceTermPaymentList.stream()
         .filter(it -> it.getInvoiceTerm().getAmountRemainingAfterFinDiscount().signum() > 0)
         .map(
-            it ->
-                invoiceTermService
+            it -> {
+              try {
+                return invoiceTermService
                     .getFinancialDiscountTaxAmount(it.getInvoiceTerm())
                     .multiply(it.getPaidAmount())
                     .divide(
                         it.getInvoiceTerm().getAmountRemainingAfterFinDiscount(),
                         10,
-                        RoundingMode.HALF_UP))
+                        RoundingMode.HALF_UP);
+              } catch (Exception e) {
+                throw new RuntimeException(e);
+              }
+            })
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
         .setScale(2, RoundingMode.HALF_UP);

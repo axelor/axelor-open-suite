@@ -155,11 +155,16 @@
     <option value="2">Accounting value</option>
     <option value="3">Sale value</option>
     <option value="4">Purchase value</option>
+    <option value="5">Wap price of the stock location</option>
   </selection>
 
   <selection name="stock.stock.location.printing.type">
     <option value="1">Location financial data</option>
     <option value="2">Stock location content</option>
+  </selection>
+
+  <selection name="stock.batch.action.select">
+    <option value="1">Recompute stock location lines</option>
   </selection>
 
 </object-views>

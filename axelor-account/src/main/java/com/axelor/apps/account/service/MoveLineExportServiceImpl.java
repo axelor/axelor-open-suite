@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -48,6 +48,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -218,7 +219,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getSaleExportNumber(Company company) throws AxelorException {
 
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.SALES_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.SALES_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -232,9 +234,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   public String getRefundExportNumber(Company company) throws AxelorException {
-
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.REFUND_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.REFUND_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -250,7 +252,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getTreasuryExportNumber(Company company) throws AxelorException {
 
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.TREASURY_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.TREASURY_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -266,7 +269,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getPurchaseExportNumber(Company company) throws AxelorException {
 
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PURCHASE_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -426,7 +430,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                   ? partner.getName()
                   : "";
         }
-        items[8] = moveLine.getOrigin();
+        String origin = moveLine.getOrigin();
+        items[8] = Strings.isNullOrEmpty(origin) ? "NA" : origin;
         if (moveLine.getOriginDate() != null) {
           items[9] =
               moveLine.getOriginDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));

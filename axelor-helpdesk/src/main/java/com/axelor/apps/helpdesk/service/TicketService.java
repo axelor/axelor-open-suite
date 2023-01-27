@@ -18,11 +18,12 @@
 package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface TicketService {
 
-  public void computeSeq(Ticket ticket);
+  public void computeSeq(Ticket ticket) throws AxelorException;
 
   public void computeSLA(Ticket ticket);
 

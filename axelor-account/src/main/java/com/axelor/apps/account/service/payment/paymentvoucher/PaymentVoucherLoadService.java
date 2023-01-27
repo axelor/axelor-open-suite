@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -105,7 +105,8 @@ public class PaymentVoucherLoadService {
             + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
             + "and (self.moveLine.move.statusSelect = :statusDaybook OR self.moveLine.move.statusSelect = :statusAccounted) "
             + "and (self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName OR (self.moveLine.move.tradingName = NULL AND self.invoice.tradingName = NULL)) "
-            + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect)";
+            + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect) "
+            + "and ((self.invoice is not null and self.invoice.currency = :currency) or self.moveLine.move.currency = :currency)";
 
     if (Beans.get(AccountConfigService.class)
                 .getAccountConfig(paymentVoucher.getCompany())
@@ -136,6 +137,7 @@ public class PaymentVoucherLoadService {
             .bind("operationTypeSelect", paymentVoucher.getOperationTypeSelect())
             .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
             .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
+            .bind("currency", paymentVoucher.getCurrency())
             .fetch());
   }
 
@@ -320,8 +322,6 @@ public class PaymentVoucherLoadService {
   }
 
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
-    paymentVoucher.getPayVoucherElementToPayList().clear();
-
     paymentVoucher.setPayVoucherDueElementList(searchDueElements(paymentVoucher));
 
     this.computeFinancialDiscount(paymentVoucher);
@@ -485,6 +485,10 @@ public class PaymentVoucherLoadService {
   protected Comparator<PayVoucherDueElement> getDueElementComparator() {
     Comparator<PayVoucherDueElement> comparator =
         Comparator.comparing(t -> t.getInvoiceTerm().getDueDate());
-    return comparator.thenComparing(t -> t.getInvoiceTerm().getInvoice().getInvoiceDate());
+    return comparator.thenComparing(
+        t ->
+            t.getInvoiceTerm().getInvoice() != null
+                ? t.getInvoiceTerm().getInvoice().getInvoiceDate()
+                : t.getInvoiceTerm().getMoveLine().getMove().getDate());
   }
 }

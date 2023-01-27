@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -156,11 +156,7 @@ public class VentilateState extends WorkflowInvoice {
 
     Account partnerAccount = invoice.getPartnerAccount();
 
-    if (!partnerAccount.getHasInvoiceTerm()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
-    } else if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
+    if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
@@ -324,7 +320,9 @@ public class VentilateState extends WorkflowInvoice {
       this.checkInvoiceDate(sequence);
     }
 
-    invoice.setInvoiceId(sequenceService.getSequenceNumber(sequence, invoice.getInvoiceDate()));
+    invoice.setInvoiceId(
+        sequenceService.getSequenceNumber(
+            sequence, invoice.getInvoiceDate(), Invoice.class, "invoiceId"));
 
     if (invoice.getInvoiceId() != null) {
       return;

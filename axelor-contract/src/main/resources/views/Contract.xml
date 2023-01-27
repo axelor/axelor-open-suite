@@ -4,11 +4,12 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
               http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
+  <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract"
+    orderBy="-contractId">
+    <hilite if="statusSelect == 1" color="info"/>
     <field name="contractId" width="120"/>
     <field name="name"/>
-    <field name="targetTypeSelect"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="partner"/>
     <field name="startDate"/>
     <field name="currentContractVersion.supposedEndDate"/>
@@ -45,7 +46,7 @@
           showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
           onChange="action-contract-attrs-partner-payment-config" required="true"
           form-view="partner-form"/>
-        <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4"
+        <field if="__config__.app.getApp('contract')?.getIsInvoicingManagement()" colSpan="4"
           name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
         <field name="name" colSpan="12" css="highlight"
           hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
@@ -102,25 +103,25 @@
         </panel>
         <panel stacked="true" name="btnsPanel">
           <field name="nextVersion" hidden="true"/>
-          <button if="__config__.app.getApp('contract').isAmendmentManagement"
+          <button if="__config__.app.getApp('contract')?.isAmendmentManagement"
             name="newVersionBtn" title="New version"
             showIf="id &amp;&amp; nextVersion == null &amp;&amp; currentContractVersion.statusSelect == 3"
             onClick="save,action-view-contract-add-version,close"/>
-          <button if="__config__.app.getApp('contract').isAmendmentManagement"
+          <button if="__config__.app.getApp('contract')?.isAmendmentManagement"
             name="showNextVersionBtn" title="Show next version"
             showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3"
             onClick="save,action-view-contract-show-version,close"/>
-          <button if="__config__.app.getApp('contract').isAmendmentManagement"
+          <button if="__config__.app.getApp('contract')?.isAmendmentManagement"
             name="deleteNextVersionBtn" title="Delete next version"
             showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3"
             onClick="save,action-contract-method-delete-next-version"/>
-          <button name="waitingBtn" title="Put on hold"
+          <button name="waitingBtn" title="Put on-hold"
             showIf="id &amp;&amp; currentContractVersion.statusSelect == 1"
             onClick="save,action-contract-method-waiting"/>
-          <button name="ongoingBtn" title="Activate"
+          <button name="ongoingBtn" title="Activate contract"
             showIf="id &amp;&amp; currentContractVersion.statusSelect == 2"
             onClick="save,action-contract-validate-on-going,action-contract-method-ongoing"/>
-          <button if="__config__.app.getApp('contract').isRenewalManagement" name="renewBtn"
+          <button if="__config__.app.getApp('contract')?.isRenewalManagement" name="renewBtn"
             title="Renew" hidden="true"
             showIf="id &amp;&amp; currentContractVersion.statusSelect == 3"
             onClick="save,action-contract-method-renew"/>
@@ -162,9 +163,11 @@
       <panel name="invoicingPanel" title="Invoicing" hidden="true"
         showIf="isInvoicingManagement &amp;&amp; statusSelect >= 2">
         <field name="invoicePeriodStartDate"
-          showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"/>
+          showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"
+          requiredIf="isInvoicingManagement &amp;&amp; statusSelect >= 2 &amp;&amp; currentContractVersion.isPeriodicInvoicing"/>
         <field name="invoicePeriodEndDate" showIf="currentContractVersion.isPeriodicInvoicing"
-          colSpan="4"/>
+          colSpan="4"
+          requiredIf="isInvoicingManagement &amp;&amp; statusSelect >= 2 &amp;&amp; currentContractVersion.isPeriodicInvoicing"/>
         <field name="invoicingDate" colSpan="4"/>
         <button name="invoicingBtn" title="Invoicing"
           showIf="id &amp;&amp; currentContractVersion.statusSelect == 3"
@@ -175,7 +178,7 @@
       <panel name="terminationPanel" title="Termination" hidden="true"
         showIf="statusSelect != 1" onTabSelect="action-contract-attrs-show-close-btn">
         <panel name="renewalPanel"
-          if="__config__.app.getApp('contract').getIsRenewalManagement()" title="Renewal"
+          if="__config__.app.getApp('contract')?.getIsRenewalManagement()" title="Renewal"
           hidden="true"
           showIf="currentContractVersion.statusSelect == 3 &amp;&amp; (renewalNumber > 0 || currentContractVersion.isTacitRenewal)"
           colSpan="12">
@@ -204,7 +207,7 @@
                 showIf="terminatedManually" colSpan="4"/>
             </panel>
             <panel name="durationPanel"
-              if="__config__.app.getApp('contract').isConfigContract" hidden="true"
+              if="__config__.app.getApp('contract')?.isConfigContract" hidden="true"
               showIf="id &amp;&amp; (currentContractVersion.isWithEngagement || currentContractVersion.isWithPriorNotice) &amp;&amp; !terminatedManually"
               colSpan="12">
               <panel name="engagementPanel" hidden="true" readonly="true"
@@ -229,24 +232,24 @@
             onClick="save,action-contract-method-terminated"/>
         </panel>
       </panel>
-      <panel if="__config__.app.getApp('contract').isConfigContract" title="Config."
+      <panel if="__config__.app.getApp('contract')?.isConfigContract" title="Config."
         name="configPanel">
         <panel name="configSubPanel" title="Invoicing"
-          if="__config__.app.getApp('contract').isInvoicingManagement" colSpan="12">
+          if="__config__.app.getApp('contract')?.isInvoicingManagement" colSpan="12">
           <field name="isInvoicingManagement"
             onChange="action-contract-attrs-required-payment-config,action-contract-attrs-partner-payment-config"
             colSpan="12" widget="boolean-switch"/>
           <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement"
             colSpan="12">
             <field name="isAdditionaBenefitManagement"
-              if="__config__.app.getApp('contract').isAdditionalBenefitManagement"
+              if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
               widget="boolean-switch" colSpan="12"/>
             <field name="isConsumptionManagement"
-              if="__config__.app.getApp('contract').isConsumptionManagement"
+              if="__config__.app.getApp('contract')?.isConsumptionManagement"
               onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
               colSpan="3"/>
             <field name="currentContractVersion"
-              if="__config__.app.getApp('contract').isConsumptionManagement" showTitle="false"
+              if="__config__.app.getApp('contract')?.isConsumptionManagement" showTitle="false"
               hidden="true" showIf="isConsumptionManagement" x-show-icons="false">
               <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                 <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"/>
@@ -291,7 +294,7 @@
             </field>
           </panel>
         </panel>
-        <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal"
+        <panel if="__config__.app.getApp('contract')?.isRenewalManagement" title="Renewal"
           colSpan="12" name="renewalDetailsPanel">
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false">
@@ -339,7 +342,7 @@
 
   <action-attrs name="action-contract-attrs-show-close-btn">
     <attribute for="closeContractBtn" name="hidden"
-      expr="terminatedDate == null || statusSelect != 2 || __config__.app.getTodayDate(__user__.activeCompany) &lt; terminatedDate"/>
+      expr="terminatedDate == null || statusSelect != 2 || __config__.date &lt; terminatedDate"/>
   </action-attrs>
 
   <action-method name="action-contract-method-close">
@@ -359,7 +362,7 @@
 
   <action-attrs name="action-contract-attrs-readonly-by-config">
     <attribute for="currentContractVersionDescriptionPanel" name="readonly"
-      expr="eval: __config__.app.getApp('contract').isUnchangableContract &amp;&amp; statusSelect > 1"/>
+      expr="eval: __config__.app.getApp('contract')?.isUnchangableContract &amp;&amp; statusSelect > 1"/>
   </action-attrs>
 
   <action-record name="action-contract-record-default"
@@ -526,11 +529,11 @@
           currentContractVersion.engagementDuration,currentContractVersion.engagementStartFromVersion,currentContractVersion.isWithPriorNotice,
           currentContractVersion.priorNoticeDuration,currentContractVersion.isPeriodicInvoicing,firstPeriodEndDate,currentContractVersion.numberOfDays"
       name="readonly"
-      expr="eval: (__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
-          || (!__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 3)"/>
+      expr="eval: (__config__.app.getApp('contract')?.isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
+          || (!__config__.app.getApp('contract')?.isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 3)"/>
     <attribute for="currentContractVersion.contractLineList" name="readonly"
-      expr="eval: (__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
-          || (!__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 3)
+      expr="eval: (__config__.app.getApp('contract')?.isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
+          || (!__config__.app.getApp('contract')?.isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 3)
           || !id"/>
   </action-attrs>
 
@@ -553,21 +556,21 @@
   <search-filters name="contract-filters"
     model="com.axelor.apps.contract.db.Contract" title="Contract filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="currency" hidden="true"
-      if="!__config__.app.getApp('contract').getIsInvoicingManagement()"/>
+      if="!__config__.app.getApp('contract')?.getIsInvoicingManagement()"/>
     <field name="renewalNumber" hidden="true"
-      if="!__config__.app.getApp('contract').getIsRenewalManagement()"/>
+      if="!__config__.app.getApp('contract')?.getIsRenewalManagement()"/>
     <field name="lastRenewalDate" hidden="true"
-      if="!__config__.app.getApp('contract').getIsRenewalManagement()"/>
+      if="!__config__.app.getApp('contract')?.getIsRenewalManagement()"/>
     <field name="engagementStartDate" hidden="true"
-      if="!__config__.app.getApp('contract').isConfigContract"/>
+      if="!__config__.app.getApp('contract')?.isConfigContract"/>
     <field name="isInvoicingManagement" hidden="true"
-      if="!__config__.app.getApp('contract').isInvoicingManagement"/>
+      if="!__config__.app.getApp('contract')?.isInvoicingManagement"/>
     <field name="isAdditionaBenefitManagement" hidden="true"
-      if="!__config__.app.getApp('contract').isAdditionalBenefitManagement"/>
+      if="!__config__.app.getApp('contract')?.isAdditionalBenefitManagement"/>
     <field name="isConsumptionManagement" hidden="true"
-      if="!__config__.app.getApp('contract').isConsumptionManagement"/>
+      if="!__config__.app.getApp('contract')?.isConsumptionManagement"/>
   </search-filters>
 
 </object-views>

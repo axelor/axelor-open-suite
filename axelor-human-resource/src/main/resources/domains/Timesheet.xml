@@ -32,16 +32,7 @@
 
     <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
-      		if(this.getEmployee() != null && this.getCreatedOn() != null){
-      			return this.getEmployee().getName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthValue()
-	  				+"/"+this.getCreatedOn().getYear()+"  "+this.getCreatedOn().getHour()+":"+this.getCreatedOn().getMinute();
-      		}
-	  		else if (this.getEmployee() != null){
-	  			return this.getEmployee().getName()+" N°"+this.getId();
-	  		}
-	  		else{
-	  			return "N°"+this.getId();
-	  		}
+      		return com.axelor.apps.hr.service.timesheet.TimesheetComputeNameServiceImpl.computeTimesheetFullname(this.getEmployee(),this.getFromDate(),this.getToDate());
 	  ]]>
     </string>
 
@@ -57,7 +48,7 @@
 	  ]]>
     </extra-code>
     <track>
-      <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
+      <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     </track>
   </entity>
 

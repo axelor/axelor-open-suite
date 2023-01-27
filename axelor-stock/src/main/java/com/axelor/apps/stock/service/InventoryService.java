@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,6 +44,7 @@ import com.axelor.apps.tool.StringHTMLListBuilder;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -96,6 +97,7 @@ public class InventoryService {
 
   static final int INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT = 15;
 
+  protected InventoryLineRepository inventoryLineRepository;
   protected InventoryLineService inventoryLineService;
   protected SequenceService sequenceService;
   protected StockConfigService stockConfigService;
@@ -124,7 +126,8 @@ public class InventoryService {
       StockLocationLineRepository stockLocationLineRepository,
       TrackingNumberRepository trackingNumberRepository,
       AppBaseService appBaseService,
-      StockLocationRepository stockLocationRepository) {
+      StockLocationRepository stockLocationRepository,
+      InventoryLineRepository inventoryLineRepository) {
     this.inventoryLineService = inventoryLineService;
     this.sequenceService = sequenceService;
     this.stockConfigService = stockConfigService;
@@ -138,6 +141,7 @@ public class InventoryService {
     this.trackingNumberRepository = trackingNumberRepository;
     this.appBaseService = appBaseService;
     this.stockLocationRepository = stockLocationRepository;
+    this.inventoryLineRepository = inventoryLineRepository;
   }
 
   public Inventory createInventory(
@@ -186,7 +190,9 @@ public class InventoryService {
 
   public String getInventorySequence(Company company) throws AxelorException {
 
-    String ref = sequenceService.getSequenceNumber(SequenceRepository.INVENTORY, company);
+    String ref =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.INVENTORY, company, Inventory.class, "inventorySeq");
     if (ref == null)
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -198,111 +204,168 @@ public class InventoryService {
   @Transactional(rollbackOn = {Exception.class})
   public Path importFile(Inventory inventory) throws AxelorException {
 
-    List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
+    HashMap<String, InventoryLine> inventoryLineMap = this.getInventoryLines(inventory);
+
     Path filePath = MetaFiles.getPath(inventory.getImportFile());
     List<String[]> data = this.getDatas(filePath);
 
-    HashMap<String, InventoryLine> inventoryLineMap = this.getInventoryLines(inventory);
     List<String> headers = Arrays.asList(data.get(0));
+    inventory.clearInventoryLineList();
 
     data.remove(0); /* Skip headers */
-    StockLocationRepository stockLocationRepo = Beans.get(StockLocationRepository.class);
 
     for (String[] line : data) {
-      if (line.length < 6)
-        throw new AxelorException(
-            new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_LINE_LENGHT)),
-            inventory,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(StockExceptionMessage.INVENTORY_3));
-
-      String code = line[headers.indexOf(PRODUCT_CODE)].replace("\"", "");
-      String rack = line[headers.indexOf(RACK)].replace("\"", "");
-      String trackingNumberSeq = line[headers.indexOf(TRACKING_NUMBER)].replace("\"", "");
-
-      String stockLocationName = line[headers.indexOf(STOCK_LOCATION)].replace("\"", "");
-      StockLocation stockLocation = null;
-      if (stockLocationName != null) {
-        stockLocation = stockLocationRepo.findByName(stockLocationName);
-      }
-
-      BigDecimal realQty = null;
-      try {
-        if (!StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)]))
-          realQty = new BigDecimal(line[headers.indexOf(REAL_QUANTITY)]);
-      } catch (NumberFormatException e) {
-        throw new AxelorException(
-            new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
-            inventory,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(StockExceptionMessage.INVENTORY_3));
-      }
-
-      String description = line[headers.indexOf(DESCRIPTION)].replace("\"", "");
-
-      int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
-      String key = code + trackingNumberSeq + stockLocationName;
-
-      if (inventoryLineMap.containsKey(key)) {
-        InventoryLine inventoryLine = inventoryLineMap.get(key);
-        if (realQty != null)
-          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
-        inventoryLine.setDescription(description);
-
-        if (inventoryLine.getTrackingNumber() != null) {
-          inventoryLine.getTrackingNumber().setCounter(realQty);
-        }
-      } else {
-        BigDecimal currentQty;
-        try {
-          currentQty = new BigDecimal(line[headers.indexOf(CURRENT_QUANTITY)].replace("\"", ""));
-        } catch (NumberFormatException e) {
-          throw new AxelorException(
-              new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)),
-              inventory,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(StockExceptionMessage.INVENTORY_3));
-        }
-
-        InventoryLine inventoryLine = new InventoryLine();
-        List<Product> productList =
-            productRepo
-                .all()
-                .filter("self.code = :code AND self.dtype = 'Product'")
-                .bind("code", code)
-                .fetch();
-        if (productList != null && !productList.isEmpty()) {
-          if (productList.size() > 1) {
-            throw new AxelorException(
-                inventory,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(StockExceptionMessage.INVENTORY_12) + " " + code);
-          }
-        }
-        Product product = productList.get(0);
-        if (product == null
-            || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE))
-          throw new AxelorException(
-              inventory,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(StockExceptionMessage.INVENTORY_4) + " " + code);
-        inventoryLine.setProduct(product);
-        inventoryLine.setInventory(inventory);
-        inventoryLine.setRack(rack);
-        inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_UP));
-        if (realQty != null)
-          inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
-        inventoryLine.setDescription(description);
-        inventoryLine.setTrackingNumber(
-            this.getTrackingNumber(trackingNumberSeq, product, realQty));
-        inventoryLine.setStockLocation(stockLocation);
-        inventoryLineList.add(inventoryLine);
-      }
+      inventory.addInventoryLineListItem(
+          createInventoryLine(inventory, inventoryLineMap, headers, line));
     }
-    inventory.setInventoryLineList(inventoryLineList);
 
     inventoryRepo.save(inventory);
+
     return filePath;
+  }
+
+  protected InventoryLine createInventoryLine(
+      Inventory inventory,
+      HashMap<String, InventoryLine> inventoryLineMap,
+      List<String> headers,
+      String[] line)
+      throws AxelorException {
+    if (line.length < 6) {
+      throw new AxelorException(
+          new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_LINE_LENGHT)),
+          inventory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.INVENTORY_3));
+    }
+
+    String code = line[headers.indexOf(PRODUCT_CODE)].replace("\"", "");
+    String rack = line[headers.indexOf(RACK)].replace("\"", "");
+    String trackingNumberSeq = line[headers.indexOf(TRACKING_NUMBER)].replace("\"", "");
+    String description = line[headers.indexOf(DESCRIPTION)].replace("\"", "");
+    String stockLocationName = line[headers.indexOf(STOCK_LOCATION)].replace("\"", "");
+    StockLocation stockLocation = null;
+    if (stockLocationName != null) {
+      stockLocation = stockLocationRepository.findByName(stockLocationName);
+    }
+    String key = code + trackingNumberSeq + stockLocationName;
+    BigDecimal realQty = getRealQty(inventory, headers, line);
+    BigDecimal currentQty = getCurrentQty(inventory, headers, line);
+    Product product = getProduct(inventory, code);
+
+    if (product == null
+        || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+      throw new AxelorException(
+          inventory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.INVENTORY_4) + " " + code);
+    }
+
+    if (inventoryLineMap.containsKey(key)) {
+      return copyAndEditInventoryLine(inventoryLineMap.get(key), description, realQty);
+    } else {
+      return createInventoryLine(
+          inventory,
+          rack,
+          trackingNumberSeq,
+          description,
+          realQty,
+          currentQty,
+          product,
+          stockLocation);
+    }
+  }
+
+  protected InventoryLine copyAndEditInventoryLine(
+      InventoryLine inventoryLine, String description, BigDecimal realQty) {
+
+    // There is not one to many for inventoryLine, so true or false is the same.
+    InventoryLine inventoryLineResult = inventoryLineRepository.copy(inventoryLine, true);
+    inventoryLineResult.setRealQty(realQty);
+    inventoryLineResult.setDescription(description);
+    if (inventoryLineResult.getTrackingNumber() != null) {
+      inventoryLineResult.getTrackingNumber().setCounter(realQty);
+    }
+    return inventoryLineResult;
+  }
+
+  protected InventoryLine createInventoryLine(
+      Inventory inventory,
+      String rack,
+      String trackingNumberSeq,
+      String description,
+      BigDecimal realQty,
+      BigDecimal currentQty,
+      Product product,
+      StockLocation stockLocation)
+      throws AxelorException {
+
+    return inventoryLineService.createInventoryLine(
+        inventory,
+        product,
+        currentQty,
+        rack,
+        this.getTrackingNumber(trackingNumberSeq, product, realQty),
+        realQty,
+        description,
+        stockLocation,
+        null);
+  }
+
+  protected Product getProduct(Inventory inventory, String code) throws AxelorException {
+    List<Product> productList =
+        productRepo
+            .all()
+            .filter("self.code = :code AND self.dtype = 'Product'")
+            .bind("code", code)
+            .fetch();
+    if (CollectionUtils.isNotEmpty(productList)) {
+      if (productList.size() > 1) {
+        throw new AxelorException(
+            inventory,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(StockExceptionMessage.INVENTORY_12) + " " + code);
+      }
+      return productList.get(0);
+    } else {
+      throw new AxelorException(
+          inventory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.INVENTORY_4) + " " + code);
+    }
+  }
+
+  protected BigDecimal getCurrentQty(Inventory inventory, List<String> headers, String[] line)
+      throws AxelorException {
+    int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
+    try {
+      return new BigDecimal(line[headers.indexOf(CURRENT_QUANTITY)].replace("\"", ""))
+          .setScale(qtyScale, RoundingMode.HALF_UP);
+    } catch (NumberFormatException e) {
+      throw new AxelorException(
+          new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)),
+          inventory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.INVENTORY_3));
+    }
+  }
+
+  protected BigDecimal getRealQty(Inventory inventory, List<String> headers, String[] line)
+      throws AxelorException {
+    int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
+    try {
+      if (!StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)])) {
+        return new BigDecimal(line[headers.indexOf(REAL_QUANTITY)])
+            .setScale(qtyScale, RoundingMode.HALF_UP);
+      }
+
+    } catch (NumberFormatException e) {
+      throw new AxelorException(
+          new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_REAL_QUANTITY)),
+          inventory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.INVENTORY_3));
+    }
+    return null;
   }
 
   public List<String[]> getDatas(Path filePath) throws AxelorException {
@@ -391,6 +454,36 @@ public class InventoryService {
           I18n.get(StockExceptionMessage.INVENTORY_START_WRONG_STATUS));
     }
     inventory.setStatusSelect(InventoryRepository.STATUS_IN_PROGRESS);
+    inventory.getInventoryLineList().stream().forEach(this::updateCurrentQty);
+  }
+
+  protected void updateCurrentQty(InventoryLine inventoryLine) {
+    StockLocation stockLocation = inventoryLine.getStockLocation();
+    Product product = inventoryLine.getProduct();
+    TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
+
+    String query =
+        "self.product = :product AND (self.stockLocation  = :stockLocation OR self.detailsStockLocation = :stockLocation)";
+
+    Query<StockLocationLine> stockLocationLineQuery =
+        stockLocationLineRepository
+            .all()
+            .bind("product", product)
+            .bind("stockLocation", stockLocation);
+
+    if (ObjectUtils.notEmpty(trackingNumber)) {
+      query += " AND self.trackingNumber = :trackingNumber";
+      stockLocationLineQuery.bind("trackingNumber", trackingNumber);
+    }
+
+    BigDecimal currentQty =
+        stockLocationLineQuery
+            .filter(query)
+            .fetchStream()
+            .map(StockLocationLine::getCurrentQty)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    inventoryLine.setCurrentQty(currentQty);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -802,6 +895,8 @@ public class InventoryService {
         stockLocationLine.getCurrentQty(),
         stockLocationLine.getRack(),
         stockLocationLine.getTrackingNumber(),
+        null,
+        null,
         stockLocationLine.getStockLocation(),
         stockLocationLine.getDetailsStockLocation());
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -273,30 +273,8 @@ public abstract class InvoiceGenerator {
     } else {
       invoice.setInAti(false);
     }
-
-    if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
-      List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
-      companyBankDetails =
-          bankDetailsList.stream()
-              .filter(bankDetails -> bankDetails.getIsDefault())
-              .findFirst()
-              .orElse(null);
-    } else if (accountingSituation != null) {
-      if (paymentMode != null) {
-        if (paymentMode.equals(partner.getOutPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-        } else if (paymentMode.equals(partner.getInPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyInBankDetails();
-        }
-      }
-    }
     if (companyBankDetails == null) {
-      companyBankDetails = company.getDefaultBankDetails();
-      List<BankDetails> allowedBDs =
-          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
-      if (!allowedBDs.contains(companyBankDetails)) {
-        companyBankDetails = null;
-      }
+      fillCompanyBankDetails(accountingSituation, accountConfig);
     }
     invoice.setCompanyBankDetails(companyBankDetails);
 
@@ -319,6 +297,35 @@ public abstract class InvoiceGenerator {
     initCollections(invoice);
 
     return invoice;
+  }
+
+  protected void fillCompanyBankDetails(
+      AccountingSituation accountingSituation, AccountConfig accountConfig) {
+    if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
+      List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
+      companyBankDetails =
+          bankDetailsList.stream()
+              .filter(bankDetails -> bankDetails.getIsDefault())
+              .findFirst()
+              .orElse(null);
+    } else if (accountingSituation != null) {
+      if (paymentMode != null) {
+        if (paymentMode.equals(partner.getOutPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+        } else if (paymentMode.equals(partner.getInPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyInBankDetails();
+        }
+      }
+    }
+    // If it is still null
+    if (companyBankDetails == null) {
+      companyBankDetails = company.getDefaultBankDetails();
+      List<BankDetails> allowedBDs =
+          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
+      if (!allowedBDs.contains(companyBankDetails)) {
+        companyBankDetails = null;
+      }
+    }
   }
 
   public int getInvoiceCopy() {
@@ -345,15 +352,19 @@ public abstract class InvoiceGenerator {
     logger.debug("Populate an invoice => invoice lines : {} ", invoiceLines.size());
 
     initCollections(invoice);
+
+    if (invoice instanceof ContextEntity) {
+      invoice.getInvoiceLineList().addAll(invoiceLines);
+    } else {
+      invoiceLines.forEach(invoice::addInvoiceLineListItem);
+    }
     // Create tax lines.
     List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
 
     // Workaround for #9759
     if (invoice instanceof ContextEntity) {
-      invoice.getInvoiceLineList().addAll(invoiceLines);
       invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
     } else {
-      invoiceLines.forEach(invoice::addInvoiceLineListItem);
       invoiceTaxLines.forEach(invoice::addInvoiceLineTaxListItem);
     }
 

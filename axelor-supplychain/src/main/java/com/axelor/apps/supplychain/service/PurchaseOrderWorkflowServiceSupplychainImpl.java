@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -64,6 +64,8 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       return;
     }
 
+    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+
     if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()
         && !purchaseOrderStockService.existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
       purchaseOrderStockService.createStockMoveFromPurchaseOrder(purchaseOrder);
@@ -80,7 +82,9 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
 
-    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+    if (!appAccountService.getAppBudget().getManageMultiBudget()) {
+      purchaseOrderSupplychainService.updateBudgetDistributionAmountAvailable(purchaseOrder);
+    }
   }
 
   @Override

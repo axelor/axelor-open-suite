@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,6 +55,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -65,7 +66,6 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -75,7 +75,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,35 +114,30 @@ public class SaleOrderController {
   }
 
   /**
-   * Method that print the sale order as a Pdf
+   * Print the sale order as a PDF.
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
    */
-  public void showSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
-
+  public void showSaleOrder(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_PDF);
   }
 
-  /** Method that prints a proforma invoice as a PDF */
-  public void printProformaInvoice(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  /**
+   * Print a proforma invoice as a PDF.
+   *
+   * @param request
+   * @param response
+   */
+  public void printProformaInvoice(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, true, ReportSettings.FORMAT_PDF);
   }
 
-  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLSX);
   }
 
-  public void exportSaleOrderWord(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void exportSaleOrderWord(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_DOC);
   }
 
@@ -256,7 +250,7 @@ public class SaleOrderController {
     SaleOrder context = Beans.get(SaleOrderRepository.class).find(Long.valueOf(saleOrderId));
 
     response.setView(
-        ActionView.define("Sale order")
+        ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-form-wizard")
             .context("_idCopy", context.getId().toString())
@@ -270,7 +264,7 @@ public class SaleOrderController {
   public void generateViewTemplate(ActionRequest request, ActionResponse response) {
     SaleOrder context = request.getContext().asType(SaleOrder.class);
     response.setView(
-        ActionView.define("Template")
+        ActionView.define(I18n.get("Template"))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-template-form-wizard")
             .context("_idCopy", context.getId().toString())
@@ -282,7 +276,7 @@ public class SaleOrderController {
     Partner clientPartner = saleOrderTemplate.getClientPartner();
 
     response.setView(
-        ActionView.define("Create the quotation")
+        ActionView.define(I18n.get("Create the quotation"))
             .model(Wizard.class.getName())
             .add("form", "sale-order-template-wizard-form")
             .param("popup", "reload")
@@ -594,26 +588,27 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
+  @HandleExceptionResponse
   public void separateInNewQuotation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
-    Optional<Entry<String, Object>> SOLinesEntry =
+    Optional<Entry<String, Object>> saleOrderLineEntries =
         contextEntry.stream()
             .filter(entry -> entry.getKey().equals("saleOrderLineList"))
             .findFirst();
-    if (!SOLinesEntry.isPresent()) {
+    if (!saleOrderLineEntries.isPresent()) {
       return;
     }
 
-    Entry<String, Object> entry = SOLinesEntry.get();
+    Entry<String, Object> entry = saleOrderLineEntries.get();
     @SuppressWarnings("unchecked")
-    ArrayList<LinkedHashMap<String, Object>> SOLines =
+    ArrayList<LinkedHashMap<String, Object>> saleOrderLines =
         (ArrayList<LinkedHashMap<String, Object>>) entry.getValue();
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
-        Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, SOLines);
+        Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, saleOrderLines);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
@@ -667,13 +662,10 @@ public class SaleOrderController {
   public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       if (saleOrder.getSaleOrderLineList() != null) {
-        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineService.updateLinesAfterFiscalPositionChange(saleOrder);
-        }
-        response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+        Beans.get(SaleOrderLineService.class).updateLinesAfterFiscalPositionChange(saleOrder);
       }
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

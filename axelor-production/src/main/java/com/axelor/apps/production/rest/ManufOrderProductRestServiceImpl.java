@@ -1,13 +1,38 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.production.rest;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.rest.dto.ConsumedProductResponse;
+import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
+import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +42,17 @@ import java.util.stream.Collectors;
 public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestService {
 
   protected ProductStockLocationService productStockLocationService;
+  protected ManufOrderService manufOrderService;
+  protected StockMoveLineService stockMoveLineService;
 
   @Inject
-  public ManufOrderProductRestServiceImpl(ProductStockLocationService productStockLocationService) {
+  public ManufOrderProductRestServiceImpl(
+      ProductStockLocationService productStockLocationService,
+      ManufOrderService manufOrderService,
+      StockMoveLineService stockMoveLineService) {
     this.productStockLocationService = productStockLocationService;
+    this.manufOrderService = manufOrderService;
+    this.stockMoveLineService = stockMoveLineService;
   }
 
   public List<ProdProduct> getProdProductsOfProduct(
@@ -41,37 +73,14 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
         .collect(Collectors.toList());
   }
 
-  public ConsumedProductResponse createConsumedProductResponse(
-      ManufOrder manufOrder, StockMoveLine stockMoveLine, BigDecimal plannedQty)
-      throws AxelorException {
-    Product product = stockMoveLine.getProduct();
-
-    Map<String, Object> mapIndicators =
-        productStockLocationService.computeIndicators(
-            product.getId(), manufOrder.getCompany().getId(), 0L);
-
-    BigDecimal availableQty = (BigDecimal) mapIndicators.get("$availableQty");
-
-    return new ConsumedProductResponse(
-        product,
-        BigDecimal.ZERO.max(plannedQty),
-        stockMoveLine.getQty(),
-        BigDecimal.ZERO.max(plannedQty.subtract(availableQty)),
-        availableQty,
-        stockMoveLine.getUnit(),
-        stockMoveLine.getTrackingNumber());
-  }
-
-  public BigDecimal getGlobalConsumedPlannedQty(Product product, ManufOrder manufOrder) {
-    List<ProdProduct> prodProducts =
-        getProdProductsOfProduct(manufOrder.getToConsumeProdProductList(), product);
-
-    BigDecimal plannedQty = BigDecimal.ZERO;
+  public BigDecimal getGlobalPlannedQty(Product product, List<ProdProduct> globalProdProductList) {
+    List<ProdProduct> prodProducts = getProdProductsOfProduct(globalProdProductList, product);
 
     if (prodProducts == null || prodProducts.isEmpty()) {
       return BigDecimal.ZERO;
     }
 
+    BigDecimal plannedQty = BigDecimal.ZERO;
     for (ProdProduct prodProduct : prodProducts) {
       plannedQty = plannedQty.add(prodProduct.getQty());
     }
@@ -79,61 +88,92 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     return plannedQty;
   }
 
+  public ManufOrderProductResponse createProductResponse(
+      ManufOrder manufOrder, StockMoveLine stockMoveLine, BigDecimal plannedQty)
+      throws AxelorException {
+    Product product = stockMoveLine.getProduct();
+    BigDecimal availableQty = null;
+    BigDecimal missingQty = null;
+
+    if (stockMoveLine.getProducedManufOrder() == null) {
+      Map<String, Object> mapIndicators =
+          productStockLocationService.computeIndicators(
+              product.getId(), manufOrder.getCompany().getId(), 0L);
+
+      availableQty = (BigDecimal) mapIndicators.get("$availableQty");
+      missingQty = BigDecimal.ZERO.max(plannedQty.subtract(availableQty));
+    }
+
+    ManufOrder subManufOrder = getProductSubManufOrder(manufOrder, product);
+
+    return new ManufOrderProductResponse(
+        product,
+        stockMoveLine,
+        BigDecimal.ZERO.max(plannedQty),
+        stockMoveLine.getQty(),
+        missingQty,
+        availableQty,
+        stockMoveLine.getTrackingNumber(),
+        stockMoveLine.getUnit(),
+        subManufOrder);
+  }
+
+  protected ManufOrder getProductSubManufOrder(ManufOrder manufOrder, Product product) {
+    List<ManufOrder> childrenManufOrder = manufOrderService.getChildrenManufOrder(manufOrder);
+    return getChildManufOrder(childrenManufOrder, product);
+  }
+
   @Override
-  public List<ConsumedProductResponse> getConsumedProductList(ManufOrder manufOrder)
+  public List<ManufOrderProductResponse> getConsumedProductList(ManufOrder manufOrder)
       throws AxelorException {
     List<Product> checkProducts = new ArrayList<>();
-    List<ConsumedProductResponse> result =
-        new ArrayList<>(getPlannedConsumedProductList(manufOrder, checkProducts));
-    result.addAll(getAdditionalConsumedProductList(manufOrder, checkProducts));
+    List<ManufOrderProductResponse> result =
+        new ArrayList<>(
+            getPlannedProductList(
+                manufOrder,
+                checkProducts,
+                manufOrder.getToConsumeProdProductList(),
+                manufOrder.getConsumedStockMoveLineList()));
+    result.addAll(
+        getAdditionalProductList(
+            manufOrder, checkProducts, manufOrder.getConsumedStockMoveLineList()));
     return result;
   }
 
-  public void getAllConsumedProductResponsesOfProduct(
-      ManufOrder manufOrder,
-      Product product,
-      List<StockMoveLine> productLines,
-      List<ConsumedProductResponse> productResponses)
+  @Override
+  public List<ManufOrderProductResponse> getProducedProductList(ManufOrder manufOrder)
       throws AxelorException {
-    BigDecimal consumedQty = BigDecimal.ZERO;
-
-    int lastIndex = productLines.size() - 1;
-    StockMoveLine lastProductLine = productLines.get(lastIndex);
-    List<StockMoveLine> productLinesSubList = productLines.subList(0, lastIndex);
-
-    for (StockMoveLine currentLine : productLinesSubList) {
-      productResponses.add(
-          createConsumedProductResponse(
-              manufOrder,
-              currentLine,
-              currentLine
-                  .getQty()
-                  .min(getGlobalConsumedPlannedQty(product, manufOrder).subtract(consumedQty))));
-      consumedQty = consumedQty.add(currentLine.getQty());
-    }
-
-    productResponses.add(
-        createConsumedProductResponse(
+    List<Product> checkProducts = new ArrayList<>();
+    List<ManufOrderProductResponse> result =
+        getPlannedProductList(
             manufOrder,
-            lastProductLine,
-            getGlobalConsumedPlannedQty(product, manufOrder).subtract(consumedQty)));
+            checkProducts,
+            manufOrder.getToProduceProdProductList(),
+            manufOrder.getProducedStockMoveLineList());
+    result.addAll(
+        getAdditionalProductList(
+            manufOrder, checkProducts, manufOrder.getProducedStockMoveLineList()));
+    return result;
   }
 
-  public List<ConsumedProductResponse> getPlannedConsumedProductList(
-      ManufOrder manufOrder, List<Product> checkProducts) throws AxelorException {
-    List<ConsumedProductResponse> result = new ArrayList<>();
+  public List<ManufOrderProductResponse> getPlannedProductList(
+      ManufOrder manufOrder,
+      List<Product> checkProducts,
+      List<ProdProduct> prodProductList,
+      List<StockMoveLine> stockMoveLines)
+      throws AxelorException {
+    List<ManufOrderProductResponse> result = new ArrayList<>();
 
-    for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
+    for (ProdProduct prodProduct : prodProductList) {
       Product product = prodProduct.getProduct();
       if (isProductNotChecked(checkProducts, product)) {
-        List<StockMoveLine> productLines =
-            getStockMoveLinesOfProduct(manufOrder.getConsumedStockMoveLineList(), product);
+        List<StockMoveLine> productLines = getStockMoveLinesOfProduct(stockMoveLines, product);
 
         if (productLines.size() == 1) {
-          result.add(
-              createConsumedProductResponse(manufOrder, productLines.get(0), prodProduct.getQty()));
+          result.add(createProductResponse(manufOrder, productLines.get(0), prodProduct.getQty()));
         } else {
-          getAllConsumedProductResponsesOfProduct(manufOrder, product, productLines, result);
+          getAllProductResponsesOfProduct(
+              manufOrder, product, prodProductList, productLines, result);
         }
         checkProducts.add(product);
       }
@@ -141,18 +181,153 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     return result;
   }
 
-  public List<ConsumedProductResponse> getAdditionalConsumedProductList(
-      ManufOrder manufOrder, List<Product> checkProducts) throws AxelorException {
-    List<ConsumedProductResponse> result = new ArrayList<>();
+  public void getAllProductResponsesOfProduct(
+      ManufOrder manufOrder,
+      Product product,
+      List<ProdProduct> prodProductList,
+      List<StockMoveLine> productLines,
+      List<ManufOrderProductResponse> productResponses)
+      throws AxelorException {
+    BigDecimal realQty = BigDecimal.ZERO;
 
-    for (StockMoveLine line : manufOrder.getConsumedStockMoveLineList()) {
+    int lastIndex = productLines.size() - 1;
+    StockMoveLine lastProductLine = productLines.get(lastIndex);
+    List<StockMoveLine> productLinesSubList = productLines.subList(0, lastIndex);
+
+    for (StockMoveLine currentLine : productLinesSubList) {
+      productResponses.add(
+          createProductResponse(
+              manufOrder,
+              currentLine,
+              currentLine
+                  .getQty()
+                  .min(getGlobalPlannedQty(product, prodProductList).subtract(realQty))));
+      realQty = realQty.add(currentLine.getQty());
+    }
+
+    productResponses.add(
+        createProductResponse(
+            manufOrder,
+            lastProductLine,
+            getGlobalPlannedQty(product, prodProductList).subtract(realQty)));
+  }
+
+  public List<ManufOrderProductResponse> getAdditionalProductList(
+      ManufOrder manufOrder, List<Product> checkProducts, List<StockMoveLine> stockMoveLines)
+      throws AxelorException {
+    List<ManufOrderProductResponse> result = new ArrayList<>();
+
+    for (StockMoveLine line : stockMoveLines) {
       Product product = line.getProduct();
       if (isProductNotChecked(checkProducts, product)) {
-        result.add(createConsumedProductResponse(manufOrder, line, BigDecimal.ZERO));
+        result.add(createProductResponse(manufOrder, line, BigDecimal.ZERO));
         checkProducts.add(product);
       }
     }
 
     return result;
+  }
+
+  /**
+   * Update quantity for consumed or produced product in manuf order.
+   *
+   * @param stockMoveLine
+   * @param qty
+   * @return
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public StockMoveLine updateStockMoveLineQty(StockMoveLine stockMoveLine, BigDecimal qty)
+      throws AxelorException {
+    if (qty == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MISSING_QUANTITY));
+    }
+    stockMoveLine.setQty(qty);
+    return stockMoveLine;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void addWasteProduct(ManufOrder manufOrder, ProdProduct wasteProduct) {
+    if (manufOrder != null && wasteProduct != null) {
+      manufOrder.addWasteProdProductListItem(wasteProduct);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void updateProdProductQty(ProdProduct prodProduct, BigDecimal qty) {
+    if (prodProduct != null && qty != null) {
+      prodProduct.setQty(qty);
+    }
+  }
+
+  /**
+   * Add consumed or produced product in manuf order.
+   *
+   * @param product
+   * @param qty
+   * @param trackingNumber
+   * @param manufOrder
+   * @param productType
+   * @return
+   */
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public StockMoveLine addManufOrderProduct(
+      Product product,
+      BigDecimal qty,
+      TrackingNumber trackingNumber,
+      ManufOrder manufOrder,
+      String productType)
+      throws AxelorException {
+
+    StockMove stockMove = getManufOrderStockMove(manufOrder, productType);
+
+    StockMoveLine stockMoveLine =
+        stockMoveLineService.createStockMoveLine(
+            stockMove, product, trackingNumber, qty, BigDecimal.ZERO, null, null);
+
+    addProductInManufOrder(manufOrder, stockMoveLine, productType);
+
+    return stockMoveLine;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void addProductInManufOrder(
+      ManufOrder manufOrder, StockMoveLine stockMoveLine, String productType)
+      throws AxelorException {
+    if (manufOrder != null && stockMoveLine != null && PRODUCT_TYPE_PRODUCED.equals(productType)) {
+      manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+      manufOrderService.updateProducedStockMoveFromManufOrder(manufOrder);
+    }
+    if (manufOrder != null && stockMoveLine != null && PRODUCT_TYPE_CONSUMED.equals(productType)) {
+      manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+      manufOrderService.updateConsumedStockMoveFromManufOrder(manufOrder);
+    }
+  }
+
+  protected StockMove getManufOrderStockMove(ManufOrder manufOrder, String productType)
+      throws AxelorException {
+    StockMove stockMove = null;
+    if (manufOrder != null && PRODUCT_TYPE_PRODUCED.equals(productType)) {
+      stockMove = manufOrderService.getProducedStockMoveFromManufOrder(manufOrder);
+    }
+
+    if (manufOrder != null && PRODUCT_TYPE_CONSUMED.equals(productType)) {
+      stockMove = manufOrderService.getConsumedStockMoveFromManufOrder(manufOrder);
+    }
+    return stockMove;
+  }
+
+  protected ManufOrder getChildManufOrder(List<ManufOrder> childrenManufOrder, Product product) {
+
+    return childrenManufOrder.stream()
+        .filter(manufOrder -> product.equals(manufOrder.getProduct()))
+        .findAny()
+        .orElse(null);
   }
 }

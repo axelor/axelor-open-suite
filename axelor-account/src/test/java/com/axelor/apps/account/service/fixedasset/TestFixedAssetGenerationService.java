@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -49,6 +49,8 @@ public class TestFixedAssetGenerationService {
   protected AccountConfigService accountConfigService;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected FixedAssetDateService fixedAssetDateService;
+  protected FixedAssetLineGenerationService fixedAssetLineGenerationService;
+  protected FixedAssetImportService fixedAssetImportService;
   protected FixedAssetLineRepository fixedAssetLineRepo;
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
   protected SequenceService sequenceService;
@@ -78,6 +80,7 @@ public class TestFixedAssetGenerationService {
     fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
     fixedAssetValidateService = mock(FixedAssetValidateService.class);
     fixedAssetDateService = mock(FixedAssetDateService.class);
+    fixedAssetImportService = mock(FixedAssetImportService.class);
 
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
@@ -85,13 +88,16 @@ public class TestFixedAssetGenerationService {
     when(fixedAssetLineServiceFactory.getFixedAssetComputationService(
             any(FixedAsset.class), any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);
+    fixedAssetLineGenerationService =
+        new FixedAssetLineGenerationServiceImpl(
+            fixedAssetLineService, fixedAssetDerogatoryLineService, fixedAssetLineServiceFactory);
     fixedAssetGenerationService =
         new FixedAssetGenerationServiceImpl(
+            fixedAssetLineGenerationService,
+            fixedAssetImportService,
             fixedAssetDateService,
             fixedAssetLineService,
-            fixedAssetDerogatoryLineService,
             fixedAssetRepo,
-            fixedAssetLineServiceFactory,
             sequenceService,
             accountConfigService,
             appBaseService,
@@ -201,6 +207,123 @@ public class TestFixedAssetGenerationService {
   }
 
   /*
+   * ================================================================================================
+   * ==  Linear fixed asset with prorata but acquisition date is equal to first depreciation date  ==
+   * ================================================================================================
+   */
+
+  protected FixedAsset generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded()
+      throws AxelorException {
+    FixedAsset fixedAsset =
+        createFixedAsset(
+            FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
+            LocalDate.of(2020, 12, 31),
+            LocalDate.of(2020, 12, 31),
+            5,
+            12,
+            createFixedAssetCategoryFromIsProrataTemporis(true),
+            new BigDecimal("500.00"));
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
+        .thenReturn(LocalDate.of(2020, 12, 31));
+    fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
+    return fixedAsset;
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeeded()
+      throws AxelorException {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    Assert.assertTrue(
+        fixedAsset.getFixedAssetLineList() != null
+            && fixedAsset.getFixedAssetLineList().size() == 6);
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFirstLine()
+      throws AxelorException {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2020, 12, 31),
+            new BigDecimal("500.00"),
+            new BigDecimal("0.28"),
+            new BigDecimal("0.28"),
+            new BigDecimal("499.72")),
+        fixedAsset.getFixedAssetLineList().get(0));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededSecondLine()
+      throws AxelorException {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2021, 12, 31),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("100.28"),
+            new BigDecimal("399.72")),
+        fixedAsset.getFixedAssetLineList().get(1));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededThirdLine()
+      throws AxelorException {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2022, 12, 31),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("200.28"),
+            new BigDecimal("299.72")),
+        fixedAsset.getFixedAssetLineList().get(2));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFourthLine()
+      throws AxelorException {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2023, 12, 31),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("300.28"),
+            new BigDecimal("199.72")),
+        fixedAsset.getFixedAssetLineList().get(3));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededFifthLine()
+      throws AxelorException {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2024, 12, 31),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("400.28"),
+            new BigDecimal("99.72")),
+        fixedAsset.getFixedAssetLineList().get(4));
+  }
+
+  @Test
+  public void testGenerateAndComputeLinesProrataLinearFixedAssetNoProrataNeededSixthLine()
+      throws AxelorException {
+    FixedAsset fixedAsset = generateAndComputeLineProrataLinearFixedAssetNoProrataNeeded();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2025, 12, 31),
+            new BigDecimal("500.00"),
+            new BigDecimal("99.72"),
+            new BigDecimal("500.00"),
+            new BigDecimal("0.00")),
+        fixedAsset.getFixedAssetLineList().get(5));
+  }
+
+  /*
    * ==================================
    * ==  Prorata linear fixed asset  ==
    * ==================================
@@ -238,9 +361,9 @@ public class TestFixedAssetGenerationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("500.00"),
-            new BigDecimal("25.00"),
-            new BigDecimal("25.00"),
-            new BigDecimal("475.00")),
+            new BigDecimal("23.89"),
+            new BigDecimal("23.89"),
+            new BigDecimal("476.11")),
         fixedAsset.getFixedAssetLineList().get(0));
   }
 
@@ -253,8 +376,8 @@ public class TestFixedAssetGenerationService {
             LocalDate.of(2021, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("100.00"),
-            new BigDecimal("125.00"),
-            new BigDecimal("375.00")),
+            new BigDecimal("123.89"),
+            new BigDecimal("376.11")),
         fixedAsset.getFixedAssetLineList().get(1));
   }
 
@@ -266,8 +389,8 @@ public class TestFixedAssetGenerationService {
             LocalDate.of(2022, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("100.00"),
-            new BigDecimal("225.00"),
-            new BigDecimal("275.00")),
+            new BigDecimal("223.89"),
+            new BigDecimal("276.11")),
         fixedAsset.getFixedAssetLineList().get(2));
   }
 
@@ -280,8 +403,8 @@ public class TestFixedAssetGenerationService {
             LocalDate.of(2023, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("100.00"),
-            new BigDecimal("325.00"),
-            new BigDecimal("175.00")),
+            new BigDecimal("323.89"),
+            new BigDecimal("176.11")),
         fixedAsset.getFixedAssetLineList().get(3));
   }
 
@@ -293,8 +416,8 @@ public class TestFixedAssetGenerationService {
             LocalDate.of(2024, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("100.00"),
-            new BigDecimal("425.00"),
-            new BigDecimal("75.00")),
+            new BigDecimal("423.89"),
+            new BigDecimal("76.11")),
         fixedAsset.getFixedAssetLineList().get(4));
   }
 
@@ -337,9 +460,9 @@ public class TestFixedAssetGenerationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("500.00"),
-            new BigDecimal("7331.31"),
-            new BigDecimal("7331.31"),
-            new BigDecimal("95307.04")),
+            new BigDecimal("7372.04"),
+            new BigDecimal("7372.04"),
+            new BigDecimal("95266.31")),
         fixedAsset.getFixedAssetLineList().get(0));
   }
 
@@ -352,8 +475,8 @@ public class TestFixedAssetGenerationService {
             LocalDate.of(2021, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("14662.62"),
-            new BigDecimal("21993.93"),
-            new BigDecimal("80644.42")),
+            new BigDecimal("22034.66"),
+            new BigDecimal("80603.69")),
         fixedAsset.getFixedAssetLineList().get(1));
   }
 
@@ -366,8 +489,8 @@ public class TestFixedAssetGenerationService {
             LocalDate.of(2022, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("14662.62"),
-            new BigDecimal("36656.55"),
-            new BigDecimal("65981.80")),
+            new BigDecimal("36697.28"),
+            new BigDecimal("65941.07")),
         fixedAsset.getFixedAssetLineList().get(2));
   }
 
@@ -380,8 +503,8 @@ public class TestFixedAssetGenerationService {
             LocalDate.of(2023, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("14662.62"),
-            new BigDecimal("51319.17"),
-            new BigDecimal("51319.18")),
+            new BigDecimal("51359.90"),
+            new BigDecimal("51278.45")),
         fixedAsset.getFixedAssetLineList().get(3));
   }
 
@@ -394,8 +517,8 @@ public class TestFixedAssetGenerationService {
             LocalDate.of(2024, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("14662.62"),
-            new BigDecimal("65981.79"),
-            new BigDecimal("36656.56")),
+            new BigDecimal("66022.52"),
+            new BigDecimal("36615.83")),
         fixedAsset.getFixedAssetLineList().get(4));
   }
 
@@ -408,8 +531,8 @@ public class TestFixedAssetGenerationService {
             LocalDate.of(2025, 12, 31),
             new BigDecimal("500.00"),
             new BigDecimal("14662.62"),
-            new BigDecimal("80644.41"),
-            new BigDecimal("21993.94")),
+            new BigDecimal("80685.14"),
+            new BigDecimal("21953.21")),
         fixedAsset.getFixedAssetLineList().get(5));
   }
 
@@ -422,8 +545,8 @@ public class TestFixedAssetGenerationService {
             LocalDate.of(2026, 12, 31),
             new BigDecimal("102638.35"),
             new BigDecimal("14662.62"),
-            new BigDecimal("95307.03"),
-            new BigDecimal("7331.32")),
+            new BigDecimal("95347.76"),
+            new BigDecimal("7290.59")),
         fixedAsset.getFixedAssetLineList().get(6));
   }
 

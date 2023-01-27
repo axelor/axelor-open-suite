@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -143,6 +143,12 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_1_PAYMENT_MODE = /*$$(*/
       "AccountingReportType1.paymentMode"; /*)*/
   public static final String ACCOUNTING_REPORT_1_DATE = /*$$(*/ "AccountingReportType1.date"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_ORIGIN_DATE = /*$$(*/
+      "AccountingReportType1.originDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_ORIGIN = /*$$(*/
+      "AccountingReportType1.origin"; /*)*/
+  public static final String ACCOUNTING_REPORT_1_ORIGIN_GROUP = /*$$(*/
+      "AccountingReportType1.originGroup"; /*)*/
 
   public static final String ACCOUNTING_REPORT_1_CODE = /*$$(*/ "AccountingReportType1.code"; /*)*/
 
@@ -221,14 +227,14 @@ public interface ITranslation {
       "AccountingReportType4.agedBalance"; /*)*/
   public static final String ACCOUNTING_REPORT_4_DETAILED_AGED_BALANCE = /*$$(*/
       "AccountingReportType4.detailedAgedBalance"; /*)*/
-  public static final String ACCOUNTING_REPORT_4_THIRD_PARTY_PAYER = /*$$(*/
-      "AccountingReportType4.thirdPartyPayer"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_PARTNER = /*$$(*/
+      "AccountingReportType4.partner"; /*)*/
   public static final String ACCOUNTING_REPORT_4_FULL_NAME = /*$$(*/
       "AccountingReportType4.fullName"; /*)*/
   public static final String ACCOUNTING_REPORT_4_REFERENCE = /*$$(*/
       "AccountingReportType4.reference"; /*)*/
-  public static final String ACCOUNTING_REPORT_4_CLIENT_BALANCE = /*$$(*/
-      "AccountingReportType4.clientBalance"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_PARTNER_BALANCE = /*$$(*/
+      "AccountingReportType4.partnerBalance"; /*)*/
   public static final String ACCOUNTING_REPORT_4_PERIOD_TOTAL = /*$$(*/
       "AccountingReportType4.periodTotal"; /*)*/
   public static final String ACCOUNTING_REPORT_4_TERM_PERIOD_TOTAL = /*$$(*/
@@ -239,8 +245,8 @@ public interface ITranslation {
       "AccountingReportType4.termControl"; /*)*/
   public static final String ACCOUNTING_REPORT_4_EDITION_DATE = /*$$(*/
       "AccountingReportType4.editionDate"; /*)*/
-  public static final String ACCOUNTING_REPORT_4_INVOICE = /*$$(*/
-      "AccountingReportType4.invoice"; /*)*/
+  public static final String ACCOUNTING_REPORT_4_ORIGIN = /*$$(*/
+      "AccountingReportType4.origin"; /*)*/
   public static final String ACCOUNTING_REPORT_4_60_DAYS = /*$$(*/
       "AccountingReportType4.60days"; /*)*/
   public static final String ACCOUNTING_REPORT_4_60_90_DAYS = /*$$(*/
@@ -397,6 +403,10 @@ public interface ITranslation {
       "AccountingReportType15.amountToReconcile"; /*)*/
   public static final String ACCOUNTING_REPORT_15_ADVANCE_PAYMENT_NOT_LETTERED = /*$$(*/
       "AccountingReportType15.advancePaymentNotLettered"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_NO_ADVANCE_PAYMENT_FOUND = /*$$(*/
+      "AccountingReportType15.noAdvancePaymentFound"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_NO_PAYMENT_FOUND = /*$$(*/
+      "AccountingReportType15.noPaymentFound"; /*)*/
 
   public static final String ACCOUNTING_REPORT_12_TITLE = /*$$(*/
       "AccountingReportType12.title"; /*)*/
@@ -1014,18 +1024,47 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType.comparison"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_NO_OF_PERIODS =
       /*$$(*/ "AccountingReportType.noOfPeriods"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_COLUMN_LIST =
+      /*$$(*/ "AccountingReportType.accountingReportConfigLineColumnList"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_LIST =
       /*$$(*/ "AccountingReportType.accountingReportConfigLineList"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_GROUP =
+      /*$$(*/ "AccountingReportTypeConfigLine.group"; /*)*/
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_COLUMN =
+      /*$$(*/ "AccountingReportTypeConfigLine.column"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_HIDDEN =
       /*$$(*/ "AccountingReportTypeConfigLine.hidden"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RESULT_SELECT =
       /*$$(*/ "AccountingReportTypeConfigLine.resultSelect"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_PREVIOUS_YEAR =
+      /*$$(*/ "AccountingReportTypeConfigLine.previousYear"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_OTHER_PERIOD =
+      /*$$(*/ "AccountingReportTypeConfigLine.otherPeriod"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_ACCOUNT =
       /*$$(*/ "AccountingReportTypeConfigLine.account"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_ACCOUNT_TYPE =
       /*$$(*/ "AccountingReportTypeConfigLine.accountType"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_ANALYTIC_ACCOUNT =
+      /*$$(*/ "AccountingReportTypeConfigLine.analyticAccount"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE =
       /*$$(*/ "AccountingReportTypeConfigLine.rule"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE_STYLE_SELECT =
+      /*$$(*/ "AccountingReportTypeConfigLine.styleSelect"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE_PERCENTAGE_TOTAL_LINE =
+      /*$$(*/ "AccountingReportTypeConfigLine.percentageTotalLine"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE_PERCENTAGE_BASE_COLUMN =
+      /*$$(*/ "AccountingReportTypeConfigLine.percentageBaseColumn"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_CONFIG_LINE_RULE_GROUPS_WITHOUT_COLUMN =
+      /*$$(*/ "AccountingReportTypeConfigLine.groupsWithoutColumn"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_DATE =
       /*$$(*/ "AccountingReportType.date"; /*)*/
   public static final String ACCOUNTING_REPORT_TYPE_USER =

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,9 +23,9 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.PaymentSessionCancelService;
-import com.axelor.apps.account.service.PaymentSessionValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -261,7 +261,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrderLineService.checkPreconditions(bankOrderLine);
       totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
       bankOrderLineService.checkBankDetails(
-          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder());
+          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder(), bankOrderLine);
     }
     if (!totalAmount.equals(arithmeticTotal)) {
       throw new AxelorException(
@@ -328,6 +328,7 @@ public class BankOrderServiceImpl implements BankOrderService {
         // TODO other cases
       default:
         bankOrderMoveService.generateMoves(bankOrder);
+        bankOrder.setAreMovesGenerated(true);
         validatePayment(bankOrder);
     }
 
@@ -367,6 +368,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
+      bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
       this.generateMoves(bankOrder);
     }
   }
@@ -387,8 +389,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
 
-    if (bankOrder.getAccountingTriggerSelect()
-        == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
+    if (!bankOrder.getAreMovesGenerated()
+        && bankOrder.getAccountingTriggerSelect()
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
+      bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
       bankOrder = this.generateMoves(bankOrder);
     }
 
@@ -412,7 +416,9 @@ public class BankOrderServiceImpl implements BankOrderService {
             I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
       }
 
-      sendBankOrderFile(bankOrder);
+      if (!bankOrder.getHasBeenSentToBank()) {
+        sendBankOrderFile(bankOrder);
+      }
     }
     realizeBankOrder(bankOrder);
   }
@@ -435,13 +441,21 @@ public class BankOrderServiceImpl implements BankOrderService {
     dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
 
     sendFile(bankOrder, dataFileToSend, signatureFileToSend);
+    markAsSent(bankOrder);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void markAsSent(BankOrder bankOrder) {
+    bankOrder.setHasBeenSentToBank(true);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    if (bankOrder.getAccountingTriggerSelect()
-        == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
+    if (!bankOrder.getAreMovesGenerated()
+        && bankOrder.getAccountingTriggerSelect()
+            == PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION) {
+      bankOrder.setBankOrderDate(appBaseService.getTodayDate(bankOrder.getSenderCompany()));
       bankOrder = this.generateMoves(bankOrder);
     }
 
@@ -761,8 +775,14 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   protected void setBankOrderSeq(BankOrder bankOrder, Sequence sequence) throws AxelorException {
+    LocalDate date = bankOrder.getBankOrderDate();
+
+    if (date == null) {
+      date = appBaseService.getTodayDate(bankOrder.getSenderCompany());
+    }
+
     bankOrder.setBankOrderSeq(
-        (sequenceService.getSequenceNumber(sequence, bankOrder.getBankOrderDate())));
+        (sequenceService.getSequenceNumber(sequence, date, BankOrder.class, "bankOrderSeq")));
 
     if (bankOrder.getBankOrderSeq() != null) {
       return;

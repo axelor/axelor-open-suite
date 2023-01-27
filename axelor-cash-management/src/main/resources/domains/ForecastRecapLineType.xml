@@ -19,6 +19,9 @@
     <integer name="estimatedDuration"
       title="Estimated duration after order creation (in days)" min="0"/>
     <string name="name" title="Name" namecolumn="true"/>
+    <many-to-many name="statusSelectSet" ref="com.axelor.apps.crm.db.OpportunityStatus"
+      title="Statuses to take into account"/>
+
     <extra-code><![CDATA[
 
       // ELEMENT SELECT

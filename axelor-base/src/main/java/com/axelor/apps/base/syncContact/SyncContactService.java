@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -146,7 +146,8 @@ public class SyncContactService {
   @POST
   @Path("/sync/{id}")
   @Deprecated
-  public Response importContact(@PathParam("id") Long id, PeopleRequest request) {
+  public Response importContact(@PathParam("id") Long id, PeopleRequest request)
+      throws AxelorException {
     if (request == null || request.getPeople() == null || id == null) {
       return new Response();
     }
@@ -154,7 +155,7 @@ public class SyncContactService {
     return new Response();
   }
 
-  public void importAllContact(Long id, List<Person> people) {
+  public void importAllContact(Long id, List<Person> people) throws AxelorException {
     int i = 0;
     SyncContact syncContact = syncContactRepo.find(id);
     if (syncContact == null) {
@@ -195,7 +196,8 @@ public class SyncContactService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   @Deprecated
-  public Partner importContact(Person googlePerson, Boolean updateContactField) {
+  public Partner importContact(Person googlePerson, Boolean updateContactField)
+      throws AxelorException {
     if (googlePerson.getNames() == null) {
       return null;
     }
@@ -220,7 +222,7 @@ public class SyncContactService {
   }
 
   @Deprecated
-  public Partner createPartner(Person googlePerson, Name googleName) {
+  public Partner createPartner(Person googlePerson, Name googleName) throws AxelorException {
     Partner partner = new Partner();
     setDefaultPartnerValue(partner);
     importName(googleName, partner);
@@ -230,9 +232,11 @@ public class SyncContactService {
     return partnerRepo.save(partner);
   }
 
-  protected void setDefaultPartnerValue(Partner partner) {
+  protected void setDefaultPartnerValue(Partner partner) throws AxelorException {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-    String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
+    String seq =
+        Beans.get(SequenceService.class)
+            .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
     partner.setUser(userService.getUser());
     partner.setPartnerSeq(seq);
     partner.setIsContact(true);

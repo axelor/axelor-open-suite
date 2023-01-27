@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -150,7 +150,9 @@ public class ImportSupplyChain {
         invoiceTermService.computeInvoiceTerms(invoice);
 
         invoiceService.validateAndVentilate(invoice);
-        purchaseOrderWorkflowService.finishPurchaseOrder(purchaseOrder);
+        if (purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_FINISHED) {
+          purchaseOrderWorkflowService.finishPurchaseOrder(purchaseOrder);
+        }
       }
 
     } catch (Exception e) {
@@ -200,7 +202,7 @@ public class ImportSupplyChain {
           if (stockMove.getStockMoveLineList() != null
               && !stockMove.getStockMoveLineList().isEmpty()) {
             stockMoveService.copyQtyToRealQty(stockMove);
-            stockMoveService.validate(stockMove);
+            stockMoveService.realize(stockMove);
             if (saleOrder.getConfirmationDateTime() != null) {
               stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
             }

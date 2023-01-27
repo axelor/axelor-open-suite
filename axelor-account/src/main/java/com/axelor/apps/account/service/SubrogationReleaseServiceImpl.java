@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -130,7 +130,11 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   public void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException {
     SequenceService sequenceService = Beans.get(SequenceService.class);
     String sequenceNumber =
-        sequenceService.getSequenceNumber("subrogationRelease", subrogationRelease.getCompany());
+        sequenceService.getSequenceNumber(
+            "subrogationRelease",
+            subrogationRelease.getCompany(),
+            SubrogationRelease.class,
+            "sequenceNumber");
     if (Strings.isNullOrEmpty(sequenceNumber)) {
       throw new AxelorException(
           Sequence.class,
@@ -283,7 +287,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
               origin,
-              description);
+              description,
+              invoice.getCompanyBankDetails());
       MoveLine creditMoveLine, debitMoveLine;
 
       debitMoveLine =

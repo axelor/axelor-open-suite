@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,12 +38,28 @@ public class InventoryLineService {
 
   protected StockConfigService stockConfigService;
   protected InventoryLineRepository inventoryLineRepository;
+  protected StockLocationLineService stockLocationLineService;
 
   @Inject
   public InventoryLineService(
-      StockConfigService stockConfigService, InventoryLineRepository inventoryLineRepository) {
+      StockConfigService stockConfigService,
+      InventoryLineRepository inventoryLineRepository,
+      StockLocationLineService stockLocationLineService) {
     this.stockConfigService = stockConfigService;
     this.inventoryLineRepository = inventoryLineRepository;
+    this.stockLocationLineService = stockLocationLineService;
+  }
+
+  public InventoryLine createInventoryLine(
+      Inventory inventory,
+      Product product,
+      BigDecimal currentQty,
+      String rack,
+      TrackingNumber trackingNumber)
+      throws AxelorException {
+
+    return createInventoryLine(
+        inventory, product, currentQty, rack, trackingNumber, null, null, null, null);
   }
 
   public InventoryLine createInventoryLine(
@@ -52,16 +68,19 @@ public class InventoryLineService {
       BigDecimal currentQty,
       String rack,
       TrackingNumber trackingNumber,
+      BigDecimal realQty,
+      String description,
       StockLocation stockLocation,
       StockLocation detailsStockLocation)
       throws AxelorException {
-
     InventoryLine inventoryLine = new InventoryLine();
     inventoryLine.setInventory(inventory);
     inventoryLine.setProduct(product);
     inventoryLine.setRack(rack);
     inventoryLine.setCurrentQty(currentQty);
     inventoryLine.setTrackingNumber(trackingNumber);
+    inventoryLine.setRealQty(realQty);
+    inventoryLine.setDescription(description);
     inventoryLine.setStockLocation(stockLocation);
     if (stockLocation == null) {
       inventoryLine.setStockLocation(detailsStockLocation);
@@ -78,8 +97,7 @@ public class InventoryLineService {
 
     if (product != null) {
       StockLocationLine stockLocationLine =
-          Beans.get(StockLocationLineService.class)
-              .getOrCreateStockLocationLine(stockLocation, product);
+          stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
 
       if (stockLocationLine != null) {
         inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
@@ -111,6 +129,8 @@ public class InventoryLineService {
 
     StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getStockLocationLine(stockLocation, product);
 
     if (product != null) {
       inventoryLine.setUnit(product.getUnit());
@@ -118,8 +138,8 @@ public class InventoryLineService {
       BigDecimal gap =
           inventoryLine.getRealQty() != null
               ? inventoryLine
-                  .getCurrentQty()
-                  .subtract(inventoryLine.getRealQty())
+                  .getRealQty()
+                  .subtract(inventoryLine.getCurrentQty())
                   .setScale(2, RoundingMode.HALF_UP)
               : BigDecimal.ZERO;
       inventoryLine.setGap(gap);
@@ -130,12 +150,27 @@ public class InventoryLineService {
               .getStockConfig(stockLocation.getCompany())
               .getInventoryValuationTypeSelect();
 
+      BigDecimal productAvgPrice = product.getAvgPrice();
+
       switch (inventoryValuationTypeSelect) {
+        case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
+          price = productAvgPrice;
+          break;
         case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
           price = product.getCostPrice();
           break;
         case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
           price = product.getSalePrice();
+          break;
+        case StockConfigRepository.VALUATION_TYPE_PURCHASE_VALUE:
+          price = product.getPurchasePrice();
+          break;
+        case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
+          if (stockLocationLine != null) {
+            price = stockLocationLine.getAvgPrice();
+          } else {
+            price = productAvgPrice;
+          }
           break;
         default:
           price = product.getAvgPrice();
@@ -157,7 +192,7 @@ public class InventoryLineService {
 
     if (stockLocation != null && product != null) {
       StockLocationLine stockLocationLine =
-          Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
+          stockLocationLineService.getStockLocationLine(stockLocation, product);
       if (stockLocationLine != null) {
         currentQty = stockLocationLine.getCurrentQty();
       }
@@ -191,6 +226,8 @@ public class InventoryLineService {
             getCurrentQty(inventory.getStockLocation(), product),
             rack,
             trackingNumber,
+            null,
+            null,
             inventory.getStockLocation(),
             null);
     updateInventoryLine(inventoryLine, realQty, null);

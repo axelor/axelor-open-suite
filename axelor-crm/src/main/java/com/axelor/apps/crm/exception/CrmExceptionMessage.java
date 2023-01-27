@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.crm.exception;
 
 public final class CrmExceptionMessage {
@@ -72,6 +89,14 @@ public final class CrmExceptionMessage {
       "Please configure all templates in CRM configuration for company %s" /*)*/;
   public static final String CRM_CONFIG_TEMPLATES_NONE = /*$$(*/
       "No template created in CRM configuration for company %s, emails have not been sent" /*)*/;
+  public static final String CRM_CLOSED_WIN_OPPORTUNITY_STATUS_MISSING = /*$$(*/
+      "Please fill closed win opportunity status in App CRM configuration." /*)*/;
+  public static final String CRM_CLOSED_LOST_OPPORTUNITY_STATUS_MISSING = /*$$(*/
+      "Please fill closed lost opportunity status in App CRM configuration." /*)*/;
+  public static final String CRM_CONVERTED_LEAD_STATUS_MISSING = /*$$(*/
+      "Please fill converted lead status in App CRM configuration." /*)*/;
+  public static final String CRM_LOST_LEAD_STATUS_MISSING = /*$$(*/
+      "Please fill lost lead status in App CRM configuration." /*)*/;
 
   /*
    * Recurrence
@@ -88,4 +113,11 @@ public final class CrmExceptionMessage {
       "The end date must be after the start date" /*)*/;
   public static final String OPPORTUNITY_1 = /*$$(*/
       "There's no configured sequence for opportunities for the company %s" /*)*/;
+
+  public static final String EVENT_USER_NO_ACTIVE_COMPANY = /*$$(*/
+      "Please set an active company for user %s" /*)*/;
+
+  /** CRM Reporting */
+  public static final String CRM_REPORTING_TYPE_SELECT_MISSING = /*$$(*/
+      "Crm Reporting type is missing!" /*)*/;
 }

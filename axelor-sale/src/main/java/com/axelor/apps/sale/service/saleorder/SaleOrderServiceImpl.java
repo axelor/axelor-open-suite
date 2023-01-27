@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,6 +38,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
+import com.axelor.db.JPA;
 import com.axelor.db.JpaSequence;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -47,7 +48,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -157,7 +157,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
       throws AxelorException {
 
@@ -173,7 +173,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       sequence = soLines.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
     }
 
-    BigDecimal conversionRate = new BigDecimal(1.00);
+    BigDecimal conversionRate = BigDecimal.valueOf(1.00);
     if (pack.getCurrency() != null
         && !pack.getCurrency().getCodeISO().equals(saleOrder.getCurrency().getCodeISO())) {
       try {
@@ -275,11 +275,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             newSoLine = new SaleOrderLine();
             newSoLine.setProduct(compProductSelected.getProduct());
             newSoLine.setSaleOrder(saleOrder);
-            newSoLine.setQty(
-                originSoLine
-                    .getQty()
-                    .multiply(compProductSelected.getQty())
-                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+            newSoLine.setQty(compProductSelected.getQty());
 
             saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
             saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
@@ -290,11 +286,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             saleOrderLineList.add(targetIndex, newSoLine);
           }
         } else {
-          newSoLine.setQty(
-              originSoLine
-                  .getQty()
-                  .multiply(compProductSelected.getQty())
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+          newSoLine.setQty(compProductSelected.getQty());
 
           saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
           saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
@@ -365,18 +357,17 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     return saleOrder;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException {
 
-    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    saleOrder = saleOrderRepo.find(saleOrder.getId());
     List<SaleOrderLine> originalSOLines = saleOrder.getSaleOrderLineList();
-    List<SaleOrderLine> separatedSOLines;
 
-    SaleOrder copySaleOrder = Beans.get(SaleOrderRepository.class).copy(saleOrder, true);
+    SaleOrder copySaleOrder = saleOrderRepo.copy(saleOrder, true);
     copySaleOrder.clearSaleOrderLineList();
-    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+    saleOrderRepo.save(copySaleOrder);
 
     for (LinkedHashMap<String, Object> soLine : saleOrderLines) {
       if (!soLine.containsKey("selected") || !(boolean) soLine.get("selected")) {
@@ -384,9 +375,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
 
       SaleOrderLine saleOrderLine =
-          Beans.get(SaleOrderLineRepository.class)
-              .find(Long.parseLong(soLine.get("id").toString()));
-      separatedSOLines = new ArrayList<>();
+          saleOrderLineRepo.find(Long.parseLong(soLine.get("id").toString()));
+      List<SaleOrderLine> separatedSOLines = new ArrayList<>();
       separatedSOLines.add(saleOrderLine);
       separatedSOLines.addAll(
           originalSOLines.stream()
@@ -398,32 +388,28 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       manageSeparatedSOLines(separatedSOLines, originalSOLines, copySaleOrder);
     }
 
-    copySaleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(copySaleOrder);
-    saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
-    Beans.get(SaleOrderRepository.class).save(saleOrder);
-    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+    copySaleOrder = saleOrderComputeService.computeSaleOrder(copySaleOrder);
+    saleOrderRepo.save(copySaleOrder);
+
+    // refresh the origin sale order to refresh the field saleOrderLineList
+    JPA.refresh(saleOrder);
+
+    saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
+    saleOrderRepo.save(saleOrder);
 
     return copySaleOrder;
   }
 
-  private void manageSeparatedSOLines(
+  protected void manageSeparatedSOLines(
       List<SaleOrderLine> separatedSOLines,
       List<SaleOrderLine> originalSOLines,
       SaleOrder copySaleOrder) {
 
-    for (SaleOrderLine SSOLine : separatedSOLines) {
-      copySaleOrder.addSaleOrderLineListItem(SSOLine);
-
-      List<SaleOrderLine> partnerComplementarySOLines =
-          originalSOLines.stream()
-              .filter(
-                  soline ->
-                      soline.getMainSaleOrderLine() != null
-                          && soline.getMainSaleOrderLine().equals(SSOLine))
-              .collect(Collectors.toList());
-      for (SaleOrderLine PCSOLine : partnerComplementarySOLines) {
-        copySaleOrder.addSaleOrderLineListItem(PCSOLine);
-      }
+    for (SaleOrderLine separatedLine : separatedSOLines) {
+      copySaleOrder.addSaleOrderLineListItem(separatedLine);
+      originalSOLines.stream()
+          .filter(soLine -> separatedLine.equals(soLine.getMainSaleOrderLine()))
+          .forEach(copySaleOrder::addSaleOrderLineListItem);
     }
   }
 
@@ -431,6 +417,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException {
 
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrder.getClientPartner() == null) {
+      return;
+    }
     List<ComplementaryProduct> complementaryProducts =
         saleOrder.getClientPartner().getComplementaryProductList();
 

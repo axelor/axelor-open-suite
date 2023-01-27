@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -181,7 +181,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
             I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_2),
             situation.getCompany().getName());
       }
-      accountCode = sequenceService.getSequenceNumber(sequence);
+      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code");
     } else {
       throw new AxelorException(
           situation,
@@ -238,7 +238,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
             I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_5),
             situation.getCompany().getName());
       }
-      accountCode = sequenceService.getSequenceNumber(sequence);
+      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code");
     } else {
       throw new AxelorException(
           situation,
@@ -294,7 +294,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
             I18n.get(AccountExceptionMessage.ACCOUNTING_SITUATION_7),
             situation.getCompany().getName());
       }
-      accountCode = sequenceService.getSequenceNumber(sequence);
+      accountCode = sequenceService.getSequenceNumber(sequence, Account.class, "code");
     } else {
       throw new AxelorException(
           situation,

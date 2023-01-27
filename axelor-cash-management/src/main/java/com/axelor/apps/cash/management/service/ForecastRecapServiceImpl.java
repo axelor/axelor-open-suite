@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -184,12 +184,17 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     int offset = 0;
 
     List<ForecastRecapLineType> forecastRecapLineTypeList;
+
     while (!(forecastRecapLineTypeList = forecastRecapLineTypeQuery.fetch(FETCH_LIMIT, offset))
         .isEmpty()) {
+      boolean manageMultiBanks =
+          appBaseService.getAppBase() != null
+              ? appBaseService.getAppBase().getManageMultiBanks()
+              : false;
       for (ForecastRecapLineType forecastRecapLineType : forecastRecapLineTypeList) {
         offset++;
-        populateWithTimetables(forecastRecap, forecastRecapLineType);
-        populateWithForecastLineType(forecastRecap, forecastRecapLineType);
+        populateWithTimetables(forecastRecap, forecastRecapLineType, manageMultiBanks);
+        populateWithForecastLineType(forecastRecap, forecastRecapLineType, manageMultiBanks);
       }
       JPA.clear();
       forecastRecap = forecastRecapRepo.find(forecastRecap.getId());
@@ -199,7 +204,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   }
 
   protected void populateWithForecastLineType(
-      ForecastRecap forecastRecap, ForecastRecapLineType forecastRecapLineType)
+      ForecastRecap forecastRecap,
+      ForecastRecapLineType forecastRecapLineType,
+      boolean manageMultiBanks)
       throws AxelorException {
 
     List<Integer> statusSelectList =
@@ -209,7 +216,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     }
     Query<? extends Model> modelQuery =
         JPA.all(getModel(forecastRecapLineType))
-            .filter(getFilter(forecastRecapLineType))
+            .filter(getFilter(forecastRecapLineType, manageMultiBanks))
             .bind("company", forecastRecap.getCompany())
             .bind("fromDate", forecastRecap.getFromDate())
             .bind("toDate", forecastRecap.getToDate())
@@ -365,7 +372,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     }
   }
 
-  protected String getFilter(ForecastRecapLineType forecastRecapLineType) throws AxelorException {
+  protected String getFilter(ForecastRecapLineType forecastRecapLineType, boolean manageMultiBanks)
+      throws AxelorException {
     switch (forecastRecapLineType.getElementSelect()) {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         return "self.company = :company "
@@ -414,7 +422,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + ((forecastRecapLineType.getStatusSelect() == null
                     || forecastRecapLineType.getStatusSelect().isEmpty())
                 ? ""
-                : "AND self.salesStageSelect IN :statusSelectList");
+                : "AND self.opportunityStatus.id IN :statusSelectList");
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         return "self.mainEmploymentContract.payCompany = :company "
             + "AND self.mainEmploymentContract.monthlyGlobalCost != 0 "
@@ -425,7 +433,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + (forecastRecapLineType.getTypeSelect() == 1
                 ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
                 : JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
-            + " AND (:bankDetails IS NULL OR self.partnerBankDetails = :bankDetails) "
+            + (manageMultiBanks
+                ? " AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
+                : "")
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.moveLine.move = self.id "
             + "AND Inv.dueDate BETWEEN :fromDate AND :toDate "
@@ -673,7 +683,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   }
 
   protected void populateWithTimetables(
-      ForecastRecap forecastRecap, ForecastRecapLineType forecastRecapLineType)
+      ForecastRecap forecastRecap,
+      ForecastRecapLineType forecastRecapLineType,
+      boolean manageMultiBanks)
       throws AxelorException {
 
     List<Integer> statusList = StringTool.getIntegerList(forecastRecapLineType.getStatusSelect());
@@ -780,8 +792,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                   "self.dueDate BETWEEN :fromDate AND :toDate AND self.moveLine.move.company = :company"
                       + " AND self.moveLine.move.journal.journalType.technicalTypeSelect = :journalType"
                       + " AND self.moveLine.move.statusSelect IN (:moveStatusList) AND self.amount != 0"
-                      + (CollectionUtils.isNotEmpty(forecastRecap.getBankDetailsSet())
-                          ? " AND self.moveLine.move.partnerBankDetails IN (:bankDetailsSet) "
+                      + ((CollectionUtils.isNotEmpty(forecastRecap.getBankDetailsSet())
+                              && manageMultiBanks)
+                          ? " AND self.moveLine.move.companyBankDetails IN (:bankDetailsSet)"
                           : "")
                       + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
               .bind("fromDate", forecastRecap.getFromDate())

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,9 +43,9 @@ import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.translation.ITranslation;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -201,7 +201,7 @@ public class InvoiceLineController {
                               invoiceLine,
                               invoiceLine.getTaxLine(),
                               InvoiceToolService.isPurchase(invoice)));
-
+      discounts.remove("price");
       for (Entry<String, Object> entry : discounts.entrySet()) {
         response.setValue(entry.getKey(), entry.getValue());
       }
@@ -227,7 +227,13 @@ public class InvoiceLineController {
       TaxLine taxLine = invoiceLine.getTaxLine();
 
       response.setValue(
-          "price", Beans.get(InvoiceLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          "price",
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  true,
+                  taxLine,
+                  inTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -250,7 +256,12 @@ public class InvoiceLineController {
 
       response.setValue(
           "inTaxPrice",
-          Beans.get(InvoiceLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  false,
+                  taxLine,
+                  exTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -541,22 +552,26 @@ public class InvoiceLineController {
   public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
-      InternationalService internationalService = Beans.get(InternationalService.class);
+      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-      Partner partner = this.getInvoice(context).getPartner();
+      Invoice parent = this.getInvoice(context);
       String userLanguage = AuthUtils.getUser().getLanguage();
 
-      if (invoiceLine.getProduct() != null && partner != null) {
-        String partnerLanguage = partner.getLanguage().getCode();
-        response.setValue(
-            "description",
-            internationalService.translate(
-                invoiceLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-        response.setValue(
-            "productName",
-            internationalService.translate(
-                invoiceLine.getProduct().getName(), userLanguage, partnerLanguage));
+      Map<String, String> translation =
+          invoiceLineService.getProductDescriptionAndNameTranslation(
+              parent, invoiceLine, userLanguage);
+
+      String description = translation.get("description");
+      String productName = translation.get("productName");
+
+      if (description != null
+          && !description.isEmpty()
+          && productName != null
+          && !productName.isEmpty()) {
+        response.setValue("description", description);
+        response.setValue("productName", productName);
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -160,6 +160,10 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
       Account forecastedInvCustAccount = accountingBatch.getForecastedInvCustAccount();
       Account forecastedInvSuppAccount = accountingBatch.getForecastedInvSuppAccount();
+      String prefixOrigin =
+          accountingBatch.getPrefixOrigin() != null
+              ? accountingBatch.getPrefixOrigin()
+              : miscOpeJournal.getPrefixOrigin() != null ? miscOpeJournal.getPrefixOrigin() : "";
 
       List<Move> moveList =
           cutOffSupplyChainService.generateCutOffMovesFromStockMove(
@@ -177,7 +181,8 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
               automaticReverse,
               automaticReconcile,
               forecastedInvCustAccount,
-              forecastedInvSuppAccount);
+              forecastedInvSuppAccount,
+              prefixOrigin);
 
       if (moveList != null && !moveList.isEmpty()) {
         updateStockMove(stockMove);

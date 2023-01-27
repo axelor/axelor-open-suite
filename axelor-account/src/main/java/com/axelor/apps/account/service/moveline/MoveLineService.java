@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,7 +33,8 @@ public interface MoveLineService {
 
   public void usherProcess(MoveLine moveLine);
 
-  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList);
+  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList)
+      throws AxelorException;
 
   public void reconcileMoveLines(List<MoveLine> moveLineList);
 
@@ -60,4 +61,6 @@ public interface MoveLineService {
   Batch validateCutOffBatch(List<Long> recordIdList, Long batchId);
 
   void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
+
+  List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds);
 }

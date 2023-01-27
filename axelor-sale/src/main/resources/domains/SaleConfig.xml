@@ -20,8 +20,8 @@
     <boolean name="displayDelCondOnPrinting" title="Display delivery condition on printing"/>
     <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
     <boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
-    <boolean name="displayEstimDelivDateOnPrinting"
-      title="Display estimated delivery dates on printing"/>
+    <boolean name="displayEstimShipDateOnPrinting"
+      title="Display estimated shipping dates on printing"/>
     <boolean name="displayCustomerCodeOnPrinting" title="Display customer code on printing"/>
     <boolean name="displayProductPictureOnPrinting"
       title="Display product picture on printing"/>
@@ -40,7 +40,7 @@
       <field name="displayDelCondOnPrinting" on="UPDATE"/>
       <field name="displayProductCodeOnPrinting" on="UPDATE"/>
       <field name="displayTaxDetailOnPrinting" on="UPDATE"/>
-      <field name="displayEstimDelivDateOnPrinting" on="UPDATE"/>
+      <field name="displayEstimShipDateOnPrinting" on="UPDATE"/>
       <field name="displayCustomerCodeOnPrinting" on="UPDATE"/>
       <field name="displayProductPictureOnPrinting" on="UPDATE"/>
       <field name="saleOrderClientBox" on="UPDATE"/>

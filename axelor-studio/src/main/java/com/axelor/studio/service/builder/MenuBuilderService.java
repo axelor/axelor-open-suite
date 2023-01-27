@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,8 +18,10 @@
 package com.axelor.studio.service.builder;
 
 import com.axelor.common.Inflector;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -28,6 +30,7 @@ import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
 import com.axelor.meta.schema.actions.Action;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.Context;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
@@ -39,10 +42,12 @@ import com.axelor.studio.service.StudioMetaService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.xml.bind.JAXBException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class MenuBuilderService {
@@ -103,8 +108,18 @@ public class MenuBuilderService {
             actionBuilder.addViewParam(paramLine);
           }
         }
-        if (action.getContext() != null) {
-          for (ActionView.Context ctx : (List<ActionView.Context>) action.getContext()) {
+        List<ActionView.Context> contextList = null;
+        try {
+          Mapper mapper = Mapper.of(ActionView.class);
+          Field field = mapper.getBeanClass().getDeclaredField("contexts");
+          field.setAccessible(true);
+          if (field.get(action) != null) contextList = (List<Context>) field.get(action);
+        } catch (Exception e) {
+          TraceBackService.trace(e);
+        }
+
+        if (!CollectionUtils.isEmpty(contextList)) {
+          for (ActionView.Context ctx : contextList) {
             ActionBuilderLine ctxLine = new ActionBuilderLine();
             ctxLine.setName(ctx.getName());
             if (ctx.getName().contentEquals("jsonModel")
@@ -201,5 +216,12 @@ public class MenuBuilderService {
 
   public String generateMenuBuilderName(String name) {
     return "studio-menu-" + name.toLowerCase().replaceAll("[ ]+", "-");
+  }
+
+  @CallMethod
+  public String checkAndGenerateName(String name) {
+    if (name == null) return "";
+    name = name.replaceAll("[^a-zA-Z0-9-. ]", "");
+    return Inflector.getInstance().dasherize(name.toLowerCase());
   }
 }

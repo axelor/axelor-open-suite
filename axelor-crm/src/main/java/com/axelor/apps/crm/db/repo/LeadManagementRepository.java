@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,17 +25,16 @@ public class LeadManagementRepository extends LeadRepository {
 
   @Override
   public Lead save(Lead entity) {
-
-    if (entity.getUser() != null && entity.getStatusSelect() == LEAD_STATUS_NEW) {
-      entity.setStatusSelect(LEAD_STATUS_ASSIGNED);
-    } else if (entity.getUser() == null && entity.getStatusSelect() == LEAD_STATUS_ASSIGNED) {
-      entity.setStatusSelect(LEAD_STATUS_NEW);
-    }
+    LeadService leadService = Beans.get(LeadService.class);
 
     String fullName =
-        Beans.get(LeadService.class)
-            .processFullName(entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
+        leadService.processFullName(
+            entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
     entity.setFullName(fullName);
+
+    if (entity.getLeadStatus() == null) {
+      entity.setLeadStatus(leadService.getDefaultLeadStatus());
+    }
 
     return super.save(entity);
   }

@@ -28,10 +28,10 @@
     <field name="date" width="90"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="140"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
     <field name="tradingName"
-      if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
       form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
     <field name="statusSelect" width="90"/>
   </grid>
@@ -83,29 +83,31 @@
               canEdit="false" canView="false" readonly="true"/>
             <field name="date"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-              onChange="action-group-move-date-onchange" hideIf="statusSelect == 3"/>
+              onChange="action-group-move-date-onchange"/>
             <field name="originDate" onChange="action-move-group-origin-date-onchange"
               readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
             <field name="$dueDate" type="date" title="Due date" hidden="true"
-              onChange="action-account-move-group-onsave"
+              onChange="action-account-move-group-onsave" readonlyIf="!paymentCondition.isFree"
               help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."/>
           </panel>
           <field name="tradingName"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+            if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
             onSelect="action-move-set-trading-name-domain"/>
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-            form-view="partner-form" grid-view="partner-grid"
-            onSelect="action-move-group-partner-on-select"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0" form-view="partner-form"
+            grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
             onChange="action-move-group-partner-onchange"/>
           <field name="currency"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
+          <field name="companyBankDetails" canEdit="false" colSpan="3"
+            onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
+            form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentMode" colSpan="3"
             readonlyIf="period.statusSelect == 2 || $validatePeriod" form-view="payment-mode-form"
-            grid-view="payment-mode-grid" onChange="action-move-attrs-header-change"/>
+            grid-view="payment-mode-grid" onChange="action-move-group-payment-mode-onchange"/>
           <spacer/>
           <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4"
             form-view="payment-condition-form" grid-view="payment-condition-grid"
@@ -121,11 +123,13 @@
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
           <field name="$headerChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChange" type="boolean" hidden="true"/>
+          <field name="$paymentConditionChangeError" hidden="true"/>
           <field name="$dateChange" type="boolean" hidden="true"/>
+          <field name="paymentCondition.isFree" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
-            onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+            onChange="action-account-move-group-set-description-on-lines"/>
           <field name="origin" colSpan="3" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-origin" requiredIf="journal.hasRequiredOrigin"/>
           <field name="$validatePeriod" hidden="true" type="boolean"/>
@@ -368,11 +372,10 @@
             grid-view="journal-grid"/>
           <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
-          <field name="date" hideIf="statusSelect == 3" colSpan="3"
-            onChange="action-group-move-date-onchange"/>
+          <field name="date" colSpan="3" onChange="action-group-move-date-onchange"/>
           <field hidden="true" name="period" canView="false" canEdit="false"
             form-view="period-form" grid-view="period-grid"/>
-          <field if="__config__.app.getApp('base').getEnableTradingNamesManagement()"
+          <field if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             name="tradingName" canNew="false" onSelect="action-move-set-trading-name-domain"
             form-view="trading-name-form" grid-view="trading-name-grid"/>
           <field name="paymentMode" colSpan="3"/>
@@ -380,7 +383,7 @@
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
-          onChange="action-account-move-group-set-origin-and-description-on-lines"/>
+          onChange="action-account-move-group-set-description-on-lines"/>
         <field name="origin" colSpan="3" requiredIf="journal.hasRequiredOrigin"
           onChange="action-account-move-group-set-origin"/>
         <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
@@ -569,12 +572,13 @@
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
     <action name="action-attrs-move-hide-trading-name"/>
     <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-attrs-check-period-and-status"/>
     <action name="action-move-attrs-set-functional-origin-select-domain"/>
     <action name="action-move-attrs-set-functional-origin-select"/>
+    <action name="action-move-attrs-manage-bank-details"/>
     <action name="action-move-method-check-period-permissions"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-group name="action-account-move-group-onload">
@@ -586,7 +590,6 @@
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
     <action name="action-attrs-move-hide-trading-name"/>
     <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-attrs-check-related-cut-off-moves"
@@ -595,6 +598,9 @@
     <action name="action-move-attrs-check-period-and-status"/>
     <action name="action-move-attrs-set-functional-origin-select-domain"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-move-attrs-hide-move-line-partner"/>
+    <action name="action-move-attrs-manage-bank-details"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-group name="action-account-move-group-onsave">
@@ -631,17 +637,17 @@
     <action name="action-move-method-accounting"/>
   </action-group>
 
-  <action-group name="action-account-move-group-set-origin-and-description-on-lines">
-    <action name="action-account-move-method-origin-description-is-empty"/>
-    <action name="action-account-move-method-set-origin-description-on-lines"/>
+  <action-group name="action-account-move-group-set-description-on-lines">
+    <action name="action-account-move-method-description-is-empty"/>
+    <action name="action-account-move-method-set-description-on-lines"/>
   </action-group>
 
   <action-group name="action-account-move-group-set-origin">
+    <action name="action-account-move-method-origin-is-empty"/>
     <action name="action-account-move-method-check-duplicated-move-origin"
       if="journal.hasDuplicateDetectionOnOrigin"/>
-    <action name="action-account-move-group-set-origin-and-description-on-lines"/>
+    <action name="action-account-move-method-set-origin-on-lines"/>
   </action-group>
-
 
   <action-group name="action-move-account-group-simulate">
     <action name="action-account-move-group-onsave"/>
@@ -652,7 +658,9 @@
     <action name="action-move-record-journal"/>
     <action name="action-group-move-date-onchange"/>
     <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-move-method-fill-company-bank-details"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action name="default-move-record-currency"/>
   </action-group>
 
   <action-group name="action-group-move-date-onchange">
@@ -682,15 +690,18 @@
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-move-attrs-hide-move-line-partner"/>
+    <action name="action-move-method-fill-company-bank-details"/>
   </action-group>
 
   <action-group name="action-move-group-move-line-list-onchange">
     <action name="action-account-move-method-compute-totals"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-group name="action-move-group-payment-condition-onchange">
+    <action name="action-move-group-check-term-in-payment"/>
     <action name="action-move-attrs-payment-condition-change"/>
     <action name="action-account-move-group-onsave"/>
   </action-group>
@@ -705,18 +716,41 @@
     <action name="action-account-move-group-onsave"/>
   </action-group>
 
+  <action-group name="action-move-group-check-term-in-payment">
+    <action name="action-move-method-check-term-in-payment"/>
+    <action name="action-move-validate-check-term-in-payment"/>
+  </action-group>
+
+  <action-group name="action-move-group-payment-mode-onchange">
+    <action name="action-move-attrs-header-change"/>
+    <action name="action-move-method-fill-company-bank-details"/>
+  </action-group>
+
   <action-validate name="action-account-accounting-prompt">
     <alert
       message="By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?"/>
   </action-validate>
 
-  <action-method name="action-account-move-method-origin-description-is-empty">
-    <call class="com.axelor.apps.account.web.MoveController" method="validateOriginDescription"/>
+  <action-method name="action-account-move-method-origin-is-empty">
+    <call class="com.axelor.apps.account.web.MoveController" method="validateOrigin"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-description-is-empty">
+    <call class="com.axelor.apps.account.web.MoveController" method="validateDescription"/>
   </action-method>
 
   <action-method name="action-account-move-method-check-duplicated-move-origin">
     <call class="com.axelor.apps.account.web.MoveController" method="checkDuplicatedMoveOrigin"/>
   </action-method>
+
+  <action-method name="action-move-method-check-term-in-payment">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkTermsInPayment"/>
+  </action-method>
+
+  <action-validate name="action-move-validate-check-term-in-payment">
+    <error message="$paymentConditionChangeError"
+      if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
+  </action-validate>
 
   <!-- ACTION RECORD -->
   <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
@@ -725,9 +759,7 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
-    <field name="date" expr="eval:__config__.app.getTodayDate(null)" if="date == null"/>
-    <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="date == null &amp;&amp; __user__.activeCompany != null"/>
+    <field name="date" expr="eval:__config__.date" if="date == null"/>
     <field name="date"
       expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
       if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
@@ -763,7 +795,7 @@
   <action-record name="action-move-account-record-set-journal-technical-type-select"
     model="com.axelor.apps.account.db.Move">
     <field name="$journalTechnicalTypeSelect"
-      expr="eval: journal?.journalType?.technicalTypeSelect"/>
+      expr="eval: journal?.journalType.technicalTypeSelect"/>
   </action-record>
 
   <action-record name="action-move-record-set-payment-mode"
@@ -927,9 +959,12 @@
       method="isHiddenMoveLineListViewer"/>
   </action-method>
 
-  <action-method name="action-account-move-method-set-origin-description-on-lines">
-    <call class="com.axelor.apps.account.web.MoveController"
-      method="setOriginAndDescriptionOnLines"/>
+  <action-method name="action-account-move-method-set-origin-on-lines">
+    <call class="com.axelor.apps.account.web.MoveController" method="setOriginOnLines"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-set-description-on-lines">
+    <call class="com.axelor.apps.account.web.MoveController" method="setDescriptionOnLines"/>
   </action-method>
 
   <action-method name="action-move-method-set-moveline-dates">
@@ -1044,7 +1079,7 @@
   <action-attrs name="action-attrs-move-hide-trading-name"
     model="com.axelor.apps.account.db.Move">
     <attribute name="hidden" for="tradingName"
-      expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+      expr="eval: !__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </action-attrs>
 
   <action-attrs name="action-move-attrs-header-change">
@@ -1060,10 +1095,17 @@
     <attribute name="value" for="$dueDate" expr="eval: null"/>
   </action-attrs>
 
+  <action-attrs name="action-move-attrs-manage-bank-details">
+    <attribute for="companyBankDetails" name="hidden"
+      expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()"/>
+    <attribute for="companyBankDetails" name="required"
+      expr="eval: __config__.app.getApp('base')?.getManageMultiBanks() &amp;&amp; [1,2].contains(journal?.journalType?.technicalTypeSelect)"/>
+  </action-attrs>
+
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
     title="Move filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <filter title="Current Period Entries">
       <domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;=
         self.period.toDate)</domain>
@@ -1102,18 +1144,7 @@
   </search-filters>
   <action-method name="action-method-hide-axis-analytic-account-move-line">
     <call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
-
   </action-method>
-  <action-method
-    name="action-account-move-method-filter-journal-partner-compatible-type">
-    <call class="com.axelor.apps.account.web.MoveController"
-      method="filterJournalPartnerCompatibleType"/>
-  </action-method>
-
-  <action-group name="action-move-group-partner-on-select">
-    <action name="action-account-move-method-filter-partner"/>
-    <action name="action-account-move-method-filter-journal-partner-compatible-type"/>
-  </action-group>
 
   <action-method name="action-move-method-journal-on-change">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
@@ -1122,4 +1153,12 @@
   <action-method name="action-move-method-update-invoice-terms">
     <call class="com.axelor.apps.account.web.MoveController" method="updateInvoiceTerms"/>
   </action-method>
+
+  <action-method name="action-move-method-fill-company-bank-details">
+    <call class="com.axelor.apps.account.web.MoveController" method="fillCompanyBankDetails"/>
+  </action-method>
+
+  <action-attrs name="action-move-attrs-hide-move-line-partner">
+    <attribute for="moveLineList.partner" name="hidden" expr="partner != null"/>
+  </action-attrs>
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -319,6 +319,19 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
 
+    if (invoice.getFinancialDiscount() != null && InvoiceToolService.isMultiCurrency(invoice)) {
+      String message;
+
+      if (InvoiceToolService.isPurchase(invoice)) {
+        message = AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PURCHASE;
+      } else {
+        message = AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_SALE;
+      }
+
+      throw new AxelorException(
+          invoice, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(message));
+    }
+
     log.debug("Ventilation of the invoice {}", invoice.getInvoiceId());
 
     ventilateFactory.getVentilator(invoice).process();
@@ -521,7 +534,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             numSeq.toString(),
             externalRef.toString(),
             null,
-            company.getDefaultBankDetails(),
+            null,
             tradingName,
             null) {
 
@@ -620,7 +633,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             numSeq.toString(),
             externalRef.toString(),
             null,
-            company.getDefaultBankDetails(),
+            null,
             tradingName,
             null) {
 
@@ -1053,6 +1066,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
+  public boolean checkInvoiceLinesAnalyticDistribution(Invoice invoice) {
+    return CollectionUtils.isEmpty(invoice.getInvoiceLineList())
+        || invoice.getInvoiceLineList().stream()
+            .allMatch(invoiceLineService::checkAnalyticDistribution);
+  }
+
+  @Override
   public boolean checkInvoiceLinesCutOffDates(Invoice invoice) {
     return invoice.getInvoiceLineList() == null
         || invoice.getInvoiceLineList().stream().allMatch(invoiceLineService::checkCutOffDates);
@@ -1119,12 +1139,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public LocalDate getFinancialDiscountDeadlineDate(Invoice invoice) {
+  public LocalDate getFinancialDiscountDeadlineDate(
+      Invoice invoice, FinancialDiscount financialDiscount) {
     int discountDelay =
-        Optional.of(invoice)
-            .map(Invoice::getFinancialDiscount)
-            .map(FinancialDiscount::getDiscountDelay)
-            .orElse(0);
+        Optional.ofNullable(financialDiscount).map(FinancialDiscount::getDiscountDelay).orElse(0);
 
     LocalDate deadlineDate = invoice.getDueDate().minusDays(discountDelay);
 

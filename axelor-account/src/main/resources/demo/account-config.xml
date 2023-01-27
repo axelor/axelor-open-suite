@@ -183,6 +183,9 @@
       search="self.code = :globalAccountingCashAccount_code and self.company.importId = :company_id"
       to="globalAccountingCashAccount" update="true" if="globalAccountingCashAccount_code"/>
     <bind
+      search="self.code = :chequeDepositJournal_code and self.company.importId = :company_id"
+      to="chequeDepositJournal" update="true" if="chequeDepositJournal_code"/>
+    <bind
       search="self.code = :allowedFinDiscountTaxVatSystem1Account_code and self.company.importId = :company_id"
       to="allowedFinDiscountTaxVatSystem1Account" update="true"
       if="allowedFinDiscountTaxVatSystem1Account_code"/>
@@ -301,18 +304,18 @@
     <bind to="reportExportTypeSelect" eval="'1'"/>
     <bind to="reportTitle" column="name"/>
     <bind to="company" column="company" search="self.importId = :company"/>
+    <bind to="comparison" eval="'0'"/>
   </input>
 
   <input file="account_accountingReportConfigLine.csv" separator=";"
     type="com.axelor.apps.account.db.AccountingReportConfigLine" search="self.importId = :importId"
     call="com.axelor.csv.script.ImportAccountingReportConfigLine:setAccounts">
-    <bind to="typeSelect" column="type"/>
-    <bind to="ruleTypeSelect" column="ruleType"/>
-    <bind to="label" column="label" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
-    <bind to="code" column="code" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
-    <bind to="resultSelect" column="result" if="ruleTypeSelect == 2"/>
-    <bind to="rule" column="rule"/>
-    <bind to="reportType" search="self.importId = :reportTypeId"/>
+    <bind to="label" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
+    <bind to="code" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
+    <bind to="resultSelect" if="ruleTypeSelect == 2"/>
+    <bind to="reportType" search="self.importId = :reportTypeId" if="reportTypeId"/>
+    <bind to="reportTypeColumn" search="self.importId = :reportTypeColumnId"
+      if="reportTypeColumnId"/>
   </input>
 
   <input file="account_paymentDelayReason.csv" separator=";"

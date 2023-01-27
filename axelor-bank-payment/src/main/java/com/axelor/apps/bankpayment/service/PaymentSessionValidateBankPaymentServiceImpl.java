@@ -1,15 +1,32 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -21,7 +38,9 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
@@ -44,9 +63,11 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -129,13 +150,11 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   @Override
   protected void postProcessPaymentSession(
       PaymentSession paymentSession,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
-    super.postProcessPaymentSession(paymentSession, moveMap, paymentAmountMap, out, isGlobal);
-
     if (paymentSession.getBankOrder() != null) {
       BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
       bankOrderService.updateTotalAmounts(bankOrder);
@@ -151,6 +170,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         }
       }
     }
+
+    super.postProcessPaymentSession(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -186,18 +207,32 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     return bankOrder;
   }
 
+  protected boolean isMultiDate(PaymentSession paymentSession) {
+    return this.isFileFormatMultiDate(paymentSession)
+        && paymentSession.getMoveAccountingDateSelect()
+            == PaymentSessionRepository.MOVE_ACCOUNTING_DATE_ORIGIN_DOCUMENT;
+  }
+
+  protected boolean isFileFormatMultiDate(PaymentSession paymentSession) {
+    return Optional.of(paymentSession)
+        .map(PaymentSession::getPaymentMode)
+        .map(PaymentMode::getBankOrderFileFormat)
+        .map(BankOrderFileFormat::getIsMultiDate)
+        .orElse(false);
+  }
+
   @Transactional(rollbackOn = {Exception.class})
   protected PaymentSession processInvoiceTerm(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
-      Map<Partner, List<Move>> moveMap,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
     paymentSession =
         super.processInvoiceTerm(
-            paymentSession, invoiceTerm, moveMap, paymentAmountMap, out, isGlobal);
+            paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, out, isGlobal);
     if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
@@ -240,7 +275,9 @@ public class PaymentSessionValidateBankPaymentServiceImpl
           bankOrder.getBankOrderLineList().stream()
               .filter(
                   it ->
-                      it.getPartner().equals(invoiceTerm.getMoveLine().getPartner())
+                      (it.getBankOrderDate() == null
+                              || it.getBankOrderDate().equals(invoiceTerm.getDueDate()))
+                          && it.getPartner().equals(invoiceTerm.getMoveLine().getPartner())
                           && ((it.getReceiverBankDetails() == null
                                   && invoiceTerm.getBankDetails() == null)
                               || (it.getReceiverBankDetails() != null
@@ -262,6 +299,15 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected void generateBankOrderLineFromInvoiceTerm(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm, BankOrder bankOrder)
       throws AxelorException {
+    LocalDate bankOrderDate = null;
+    if (this.isFileFormatMultiDate(paymentSession)) {
+      bankOrderDate =
+          paymentSession.getMoveAccountingDateSelect()
+                  == PaymentSessionRepository.MOVE_ACCOUNTING_DATE_PAYMENT
+              ? paymentSession.getPaymentDate()
+              : invoiceTerm.getDueDate();
+    }
+
     BankOrderLine bankOrderLine =
         bankOrderLineService.createBankOrderLine(
             bankOrder.getBankOrderFileFormat(),
@@ -270,7 +316,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             invoiceTerm.getBankDetails(),
             invoiceTerm.getAmountPaid(),
             paymentSession.getCurrency(),
-            paymentSession.getPaymentDate(),
+            bankOrderDate,
             this.getReference(invoiceTerm),
             this.getLabel(paymentSession),
             invoiceTerm);

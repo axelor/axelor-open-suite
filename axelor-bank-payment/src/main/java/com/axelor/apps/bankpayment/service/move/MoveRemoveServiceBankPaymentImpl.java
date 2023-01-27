@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,8 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
+import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.tool.service.ArchivingToolService;
@@ -31,9 +33,13 @@ import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
+
+  protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
 
   @Inject
   public MoveRemoveServiceBankPaymentImpl(
@@ -42,7 +48,8 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
       ArchivingToolService archivingToolService,
       ReconcileService reconcileService,
       AccountingSituationService accountingSituationService,
-      AccountCustomerService accountCustomerService) {
+      AccountCustomerService accountCustomerService,
+      BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
     super(
         moveRepo,
         moveLineRepo,
@@ -50,11 +57,13 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
         reconcileService,
         accountingSituationService,
         accountCustomerService);
+    this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
   }
 
   @Override
-  protected String checkDaybookMoveLine(MoveLine moveLine) throws AxelorException {
-    String errorMessage = super.checkDaybookMoveLine(moveLine);
+  public String checkMoveLineBeforeRemove(MoveLine moveLine) throws AxelorException {
+    removeMoveLineFromBankStatements(moveLine);
+    String errorMessage = super.checkMoveLineBeforeRemove(moveLine);
 
     if (Beans.get(AppBankPaymentService.class).isApp("bank-payment")
         && moveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {
@@ -66,5 +75,15 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
               moveLine.getName());
     }
     return errorMessage;
+  }
+
+  @Transactional
+  protected void removeMoveLineFromBankStatements(MoveLine moveLine) {
+    List<BankStatementLineAFB120> bankStatementLineAFB120List =
+        bankStatementLineAFB120Repository.all().filter("self.moveLine = ?1", moveLine).fetch();
+    for (BankStatementLineAFB120 bankStatementLineAFB120 : bankStatementLineAFB120List) {
+      bankStatementLineAFB120.setMoveLine(null);
+      bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
+    }
   }
 }

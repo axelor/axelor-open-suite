@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,7 +42,8 @@ public interface AccountingCutOffService {
       int accountingCutOffTypeSelect,
       int cutOffMoveStatusSelect,
       boolean automaticReverse,
-      boolean automaticReconcile)
+      boolean automaticReconcile,
+      String prefixOrigin)
       throws AxelorException;
 
   Move generateCutOffMoveFromMove(
@@ -53,6 +54,7 @@ public interface AccountingCutOffService {
       String moveDescription,
       int accountingCutOffTypeSelect,
       int cutOffMoveStatusSelect,
-      boolean isReverse)
+      boolean isReverse,
+      String prefixOrigin)
       throws AxelorException;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,9 +42,9 @@ import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,19 +91,24 @@ public class AccountingReportController {
         if (accountingReportToolService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
           response.setError(
               I18n.get(
-                  "There is already an ongoing accounting report of this type in draft status for this same period."));
+                  "There is already an ongoing accounting report of this type in draft status and covering the same period (potentially created by another user). To continue, please delete one of the reports so that only one remains at the status Draft and for the period and then relaunch the print in that remaining report record."));
           return;
         }
 
-        List<BigInteger> paymentMoveLinedistributionIdList =
+        List<Long> paymentMoveLinedistributionIdList =
             accountingReportDas2Service.getAccountingReportDas2Pieces(accountingReport);
         ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
         actionViewBuilder.model(PaymentMoveLineDistribution.class.getName());
         actionViewBuilder.add("grid", "payment-move-line-distribution-das2-grid");
         actionViewBuilder.add("form", "payment-move-line-distribution-form");
-        actionViewBuilder.domain(
-            "self.id in (" + Joiner.on(",").join(paymentMoveLinedistributionIdList) + ")");
+        String domain = "self.id IN (0)";
+        if (CollectionUtils.isNotEmpty(paymentMoveLinedistributionIdList)) {
+          domain =
+              String.format(
+                  "self.id in ( %s )", Joiner.on(",").join(paymentMoveLinedistributionIdList));
+        }
+        actionViewBuilder.domain(domain);
 
         response.setReload(true);
         response.setView(actionViewBuilder.map());
@@ -227,10 +232,12 @@ public class AccountingReportController {
         }
       } else {
         if (Beans.get(AccountingReportToolService.class)
-            .isThereAlreadyDraftReportInPeriod(accountingReport)) {
+                .isThereAlreadyDraftReportInPeriod(accountingReport)
+            && accountingReport.getReportType().getTypeSelect()
+                == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
           response.setError(
               I18n.get(
-                  "There is already an ongoing accounting report of this type in draft status for this same period."));
+                  "There is already an ongoing accounting report of this type in draft status and covering the same period (potentially created by another user). To continue, please delete one of the reports so that only one remains at the status Draft and for the period and then relaunch the print in that remaining report record."));
           return;
         }
         String fileLink = accountingReportService.print(accountingReport);

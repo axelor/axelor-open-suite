@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1857,7 +1857,7 @@ SELECT
     POL.product_code,
     POL.product_standard,
     POL.supplier_product_code,
-    POL.product_name as supplier_product_name,
+    POL.supplier_product_name as supplier_product_name,
     POL."productCategory",
     POL.purchase_line_id,
     POL.desired_deliv_date,
@@ -5054,7 +5054,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                             <structure>
                                 <property name="name">total_discount</property>
                                 <text-property name="displayName">total_discount</text-property>
-                                <expression name="expression" type="javascript">row["sumDiscountLine"] + row["sumNegativeExTaxTotal"]</expression>
+                                <expression name="expression" type="javascript">row["sumDiscountLine"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -6438,7 +6438,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'value:'+row["product_name"]</value>
+                                                    <value type="javascript">'value:'+row["supplier_product_name"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>

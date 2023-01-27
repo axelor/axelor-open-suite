@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,28 +62,18 @@ public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
   }
 
   @Override
-  public void updateStatus(StockMove stockMove, Integer status) throws AxelorException {
-    int currentStatus = stockMove.getStatusSelect();
-    if (currentStatus == StockMoveRepository.STATUS_DRAFT) {
-      if (status == StockMoveRepository.STATUS_PLANNED) {
-        stockMoveService.plan(stockMove);
-      } else if (status == StockMoveRepository.STATUS_REALIZED) {
-        stockMoveService.validate(stockMove);
-      } else if (status == StockMoveRepository.STATUS_CANCELED) {
-        stockMoveService.cancel(stockMove);
-      }
-    } else if (currentStatus == StockMoveRepository.STATUS_PLANNED) {
-      if (status == StockMoveRepository.STATUS_REALIZED) {
-        stockMoveService.realize(stockMove);
-      } else if (status == StockMoveRepository.STATUS_CANCELED) {
-        stockMoveService.cancel(stockMove);
-      }
+  public void updateStatus(StockMove stockMove, Integer targetStatus) throws AxelorException {
+    if (targetStatus == StockMoveRepository.STATUS_PLANNED) {
+      stockMoveService.plan(stockMove);
+    } else if (targetStatus == StockMoveRepository.STATUS_REALIZED) {
+      stockMoveService.realize(stockMove);
+    } else if (targetStatus == StockMoveRepository.STATUS_CANCELED) {
+      stockMoveService.cancel(stockMove);
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          "Cannot update stock move from status %d to %d",
-          currentStatus,
-          status);
+          "Workflow to update status to value %d is not supported for stock move.",
+          targetStatus);
     }
   }
 

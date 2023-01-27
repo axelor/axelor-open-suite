@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,62 +43,59 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
   }
 
   @Override
-  public List<Long> findPartnerMails(Partner partner) {
-
+  public List<Long> findPartnerMails(Partner partner, int emailType) {
     if (!Beans.get(AppSaleService.class).isApp("sale")) {
-
-      return super.findPartnerMails(partner);
+      return super.findPartnerMails(partner, emailType);
     }
 
     List<Long> idList = new ArrayList<Long>();
 
-    idList.addAll(this.findMailsFromPartner(partner));
-    idList.addAll(this.findMailsFromSaleOrder(partner));
+    idList.addAll(this.findMailsFromPartner(partner, emailType));
+
+    if (partner.getIsContact()) {
+      idList.addAll(this.findMailsFromSaleOrderContact(partner, emailType));
+      return idList;
+    } else {
+      idList.addAll(this.findMailsFromSaleOrder(partner, emailType));
+    }
 
     Set<Partner> contactSet = partner.getContactPartnerSet();
     if (contactSet != null && !contactSet.isEmpty()) {
       for (Partner contact : contactSet) {
-        idList.addAll(this.findMailsFromPartner(contact));
-        idList.addAll(this.findMailsFromSaleOrderContact(contact));
+        idList.addAll(this.findMailsFromPartner(contact, emailType));
+        idList.addAll(this.findMailsFromSaleOrderContact(contact, emailType));
       }
     }
     return idList;
   }
 
-  @Override
-  public List<Long> findContactMails(Partner partner) {
-
-    if (!Beans.get(AppSaleService.class).isApp("sale")) {
-      return super.findContactMails(partner);
-    }
-
-    List<Long> idList = new ArrayList<Long>();
-
-    idList.addAll(this.findMailsFromPartner(partner));
-    idList.addAll(this.findMailsFromSaleOrderContact(partner));
-
-    return idList;
-  }
-
   @SuppressWarnings("unchecked")
-  public List<Long> findMailsFromSaleOrder(Partner partner) {
+  public List<Long> findMailsFromSaleOrder(Partner partner, int emailType) {
+
     String query =
         "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"
             + " WHERE part.id = "
             + partner.getId()
             + " AND so.clientPartner = part.id AND email.mediaTypeSelect = 2 AND "
-            + "email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND related.relatedToSelectId = so.id)";
+            + "email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND related.relatedToSelectId = so.id)"
+            + " AND email.typeSelect = "
+            + emailType;
+
     return JPA.em().createQuery(query).getResultList();
   }
 
   @SuppressWarnings("unchecked")
-  public List<Long> findMailsFromSaleOrderContact(Partner partner) {
+  public List<Long> findMailsFromSaleOrderContact(Partner partner, int emailType) {
+
     String query =
         "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"
             + " WHERE part.id = "
             + partner.getId()
             + " AND so.contactPartner = part.id AND email.mediaTypeSelect = 2 AND "
-            + "email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND related.relatedToSelectId = so.id)";
+            + "email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.sale.db.SaleOrder' AND related.relatedToSelectId = so.id)"
+            + " AND email.typeSelect = "
+            + emailType;
+
     return JPA.em().createQuery(query).getResultList();
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,6 +79,8 @@ import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
+import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetReportService;
@@ -139,5 +141,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(AnalyticMoveLineGenerateRealServiceImpl.class)
         .to(AnalyticMoveLineGenerateRealServiceHrImpl.class);
     bind(ExpenseFetchPeriodService.class).to(ExpenseFetchPeriodServiceImpl.class);
+    bind(TimesheetComputeNameService.class).to(TimesheetComputeNameServiceImpl.class);
   }
 }

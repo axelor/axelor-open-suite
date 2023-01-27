@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,6 +38,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
@@ -65,10 +66,12 @@ public class InvoiceToolService {
     return invoice.getInvoiceTermList().stream()
         .filter(
             invoiceTerm ->
-                (invoiceTerm.getDueDate().isEqual(LocalDate.now())
+                invoiceTerm.getDueDate() != null
+                    && (invoiceTerm.getDueDate().isEqual(LocalDate.now())
                         || invoiceTerm.getDueDate().isAfter(LocalDate.now()))
                     && !invoiceTerm.getIsPaid())
         .map(invoiceTerm -> invoiceTerm.getDueDate())
+        .filter(Objects::nonNull)
         .min(Comparator.comparing(LocalDate::toEpochDay))
         .orElse(invoice.getNextDueDate());
   }
@@ -300,7 +303,6 @@ public class InvoiceToolService {
     copy.setValidatedDate(null);
     copy.setVentilatedByUser(null);
     copy.setVentilatedDate(null);
-    copy.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
     copy.setDecisionPfpTakenDate(null);
     copy.setInternalReference(null);
     copy.setExternalReference(null);
@@ -316,8 +318,9 @@ public class InvoiceToolService {
     copy.setBillOfExchangeBlockingReason(null);
     copy.setBillOfExchangeBlockingToDate(null);
     copy.setBillOfExchangeBlockingByUser(null);
-
-    InvoiceToolService.setPfpStatus(copy);
+    copy.setNextDueDate(getNextDueDate(copy));
+    setPfpStatus(copy);
+    copy.setHasPendingPayments(false);
   }
 
   /**
@@ -349,5 +352,12 @@ public class InvoiceToolService {
     } else {
       invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_NONE);
     }
+  }
+
+  public static boolean isMultiCurrency(Invoice invoice) {
+    return invoice != null
+        && invoice.getCurrency() != null
+        && invoice.getCompany() != null
+        && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency());
   }
 }

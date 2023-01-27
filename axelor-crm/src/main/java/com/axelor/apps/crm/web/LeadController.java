@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -135,10 +135,7 @@ public class LeadController {
         Beans.get(LeadService.class)
             .getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
     response.setAttr("googleLabel", "title", urlMap.get("google"));
-    response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
   public void getLeadImportConfig(ActionRequest request, ActionResponse response) {
@@ -184,28 +181,11 @@ public class LeadController {
     try {
       Lead lead = request.getContext().asType(Lead.class);
       Beans.get(LeadService.class)
-          .loseLead(Beans.get(LeadRepository.class).find(lead.getId()), lead.getLostReason());
+          .loseLead(
+              Beans.get(LeadRepository.class).find(lead.getId()),
+              lead.getLostReason(),
+              lead.getLostReasonStr());
       response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void startLead(ActionRequest request, ActionResponse response) {
-    try {
-      Lead lead = request.getContext().asType(Lead.class);
-      Beans.get(LeadService.class).startLead(Beans.get(LeadRepository.class).find(lead.getId()));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void recycleLead(ActionRequest request, ActionResponse response) {
-    try {
-      Lead lead = request.getContext().asType(Lead.class);
-      Beans.get(LeadService.class).recycleLead(Beans.get(LeadRepository.class).find(lead.getId()));
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

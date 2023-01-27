@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -871,7 +871,8 @@ public class IrrecoverableService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             invoice.getMove().getOrigin() + ":" + irrecoverableName,
-            invoice.getInvoiceId());
+            invoice.getInvoiceId(),
+            invoice.getCompanyBankDetails());
     move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
     int seq = 1;
 
@@ -1017,7 +1018,8 @@ public class IrrecoverableService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             originStr,
-            moveLine.getDescription());
+            moveLine.getDescription(),
+            moveLine.getMove().getCompanyBankDetails());
     move.setOriginDate(moveLine.getMove().getDate());
 
     int seq = 1;
@@ -1129,7 +1131,9 @@ public class IrrecoverableService {
 
   public String getSequence(Company company) throws AxelorException {
 
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.IRRECOVERABLE, company);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.IRRECOVERABLE, company, Irrecoverable.class, "name");
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

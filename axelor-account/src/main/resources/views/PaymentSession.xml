@@ -59,28 +59,28 @@
       <button name="showMoveLinesBtn" title="Show move line(s)"
         onClick="action-payment-session-view-move-lines" showIf="statusSelect == 3"/>
     </toolbar>
-    <panel name="statusSelectPanel" colSpan="7" stacked="true">
-      <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
-        colSpan="9"/>
-      <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
-        widget="info-button" onClick="action-payment-session-view-invoice-terms" colSpan="3"
-        showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
-        x-currency="company.currency.symbol"/>
-    </panel>
-    <panel name="viewerTagsPanel" colSpan="5">
-      <field name="$viewerTags" showTitle="false" readonly="true" colSpan="12">
-        <viewer><![CDATA[
-                       <h4 class="text-right">
-                           <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.sessionTotalAmount < 0">Session total amount is negative</span>
-                       </h4>
-        ]]></viewer>
-      </field>
+    <panel name="infoPanel">
+      <panel name="statusSelectPanel" stacked="true">
+        <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"/>
+      </panel>
+      <panel name="viewerTagsPanel">
+        <field name="$viewerTags" showTitle="false" readonly="true">
+          <viewer><![CDATA[
+	                       <h4>
+	                           <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.sessionTotalAmount < 0">Session total amount is negative</span>
+	                       </h4>
+	        ]]></viewer>
+        </field>
+        <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
+          widget="info-button" onClick="action-payment-session-view-invoice-terms"
+          showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
+          x-currency="company.currency.symbol"/>
+      </panel>
     </panel>
     <panel name="mainPanel" itemSpan="4"
       readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
       <field name="createdOn"/>
       <field name="sequence"/>
-      <field name="name"/>
       <field name="company" form-view="company-form" grid-view="company-grid"
         onSelect="action-attrs-payment-session-set-company-domain"
         onChange="action-group-payment-session-on-company-change"/>
@@ -106,9 +106,9 @@
       showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails">
       <button name="searchEligibleTermsBtn" title="Search due Terms"
         onClick="action-group-payment-session-search-eligible-terms"
-        readonlyIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
+        hideIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
-        showIf="id &amp;&amp; sessionTotalAmount > 0" readonlyIf="statusSelect > 1"
+        showIf="id &amp;&amp; sessionTotalAmount > 0 &amp;&amp; statusSelect == 1"
         onClick="action-method-payment-session-search-eligible-terms"/>
       <button name="selectAllBtn" title="Select all"
         onClick="action-payment-session-method-select-all" colSpan="3" hidden="true"/>
@@ -118,11 +118,7 @@
         showIf="id" colSpan="12" canSearch="true" height="600" readonlyIf="statusSelect > 1"/>
       <panel-dashlet
         action="action-invoice-term-view-payment-session-group-by-partner-dashlet" showIf="id"
-        colSpan="8" canSearch="true" height="380" readonlyIf="statusSelect > 1"/>
-      <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
-        widget="info-button" onClick="action-payment-session-view-invoice-terms" colSpan="4"
-        showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
-        x-currency="company.currency.symbol"/>
+        colSpan="12" canSearch="true" height="380" readonlyIf="statusSelect > 1"/>
       <field name="sessionTotalAmount" hidden="true"/>
     </panel>
     <panel name="btnPanel" sidebar="true">
@@ -133,21 +129,38 @@
         showIf="statusSelect == 1 &amp;&amp; id" onClick="action-payment-session-group-cancel"/>
       <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
     </panel>
-    <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3">
-      <field name="validatedByUser" readonly="true"/>
-      <field name="validatedDate" readonly="true"/>
-    </panel>
     <panel name="emailPanel" sidebar="true" showIf="id &amp;&amp; sessionTotalAmount > 0">
       <button name="sendEmailsBtn" title="Send emails payment notice"
-        showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true"
+        showIf="statusSelect == 2 || statusSelect == 3" readonlyIf="hasEmailsSent == true"
         onClick="save,action-payment-session-method-send-emails"/>
       <button name="viewSentEmailsBtn" title="View emails sent"
         onClick="save,action-payment-session-view-all-sent-emails" showIf="hasEmailsSent"/>
-      <field name="hasEmailsSent" readonly="true"/>
+      <field name="hasEmailsSent" showTitle="false" readonly="true" colSpan="12">
+        <viewer><![CDATA[
+                       <h4>
+                           <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.hasEmailsSent == true">Email(s) sent</span>
+                           <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.hasEmailsSent == false">Email(s) not sent</span>
+                       </h4>
+        ]]></viewer>
+      </field>
+    </panel>
+    <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3" sidebar="true"
+      itemSpan="6">
+      <field name="validatedByUser" readonly="true"/>
+      <field name="validatedDate" readonly="true"/>
     </panel>
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
       readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
-      <field name="accountingMethodSelect"/>
+      <panel name="accountingMethodPanel" stacked="true">
+        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect != 3"/>
+        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect == 3"
+          selection-in="[1,2]"/>
+      </panel>
+      <panel name="moveAccountingDatePanel" stacked="true">
+        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"/>
+        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect == 3"
+          selection-in="[1,2]"/>
+      </panel>
       <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"
         selection-in="[1,2,3,4]"/>
       <field name="daysMarginOnPaySession"
@@ -244,7 +257,7 @@
   <action-record name="action-record-payment-session-set-default-values"
     model="com.axelor.apps.account.db.PaymentSession">
     <field name="company" expr="eval: __user__.activeCompany"/>
-    <field name="paymentDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="paymentDate" expr="eval: __config__.date"/>
     <field name="assignedToUser" expr="eval: __user__"/>
   </action-record>
 
@@ -265,6 +278,7 @@
       if="paymentMode?.inOutSelect == __repo__(PaymentMode).OUT"/>
     <field name="accountingMethodSelect" expr="eval: paymentMode?.accountingMethodSelect"/>
     <field name="accountingTriggerSelect" expr="eval: paymentMode?.accountingTriggerSelect"/>
+    <field name="moveAccountingDateSelect" expr="eval: paymentMode?.moveAccountingDateSelect"/>
   </action-record>
 
   <action-record name="action-payment-session-record-set-session-total-amount-btn"
@@ -285,7 +299,7 @@
   </action-method>
 
   <action-method name="action-method-payment-session-search-eligible-terms">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
       method="searchEligibleTerms"/>
   </action-method>
 
@@ -368,8 +382,7 @@
     <view type="form" name="payment-session-form"/>
     <domain>self.assignedToUser.id = :userId</domain>
     <context name="userId" expr="eval: __user__.id"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.paymentSession.paymentSessions" title="Payment sessions"

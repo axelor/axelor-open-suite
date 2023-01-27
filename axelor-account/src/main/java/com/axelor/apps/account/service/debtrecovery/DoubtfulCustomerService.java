@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -175,7 +175,8 @@ public class DoubtfulCustomerService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER,
             move.getOrigin(),
-            debtPassReason);
+            debtPassReason,
+            invoice != null ? invoice.getCompanyBankDetails() : move.getCompanyBankDetails());
     newMove.setOriginDate(move.getOriginDate());
     newMove.setInvoice(invoice);
     LocalDate todayDate = appBaseService.getTodayDate(company);
@@ -273,7 +274,8 @@ public class DoubtfulCustomerService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER,
             moveLine.getName(),
-            debtPassReason);
+            debtPassReason,
+            moveLine.getMove().getCompanyBankDetails());
 
     BigDecimal amountRemaining = moveLine.getAmountRemaining();
 

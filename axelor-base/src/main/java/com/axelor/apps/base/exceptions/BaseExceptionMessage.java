@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.exceptions;
 
 public final class BaseExceptionMessage {
@@ -140,6 +157,9 @@ public final class BaseExceptionMessage {
   public static final String APP_BASE_NO_SEQUENCE =
       "There is no configured product sequence in the app base config";
 
+  public static final String SEQUENCE_ALREADY_EXISTS =
+      /*$$(*/ "The generated sequence %s already exists. Please fix the configuration of sequence %s." /*)*/;
+
   /** Importer */
   public static final String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
 
@@ -173,6 +193,9 @@ public final class BaseExceptionMessage {
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
 
   public static final String TAX_2 = /*$$(*/ "Tax is missing" /*)*/;
+
+  public static final String TAX_DATE_MISSING = /*$$(*/
+      "There is no date to determine which rate to take for the tax. Please define a tax active version for : %s." /*)*/;
 
   /** Template rule service */
   public static final String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;
@@ -485,4 +508,11 @@ public final class BaseExceptionMessage {
       "Error: The type of the field %s does not match the type of the value %s" /*)*/;
   public static final String META_JSON_TYPE_NOT_MANAGED = /*$$(*/
       "Error: The type of the field %s is not managed by the adapter" /*)*/;
+
+  public static final String COMPANY_MISSING = /*$$(*/ "Please set a company." /*)*/;
+
+  public static final String PRICING_INVALID_DATES = /*$$(*/
+      "The start date cannot be later than the end date." /*)*/;
+
+  public static final String NO_ACTIVE_COMPANY = /*$$(*/ "Please set an active company." /*)*/;
 }

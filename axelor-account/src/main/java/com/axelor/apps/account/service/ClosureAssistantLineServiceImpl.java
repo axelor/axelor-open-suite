@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingBatch;
@@ -50,17 +67,18 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
   public List<ClosureAssistantLine> initClosureAssistantLines(ClosureAssistant closureAssistant)
       throws AxelorException {
     List<ClosureAssistantLine> closureAssistantLineList = new ArrayList<>();
-    for (int i = 2; i < 8; i++) {
-      ClosureAssistantLine closureAssistantLine = new ClosureAssistantLine(i - 1, null, i, false);
+    for (int i = 1; i < 8; i++) {
+      ClosureAssistantLine closureAssistantLine = new ClosureAssistantLine(i, null, i, false);
 
-      if (i != 2) {
+      if (i != 1) {
         closureAssistantLine.setIsPreviousLineValidated(false);
       } else {
         closureAssistantLine.setIsPreviousLineValidated(true);
       }
-      closureAssistantLine.setIsNextLineValidated(false);
+
       closureAssistantLineList.add(closureAssistantLine);
     }
+
     return closureAssistantLineList;
   }
 
@@ -86,6 +104,15 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
     }
     AccountingBatch accountingBatch = new AccountingBatch();
     switch (closureAssistantLine.getActionSelect()) {
+      case ClosureAssistantLineRepository.ACTION_CUT_OF_GENERATION:
+        accountingBatch =
+            accountingBatchService.createNewAccountingBatch(
+                AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF,
+                AuthUtils.getUser().getActiveCompany());
+        if (accountingBatch != null && accountingBatch.getId() != null) {
+          return this.getAccountingBatchView(accountingBatch.getId());
+        }
+        break;
       case ClosureAssistantLineRepository.ACTION_FIXED_ASSET_REALIZATION:
         accountingBatch =
             accountingBatchService.createNewAccountingBatch(
@@ -94,6 +121,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
         if (accountingBatch != null && accountingBatch.getId() != null) {
           return this.getAccountingBatchView(accountingBatch.getId());
         }
+        break;
       case ClosureAssistantLineRepository.ACTION_MOVE_CONSISTENCY_CHECK:
         accountingBatch =
             accountingBatchService.createNewAccountingBatch(
@@ -102,7 +130,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
         if (accountingBatch != null && accountingBatch.getId() != null) {
           return this.getAccountingBatchView(accountingBatch.getId());
         }
-        return null;
+        break;
       case ClosureAssistantLineRepository.ACTION_ACCOUNTING_REPORTS:
         return ActionView.define(I18n.get("Accounting report"))
             .model(AccountingReport.class.getName())
@@ -122,6 +150,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
         if (accountingBatch != null && accountingBatch.getId() != null) {
           return this.getAccountingBatchView(accountingBatch.getId());
         }
+        break;
       case ClosureAssistantLineRepository.ACTION_FISCAL_YEAR_CLOSURE:
         return ActionView.define(I18n.get("Fiscal year"))
             .model(Year.class.getName())
@@ -132,6 +161,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
       default:
         return null;
     }
+    return null;
   }
 
   protected Map<String, Object> getAccountingBatchView(long id) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -100,9 +100,9 @@ public class TestFixedAssetLineComputationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("500.00"),
-            new BigDecimal("25.00"),
-            new BigDecimal("25.00"),
-            new BigDecimal("475.00")),
+            new BigDecimal("23.89"),
+            new BigDecimal("23.89"),
+            new BigDecimal("476.11")),
         fixedAssetLine.get());
   }
 
@@ -289,9 +289,9 @@ public class TestFixedAssetLineComputationService {
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
             new BigDecimal("20000.00"),
-            new BigDecimal("5852.78"),
-            new BigDecimal("5852.78"),
-            new BigDecimal("14147.22")),
+            new BigDecimal("5833.33"),
+            new BigDecimal("5833.33"),
+            new BigDecimal("14166.67")),
         fixedAssetLine.get());
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -182,6 +182,8 @@ public interface IExceptionMessage {
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
 
   public static final String TAX_2 = /*$$(*/ "Tax is missing" /*)*/;
+
+  public static final String TAX_DATE_MISSING = /*$$(*/ "Date is missing." /*)*/;
 
   /** Template rule service */
   public static final String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;

@@ -1,13 +1,39 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PayVoucherDueElement;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
+import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
+import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -22,17 +48,23 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   protected InvoiceTermService invoiceTermService;
   protected MoveRepository moveRepo;
   protected InvoiceTermRepository invoiceTermRepo;
+  protected PayVoucherElementToPayRepository payVoucherElementToPayRepository;
+  protected PayVoucherDueElementRepository payVoucherDueElementRepository;
 
   @Inject
   public MoveInvoiceTermServiceImpl(
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       InvoiceTermService invoiceTermService,
       MoveRepository moveRepo,
-      InvoiceTermRepository invoiceTermRepo) {
+      InvoiceTermRepository invoiceTermRepo,
+      PayVoucherElementToPayRepository payVoucherElementToPayRepository,
+      PayVoucherDueElementRepository payVoucherDueElementRepository) {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.invoiceTermService = invoiceTermService;
     this.moveRepo = moveRepo;
     this.invoiceTermRepo = invoiceTermRepo;
+    this.payVoucherElementToPayRepository = payVoucherElementToPayRepository;
+    this.payVoucherDueElementRepository = payVoucherDueElementRepository;
   }
 
   @Override
@@ -172,5 +204,77 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         .flatMap(Collection::stream)
         .findFirst()
         .orElse(null);
+  }
+
+  @Override
+  public String checkIfInvoiceTermInPayment(Move move) {
+    String errorMessage = "";
+    if (move != null
+        && (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED))
+        && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+      List<InvoiceTerm> invoiceTermList =
+          move.getMoveLineList().stream()
+              .map(MoveLine::getInvoiceTermList)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList());
+      if (!CollectionUtils.isEmpty(invoiceTermList)) {
+        errorMessage = this.checkInvoiceTermInPaymentVoucher(invoiceTermList);
+        if (!StringUtils.isEmpty(errorMessage)) {
+          return errorMessage;
+        }
+        errorMessage = this.checkInvoiceTermInPaymentSession(invoiceTermList);
+        if (!StringUtils.isEmpty(errorMessage)) {
+          return errorMessage;
+        }
+        for (InvoiceTerm invoiceTerm : invoiceTermList) {
+          if (!invoiceTermService.isNotReadonlyExceptPfp(invoiceTerm)) {
+            errorMessage =
+                I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE);
+          }
+        }
+      }
+    }
+    return errorMessage;
+  }
+
+  public String checkInvoiceTermInPaymentVoucher(List<InvoiceTerm> invoiceTermList) {
+    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+      List<String> paymentVoucherRefList =
+          payVoucherElementToPayRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList).fetch().stream()
+              .map(PayVoucherElementToPay::getPaymentVoucher)
+              .map(PaymentVoucher::getRef)
+              .collect(Collectors.toList());
+      paymentVoucherRefList.addAll(
+          payVoucherDueElementRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList).fetch().stream()
+              .map(PayVoucherDueElement::getPaymentVoucher)
+              .map(PaymentVoucher::getRef)
+              .collect(Collectors.toList()));
+      if (!CollectionUtils.isEmpty(paymentVoucherRefList)) {
+        return String.format(
+            I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_VOUCHER_CHANGE),
+            paymentVoucherRefList.toString());
+      }
+    }
+    return "";
+  }
+
+  public String checkInvoiceTermInPaymentSession(List<InvoiceTerm> invoiceTermList) {
+    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+      List<String> paymentSessionSeqList =
+          invoiceTermList.stream()
+              .filter(it -> it.getPaymentSession() != null)
+              .map(InvoiceTerm::getPaymentSession)
+              .map(PaymentSession::getSequence)
+              .collect(Collectors.toList());
+      if (!CollectionUtils.isEmpty(paymentSessionSeqList)) {
+        return String.format(
+            I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_SESSION_CHANGE),
+            paymentSessionSeqList.toString());
+      }
+    }
+    return "";
   }
 }

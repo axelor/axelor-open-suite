@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -237,7 +237,6 @@ public class ProjectServiceImpl implements ProjectService {
     project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
     project.setImputable(projectTemplate.getImputable());
     project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
-    project.setExcludePlanning(projectTemplate.getExcludePlanning());
     project.setProjectStatus(getDefaultProjectStatus());
     project.setProjectTaskStatusSet(
         new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
@@ -55,10 +54,6 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
     SaleOrder saleOrder = createSaleOrder(opportunity, currency);
 
     opportunity.addSaleOrderListItem(saleOrder);
-
-    if (opportunity.getSalesStageSelect() < OpportunityRepository.SALES_STAGE_PROPOSITION) {
-      opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_PROPOSITION);
-    }
 
     saleOrder.setTradingName(opportunity.getTradingName());
 

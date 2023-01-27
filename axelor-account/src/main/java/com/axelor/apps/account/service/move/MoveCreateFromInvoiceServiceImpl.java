@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -148,7 +148,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
               functionalOrigin,
               origin,
-              description);
+              description,
+              invoice.getCompanyBankDetails());
 
       if (move != null) {
 
@@ -308,7 +309,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                 MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                 origin,
-                null);
+                null,
+                invoice.getCompanyBankDetails());
 
         if (move != null) {
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -391,7 +393,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null);
+            null,
+            invoice.getCompanyBankDetails());
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
@@ -433,39 +436,5 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       }
     }
     return oDmove;
-  }
-
-  @Override
-  public boolean isPartnerNotCompatible(Move move) {
-    Journal journal = move.getJournal();
-    Partner partner = move.getPartner();
-    if (journal != null && journal.getCompatiblePartnerTypeSelect() != null) {
-      String[] compatiblePartnerTypeSelect = journal.getCompatiblePartnerTypeSelect().split(",");
-      for (String compatiblePartnerType : compatiblePartnerTypeSelect) {
-        switch (compatiblePartnerType) {
-          case JournalRepository.IS_PROSPECT:
-            if (partner.getIsProspect()) {
-              return false;
-            }
-            break;
-          case JournalRepository.IS_CUSTOMER:
-            if (partner.getIsCustomer()) {
-              return false;
-            }
-            break;
-          case JournalRepository.IS_SUPPLIER:
-            if (partner.getIsSupplier()) {
-              return false;
-            }
-            break;
-          case JournalRepository.IS_FACTOR:
-            if (!partner.getIsFactor()) {
-              return false;
-            }
-            break;
-        }
-      }
-    }
-    return true;
   }
 }

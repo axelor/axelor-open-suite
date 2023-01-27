@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -203,7 +203,8 @@ public class ReimbursementExportService {
                     MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
                     MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                     reimbursement.getRef(),
-                    reimbursement.getDescription());
+                    reimbursement.getDescription(),
+                    moveLine.getMove().getCompanyBankDetails());
             first = false;
           }
           // Création d'une ligne au débit
@@ -306,7 +307,8 @@ public class ReimbursementExportService {
     reimbursement.setBankDetails(bankDetails);
 
     reimbursement.setRef(
-        sequenceService.getSequenceNumber(SequenceRepository.REIMBOURSEMENT, company));
+        sequenceService.getSequenceNumber(
+            SequenceRepository.REIMBOURSEMENT, company, Reimbursement.class, "ref"));
 
     return reimbursement;
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,7 +53,8 @@ public interface AccountingCutOffSupplyChainService extends AccountingCutOffServ
       boolean automaticReverse,
       boolean automaticReconcile,
       Account forecastedInvCustAccount,
-      Account forecastedInvSuppAccount)
+      Account forecastedInvSuppAccount,
+      String prefixOrigin)
       throws AxelorException;
 
   public Move generateCutOffMoveFromStockMove(
@@ -70,7 +71,8 @@ public interface AccountingCutOffSupplyChainService extends AccountingCutOffServ
       boolean includeNotStockManagedProduct,
       boolean isReverse,
       Account forecastedInvCustAccount,
-      Account forecastedInvSuppAccount)
+      Account forecastedInvSuppAccount,
+      String prefixOrigin)
       throws AxelorException;
 
   @CallMethod
