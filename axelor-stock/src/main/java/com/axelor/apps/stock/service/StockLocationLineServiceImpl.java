@@ -646,7 +646,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       if (currentQty.compareTo(BigDecimal.ZERO) != 0) {
         avgQty = oldQty.divide(currentQty, qtyScale, RoundingMode.HALF_UP);
       }
-      BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty);
+      BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty).setScale(scale, RoundingMode.HALF_UP);
       stockLocationLine.setAvgPrice(newAvgPrice);
       updateHistory(
           stockLocationLine,

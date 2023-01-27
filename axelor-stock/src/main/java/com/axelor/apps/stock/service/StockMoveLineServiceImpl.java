@@ -519,7 +519,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         if (fromStatus == StockMoveRepository.STATUS_REALIZED
             && toStatus == StockMoveRepository.STATUS_CANCELED) {
           // We dont recompute on cancel
-          this.updateWapStockMoveLine(fromStockLocation, stockMoveLine, date, origin, toStatus);
+          if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine, date, origin, toStatus);
+          }
+          if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            this.updateWapStockMoveLine(toStockLocation, stockMoveLine, date, origin, toStatus);
+          }
         }
       }
     }
