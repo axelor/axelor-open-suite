@@ -601,7 +601,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public Company getSingleCompany(UnitCostCalculation unitCostCalculation) {
     Company company = null;
-    if (this.hasDefaultBOMSelected() && unitCostCalculation.getCompanySet().size() == 1) {
+    if (unitCostCalculation.getCompanySet().size() == 1) {
       Iterator<Company> companyIterator = unitCostCalculation.getCompanySet().iterator();
       company = companyIterator.next();
     }
