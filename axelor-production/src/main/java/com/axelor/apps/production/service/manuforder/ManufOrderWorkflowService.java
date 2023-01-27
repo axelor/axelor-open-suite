@@ -55,6 +55,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.AxelorMessageException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -531,7 +532,7 @@ public class ManufOrderWorkflowService {
   protected boolean sendMail(ManufOrder manufOrder, Template template) {
     if (template == null) {
       TraceBackService.trace(
-          new AxelorException(
+          new AxelorMessageException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(ProductionExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE)));
     }
@@ -546,7 +547,8 @@ public class ManufOrderWorkflowService {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(manufOrder, template);
     } catch (Exception e) {
       TraceBackService.trace(
-          new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
+          new AxelorMessageException(
+              e, manufOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
     }
     return true;
   }
