@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
@@ -58,10 +58,10 @@ import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
@@ -79,12 +79,14 @@ public class PartnerController {
     Partner partner = request.getContext().asType(Partner.class);
     partner = Beans.get(PartnerRepository.class).find(partner.getId());
     if (partner.getPartnerSeq() == null) {
-      String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
+      String seq =
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
       if (seq == null)
         throw new AxelorException(
             partner,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PARTNER_1));
+            I18n.get(BaseExceptionMessage.PARTNER_1));
       else response.setValue("partnerSeq", seq);
     }
   }
@@ -231,25 +233,39 @@ public class PartnerController {
             .getSocialNetworkUrl(
                 partner.getName(), partner.getFirstName(), partner.getPartnerTypeSelect());
     response.setAttr("googleLabel", "title", urlMap.get("google"));
-    response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
-  public void findPartnerMails(ActionRequest request, ActionResponse response) {
-    Partner partner = request.getContext().asType(Partner.class);
-    List<Long> idList = Beans.get(PartnerService.class).findPartnerMails(partner);
-
-    List<Message> emailsList = new ArrayList<Message>();
-    for (Long id : idList) {
-      Message message = Beans.get(MessageRepository.class).find(id);
-      if (!emailsList.contains(message)) {
-        emailsList.add(message);
-      }
+  public void findSentMails(ActionRequest request, ActionResponse response) {
+    try {
+      this.findMails(request, response, MessageRepository.TYPE_SENT);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
 
-    response.setValue("$emailsList", emailsList);
+  public void findReceivedMails(ActionRequest request, ActionResponse response) {
+    try {
+      this.findMails(request, response, MessageRepository.TYPE_RECEIVED);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  private void findMails(ActionRequest request, ActionResponse response, int emailType) {
+    Partner partner = request.getContext().asType(Partner.class);
+    partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    List<Long> idList = Beans.get(PartnerService.class).findPartnerMails(partner, emailType);
+
+    response.setView(
+        ActionView.define(I18n.get("Emails"))
+            .model(Message.class.getName())
+            .add("cards", "message-cards")
+            .add("grid", "message-grid")
+            .add("form", "message-form")
+            .domain("self.id IN (:ids)")
+            .context("ids", !CollectionUtils.isEmpty(idList) ? idList : null)
+            .map());
   }
 
   public void addContactToPartner(ActionRequest request, ActionResponse response) {
@@ -269,21 +285,6 @@ public class PartnerController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void findContactMails(ActionRequest request, ActionResponse response) {
-    Partner partner = request.getContext().asType(Partner.class);
-    List<Long> idList = Beans.get(PartnerService.class).findContactMails(partner);
-
-    List<Message> emailsList = new ArrayList<Message>();
-    for (Long id : idList) {
-      Message message = Beans.get(MessageRepository.class).find(id);
-      if (!emailsList.contains(message)) {
-        emailsList.add(message);
-      }
-    }
-
-    response.setValue("$emailsList", emailsList);
   }
 
   public void checkIbanValidity(ActionRequest request, ActionResponse response)
@@ -316,7 +317,7 @@ public class PartnerController {
 
       response.setAlert(
           String.format(
-              IExceptionMessage.BANK_DETAILS_2,
+              BaseExceptionMessage.BANK_DETAILS_2,
               "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
     }
   }
@@ -326,7 +327,8 @@ public class PartnerController {
     Partner partner = request.getContext().asType(Partner.class);
     if (partner.getId() == null) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_3));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.PARTNER_3));
     }
     partner = Beans.get(PartnerRepository.class).find(partner.getId());
     Beans.get(PartnerService.class).convertToIndividualPartner(partner);
@@ -386,15 +388,16 @@ public class PartnerController {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       PartnerService partnerService = Beans.get(PartnerService.class);
-      if (!partnerService.isRegistrationCodeValid(partner)) {
-        response.setError(I18n.get(IExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+      if (partnerService.isRegistrationCodeValid(partner)) {
+        String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
+        String nic = partnerService.getNicFromRegistrationCode(partner);
+        String siren = partnerService.getSirenFromRegistrationCode(partner);
+
+        response.setValue("taxNbr", taxNbr);
+        response.setValue("nic", nic);
+        response.setValue("siren", siren);
       }
-      String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
-      String nic = partnerService.getNicFromRegistrationCode(partner);
-      String siren = partnerService.getSirenFromRegistrationCode(partner);
-      response.setValue("taxNbr", taxNbr);
-      response.setValue("nic", nic);
-      response.setValue("siren", siren);
+
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
@@ -404,7 +407,7 @@ public class PartnerController {
     Partner partner = request.getContext().asType(Partner.class);
     PartnerService partnerService = Beans.get(PartnerService.class);
     if (!partnerService.isRegistrationCodeValid(partner)) {
-      response.setError(I18n.get(IExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+      response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }
 }

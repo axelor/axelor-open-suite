@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -33,7 +34,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -66,6 +67,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
+      AppCrmService appCrmService,
       UserService userService,
       SaleOrderLineService saleOrderLineService,
       SaleOrderStockService saleOrderStockService,
@@ -75,15 +77,14 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       PartnerSupplychainService partnerSupplychainService,
       SaleConfigService saleConfigService,
       SaleOrderCheckAnalyticService saleOrderCheckAnalyticService) {
-
     super(
         sequenceService,
         partnerRepo,
         saleOrderRepo,
         appSaleService,
+        appCrmService,
         userService,
         saleOrderLineService);
-
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
     this.appSupplychain = appSupplychainService.getAppSupplychain();
@@ -111,7 +112,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
+          I18n.get(SupplychainExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
     }
 
     super.confirmSaleOrder(saleOrder);
@@ -210,7 +211,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
             || statusSelect == StockMoveRepository.STATUS_PLANNED) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.SALE_ORDER_COMPLETE_MANUALLY));
+              I18n.get(SupplychainExceptionMessage.SALE_ORDER_COMPLETE_MANUALLY));
         }
       }
     }

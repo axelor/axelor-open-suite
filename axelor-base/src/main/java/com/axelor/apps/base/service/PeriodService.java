@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
@@ -74,7 +75,21 @@ public interface PeriodService {
    */
   public void checkPeriod(Period period) throws AxelorException;
 
+  /**
+   * @param period
+   * @throws AxelorException if the period is permanently or temporally closed
+   */
+  @CallMethod
+  boolean isClosedPeriod(Period period) throws AxelorException;
+
   public void validateTempClosure(Period period) throws AxelorException;
 
   public void validateClosure(Period period) throws AxelorException;
+
+  /**
+   * Method thats open the period
+   *
+   * @param period
+   */
+  void openPeriod(Period period);
 }

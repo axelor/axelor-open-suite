@@ -1,7 +1,0 @@
----
-title: "MRP : purchase proposal changes - introduce a new mrp line type for delivery"
-type: feature
-description: |
-   Add a new mrp line type 'purchase proposal / estimated delivery in order' to increase the cumulated quantity once we will have received the product instead of increase it at the order date.
-   The previous behavior is kept if we don't define this new mrp line type
-   A new column is also added to know the theorical purchase date and the theorical delivery date to avoid out of stock. In case of out of stock, the dates is displayed in red color.

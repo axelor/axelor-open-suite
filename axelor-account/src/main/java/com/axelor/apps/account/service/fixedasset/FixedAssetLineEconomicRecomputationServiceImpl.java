@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.fixedasset;
 
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
@@ -42,7 +59,8 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
+  protected BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset) {
+    BigDecimal initialProrata = computeProrataTemporis(fixedAsset);
     int nbRealizedLines =
         Optional.ofNullable(fixedAsset.getFixedAssetLineList())
             .map(
@@ -55,11 +73,24 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
                         .count())
             .orElse(0l)
             .intValue();
-    return fixedAsset.getNumberOfDepreciation() - nbRealizedLines;
+    if (isProrataTemporis(fixedAsset)
+        && getComputationMethodSelect(fixedAsset)
+            .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
+      if (fixedAsset.getCorrectedAccountingValue().signum() > 0) {
+        // Nb depreciation = new nb depreciation - ( nb lines realized + prorata )
+        return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation() - nbRealizedLines)
+            .subtract(initialProrata);
+      } else {
+        // Nb depreciation = new nb depreciation - ( nb lines realized + prorata - 1 )
+        return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation() - nbRealizedLines + 1)
+            .subtract(initialProrata);
+      }
+    }
+    return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation() - nbRealizedLines);
   }
 
   @Override
-  protected int numberOfDepreciationDone(FixedAsset fixedAsset) {
+  protected BigDecimal numberOfDepreciationDone(FixedAsset fixedAsset) {
     List<FixedAssetLine> fixedAssetLineList = getFixedAssetLineList(fixedAsset);
     // We substract nbRealizedLines because we already take it into account in
     // getNumberOfDepreciation
@@ -79,12 +110,15 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
       if (fixedAssetLineList == null) {
         return getNumberOfPastDepreciation(fixedAsset);
       }
-      return fixedAssetLineList.size() + getNumberOfPastDepreciation(fixedAsset) - nbRealizedLines;
+      return BigDecimal.valueOf(fixedAssetLineList.size())
+          .add(getNumberOfPastDepreciation(fixedAsset))
+          .subtract(BigDecimal.valueOf(nbRealizedLines));
     }
     if (fixedAssetLineList == null) {
-      return 0;
+      return BigDecimal.ZERO;
     }
-    return fixedAssetLineList.size() - nbRealizedLines;
+    return BigDecimal.valueOf(fixedAssetLineList.size())
+        .subtract(BigDecimal.valueOf(nbRealizedLines));
   }
 
   @Override
@@ -105,7 +139,7 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
             .orElse(0l)
             .intValue();
     return computeDepreciationNumerator(
-            baseValue, getNumberOfDepreciation(fixedAsset) + nbRealizedLines)
+            baseValue, getNumberOfDepreciation(fixedAsset).add(BigDecimal.valueOf(nbRealizedLines)))
         .multiply(ddRate)
         .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
   }
@@ -128,5 +162,10 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
       linearDepreciationBase = getAccountingValue(previousFixedAssetLine);
     }
     return super.computeDepreciation(fixedAsset, previousFixedAssetLine, linearDepreciationBase);
+  }
+
+  @Override
+  protected Integer getPeriodicityInMonthProrataTemporis(FixedAsset fixedAsset) {
+    return fixedAsset.getInitialPeriodicityInMonth();
   }
 }

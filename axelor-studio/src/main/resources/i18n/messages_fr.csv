@@ -291,6 +291,7 @@
 "Task node","Noeud intermédiaire",,
 "Template","Modèle",,
 "Text","Texte",,
+"The domain must not contains any escaped HTML characters","Le domaine ne doit pas contenir de caractère d'échappement en HTML",,
 "The name must not contain spaces",,,
 "Time","Heure",,
 "Title","Titre",,

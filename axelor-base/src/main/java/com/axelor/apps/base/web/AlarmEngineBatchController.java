@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.AlarmEngineBatch;
 import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.alarm.AlarmEngineBatchService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -54,7 +54,7 @@ public class AlarmEngineBatchController {
       TraceBackService.trace(
           new AxelorException(
               TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_5)
+              I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_5)
                   + " "
                   + request.getContext().get("code")));
     } else {

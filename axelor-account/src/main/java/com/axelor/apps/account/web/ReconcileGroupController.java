@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,25 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class ReconcileGroupController {
+
+  public void letter(ActionRequest request, ActionResponse response) {
+
+    ReconcileGroupRepository reconcileGroupRepo = Beans.get(ReconcileGroupRepository.class);
+    ReconcileGroup reconcileGroup =
+        reconcileGroupRepo.find(request.getContext().asType(ReconcileGroup.class).getId());
+
+    if (reconcileGroup != null) {
+      try {
+        ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
+        reconcileGroupService.letter(reconcileGroup);
+        reconcileGroup = reconcileGroupRepo.find(reconcileGroup.getId());
+        reconcileGroupService.updateStatus(reconcileGroup);
+      } catch (AxelorException e) {
+        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      }
+    }
+    response.setReload(true);
+  }
 
   public void unletter(ActionRequest request, ActionResponse response) {
 

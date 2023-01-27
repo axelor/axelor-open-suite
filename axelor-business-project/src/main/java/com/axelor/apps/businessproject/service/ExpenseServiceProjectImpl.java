@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -29,6 +30,7 @@ import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.KilometricService;
@@ -49,34 +51,37 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       MoveValidateService moveValidateService,
       ExpenseRepository expenseRepository,
       MoveLineCreateService moveLineCreateService,
-      AccountManagementAccountService accountManagementAccountService,
+      AccountManagementAccountService accountManagementService,
       AppAccountService appAccountService,
       AccountConfigHRService accountConfigService,
       AccountingSituationService accountingSituationService,
       AnalyticMoveLineService analyticMoveLineService,
+      AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
       PaymentModeService paymentModeService,
       PeriodRepository periodRepository,
       MoveLineConsolidateService moveLineConsolidateService,
-      KilometricService kilometricService) {
-
+      KilometricService kilometricService,
+      BankDetailsService bankDetailsService) {
     super(
         moveCreateService,
         moveValidateService,
         expenseRepository,
         moveLineCreateService,
-        accountManagementAccountService,
+        accountManagementService,
         appAccountService,
         accountConfigService,
         accountingSituationService,
         analyticMoveLineService,
+        analyticMoveLineGenerateRealService,
         hrConfigService,
         templateMessageService,
         paymentModeService,
         periodRepository,
         moveLineConsolidateService,
-        kilometricService);
+        kilometricService,
+        bankDetailsService);
   }
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.db.Company;
@@ -60,7 +61,7 @@ public interface AccountManagementAccountService extends AccountManagementServic
    * @throws AxelorException
    */
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Product product, Company company);
+      Product product, Company company, boolean isPurchase) throws AxelorException;
 
   /**
    * Get the product fixed asset category
@@ -80,4 +81,15 @@ public interface AccountManagementAccountService extends AccountManagementServic
 
   public Account getSaleVatRegulationAccount(
       AccountManagement accountManagement, Tax tax, Company company) throws AxelorException;
+
+  public Account getTaxAccount(
+      AccountManagement accountManagement,
+      Tax tax,
+      Company company,
+      Journal journal,
+      int vatSystemSelect,
+      int functionalOrigin,
+      boolean isFixedAssets,
+      boolean isFinancialDiscount)
+      throws AxelorException;
 }

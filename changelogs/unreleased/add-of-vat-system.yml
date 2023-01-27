@@ -1,7 +1,0 @@
----
-title: "MOVELINE / ACCOUNT / ACCOUNTINGSITUATION : VAT System (Regime) modelization and computation "
-type: feature
-description: |
-  The objective of this new feature is to change the way VAT reports will be executed by determining the way regime of VAT which applies to a transaction.
-  The VAT Regime is currently held by the Tax itself with the field typeSelect.
-  This field will be deleted and replaced by a combo of 3 fields which will allow to better determine the regime/system that applies.

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,8 +20,10 @@ package com.axelor.apps.bankpayment.exception;
 /**
  * Interface of Exceptions. Enum all exception of axelor-account.
  *
+ * @deprecated Replaced by {@link BankPaymentExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Bank statement service */
@@ -143,8 +145,6 @@ public interface IExceptionMessage {
       "Please fill the receiver bank details" /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/
       "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
-  static final String BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
-      "The receiver bank details is inactive." /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
       "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
   static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
@@ -275,6 +275,8 @@ public interface IExceptionMessage {
   /** Bank Statement Query */
   static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/ "Sequence is already used" /*)*/;
 
+  static final String PAYMENT_SESSION_GENERATED_BANK_ORDER = /*$$(*/
+      "The bank order %s has been generated successfully." /*)*/;
   static final String BATCH_BOE_SEND_BILLING_PARTNER_ADRESS_MISSING = /*$$(*/
       "Email adress is missing for partner %s" /*)*/;
 

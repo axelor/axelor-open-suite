@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,9 +33,6 @@ public interface EmployeeService extends UserService {
   public int getAge(Employee employee, LocalDate refDate) throws AxelorException;
 
   public BigDecimal getDaysWorksInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException;
-
-  public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
 
   public Map<String, String> getSocialNetworkUrl(String name, String firstName);

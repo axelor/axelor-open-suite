@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,8 +18,9 @@
 package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.db.JPA;
@@ -84,14 +85,14 @@ public class BatchInvoicing extends BatchStrategy {
   @Override
   protected void stop() {
 
-    String comment = I18n.get(IExceptionMessage.BATCH_INVOICING_1) + " ";
+    String comment = I18n.get(SupplychainExceptionMessage.BATCH_INVOICING_1) + " ";
     comment +=
         String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_INVOICING_2) + "\n", batch.getDone());
+            "\t* %s " + I18n.get(SupplychainExceptionMessage.BATCH_INVOICING_2) + "\n",
+            batch.getDone());
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

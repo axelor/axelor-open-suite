@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,7 @@ import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.tool.StringTool;
@@ -65,11 +65,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.validation.ValidationException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -189,7 +191,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       InputStream bindFileInputStream =
           this.getClass().getResourceAsStream("/import-configs/" + "csv-config.xml");
       if (bindFileInputStream == null) {
-        throw new ValidationException(IExceptionMessage.UNIT_COST_CALCULATION_IMPORT_FAIL_ERROR);
+        throw new ValidationException(
+            ProductionExceptionMessage.UNIT_COST_CALCULATION_IMPORT_FAIL_ERROR);
       }
       FileOutputStream outputStream = new FileOutputStream(configFile);
       IOUtils.copy(bindFileInputStream, outputStream);
@@ -330,7 +333,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     if (productSet.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.UNIT_COST_CALCULATION_NO_PRODUCT));
+          I18n.get(ProductionExceptionMessage.UNIT_COST_CALCULATION_NO_PRODUCT));
     }
 
     return productSet;
@@ -505,9 +508,16 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   public String createProductSetDomain(UnitCostCalculation unitCostCalculation, Company company)
       throws AxelorException {
     String domain = null;
+    String bomsProductsList = createBomProductList(unitCostCalculation, company);
     if (this.hasDefaultBOMSelected()) {
       if (company != null) {
-        domain = "self.defaultBillOfMaterial.company.id = " + company.getId().toString() + "";
+        domain =
+            "(self.id in ("
+                + bomsProductsList
+                + ")"
+                + " OR self.defaultBillOfMaterial.company.id = "
+                + company.getId().toString()
+                + ")";
       } else {
         domain = "self.defaultBillOfMaterial IS NOT NULL";
       }
@@ -527,16 +537,41 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
                 + StringTool.getIdListString(unitCostCalculation.getProductFamilySet())
                 + ")";
       }
+
+      domain +=
+          " AND self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
+              + unitCostCalculation.getProductSubTypeSelect()
+              + ")";
     } else {
       domain =
           " self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
               + unitCostCalculation.getProductSubTypeSelect()
-              + ") AND self.defaultBillOfMaterial.company IN ("
+              + ") AND (self.defaultBillOfMaterial.company IN ("
               + StringTool.getIdListString(unitCostCalculation.getCompanySet())
+              + ") OR self.id in ("
+              + bomsProductsList
+              + ")"
               + ") AND self.procurementMethodSelect IN ('produce', 'buyAndProduce') AND self.dtype = 'Product'";
     }
     log.debug("Product Domain: {}", domain);
     return domain;
+  }
+
+  protected String createBomProductList(UnitCostCalculation unitCostCalculation, Company company)
+      throws AxelorException {
+
+    Set<Company> companySet = new HashSet<>();
+
+    if (unitCostCalculation.getCompanySet() != null) {
+      companySet.addAll(unitCostCalculation.getCompanySet());
+    }
+    if (company != null) {
+      companySet.add(company);
+    }
+
+    return billOfMaterialService.getBillOfMaterialProductsId(companySet).stream()
+        .map(id -> id.toString())
+        .collect(Collectors.joining(","));
   }
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,8 +20,10 @@ package com.axelor.apps.base.exceptions;
 /**
  * Interface of Exceptions.
  *
+ * @deprecated Replaced by {@link BaseExceptionMessage}
  * @author dubaux
  */
+@Deprecated
 public interface IExceptionMessage {
 
   public static final String EXCEPTION = /*$$(*/ "Warning !" /*)*/;
@@ -144,8 +146,8 @@ public interface IExceptionMessage {
   public static final String CATEGORY_NO_SEQUENCE = /*$$(*/
       "There is no configured sequence for the category" /*)*/;
 
-  public static final String APP_BASE_NO_SEQUENCE =
-      "There is no configured product sequence in the app base config";
+  public static final String APP_BASE_NO_SEQUENCE = /*$$(*/
+      "There is no configured product sequence in the app base config" /*)*/;
 
   /** Importer */
   public static final String IMPORTER_1 = /*$$(*/ "Error : Mapping file is unreachable." /*)*/;
@@ -180,6 +182,8 @@ public interface IExceptionMessage {
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
 
   public static final String TAX_2 = /*$$(*/ "Tax is missing" /*)*/;
+
+  public static final String TAX_DATE_MISSING = /*$$(*/ "Date is missing." /*)*/;
 
   /** Template rule service */
   public static final String TEMPLATE_RULE_1 = /*$$(*/ "Bean is not an instance of" /*)*/;
@@ -248,8 +252,6 @@ public interface IExceptionMessage {
   public static final String PARTNER_NOT_FOUND = /*$$(*/ "Partner not found" /*)*/;
   public static final String PARTNER_EMAIL_EXIST = /*$$(*/
       "Email address already linked with another partner" /*)*/;
-  public static final String PARTNER_INVALID_REGISTRATION_CODE = /*$$(*/
-      "Registration code is invalid." /*)*/;
 
   /** Product controller */
   public static final String PRODUCT_1 = /*$$(*/ "Variants generated" /*)*/;
@@ -450,8 +452,10 @@ public interface IExceptionMessage {
 
   /* Geonames import */
   public static final String NO_DATA_FILE_FOUND = /*$$(*/ "No file found on %s." /*)*/;
-  public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
-      "Please fill in GeoNames URL in Base application configuration." /*)*/;
+  public static final String GEONAMES_DUMP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Geoname Dump files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Dump URL in tab Interfaces and in the panel GeoNames." /*)*/;
+  public static final String GEONAMES_ZIP_URL_NOT_SPECIFIED = /*$$(*/
+      "Geoname's URL to access Zip files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Zip URL in tab Interfaces and in the panel GeoNames." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
   public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
@@ -498,4 +502,8 @@ public interface IExceptionMessage {
       "Advanced import is not validated" /*)*/;
   public static final String BATCH_ADVANCED_IMPORT_FILE_NOT_IMPORTED = /*$$(*/
       "File %s could not be imported" /*)*/;
+  public static final String META_JSON_TYPE_NO_MATCH_OBJECT_VALUE = /*$$(*/
+      "Error: The type of the field %s does not match the type of the value %s" /*)*/;
+  public static final String META_JSON_TYPE_NOT_MANAGED = /*$$(*/
+      "Error: The type of the field %s is not managed by the adapter" /*)*/;
 }

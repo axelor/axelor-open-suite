@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,8 @@ package com.axelor.apps.base.service.weeklyplanning;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.repo.DayPlanningRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -58,19 +59,19 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
   private DayOfWeek getDayOfWeek(DayPlanning day) {
     switch (day.getName()) {
-      case "monday":
+      case DayPlanningRepository.MONDAY:
         return DayOfWeek.MONDAY;
-      case "tuesday":
+      case DayPlanningRepository.TUESDAY:
         return DayOfWeek.TUESDAY;
-      case "wednesday":
+      case DayPlanningRepository.WEDNESDAY:
         return DayOfWeek.WEDNESDAY;
-      case "thursday":
+      case DayPlanningRepository.THURSDAY:
         return DayOfWeek.THURSDAY;
-      case "friday":
+      case DayPlanningRepository.FRIDAY:
         return DayOfWeek.FRIDAY;
-      case "saturday":
+      case DayPlanningRepository.SATURDAY:
         return DayOfWeek.SATURDAY;
-      case "sunday":
+      case DayPlanningRepository.SUNDAY:
         return DayOfWeek.SUNDAY;
       default:
         return DayOfWeek.SUNDAY;
@@ -81,7 +82,15 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   @Transactional
   public WeeklyPlanning initPlanning(WeeklyPlanning planning) {
     String[] dayTab =
-        new String[] {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
+        new String[] {
+          DayPlanningRepository.MONDAY,
+          DayPlanningRepository.TUESDAY,
+          DayPlanningRepository.WEDNESDAY,
+          DayPlanningRepository.THURSDAY,
+          DayPlanningRepository.FRIDAY,
+          DayPlanningRepository.SATURDAY,
+          DayPlanningRepository.SUNDAY
+        };
     for (int i = 0; i < dayTab.length; i++) {
       DayPlanning day = new DayPlanning();
       day.setName(dayTab[i]);
@@ -101,7 +110,8 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
           && dayPlanning.getMorningTo() != null
           && dayPlanning.getMorningFrom().isAfter(dayPlanning.getMorningTo())) {
 
-        String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_1, dayPlanning);
+        String message =
+            messageInCheckPlanning(BaseExceptionMessage.WEEKLY_PLANNING_1, dayPlanning);
         throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
       }
 
@@ -109,7 +119,8 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
           && dayPlanning.getAfternoonFrom() != null
           && dayPlanning.getMorningTo().isAfter(dayPlanning.getAfternoonFrom())) {
 
-        String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_2, dayPlanning);
+        String message =
+            messageInCheckPlanning(BaseExceptionMessage.WEEKLY_PLANNING_2, dayPlanning);
         throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
       }
 
@@ -117,7 +128,8 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
           && dayPlanning.getAfternoonTo() != null
           && dayPlanning.getAfternoonFrom().isAfter(dayPlanning.getAfternoonTo())) {
 
-        String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_3, dayPlanning);
+        String message =
+            messageInCheckPlanning(BaseExceptionMessage.WEEKLY_PLANNING_3, dayPlanning);
         throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
       }
 
@@ -126,7 +138,8 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
           || (dayPlanning.getAfternoonFrom() == null && dayPlanning.getAfternoonTo() != null)
           || (dayPlanning.getAfternoonTo() == null && dayPlanning.getAfternoonFrom() != null)) {
 
-        String message = messageInCheckPlanning(IExceptionMessage.WEEKLY_PLANNING_4, dayPlanning);
+        String message =
+            messageInCheckPlanning(BaseExceptionMessage.WEEKLY_PLANNING_4, dayPlanning);
         throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
       }
     }
@@ -212,25 +225,25 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
     int dayOfWeek = date.getDayOfWeek().getValue();
     switch (dayOfWeek) {
       case 1:
-        return findDayWithName(planning, "monday");
+        return findDayWithName(planning, DayPlanningRepository.MONDAY);
 
       case 2:
-        return findDayWithName(planning, "tuesday");
+        return findDayWithName(planning, DayPlanningRepository.TUESDAY);
 
       case 3:
-        return findDayWithName(planning, "wednesday");
+        return findDayWithName(planning, DayPlanningRepository.WEDNESDAY);
 
       case 4:
-        return findDayWithName(planning, "thursday");
+        return findDayWithName(planning, DayPlanningRepository.THURSDAY);
 
       case 5:
-        return findDayWithName(planning, "friday");
+        return findDayWithName(planning, DayPlanningRepository.FRIDAY);
 
       case 6:
-        return findDayWithName(planning, "saturday");
+        return findDayWithName(planning, DayPlanningRepository.SATURDAY);
 
       case 7:
-        return findDayWithName(planning, "sunday");
+        return findDayWithName(planning, DayPlanningRepository.SUNDAY);
 
       default:
         return findDayWithName(planning, "null");

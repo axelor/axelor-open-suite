@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,28 +44,6 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   @Inject private PurchaseOrderLineRepository purchaseOrderLineRepo;
   @Inject private AppBaseService appBaseService;
   @Inject private PurchaseRequestWorkflowService purchaseRequestWorkflowService;
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void confirmCart() throws AxelorException {
-    List<PurchaseRequest> purchaseRequests =
-        purchaseRequestRepo
-            .all()
-            .filter("self.statusSelect = 1 and self.createdBy = ?1", AuthUtils.getUser())
-            .fetch();
-
-    for (PurchaseRequest purchaseRequest : purchaseRequests) {
-      purchaseRequestWorkflowService.requestPurchaseRequest(purchaseRequest);
-    }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void acceptRequest(List<PurchaseRequest> purchaseRequests) throws AxelorException {
-    for (PurchaseRequest purchaseRequest : purchaseRequests) {
-      purchaseRequestWorkflowService.acceptPurchaseRequest(purchaseRequest);
-    }
-  }
 
   @Transactional(rollbackOn = {Exception.class})
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -32,6 +32,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -70,7 +71,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   @Override
   public void archiveDaybookMove(Move move) throws Exception {
     if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
-      this.checkDaybookMove(move);
+      this.checkMoveBeforeRemove(move);
       this.cleanMoveToArchived(move);
       move = this.updateMoveToArchived(move);
       this.archiveMove(move);
@@ -85,7 +86,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_CANCEL_4));
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_4));
     }
 
     move.setStatusSelect(MoveRepository.STATUS_CANCELED);
@@ -117,7 +118,8 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
     }
   }
 
-  protected void checkDaybookMove(Move move) throws Exception {
+  @Override
+  public void checkMoveBeforeRemove(Move move) throws Exception {
     String errorMessage = "";
     Map<String, String> objectsLinkToMoveMap =
         archivingToolService.getObjectLinkTo(move, move.getId());
@@ -132,33 +134,53 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
         }
       }
     }
-    if (moveModelError != null) {
+    if (moveModelError != null && move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       errorMessage +=
           String.format(
-              I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+              I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+              move.getReference(),
+              moveModelError);
+    } else if (moveModelError != null
+        && (move.getStatusSelect() == MoveRepository.STATUS_NEW
+            || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
+      errorMessage +=
+          String.format(
+              I18n.get(AccountExceptionMessage.MOVE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH),
               move.getReference(),
               moveModelError);
     }
 
     for (MoveLine moveLine : move.getMoveLineList()) {
 
-      errorMessage += checkDaybookMoveLine(moveLine);
+      errorMessage += checkMoveLineBeforeRemove(moveLine);
     }
     if (errorMessage != null && !errorMessage.isEmpty()) {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage);
     }
   }
 
-  protected String checkDaybookMoveLine(MoveLine moveLine) throws AxelorException {
+  protected String checkMoveLineBeforeRemove(MoveLine moveLine) throws AxelorException {
     String errorMessage = "";
     Map<String, String> objectsLinkToMoveLineMap =
         archivingToolService.getObjectLinkTo(moveLine, moveLine.getId());
     for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
       String modelName = entry.getKey();
-      if (!modelName.equals("Move") && !modelName.equals("Reconcile")) {
+      List<String> modelsToIgnore =
+          Lists.newArrayList(
+              "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
+      if (!modelsToIgnore.contains(modelName)
+          && moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
         errorMessage +=
             String.format(
-                I18n.get(IExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+                I18n.get(AccountExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+                moveLine.getName(),
+                modelName);
+      } else if (!modelsToIgnore.contains(modelName)
+          && (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_NEW
+              || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
+        errorMessage +=
+            String.format(
+                I18n.get(AccountExceptionMessage.MOVE_LINE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH),
                 moveLine.getName(),
                 modelName);
       }

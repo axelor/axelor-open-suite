@@ -22,7 +22,7 @@
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>
-    <string name="origin" title="Origin" initParam="true"/>
+    <string name="origin" title="moveLine.origin" initParam="true"/>
 
     <one-to-many name="debitReconcileList" orphanRemoval="false" ref="Reconcile"
       title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
@@ -39,11 +39,16 @@
 
     <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0"
       selection="move.line.reimbursement.status.select"/>
-    <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
+    <string name="passageReason" title="Doubtful Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <many-to-one name="taxLineBeforeReverse" ref="com.axelor.apps.account.db.TaxLine"
+      title="Tax"/>
     <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine"
       title="Source Tax"/>
+
+    <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
+      title="Tax Equiv"/>
 
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5"
       initParam="true"/>
@@ -88,7 +93,7 @@
     <long name="partnerId"/>
     <long name="accountId"/>
 
-    <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
+    <decimal name="taxRate" scale="10" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
 
     <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
@@ -102,13 +107,10 @@
 
     <date name="originDate" title="Origin date" initParam="true"/>
 
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
+      mappedBy="moveLine" title="Invoice terms"/>
+
     <!-- DAS2 -->
-    <many-to-one name="serviceType" ref="ServiceType" title="Service type"
-      readonly="true"/>
-    <string name="serviceTypeCode" title="Service type code" readonly="true"/>
-    <many-to-one name="das2Activity" ref="com.axelor.apps.account.db.Das2Activity"
-      title="DAS2 activity" readonly="true"/>
-    <string name="das2ActivityName" title="DAS2 activity name" readonly="true"/>
 
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[
@@ -129,6 +131,17 @@
         return BigDecimal.ZERO;
 	   ]]>
     </decimal>
+    <decimal name="lineAmount" transient="true">
+    	<![CDATA[
+			if (this.credit != null && this.credit.signum() > 0) {
+				return this.credit;
+			}
+			if (this.debit != null && this.debit.signum() > 0) {
+				return this.debit;
+			}
+			return BigDecimal.ZERO;
+	    ]]>
+    </decimal>
 
     <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1"
       ref="com.axelor.apps.account.db.AnalyticAccount"/>
@@ -143,6 +156,25 @@
 
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.moveline.select" default="0"/>
+
+    <!-- Discount -->
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <decimal name="financialDiscountRate" title="Financial discount rate"/>
+    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
+    <decimal name="remainingAmountAfterFinDiscount"
+      title="Remaining amount after Fin. discount"/>
+
+    <!-- Fixed information -->
+    <string name="companyCode"/>
+    <string name="companyName"/>
+    <string name="journalCode"/>
+    <string name="journalName"/>
+    <string name="currencyCode"/>
+    <string name="companyCurrencyCode"/>
+    <string name="fiscalYearCode"/>
+    <date name="accountingDate"/>
+    <boolean name="adjustingMove"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>

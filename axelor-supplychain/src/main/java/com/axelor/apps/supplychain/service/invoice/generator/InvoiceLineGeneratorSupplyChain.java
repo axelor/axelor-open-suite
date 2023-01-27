@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -48,6 +48,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 /** Classe de création de ligne de facture abstraite. */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
@@ -278,6 +279,13 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
     }
 
+    if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+        analyticMoveLine.setPurchaseOrderLine(invoiceLine.getPurchaseOrderLine());
+        analyticMoveLine.setSaleOrderLine(invoiceLine.getSaleOrderLine());
+      }
+    }
+
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
@@ -321,7 +329,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         invoiceLine.setOutgoingStockMove(stockMove);
       }
     }
-
     if (saleOrderLine != null) {
       invoiceLine.setSaleOrderLine(saleOrderLine);
     }

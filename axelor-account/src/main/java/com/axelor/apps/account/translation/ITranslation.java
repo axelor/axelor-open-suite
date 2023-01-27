@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,5 +30,7 @@ public interface ITranslation {
       "Invoiced Amount" /*)*/;
   public static final String INVOICE_PURCHASE_SITUTATION_UNPAID_INVOICE_AMOUNT = /*$$(*/
       "Unpaid Inv. due" /*)*/;
+  public static final String PAYMENT_SESSION_COMPUTE_NAME_ON_THE = /*$$(*/ "on the" /*)*/;
+  public static final String PAYMENT_SESSION_COMPUTE_NAME_BY = /*$$(*/ "by" /*)*/;
   public static final String FIXED_ASSET_SPLIT_AMOUNT = /*$$(*/ "fixedAsset.amount" /*)*/;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,8 +22,6 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -62,15 +60,6 @@ public class SupplychainBatchController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void validateDates(ActionRequest request, ActionResponse response) {
-    try {
-      SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
-      Beans.get(SupplychainBatchService.class).checkDates(supplychainBatch);
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,7 +67,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
 
-      LOG.debug("Création des lignes de tva pour les lignes de factures.");
+      LOG.debug("Creation of lines with taxes for the invoices lines");
 
       for (InvoiceLine invoiceLine : invoiceLines) {
         // map is updated with created invoice line taxes
@@ -116,21 +116,26 @@ public class TaxInvoiceLine extends TaxGenerator {
                                       .map(Invoice::getCompany)
                                       .orElse(null))));
     }
-    int vatSystem =
-        Beans.get(TaxAccountToolService.class)
-            .calculateVatSystem(
-                invoice.getPartner(),
-                invoice.getCompany(),
-                invoiceLine.getAccount(),
-                (invoice.getOperationTypeSelect()
-                        == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                    || invoice.getOperationTypeSelect()
-                        == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
-                (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-                    || invoice.getOperationTypeSelect()
-                        == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+
+    int vatSystem = 0;
 
     if (taxLine != null) {
+      if (taxLine.getValue().signum() != 0) {
+        vatSystem =
+            Beans.get(TaxAccountToolService.class)
+                .calculateVatSystem(
+                    invoice.getPartner(),
+                    invoice.getCompany(),
+                    invoiceLine.getAccount(),
+                    (invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                        || invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
+                    (invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+                        || invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+      }
       createOrUpdateInvoiceLineTax(invoiceLine, taxLine, vatSystem, map);
     }
     if (taxLineRC != null) {
@@ -144,7 +149,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       int vatSystem,
       Map<TaxLineByVatSystem, InvoiceLineTax> map)
       throws AxelorException {
-    LOG.debug("TVA {}", taxLine);
+    LOG.debug("ax {}", taxLine);
 
     TaxLineByVatSystem taxLineByVatSystem = new TaxLineByVatSystem(taxLine, vatSystem);
     InvoiceLineTax invoiceLineTax = map.get(taxLineByVatSystem);
@@ -239,7 +244,7 @@ public class TaxInvoiceLine extends TaxGenerator {
 
     for (InvoiceLineTax invoiceLineTax : map.values()) {
 
-      BigDecimal taxValue = invoiceLineTax.getTaxLine().getValue();
+      BigDecimal taxValue = invoiceLineTax.getTaxLine().getValue().divide(new BigDecimal(100));
       // Dans la devise de la facture
       BigDecimal exTaxBase =
           (invoiceLineTax.getReverseCharged())
@@ -286,7 +291,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       invoiceLineTaxList.add(invoiceLineTax);
 
       LOG.debug(
-          "Ligne de TVA : Total TVA => {}, Total HT => {}",
+          "Tax line : Tax total => {}, Total W.T. => {}",
           invoiceLineTax.getTaxTotal(),
           invoiceLineTax.getInTaxTotal());
     }

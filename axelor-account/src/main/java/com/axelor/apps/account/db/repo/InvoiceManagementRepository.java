@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,11 +33,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceManagementRepository extends InvoiceRepository {
   @Override
   public Invoice copy(Invoice entity, boolean deep) {
-
-    Invoice copy = super.copy(entity, deep);
-
-    InvoiceToolService.resetInvoiceStatusOnCopy(copy);
-    return copy;
+    try {
+      Invoice copy = super.copy(entity, deep);
+      InvoiceToolService.resetInvoiceStatusOnCopy(copy);
+      return copy;
+    } catch (Exception e) {
+      throw new PersistenceException(e);
+    }
   }
 
   @Override
@@ -56,6 +58,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
                 .orElse(null);
         invoice.setPaymentDate(latestPaymentDate);
       }
+      invoice.setNextDueDate(Beans.get(InvoiceToolService.class).getNextDueDate(invoice));
       invoice = super.save(invoice);
 
       InvoiceService invoiceService = Beans.get(InvoiceService.class);

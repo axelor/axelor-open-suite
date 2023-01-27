@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
@@ -48,7 +49,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
@@ -80,6 +81,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -164,7 +166,7 @@ public class ExpenseController {
         (Map<String, Object>) request.getContext().get("expenseSelect");
 
     if (expenseMap == null) {
-      response.setError(I18n.get(IExceptionMessage.EXPENSE_NOT_SELECTED));
+      response.setError(I18n.get(HumanResourceExceptionMessage.EXPENSE_NOT_SELECTED));
       return;
     }
     Long expenseId = Long.valueOf((Integer) expenseMap.get("id"));
@@ -226,6 +228,11 @@ public class ExpenseController {
 
     User user = AuthUtils.getUser();
     Company activeCompany = user.getActiveCompany();
+
+    if (activeCompany == null) {
+      response.setError(I18n.get(BaseExceptionMessage.NO_ACTIVE_COMPANY));
+      return;
+    }
 
     ActionViewBuilder actionView =
         ActionView.define(I18n.get("Expenses to be Validated by your subordinates"))
@@ -489,11 +496,10 @@ public class ExpenseController {
 
     List<Integer> expenseLineListId = new ArrayList<>();
     int compt = 0;
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(expense.getCompany());
     for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
       compt++;
-      if (expenseLine
-          .getExpenseDate()
-          .isAfter(Beans.get(AppBaseService.class).getTodayDate(expense.getCompany()))) {
+      if (expenseLine.getExpenseDate() != null && expenseLine.getExpenseDate().isAfter(todayDate)) {
         expenseLineListId.add(compt);
       }
     }
@@ -677,7 +683,7 @@ public class ExpenseController {
       if (employee == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
+            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
             AuthUtils.getUser().getName());
       }
 

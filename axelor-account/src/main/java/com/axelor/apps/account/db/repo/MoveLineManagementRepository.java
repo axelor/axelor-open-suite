@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.exception.AxelorException;
@@ -40,7 +40,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
+            I18n.get(AccountExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getMove().getReference());
       } catch (AxelorException e) {
         throw new PersistenceException(e.getMessage(), e);
@@ -48,6 +48,14 @@ public class MoveLineManagementRepository extends MoveLineRepository {
     } else {
       super.remove(entity);
     }
+  }
+
+  @Override
+  public MoveLine copy(MoveLine entity, boolean deep) {
+    MoveLine copy = super.copy(entity, deep);
+
+    copy.setPostedNbr(null);
+    return copy;
   }
 
   @Override

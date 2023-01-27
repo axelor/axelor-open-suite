@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,7 @@ import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.exception.IExceptionMessage;
+import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -139,7 +139,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL), modelName, model));
+                I18n.get(MessageExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL), modelName, model));
       }
 
       if (objectId != 0L) {
@@ -248,7 +248,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       TraceBackService.trace(
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.MAIL_ACCOUNT_6)));
+              I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_6)));
     } else {
       fromAddress = getEmailAddress(mailAccount.getFromAddress());
     }

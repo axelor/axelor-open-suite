@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -331,7 +331,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     if (!advancedExport.getIncludeArchivedRecords() && Strings.isNullOrEmpty(criteria)) {
       queryBuilder.append("WHERE self.archived = 'f' OR self.archived IS NULL");
     } else if (!advancedExport.getIncludeArchivedRecords() && !Strings.isNullOrEmpty(criteria)) {
-      queryBuilder.append(" AND (self.archived = 'f' OR self.archived IS NULL");
+      queryBuilder.append(" AND (self.archived = 'f' OR self.archived IS NULL)");
     }
     queryBuilder.append((!Strings.isNullOrEmpty(orderByCol)) ? orderByCol : "");
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
@@ -133,7 +133,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+              I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
         }
         return duration.multiply(dailyWorkHrs);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
@@ -150,7 +150,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+              I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
         }
         return duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_UP);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:

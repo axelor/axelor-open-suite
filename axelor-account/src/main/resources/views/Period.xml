@@ -22,7 +22,7 @@
     </extend>
     <extend target="//button[@name='openBtn']">
       <attribute name="onClick"
-        value="save,action-period-record-status-open,action-method-period-show-buttons,save"/>
+        value="save,action-method-period-status-open,action-method-period-show-buttons,action-method-account-set-readonly"/>
       <insert position="after">
         <field name="closeJournalsOnPeriod" showIf="statusSelect == 1" colSpan="12"
           onChange="action-account-period-attrs-show-journal-btn"/>
@@ -47,6 +47,9 @@
           showIf="statusSelect == 4 &amp;&amp; keepJournalsOpenOnPeriod &amp;&amp; openedJournalSet != null &amp;&amp; !openedJournalSet.isEmpty()"/>
       </insert>
     </extend>
+    <extend target="//panel[@name='mainPanel']">
+      <attribute name="readonlyIf" value=""/>
+    </extend>
   </form>
 
   <form id="account-period-year-form" name="period-year-form" title="Period"
@@ -61,13 +64,14 @@
     <call class="com.axelor.apps.account.web.PeriodController" method="controlDates"/>
   </action-method>
 
-  <action-method name="action-method-account-readonly-if-period-in-move">
+  <action-method name="action-method-account-set-readonly">
     <call class="com.axelor.apps.account.web.PeriodController" method="setReadOnly"/>
   </action-method>
 
   <action-group name="action-period-group-onload">
     <action name="action-attrs-period-hide-linked-adjusting-moves-dashlet"/>
     <action name="action-method-period-show-buttons"/>
+    <action name="action-method-account-set-readonly"/>
     <action name="action-method-account-readonly-if-period-in-move"/>
   </action-group>
 
@@ -118,7 +122,6 @@
     <action name="action-account-period-validate-need-confirmation"/>
     <action name="action-method-validate-close-period"/>
     <action name="action-method-period-call-service"/>
-    <action name="action-method-period-close"/>
   </action-group>
 
   <action-method name="action-method-period-show-buttons">

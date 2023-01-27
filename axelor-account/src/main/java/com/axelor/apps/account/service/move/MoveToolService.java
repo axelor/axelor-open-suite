@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -57,6 +58,23 @@ public interface MoveToolService {
    * @throws AxelorException
    */
   MoveLine getInvoiceCustomerMoveLineByLoop(Invoice invoice) throws AxelorException;
+
+  /**
+   * Method that returns all move lines of an invoice payment that are not completely lettered
+   *
+   * @param invoicePayment Invoice payment
+   * @return
+   */
+  List<MoveLine> getInvoiceCustomerMoveLines(InvoicePayment invoicePayment);
+
+  /**
+   * Method that returns all the move lines of an invoice that are not completely lettered
+   *
+   * @param invoice Invoice
+   * @return
+   * @throws AxelorException
+   */
+  List<MoveLine> getInvoiceCustomerMoveLines(Invoice invoice) throws AxelorException;
 
   /**
    * Fonction permettant de récuperer la ligne d'écriture (non complétement lettrée sur le compte
@@ -162,7 +180,7 @@ public interface MoveToolService {
 
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
-  void setOriginAndDescriptionOnMoveLineList(Move move);
+  void setOriginOnMoveLineList(Move move);
 
   @CallMethod
   boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
@@ -172,10 +190,14 @@ public interface MoveToolService {
 
   boolean checkMoveLinesCutOffDates(Move move);
 
-  List<Move> findDaybookByYear(Set<Year> yearList);
+  List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException;
+
+  List<Move> findDaybookAndAccountingByYear(Set<Year> yearList);
 
   @CallMethod
   boolean isSimulatedMovePeriodClosed(Move move);
 
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
+
+  void setDescriptionOnMoveLineList(Move move);
 }

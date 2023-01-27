@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.stock.service;
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
@@ -29,9 +30,9 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.LogisticalFormLineRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.apps.tool.StringTool;
@@ -85,7 +86,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       throw new AxelorException(
           logisticalForm,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.LOGISTICAL_FORM_PARTNER_MISMATCH),
+          I18n.get(StockExceptionMessage.LOGISTICAL_FORM_PARTNER_MISMATCH),
           logisticalForm.getDeliverToCustomerPartner().getName());
     }
 
@@ -161,7 +162,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       if (logisticalFormLine.getTypeSelect() == 0) {
         throw new LogisticalFormError(
             logisticalFormLine,
-            I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_TYPE),
+            I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_TYPE),
             logisticalFormLine.getSequence() + 1);
       }
 
@@ -169,13 +170,13 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         if (logisticalFormLine.getStockMoveLine() == null) {
           throw new LogisticalFormError(
               logisticalFormLine,
-              I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE),
+              I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE),
               logisticalFormLine.getSequence() + 1);
         }
         if (logisticalFormLine.getQty() == null || logisticalFormLine.getQty().signum() <= 0) {
           throw new LogisticalFormError(
               logisticalFormLine,
-              I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_QUANTITY),
+              I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINE_REQUIRED_QUANTITY),
               logisticalFormLine.getSequence() + 1);
         }
       }
@@ -199,7 +200,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         String errorMessage =
             String.format(
                 locale,
-                I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY),
+                I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY),
                 String.format(
                     "%s (%s)",
                     stockMoveLine.getProductName(), stockMoveLine.getStockMove().getStockMoveSeq()),
@@ -226,7 +227,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       } else {
         if (currentLine == null) {
           throw new LogisticalFormError(
-              logisticalForm, I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_ORPHAN_DETAIL));
+              logisticalForm, I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINES_ORPHAN_DETAIL));
         }
         qtyMap.merge(currentLine, logisticalFormLine.getQty(), BigDecimal::add);
       }
@@ -241,9 +242,9 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         String msg;
 
         if (logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_PARCEL) {
-          msg = I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_EMPTY_PARCEL);
+          msg = I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINES_EMPTY_PARCEL);
         } else {
-          msg = I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINES_EMPTY_PALLET);
+          msg = I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINES_EMPTY_PALLET);
         }
 
         String errorMessage = String.format(msg, logisticalFormLine.getParcelPalletNumber());
@@ -478,7 +479,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
           BigDecimal toAdd = logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper);
           if (toAdd == null) {
             throw new LogisticalFormError(
-                logisticalForm, I18n.get(IExceptionMessage.LOGISTICAL_FORM_INVALID_DIMENSIONS));
+                logisticalForm, I18n.get(StockExceptionMessage.LOGISTICAL_FORM_INVALID_DIMENSIONS));
           } else {
             totalVolume = totalVolume.add(toAdd);
           }
@@ -546,7 +547,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       throw new AxelorException(
           StockMove.class,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_UNSAVED));
+          I18n.get(BaseExceptionMessage.RECORD_UNSAVED));
     }
 
     TypedQuery<LogisticalForm> query =
@@ -571,7 +572,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         || logisticalForm.getStatusSelect() != LogisticalFormRepository.STATUS_CARRIER_VALIDATED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.LOGISTICAL_FORM_COLLECT_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.LOGISTICAL_FORM_COLLECT_WRONG_STATUS));
     }
 
     if (logisticalForm.getLogisticalFormLineList() == null) {
@@ -637,7 +638,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         throw new AxelorException(
             logisticalForm,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LOGISTICAL_FORM_UNKNOWN_ACCOUNT_SELECTION));
+            I18n.get(StockExceptionMessage.LOGISTICAL_FORM_UNKNOWN_ACCOUNT_SELECTION));
     }
 
     if (freightCarrierCustomerAccountNumberList != null) {
@@ -695,7 +696,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         || logisticalForm.getStatusSelect() != LogisticalFormRepository.STATUS_PROVISION) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.LOGISTICAL_FORM_CARRIER_VALIDATE_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.LOGISTICAL_FORM_CARRIER_VALIDATE_WRONG_STATUS));
     }
     logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_CARRIER_VALIDATED);
   }
@@ -710,7 +711,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         || !authorizedStatus.contains(logisticalForm.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.LOGISTICAL_FORM_PROVISION_WRONG_STATUS));
+          I18n.get(StockExceptionMessage.LOGISTICAL_FORM_PROVISION_WRONG_STATUS));
     }
     logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_PROVISION);
   }

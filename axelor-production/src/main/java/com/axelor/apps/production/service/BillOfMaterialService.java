@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,7 @@ import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 public interface BillOfMaterialService {
 
@@ -75,4 +76,13 @@ public interface BillOfMaterialService {
 
   List<BillOfMaterial> getAlternativesBOM(Product originalProduct, Company company)
       throws AxelorException;
+
+  /**
+   * Returns all the products from boms
+   *
+   * @param companySet
+   * @return
+   * @throws AxelorException
+   */
+  List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException;
 }

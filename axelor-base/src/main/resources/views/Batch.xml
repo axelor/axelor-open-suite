@@ -77,6 +77,12 @@
       <button name="showStockHistoryLinesBtn" title="Stock history line" hidden="true"
         colSpan="4" onClick="action-batch-show-stock-history-lines,close"
         if-module="axelor-supplychain"/>
+      <button name="showGeneratedAccountMoveBtn" title="Generated account moves"
+        hidden="true" colSpan="6" onClick="action-batch-show-generated-move,close"
+        if-module="axelor-account"/>
+      <button name="showProcessedAccountMoveBtn" title="Processed account moves"
+        hidden="true" colSpan="6" onClick="action-batch-show-processed-move,close"
+        if-module="axelor-account"/>
       <button name="showContractBtn" title="Contracts" hidden="true" colSpan="4"
         onClick="action-batch-show-contract,close" if-module="axelor-contract"
         if="__config__.app.isApp('contract')"/>
@@ -126,11 +132,17 @@
       if="__parent__?._model == 'com.axelor.apps.bankpayment.db.BankPaymentBatch'"/>
 
     <attribute name="hidden" for="showStockMoveBtn"
-      expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY"/>
+      expr="eval: (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF  || accountingCutOffTypeSelect &gt;= __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) &amp;&amp; (__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY)"/>
     <attribute name="hidden" for="showStockMoveLinesBtn"
-      expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY"/>
+      expr="eval: (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF  || accountingCutOffTypeSelect &gt;= __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) &amp;&amp; (__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY)"/>
     <attribute name="hidden" for="showAccountMoveBtn"
-      expr="(__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF) &amp;&amp; (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' &amp;&amp; accountingBatch == null)"/>
+      expr="eval: (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' &amp;&amp; accountingBatch == null) || (__parent__?.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF  &amp;&amp; accountingCutOffTypeSelect &gt;= __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES)"/>
+
+    <attribute name="hidden" for="showGeneratedAccountMoveBtn"
+      expr="eval: __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF || accountingCutOffTypeSelect &lt; __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES"/>
+    <attribute name="hidden" for="showProcessedAccountMoveBtn"
+      expr="eval: __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF || accountingCutOffTypeSelect &lt; __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES"/>
+
 
     <attribute name="hidden" for="showStockHistoryLinesBtn"
       expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY"/>
@@ -184,6 +196,23 @@
     <domain>:batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
   </action-view>
+
+  <action-view name="action-batch-show-generated-move" title="Moves"
+    model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-grid"/>
+    <view type="form" name="move-form"/>
+    <domain>:batch MEMBER OF self.batchSet AND self.functionalOriginSelect = 6</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-batch-show-processed-move" title="Moves"
+    model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-grid"/>
+    <view type="form" name="move-form"/>
+    <domain>:batch MEMBER OF self.batchSet AND self.functionalOriginSelect != 6</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
 
   <action-view name="action-batch-show-reimbursement" title="Reimbursements"
     model="com.axelor.apps.account.db.Reimbursement">

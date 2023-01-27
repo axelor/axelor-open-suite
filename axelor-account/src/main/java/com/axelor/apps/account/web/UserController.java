@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.UserServiceAccountImpl;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
@@ -50,12 +50,12 @@ public class UserController {
         Beans.get(UserServiceAccountImpl.class)
             .changePfpValidator(pfpValidatorUser, newPfpValidatorUser);
     if (updateCount >= 1) {
-      response.setFlash(I18n.get(IExceptionMessage.USER_PFP_VALIDATOR_UPDATED));
+      response.setFlash(I18n.get(AccountExceptionMessage.USER_PFP_VALIDATOR_UPDATED));
       response.setCanClose(true);
     } else if (updateCount == 0) {
       response.setAlert(
           String.format(
-              I18n.get(IExceptionMessage.USER_PFP_VALIDATOR_NO_RELATED_ACCOUNTING_SITUATION),
+              I18n.get(AccountExceptionMessage.USER_PFP_VALIDATOR_NO_RELATED_ACCOUNTING_SITUATION),
               pfpValidatorUser.getName()));
     }
   }
@@ -83,7 +83,7 @@ public class UserController {
           "$pfpValidatorCompanySetLabel",
           "title",
           String.format(
-              I18n.get(IExceptionMessage.USER_PFP_VALIDATOR_COMPANY_SET_NOT_EQUAL),
+              I18n.get(AccountExceptionMessage.USER_PFP_VALIDATOR_COMPANY_SET_NOT_EQUAL),
               newPfpValidatorUser.getName(),
               pfpValidatorUser.getName()));
       response.setAttr("$pfpValidatorCompanySetLabel", "hidden", false);

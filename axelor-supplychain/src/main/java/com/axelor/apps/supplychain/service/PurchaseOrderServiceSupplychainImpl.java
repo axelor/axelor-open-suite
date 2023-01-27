@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,9 +40,12 @@ import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -73,6 +76,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected BudgetSupplychainService budgetSupplychainService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepository;
   protected PurchaseOrderLineService purchaseOrderLineService;
+  protected PartnerStockSettingsService partnerStockSettingsService;
+  protected StockConfigService stockConfigService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -83,7 +88,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       PurchaseOrderStockService purchaseOrderStockService,
       BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
-      PurchaseOrderLineService purchaseOrderLineService) {
+      PurchaseOrderLineService purchaseOrderLineService,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -93,6 +100,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.budgetSupplychainService = budgetSupplychainService;
     this.purchaseOrderLineRepository = purchaseOrderLineRepository;
     this.purchaseOrderLineService = purchaseOrderLineService;
+    this.partnerStockSettingsService = partnerStockSettingsService;
+    this.stockConfigService = stockConfigService;
   }
 
   @Override
@@ -112,7 +121,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       throws AxelorException {
 
     LOG.debug(
-        "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Fournisseur = {}",
+        "Creation of a purchase order : Company = {},  External reference = {}, Supplier = {}",
         company.getName(),
         externalReference,
         supplierPartner.getFullName());
@@ -191,12 +200,16 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   public void generateBudgetDistribution(PurchaseOrder purchaseOrder) {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        if (purchaseOrderLine.getBudget() != null
+        Budget budget = purchaseOrderLine.getBudget();
+        if (purchaseOrder.getStatusSelect().equals(PurchaseOrderRepository.STATUS_REQUESTED)
+            && budget != null
             && (purchaseOrderLine.getBudgetDistributionList() == null
                 || purchaseOrderLine.getBudgetDistributionList().isEmpty())) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
-          budgetDistribution.setBudget(purchaseOrderLine.getBudget());
+          budgetDistribution.setBudget(budget);
           budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
+          budgetDistribution.setBudgetAmountAvailable(
+              budget.getTotalAmountExpected().subtract(budget.getTotalAmountCommitted()));
           purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
         }
       }
@@ -340,7 +353,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_FINISHED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS));
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS));
     }
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
@@ -355,6 +368,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return null;
     }
     Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
+    if (shippingCostProduct == null) {
+      return null;
+    }
     if (shipmentMode.getHasCarriagePaidPossibility()) {
       BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
       if (computeExTaxTotalWithoutShippingLines(purchaseOrder).compareTo(carriagePaidThreshold)
@@ -408,7 +424,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
     List<PurchaseOrderLine> linesToRemove = new ArrayList<>();
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
-      if (purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
+      if (purchaseOrderLine.getProduct() != null
+          && purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         linesToRemove.add(purchaseOrderLine);
       }
     }
@@ -433,10 +450,82 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
     BigDecimal exTaxTotal = BigDecimal.ZERO;
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
-      if (!purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
+      if (purchaseOrderLine.getProduct() != null
+          && !purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
         exTaxTotal = exTaxTotal.add(purchaseOrderLine.getExTaxTotal());
       }
     }
     return exTaxTotal;
+  }
+
+  @Transactional
+  @Override
+  public void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder) {
+    if (purchaseOrder.getPurchaseOrderLineList() != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        List<BudgetDistribution> budgetDistributionList =
+            purchaseOrderLine.getBudgetDistributionList();
+        Budget budget = purchaseOrderLine.getBudget();
+        if (!budgetDistributionList.isEmpty() && budget != null) {
+          for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+            budgetDistribution.setBudgetAmountAvailable(
+                budget.getTotalAmountExpected().subtract(budget.getTotalAmountCommitted()));
+          }
+        }
+      }
+    }
+  }
+
+  @Override
+  public boolean isGoodAmountBudgetDistribution(PurchaseOrder purchaseOrder) {
+    if (purchaseOrder.getPurchaseOrderLineList() != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        if (purchaseOrderLine.getBudgetDistributionList() != null
+            && !purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
+          BigDecimal budgetDistributionTotalAmount =
+              purchaseOrderLine.getBudgetDistributionList().stream()
+                  .map(BudgetDistribution::getAmount)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+          if (budgetDistributionTotalAmount.compareTo(purchaseOrderLine.getCompanyExTaxTotal())
+              != 0) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public StockLocation getStockLocation(Partner supplierPartner, Company company)
+      throws AxelorException {
+    if (company == null) {
+      return null;
+    }
+    StockLocation stockLocation =
+        partnerStockSettingsService.getDefaultStockLocation(
+            supplierPartner, company, StockLocation::getUsableOnPurchaseOrder);
+    if (stockLocation == null) {
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      stockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+    }
+    return stockLocation;
+  }
+
+  @Override
+  public StockLocation getFromStockLocation(Partner supplierPartner, Company company)
+      throws AxelorException {
+    if (company == null) {
+      return null;
+    }
+
+    StockLocation fromStockLocation =
+        partnerStockSettingsService.getDefaultExternalStockLocation(
+            supplierPartner, company, StockLocation::getUsableOnPurchaseOrder);
+    if (fromStockLocation == null) {
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+    }
+    return fromStockLocation;
   }
 }

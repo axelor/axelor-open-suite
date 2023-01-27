@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,26 +26,29 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class MoveCreateServiceImpl implements MoveCreateService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -93,7 +96,8 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
-      String description)
+      String description,
+      BankDetails companyBankDetails)
       throws AxelorException {
     return this.createMove(
         journal,
@@ -107,7 +111,45 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         technicalOriginSelect,
         functionalOriginSelect,
         origin,
-        description);
+        description,
+        companyBankDetails);
+  }
+
+  @Override
+  public Move createMove(
+      Journal journal,
+      Company company,
+      Currency currency,
+      Partner partner,
+      LocalDate date,
+      LocalDate originDate,
+      PaymentMode paymentMode,
+      FiscalPosition fiscalPosition,
+      BankDetails bankDetails,
+      int technicalOriginSelect,
+      int functionalOriginSelect,
+      String origin,
+      String description,
+      BankDetails companyBankDetails)
+      throws AxelorException {
+    return this.createMove(
+        journal,
+        company,
+        currency,
+        partner,
+        date,
+        originDate,
+        paymentMode,
+        fiscalPosition,
+        bankDetails,
+        technicalOriginSelect,
+        functionalOriginSelect,
+        false,
+        false,
+        false,
+        origin,
+        description,
+        companyBankDetails);
   }
 
   /**
@@ -137,7 +179,8 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
-      String description)
+      String description,
+      BankDetails companyBankDetails)
       throws AxelorException {
     return this.createMove(
         journal,
@@ -148,13 +191,15 @@ public class MoveCreateServiceImpl implements MoveCreateService {
         originDate,
         paymentMode,
         fiscalPosition,
+        null,
         technicalOriginSelect,
         functionalOriginSelect,
         false,
         false,
         false,
         origin,
-        description);
+        description,
+        companyBankDetails);
   }
 
   /**
@@ -183,13 +228,15 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       LocalDate originDate,
       PaymentMode paymentMode,
       FiscalPosition fiscalPosition,
+      BankDetails bankDetails,
       int technicalOriginSelect,
       int functionalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
       boolean ignoreInAccountingOk,
       boolean autoYearClosureMove,
       String origin,
-      String description)
+      String description,
+      BankDetails companyBankDetails)
       throws AxelorException {
     log.debug(
         "Creating a new generic accounting move (journal : {}, company : {}",
@@ -209,7 +256,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       if (move.getPeriod() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PERIOD_1),
+            I18n.get(ToolExceptionMessage.PERIOD_1),
             company.getName(),
             L10n.getInstance().format(date));
       }
@@ -225,7 +272,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
 
     if (companyCurrency != null) {
       move.setCompanyCurrency(companyCurrency);
-      move.setCompanyCurrencyCode(companyCurrency.getCode());
+      move.setCompanyCurrencyCode(companyCurrency.getCodeISO());
     }
 
     if (currency == null) {
@@ -233,13 +280,15 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     }
     if (currency != null) {
       move.setCurrency(currency);
-      move.setCurrencyCode(currency.getCode());
+      move.setCurrencyCode(currency.getCodeISO());
     }
     move.setOrigin(origin);
     move.setDescription(description);
     move.setPartner(partner);
     move.setPaymentMode(paymentMode);
     move.setFiscalPosition(fiscalPosition);
+    move.setPartnerBankDetails(bankDetails);
+    move.setCompanyBankDetails(companyBankDetails);
     move.setTechnicalOriginSelect(technicalOriginSelect);
     move.setFunctionalOriginSelect(functionalOriginSelect);
     moveRepository.save(move);
@@ -273,7 +322,8 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       int technicalOriginSelect,
       int functionalOriginSelect,
       String origin,
-      String description)
+      String description,
+      BankDetails companyBankDetails)
       throws AxelorException {
     Move move =
         this.createMove(
@@ -288,7 +338,8 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             technicalOriginSelect,
             functionalOriginSelect,
             origin,
-            description);
+            description,
+            companyBankDetails);
     move.setPaymentVoucher(paymentVoucher);
     return move;
   }
@@ -310,7 +361,8 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       String origin,
       String description,
       Invoice invoice,
-      PaymentVoucher paymentVoucher)
+      PaymentVoucher paymentVoucher,
+      BankDetails companyBankDetails)
       throws AxelorException {
     Move move =
         this.createMove(
@@ -322,13 +374,15 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             null,
             paymentMode,
             fiscalPosition,
+            null,
             technicalOriginSelect,
             functionalOriginSelect,
             ignoreInDebtRecoveryOk,
             ignoreInAccountingOk,
             autoYearClosureMove,
             origin,
-            description);
+            description,
+            companyBankDetails);
     move.setInvoice(invoice);
     move.setPaymentVoucher(paymentVoucher);
     return move;

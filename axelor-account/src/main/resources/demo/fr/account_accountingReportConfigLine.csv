@@ -1,195 +1,171 @@
-"importId";"type";"ruleType";"label";"code";"result";"rule";"accountType";"accountCode";"reportTypeId";"sequence"
-1;1;1;"ACTIFS";;;;;;25;
-2;3;1;;;;;;;25;
-3;2;2;"Capital souscrit non appelé";"csna";1;;;109000;25;
-4;3;1;;;;;;;25;
-5;2;2;"Frais d'établissement";"frdet";1;;;201000;25;
-6;2;2;"Frais de recherche et de développement";"fdredd";1;;;203000;25;
-7;2;2;"Frais de concessions, brevets, licences";"fdcbl";1;;;205000;25;
-8;2;2;"Fonds commercial";"fondc";1;;;"206000|207000";25;
-9;2;2;"Autres";"iiaut";1;;;208000;25;
-10;2;2;"Immobilisations incorporelles en cours";"iiec";1;;;232000;25;
-11;2;2;"Avances et acomptes";"aveac";1;;;237000;25;
-12;1;3;"Immobilisations incorporelles";"immoi";;"rules['frdet'] + rules['fdredd'] + rules['fdcbl'] + rules['fondc'] + rules['iiaut'] + rules['iiec'] + rules['aveac']";;;25;
-13;3;1;;;;;;;25;
-14;2;2;"Terrain";"terrain";1;;;"211000|212000";25;
-15;2;2;"Consutructions";"constr";1;;;"213000|214000";25;
-16;2;2;"Installations techniques, matériel et outillage";"itmo";1;;;215000;25;
-17;2;2;"Autres";"icaut";1;;;218000;25;
-18;2;2;"Immobilisations corporelles en cours";"icec";1;;;231000;25;
-19;2;2;"Avances et acomptes";"avetac";1;;;238000;25;
-20;1;3;"Immobilisation corporelles";"immoc";;"rules['terrain'] + rules['constr'] + rules['itmo'] + rules['icaut'] + rules['icec'] + rules['avetac']";;;25;
-21;3;1;;;;;;;25;
-22;2;2;"Participations";"parti";1;;;"261000|266000";25;
-23;2;2;"Créances rattachées à des participations";"cradp";1;;;"267000|268000";25;
-24;2;2;"Titres immobilisés de l'activité de portefeuille";"tidladp";1;;;273000;25;
-25;2;2;"Autres titres immobilisés";"autti";1;;;"271000|272000";25;
-26;2;2;"Prêts";"prets";1;;;274000;25;
-27;2;2;"Autres";"ifaut";1;;;"275000|276100";25;
-28;1;3;"Immobilisations financières";"immof";;"rules['parti'] + rules['cradp'] + rules ['tidladp'] + rules['autti'] + rules['prets'] + rules['ifaut']";;;25;
-29;3;1;;;;;;;25;
-30;2;2;"Matières premières";"matpre";1;;;"310000|320000";25;
-31;2;2;"En-cours de production";"encdep";1;;;"330000|340000";25;
-32;2;2;"Produit intermédiaires et finis";"pief";1;;;350000;25;
-33;2;2;"Marchandises";"march";1;;;370000;25;
-34;2;2;"Avances et acomptes versés sur commandes";"aeavsc";1;;;409100;25;
-35;1;3;"Stocks et en-cours";"seec";;"rules['matpre'] + rules['encdep'] + rules['pief'] + rules['march'] + rules['aeavsc']";;;25;
-36;3;1;;;;;;;25;
-37;2;2;"Créances clients et comptes rattachés";"ccecr";1;;;"411000|413000|416000|418000";25;
-38;2;2;"Autres créans";"autcr";1;;;"409600|109700|409800|425000|428700|438700|441000|443000|444000|445200|445600|445810|445820|458300|445860|448700|451000|455000|456000|458000|462000|465000|467000|468700|478000";25;
-39;1;3;"Créances";"creances";;"rules['ccecr'] + rules['autcr']";;;25;
-40;3;1;;;;;;;25;
-41;2;2;"Capital souscrit non versé";"csnv";1;;;456200;25;
-42;3;1;;;;;;;25;
-43;2;2;"Action propres";"actpro";1;;;502000;25;
-44;2;2;"Actions titres";"acttit";1;;;500000;25;
-45;1;3;"VMP";"vmp";;"rules['actpro'] + rules['acttit']";;;25;
-46;3;1;;;;;;;25;
-47;2;2;"Instruments de trésorerie";"insdt";1;;;520000;25;
-48;3;1;;;;;;;25;
-49;2;2;"Disponibilités";"dispo";1;;;"510000|530000|540000";25;
-50;3;1;;;;;;;25;
-51;2;2;"Charges constatées d'avance";"chcda";1;;;486000;25;
-52;3;1;;;;;;;25;
-53;1;3;"TOTAL ACTIFS";"totact";;"rules['csna'] + rules ['immoi'] + rules['immoc'] + rules['immof'] + rules['seec'] + rules['creances'] + rules['csnv'] + rules['vmp'] + rules['insdt'] + rules['dispo'] + rules['chcda']";;;25;
-54;3;1;;;;;;;25;
-55;3;1;;;;;;;25;
-93;1;1;"PASSIFS";;;;;;25;
-94;3;1;;;;;;;25;
-56;2;2;"Capital";"capital";1;;;"101000|108000";25;
-57;2;2;"Primes d'émission, de fusion, d'apport";"pdedfda";1;;;104000;25;
-58;2;2;"Ecart de réévaluation";"ecdere";1;;;105000;25;
-59;2;2;"Ecart d'équivalence";"ecdeq";1;;;"107000|105700";25;
-60;2;2;"Réserve légale";"resleg";1;;;106100;25;
-61;2;2;"Réserve statuaire";"ressta";1;;;106300;25;
-62;2;2;"Réserve réglementée";"resreg";1;;;"106200|106400";25;
-63;2;2;"Autres réserves";"autres";1;;;106800;25;
-64;1;3;"Réserve";"reserve";;"rules['resleg'] + rules['ressta'] + rules['resreg'] + rules['autres']";;;25;
-65;2;2;"Report à nouveau";"repan";1;;;110000;25;
-66;2;2;"Résultat de l'exercice";"rdle";1;;;120000;25;
-67;2;2;"Subventions d'investissement";"subdi";1;;;130000;25;
-68;2;2;"Provisions réglementées";"proreg";1;;;140000;25;
-69;1;3;"Capitaux propres";"cappro";;"rules['capital'] + rules['pdedfda'] + rules['ecdere'] + rules['ecdeq'] + rules['reserve'] + rules['repan'] + rules['rdle'] + rules['subdi'] + rules['proreg']";;;25;
-70;3;1;;;;;;;25;
-71;2;2;"Produit des émissions de titres participatifs";"pdedtp";1;;;167100;25;
-72;2;2;"Avances conditionnées de l'Etat";"acdle";1;;;167400;25;
-73;2;2;"Autres emprunts participatifs";"aep";1;;;167500;25;
-74;2;2;"Provisions pour risques";"ppr";1;;;151000;25;
-75;2;2;"Provisions pour charges";"ppc";1;;;"151100|151200|151300|151400|151500|151600|151800|153000|154000|155000|156000|157000|157200|158000|158100";25;
-76;1;3;"Provisions pour risques et charges";"pprec";;"rules['ppr'] + rules['ppc']";;;25;
-77;1;3;"Autres fonds propres";"autfp";;"rules['pdedtp'] + rules['acdle'] + rules['aep'] + rules['pprec']";;;25;
-78;3;1;;;;;;;25;
-79;2;2;"Emprunts obligataires convertibles";"emobc";1;;;"161000|168810";25;
-80;2;2;"Autres emprunts obligataires";"auteo";1;;;"163000|16883";25;
-81;2;2;"Emprunts et dettes auprès des établissements de crédits";"eedadedc";1;;;"164000|168840|512000|514000|517000|518600|519000";25;
-82;2;2;"Emprunts et dettes financières";"eedf";1;;;"162000|165000|166000|167500|168000|170000|426000|450000";25;
-83;2;2;"Avances et acomptes sur commandes en cours";"aeascec";1;;;419100;25;
-84;2;2;"Dettes fournisseurs et comptes rattachés";"dfecr";1;;;"401000|403000|408100|408800";25;
-85;2;2;"Dettes fiscales et sociales";"dfes";1;;;"421000;422000;424000;427000|428200|428400|428600|430000|442000|443000|444000|445500|445700|445840|445870|446000|447000|448200|448600|449000|457000";25;
-86;2;2;"Dettes sur immobilisations et comptes rattachés";"dsiecr";1;;;"168500|269000|279000|404000|405000|408400|408800";25;
-87;2;2;"Autres dettes";"autde";1;;;"419600|419700|419800|464000|467000|468600|478000|509000";25;
-88;2;2;"Produits constatés d'avance";"pcda";1;;;487000;25;
-89;2;2;"Ecarts de convertion passif";"edcp";1;;;477000;25;
-90;1;3;"Dettes";"dettes";;"rules['emobc'] + rules['auteo'] + rules['eedadedc'] + rules['eedf'] + rules['aeascec'] + rules['dfecr'] + rules['dfes'] + rules['dsiecr'] + rules['autde'] + rules['pcda'] + rules['edcp']";;;25;
-91;3;1;;;;;;;25;
-92;1;3;"TOTAL PASSIFS";"totpas";;"rules['cappro'] + rules['autfp'] + rules['dettes']";;;25;
-95;2;2;"Vente de marchandises";"vdem";1;;;"707000|708700|709700";25;
-96;2;2;"Production vendue";"proven";1;;;"700|701000|701200|702000|703000|704000|704100|704200|705000|706000|707100|707200|707210|707300|708000|708100|708200|708300|708400|708500|708600|708800|709000|709100|709200|709400|709500|709600|709700|709800";26;
-97;2;2;"Production stockée";"prosto";1;;;713000;26;
-98;2;2;"Production immobilisée";"proimo";1;;;720000;26;
-99;2;2;"Subventions d'exploitation";"subdex";1;;;740000;26;
-100;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc";1;;;"781000|791000";26;
-101;2;2;"Autres produits";"autpro";1;;;"750|751000|751100|751600|751800|752000|753000|754000|758000";26;
-102;1;3;"Produits d'exploitation";"prodex";;"rules['vdem'] + rules['proven'] + rules['prosto'] + rules['proimo'] + rules['subdex'] + rules['rdpatc'] + rules['autpro']";;;26;
-103;3;1;;;;;;;26;
-104;2;2;"Achats de marchandises";"acdem";1;;;"607000|608700|609700";26;
-105;2;2;"Variation de stocks de marchandises";"vdsdm";1;;;603700;26;
-106;2;2;"Achats de matières premières";"acdemp";1;;;"601000|602000|608100|608200|609100|609200";26;
-107;2;2;"Variations de stocks";"vadest";1;;;"603100|603200";26;
-108;2;2;"Autres charges externes";"auchex";1;;;"604000|605000|606000|610000|620000|608400|608500|608600|609400|609500|609600";26;
-109;2;2;"Impôts taxes et versements assimilés";"iteva";1;;;630000;26;
-110;2;2;"Salaires et traitements";"saetr";1;;;"641000|644000";26;
-111;2;2;"Charges sociales";"chasoc";1;;;"645000|646000|647000|648000|649000";26;
-112;2;2;"Dotations aux amortissements, dépréciations";"doaad";1;;;"681100|681200|681600|681700";26;
-113;2;2;"Dotations aux provisions";"doaupr";1;;;681500;26;
-114;2;2;"Autres charges";"autcha";1;;;"650|651000|651100|651600|651800|653000|654000|654100|654400|658000";26;
-115;1;3;"Charges d'exploitation";"chadex";;"rules['acdem'] + rules['vdsdm'] + rules['acdemp'] + rules['vadest'] + rules['auchex'] + rules['iteva'] + rules['saetr'] + rules['chasoc'] + rules['doaad'] + rules['doaupr'] + rules['autcha']";;;26;
-116;3;1;;;;;;;26;
-117;2;2;"Bénéfice attribué ou perte transférée";"baopt";1;;;755000;26;
-118;2;2;"Perte supportée ou bénéfice transféré";"psobt";1;;;655000;26;
-119;1;3;"Quote-part de résultat sur opérations faites en commun";"qprofc";;"rules['baopt'] + rules['psobt']";;;26;
-120;3;1;;;;;;;26;
-121;2;2;"Produits financiers de participation";"prfidp";1;;;761000;26;
-122;2;2;"Produits financiers d'autres valeurs mobilières et créances de l'actif immobilisé";"pfdvmcai";1;;;762000;26;
-123;2;2;"Autres intérêts et produits assimilés";"aiepa";1;;;"763000|764000|765000|768000";26;
-124;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc2";1;;;"786000|796000";26;
-125;2;2;"Différences positives de change";"dipodc";1;;;766000;26;
-126;2;2;"Produits nets de cessions de VMP";"pndcdv";1;;;767000;26;
-127;1;3;"Produits financiers";"profin";;"rules['prdidp'] + rules['psobt'] + rules['qprofc'] + rules['prfidp'] + rules['pfdvmcai'] + rules['aiepa'] + rules['rdpatc2'] + rules['dipodc'] + rules['pndcdv']";;;26;
-128;3;1;;;;;;;26;
-129;2;2;"Dotations aux amortissements, dépréciations, provisions";"daadp";1;;;686000;26;
-130;2;2;"Intérêts et charges assimilées";"inecha";1;;;"661000|664000|665000|668000";26;
-131;2;2;"Différence négative de change";"dinedc";1;;;666000;26;
-132;2;2;"Charges nettes sur cessions de VMP";"cnscdv";1;;;667000;26;
-133;1;3;"Charges financières";"chafin";;"rules['daadp'] + rules['inecha'] + rules['dinedc'] + rules['cnscdv']";;;26;
-134;3;1;;;;;;;26;
-135;2;2;"Produits exceptionnels sur opérations de gestion";"pesodg";1;;;771000;26;
-136;2;2;"Produits exceptionnels sur opérations de capital";"pesodc";1;;;"775000|777000|778000";26;
-137;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc3";1;;;"787000|797000";26;
-138;1;3;"Produits exceptionnels";"'proexc'";;"rules['pesodg'] + rules['pesodc'] + rules['rdpatc3']";;;26;
-139;3;1;;;;;;;26;
-140;2;2;"Charges exceptionnelles sur opérations de gestion";"cesodg";1;;;"671000|672000";26;
-141;2;2;"Charges exceptionneles sur opérations de capital";"cesodc";1;;;"675000|678000";26;
-142;2;2;"Dotations aux amortissements, dépréciations, provisions";"daadp2";1;;;687000;26;
-143;1;3;"Charges exceptionneles";"chaexc";;"rules['cesodg'] + rules['cesodc'] + rules['daadp2']";;;26;
-144;3;1;;;;;;;26;
-145;2;2;"Participation des salariés";"padesa";1;;;691000;26;
-146;3;1;;;;;;;26;
-147;2;2;"Impôts sur les bénéfices";"imslbe";1;;;"690|691000|695000|695100|695200|695400|696000|697000|698000|698100|698900|699000";26;
-200;2;2;"Ventes de marchandises (707)";"707-ventesDeMarchandises";2;;;"707000|707100|707200|707210|707300";100;0
-201;2;2;"Rabais, remise, ristourne sur ventes de marchandises (7097)";"7097-RRR-ventes-de-marchandises";2;;;;100;1
-202;2;2;"Ventes de produits";"701-702-703-ventes-produits";2;;;;100;9
-203;3;1;;;1;;;;100;8
-204;3;1;;;1;;;;100;16
-205;2;2;"Subventions d'exploitation";"74-subventions-exploitation";2;;;;100;21
-206;2;2;"Travaux, études, produits vendues";"704-705-706-708-travaux-etudes-produits";2;;;;100;10
-207;2;2;"Rabais, remises, ristournes accordés";"709-RRR";2;;;;100;11
-208;2;2;"Impôts, taxes et versements assimilés";"63-impots-taxes";2;;;"63|631000|631100|631200|631300|631400|631800|633000|633100|633200|633300|633400|633500|633800|635000|635100|635110|635120|635130|635140|635200|635300|635400|635410|635800|637000|637100|637200|637400|637800";100;22
-209;2;2;"Production stockée";"713-production-stockee";2;;;"713000|713300|713310|713350|713400|713410|713450|713500|713510|713550|713580";100;13
-210;2;2;"Production immobilisée";"72-Production-immobilisee";2;;;"72|721000|722000";100;14
-211;2;2;"Achat de marchandises (607)";"607-achats-marchandises";2;;;;100;15
-212;2;2;"Variations des stocks de marchandises (6037)";"6037-variations-stocks-marchandises";2;;;;100;4
-213;2;2;"Rabais, remises et ristournes sur achat de marchandises";"6097-RRR";2;;;;100;5
-214;2;2;"Achats d'approvisionnements";"achat-appro";2;;;;100;17
-215;2;2;"Autres charges externes";"autres-charges-externes";2;;;;100;18
-216;3;1;;;1;;;;100;20
-217;3;1;;;1;;;;100;25
-218;2;2;"Reprises sur amortissements & provisions";"781-reprises-amort";2;;;"781000|781100|781110|781120|781500|781600|781610|781620|781700|781730|781740";100;26
-219;2;2;"Dotations aux amortissements et provisions";"681-dotations";2;;;"681000|681100|681110|681120|681200|681500|681600|681610|681620|681700|681730|681740";100;27
-220;2;2;"Autres produits de gestion courante";"75-autres-produits";2;;;"75|751000|751100|751600|751800|752000|753000|754000|755000|755100|755500|758000";100;28
-221;2;2;"Autres charges de gestion courante";"65-autres-charges";2;;;"65|651000|651100|651600|651800|653000|654000|654100|654400|655000|655100|655500|658000";100;29
-222;2;2;"Transferts de charges d'exploitation";"791-transferts-charges";2;;;791000;100;30
-223;2;2;"Charges de personnel";"64-charges-personnel";1;;;"64|641000|641100|641200|641300|641400|641500|644000|645|645100|645200|645300|645400|645800|646|647000|647100|647200|647300|647400|647500|648000";100;23
-224;3;1;;;1;;;;100;32
-225;2;2;"Quotes-parts d'opérations faites en commun";"755-655-quotes-parts";2;;;;100;33
-226;2;2;"Produits financiers";"76-786-796-produits-financiers";2;;;;100;34
-227;2;2;"Charges financières";"66-686-charges-financieres";2;;;;100;35
-228;3;1;;;1;;;;100;37
-229;2;2;"Produits exceptionnels";"77-787-797-produits-exceptionnels";2;;;;100;38
-230;2;2;"Charges exceptionnelles";"67-687-charges-exceptionnelles";2;;;;100;39
-231;3;1;;;1;;;;100;41
-232;2;2;"Participation des salariés";"participation-salaries";2;;;;100;42
-233;2;2;"Impôts sur les bénéfices";"impots-benefices";2;;;;100;43
-234;2;3;"Cout direct d'achat";"cout-direct-achat";1;"rules[""607-achats-marchandises""]+rules[""6037-variations-stocks-marchandises""]+rules[""6097-RRR""]";;;100;6
-235;2;3;"Ventes de marchandises";"ventes-marchandises";1;"rules[""707-ventesDeMarchandises""]-rules[""7097-RRR-ventes-de-marchandises""]";;;100;19
-236;2;3;"Production vendue";"production-vendue";1;"rules[""704-705-706-708-travaux-etudes-produits""]-rules[""709-RRR""]";;;100;12
-237;1;3;"Marge commerciale";"marge-commerciale";1;"rules[""ventes-marchandises""]+rules[""cout-direct-achat""]";;;100;7
-238;1;3;"Production de l'exercice";"production-exercice";1;"rules[""701-702-703-ventes-produits""]+rules[""production-vendue""]+rules[""713-production-stockee""]+rules[""72-Production-immobilisee""]";;;100;15
-239;1;3;"Valeur ajoutée";"valeur-ajoutee";1;"rules[""marge-commerciale""]+rules[""production-exercice""]+rules[""achat-appro""]+rules[""autres-charges-externes""]";;;100;19
-240;1;3;"Excédent Brut d'Exploitation";"ebe";1;"rules[""valeur-ajoutee""]+rules[""74-subventions-exploitation""]+rules[""63-impots-taxes""]+rules[""64-charges-personnel""]";;;100;24
-241;1;3;"Résultat d'exploitation";"resultat-exploitation";1;"rules[""ebe""]+rules[""781-reprises-amort""]+rules[""681-dotations""]+rules[""75-autres-produits""]+rules[""65-autres-charges""]+rules[""791-transferts-charges""]
-
-";;;100;31
-242;1;3;"Résultat courant avant impôts";"resultat-courant-avant-impots";1;"rules[""resultat-exploitation""]+rules[""755-655-quotes-parts""]+rules[""76-786-796-produits-financiers""]+rules[""66-686-charges-financieres""]";;;100;36
-243;1;3;"Résultat exceptionnel";"resultat-exceptionnel";1;"rules[""resultat-courant-avant-impots""]+rules[""77-787-797-produits-exceptionnels""]+rules[""67-687-charges-exceptionnelles""]";;;100;40
-244;1;3;"Résultat net comptable";"resultat-net-comptable";1;"rules[""resultat-exceptionnel""]+rules[""participation-salaries""]+rules[""impots-benefices""]";;;100;44
+importId;typeSelect;ruleTypeSelect;label;code;styleSelect;resultSelect;rule;accountType;accountCode;reportTypeId;reportTypeColumnId;sequence
+10200;1;2;Montant;montant;0;4;;;;;100;
+10201;1;1;ACTIFS;title1;1;;;;;100;;0
+10203;1;2;Capital souscrit non appelé;csna;0;1;;;109%;100;;2
+10205;1;2;Frais d'établissement;frdet;0;1;;;201%;100;;4
+10206;1;2;Frais de recherche et de développement;fdredd;0;1;;;203%;100;;5
+10207;1;2;Frais de concessions, brevets, licences;fdcbl;0;1;;;205%;100;;6
+10208;1;2;Fonds commercial;fondc;0;1;;;206%,207%;100;;7
+10209;1;2;Autres;iiaut;0;1;;;208%;100;;8
+10210;1;2;Immobilisations incorporelles en cours;iiec;0;1;;;232%;100;;9
+10211;1;2;Avances et acomptes;aveac;0;1;;;237%;100;;10
+10212;1;3;Immobilisations incorporelles;immoi;0;;frdet + fdredd + fdcbl + fondc + iiaut + iiec + aveac;;;100;;11
+10214;1;2;Terrains;terrain;0;1;;;211%,212%;100;;13
+10215;1;2;Constructions;constr;0;1;;;213%,214%;100;;14
+10216;1;2;Installations techniques, matériel et outillage;itmo;0;1;;;215%;100;;15
+10217;1;2;Autres;icaut;0;1;;;218%;100;;16
+10218;1;2;Immobilisations corporelles en cours;icec;0;1;;;231%;100;;17
+10219;1;2;Avances et acomptes;avetac;0;1;;;238%;100;;18
+10220;1;3;Immobilisation corporelles;immoc;0;;terrain + constr + itmo + icaut + icec + avetac;;;100;;19
+10222;1;2;Participations;parti;0;1;;;261%,266%;100;;21
+10223;1;2;Créances rattachées à des participations;cradp;0;1;;;267%,268%;100;;22
+10224;1;2;Titres immobilisés de l'activité de portefeuille;tidladp;0;1;;;273%;100;;23
+10225;1;2;Autres titres immobilisés;autti;0;1;;;271%,272%;100;;24
+10226;1;2;Prêts;prets;0;1;;;274%;100;;25
+10227;1;2;Autres;ifaut;0;1;;;275%,2761%;100;;26
+10228;1;3;Immobilisations financières;immof;0;;parti + cradp + tidladp + autti + prets + ifaut;;;100;;27
+10230;1;2;Matières premières;matpre;0;1;;;31%,32%;100;;29
+10231;1;2;En-cours de production;encdep;0;1;;;33%,34%;100;;30
+10232;1;2;Produit intermédiaires et finis;pief;0;1;;;35%;100;;31
+10233;1;2;Marchandises;march;0;1;;;37%;100;;32
+10234;1;2;Avances et acomptes versés sur commandes;aeavsc;0;1;;;4091%;100;;33
+10235;1;3;Stocks et en-cours;seec;0;;matpre + encdep + pief + march + aeavsc;;;100;;34
+10237;1;2;Créances clients et comptes rattachés;ccecr;0;1;;;411%,413%,416%,418%;100;;36
+10238;1;2;Autres créances;autcr;0;1;;;4096%,4097%,4098%,425%,4287%,438700,441%,443%,444%,4452%,4456%,4458%,4487%,451%,455%,4561%,4563%,4564%,4566%,4567%,458%,462%,465%,467%,4687%,478%;100;;37
+10239;1;3;Créances;creances;0;;ccecr + autcr;;;100;;38
+10241;1;2;Capital souscrit non versé;csnv;0;1;;;4562%;100;;40
+10243;1;2;Action propres;actpro;0;1;;;502%;100;;42
+10244;1;2;Actions titres;acttit;0;1;;;501%,503%,504%,505%,506%,507%,508%,509%,;100;;43
+10245;1;3;VMP;vmp;0;;actpro + acttit;;;100;;44
+10247;1;2;Instruments de trésorerie;insdt;0;1;;;52%;100;;46
+10249;1;2;Disponibilités;dispo;0;1;;;51%,53%,54%;100;;48
+10251;1;2;Charges constatées d'avance;chcda;0;1;;;486%;100;;50
+10253;1;3;TOTAL ACTIFS;totact;1;;csna + immoi + immoc + immof + seec + creances + csnv + vmp + insdt + dispo + chcda;;;100;;52
+10256;1;1;PASSIFS;title2;1;;;;;100;;55
+10258;1;2;Capital;capital;0;2;;;101%,108%;100;;57
+10259;1;2;Primes d'émission, de fusion, d'apport;pdedfda;0;2;;;104%;100;;58
+10260;1;2;Ecart de réévaluation;ecdere;0;2;;;105%;100;;59
+10261;1;2;Ecart d'équivalence;ecdeq;0;2;;;107%,1057%;100;;60
+10262;1;2;Réserve légale;resleg;0;2;;;1061%;100;;61
+10263;1;2;Réserve statuaire;ressta;0;2;;;1063%;100;;62
+10264;1;2;Réserve réglementée;resreg;0;2;;;1062%,1064%;100;;63
+10265;1;2;Autres réserves;autres;0;2;;;1068%;100;;64
+10266;1;3;Réserve;reserve;0;;resleg + ressta + resreg + autres;;;100;;65
+10267;1;2;Report à nouveau;repan;0;2;;;11%;100;;66
+10268;1;2;Résultat de l'exercice;rdle;0;2;;;12%;100;;67
+10269;1;2;Subventions d'investissement;subdi;0;2;;;13%;100;;68
+10270;1;2;Provisions réglementées;proreg;0;2;;;14%;100;;69
+10271;1;3;Capitaux propres;cappro;0;;capital + pdedfda + ecdere + ecdeq + reserve + repan + rdle + subdi + proreg;;;100;;70
+10273;1;2;Produit des émissions de titres participatifs;pdedtp;0;2;;;1671%;100;;72
+10274;1;2;Avances conditionnées de l'Etat;acdle;0;2;;;1674%;100;;73
+10275;1;2;Autres emprunts participatifs;aep;0;2;;;1675%;100;;74
+10276;1;2;Provisions pour risques;ppr;0;2;;;151%;100;;75
+10277;1;2;Provisions pour charges;ppc;0;2;;;153%,154%,155%,156%,157%,158%;100;;76
+10278;1;3;Provisions pour risques et charges;pprec;0;;ppr + ppc;;;100;;77
+10279;1;3;Autres fonds propres;autfp;0;;pdedtp + acdle + aep + pprec;;;100;;78
+10281;1;2;Emprunts obligataires convertibles;emobc;0;2;;;161%,16881%;100;;80
+10282;1;2;Autres emprunts obligataires;auteo;0;2;;;163%,16883%;100;;81
+10283;1;2;Emprunts et dettes auprès des établissements de crédits;eedadedc;0;2;;;164%,16884%,512%,514%,517%,5186%,519%;100;;82
+10284;1;2;Emprunts et dettes financières;eedf;0;2;;;162%,165%,166%,1675%,168%,170%,426%,45%;100;;83
+10285;1;2;Avances et acomptes sur commandes en cours;aeascec;0;2;;;4191%;100;;84
+10286;1;2;Dettes fournisseurs et comptes rattachés;dfecr;0;2;;;4011%,403%,4081%,4088%;100;;85
+10287;1;2;Dettes fiscales et sociales;dfes;0;2;;;421000,422%,424%,427%,4282%,4284%,4286%,430%,442%,443%,444%,4455%,4457%,44584%,44587%,446%,447%,4482%,4486%,449%,457%;100;;86
+10288;1;2;Dettes sur immobilisations et comptes rattachés;dsiecr;0;2;;;1685%,269%,279%,404%,405%,4084%,4088%;100;;87
+10289;1;2;Autres dettes;autde;0;2;;;4196%,4197%,4198%,464%,467%,4686%,478%,509%;100;;88
+10290;1;2;Produits constatés d'avance;pcda;0;2;;;487%;100;;89
+10291;1;2;Ecarts de convertion passif;edcp;0;2;;;477%;100;;90
+10292;1;3;Dettes;dettes;0;;emobc + auteo + eedadedc + eedf + aeascec + dfecr + dfes + dsiecr + autde + pcda + edcp;;;100;;91
+10294;1;3;TOTAL PASSIFS;totpas;1;;cappro + autfp + dettes;;;100;;93
+10100;1;2;Montant;montant;0;4;;;;;101;
+10101;1;2;Vente de marchandises;vdem;0;2;;;707%,7087%,7097%;101;;0
+10102;1;2;Production vendue;proven;0;2;;;701%,702%,703%,704%,705%,706%,708%,709%;101;;1
+10103;1;2;Production stockée;prosto;0;2;;;713%;101;;2
+10104;1;2;Production immobilisée;proimo;0;2;;;721%,722%;101;;3
+10105;1;2;Subventions d'exploitation;subdex;0;2;;;74%;101;;4
+10106;1;2;Reprises sur dépréciations, provisions et amortissements, transferts de charges;rdpatc;0;2;;;781%,791%;101;;5
+10107;1;2;Autres produits;autpro;0;2;;;751%,752%,753%,754%,758%;101;;6
+10108;1;3;Produits d'exploitation (I);prodex;0;;vdem + proven + prosto + proimo + subdex + rdpatc + autpro;;;101;;7
+10110;1;2;Achats de marchandises;acdem;0;1;;;607%,609700;101;;9
+10111;1;2;Variation de stocks de marchandises;vdsdm;0;1;;;603700;101;;10
+10112;1;2;Achats de matières premières;acdemp;0;1;;;601%,602%,6091%,6092%;101;;11
+10113;1;2;Variations de stocks;vadest;0;1;;;6031%,6032%;101;;12
+10114;1;2;Autres charges externes;auchex;0;1;;;604%,605%,606%,608%,6094%,6095%,6096%,6098%,611%,612%,613%,614%,615%,616%,617%,618%,619 %;101;;13
+10115;1;2;Impôts taxes et versements assimilés;iteva;0;1;;;63%;101;;14
+10116;1;2;Salaires et traitements;saetr;0;1;;;641%,644%;101;;15
+10117;1;2;Charges sociales;chasoc;0;1;;;645%,646%,647%,648%;101;;16
+10118;1;2;Dotations aux amortissements, dépréciations;doaad;0;1;;;6811%,6812%,6816%,6817%;101;;17
+10119;1;2;Dotations aux provisions;doaupr;0;1;;;6815%;101;;18
+10120;1;2;Autres charges;autcha;0;1;;;651%,653%,654%,658%;101;;19
+10121;1;3;Charges d'exploitation (II);chadex;0;;acdem + vdsdm + acdemp + vadest + auchex + iteva + saetr + chasoc + doaad + doaupr + autcha;;;101;;20
+10123;1;3;RESULTAT D’EXPLOITATION (I-II);resdex;1;;prodex - chadex;;;101;;22
+10125;1;2;Bénéfice attribué ou perte transférée (III);baopt;0;2;;;755%;101;;24
+10126;1;2;Perte supportée ou bénéfice transféré (IV);psobt;0;1;;;655%;101;;25
+10127;1;3;Quote-part de résultat sur opérations faites en commun (III-IV);qprofc;0;;baopt - psobt;;;101;;26
+10129;1;2;Produits financiers de participation;prfidp;0;2;;;761%;101;;28
+10130;1;2;Produits financiers d'autres valeurs mobilières et créances de l'actif immobilisé;pfdvmcai;0;2;;;762%;101;;29
+10131;1;2;Autres intérêts et produits assimilés;aiepa;0;2;;;763%,764%,765%,768%;101;;30
+10132;1;2;Reprises sur dépréciations, provisions et amortissements, transferts de charges;rdpatc2;0;2;;;786%,796%;101;;31
+10133;1;2;Différences positives de change;dipodc;0;2;;;766%;101;;32
+10134;1;2;Produits nets de cessions de VMP;pndcdv;0;2;;;767%;101;;33
+10135;1;3;Produits financiers (V);profin;0;;prfidp + pfdvmcai + aiepa + rdpatc2 + dipodc + pndcdv;;;101;;34
+10137;1;2;Dotations aux amortissements, dépréciations, provisions;daadp;0;1;;;686%;101;;36
+10138;1;2;Intérêts et charges assimilées;inecha;0;1;;;661%,664%,665%,668%;101;;37
+10139;1;2;Différence négative de change;dinedc;0;1;;;666%;101;;38
+10140;1;2;Charges nettes sur cessions de VMP;cnscdv;0;1;;;667%;101;;39
+10141;1;3;Charges financières (VI);chafin;0;;daadp + inecha + dinedc + cnscdv;;;101;;40
+10143;1;3;RESULTAT FINANCIER (V-VI);resfin;1;;profin - chafin;;;101;;42
+10145;1;3;RESULTAT COURANT AVANT IMPÔTS (I-II+III-IV+V-VI);rescai;1;;resdex + resfin + qprofc;;;101;;44
+10147;1;2;Produits exceptionnels sur opérations de gestion;pesodg;0;2;;;771%;101;;46
+10148;1;2;Produits exceptionnels sur opérations de capital;pesodc;0;2;;;775%,777%,778%;101;;47
+10149;1;2;Reprises sur dépréciations, provisions et amortissements, transferts de charges;rdpatc3;0;2;;;787%,797%;101;;48
+10150;1;3;Produits exceptionnels (VII);proexc;0;;pesodg + pesodc + rdpatc3;;;101;;49
+10152;1;2;Charges exceptionnelles sur opérations de gestion;cesodg;0;1;;;671%,672%;101;;51
+10153;1;2;Charges exceptionnelles sur opérations de capital;cesodc;0;1;;;675%,678%;101;;52
+10154;1;2;Dotations aux amortissements, dépréciations, provisions;daadp2;0;1;;;687%;101;;53
+10155;1;3;Charges exceptionnelles (VIII);chaexc;0;;cesodg + cesodc + daadp2;;;101;;54
+10157;1;3;RESULTAT EXCEPTIONNEL (VII-VIII);resexc;1;;proexc - chaexc;;;101;;56
+10159;1;2;Participation des salariés aux résultats (IX);padesa;0;2;;;691%;101;;58
+10161;1;2;Impôts sur les bénéfices (X);imslbe;0;2;;;695%,696%,697%,698%,699%;101;;60
+10163;1;3;TOTAL DES PRODUITS (I+III+V+VII);totprod;1;;prodex + baopt + profin + proexc;;;101;;62
+10164;1;3;TOTAL DES CHARGES (II+IV+VI+VIII+IX+X);totcha;1;;chadex + psobt + chafin + chaexc;;;101;;63
+10166;1;3;RESULTAT NET COMPTABLE (Total Produits – Total Charges);resntcpt;1;;totprod - totcha;;;101;;65
+10000;1;2;Montant;montant;0;4;;;;;102;
+10001;1;2;Ventes de marchandises (707);ventesDeMarchandises;0;2;;;707%;102;;0
+10002;1;2;Rabais, remise, ristourne sur ventes de marchandises (7097);RRRVentesDeMarchandises;0;1;;;7097%;102;;1
+10003;1;3;Ventes de marchandises (I);ventesMarchandises;0;;ventesDeMarchandises - RRRVentesDeMarchandises;;;102;;2
+10004;1;2;Achat de marchandises (607);achatsMarchandises;0;1;;;607%;102;;3
+10005;1;2;Variations des stocks de marchandises (6037);variationsStocksMarchandises;0;2;;;6037%;102;;4
+10006;1;2;Rabais, remises et ristournes sur achat de marchandises;RRR6097;0;2;;;6097%;102;;5
+10007;1;3;Cout direct d'achat (II);coutDirectAchat;0;;achatsMarchandises - variationsStocksMarchandises - RRR6097;;;102;;6
+10009;1;3;MARGE COMMERCIALE (I-II);margeCommerciale;1;;ventesMarchandises - coutDirectAchat;;;102;;8
+10011;1;2;Ventes de produits;ventesProduits;0;2;;;701%,702%,703%;102;;10
+10013;1;2;Travaux, études, produits vendues;travauxEtudesProduits;0;2;;;704%,705%,706%,708100,708%;102;;12
+10014;1;2;Rabais, remises, ristournes accordés;RRR709;0;1;;;7091%,7092%,7094%,7095%,7096%,7098%;102;;13
+10015;1;3;Production vendue;productionVendue;0;;travauxEtudesProduits - RRR709;;;102;;14
+10017;1;2;Production stockée;productionStockee;0;2;;;71%;102;;16
+10018;1;2;Production immobilisée;productionImmobilisee;0;2;;;72%;102;;17
+10019;1;3;Production de l'exercice;productionExercice;0;;ventesProduits + productionVendue + productionStockee + productionImmobilisee;;;102;;18
+10021;1;2;Achats d'approvisionnements;achatAppro;0;1;;;601%,602%,604%,605%,606%,608%,6091%,6092%,6093%,6094%,6095%,6096%,6098%;102;;20
+10022;1;2;Autres charges externes;autresChargesExternes;0;1;;;61%,62%;102;;21
+10023;1;3;VALEUR AJOUTÉE (III);valeurAjoutee;1;;margeCommerciale + productionExercice - achatAppro - autresChargesExternes;;;102;;22
+10025;1;2;Subventions d'exploitation;subventionsExploitation;0;1;;;74%;102;;24
+10026;1;2;Impôts, taxes et versements assimilés;impotsTaxes;0;2;;;63%;102;;25
+10027;1;2;Charges de personnel;chargesPersonnel;0;2;;;64%;102;;26
+10028;1;3;EXCÉDENT BRUT D'EXPLOITATION (EBE) (IV);ebe;1;;valeurAjoutee - subventionsExploitation - impotsTaxes - chargesPersonnel;;;102;;27
+10030;1;2;Reprises sur amortissements & provisions;reprisesAmort;0;2;;;781%;102;;29
+10031;1;2;Dotations aux amortissements et provisions;dotations;0;1;;;681%;102;;30
+10032;1;2;Autres produits de gestion courante;autresProduits;0;2;;;751%,752%,753%,754%,758%;102;;31
+10033;1;2;Autres charges de gestion courante;autresCharges;0;1;;;651%,653%,654%,658%;102;;32
+10034;1;2;Transferts de charges d'exploitation;transfertsCharges;0;1;;;791%;102;;33
+10035;1;3;RÉSULTAT D'EXPLOITATION (V);resultatExploitation;1;;ebe + reprisesAmort - dotations + autresProduits - autresCharges + transfertsCharges;;;102;;34
+10037;1;2;Quotes-parts d'opérations faites en commun (VI);quotesParts;0;2;;;655%,755%;102;;36
+10039;1;2;Produits financiers;produitsFinanciers;0;2;;;76%,786%,796%;102;;38
+10040;1;2;Charges financières;chargesFinancieres;0;1;;;66%,686%;102;;39
+10041;1;3;RÉSULTAT FINANCIER (VII);resultatFinancier;1;;produitsFinanciers - chargesFinancieres;;;102;;40
+10043;1;3;RÉSULTAT COURANT AVANT IMPÔTS (VIII) (V+VI+VII);resultatCourantAvantImpots;1;;resultatExploitation + quotesParts + resultatFinancier;;;102;;42
+10045;1;2;Produits exceptionnels;produitsExceptionnels;0;2;;;77%,787%,797%;102;;44
+10046;1;2;Charges exceptionnelles;chargesExceptionnelles;0;1;;;67%,687%;102;;45
+10047;1;3;RÉSULTAT EXCEPTIONNEL (IX);resultatExceptionnel;1;;produitsExceptionnels - chargesExceptionnelles;;;102;;46
+10049;1;2;Participation des salariés (X);participationSalaries;0;1;;;691%;102;;48
+10050;1;2;Impôts sur les bénéfices (XI);impotsBenefices;0;1;;;695%;102;;49
+10051;1;3;RÉSULTAT NET COMPTABLE (BENEFICE OU PERTE) (XII) (VIII+IX-X-XI);resultatNetComptable;1;;resultatCourantAvantImpots + resultatExceptionnel - participationSalaries - impotsBenefices;;;102;;50

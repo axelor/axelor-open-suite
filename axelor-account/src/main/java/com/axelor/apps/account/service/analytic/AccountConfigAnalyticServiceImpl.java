@@ -1,9 +1,26 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -29,7 +46,7 @@ public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticSe
     if (checkChangesInAnalyticConfig(initialList, modifiedList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG));
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_ANALYTIC_CHANGE_IN_CONFIG));
     }
   }
 
@@ -89,7 +106,7 @@ public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticSe
       List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList) {
     for (AnalyticAxisByCompany analyticAxisByCompanyInit : initialList) {
       for (AnalyticAxisByCompany analyticAxisByCompany : modifiedList) {
-        if (analyticAxisByCompanyInit.getOrderSelect() == analyticAxisByCompany.getOrderSelect()
+        if (analyticAxisByCompanyInit.getSequence() == analyticAxisByCompany.getSequence()
             && !analyticAxisByCompanyInit
                 .getAnalyticAxis()
                 .equals(analyticAxisByCompany.getAnalyticAxis())) {

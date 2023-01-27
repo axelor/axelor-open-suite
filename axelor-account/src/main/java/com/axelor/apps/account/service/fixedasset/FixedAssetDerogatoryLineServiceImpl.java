@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,16 +43,16 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
   protected FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository;
 
-  protected FixedAssetLineService fixedAssetLineService;
+  protected FixedAssetLineToolService fixedAssetLineToolService;
 
   @Inject
   public FixedAssetDerogatoryLineServiceImpl(
       FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
       FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepository,
-      FixedAssetLineService fixedAssetLineService) {
+      FixedAssetLineToolService fixedAssetLineToolService) {
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
-    this.fixedAssetLineService = fixedAssetLineService;
+    this.fixedAssetLineToolService = fixedAssetLineToolService;
   }
 
   @Override
@@ -103,7 +103,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   public List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(
       FixedAsset fixedAsset) {
     LinkedHashMap<LocalDate, List<FixedAssetLine>> dateFixedAssetLineGrouped =
-        fixedAssetLineService.groupAndSortByDateFixedAssetLine(fixedAsset);
+        fixedAssetLineToolService.groupAndSortByDateFixedAssetLine(fixedAsset);
 
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList = new ArrayList<>();
     FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine = null;
@@ -151,7 +151,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
     // If fiscal depreciation is greater than economic depreciation then we fill
     // derogatoryAmount, else incomeDepreciation.
-    if (fiscalDepreciationAmount.compareTo(depreciationAmount) > 0) {
+    if (fiscalDepreciationAmount.abs().compareTo(depreciationAmount.abs()) > 0) {
       derogatoryAmount = fiscalDepreciationAmount.subtract(depreciationAmount);
     } else {
       incomeDepreciationAmount = depreciationAmount.subtract(fiscalDepreciationAmount);
@@ -269,7 +269,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     }
     firstPlannedDerogatoryLine.setDerogatoryDepreciationMove(
         fixedAssetDerogatoryLineMoveService.generateMove(
-            firstPlannedDerogatoryLine, creditAccount, debitAccount, amount, false));
+            firstPlannedDerogatoryLine, creditAccount, debitAccount, amount, false, true));
     firstPlannedDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
   }
 

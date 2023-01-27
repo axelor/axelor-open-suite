@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -53,14 +53,13 @@ public class ClosePeriodCallableService implements Callable<Period> {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void closePeriodAndSendMessage() throws AxelorException {
     Beans.get(PeriodService.class).close(period);
     Beans.get(MailMessageService.class)
         .sendNotification(
             AuthUtils.getUser(),
-            String.format(I18n.get(IExceptionMessage.PERIOD_CLOSING_MESSAGE), period.getName()),
-            String.format(I18n.get(IExceptionMessage.PERIOD_CLOSING_MESSAGE), period.getName()),
+            String.format(I18n.get(BaseExceptionMessage.PERIOD_CLOSING_MESSAGE), period.getName()),
+            String.format(I18n.get(BaseExceptionMessage.PERIOD_CLOSING_MESSAGE), period.getName()),
             period.getId(),
             period.getClass());
   }
@@ -72,7 +71,7 @@ public class ClosePeriodCallableService implements Callable<Period> {
         .sendNotification(
             AuthUtils.getUser(),
             String.format(
-                I18n.get(IExceptionMessage.PERIOD_CLOSING_EXCEPTION_MESSAGE), period.getName()),
+                I18n.get(BaseExceptionMessage.PERIOD_CLOSING_EXCEPTION_MESSAGE), period.getName()),
             e.getMessage(),
             period.getId(),
             period.getClass());

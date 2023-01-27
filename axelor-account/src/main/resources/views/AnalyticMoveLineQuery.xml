@@ -9,8 +9,6 @@
     <field name="tradingName"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <button name="filterAnalyticMoveLineBtn"
-      onClick="save,action-analytic-move-line-query-method-show-filtered-lines" icon="fa-search"/>
   </grid>
 
   <form name="analytic-move-line-query-form" title="Analytic review"
@@ -39,7 +37,7 @@
             onNew="action-analytic-move-line-query-parameter-record-search-on-new">
             <field name="analyticAxis" grid-view="analytic-axis-grid"
               form-view="analytic-axis-form"
-              onSelect="action-attrs-domain-axis-distribution-line,action-analytic-move-line-search-query-attrs-domain-axis"
+              onSelect="action-analytic-move-line-query-method-search-query-axis-domain"
               onChange="action-analytic-move-line-search-query-attrs-axis-onchange"/>
             <field name="analyticAccountSet" grid-view="analytic-account-grid"
               form-view="analytic-account-info-form"
@@ -56,7 +54,7 @@
             onNew="action-analytic-move-line-query-parameter-record-reverse-on-new">
             <field name="analyticAxis" grid-view="analytic-axis-grid"
               form-view="analytic-axis-form"
-              onSelect="action-attrs-domain-axis-distribution-line,action-analytic-move-line-reverse-query-attrs-domain-axis"
+              onSelect="action-analytic-move-line-query-method-reverse-query-axis-domain"
               onChange="action-analytic-move-line-reverse-query-attrs-axis-onchange"/>
             <field name="analyticAccount" grid-view="analytic-account-grid"
               form-view="analytic-account-info-form"
@@ -78,8 +76,8 @@
   </form>
 
   <action-group name="action-analytic-move-line-query-group-on-new">
-    <action name="action-analytic-move-line-query-origin-select-domain"/>
     <action name="action-analytic-move-line-query-record-default"/>
+    <action name="action-analytic-move-line-query-origin-select-domain"/>
   </action-group>
 
   <action-attrs name="action-analytic-move-line-query-attrs-set-company-domain">
@@ -105,7 +103,7 @@
   <action-record name="action-analytic-move-line-query-record-default"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery">
     <field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany"/>
-    <field name="toDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="toDate" expr="eval:__config__.date"/>
   </action-record>
 
   <action-record name="action-analytic-move-line-query-record-company-onchange"
@@ -114,22 +112,6 @@
     <field name="searchAnalyticMoveLineQueryParameterList" expr="eval: null"/>
     <field name="reverseAnalyticMoveLineQueryParameterList" expr="eval: null"/>
   </action-record>
-
-  <action-attrs name="action-analytic-move-line-search-query-attrs-domain-axis">
-    <attribute name="domain" for="analyticAxis"
-      expr="eval: 'self.id not in (' + __parent__?.searchAnalyticMoveLineQueryParameterList?.findAll{it->it.analyticAxis!=null}?.collect{it.analyticAxis?.id}?.join(',')+ ')'"
-      if="__parent__?.searchAnalyticMoveLineQueryParameterList?.findAll{it->it.analyticAxis!=null}?.size() > 0"/>
-  </action-attrs>
-
-  <action-attrs name="action-analytic-move-line-reverse-query-attrs-domain-axis">
-    <attribute name="domain" for="analyticAxis"
-      expr="eval: (__parent__?.searchAnalyticMoveLineQueryParameterList.findAll{it->it.analyticAxis!=null}?.size() > 0) ?
-      ((__parent__?.reverseAnalyticMoveLineQueryParameterList.findAll{it->it.analyticAxis!=null}?.size() != 0) ?
-	'self.id in (' + __parent__?.searchAnalyticMoveLineQueryParameterList?.findAll{it->it.analyticAxis!=null}?.collect{it.analyticAxis?.id}?.join(',')+ ')
-	AND self.id not in (' + __parent__?.reverseAnalyticMoveLineQueryParameterList?.findAll{it->it.analyticAxis!=null}?.collect{it.analyticAxis?.id}?.join(',')+ ')' :
-	'self.id in (' + __parent__?.searchAnalyticMoveLineQueryParameterList?.findAll{it->it.analyticAxis!=null}?.collect{it.analyticAxis?.id}?.join(',')+ ')') :
-	null"/>
-  </action-attrs>
 
   <action-attrs name="action-analytic-move-line-search-query-attrs-axis-onchange">
     <attribute name="value" for="analyticAccountSet" expr="eval:null"/>
@@ -152,6 +134,18 @@
   <action-method name="action-analytic-move-line-query-method-all-reverse">
     <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
       method="allReverse"/>
+  </action-method>
+
+  <action-method
+    name="action-analytic-move-line-query-method-search-query-axis-domain">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="searchQueryAxisDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-analytic-move-line-query-method-reverse-query-axis-domain">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="reverseQueryAxisDomain"/>
   </action-method>
 
 </object-views>

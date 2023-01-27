@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,7 +31,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -44,6 +44,9 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -198,7 +201,7 @@ public class InvoiceLineController {
                               invoiceLine,
                               invoiceLine.getTaxLine(),
                               InvoiceToolService.isPurchase(invoice)));
-
+      discounts.remove("price");
       for (Entry<String, Object> entry : discounts.entrySet()) {
         response.setValue(entry.getKey(), entry.getValue());
       }
@@ -224,7 +227,13 @@ public class InvoiceLineController {
       TaxLine taxLine = invoiceLine.getTaxLine();
 
       response.setValue(
-          "price", Beans.get(InvoiceLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
+          "price",
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  true,
+                  taxLine,
+                  inTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -247,7 +256,12 @@ public class InvoiceLineController {
 
       response.setValue(
           "inTaxPrice",
-          Beans.get(InvoiceLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  false,
+                  taxLine,
+                  exTaxPrice,
+                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -270,7 +284,9 @@ public class InvoiceLineController {
 
     try {
       BigDecimal price = invoiceLine.getPrice();
-      BigDecimal inTaxPrice = price.add(price.multiply(invoiceLine.getTaxLine().getValue()));
+      BigDecimal inTaxPrice =
+          price.add(
+              price.multiply(invoiceLine.getTaxLine().getValue().divide(new BigDecimal(100))));
 
       response.setValue("inTaxPrice", inTaxPrice);
 
@@ -507,7 +523,7 @@ public class InvoiceLineController {
             invoiceLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList());
         if (!analyticMoveLineService.validateAnalyticMoveLines(
             invoiceLine.getAnalyticMoveLineList())) {
-          response.setError(I18n.get(IExceptionMessage.INVALID_ANALYTIC_MOVE_LINE));
+          response.setError(I18n.get(AccountExceptionMessage.INVALID_ANALYTIC_MOVE_LINE));
         }
         Beans.get(AnalyticDistributionTemplateService.class)
             .validateTemplatePercentages(invoiceLine.getAnalyticDistributionTemplate());
@@ -528,6 +544,34 @@ public class InvoiceLineController {
           response.setValues(invoiceLine);
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void translateProductDescriptionAndName(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice parent = this.getInvoice(context);
+      String userLanguage = AuthUtils.getUser().getLanguage();
+
+      Map<String, String> translation =
+          invoiceLineService.getProductDescriptionAndNameTranslation(
+              parent, invoiceLine, userLanguage);
+
+      String description = translation.get("description");
+      String productName = translation.get("productName");
+
+      if (description != null
+          && !description.isEmpty()
+          && productName != null
+          && !productName.isEmpty()) {
+        response.setValue("description", description);
+        response.setValue("productName", productName);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -562,7 +606,7 @@ public class InvoiceLineController {
                   !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
               for (AnalyticAxisByCompany analyticAxisByCompany :
                   accountConfig.getAnalyticAxisByCompanyList()) {
-                if (analyticAxisByCompany.getOrderSelect() == i) {
+                if (analyticAxisByCompany.getSequence() + 1 == i) {
                   analyticAxis = analyticAxisByCompany.getAnalyticAxis();
                 }
               }
