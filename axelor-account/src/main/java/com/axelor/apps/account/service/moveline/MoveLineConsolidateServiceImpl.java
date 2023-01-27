@@ -19,6 +19,8 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,6 +31,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateService {
+
+  protected MoveToolService moveToolService;
+
+  @Inject
+  public MoveLineConsolidateServiceImpl(MoveToolService moveToolService) {
+    this.moveToolService = moveToolService;
+  }
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Override
@@ -163,8 +173,11 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
         boolean isDebit =
             consolidateMoveLine.getDebit().compareTo(consolidateMoveLine.getCredit()) > 0;
-        consolidateMoveLine.setCurrencyAmount(
-            isDebit ? consolidateCurrencyAmount.abs() : consolidateCurrencyAmount.negate());
+
+        consolidateCurrencyAmount =
+            moveToolService.computeCurrencyAmountSign(consolidateCurrencyAmount, isDebit);
+
+        consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount);
 
         if (consolidateMoveLine.getAnalyticMoveLineList() != null
             && !consolidateMoveLine.getAnalyticMoveLineList().isEmpty()) {
@@ -220,7 +233,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
       boolean isDebit = debit.compareTo(credit) > 0;
       moveLine.setCurrencyAmount(
-          isDebit ? moveLine.getCurrencyAmount().abs() : moveLine.getCurrencyAmount().negate());
+          moveToolService.computeCurrencyAmountSign(moveLine.getCurrencyAmount(), isDebit));
 
       if (debit.compareTo(BigDecimal.ZERO) == 1 && credit.compareTo(BigDecimal.ZERO) == 1) {
 

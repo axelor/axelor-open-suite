@@ -368,7 +368,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             cutOffMoveLine.setCurrencyAmount(currencyAmount.abs());
           } else {
             cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount));
-            cutOffMoveLine.setCurrencyAmount(currencyAmount.negate());
+            currencyAmount = moveToolService.computeCurrencyAmountSign(currencyAmount, false);
+            cutOffMoveLine.setCurrencyAmount(currencyAmount);
           }
 
         } else {
@@ -517,7 +518,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         InvoiceLineManagement.computeAmount(
             productMoveLine.getCurrencyAmount(), taxLine.getValue().divide(new BigDecimal(100)));
     boolean isDebit = productMoveLine.getDebit().signum() > 0;
-    currencyTaxAmount = isDebit ? currencyTaxAmount.abs() : currencyTaxAmount.negate();
+
+    currencyTaxAmount = moveToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);
+
     Integer vatSystem =
         taxAccountToolService.calculateVatSystem(
             move.getPartner(),
@@ -529,9 +532,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     MoveLine moveLine = this.getMoveLineWithSameTax(move, taxAccount, taxLine, vatSystem);
 
     if (moveLine != null && (moveLine.getDebit().compareTo(new BigDecimal(0)) > 0)) {
-      moveLine.setDebit(moveLine.getDebit().add(currencyTaxAmount));
+      moveLine.setDebit(moveLine.getDebit().add(currencyTaxAmount.abs()));
     } else if (moveLine != null) {
-      moveLine.setCredit(moveLine.getCredit().add(currencyTaxAmount));
+      moveLine.setCredit(moveLine.getCredit().add(currencyTaxAmount.abs()));
     } else {
       MoveLine taxMoveLine =
           moveLineCreateService.createMoveLine(

@@ -519,6 +519,17 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
   }
 
+  @Override
+  public BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit) {
+    if (isDebit) {
+      return currencyAmount.abs();
+    } else {
+      return currencyAmount.compareTo(BigDecimal.ZERO) < 0
+          ? currencyAmount
+          : currencyAmount.negate();
+    }
+  }
+
   public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
       throws AxelorException {
     if (period != null) {

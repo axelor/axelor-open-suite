@@ -59,6 +59,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected CancelFactory cancelFactory;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
+  protected MoveToolService moveToolService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -70,7 +71,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       ExtractContextMoveService extractContextMoveService,
       CancelFactory cancelFactory,
       InvoicePaymentRepository invoicePaymentRepository,
-      InvoicePaymentCancelService invoicePaymentCancelService) {
+      InvoicePaymentCancelService invoicePaymentCancelService,
+      MoveToolService moveToolService) {
+
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
     this.moveValidateService = moveValidateService;
@@ -80,6 +83,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.cancelFactory = cancelFactory;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
+    this.moveToolService = moveToolService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -218,7 +222,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       throws AxelorException {
 
     BigDecimal currencyAmount = originMoveLine.getCurrencyAmount();
-    currencyAmount = isDebit ? currencyAmount.abs() : currencyAmount.negate();
+
+    currencyAmount = moveToolService.computeCurrencyAmountSign(currencyAmount, isDebit);
 
     MoveLine reverseMoveLine =
         moveLineCreateService.createMoveLine(

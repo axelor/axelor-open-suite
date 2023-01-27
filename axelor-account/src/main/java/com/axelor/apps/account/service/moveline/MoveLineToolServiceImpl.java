@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
@@ -53,15 +54,18 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   protected TaxService taxService;
   protected CurrencyService currencyService;
   protected MoveLineRepository moveLineRepository;
+  protected MoveToolService moveToolService;
 
   @Inject
   public MoveLineToolServiceImpl(
       TaxService taxService,
       CurrencyService currencyService,
-      MoveLineRepository moveLineRepository) {
+      MoveLineRepository moveLineRepository,
+      MoveToolService moveToolService) {
     this.taxService = taxService;
     this.currencyService = currencyService;
     this.moveLineRepository = moveLineRepository;
+    this.moveToolService = moveToolService;
   }
 
   /**
@@ -314,7 +318,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     BigDecimal unratedAmount = moveLine.getDebit().add(moveLine.getCredit());
     BigDecimal currencyAmount =
         unratedAmount.divide(moveLine.getCurrencyRate(), RETURNED_SCALE, RoundingMode.HALF_UP);
-    moveLine.setCurrencyAmount(isDebit ? currencyAmount.negate() : currencyAmount.abs());
+    moveLine.setCurrencyAmount(moveToolService.computeCurrencyAmountSign(currencyAmount, isDebit));
     return moveLine;
   }
 
