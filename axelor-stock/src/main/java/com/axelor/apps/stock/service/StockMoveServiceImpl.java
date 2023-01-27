@@ -43,6 +43,7 @@ import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.AxelorMessageException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -539,7 +540,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
     } catch (Exception e) {
       TraceBackService.trace(
-          new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
+          new AxelorMessageException(
+              e, stockMove, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
     }
   }
 

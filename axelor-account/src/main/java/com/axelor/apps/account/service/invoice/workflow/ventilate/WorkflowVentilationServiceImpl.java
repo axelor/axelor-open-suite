@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.AxelorMessageException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -93,7 +94,8 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
             .generateAndSendMessage(invoice, invoice.getInvoiceMessageTemplate());
       } catch (Exception e) {
         TraceBackService.trace(
-            new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
+            new AxelorMessageException(
+                e, invoice, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
       }
     }
   }
