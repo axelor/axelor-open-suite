@@ -385,6 +385,10 @@ public class BankReconciliationService {
             move.getMoveLineList().size() + 1,
             origin,
             description);
+    if (account.getHasAutomaticApplicationAccountingDate()) {
+      moveLineService.applyCutOffDates(moveLine, move, date, date);
+      moveLine.setIsCutOffGenerated(true);
+    }
     move.addMoveLineListItem(moveLine);
     return moveLine;
   }

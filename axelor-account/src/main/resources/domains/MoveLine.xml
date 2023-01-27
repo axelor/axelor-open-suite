@@ -18,6 +18,7 @@
     <date name="dueDate" title="Due Date" initParam="true"/>
     <date name="cutOffStartDate" title="From date"/>
     <date name="cutOffEndDate" title="To date"/>
+    <boolean name="isCutOffGenerated" default="false"/>
     <integer name="counter" title="Line Nbr." initParam="true"/>
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
