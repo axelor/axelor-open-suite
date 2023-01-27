@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -67,6 +68,7 @@ import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
@@ -131,6 +133,7 @@ public class BankReconciliationService {
   protected BankPaymentConfigService bankPaymentConfigService;
   protected BankStatementRuleService bankStatementRuleService;
   protected ReconcileService reconcileService;
+  protected TaxService taxService;
 
   @Inject
   public BankReconciliationService(
@@ -159,7 +162,8 @@ public class BankReconciliationService {
       AccountConfigRepository accountConfigRepository,
       BankPaymentConfigService bankPaymentConfigService,
       BankStatementRuleService bankStatementRuleService,
-      ReconcileService reconcileService) {
+      ReconcileService reconcileService,
+      TaxService taxService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -187,6 +191,7 @@ public class BankReconciliationService {
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.bankStatementRuleService = bankStatementRuleService;
     this.reconcileService = reconcileService;
+    this.taxService = taxService;
   }
 
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
@@ -373,6 +378,16 @@ public class BankReconciliationService {
       }
     }
     boolean isDebit = debit.compareTo(credit) > 0;
+
+    TaxLine taxLine = null;
+    if (account.getIsTaxRequiredOnMoveLine()) {
+      if (bankStatementRule.getSpecificTax() == null) {
+        taxLine = taxService.getTaxLine(account.getDefaultTax(), date);
+      } else {
+        taxLine = taxService.getTaxLine(bankStatementRule.getSpecificTax(), date);
+      }
+    }
+
     moveLine =
         moveLineCreateService.createMoveLine(
             move,
@@ -380,11 +395,12 @@ public class BankReconciliationService {
             account,
             debit.add(credit),
             isDebit,
-            date,
+            taxLine,
             date,
             move.getMoveLineList().size() + 1,
             origin,
             description);
+
     move.addMoveLineListItem(moveLine);
     return moveLine;
   }

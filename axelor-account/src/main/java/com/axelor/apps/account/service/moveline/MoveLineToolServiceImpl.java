@@ -290,7 +290,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
           I18n.get(AccountExceptionMessage.MOVE_LINE_MISSING_DATE));
     }
     if (moveLine.getAccount() != null && moveLine.getAccount().getDefaultTax() != null) {
-      taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
+      taxLine = taxService.getTaxLine(moveLine.getAccount().getDefaultTax(), date);
     }
     return taxLine;
   }
