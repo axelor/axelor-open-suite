@@ -13,6 +13,7 @@
 "%d invoices treated successfully,",,,
 "%d move(s) has/have been removed successfully",,,
 "%d moves couldn't be deleted or archived, please check the logs.",,,
+"%d objects are linked to this payment condition, the modifications will be applied these objects.",,,
 "%d reimbursement created successfully,",,,
 "%d reimbursements created successfully,",,,
 "%s - Invoice date can't be in the future.",,,
