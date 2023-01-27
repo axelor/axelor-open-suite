@@ -712,11 +712,11 @@ public class EventServiceImpl implements EventService {
 
     Partner partner = event.getPartner();
     if (partner != null
-        && partner.getLastEventDate() != null
-        && partner.getLastEventDate().equals(eventDateTime.toLocalDate())) {
+        && partner.getLastEventDateT() != null
+        && partner.getLastEventDateT().equals(eventDateTime)) {
       this.fetchLatestEventEndDateT(
               event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
-          .ifPresent(localDateTime -> partner.setLastEventDate(localDateTime.toLocalDate()));
+          .ifPresent(partner::setLastEventDateT);
     }
   }
 
@@ -736,9 +736,9 @@ public class EventServiceImpl implements EventService {
     Partner partner = event.getPartner();
     if (partner != null
         && event.getEndDateTime() != null
-        && (partner.getLastEventDate() == null
-            || !partner.getLastEventDate().isAfter(event.getEndDateTime().toLocalDate()))) {
-      partner.setLastEventDate(event.getEndDateTime().toLocalDate());
+        && (partner.getLastEventDateT() == null
+            || !partner.getLastEventDateT().isAfter(event.getEndDateTime()))) {
+      partner.setLastEventDateT(event.getEndDateTime());
     }
   }
 
@@ -749,9 +749,9 @@ public class EventServiceImpl implements EventService {
     if (partner != null
         && startDateTime != null
         && event.getStatusSelect() == EventRepository.STATUS_PLANNED
-        && (partner.getScheduledEventDate() == null
-            || partner.getScheduledEventDate().isAfter(startDateTime.toLocalDate()))) {
-      partner.setScheduledEventDate(startDateTime.toLocalDate());
+        && (partner.getScheduledEventDateT() == null
+            || partner.getScheduledEventDateT().isAfter(startDateTime))) {
+      partner.setScheduledEventDateT(startDateTime);
     }
   }
 
@@ -774,7 +774,7 @@ public class EventServiceImpl implements EventService {
     if (partner != null && event.getStartDateTime() != null) {
       this.fetchNextEventStartDateT(
               event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
-          .ifPresent(startDateT -> partner.setScheduledEventDate(startDateT.toLocalDate()));
+          .ifPresent(partner::setScheduledEventDateT);
     }
   }
 
