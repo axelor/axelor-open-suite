@@ -225,7 +225,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Override
-  @Transactional
   public void retrieveEligibleTerms(PaymentSession paymentSession) {
     List<InvoiceTerm> eligibleInvoiceTermList =
         invoiceTermRepository
@@ -254,11 +253,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
     eligibleInvoiceTermList = this.filterNotAwaitingPayment(eligibleInvoiceTermList);
     eligibleInvoiceTermList = this.filterBlocking(eligibleInvoiceTermList, paymentSession);
-    eligibleInvoiceTermList.forEach(
-        invoiceTerm -> {
-          fillEligibleTerm(paymentSession, invoiceTerm);
-          invoiceTermRepository.save(invoiceTerm);
-        });
+    for (InvoiceTerm invoiceTerm : eligibleInvoiceTermList) {
+      paymentSession = paymentSessionRepository.find(paymentSession.getId());
+      invoiceTerm = invoiceTermRepository.find(invoiceTerm.getId());
+      this.saveInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
+      JPA.clear();
+    }
 
     computeTotalPaymentSession(paymentSession);
   }
@@ -416,5 +416,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       }
     }
     return isSignedNegative;
+  }
+
+  @Transactional
+  protected InvoiceTerm saveInvoiceTermWithPaymentSession(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    fillEligibleTerm(paymentSession, invoiceTerm);
+    return invoiceTerm;
   }
 }
