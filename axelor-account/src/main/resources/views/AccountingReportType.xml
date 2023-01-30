@@ -59,7 +59,7 @@
       </panel>
     </panel>
     <panel sidebar="true">
-      <field name="template" widget="binary-link" hideIf="reportExportTypeSelect == 2"/>
+      <field name="template" widget="binary-link"/>
     </panel>
   </form>
 
