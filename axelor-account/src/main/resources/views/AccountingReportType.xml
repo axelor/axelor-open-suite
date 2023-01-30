@@ -58,8 +58,8 @@
           grid-view="accounting-report-config-line-grid"/>
       </panel>
     </panel>
-    <panel sidebar="true">
-      <field name="template" widget="binary-link"/>
+    <panel sidebar="true" showIf="reportExportTypeSelect">
+      <field name="template" widget="binary-link" hideIf="reportExportTypeSelect == 2"/>
     </panel>
   </form>
 

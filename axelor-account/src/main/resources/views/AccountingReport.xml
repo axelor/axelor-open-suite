@@ -262,7 +262,8 @@
           grid-view="period-grid" canView="false" hideIf="$contains([1000], reportType.typeSelect)"/>
         <field name="dateFrom" onChange="action-move-Live-report-record-set-date-to"
           readonlyIf="$contains([1000], reportType.typeSelect) || year || period"/>
-        <field name="dateTo" readonlyIf="$contains([1000], reportType.typeSelect)  || year || period"/>
+        <field name="dateTo"
+          readonlyIf="$contains([1000], reportType.typeSelect)  || year || period"/>
       </panel>
       <field name="journal" form-view="journal-form" grid-view="journal-grid"
         showIf="$contains([1001], reportType.typeSelect)"/>
