@@ -653,9 +653,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	SUM(CASE
 		WHEN 
 			FixedAsset.first_service_date < AccountingReport.date_from
-			and FixedAsset.first_service_date >= AccountingReport.date_from - interval '1 year'
 			and((FixedAsset.status_select = 2 OR FixedAsset.status_select = 3)
-			or(FixedAsset.status_select = 4 and FixedAsset.disposal_date > AccountingReport.date_from))
+			or(FixedAsset.status_select = 4 and FixedAsset.disposal_date > AccountingReport.date_to))
 		THEN FixedAsset.gross_value
 		ELSE 0
 	END) AS value_a,
@@ -673,7 +672,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 			FixedAsset.disposal_date >= AccountingReport.date_from
 			AND FixedAsset.disposal_date <= AccountingReport.date_to
 			AND FixedAsset.status_select = 4
-		THEN FixedAsset.disposal_value
+		THEN FixedAsset.gross_value
 		ELSE 0
 	END) AS value_c
 	
