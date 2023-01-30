@@ -50,7 +50,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AccountingReportValueMoveLineService accountingReportValueMoveLineService;
   protected AccountingReportValuePercentageService accountingReportValuePercentageService;
   protected AppBaseService appBaseService;
-  protected AccountingReportValueRepository accountingReportValueRepo;
 
   protected static int lineOffset = 0;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -69,7 +68,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     this.accountingReportValueMoveLineService = accountingReportValueMoveLineService;
     this.accountingReportValuePercentageService = accountingReportValuePercentageService;
     this.appBaseService = appBaseService;
-    this.accountingReportValueRepo = accountingReportValueRepo;
   }
 
   public static synchronized void incrementLineOffset() {
