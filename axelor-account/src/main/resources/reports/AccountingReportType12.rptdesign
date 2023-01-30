@@ -485,7 +485,7 @@ AND AccountingReport.company = Move.company
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
 AND MoveLine.tax_line is not null
-AND (((AccountType.technical_type_select not like 'tax' 
+AND ((((AccountType.technical_type_select not like 'tax' 
 		and ((Move.functional_origin_select = 3 
 				and (CompanyAccountingSituation.vat_system_select = 2 
 						or (CompanyAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1)))
@@ -498,7 +498,8 @@ AND (((AccountType.technical_type_select not like 'tax'
 						or (CompanyAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1))))
 			or  (Move.functional_origin_select = 4 
 				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
-						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1)))))) 
+						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1))))))
+	or (Move.functional_origin_select IN (3,4) and MoveLinePartner.id IS NULL and Account.vat_system_select = 1 )) 
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
@@ -508,7 +509,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND  Move.ignore_in_accounting_ok = false
 AND (CompanyAccountingSituation.company = Company.id)
-AND (MoveLinePartnerAccountingSituation.company = Company.id)
+AND (MoveLinePartnerAccountingSituation.company = Company.id or MoveLinePartnerAccountingSituation.id IS NULL)
 order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -873,7 +874,7 @@ AND MoveLine.date_val >= AccountingReport.date_from
 AND MoveLine.date_val <= AccountingReport.date_to 
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move)) 
 AND MoveLine.tax_line is not null
-AND (((AccountType.technical_type_select not like 'tax' 
+AND ((((AccountType.technical_type_select not like 'tax' 
 		and ((Move.functional_origin_select = 3 
 				and (CompanyAccountingSituation.vat_system_select = 2 
 						or (CompanyAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1)))
@@ -887,6 +888,7 @@ AND (((AccountType.technical_type_select not like 'tax'
 			or  (Move.functional_origin_select = 4 
 				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
 						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1)))))) 
+		or (Move.functional_origin_select IN (3,4) and MoveLinePartner.id IS NULL and Account.vat_system_select = 1 )) 
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -895,7 +897,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND  Move.ignore_in_accounting_ok = false
 AND (CompanyAccountingSituation.company = Company.id)
-AND (MoveLinePartnerAccountingSituation.company = Company.id)
+AND (MoveLinePartnerAccountingSituation.company = Company.id or MoveLinePartnerAccountingSituation.id IS NULL)
 group by Tax.id, TaxLine.value, FiscalPosition.code
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>
