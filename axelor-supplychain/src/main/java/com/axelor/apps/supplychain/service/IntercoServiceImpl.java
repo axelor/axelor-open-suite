@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -79,12 +80,15 @@ import java.util.Set;
 public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
+  protected BankDetailsService bankDetailsService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Inject
-  public IntercoServiceImpl(PurchaseConfigService purchaseConfigService) {
+  public IntercoServiceImpl(
+      PurchaseConfigService purchaseConfigService, BankDetailsService bankDetailsService) {
     this.purchaseConfigService = purchaseConfigService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Override
@@ -124,7 +128,6 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrder.setPaymentCondition(purchaseOrder.getPaymentCondition());
 
     // copy delivery info
-    saleOrder.setDeliveryDate(purchaseOrder.getDeliveryDate());
     saleOrder.setShipmentMode(purchaseOrder.getShipmentMode());
     saleOrder.setFreightCarrierMode(purchaseOrder.getFreightCarrierMode());
 
@@ -175,7 +178,6 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setCompany(intercoCompany);
     purchaseOrder.setContactPartner(saleOrder.getContactPartner());
     purchaseOrder.setCurrency(saleOrder.getCurrency());
-    purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setOrderDate(saleOrder.getCreationDate());
     purchaseOrder.setPriceList(saleOrder.getPriceList());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
@@ -202,7 +204,6 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setPaymentCondition(saleOrder.getPaymentCondition());
 
     // copy delivery info
-    purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setStockLocation(
         Beans.get(PurchaseOrderSupplychainService.class)
             .getStockLocation(saleOrder.getCompany().getPartner(), intercoCompany));
@@ -262,7 +263,7 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderLine.setDiscountAmount(saleOrderLine.getDiscountAmount());
 
     // delivery
-    purchaseOrderLine.setEstimatedDelivDate(saleOrderLine.getEstimatedDelivDate());
+    purchaseOrderLine.setEstimatedDelivDate(saleOrderLine.getDesiredDelivDate());
 
     // compute price discounted
     BigDecimal priceDiscounted =
@@ -313,7 +314,7 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setPriceDiscounted(priceDiscounted);
 
     // delivery
-    saleOrderLine.setEstimatedDelivDate(purchaseOrderLine.getEstimatedDelivDate());
+    saleOrderLine.setDesiredDelivDate(purchaseOrderLine.getDesiredDelivDate());
 
     // tax
     saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());
@@ -383,7 +384,6 @@ public class IntercoServiceImpl implements IntercoService {
             .getDefaultPriceList(intercoPartner, priceListRepositoryType);
 
     Invoice intercoInvoice = invoiceRepository.copy(invoice, true);
-
     intercoInvoice.setOperationTypeSelect(generatedOperationTypeSelect);
     intercoInvoice.setCompany(intercoCompany);
     intercoInvoice.setPartner(intercoPartner);
@@ -422,6 +422,9 @@ public class IntercoServiceImpl implements IntercoService {
 
     invoiceService.compute(intercoInvoice);
     intercoInvoice.setExternalReference(invoice.getInvoiceId());
+    intercoInvoice.setCompanyBankDetails(
+        bankDetailsService.getDefaultCompanyBankDetails(
+            intercoCompany, intercoPaymentMode, intercoPartner, generatedOperationTypeSelect));
     intercoInvoice = invoiceRepository.save(intercoInvoice);
 
     // the interco invoice needs to be saved before we can attach files to it

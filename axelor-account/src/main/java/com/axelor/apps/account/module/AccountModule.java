@@ -121,14 +121,6 @@ import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
-import com.axelor.apps.account.service.PaymentSessionCancelService;
-import com.axelor.apps.account.service.PaymentSessionCancelServiceImpl;
-import com.axelor.apps.account.service.PaymentSessionEmailService;
-import com.axelor.apps.account.service.PaymentSessionEmailServiceImpl;
-import com.axelor.apps.account.service.PaymentSessionService;
-import com.axelor.apps.account.service.PaymentSessionServiceImpl;
-import com.axelor.apps.account.service.PaymentSessionValidateService;
-import com.axelor.apps.account.service.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.PeriodControlService;
 import com.axelor.apps.account.service.PeriodControlServiceImpl;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -313,12 +305,21 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueElementService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherDueElementServiceImpl;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelServiceImpl;
 import com.axelor.apps.account.service.umr.UmrNumberService;
 import com.axelor.apps.account.service.umr.UmrNumberServiceImpl;
+import com.axelor.apps.account.service.wizard.AccountConvertLeadWizardServiceImpl;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.account.util.TaxAccountToolServiceImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
@@ -328,6 +329,7 @@ import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 
@@ -640,6 +642,7 @@ public class AccountModule extends AxelorModule {
     bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
 
     bind(MoveLineQueryService.class).to(MoveLineQueryServiceImpl.class);
+    bind(BaseConvertLeadWizardService.class).to(AccountConvertLeadWizardServiceImpl.class);
 
     bind(InvoiceFinancialDiscountService.class).to(InvoiceFinancialDiscountServiceImpl.class);
 

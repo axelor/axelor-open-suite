@@ -304,7 +304,8 @@
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-atts-overview-readonly">
-    <attribute name="readonly" for="overviewPanel" expr="_projectIds != null"/>
+    <attribute name="readonly" for="overviewPanel" expr="_projectIds != null"
+      if="__user__.employee != employee || timesheet.statusSelect == 3"/>
   </action-attrs>
 
   <action-attrs name="action-hr-timesheet-line-attrs-domain-product">
@@ -319,7 +320,7 @@
 
   <action-attrs name="action-timesheet-line-attrs-domain-employee">
     <attribute name="domain"
-      expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.employee.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
+      expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.employee?.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
       for="employee"/>
   </action-attrs>
 
@@ -480,6 +481,7 @@
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
     <domain>self.timesheet.statusSelect = 3 and self.projectTask = :id</domain>
+    <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-project-task-dashlet-waiting-timesheet-lines"
@@ -488,6 +490,7 @@
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
     <domain>self.timesheet.statusSelect &lt; 3 and self.projectTask = :id</domain>
+    <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-project-task-dashlet-all-timesheet-lines"
@@ -496,6 +499,7 @@
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
     <domain>self.projectTask = :id</domain>
+    <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-timesheet-line-log-time"

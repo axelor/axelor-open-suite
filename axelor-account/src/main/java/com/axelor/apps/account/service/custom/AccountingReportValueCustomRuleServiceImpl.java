@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -25,9 +26,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     implements AccountingReportValueCustomRuleService {
   @Inject
   public AccountingReportValueCustomRuleServiceImpl(
+      AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo) {
-    super(accountingReportValueRepo, analyticAccountRepo);
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
   }
 
   @Override
@@ -44,9 +46,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       LocalDate endDate,
       int analyticCounter) {
     if (accountingReport.getDisplayDetails()
-        && (line.getDetailByAccount()
-            || line.getDetailByAccountType()
-            || line.getDetailByAnalyticAccount())) {
+        && line.getDetailBySelect() != AccountingReportConfigLineRepository.DETAIL_BY_NOTHING) {
       for (String lineCode :
           valuesMapByLine.keySet().stream()
               .filter(it -> it.matches(String.format("%s_[0-9]+", line.getCode())))
@@ -304,6 +304,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
         && groupColumn.getRuleTypeSelect()
             == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       return groupColumn.getRule();
+    } else if (column.getRuleTypeSelect()
+            == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+        && line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
+      return column.getPriority() > line.getPriority() ? column.getRule() : line.getRule();
     } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       return column.getRule();

@@ -23,6 +23,8 @@ import com.axelor.exception.AxelorException;
 
 public interface FixedAssetImportService {
 
+  void realizeFirstLine(FixedAsset fixedAsset) throws AxelorException;
+
   FixedAsset generateAndComputeLines(
       FixedAsset fixedAsset, FixedAssetRepository fixedAssetRepository) throws AxelorException;
 }

@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -23,9 +24,10 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
     implements AccountingReportValuePercentageService {
   @Inject
   public AccountingReportValuePercentageServiceImpl(
+      AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo) {
-    super(accountingReportValueRepo, analyticAccountRepo);
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
   }
 
   @Override

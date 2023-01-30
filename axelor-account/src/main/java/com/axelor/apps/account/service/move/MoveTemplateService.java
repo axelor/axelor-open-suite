@@ -272,6 +272,7 @@ public class MoveTemplateService {
   public List<Long> generateMove(LocalDate moveDate, List<HashMap<String, Object>> moveTemplateList)
       throws AxelorException {
     List<Long> moveList = new ArrayList<>();
+    String taxLineDescription = "";
 
     for (HashMap<String, Object> moveTemplateMap : moveTemplateList) {
 
@@ -291,6 +292,7 @@ public class MoveTemplateService {
                   .mapToInt(Integer::parseInt)
                   .toArray();
         }
+        Partner moveTemplatePartner = fillPartnerWithMoveTemplate(moveTemplate);
 
         BankDetails companyBankDetails = null;
         if (moveTemplate != null
@@ -298,7 +300,12 @@ public class MoveTemplateService {
             && moveTemplate.getJournal().getCompany() != null) {
           companyBankDetails =
               bankDetailsService.getDefaultCompanyBankDetails(
-                  moveTemplate.getJournal().getCompany(), null, null, null);
+                  moveTemplate.getJournal().getCompany(),
+                  moveTemplatePartner == null || moveTemplatePartner.getOutPaymentMode() == null
+                      ? null
+                      : moveTemplatePartner.getOutPaymentMode(),
+                  moveTemplatePartner,
+                  null);
         }
 
         Move move =
@@ -306,10 +313,12 @@ public class MoveTemplateService {
                 moveTemplate.getJournal(),
                 moveTemplate.getJournal().getCompany(),
                 null,
-                null,
+                moveTemplatePartner,
                 moveDate,
                 moveDate,
-                null,
+                moveTemplatePartner == null || moveTemplatePartner.getOutPaymentMode() == null
+                    ? null
+                    : moveTemplatePartner.getOutPaymentMode(),
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
@@ -354,21 +363,25 @@ public class MoveTemplateService {
                 moveTemplateLine.getAnalyticDistributionTemplate());
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
             counter++;
+          } else {
+            taxLineDescription = moveTemplateLine.getName();
           }
         }
 
-        if (move.getMoveLineList().stream()
-                .filter(it -> it.getPartner() != null)
-                .map(it -> it.getPartner())
-                .distinct()
-                .count()
-            == 1) {
-          move.setPartner(move.getMoveLineList().get(0).getPartner());
+        if (ObjectUtils.notEmpty(move)
+            && ObjectUtils.notEmpty(move.getMoveLineList())
+            && ObjectUtils.notEmpty(move.getMoveLineList().get(0).getPartner())) {
+          move.getMoveLineList().get(0).getPartner().getBankDetailsList().stream()
+              .filter(it -> it.getIsDefault() && it.getActive())
+              .findFirst()
+              .ifPresent(move::setPartnerBankDetails);
         }
 
+        move.setDescription(taxLineDescription);
         moveLineTaxService.autoTaxLineGenerate(move);
         manageAccounting(moveTemplate, move);
 
+        move.setDescription(moveTemplate.getDescription());
         moveList.add(move.getId());
       }
     }
@@ -473,5 +486,19 @@ public class MoveTemplateService {
     values.put("$difference", difference);
 
     return values;
+  }
+
+  public Partner fillPartnerWithMoveTemplate(MoveTemplate moveTemplate) {
+    Partner partner = null;
+
+    if (moveTemplate.getMoveTemplateLineList().stream()
+            .filter(it -> it.getPartner() != null)
+            .map(it -> it.getPartner())
+            .distinct()
+            .count()
+        == 1) {
+      partner = moveTemplate.getMoveTemplateLineList().get(0).getPartner();
+    }
+    return partner;
   }
 }

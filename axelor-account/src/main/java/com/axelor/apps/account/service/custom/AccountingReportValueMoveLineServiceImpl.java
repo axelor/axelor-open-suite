@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -26,6 +27,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportValueMoveLineServiceImpl extends AccountingReportValueAbstractService
@@ -44,10 +49,11 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
 
   @Inject
   public AccountingReportValueMoveLineServiceImpl(
+      AccountRepository accountRepository,
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo,
       MoveLineRepository moveLineRepo) {
-    super(accountingReportValueRepo, analyticAccountRepo);
+    super(accountRepository, accountingReportValueRepo, analyticAccountRepo);
     this.moveLineRepo = moveLineRepo;
   }
 
@@ -86,8 +92,26 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       analyticAccountSet = this.mergeSets(groupColumn.getAnalyticAccountSet(), analyticAccountSet);
     }
 
-    if (accountingReport.getDisplayDetails() && line.getDetailByAccount()) {
+    if (accountingReport.getDisplayDetails()
+        && line.getDetailBySelect() == AccountingReportConfigLineRepository.DETAIL_BY_ACCOUNT) {
       int counter = 1;
+
+      if (CollectionUtils.isNotEmpty(accountTypeSet)) {
+        accountSet = this.mergeWithAccountTypes(accountSet, accountTypeSet);
+        accountTypeSet = new HashSet<>();
+      }
+
+      if (StringUtils.notEmpty(line.getAccountCode())) {
+        accountSet = this.mergeWithAccountCode(accountSet, line.getAccountCode());
+      }
+
+      if (StringUtils.notEmpty(column.getAccountCode())) {
+        accountSet = this.mergeWithAccountCode(accountSet, column.getAccountCode());
+      }
+
+      if (groupColumn != null && StringUtils.notEmpty(groupColumn.getAccountCode())) {
+        accountSet = this.mergeWithAccountCode(accountSet, groupColumn.getAccountCode());
+      }
 
       for (Account account : accountSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
@@ -95,6 +119,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         if (!valuesMapByLine.containsKey(lineCode)) {
           valuesMapByLine.put(lineCode, new HashMap<>());
         }
+
         account = JPA.find(Account.class, account.getId());
         accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
         line = JPA.find(AccountingReportConfigLine.class, line.getId());
@@ -107,6 +132,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             configAnalyticAccount != null
                 ? JPA.find(AnalyticAccount.class, configAnalyticAccount.getId())
                 : null;
+
         this.createValueFromMoveLine(
             accountingReport,
             groupColumn,
@@ -128,9 +154,13 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         AccountingReportValueServiceImpl.incrementLineOffset();
       }
     } else if (accountingReport.getDisplayDetails()
-        && line.getDetailByAccountType()
+        && line.getDetailBySelect() == AccountingReportConfigLineRepository.DETAIL_BY_ACCOUNT_TYPE
         && accountTypeSet != null) {
       int counter = 1;
+
+      if (CollectionUtils.isNotEmpty(accountSet)) {
+        accountTypeSet = this.mergeWithAccounts(accountTypeSet, accountSet);
+      }
 
       for (AccountType accountType : accountTypeSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
@@ -171,7 +201,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         AccountingReportValueServiceImpl.incrementLineOffset();
       }
     } else if (accountingReport.getDisplayDetails()
-        && line.getDetailByAnalyticAccount()
+        && line.getDetailBySelect()
+            == AccountingReportConfigLineRepository.DETAIL_BY_ANALYTIC_ACCOUNT
         && analyticAccountSet != null) {
       int counter = 1;
 
@@ -290,6 +321,39 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     }
   }
 
+  protected Set<Account> mergeWithAccountTypes(
+      Set<Account> accountSet, Set<AccountType> accountTypeSet) {
+    Set<Account> tempSet =
+        this.getSetFromStream(
+            accountTypeSet.stream(),
+            accountType -> accountRepo.findByAccountType(accountType).fetch());
+
+    return this.mergeSets(accountSet, tempSet);
+  }
+
+  protected Set<Account> mergeWithAccountCode(Set<Account> accountSet, String accountCode) {
+    Set<Account> tempSet =
+        this.getSetFromStream(
+            Arrays.stream(accountCode.split(",")),
+            accountCodeToken ->
+                accountRepo.all().filter("self.code LIKE ?", accountCodeToken).fetch());
+
+    return this.mergeSets(accountSet, tempSet);
+  }
+
+  protected <T> Set<Account> getSetFromStream(
+      Stream<T> stream, Function<T, List<Account>> function) {
+    return stream.map(function).flatMap(Collection::stream).collect(Collectors.toSet());
+  }
+
+  protected Set<AccountType> mergeWithAccounts(
+      Set<AccountType> accountTypeSet, Set<Account> accountSet) {
+    Set<AccountType> tempSet =
+        accountSet.stream().map(Account::getAccountType).collect(Collectors.toSet());
+
+    return this.mergeSets(accountTypeSet, tempSet);
+  }
+
   protected void createValueFromMoveLine(
       AccountingReport accountingReport,
       AccountingReportConfigLine groupColumn,
@@ -335,6 +399,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             line,
             moveLineList,
             resultAnalyticAccountSet,
+            startDate,
+            endDate,
             this.getResultSelect(column, line, groupColumn));
 
     this.createReportValue(
@@ -382,8 +448,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     if (column.getComputePreviousYear()) {
       startDate = startDate.minusYears(1);
       endDate = endDate.minusYears(1);
-    } else if (column.getComputeOtherPeriod()
-        || (groupColumn != null && groupColumn.getComputeOtherPeriod())) {
+    } else if (this.isComputeOnOtherPeriod(groupColumn, column)) {
       startDate = accountingReport.getOtherDateFrom();
       endDate = accountingReport.getOtherDateTo();
     }
@@ -398,6 +463,12 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         line,
         startDate,
         endDate);
+  }
+
+  protected boolean isComputeOnOtherPeriod(
+      AccountingReportConfigLine groupColumn, AccountingReportConfigLine column) {
+    return column.getComputeOtherPeriod()
+        || (groupColumn != null && groupColumn.getComputeOtherPeriod());
   }
 
   protected Query<MoveLine> buildMoveLineQuery(
@@ -522,6 +593,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReportConfigLine line,
       List<MoveLine> moveLineList,
       Set<AnalyticAccount> analyticAccountSet,
+      LocalDate startDate,
+      LocalDate endDate,
       int resultSelect) {
     String groupColumnAnalyticAccountCode =
         groupColumn != null ? groupColumn.getAnalyticAccountCode() : null;
@@ -549,6 +622,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
                     column,
                     line,
                     analyticAccountSet,
+                    startDate,
+                    endDate,
                     resultSelect))
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
@@ -573,6 +648,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       Set<AnalyticAccount> analyticAccountSet,
+      LocalDate startDate,
+      LocalDate endDate,
       int resultSelect) {
     String groupColumnAnalyticAccountCode =
         groupColumn == null ? null : groupColumn.getAnalyticAccountCode();

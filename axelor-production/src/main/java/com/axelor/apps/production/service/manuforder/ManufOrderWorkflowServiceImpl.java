@@ -678,7 +678,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             null,
             null,
             null,
-            manufOrder.getProdProcess().getSubcontractors(),
+            manufOrder.getProdProcess().getSubcontractor(),
             null);
 
     purchaseOrder.setOutsourcingOrder(true);

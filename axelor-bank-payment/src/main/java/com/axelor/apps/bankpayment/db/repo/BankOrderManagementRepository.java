@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.exception.service.TraceBackService;
@@ -59,6 +60,13 @@ public class BankOrderManagementRepository extends BankOrderRepository {
     copy.setValidationDateTime(null);
     copy.setSendingDateTime(null);
     copy.setBankOrderSeq(null);
+
+    for (BankOrderLine bankOrderLine : copy.getBankOrderLineList()) {
+      bankOrderLine.setSenderMove(null);
+      bankOrderLine.setReceiverMove(null);
+      bankOrderLine.setRejectMove(null);
+    }
+    copy.setAreMovesGenerated(false);
 
     return copy;
   }

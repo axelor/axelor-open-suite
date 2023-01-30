@@ -25,6 +25,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
@@ -50,27 +51,25 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AccountingReportValuePercentageService accountingReportValuePercentageService;
   protected AppBaseService appBaseService;
   protected AccountingReportValueRepository accountingReportValueRepo;
-  protected AccountRepository accountRepo;
 
   protected static int lineOffset = 0;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public AccountingReportValueServiceImpl(
+      AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
       AccountingReportValueCustomRuleService accountingReportValueCustomRuleService,
       AccountingReportValueMoveLineService accountingReportValueMoveLineService,
       AccountingReportValuePercentageService accountingReportValuePercentageService,
       AppBaseService appBaseService,
-      AnalyticAccountRepository analyticAccountRepo,
-      AccountRepository accountRepo) {
-    super(accountingReportValueRepo, analyticAccountRepo);
+      AnalyticAccountRepository analyticAccountRepo) {
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
     this.accountingReportValueCustomRuleService = accountingReportValueCustomRuleService;
     this.accountingReportValueMoveLineService = accountingReportValueMoveLineService;
     this.accountingReportValuePercentageService = accountingReportValuePercentageService;
     this.appBaseService = appBaseService;
     this.accountingReportValueRepo = accountingReportValueRepo;
-    this.accountRepo = accountRepo;
   }
 
   public static synchronized void incrementLineOffset() {
@@ -495,9 +494,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             startDate,
             endDate,
             analyticCounter);
-      } else if ((column.getNotComputedIfIntersect() && line.getNotComputedIfIntersect())
-          || column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
-          || line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE) {
+      } else if (this.isNotCompute(column, line)) {
         this.createReportValue(
             accountingReport,
             column,
@@ -507,7 +504,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             endDate,
             parentTitle,
             line.getLabel(),
-            null,
+            BigDecimal.ZERO,
             valuesMapByColumn,
             valuesMapByLine,
             configAnalyticAccount,
@@ -581,6 +578,13 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               column.getCode(),
               line.getCode()));
     }
+  }
+
+  protected boolean isNotCompute(
+      AccountingReportConfigLine column, AccountingReportConfigLine line) {
+    return (column.getNotComputedIfIntersect() && line.getNotComputedIfIntersect())
+        || column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE
+        || line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_NO_VALUE;
   }
 
   protected boolean isValueAlreadyComputed(

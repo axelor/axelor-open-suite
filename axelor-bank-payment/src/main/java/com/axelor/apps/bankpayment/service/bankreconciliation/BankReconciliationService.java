@@ -953,6 +953,7 @@ public class BankReconciliationService {
     List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
     for (MoveLine moveLine : moveLines) {
       moveLineService.removePostedNbr(moveLine, bankReconciliationLine.getPostedNbr());
+      moveLine.setIsSelectedBankReconciliation(false);
     }
     boolean isUnderCorrection =
         bankReconciliationLine.getBankReconciliation().getStatusSelect()
@@ -1321,7 +1322,11 @@ public class BankReconciliationService {
   public boolean getIsCorrectButtonHidden(BankReconciliation bankReconciliation)
       throws AxelorException {
     String onClosedPeriodClause =
-        " AND self.move.period.statusSelect = " + PeriodRepository.STATUS_CLOSED;
+        " AND self.move.period.statusSelect IN ("
+            + PeriodRepository.STATUS_CLOSED
+            + ","
+            + PeriodRepository.STATUS_CLOSURE_IN_PROGRESS
+            + ")";
     List<MoveLine> authorizedMoveLinesOnClosedPeriod =
         moveLineRepository
             .all()
