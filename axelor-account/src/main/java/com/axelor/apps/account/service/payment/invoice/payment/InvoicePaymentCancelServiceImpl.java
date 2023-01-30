@@ -19,9 +19,8 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -29,8 +28,6 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,25 +67,14 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
    */
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
-
     Move paymentMove = invoicePayment.getMove();
-    List<Reconcile> reconciliations = invoicePayment.getReconcileList();
 
-    log.debug("cancel : reconcile : {}", reconciliations);
-
-    if (!CollectionUtils.isEmpty(reconciliations)) {
-      for (Reconcile reconcile : reconciliations) {
-        if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
-          reconcileService.unreconcile(reconcile);
-        }
+    if (paymentMove != null) {
+      if (paymentMove.getStatusSelect() == MoveRepository.STATUS_NEW) {
+        invoicePayment.setMove(null);
       }
-    }
-    if (paymentMove != null
-        && invoicePayment.getTypeSelect() == InvoicePaymentRepository.TYPE_PAYMENT) {
-      invoicePayment.setMove(null);
       moveCancelService.cancel(paymentMove);
-    } else {
-      this.updateCancelStatus(invoicePayment);
+      updateCancelStatus(invoicePayment);
     }
   }
 

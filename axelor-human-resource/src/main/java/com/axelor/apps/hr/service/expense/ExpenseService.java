@@ -87,8 +87,9 @@ public interface ExpenseService {
    * @param expense
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
-  public void cancelPayment(Expense expense) throws AxelorException;
+  void cancelPayment(Expense expense) throws AxelorException;
+
+  void resetExpensePaymentAfterCancellation(Expense expense);
 
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException;
