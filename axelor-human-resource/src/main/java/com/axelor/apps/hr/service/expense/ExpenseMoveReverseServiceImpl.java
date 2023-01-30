@@ -72,7 +72,7 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
             isAutomaticAccounting,
             isUnreconcileOriginalMove,
             dateOfReversion);
-    if (!Beans.get(AppService.class).isApp("employee")) {
+    if (!Beans.get(AppService.class).isApp("expense")) {
       return reverseMove;
     }
 
