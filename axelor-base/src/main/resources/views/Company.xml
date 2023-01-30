@@ -13,8 +13,7 @@
     onSave="action-company-check-multi-banks" canNew="_canNew">
     <panel name="mainPanel" readonlyIf="$popup()">
       <panel name="logoPanel" colSpan="4">
-        <field name="logo" widget="Image" colSpan="12"
-          onChange="action-company-logo-onchange-update-dimension"/>
+        <field name="logo" widget="Image" colSpan="12"/>
         <field name="width" requiredIf="height"
           onChange="action-company-condition-validate-logo-height-and-width">
           <viewer depends="width"><![CDATA[
@@ -176,10 +175,6 @@
 
   <action-method name="action-company-check-multi-banks">
     <call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks"/>
-  </action-method>
-
-  <action-method name="action-company-logo-onchange-update-dimension">
-    <call class="com.axelor.apps.base.web.CompanyController" method="updateDimension"/>
   </action-method>
 
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
