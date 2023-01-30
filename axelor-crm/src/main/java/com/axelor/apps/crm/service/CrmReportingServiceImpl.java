@@ -61,18 +61,17 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       boolean isPartner = crmReporting.getTypeSelect().equals(Partner.class.getName());
       boolean isOpportunity = false;
 
-      switch (className) {
-        case OPPORTUNITY:
+      if (className.equals(OPPORTUNITY) || className.equals(EVENT)) {
+
+        if (isPartner) {
+          model = PARTNER.toLowerCase();
+        } else {
+          model = LEAD.toLowerCase();
+        }
+
+        if (className.equals(OPPORTUNITY)) {
           isOpportunity = true;
-        case EVENT:
-          if (isPartner) {
-            model = PARTNER.toLowerCase();
-          } else {
-            model = LEAD.toLowerCase();
-          }
-          break;
-        default:
-          break;
+        }
       }
 
       this.prepareQuery(crmReporting, isPartner, model);
