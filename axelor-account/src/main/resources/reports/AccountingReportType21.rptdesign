@@ -654,7 +654,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 		WHEN 
 			FixedAsset.first_service_date < AccountingReport.date_from
 			and((FixedAsset.status_select = 2 OR FixedAsset.status_select = 3)
-			or(FixedAsset.status_select = 4 and FixedAsset.disposal_date > AccountingReport.date_to))
+			or(FixedAsset.status_select = 4 and FixedAsset.disposal_date > AccountingReport.date_from))
 		THEN FixedAsset.gross_value
 		ELSE 0
 	END) AS value_a,
