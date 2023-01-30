@@ -316,21 +316,22 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   protected BankOrder generateMoves(BankOrder bankOrder) throws AxelorException {
-    switch (bankOrder.getFunctionalOriginSelect()) {
-      case BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION:
-        PaymentSession paymentSession =
-            paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
-        if (paymentSession != null) {
-          Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
-          break;
-        }
-        // TODO other cases
-      default:
-        bankOrderMoveService.generateMoves(bankOrder);
-        bankOrder.setAreMovesGenerated(true);
-        validatePayment(bankOrder);
+    if (bankOrder
+        .getFunctionalOriginSelect()
+        .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION)) {
+      PaymentSession paymentSession =
+          paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
+
+      if (paymentSession != null) {
+        Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
+        return bankOrderRepo.find(bankOrder.getId());
+      }
     }
+
+    bankOrderMoveService.generateMoves(bankOrder);
+    bankOrder.setAreMovesGenerated(true);
+    validatePayment(bankOrder);
 
     return bankOrderRepo.find(bankOrder.getId());
   }
