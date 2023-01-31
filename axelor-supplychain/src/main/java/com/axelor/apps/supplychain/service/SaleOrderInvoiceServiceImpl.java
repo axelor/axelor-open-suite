@@ -232,20 +232,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       int operationSelect,
       SaleOrder saleOrder,
       Map<Long, BigDecimal> qtyToInvoiceMap,
-      Map<Long, BigDecimal> priceMap,
-      boolean isPercent) {
+      Map<Long, BigDecimal> priceMap) {
 
     if (operationSelect == SaleOrderRepository.INVOICE_LINES) {
       amountToInvoice = BigDecimal.ZERO;
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         Long saleOrderLineId = saleOrderLine.getId();
         if (qtyToInvoiceMap.containsKey(saleOrderLineId) && priceMap.containsKey(saleOrderLineId)) {
-          BigDecimal qtyToInvoice =
-              qtyToInvoiceMap
-                  .get(saleOrderLineId)
-                  .divide(new BigDecimal(100), RoundingMode.HALF_UP);
           amountToInvoice =
-              amountToInvoice.add(qtyToInvoice.multiply(priceMap.get(saleOrderLineId)));
+              amountToInvoice.add(
+                  qtyToInvoiceMap.get(saleOrderLineId).multiply(priceMap.get(saleOrderLineId)));
         }
       }
     }
