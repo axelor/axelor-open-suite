@@ -824,8 +824,8 @@
   </selection>
 
   <selection name="accounting.report.analytic.config.line.type.select">
-    <option value="1">Code</option>
-    <option value="2">Range</option>
-    <option value="3">Account</option>
+    <option value="1" order="3">Account code filter</option>
+    <option value="2" order="2">Multiple accounts</option>
+    <option value="3" order="1">Single account</option>
   </selection>
 </object-views>

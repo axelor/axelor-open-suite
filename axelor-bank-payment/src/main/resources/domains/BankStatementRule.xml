@@ -27,6 +27,10 @@
     <many-to-one ref="com.axelor.apps.bankpayment.db.BankStatementQuery"
       name="moveLineBankStatementQuery" title="Move line's fetch query"/>
 
+    <many-to-one name="specificTax" ref="com.axelor.apps.account.db.Tax"
+      title="Specific tax"
+      help="By filling in this field, the selected tax will be applied to the move lines for which the tax is mandatory instead of the one filled in the configuration of the account"/>
+
     <extra-code><![CDATA[
 
     // RULE TYPE

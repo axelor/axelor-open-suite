@@ -303,7 +303,7 @@
     <panel name="analyticDistributionPanel" title="Analytic distribution"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       showIf="account.analyticDistributionAuthorized"
-      readonlyIf="move.period.statusSelect == 2 || $validatePeriod">
+      readonlyIf="move.period.statusSelect == 2 || move.period.statusSelect == 5 || $validatePeriod">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid" colSpan="12"
         form-view="analytic-distribution-template-form"
@@ -649,7 +649,7 @@
     </panel>
     <panel name="detailsPanel">
       <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"
-        readonlyIf="move.period.statusSelect == 2 || $validatePeriod"/>
+        readonlyIf="move.period.statusSelect == 2 || move.period.statusSelect == 5 || $validatePeriod"/>
       <field name="move.period.statusSelect" hidden="true"/>
       <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     </panel>
