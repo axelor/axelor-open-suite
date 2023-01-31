@@ -4,8 +4,9 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceProductStatement;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Product;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,16 +17,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class InvoiceProductStatementServiceImpl implements InvoiceProductStatementService {
-  protected AccountConfigRepository accountConfigRepository;
+  protected AccountConfigService accountConfigService;
 
   @Inject
-  public InvoiceProductStatementServiceImpl(AccountConfigRepository accountConfigRepository) {
-    this.accountConfigRepository = accountConfigRepository;
+  public InvoiceProductStatementServiceImpl(AccountConfigService accountConfigService) {
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
-  public String getInvoiceProductStatement(Invoice invoice) {
-    AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
+  public String getInvoiceProductStatement(Invoice invoice) throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
     if (invoiceLineList == null
         || invoiceLineList.isEmpty()
@@ -37,7 +38,7 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
     return getStatement(invoice, productTypes);
   }
 
-  protected String getStatement(Invoice invoice, Set<String> productTypes) {
+  protected String getStatement(Invoice invoice, Set<String> productTypes) throws AxelorException {
     if (!productTypes.isEmpty()) {
       Set<InvoiceProductStatement> invoiceProductStatementList =
           getInvoiceProductStatements(invoice);
@@ -46,8 +47,9 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
     return "";
   }
 
-  protected Set<InvoiceProductStatement> getInvoiceProductStatements(Invoice invoice) {
-    AccountConfig accountConfig = accountConfigRepository.findByCompany(invoice.getCompany());
+  protected Set<InvoiceProductStatement> getInvoiceProductStatements(Invoice invoice)
+      throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
     return accountConfig.getStatementsForItemsCategoriesSet();
   }
 
@@ -81,15 +83,15 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
       return "";
     }
     int min = getTypeListMinSize(invoiceProductStatementList);
-    List<String> statementSet = new ArrayList<>();
+    List<String> statementList = new ArrayList<>();
     for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
       Set<String> result = getTypesList(invoiceProductStatement);
       if (result.containsAll(productTypes) && result.size() == min) {
-        statementSet.add(invoiceProductStatement.getStatement());
+        statementList.add(invoiceProductStatement.getStatement());
       }
     }
-    Collections.sort(statementSet);
-    return statementSet.stream().findFirst().orElse("");
+    Collections.sort(statementList);
+    return statementList.stream().findFirst().orElse("");
   }
 
   protected int getTypeListMinSize(Set<InvoiceProductStatement> invoiceProductStatementList) {
