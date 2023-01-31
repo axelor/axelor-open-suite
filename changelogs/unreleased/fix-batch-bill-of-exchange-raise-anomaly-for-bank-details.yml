@@ -1,0 +1,3 @@
+---
+title: "Batch bill of exchange : Raise anomaly when invoices are ready to be processed but bank details is inactive."
+type: fix
