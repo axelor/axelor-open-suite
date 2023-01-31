@@ -488,11 +488,11 @@
 
   <action-group
     name="action-invoice-line-group-analytic-distribution-template-onchange">
-    <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-invoice-line-method-clear-analytic-invoice-line"/>
     <action name="action-invoice-line-method-check-analytic-on-invoice-line"/>
     <action name="action-invoice-line-method-create-distribution"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
+    <action name="action-invoice-line-check-distribution-template-account"/>
   </action-group>
 
   <action-group name="action-invoice-line-group-analytic-move-line-onchange">

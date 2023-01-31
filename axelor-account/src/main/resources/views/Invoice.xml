@@ -1648,6 +1648,7 @@ InvoiceSet.length > 0))"
 
   <action-group name="action-invoice-onsave-group">
     <action name="action-validate-invoice-ckeck-duplicate-same-nbr-year-partner"/>
+    <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-invoice-method-generate-invoice-terms"
       if="statusSelect == 1 &amp;&amp; invoiceTermList?.isEmpty() &amp;&amp; invoiceLineList?.size() > 0 &amp;&amp; paymentCondition != null"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>

@@ -629,10 +629,25 @@ public class InvoiceLineController {
 
   public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
-      Context parentContext = request.getContext().getParent();
-      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (invoiceLine != null && invoiceLine.getAccount() != null) {
-        Beans.get(AccountService.class).checkAnalyticAxis(invoiceLine.getAccount());
+
+      if (Invoice.class.equals(request.getContext().getContextClass())) {
+        Invoice invoice = request.getContext().asType(Invoice.class);
+        if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
+          for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+            if (invoiceLine != null && invoiceLine.getAccount() != null) {
+              Beans.get(AccountService.class)
+                  .checkAnalyticAxis(
+                      invoiceLine.getAccount(), invoiceLine.getAnalyticDistributionTemplate());
+            }
+          }
+        }
+      } else {
+        InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+        if (invoiceLine != null && invoiceLine.getAccount() != null) {
+          Beans.get(AccountService.class)
+              .checkAnalyticAxis(
+                  invoiceLine.getAccount(), invoiceLine.getAnalyticDistributionTemplate());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

@@ -607,6 +607,7 @@
     <action name="action-move-method-check-dates"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
+    <action name="action-move-line-check-distribution-template-account"/>
     <action name="action-move-method-update-partner" if="id != null"/>
     <action name="save"/>
     <action name="action-move-method-update-invoice-terms"/>

@@ -935,7 +935,6 @@
   </action-group>
 
   <action-group name="action-move-line-group-analytic-distribution-template-onchange">
-    <action name="action-move-line-check-distribution-template-account"/>
     <action name="action-move-line-method-clear-analytic-move-line"/>
     <action name="action-move-line-method-check-analytic-on-move-line"/>
     <action name="action-move-line-method-create-analytic-distribution"/>
@@ -943,6 +942,7 @@
     <action name="action-move-line-method-set-required-analytic-accounts"/>
     <action name="action-move-line-method-clear-analytic-move-line"
       if="analyticDistributionTemplate == null"/>
+    <action name="action-move-line-check-distribution-template-account"/>
   </action-group>
 
   <action-group name="action-move-line-group-currency-amount-rate-onchange">
