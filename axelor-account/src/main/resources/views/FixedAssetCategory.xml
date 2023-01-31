@@ -147,7 +147,7 @@
   <action-attrs
     name="action-attrs-account-fixed-asset-category-reset-journal-account-fields">
     <attribute name="value"
-      for="journal,ifrsDepreciationAccount,ifrsChargeAccount,chargeAccount,approExtraordDepreciationExpenseAccount,depreciationAccount,provisionTangibleFixedAssetAccount,appProvisionTangibleFixedAssetAccount,wbProvisionTangibleFixedAssetAccount,expenseDepreciationDerogatoryAccount,capitalDepreciationDerogatoryAccount,incomeDepreciationDerogatoryAccount,realisedAssetsValueAccount,realisedAssetsIncomeAccount,debtReceivableAccount,analyticDistributionTemplate"
+      for="journal,ifrsDepreciationAccount,ifrsChargeAccount,chargeAccount,approExtraordDepreciationExpenseAccount,depreciationAccount,provisionTangibleFixedAssetAccount,wbProvisionTangibleFixedAssetAccount,expenseDepreciationDerogatoryAccount,capitalDepreciationDerogatoryAccount,incomeDepreciationDerogatoryAccount,realisedAssetsValueAccount,realisedAssetsIncomeAccount,debtReceivableAccount,analyticDistributionTemplate"
       expr="eval: null"/>
   </action-attrs>
 
