@@ -423,6 +423,10 @@ public class BankReconciliationService {
             move.getMoveLineList().size() + 1,
             origin,
             description);
+    if (account.getHasAutomaticApplicationAccountingDate()) {
+      moveLineService.applyCutOffDates(moveLine, move, date, date);
+      moveLine.setIsCutOffGenerated(true);
+    }
     if (account.getAnalyticDistributionRequiredOnMoveLines()) {
       if (account.getAnalyticDistributionTemplate() == null) {
         throw new AxelorException(
