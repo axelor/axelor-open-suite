@@ -4,7 +4,10 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid model="com.axelor.apps.bankpayment.db.BankStatementQuery"
-    title="Bank statement queries" name="bank-statement-query-grid">
+    title="Bank statement queries" name="bank-statement-query-grid"
+    orderBy="sequence, confidenceIndex">
+    <field name="sequence" width="160"/>
+    <field name="confidenceIndex" width="160"/>
     <field name="name"/>
     <field name="ruleTypeSelect"/>
   </grid>
