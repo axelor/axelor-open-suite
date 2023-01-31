@@ -162,29 +162,19 @@ public class AnalyticDistributionLineController {
         grandParentContext = request.getContext().getParent().getParent();
         if (grandParentContext != null) {
           Account account = grandParentContext.asType(Account.class);
-          if (Beans.get(AccountAnalyticRulesRepository.class)
-                  .all()
-                  .filter(
-                      "self.fromAccount < "
-                          + account.getId()
-                          + " AND self.toAccount > "
-                          + account.getId())
-                  .count()
-              != 0) {
-            List<AnalyticAccount> analyticAccountList =
-                Beans.get(AccountAnalyticRulesRepository.class)
-                    .findAnalyticAccountByAccounts(account);
-            if (CollectionUtils.isNotEmpty(analyticAccountList)) {
-              for (AnalyticAccount analyticAccount : analyticAccountList) {
-                analyticAccountIdList.add(analyticAccount.getId());
-              }
-
-              domain += " AND self.id in (";
-              String idList = Joiner.on(",").join(analyticAccountIdList);
-              domain += idList + ")";
-            } else {
-              domain += " AND self.id in (0)";
+          List<AnalyticAccount> analyticAccountList =
+              Beans.get(AccountAnalyticRulesRepository.class)
+                  .findAnalyticAccountByAccounts(account);
+          if (CollectionUtils.isNotEmpty(analyticAccountList)) {
+            for (AnalyticAccount analyticAccount : analyticAccountList) {
+              analyticAccountIdList.add(analyticAccount.getId());
             }
+
+            domain += " AND self.id in (";
+            String idList = Joiner.on(",").join(analyticAccountIdList);
+            domain += idList + ")";
+          } else {
+            domain += " AND self.id in (0)";
           }
         }
       }

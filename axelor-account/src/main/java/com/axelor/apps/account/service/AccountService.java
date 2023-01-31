@@ -184,6 +184,12 @@ public class AccountService {
                     "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
           } else {
             List<Long> rulesAnalyticAccountList = getRulesIds(account);
+            if (CollectionUtils.isEmpty(rulesAnalyticAccountList)) {
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                  I18n.get(
+                      "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."));
+            }
 
             if (CollectionUtils.isNotEmpty(rulesAnalyticAccountList)
                 && account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList()
