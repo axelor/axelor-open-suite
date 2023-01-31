@@ -78,8 +78,10 @@
     <domain>self.restoreDate != null</domain>
   </action-view>
 
+  <menuitem name="admin-root-anonymizer-template" title="Anonymizer template" parent="admin-root-maintenance" order="12"/>
+
   <menuitem name="admin-root-anonymizer" title="Anonymizer"
-    action="action.admin.root.view.anonymizer" parent="admin-root-maintenance"/>
+    action="action.admin.root.view.anonymizer" parent="admin-root-anonymizer-template"/>
 
   <action-view name="action.admin.root.view.anonymizer" title="Anonymizer"
     model="com.axelor.apps.base.db.Anonymizer">
@@ -88,7 +90,7 @@
   </action-view>
 
   <menuitem name="admin-root-faker-api-field" title="Faker API fields"
-    action="action.admin.root.view.faker.api.field" parent="admin-root-maintenance"/>
+    action="action.admin.root.view.faker.api.field" parent="admin-root-anonymizer-template"/>
 
   <action-view name="action.admin.root.view.faker.api.field" title="Faker API field"
     model="com.axelor.apps.base.db.FakerApiField">
