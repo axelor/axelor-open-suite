@@ -385,6 +385,17 @@ public class BankReconciliationService {
             move.getMoveLineList().size() + 1,
             origin,
             description);
+    if (account.getAnalyticDistributionRequiredOnMoveLines()) {
+      if (account.getAnalyticDistributionTemplate() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(
+                BankPaymentExceptionMessage
+                    .BANK_RECONCILIATION_NO_DISTRIBUTION_GENERATED_MOVE_LINE),
+            account.getCode());
+      }
+      moveLine.setAnalyticDistributionTemplate(account.getAnalyticDistributionTemplate());
+    }
     move.addMoveLineListItem(moveLine);
     return moveLine;
   }
