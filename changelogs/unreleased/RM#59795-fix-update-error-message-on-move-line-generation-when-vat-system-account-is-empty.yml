@@ -1,0 +1,3 @@
+---
+title: "ACCOUNT: corrected wrong message on move line generation when account vat system is empty"
+type: fix

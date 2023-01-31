@@ -3241,6 +3241,7 @@
 "VAT Statement on amount received","État TVA sur encaissement",,
 "VAT Statement on invoices","État TVA sur facturation",,
 "VAT System","Régime TVA",,
+"VAT system is mandatory for the account %s on the move line %s","Le régime TVA est obligatoire pour le compte %s (%s) sur la ligne d'écriture %s",,
 "Valid","Valide",,
 "Valid the generated move","Valider l'écriture générée ?",,
 "Validate","Valider",,

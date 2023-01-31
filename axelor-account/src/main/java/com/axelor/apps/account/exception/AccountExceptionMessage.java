@@ -1498,4 +1498,7 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE = /*$$(*/
       "At least one of the invoice term is paid or partially paid, thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms." /*)*/;
+
+  public static final String MOVE_ACCOUNT_VAT_SYSTEM_MISSING = /*$$(*/
+      "VAT system is mandatory for the account %s on the move line %s" /*)*/;;
 }

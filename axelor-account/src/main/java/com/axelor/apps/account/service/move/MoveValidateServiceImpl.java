@@ -252,12 +252,21 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         if (account.getIsTaxAuthorizedOnMoveLine()
             && account.getIsTaxRequiredOnMoveLine()
             && moveLine.getTaxLine() == null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(AccountExceptionMessage.MOVE_9),
-              account.getCode(),
-              account.getName(),
-              moveLine.getName());
+          if (account.getVatSystemSelect() == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(AccountExceptionMessage.MOVE_ACCOUNT_VAT_SYSTEM_MISSING),
+                account.getCode(),
+                account.getName(),
+                moveLine.getName());
+          } else {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(AccountExceptionMessage.MOVE_9),
+                account.getCode(),
+                account.getName(),
+                moveLine.getName());
+          }
         }
 
         if (moveLine.getAnalyticDistributionTemplate() == null
