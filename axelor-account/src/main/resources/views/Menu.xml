@@ -472,17 +472,13 @@
     <view type="form" name="interbank-code-form"/>
   </action-view>
 
-  <menuitem name="account-root-accounting-conf-report-types"
-    parent="account-conf-reporting" title="Report/Export types"/>
-
-
   <menuitem name="account-root-accounting-conf-report-types-report"
-    action="account.conf.reporting.accounting.report.types.report"
-    parent="account-root-accounting-conf-report-types" title="Report types"/>
+    action="account.conf.reporting.accounting.report.types.report" parent="account-conf-reporting"
+    title="Report types"/>
 
   <menuitem name="account-root-accounting-conf-report-types-export"
-    action="account.conf.reporting.accounting.report.types.export"
-    parent="account-root-accounting-conf-report-types" title="Export types"/>
+    action="account.conf.reporting.accounting.report.types.export" parent="account-conf-reporting"
+    title="Export types"/>
 
   <action-view name="account.conf.reporting.accounting.report.types.report"
     title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
