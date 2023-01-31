@@ -21,6 +21,10 @@
     <string name="name" title="Name" namecolumn="true"/>
     <many-to-many name="statusSelectSet" ref="com.axelor.apps.crm.db.OpportunityStatus"
       title="Statuses to take into account"/>
+    <many-to-many ref="com.axelor.apps.account.db.Journal" name="journalSet"
+      title="Journals to take into account"/>
+    <string name="functionalOriginSelect" title="Functional origin"
+      selection="iaccount.move.functional.origin.select"/>
 
     <extra-code><![CDATA[
 

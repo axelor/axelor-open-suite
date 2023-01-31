@@ -214,6 +214,11 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     if (statusSelectList.isEmpty()) {
       statusSelectList.add(0);
     }
+    List<Integer> functionalOriginList =
+        StringTool.getIntegerList(forecastRecapLineType.getFunctionalOriginSelect());
+    if (functionalOriginList.isEmpty()) {
+      functionalOriginList.add(0);
+    }
     Query<? extends Model> modelQuery =
         JPA.all(getModel(forecastRecapLineType))
             .filter(getFilter(forecastRecapLineType, manageMultiBanks))
@@ -234,6 +239,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .bind(
                 "toDateMinusDuration",
                 forecastRecap.getToDate().minusDays(forecastRecapLineType.getEstimatedDuration()))
+            .bind("journals", forecastRecapLineType.getJournalSet())
+            .bind("functionalOrigin", functionalOriginList)
             .order("id");
 
     final int FETCH_LIMIT = 10;
@@ -378,6 +385,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         return "self.company = :company "
             + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
+            + "AND ((:journals) IS NULL OR self.journal in (:journals)) "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
             + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice = self.id "
@@ -437,6 +445,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 ? " AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
                 : "")
             + "AND self.statusSelect IN (:statusSelectList) "
+            + "AND ((:journals) IS NULL OR self.journal in (:journals)) "
+            + "AND ((:functionalOrigin) IS NULL OR self.functionalOriginSelect in (:functionalOrigin)) "
             + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.moveLine.move = self.id "
             + "AND Inv.dueDate BETWEEN :fromDate AND :toDate "
             + "AND Inv.amountRemaining != 0) > 0";
