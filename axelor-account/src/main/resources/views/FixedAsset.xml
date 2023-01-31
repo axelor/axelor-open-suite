@@ -38,7 +38,8 @@
       <panel name="mainPanel" colSpan="12">
         <field name="name" readonlyIf="statusSelect > 1" colSpan="6"/>
         <field name="company" readonlyIf="statusSelect > 1" colSpan="3" canEdit="false"
-          form-view="company-form" grid-view="company-grid"/>
+          form-view="company-form" grid-view="company-grid"
+          onChange="action-record-account-fixed-asset-reset-company-related-fields"/>
         <field name="company.currency" title="Currency" colSpan="3" form-view="currency-form"
           grid-view="currency-grid"/>
         <field name="fixedAssetCategory" domain="self.company = :company"
@@ -65,8 +66,8 @@
     </panel>
     <panel name="otherDetailsPanel">
       <field name="partner" readonlyIf="statusSelect > 1" canEdit="false"
-        domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form"
-        grid-view="partner-supplier-grid"/>
+        domain="self.isContact = false AND self.isSupplier = true AND (:company member of self.companySet)"
+        form-view="partner-form" grid-view="partner-supplier-grid"/>
       <field name="invoiceLine" colSpan="3"
         domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)"
         form-view="invoice-line-form" grid-view="invoice-line-grid"/>
@@ -963,6 +964,14 @@
     <field name="barcodeTypeConfig"
       expr="eval: __config__?.app?.getApp('account')?.getFixedAssetBarcodeTypeConfig()"
       if="__config__.app.getApp('account')?.getActivateFixedAssetBarCodeGeneration()"/>
+  </action-record>
+
+  <action-record name="action-record-account-fixed-asset-reset-company-related-fields"
+    model="com.axelor.apps.account.db.FixedAsset">
+    <field
+      name="fixedAssetCategory,invoiceLine,purchaseAccountMove,journal,purchaseAccount,analyticDistributionTemplate,associatedFixedAssetsSet"
+      expr="eval: null"/>
+    <field name="partner" expr="eval: null" if="!(partner?.companySet?.contains(company))"/>
   </action-record>
 
   <action-method name="action-fixed-asset-method-check-depreciation-plans">

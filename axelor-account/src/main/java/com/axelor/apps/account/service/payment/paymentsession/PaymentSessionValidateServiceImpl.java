@@ -63,7 +63,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.TypedQuery;
@@ -528,16 +527,21 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out,
       boolean isGlobal)
       throws AxelorException {
-    Iterator<BigDecimal> amountIterator = isGlobal ? paymentAmountMap.values().iterator() : null;
 
     for (LocalDate accountingDate : moveDateMap.keySet()) {
+
       Map<Partner, List<Move>> moveMapIt = moveDateMap.get(accountingDate);
 
       if (!moveMapIt.isEmpty()) {
         this.generateCashMoveLines(paymentSession, moveMapIt, paymentAmountMap, out, isGlobal);
 
-        if (isGlobal) {
-          this.generateCashMove(paymentSession, accountingDate, amountIterator.next(), out);
+        if (isGlobal
+            && moveDateMap != null
+            && moveDateMap.get(accountingDate) != null
+            && moveDateMap.get(accountingDate).get(null) != null) {
+          BigDecimal paymentAmount =
+              paymentAmountMap.get(moveDateMap.get(accountingDate).get(null).get(0));
+          this.generateCashMove(paymentSession, accountingDate, paymentAmount, out);
         }
       }
     }
