@@ -93,15 +93,15 @@
         </panel>
         <field name="isComparativeBalance" widget="boolean-switch" colSpan="12"
           showIf="reportType.typeSelect == 2"/>
-        <panel name="previousPeriodPanel" title="Previous period"
+        <panel name="otherPeriodPanel" title="Period"
           showIf="reportType.typeSelect == 2 &amp;&amp; isComparativeBalance" colSpan="12">
-          <field name="previousYear"
-            onChange="action-accounting-report-record-previous-period-dates"
-            onSelect="action-accounting-report-attrs-previous-year-domain"
+          <field name="otherYear"
+            onChange="action-accounting-report-record-other-period-dates"
+            onSelect="action-accounting-report-attrs-other-year-domain"
             grid-view="year-account-grid" form-view="year-account-form" colSpan="6"/>
           <field name="previousPeriod"
-            onChange="action-accounting-report-record-previous-period-on-change"
-            onSelect="action-accounting-report-attrs-previous-period-domain" form-view="period-form"
+            onChange="action-accounting-report-record-other-period-on-change"
+            onSelect="action-accounting-report-attrs-other-period-domain" form-view="period-form"
             grid-view="period-grid" canView="false" colSpan="6"/>
           <field name="otherDateFrom" colSpan="6"/>
           <field name="otherDateTo" colSpan="6"/>
@@ -345,12 +345,12 @@
       if="eval: year == null "/>
   </action-attrs>
 
-  <action-attrs name="action-accounting-report-attrs-previous-period-domain">
-    <attribute name="domain" expr="eval: &quot;self.year.id = ${previousYear?.id}&quot;"
-      for="previousPeriod" if="eval: previousYear != null"/>
-    <attribute name="domain" for="previousPeriod"
+  <action-attrs name="action-accounting-report-attrs-other-period-domain">
+    <attribute name="domain" expr="eval: &quot;self.year.id = ${otherYear?.id}&quot;"
+      for="otherPeriod" if="eval: otherYear != null"/>
+    <attribute name="domain" for="otherPeriod"
       expr="eval: &quot; self.year.company = :company AND self.year.typeSelect = 1 &quot;"
-      if="eval: previousYear == null "/>
+      if="eval: otherYear == null "/>
   </action-attrs>
 
   <action-attrs name="action-accounting-report-attrs-year-domain">
@@ -358,8 +358,8 @@
       expr="eval: &quot;self.company.id = ${company?.id} AND self.typeSelect = 1 &quot;"/>
   </action-attrs>
 
-  <action-attrs name="action-accounting-report-attrs-previous-year-domain">
-    <attribute name="domain" for="previousYear"
+  <action-attrs name="action-accounting-report-attrs-other-year-domain">
+    <attribute name="domain" for="otherYear"
       expr="eval: &quot;self.company.id = ${company?.id} AND self.typeSelect = 1 &quot;"/>
   </action-attrs>
 
@@ -406,12 +406,11 @@
       if="(period == null &amp;&amp; !(typeSelect in [2,12,15,16,17]))"/>
   </action-record>
 
-  <action-record name="action-accounting-report-record-previous-period-on-change"
+  <action-record name="action-accounting-report-record-other-period-on-change"
     model="com.axelor.apps.account.db.AccountingReport">
-    <field name="previousYear" expr="eval: previousPeriod.year" if="previousPeriod != null"/>
-    <field name="otherDateFrom" expr="eval: previousPeriod.fromDate"
-      if="previousPeriod != null"/>
-    <field name="otherDateTo" expr="eval: previousPeriod.toDate" if="previousPeriod != null"/>
+    <field name="otherYear" expr="eval: otherPeriod.year" if="otherPeriod != null"/>
+    <field name="otherDateFrom" expr="eval: otherPeriod.fromDate" if="otherPeriod != null"/>
+    <field name="otherDateTo" expr="eval: otherPeriod.toDate" if="otherPeriod != null"/>
   </action-record>
 
   <action-record name="action-accounting-report-record-period-dates"
@@ -421,11 +420,11 @@
     <field name="dateTo" expr="eval: year.toDate" if="year"/>
   </action-record>
 
-  <action-record name="action-accounting-report-record-previous-period-dates"
+  <action-record name="action-accounting-report-record-other-period-dates"
     model="com.axelor.apps.account.db.AccountingReport">
-    <field name="previousPeriod" expr="eval: null"/>
-    <field name="otherDateFrom" expr="eval: previousYear.fromDate" if="previousYear"/>
-    <field name="otherDateTo" expr="eval: previousYear.toDate" if="previousYear"/>
+    <field name="otherPeriod" expr="eval: null"/>
+    <field name="otherDateFrom" expr="eval: otherYear.fromDate" if="otherYear"/>
+    <field name="otherDateTo" expr="eval: otherYear.toDate" if="otherYear"/>
   </action-record>
 
   <action-record name="action-accounting-report-record-date-from-and-date-to"
