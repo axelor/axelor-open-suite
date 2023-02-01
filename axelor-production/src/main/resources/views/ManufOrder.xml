@@ -490,6 +490,7 @@
         canRemove="false" colSpan="12" grid-view="generated-manuf-order-grid"/>
 
       <button title="Plan selected orders and discard others" name="planSelectedOrders"
+        colSpan="12"
         onClick="action-manuf-order-validate-order-selection,com.axelor.apps.production.web.ManufOrderController:removeUnselectedMOs,close"/>
     </panel>
   </form>
