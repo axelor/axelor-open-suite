@@ -61,4 +61,12 @@ public interface ProductCompanyService {
    */
   Object getWithNoDefault(Product originalProduct, String fieldName, Company company)
       throws AxelorException;
+
+  /**
+   * Method that checks if field name is a company specific product field
+   *
+   * @param fieldName
+   * @return true if field name is a company specific field, else no.
+   */
+  boolean isCompanySpecificProductFields(String fieldName);
 }

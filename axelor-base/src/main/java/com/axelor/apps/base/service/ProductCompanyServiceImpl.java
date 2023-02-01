@@ -81,16 +81,10 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
    */
   private Product findAppropriateProductCompany(
       Product originalProduct, String fieldName, Company company) throws AxelorException {
-    if (originalProduct == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(BaseExceptionMessage.PRODUCT_COMPANY_NO_PRODUCT),
-          fieldName);
-    } else if (fieldName == null || fieldName.trim().equals("")) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(BaseExceptionMessage.PRODUCT_COMPANY_NO_FIELD),
-          originalProduct.getFullName());
+    checkProductAndFieldName(originalProduct, fieldName);
+
+    if (!isCompanySpecificProductFields(fieldName)) {
+      return originalProduct;
     }
 
     Product product = originalProduct;
@@ -98,14 +92,7 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
     if (company != null && originalProduct.getProductCompanyList() != null) {
       for (ProductCompany productCompany : originalProduct.getProductCompanyList()) {
         if (company.equals(productCompany.getCompany())) {
-          Set<MetaField> companySpecificFields =
-              appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
-          for (MetaField field : companySpecificFields) {
-            if (field.getName().equals(fieldName)) {
-              product = productCompany;
-              break;
-            }
-          }
+          product = productCompany;
           break;
         }
       }
@@ -126,6 +113,28 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
    */
   protected Product findAppropriateProductCompanyWithNoDefault(
       Product originalProduct, String fieldName, Company company) throws AxelorException {
+    checkProductAndFieldName(originalProduct, fieldName);
+
+    if (!isCompanySpecificProductFields(fieldName)) {
+      return null;
+    }
+
+    Product product = null;
+
+    if (company != null && originalProduct.getProductCompanyList() != null) {
+      for (ProductCompany productCompany : originalProduct.getProductCompanyList()) {
+        if (company.equals(productCompany.getCompany())) {
+          product = productCompany;
+          break;
+        }
+      }
+    }
+
+    return product;
+  }
+
+  protected void checkProductAndFieldName(Product originalProduct, String fieldName)
+      throws AxelorException {
     if (originalProduct == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -137,25 +146,14 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
           I18n.get(BaseExceptionMessage.PRODUCT_COMPANY_NO_FIELD),
           originalProduct.getFullName());
     }
+  }
 
-    Product product = null;
+  @Override
+  public boolean isCompanySpecificProductFields(String fieldName) {
+    Set<MetaField> companySpecificFields =
+        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
 
-    if (company != null && originalProduct.getProductCompanyList() != null) {
-      for (ProductCompany productCompany : originalProduct.getProductCompanyList()) {
-        if (company.equals(productCompany.getCompany())) {
-          Set<MetaField> companySpecificFields =
-              appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
-          for (MetaField field : companySpecificFields) {
-            if (field.getName().equals(fieldName)) {
-              product = productCompany;
-              break;
-            }
-          }
-          break;
-        }
-      }
-    }
-
-    return product;
+    return companySpecificFields.stream()
+        .anyMatch(metaField -> metaField.getName().equals(fieldName));
   }
 }

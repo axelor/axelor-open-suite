@@ -78,8 +78,9 @@ public interface BillOfMaterialService {
       throws AxelorException;
 
   /**
-   * Return a ANY BOM (Alternative or default) associated to product and company. If not found, it
-   * will return the default BOM
+   * This method will return a BOM fetched by priority that goes like this 1) search for company
+   * specific default BOM in the the original product 2) Any BOM with original product and company.
+   * 3) Default bom of the original product regardless of the company
    *
    * @param originalProduct
    * @param company
