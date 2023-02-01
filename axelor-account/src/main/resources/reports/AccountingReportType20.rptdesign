@@ -719,7 +719,7 @@ OR (EXISTS (
                 AND (reconcile.debit_move_line = ML.id OR reconcile.credit_move_line = ML.id)))))
 
 AND Move.ignore_in_accounting_ok IS false
-AND Move.status_select = 3
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 
 order by MoveLine.partner_full_name, MoveLine.date_val, MoveLine.name]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
