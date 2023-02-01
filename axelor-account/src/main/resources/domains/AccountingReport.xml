@@ -33,8 +33,6 @@
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
 
     <boolean name="isComparativeBalance" title="Comparative balance" default="false"/>
-    <date name="previousDateFrom" title="From (N-1)"/>
-    <date name="previousDateTo" title="To (N-1)"/>
     <many-to-one name="previousYear" ref="com.axelor.apps.base.db.Year"
       title="Year (N-1)"/>
     <many-to-one name="previousPeriod" ref="com.axelor.apps.base.db.Period"

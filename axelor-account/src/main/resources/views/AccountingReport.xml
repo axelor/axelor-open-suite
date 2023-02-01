@@ -103,8 +103,8 @@
             onChange="action-accounting-report-record-previous-period-on-change"
             onSelect="action-accounting-report-attrs-previous-period-domain" form-view="period-form"
             grid-view="period-grid" canView="false" colSpan="6"/>
-          <field name="previousDateFrom" colSpan="6"/>
-          <field name="previousDateTo" colSpan="6"/>
+          <field name="otherDateFrom" colSpan="6"/>
+          <field name="otherDateTo" colSpan="6"/>
         </panel>
         <field name="journal"
           hideIf="[0,1,2,3,4,5,10,12,13,14,15,16,17,18,19,20,21,22,23,24].indexOf(reportType.typeSelect) != -1"
@@ -409,10 +409,9 @@
   <action-record name="action-accounting-report-record-previous-period-on-change"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="previousYear" expr="eval: previousPeriod.year" if="previousPeriod != null"/>
-    <field name="previousDateFrom" expr="eval: previousPeriod.fromDate"
+    <field name="otherDateFrom" expr="eval: previousPeriod.fromDate"
       if="previousPeriod != null"/>
-    <field name="previousDateTo" expr="eval: previousPeriod.toDate"
-      if="previousPeriod != null"/>
+    <field name="otherDateTo" expr="eval: previousPeriod.toDate" if="previousPeriod != null"/>
   </action-record>
 
   <action-record name="action-accounting-report-record-period-dates"
@@ -425,8 +424,8 @@
   <action-record name="action-accounting-report-record-previous-period-dates"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="previousPeriod" expr="eval: null"/>
-    <field name="previousDateFrom" expr="eval: previousYear.fromDate" if="previousYear"/>
-    <field name="previousDateTo" expr="eval: previousYear.toDate" if="previousYear"/>
+    <field name="otherDateFrom" expr="eval: previousYear.fromDate" if="previousYear"/>
+    <field name="otherDateTo" expr="eval: previousYear.toDate" if="previousYear"/>
   </action-record>
 
   <action-record name="action-accounting-report-record-date-from-and-date-to"

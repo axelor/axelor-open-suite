@@ -457,8 +457,8 @@ left outer join public.account_account as ParentAccount6 on (ParentAccount5.pare
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
-(AccountingReport.previous_date_from IS NULL OR MoveLine.date_val >= AccountingReport.previous_date_from) AND
-(AccountingReport.previous_date_to IS NULL OR MoveLine.date_val <= AccountingReport.previous_date_to) AND
+(AccountingReport.other_date_from IS NULL OR MoveLine.date_val >= AccountingReport.other_date_from) AND
+(AccountingReport.other_date_to IS NULL OR MoveLine.date_val <= AccountingReport.other_date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
@@ -534,13 +534,13 @@ ORDER BY data.account_code
                     <text-property name="heading">previous_year_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">previous_date_from</property>
-                    <property name="alias">previous_date_from</property>
+                    <property name="columnName">other_date_from</property>
+                    <property name="alias">other_date_from</property>
                     <property name="analysis">dimension</property>
                 </structure>
                 <structure>
-                    <property name="columnName">previous_date_to</property>
-                    <property name="alias">previous_date_to</property>
+                    <property name="columnName">other_date_to</property>
+                    <property name="alias">other_date_to</property>
                     <property name="analysis">dimension</property>
                 </structure>
                 <structure>
@@ -683,12 +683,12 @@ ORDER BY data.account_code
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">previous_date_from</property>
+                        <property name="name">other_date_from</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">previous_date_to</property>
+                        <property name="name">other_date_to</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
@@ -811,15 +811,15 @@ ORDER BY data.account_code
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">previous_date_from</property>
-                    <property name="nativeName">previous_date_from</property>
+                    <property name="name">other_date_from</property>
+                    <property name="nativeName">other_date_from</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">previous_date_to</property>
-                    <property name="nativeName">previous_date_to</property>
+                    <property name="name">other_date_to</property>
+                    <property name="nativeName">other_date_to</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
@@ -919,7 +919,7 @@ ORDER BY data.account_code
 Company.height as logo_height,
 Company.width as logo_width,
 AccountingReport.is_comparative_balance as is_comparative_balance, CurrentYear.name as year_name,
-PreviousPeriod.name as previous_period_name,PreviousYear.name as previous_year_name,AccountingReport.previous_date_from,AccountingReport.previous_date_to,
+PreviousPeriod.name as previous_period_name,PreviousYear.name as previous_year_name,AccountingReport.other_date_from,AccountingReport.other_date_to,
 AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date,
 AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path,
 Period.name as period_name, Journal.name as journal_name, AccountingReport.global, AccountingReport.global_by_date,
@@ -1421,15 +1421,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">previous_date_from</property>
-                    <text-property name="displayName">previous_date_from</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["previous_date_from"]</expression>
+                    <property name="name">other_date_from</property>
+                    <text-property name="displayName">other_date_from</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["other_date_from"]</expression>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">previous_date_to</property>
-                    <text-property name="displayName">previous_date_to</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["previous_date_to"]</expression>
+                    <property name="name">other_date_to</property>
+                    <text-property name="displayName">other_date_to</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["other_date_to"]</expression>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
@@ -2101,7 +2101,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="category">Short Date</property>
                             <property name="pattern">Short Date</property>
                         </structure>
-                        <property name="resultSetColumn">previous_date_from</property>
+                        <property name="resultSetColumn">other_date_from</property>
                     </data>
                 </cell>
                 <cell id="4318">
@@ -2146,7 +2146,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="category">Short Date</property>
                             <property name="pattern">Short Date</property>
                         </structure>
-                        <property name="resultSetColumn">previous_date_to</property>
+                        <property name="resultSetColumn">other_date_to</property>
                     </data>
                 </cell>
             </row>
