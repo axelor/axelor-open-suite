@@ -221,7 +221,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   @Override
   public BigDecimal getPurchasePrice(SupplierCatalog supplierCatalog, Company company)
       throws AxelorException {
-    if (!supplierCatalog.getIsTakingProductPurchasePrice()) {
+    if (!supplierCatalog.getIsTakingProductPurchasePrice() && supplierCatalog.getPrice() != null) {
       return supplierCatalog.getPrice();
     }
 
