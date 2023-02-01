@@ -49,234 +49,237 @@ import org.slf4j.LoggerFactory;
 
 public class StockMoveToolServiceImpl implements StockMoveToolService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    protected StockMoveLineService stockMoveLineService;
-    protected AppBaseService appBaseService;
-    protected StockMoveRepository stockMoveRepo;
-    protected PartnerProductQualityRatingService partnerProductQualityRatingService;
-    private SequenceService sequenceService;
-    private StockMoveLineRepository stockMoveLineRepo;
+  protected StockMoveLineService stockMoveLineService;
+  protected AppBaseService appBaseService;
+  protected StockMoveRepository stockMoveRepo;
+  protected PartnerProductQualityRatingService partnerProductQualityRatingService;
+  private SequenceService sequenceService;
+  private StockMoveLineRepository stockMoveLineRepo;
 
-    @Inject
-    public StockMoveToolServiceImpl(
-            StockMoveLineService stockMoveLineService,
-            SequenceService sequenceService,
-            StockMoveLineRepository stockMoveLineRepository,
-            AppBaseService appBaseService,
-            StockMoveRepository stockMoveRepository,
-            PartnerProductQualityRatingService partnerProductQualityRatingService) {
-        this.stockMoveLineService = stockMoveLineService;
-        this.sequenceService = sequenceService;
-        this.stockMoveLineRepo = stockMoveLineRepository;
-        this.appBaseService = appBaseService;
-        this.stockMoveRepo = stockMoveRepository;
-        this.partnerProductQualityRatingService = partnerProductQualityRatingService;
+  @Inject
+  public StockMoveToolServiceImpl(
+      StockMoveLineService stockMoveLineService,
+      SequenceService sequenceService,
+      StockMoveLineRepository stockMoveLineRepository,
+      AppBaseService appBaseService,
+      StockMoveRepository stockMoveRepository,
+      PartnerProductQualityRatingService partnerProductQualityRatingService) {
+    this.stockMoveLineService = stockMoveLineService;
+    this.sequenceService = sequenceService;
+    this.stockMoveLineRepo = stockMoveLineRepository;
+    this.appBaseService = appBaseService;
+    this.stockMoveRepo = stockMoveRepository;
+    this.partnerProductQualityRatingService = partnerProductQualityRatingService;
+  }
+
+  @Override
+  public BigDecimal compute(StockMove stockMove) {
+    BigDecimal exTaxTotal = BigDecimal.ZERO;
+    if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        exTaxTotal =
+            exTaxTotal.add(
+                stockMoveLine
+                    .getRealQty()
+                    .multiply(stockMoveLine.getUnitPriceUntaxed())
+                    .setScale(2, RoundingMode.HALF_UP));
+      }
+    }
+    return exTaxTotal;
+  }
+
+  /**
+   * Méthode permettant d'obtenir la séquence du StockMove.
+   *
+   * @param stockMoveType Type de mouvement de stock
+   * @param company la société
+   * @return la chaine contenant la séquence du StockMove
+   * @throws AxelorException Aucune séquence de StockMove n'a été configurée
+   */
+  @Override
+  public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException {
+
+    String ref = "";
+
+    switch (stockMoveType) {
+      case StockMoveRepository.TYPE_INTERNAL:
+        ref =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.INTERNAL, company, StockMove.class, "stockMoveSeq");
+        if (ref == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(StockExceptionMessage.STOCK_MOVE_1),
+              company.getName());
+        }
+        break;
+
+      case StockMoveRepository.TYPE_INCOMING:
+        ref =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.INCOMING, company, StockMove.class, "stockMoveSeq");
+        if (ref == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(StockExceptionMessage.STOCK_MOVE_2),
+              company.getName());
+        }
+        break;
+
+      case StockMoveRepository.TYPE_OUTGOING:
+        ref =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.OUTGOING, company, StockMove.class, "stockMoveSeq");
+        if (ref == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(StockExceptionMessage.STOCK_MOVE_3),
+              company.getName());
+        }
+        break;
+
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(StockExceptionMessage.STOCK_MOVE_4),
+            company.getName());
     }
 
-    @Override
-    public BigDecimal compute(StockMove stockMove) {
-        BigDecimal exTaxTotal = BigDecimal.ZERO;
-        if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
-            for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-                exTaxTotal =
-                        exTaxTotal.add(
-                                stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()).setScale(2, RoundingMode.HALF_UP));
-            }
-        }
-        return exTaxTotal;
+    return ref;
+  }
+
+  /**
+   * @param clientPartner
+   * @param toAddress
+   * @return default value for {@link StockMove#isIspmRequired}
+   */
+  public boolean getDefaultISPM(Partner clientPartner, Address toAddress) {
+    if (clientPartner != null && clientPartner.getIsIspmRequired()) {
+      return true;
+    } else {
+      return toAddress != null
+          && toAddress.getAddressL7Country() != null
+          && toAddress.getAddressL7Country().getIsIspmRequired();
+    }
+  }
+
+  @Override
+  public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation) {
+
+    if (fromStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL
+        && toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
+      return StockMoveRepository.TYPE_INTERNAL;
+    } else if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL
+        && toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
+      return StockMoveRepository.TYPE_INCOMING;
+    } else if (fromStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL
+        && toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL) {
+      return StockMoveRepository.TYPE_OUTGOING;
+    }
+    return 0;
+  }
+
+  @Override
+  public Address getFromAddress(StockMove stockMove) {
+    Address fromAddress = stockMove.getFromAddress();
+    if (fromAddress == null && stockMove.getFromStockLocation() != null) {
+      fromAddress = stockMove.getFromStockLocation().getAddress();
+    }
+    return fromAddress;
+  }
+
+  @Override
+  public Address getToAddress(StockMove stockMove) {
+    Address toAddress = stockMove.getToAddress();
+    if (toAddress == null && stockMove.getToStockLocation() != null) {
+      toAddress = stockMove.getToStockLocation().getAddress();
+    }
+    return toAddress;
+  }
+
+  @Override
+  public void computeAddressStr(StockMove stockMove) {
+    AddressService addressService = Beans.get(AddressService.class);
+    stockMove.setFromAddressStr(addressService.computeAddressStr(stockMove.getFromAddress()));
+    stockMove.setToAddressStr(addressService.computeAddressStr(stockMove.getToAddress()));
+  }
+
+  @Override
+  public String computeName(StockMove stockMove) {
+    return computeName(stockMove, null);
+  }
+
+  @Override
+  public String computeName(StockMove stockMove, String name) {
+    Objects.requireNonNull(stockMove);
+    StringBuilder nameBuilder = new StringBuilder();
+
+    if (Strings.isNullOrEmpty(name)) {
+      if (!Strings.isNullOrEmpty(stockMove.getStockMoveSeq())) {
+        nameBuilder.append(stockMove.getStockMoveSeq());
+      }
+    } else {
+      nameBuilder.append(name);
     }
 
-    /**
-     * Méthode permettant d'obtenir la séquence du StockMove.
-     *
-     * @param stockMoveType Type de mouvement de stock
-     * @param company       la société
-     * @return la chaine contenant la séquence du StockMove
-     * @throws AxelorException Aucune séquence de StockMove n'a été configurée
-     */
-    @Override
-    public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException {
+    if (stockMove.getPartner() != null
+        && !Strings.isNullOrEmpty(stockMove.getPartner().getFullName())) {
+      if (nameBuilder.length() > 0) {
+        nameBuilder.append(" - ");
+      }
 
-        String ref = "";
-
-        switch (stockMoveType) {
-            case StockMoveRepository.TYPE_INTERNAL:
-                ref =
-                        sequenceService.getSequenceNumber(
-                                SequenceRepository.INTERNAL, company, StockMove.class, "stockMoveSeq");
-                if (ref == null) {
-                    throw new AxelorException(
-                            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                            I18n.get(StockExceptionMessage.STOCK_MOVE_1),
-                            company.getName());
-                }
-                break;
-
-            case StockMoveRepository.TYPE_INCOMING:
-                ref =
-                        sequenceService.getSequenceNumber(
-                                SequenceRepository.INCOMING, company, StockMove.class, "stockMoveSeq");
-                if (ref == null) {
-                    throw new AxelorException(
-                            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                            I18n.get(StockExceptionMessage.STOCK_MOVE_2),
-                            company.getName());
-                }
-                break;
-
-            case StockMoveRepository.TYPE_OUTGOING:
-                ref =
-                        sequenceService.getSequenceNumber(
-                                SequenceRepository.OUTGOING, company, StockMove.class, "stockMoveSeq");
-                if (ref == null) {
-                    throw new AxelorException(
-                            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                            I18n.get(StockExceptionMessage.STOCK_MOVE_3),
-                            company.getName());
-                }
-                break;
-
-            default:
-                throw new AxelorException(
-                        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                        I18n.get(StockExceptionMessage.STOCK_MOVE_4),
-                        company.getName());
-        }
-
-        return ref;
+      nameBuilder.append(stockMove.getPartner().getFullName());
     }
 
-    /**
-     * @param clientPartner
-     * @param toAddress
-     * @return default value for {@link StockMove#isIspmRequired}
-     */
-    public boolean getDefaultISPM(Partner clientPartner, Address toAddress) {
-        if (clientPartner != null && clientPartner.getIsIspmRequired()) {
-            return true;
-        } else {
-            return toAddress != null
-                    && toAddress.getAddressL7Country() != null
-                    && toAddress.getAddressL7Country().getIsIspmRequired();
-        }
+    return nameBuilder.toString();
+  }
+
+  @Override
+  public Address getPartnerAddress(StockMove stockMove) throws AxelorException {
+    Address address;
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      address = getToAddress(stockMove);
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      address = getFromAddress(stockMove);
+    } else {
+      throw new AxelorException(
+          stockMove, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get("Bad stock move type"));
     }
 
-    @Override
-    public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation) {
-
-        if (fromStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL
-                && toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
-            return StockMoveRepository.TYPE_INTERNAL;
-        } else if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL
-                && toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
-            return StockMoveRepository.TYPE_INCOMING;
-        } else if (fromStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL
-                && toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL) {
-            return StockMoveRepository.TYPE_OUTGOING;
-        }
-        return 0;
+    if (address.getAddressL7Country() == null) {
+      throw new AxelorException(address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing country");
     }
 
-    @Override
-    public Address getFromAddress(StockMove stockMove) {
-        Address fromAddress = stockMove.getFromAddress();
-        if (fromAddress == null && stockMove.getFromStockLocation() != null) {
-            fromAddress = stockMove.getFromStockLocation().getAddress();
-        }
-        return fromAddress;
+    return address;
+  }
+
+  @Override
+  public Address getCompanyAddress(StockMove stockMove) throws AxelorException {
+    Address address;
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      address = getFromAddress(stockMove);
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      address = getToAddress(stockMove);
+    } else {
+      throw new AxelorException(
+          stockMove, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get("Bad stock move type"));
     }
 
-    @Override
-    public Address getToAddress(StockMove stockMove) {
-        Address toAddress = stockMove.getToAddress();
-        if (toAddress == null && stockMove.getToStockLocation() != null) {
-            toAddress = stockMove.getToStockLocation().getAddress();
-        }
-        return toAddress;
+    if (address.getAddressL7Country() == null) {
+      throw new AxelorException(address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing country");
     }
 
-    @Override
-    public void computeAddressStr(StockMove stockMove) {
-        AddressService addressService = Beans.get(AddressService.class);
-        stockMove.setFromAddressStr(addressService.computeAddressStr(stockMove.getFromAddress()));
-        stockMove.setToAddressStr(addressService.computeAddressStr(stockMove.getToAddress()));
+    if (address.getCity() == null
+        || address.getCity().getDepartment() == null
+        || StringUtils.isBlank(address.getCity().getDepartment().getCode())) {
+      throw new AxelorException(
+          address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing department");
     }
 
-    @Override
-    public String computeName(StockMove stockMove) {
-        return computeName(stockMove, null);
-    }
-
-    @Override
-    public String computeName(StockMove stockMove, String name) {
-        Objects.requireNonNull(stockMove);
-        StringBuilder nameBuilder = new StringBuilder();
-
-        if (Strings.isNullOrEmpty(name)) {
-            if (!Strings.isNullOrEmpty(stockMove.getStockMoveSeq())) {
-                nameBuilder.append(stockMove.getStockMoveSeq());
-            }
-        } else {
-            nameBuilder.append(name);
-        }
-
-        if (stockMove.getPartner() != null
-                && !Strings.isNullOrEmpty(stockMove.getPartner().getFullName())) {
-            if (nameBuilder.length() > 0) {
-                nameBuilder.append(" - ");
-            }
-
-            nameBuilder.append(stockMove.getPartner().getFullName());
-        }
-
-        return nameBuilder.toString();
-    }
-
-    @Override
-    public Address getPartnerAddress(StockMove stockMove) throws AxelorException {
-        Address address;
-
-        if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-            address = getToAddress(stockMove);
-        } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-            address = getFromAddress(stockMove);
-        } else {
-            throw new AxelorException(
-                    stockMove, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get("Bad stock move type"));
-        }
-
-        if (address.getAddressL7Country() == null) {
-            throw new AxelorException(address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing country");
-        }
-
-        return address;
-    }
-
-    @Override
-    public Address getCompanyAddress(StockMove stockMove) throws AxelorException {
-        Address address;
-
-        if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-            address = getFromAddress(stockMove);
-        } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-            address = getToAddress(stockMove);
-        } else {
-            throw new AxelorException(
-                    stockMove, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get("Bad stock move type"));
-        }
-
-        if (address.getAddressL7Country() == null) {
-            throw new AxelorException(address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing country");
-        }
-
-        if (address.getCity() == null
-                || address.getCity().getDepartment() == null
-                || StringUtils.isBlank(address.getCity().getDepartment().getCode())) {
-            throw new AxelorException(
-                    address, TraceBackRepository.CATEGORY_NO_VALUE, "Missing department");
-        }
-
-        return address;
-    }
+    return address;
+  }
 }
