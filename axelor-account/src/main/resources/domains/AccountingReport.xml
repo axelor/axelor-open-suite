@@ -46,7 +46,8 @@
     <boolean name="detailed" title="Detailed" default="false"/>
     <integer name="statusSelect" title="Status"
       selection="iaccount.accounting.report.status.select" readonly="true" default="1"/>
-
+    <string name="moveStatusSelect" title="Move statuses"
+      selection="iaccount.move.status.select"/>
     <decimal name="totalDebit" title="Total Debit" readonly="true"/>
     <decimal name="totalCredit" title="Total Credit" readonly="true"/>
     <decimal name="balance" title="Balance" readonly="true"/>
