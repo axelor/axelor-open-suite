@@ -6,18 +6,20 @@
   <form name="incl-invoice-payment-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
     <panel name="mainPanel" colSpan="12">
+      <field name="payNoticeSendingMethodSelect"/>
       <field name="invoiceSendingFormatSelect" hideIf="isEmployee"/>
       <field name="invoicesCopySelect"
         hideIf="(!isCustomer &amp;&amp; !isSupplier) || isEmployee"/>
-      <field name="groupProductsOnPrintings"
-        hideIf="(!isCustomer &amp;&amp; !isSupplier) || __config__.app.getApp('base').getIsRegroupProductsOnPrintings() == false"/>
+      <field name="groupProductsOnPrintings" hideIf="(!isCustomer &amp;&amp; !isSupplier)"
+        if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"/>
       <field name="inPaymentMode" canEdit="false" grid-view="payment-mode-grid"
         form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
       <field name="outPaymentMode" canEdit="false" grid-view="payment-mode-grid"
         form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
       <field name="paymentCondition" canEdit="false" grid-view="payment-condition-grid"
         form-view="payment-condition-form" hideIf="isEmployee"/>
-      <field name="financialDiscount"/>
+      <field name="financialDiscount"
+        if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
       <field name="currency" canEdit="false"
         requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form"
         grid-view="currency-grid"/>
@@ -98,11 +100,14 @@
           <field name="blockingToDate" colSpan="3" required="true"/>
           <field name="blockingReason" colSpan="3" canNew="true" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
-          <field name="blockingByUser" colSpan="3" readonly="true" form-view="user-form"
-            grid-view="user-grid"/>
-          <panel colSpan="3">
-            <field name="createdOn" colSpan="6" showIf="createdOn"/>
-            <field name="updatedOn" colSpan="6" showIf="updatedOn"/>
+          <panel name="informationPanel" colSpan="6">
+            <field name="blockingByUser" colSpan="3" readonly="true" form-view="user-form"
+              grid-view="user-grid"/>
+            <field name="blockingComment" widget="html" colSpan="12"/>
+            <field name="createdOn" colSpan="3" showIf="createdOn"/>
+            <field name="updatedOn" colSpan="3" showIf="updatedOn"/>
+            <field name="updatedBy" form-view="user-form" grid-view="user-grid"
+              showIf="updatedBy" colSpan="3"/>
           </panel>
         </editor>
       </field>

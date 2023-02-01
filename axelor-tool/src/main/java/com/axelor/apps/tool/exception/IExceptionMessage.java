@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.tool.exception;
 
-/** @author axelor */
+/**
+ * @author axelor
+ * @deprecated Replaced by {@link ToolExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
 
   /** Period service */
@@ -51,4 +55,7 @@ public interface IExceptionMessage {
 
   // Callable Tool
   String PROCESS_BEING_COMPUTED = /*$$(*/ "Computation in progress..." /*)*/;
+
+  static final String API_DISABLED = /*$$(*/
+      "AOS API calls are disabled, please contact your administrator. The property aos.api.enable is false in application.properties." /*)*/;
 }

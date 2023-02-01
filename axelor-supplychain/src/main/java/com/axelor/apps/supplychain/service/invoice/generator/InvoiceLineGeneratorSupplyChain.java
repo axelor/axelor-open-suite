@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,10 +26,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
@@ -57,7 +56,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected PurchaseOrderLine purchaseOrderLine;
   protected StockMoveLine stockMoveLine;
 
-  protected AppBaseService appBaseService;
   protected UnitConversionService unitConversionService;
 
   @Inject
@@ -192,7 +190,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       return invoiceLine;
     }
 
-    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    InvoiceLineAnalyticService invoiceLineAnalyticService =
+        Beans.get(InvoiceLineAnalyticService.class);
 
     this.assignOriginElements(invoiceLine);
 
@@ -212,10 +211,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             invoiceLine.setAnalyticDistributionTemplate(
                 saleOrderLine.getAnalyticDistributionTemplate());
             this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
-            analyticMoveLineList = invoiceLineService.computeAnalyticDistribution(invoiceLine);
+            analyticMoveLineList =
+                invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
           } else {
             analyticMoveLineList =
-                invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+                invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
             analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
           }
           break;
@@ -231,10 +231,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         invoiceLine.setAnalyticDistributionTemplate(
             purchaseOrderLine.getAnalyticDistributionTemplate());
         this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
-        analyticMoveLineList = invoiceLineService.computeAnalyticDistribution(invoiceLine);
+        analyticMoveLineList = invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
       } else {
         analyticMoveLineList =
-            invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+            invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
         analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
       }
 
@@ -274,7 +274,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setInTaxPrice(inTaxPrice);
 
       analyticMoveLineList =
-          invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+          invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
       analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
     }
 
@@ -342,7 +342,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       AnalyticMoveLine analyticMoveLine =
           Beans.get(AnalyticMoveLineRepository.class).copy(originalAnalyticMoveLine, false);
 
-      analyticMoveLine.setTypeSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
+      analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 
       invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }

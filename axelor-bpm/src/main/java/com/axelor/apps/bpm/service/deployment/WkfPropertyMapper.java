@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,6 +60,7 @@ public class WkfPropertyMapper {
     FIELD_MAP.put("callModel", "model");
     FIELD_MAP.put("callLink", "parentPath");
     FIELD_MAP.put("callLinkCondition", "condition");
+    FIELD_MAP.put("teamPath", "teamFieldPath");
   }
 
   protected static final Map<String, String> PROCESS_DISPLAY_PROPERTIES =

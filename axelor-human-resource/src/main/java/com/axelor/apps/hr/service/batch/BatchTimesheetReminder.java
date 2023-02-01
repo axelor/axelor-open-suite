@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
@@ -88,10 +88,13 @@ public class BatchTimesheetReminder extends BatchStrategy {
   @Override
   protected void stop() {
     String comment =
-        String.format(I18n.get(IExceptionMessage.BATCH_TIMESHEET_REMINDER_DONE), batch.getDone())
+        String.format(
+                I18n.get(HumanResourceExceptionMessage.BATCH_TIMESHEET_REMINDER_DONE),
+                batch.getDone())
             + "<br/>"
             + String.format(
-                I18n.get(IExceptionMessage.BATCH_TIMESHEET_REMINDER_ANOMALY), batch.getAnomaly());
+                I18n.get(HumanResourceExceptionMessage.BATCH_TIMESHEET_REMINDER_ANOMALY),
+                batch.getAnomaly());
 
     addComment(comment);
     super.stop();
@@ -126,8 +129,8 @@ public class BatchTimesheetReminder extends BatchStrategy {
         timesheetRepo
             .all()
             .filter(
-                "self.user.id = :userId AND self.statusSelect IN (:confirmed, :validated) AND self.company = :companyId")
-            .bind("userId", employee.getUser().getId())
+                "self.employee.id = :employeeId AND self.statusSelect IN (:confirmed, :validated) AND self.company = :companyId")
+            .bind("employeeId", employee.getId())
             .bind("confirmed", TimesheetRepository.STATUS_CONFIRMED)
             .bind("validated", TimesheetRepository.STATUS_VALIDATED)
             .bind("companyId", batch.getHrBatch().getCompany().getId())
@@ -171,7 +174,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
         throw new AxelorException(
             Timesheet.class,
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.NO_TIMESHEET_FOUND_FOR_EMPLOYEE),
+            I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_FOUND_FOR_EMPLOYEE),
             employee.getName());
       }
       incrementDone();

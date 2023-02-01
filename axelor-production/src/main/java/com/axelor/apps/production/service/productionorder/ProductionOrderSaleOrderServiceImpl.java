@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,9 +24,9 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -34,18 +34,13 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected UnitConversionService unitConversionService;
   protected ProductionOrderService productionOrderService;
@@ -122,7 +117,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
         throw new AxelorException(
             saleOrderLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM),
+            I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_SALES_ORDER_NO_BOM),
             product.getName(),
             product.getCode());
       }
@@ -180,7 +175,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       if (depth >= 100) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
+            I18n.get(ProductionExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
       }
       List<BillOfMaterial> tempChildBomList = new ArrayList<>();
       for (BillOfMaterial childBom : childBomList) {
@@ -194,7 +189,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
                 null,
                 saleOrder,
                 saleOrderLine,
-                ManufOrderService.ORIGIN_TYPE_SALE_ORDER);
+                ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER);
         tempChildBomList.addAll(
             childBom.getBillOfMaterialSet().stream()
                 .filter(BillOfMaterial::getDefineSubBillOfMaterial)

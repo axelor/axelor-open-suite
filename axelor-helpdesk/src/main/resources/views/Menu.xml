@@ -108,7 +108,7 @@
   </action-view>
 
   <menuitem title="SLA" name="helpdesk-report-sla" action="helpdesk.report.sla"
-    parent="helpdesk-reporting" if="__config__.app.getApp('helpdesk').getIsSla()"/>
+    parent="helpdesk-reporting" if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
 
   <action-view name="helpdesk.report.sla" title="SLA">
     <view name="helpdesk.sla.dashboard" type="dashboard"/>
@@ -121,7 +121,7 @@
 
   <menuitem title="SLA policies" name="helpdesk-sla-policies-all"
     action="helpdesk.sla.policies.all" parent="helpdesk-config"
-    if="__config__.app.getApp('helpdesk').getIsSla()"/>
+    if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
 
   <action-view name="helpdesk.sla.policies.all" title="SLA policies"
     model="com.axelor.apps.helpdesk.db.Sla">

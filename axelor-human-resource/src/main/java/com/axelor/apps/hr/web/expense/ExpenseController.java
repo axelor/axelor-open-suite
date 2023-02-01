@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
@@ -48,7 +49,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
@@ -80,6 +81,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -124,8 +126,8 @@ public class ExpenseController {
         Beans.get(ExpenseRepository.class)
             .all()
             .filter(
-                "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1 AND (self.multipleUsers is false OR self.multipleUsers is null)",
-                user,
+                "self.employee.user.id = ?1 AND self.company = ?2 AND self.statusSelect = 1 AND (self.multipleUsers is false OR self.multipleUsers is null)",
+                user.getId(),
                 activeCompany)
             .fetch();
     if (expenseList.isEmpty()) {
@@ -164,7 +166,7 @@ public class ExpenseController {
         (Map<String, Object>) request.getContext().get("expenseSelect");
 
     if (expenseMap == null) {
-      response.setError(I18n.get(IExceptionMessage.EXPENSE_NOT_SELECTED));
+      response.setError(I18n.get(HumanResourceExceptionMessage.EXPENSE_NOT_SELECTED));
       return;
     }
     Long expenseId = Long.valueOf((Integer) expenseMap.get("id"));
@@ -215,7 +217,7 @@ public class ExpenseController {
 
     if (employee == null || !employee.getHrManager()) {
       actionView
-          .domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
+          .domain(actionView.get().getDomain() + " AND self.employee.managerUser = :_user")
           .context("_user", user);
     }
 
@@ -227,6 +229,11 @@ public class ExpenseController {
     User user = AuthUtils.getUser();
     Company activeCompany = user.getActiveCompany();
 
+    if (activeCompany == null) {
+      response.setError(I18n.get(BaseExceptionMessage.NO_ACTIVE_COMPANY));
+      return;
+    }
+
     ActionViewBuilder actionView =
         ActionView.define(I18n.get("Expenses to be Validated by your subordinates"))
             .model(Expense.class.getName())
@@ -235,7 +242,7 @@ public class ExpenseController {
             .param("search-filters", "expense-filters");
 
     String domain =
-        "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
+        "self.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 
     long nbExpenses =
         Query.of(Expense.class)
@@ -489,11 +496,10 @@ public class ExpenseController {
 
     List<Integer> expenseLineListId = new ArrayList<>();
     int compt = 0;
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(expense.getCompany());
     for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
       compt++;
-      if (expenseLine
-          .getExpenseDate()
-          .isAfter(Beans.get(AppBaseService.class).getTodayDate(expense.getCompany()))) {
+      if (expenseLine.getExpenseDate() != null && expenseLine.getExpenseDate().isAfter(todayDate)) {
         expenseLineListId.add(compt);
       }
     }
@@ -533,29 +539,18 @@ public class ExpenseController {
       return;
     }
 
-    String userId;
-    String userName;
+    Long empId;
     if (expenseLine.getExpense() != null) {
       setExpense(request, expenseLine);
     }
     Expense expense = expenseLine.getExpense();
 
-    if (expense != null && expenseLine.getUser() != null) {
-      userId = expense.getUser().getId().toString();
-      userName = expense.getUser().getFullName();
+    if (expense != null && expenseLine.getEmployee() != null) {
+      empId = expense.getEmployee().getId();
     } else {
-      userId = request.getContext().getParent().asType(Expense.class).getUser().getId().toString();
-      userName = request.getContext().getParent().asType(Expense.class).getUser().getFullName();
+      empId = request.getContext().getParent().asType(Expense.class).getEmployee().getId();
     }
-    Employee employee =
-        Beans.get(EmployeeRepository.class).all().filter("self.user.id = ?1", userId).fetchOne();
-
-    if (employee == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-          userName);
-    }
+    Employee employee = Beans.get(EmployeeRepository.class).find(empId);
 
     BigDecimal amount = BigDecimal.ZERO;
     try {
@@ -683,13 +678,13 @@ public class ExpenseController {
         expense = context.getParent().asType(Expense.class);
       }
 
-      Employee employee = expense.getUser().getEmployee();
+      Employee employee = expense.getEmployee();
 
       if (employee == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-            expense.getUser().getName());
+            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
+            AuthUtils.getUser().getName());
       }
 
       BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);

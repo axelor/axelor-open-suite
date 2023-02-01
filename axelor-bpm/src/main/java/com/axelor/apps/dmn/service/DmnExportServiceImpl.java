@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,7 @@
 package com.axelor.apps.dmn.service;
 
 import com.axelor.apps.bpm.db.WkfDmnModel;
-import com.axelor.apps.bpm.exception.IExceptionMessage;
+import com.axelor.apps.bpm.exception.BpmExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -98,7 +98,7 @@ public class DmnExportServiceImpl implements DmnExportService {
     for (Input input : table.getInputs()) {
       if (Strings.isNullOrEmpty(input.getLabel())) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE, IExceptionMessage.MISSING_INPUT_LABEL);
+            TraceBackRepository.CATEGORY_NO_VALUE, BpmExceptionMessage.MISSING_INPUT_LABEL);
       }
       Cell cell = row.createCell(inputIndex);
       cell.setCellValue(input.getLabel() + "(" + input.getId() + ")");
@@ -110,7 +110,7 @@ public class DmnExportServiceImpl implements DmnExportService {
     for (Output output : table.getOutputs()) {
       if (Strings.isNullOrEmpty(output.getLabel())) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE, IExceptionMessage.MISSING_OUTPUT_LABEL);
+            TraceBackRepository.CATEGORY_NO_VALUE, BpmExceptionMessage.MISSING_OUTPUT_LABEL);
       }
       Cell cell = row.createCell(outputIndex);
       cell.setCellValue(output.getLabel() + "(" + output.getId() + ")");

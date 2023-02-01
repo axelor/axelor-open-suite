@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -28,8 +29,6 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -52,7 +51,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected WeeklyPlanningService weeklyPlanningService;
   protected PublicHolidayHrService holidayService;
   protected ProductRepository productRepo;
-  protected UserRepository userRepo;
+  protected EmployeeRepository employeeRepo;
 
   @Inject
   public ProjectPlanningTimeServiceImpl(
@@ -62,7 +61,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       WeeklyPlanningService weeklyPlanningService,
       PublicHolidayHrService holidayService,
       ProductRepository productRepo,
-      UserRepository userRepo) {
+      EmployeeRepository employeeRepo) {
     super();
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
@@ -70,7 +69,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.weeklyPlanningService = weeklyPlanningService;
     this.holidayService = holidayService;
     this.productRepo = productRepo;
-    this.userRepo = userRepo;
+    this.employeeRepo = employeeRepo;
   }
 
   @Override
@@ -120,7 +119,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   public void addMultipleProjectPlanningTime(Map<String, Object> datas) throws AxelorException {
 
     if (datas.get("project") == null
-        || datas.get("user") == null
+        || datas.get("employee") == null
         || datas.get("fromDate") == null
         || datas.get("toDate") == null) {
       return;
@@ -141,10 +140,10 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       timePercent = Integer.parseInt(datas.get("timepercent").toString());
     }
 
-    objMap = (Map) datas.get("user");
-    User user = userRepo.find(Long.parseLong(objMap.get("id").toString()));
+    objMap = (Map) datas.get("employee");
+    Employee employee = employeeRepo.find(Long.parseLong(objMap.get("id").toString()));
 
-    if (user.getEmployee() == null) {
+    if (employee == null) {
       return;
     }
 
@@ -159,7 +158,6 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       activity = productRepo.find(Long.valueOf(objMap.get("id").toString()));
     }
 
-    Employee employee = user.getEmployee();
     BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
 
     while (fromDate.isBefore(toDate)) {
@@ -180,7 +178,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         planningTime.setProjectTask(projectTask);
         planningTime.setProduct(activity);
         planningTime.setTimepercent(timePercent);
-        planningTime.setUser(user);
+        planningTime.setEmployee(employee);
         planningTime.setDate(date);
         planningTime.setProject(project);
         planningTime.setIsIncludeInTurnoverForecast(

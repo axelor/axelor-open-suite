@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
@@ -34,12 +33,12 @@ import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
-import com.axelor.apps.sale.report.IReport;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
+import com.axelor.db.JPA;
 import com.axelor.db.JpaSequence;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -49,7 +48,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -117,26 +115,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  @Deprecated
-  public String getReportLink(
-      SaleOrder saleOrder, String name, String language, boolean proforma, String format)
-      throws AxelorException {
-
-    return ReportFactory.createReport(IReport.SALES_ORDER, name + "-${date}")
-        .addParam("Locale", language)
-        .addParam(
-            "Timezone",
-            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
-        .addParam("SaleOrderId", saleOrder.getId())
-        .addParam("ProformaInvoice", proforma)
-        .addParam(
-            "AddressPositionSelect", saleOrder.getPrintingSettings().getAddressPositionSelect())
-        .addFormat(format)
-        .generate()
-        .getFileLink();
-  }
-
-  @Override
   public void computeAddressStr(SaleOrder saleOrder) {
     AddressService addressService = Beans.get(AddressService.class);
     saleOrder.setMainInvoicingAddressStr(
@@ -152,7 +130,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SALES_ORDER_COMPLETED));
+          I18n.get(SaleExceptionMessage.SALES_ORDER_COMPLETED));
     }
 
     saleOrder.setOrderBeingEdited(true);
@@ -179,7 +157,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
       throws AxelorException {
 
@@ -195,9 +173,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       sequence = soLines.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
     }
 
-    BigDecimal conversionRate = new BigDecimal(1.00);
+    BigDecimal conversionRate = BigDecimal.valueOf(1.00);
     if (pack.getCurrency() != null
-        && !pack.getCurrency().getCode().equals(saleOrder.getCurrency().getCode())) {
+        && !pack.getCurrency().getCodeISO().equals(saleOrder.getCurrency().getCodeISO())) {
       try {
         conversionRate =
             Beans.get(CurrencyConversionFactory.class)
@@ -297,11 +275,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             newSoLine = new SaleOrderLine();
             newSoLine.setProduct(compProductSelected.getProduct());
             newSoLine.setSaleOrder(saleOrder);
-            newSoLine.setQty(
-                originSoLine
-                    .getQty()
-                    .multiply(compProductSelected.getQty())
-                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+            newSoLine.setQty(compProductSelected.getQty());
 
             saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
             saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
@@ -312,11 +286,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             saleOrderLineList.add(targetIndex, newSoLine);
           }
         } else {
-          newSoLine.setQty(
-              originSoLine
-                  .getQty()
-                  .multiply(compProductSelected.getQty())
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+          newSoLine.setQty(compProductSelected.getQty());
 
           saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
           saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
@@ -347,7 +317,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 saleOrderLine, maxDiscountAuthorized)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
+              I18n.get(SaleExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
         }
       }
     }
@@ -387,18 +357,17 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     return saleOrder;
   }
 
-  @Transactional
-  public SaleOrder seperateInNewQuotation(
+  @Transactional(rollbackOn = Exception.class)
+  public SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException {
 
-    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    saleOrder = saleOrderRepo.find(saleOrder.getId());
     List<SaleOrderLine> originalSOLines = saleOrder.getSaleOrderLineList();
-    List<SaleOrderLine> seperatedSOLines;
 
-    SaleOrder copySaleOrder = Beans.get(SaleOrderRepository.class).copy(saleOrder, true);
+    SaleOrder copySaleOrder = saleOrderRepo.copy(saleOrder, true);
     copySaleOrder.clearSaleOrderLineList();
-    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+    saleOrderRepo.save(copySaleOrder);
 
     for (LinkedHashMap<String, Object> soLine : saleOrderLines) {
       if (!soLine.containsKey("selected") || !(boolean) soLine.get("selected")) {
@@ -406,46 +375,41 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
 
       SaleOrderLine saleOrderLine =
-          Beans.get(SaleOrderLineRepository.class)
-              .find(Long.parseLong(soLine.get("id").toString()));
-      seperatedSOLines = new ArrayList<>();
-      seperatedSOLines.add(saleOrderLine);
-      seperatedSOLines.addAll(
+          saleOrderLineRepo.find(Long.parseLong(soLine.get("id").toString()));
+      List<SaleOrderLine> separatedSOLines = new ArrayList<>();
+      separatedSOLines.add(saleOrderLine);
+      separatedSOLines.addAll(
           originalSOLines.stream()
               .filter(
                   soline ->
                       StringUtils.notBlank(saleOrderLine.getManualId())
                           && saleOrderLine.getManualId().equals(soline.getParentId()))
               .collect(Collectors.toList()));
-      manageSeperatedSOLines(seperatedSOLines, originalSOLines, copySaleOrder);
+      manageSeparatedSOLines(separatedSOLines, originalSOLines, copySaleOrder);
     }
 
-    copySaleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(copySaleOrder);
-    saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
-    Beans.get(SaleOrderRepository.class).save(saleOrder);
-    Beans.get(SaleOrderRepository.class).save(copySaleOrder);
+    copySaleOrder = saleOrderComputeService.computeSaleOrder(copySaleOrder);
+    saleOrderRepo.save(copySaleOrder);
+
+    // refresh the origin sale order to refresh the field saleOrderLineList
+    JPA.refresh(saleOrder);
+
+    saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
+    saleOrderRepo.save(saleOrder);
 
     return copySaleOrder;
   }
 
-  private void manageSeperatedSOLines(
-      List<SaleOrderLine> seperatedSOLines,
+  protected void manageSeparatedSOLines(
+      List<SaleOrderLine> separatedSOLines,
       List<SaleOrderLine> originalSOLines,
       SaleOrder copySaleOrder) {
 
-    for (SaleOrderLine SSOLine : seperatedSOLines) {
-      copySaleOrder.addSaleOrderLineListItem(SSOLine);
-
-      List<SaleOrderLine> partnerComplementarySOLines =
-          originalSOLines.stream()
-              .filter(
-                  soline ->
-                      soline.getMainSaleOrderLine() != null
-                          && soline.getMainSaleOrderLine().equals(SSOLine))
-              .collect(Collectors.toList());
-      for (SaleOrderLine PCSOLine : partnerComplementarySOLines) {
-        copySaleOrder.addSaleOrderLineListItem(PCSOLine);
-      }
+    for (SaleOrderLine separatedLine : separatedSOLines) {
+      copySaleOrder.addSaleOrderLineListItem(separatedLine);
+      originalSOLines.stream()
+          .filter(soLine -> separatedLine.equals(soLine.getMainSaleOrderLine()))
+          .forEach(copySaleOrder::addSaleOrderLineListItem);
     }
   }
 
@@ -453,6 +417,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   public void manageComplementaryProductSOLines(SaleOrder saleOrder) throws AxelorException {
 
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrder.getClientPartner() == null) {
+      return;
+    }
     List<ComplementaryProduct> complementaryProducts =
         saleOrder.getClientPartner().getComplementaryProductList();
 

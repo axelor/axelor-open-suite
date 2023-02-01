@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.auth.AuthUtils;
@@ -78,7 +78,7 @@ public class ICalendarController {
   public void importCalendar(ActionRequest request, ActionResponse response) {
     ICalendar cal = request.getContext().asType(ICalendar.class);
     response.setView(
-        ActionView.define(I18n.get(IExceptionMessage.IMPORT_CALENDAR))
+        ActionView.define(I18n.get(BaseExceptionMessage.IMPORT_CALENDAR))
             .model("com.axelor.apps.base.db.ImportConfiguration")
             .add("form", "import-icalendar-form")
             .param("popup", "reload")

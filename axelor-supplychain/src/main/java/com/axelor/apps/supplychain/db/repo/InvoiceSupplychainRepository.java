@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,12 +24,9 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
 public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
-
-  @Inject InvoiceServiceSupplychain invoiceServiceSupplychain;
 
   @Override
   public Invoice copy(Invoice entity, boolean deep) {
@@ -54,12 +51,16 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
   @Override
   public Invoice save(Invoice invoice) {
     try {
+      InvoiceServiceSupplychain invoiceServiceSupplychain =
+          Beans.get(InvoiceServiceSupplychain.class);
+
       if (Boolean.TRUE.equals(
           Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())) {
         invoiceServiceSupplychain.computePackTotal(invoice);
       } else {
         invoiceServiceSupplychain.resetPackTotal(invoice);
       }
+
       return super.save(invoice);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

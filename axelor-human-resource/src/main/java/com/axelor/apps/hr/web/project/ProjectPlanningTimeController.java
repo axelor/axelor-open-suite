@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,6 +38,7 @@ import java.util.Map;
 @Singleton
 public class ProjectPlanningTimeController {
 
+  @SuppressWarnings("unchecked")
   public void showPlanning(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
@@ -65,7 +66,7 @@ public class ProjectPlanningTimeController {
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Project Planning time"))
             .model(ProjectPlanningTime.class.getName());
-    String url = "project/planning";
+    String url = "project/planning/";
 
     if (!userIds.isEmpty() && !projectId.isEmpty()) {
       url += "?userIds=" + userIds + "&projectIds=" + projectId;
@@ -119,6 +120,7 @@ public class ProjectPlanningTimeController {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {
 
     List<Map<String, Object>> projectPlanningTimeLines =

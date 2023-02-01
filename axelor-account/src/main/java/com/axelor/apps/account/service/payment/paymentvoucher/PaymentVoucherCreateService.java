@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -76,16 +76,15 @@ public class PaymentVoucherCreateService {
     MoveLine customerMoveLine = moveToolService.getCustomerMoveLineByQuery(invoice);
 
     log.debug(
-        "Création d'une saisie paiement par TIP ou TIP chèque - facture : {}",
-        invoice.getInvoiceId());
+        "Creation of a payment voucher by IPO or IPO check - invoice : {}", invoice.getInvoiceId());
     log.debug(
-        "Création d'une saisie paiement par TIP ou TIP chèque - mode de paiement : {}",
+        "Creation of a payment voucher by IPO or IPO check - payment mode : {}",
         paymentMode.getCode());
     log.debug(
-        "Création d'une saisie paiement par TIP ou TIP chèque - société : {}",
+        "Creation of a payment voucher by IPO or IPO check - company : {}",
         invoice.getCompany().getName());
     log.debug(
-        "Création d'une saisie paiement par TIP ou TIP chèque - tiers payeur : {}",
+        "Creation of a payment voucher by IPO or IPO check - partner : {}",
         invoice.getPartner().getName());
 
     PaymentVoucher paymentVoucher =

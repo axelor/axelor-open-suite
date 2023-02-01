@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,6 +41,7 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
 
     copy.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
     copy.setAmountInvoiced(null);
+    copy.setBudget(null);
 
     if (copy.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
@@ -48,6 +49,8 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
         purchaseOrderLine.setReceivedQty(null);
         purchaseOrderLine.setAmountInvoiced(null);
         purchaseOrderLine.setInvoiced(null);
+        purchaseOrderLine.setBudgetDistributionList(null);
+        purchaseOrderLine.setBudgetDistributionSumAmount(null);
       }
     }
 

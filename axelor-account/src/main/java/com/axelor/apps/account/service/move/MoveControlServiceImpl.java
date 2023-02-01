@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -36,7 +36,7 @@ public class MoveControlServiceImpl implements MoveControlService {
     if (journal != null && company != null && !company.equals(journal.getCompany())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MOVE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY),
+          I18n.get(AccountExceptionMessage.MOVE_INCONSISTENCY_DETECTED_JOURNAL_COMPANY),
           move.getReference(),
           journal.getName());
     }

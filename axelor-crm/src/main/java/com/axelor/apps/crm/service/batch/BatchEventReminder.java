@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,11 +18,12 @@
 package com.axelor.apps.crm.service.batch;
 
 import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.repo.EventReminderRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
-import com.axelor.apps.crm.exception.IExceptionMessage;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
@@ -100,7 +101,7 @@ public class BatchEventReminder extends BatchStrategy {
           TraceBackService.trace(
               new Exception(
                   String.format(
-                      I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_1),
+                      I18n.get(CrmExceptionMessage.BATCH_EVENT_REMINDER_1),
                       eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject()),
                   e),
               ExceptionOriginRepository.CRM,
@@ -202,7 +203,7 @@ public class BatchEventReminder extends BatchStrategy {
             messageRepo.remove(message);
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.CRM_CONFIG_USER_EMAIL),
+                I18n.get(CrmExceptionMessage.CRM_CONFIG_USER_EMAIL),
                 eventReminder.getUser().getName());
           }
 
@@ -254,14 +255,14 @@ public class BatchEventReminder extends BatchStrategy {
   @Override
   protected void stop() {
 
-    String comment = I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_2) + "\n";
+    String comment = I18n.get(CrmExceptionMessage.BATCH_EVENT_REMINDER_2) + "\n";
     comment +=
         String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_3) + "\n", batch.getDone());
+            "\t* %s " + I18n.get(CrmExceptionMessage.BATCH_EVENT_REMINDER_3) + "\n",
+            batch.getDone());
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

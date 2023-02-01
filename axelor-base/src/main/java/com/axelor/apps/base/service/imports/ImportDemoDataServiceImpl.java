@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.imports;
 
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.exception.AxelorException;
@@ -139,15 +139,16 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
 
   private boolean validateModule(Row moduleRow, StringBuilder errorList) throws IOException {
 
-    if (this.validateRow(moduleRow, errorList, I18n.get(IExceptionMessage.MODULE))
-        && this.validateCell(moduleRow.getCell(0), errorList, I18n.get(IExceptionMessage.MODULE))) {
+    if (this.validateRow(moduleRow, errorList, I18n.get(BaseExceptionMessage.MODULE))
+        && this.validateCell(
+            moduleRow.getCell(0), errorList, I18n.get(BaseExceptionMessage.MODULE))) {
       String moduleName = moduleRow.getCell(0).getStringCellValue();
 
       if (metaModuleRepo.findByName(moduleName) != null) {
         return true;
       } else {
         errorList.append(
-            String.format("\n" + I18n.get(IExceptionMessage.MODULE_NOT_EXIST), moduleName));
+            String.format("\n" + I18n.get(BaseExceptionMessage.MODULE_NOT_EXIST), moduleName));
       }
     }
     return false;
@@ -155,9 +156,9 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
 
   private boolean validateDataFile(Row dataFileRow, StringBuilder errorList) throws IOException {
 
-    if (this.validateRow(dataFileRow, errorList, I18n.get(IExceptionMessage.DATA_FILE))
+    if (this.validateRow(dataFileRow, errorList, I18n.get(BaseExceptionMessage.DATA_FILE))
         && this.validateCell(
-            dataFileRow.getCell(0), errorList, I18n.get(IExceptionMessage.DATA_FILE))) {
+            dataFileRow.getCell(0), errorList, I18n.get(BaseExceptionMessage.DATA_FILE))) {
       return true;
     }
 
@@ -167,9 +168,12 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
   private boolean validateConfigFile(Row moduleRow, Row configFileRow, StringBuilder errorList)
       throws IOException {
 
-    if (this.validateRow(configFileRow, errorList, I18n.get(IExceptionMessage.CONFIGURATION_FILE))
+    if (this.validateRow(
+            configFileRow, errorList, I18n.get(BaseExceptionMessage.CONFIGURATION_FILE))
         && this.validateCell(
-            configFileRow.getCell(0), errorList, I18n.get(IExceptionMessage.CONFIGURATION_FILE))) {
+            configFileRow.getCell(0),
+            errorList,
+            I18n.get(BaseExceptionMessage.CONFIGURATION_FILE))) {
 
       String moduleName = moduleRow.getCell(0).getStringCellValue();
       String configFileName = configFileRow.getCell(0).getStringCellValue();
@@ -179,7 +183,8 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
       } else {
         errorList.append(
             String.format(
-                I18n.get("\n" + IExceptionMessage.CONFIGURATION_FILE_NOT_EXIST), configFileName));
+                I18n.get("\n" + BaseExceptionMessage.CONFIGURATION_FILE_NOT_EXIST),
+                configFileName));
       }
     }
     return false;
@@ -196,12 +201,12 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
         Cell headerCell = headerRow.getCell(cell);
 
         if (headerCell == null || headerCell.getCellType() != Cell.CELL_TYPE_STRING) {
-          errorList.append("\n" + I18n.get(IExceptionMessage.INVALID_HEADER));
+          errorList.append("\n" + I18n.get(BaseExceptionMessage.INVALID_HEADER));
           flag = false;
         }
       }
     } else {
-      errorList.append("\n" + I18n.get(IExceptionMessage.INVALID_HEADER));
+      errorList.append("\n" + I18n.get(BaseExceptionMessage.INVALID_HEADER));
       flag = false;
     }
     return flag;
@@ -210,7 +215,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
   private boolean validateRow(Row row, StringBuilder errorList, String rowName) throws IOException {
 
     if (row == null) {
-      errorList.append(String.format("\n" + I18n.get(IExceptionMessage.ROW_NOT_EMPTY), rowName));
+      errorList.append(String.format("\n" + I18n.get(BaseExceptionMessage.ROW_NOT_EMPTY), rowName));
       return false;
     }
     return true;
@@ -220,7 +225,8 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
       throws IOException {
 
     if (cell == null || cell.getCellType() != Cell.CELL_TYPE_STRING) {
-      errorList.append(String.format("\n" + I18n.get(IExceptionMessage.CELL_NOT_VALID), cellName));
+      errorList.append(
+          String.format("\n" + I18n.get(BaseExceptionMessage.CELL_NOT_VALID), cellName));
       return false;
     }
     return true;

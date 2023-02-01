@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -269,19 +269,21 @@ public final class StringTool {
    * @return
    */
   public static String getIdListString(Collection<? extends Model> collection) {
-    List<Long> idList = new ArrayList<>();
-    String idString;
     if (CollectionUtils.isEmpty(collection)) {
-      idString = "0";
-    } else {
-      for (Model item : collection) {
-        if (item != null) {
-          idList.add(item.getId());
-        }
-      }
-      idString = idList.stream().map(l -> l.toString()).collect(Collectors.joining(","));
+      return "0";
     }
-    return idString;
+    StringBuilder idStringBuilder = new StringBuilder();
+    for (Model item : collection) {
+      if (item != null && item.getId() != null) {
+        idStringBuilder.append(String.valueOf(item.getId()));
+        idStringBuilder.append(",");
+      }
+    }
+    int length = idStringBuilder.length();
+    if (length != 0) {
+      idStringBuilder.deleteCharAt(length - 1);
+    }
+    return idStringBuilder.toString();
   }
 
   public static String getFilename(String name) {

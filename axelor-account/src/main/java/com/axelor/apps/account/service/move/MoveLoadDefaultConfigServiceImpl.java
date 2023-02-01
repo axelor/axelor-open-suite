@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
@@ -93,13 +94,20 @@ public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigSe
     if (accountingAccount == null || accountingAccount.getDefaultTax() == null) {
       return null;
     }
+
     tax = accountingAccount.getDefaultTax();
+    taxLine = taxService.getTaxLine(tax, moveLine.getDate());
 
     if (!ObjectUtils.isEmpty(partner) && !ObjectUtils.isEmpty(partner.getFiscalPosition())) {
-      tax = fiscalPositionAccountService.getTax(partner.getFiscalPosition(), tax);
+      TaxEquiv taxEquiv =
+          fiscalPositionAccountService.getTaxEquiv(partner.getFiscalPosition(), tax);
+      if (taxEquiv != null) {
+        moveLine.setTaxLineBeforeReverse(taxLine);
+        moveLine.setTaxEquiv(taxEquiv);
+        taxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
+      }
     }
 
-    taxLine = taxService.getTaxLine(tax, moveLine.getDate());
     return taxLine;
   }
 }

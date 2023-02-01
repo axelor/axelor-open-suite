@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
@@ -75,8 +75,8 @@ public class AddressController {
 
     String msg =
         Beans.get(AddressService.class).check(appBase.getQasWsdlUrl())
-            ? appBase.getQasWsdlUrl() + " " + I18n.get(IExceptionMessage.ADDRESS_1)
-            : I18n.get(IExceptionMessage.ADDRESS_2);
+            ? appBase.getQasWsdlUrl() + " " + I18n.get(BaseExceptionMessage.ADDRESS_1)
+            : I18n.get(BaseExceptionMessage.ADDRESS_2);
     response.setFlash(msg);
   }
 
@@ -148,7 +148,7 @@ public class AddressController {
 
     } else if (verifyLevel != null && verifyLevel.value().equals("None")) {
       LOG.debug("address None");
-      response.setFlash(I18n.get(IExceptionMessage.ADDRESS_3));
+      response.setFlash(I18n.get(BaseExceptionMessage.ADDRESS_3));
     }
   }
 
@@ -191,7 +191,7 @@ public class AddressController {
         response.setValue("certifiedOk", true);
       }
 
-    } else response.setFlash(I18n.get(IExceptionMessage.ADDRESS_4));
+    } else response.setFlash(I18n.get(BaseExceptionMessage.ADDRESS_4));
   }
 
   public void export(ActionRequest request, ActionResponse response)
@@ -227,7 +227,7 @@ public class AddressController {
         response.setView(mapView);
       } else {
         response.setFlash(
-            String.format(I18n.get(IExceptionMessage.ADDRESS_5), address.getFullName()));
+            String.format(I18n.get(BaseExceptionMessage.ADDRESS_5), address.getFullName()));
       }
       response.setReload(true);
     } catch (Exception e) {
@@ -248,12 +248,12 @@ public class AddressController {
       Company company =
           Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
       if (company == null) {
-        response.setFlash(I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+        response.setFlash(I18n.get(BaseExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
         return;
       }
       Address departureAddress = company.getAddress();
       if (departureAddress == null) {
-        response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
+        response.setFlash(I18n.get(BaseExceptionMessage.ADDRESS_7));
         return;
       }
 
@@ -263,7 +263,8 @@ public class AddressController {
 
       if (!departureLatLong.isPresent()) {
         response.setFlash(
-            String.format(I18n.get(IExceptionMessage.ADDRESS_5), departureAddress.getFullName()));
+            String.format(
+                I18n.get(BaseExceptionMessage.ADDRESS_5), departureAddress.getFullName()));
         return;
       }
 
@@ -274,7 +275,7 @@ public class AddressController {
 
       if (!arrivalLatLong.isPresent()) {
         response.setFlash(
-            String.format(I18n.get(IExceptionMessage.ADDRESS_5), arrivalAddress.getFullName()));
+            String.format(I18n.get(BaseExceptionMessage.ADDRESS_5), arrivalAddress.getFullName()));
         return;
       }
 

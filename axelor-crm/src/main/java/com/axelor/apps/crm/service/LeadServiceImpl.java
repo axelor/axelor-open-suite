@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
@@ -31,6 +31,7 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -77,7 +78,7 @@ public class LeadServiceImpl implements LeadService {
     if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(com.axelor.apps.crm.exception.IExceptionMessage.LEAD_CONVERT_WRONG_STATUS));
+          I18n.get(CrmExceptionMessage.LEAD_CONVERT_WRONG_STATUS));
     }
 
     if (partner != null && contactPartner != null) {
@@ -117,10 +118,12 @@ public class LeadServiceImpl implements LeadService {
    */
   public String getSequence() throws AxelorException {
 
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PARTNER);
+    String seq =
+        sequenceService.getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
     if (seq == null) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_1));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.PARTNER_1));
     }
     return seq;
   }
@@ -246,7 +249,7 @@ public class LeadServiceImpl implements LeadService {
     if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(com.axelor.apps.crm.exception.IExceptionMessage.LEAD_START_WRONG_STATUS));
+          I18n.get(CrmExceptionMessage.LEAD_START_WRONG_STATUS));
     }
     lead.setStatusSelect(LeadRepository.LEAD_STATUS_IN_PROCESS);
   }
@@ -261,7 +264,7 @@ public class LeadServiceImpl implements LeadService {
     if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(com.axelor.apps.crm.exception.IExceptionMessage.LEAD_ASSIGN_TO_ME_WRONG_STATUS));
+          I18n.get(CrmExceptionMessage.LEAD_ASSIGN_TO_ME_WRONG_STATUS));
     }
     lead.setUser(AuthUtils.getUser());
     if (lead.getStatusSelect() == LeadRepository.LEAD_STATUS_NEW) {
@@ -285,7 +288,7 @@ public class LeadServiceImpl implements LeadService {
         || lead.getStatusSelect() != LeadRepository.LEAD_STATUS_LOST) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(com.axelor.apps.crm.exception.IExceptionMessage.LEAD_RECYCLE_WRONG_STATUS));
+          I18n.get(CrmExceptionMessage.LEAD_RECYCLE_WRONG_STATUS));
     }
     lead.setStatusSelect(LeadRepository.LEAD_STATUS_IN_PROCESS);
     lead.setIsRecycled(true);
@@ -301,7 +304,7 @@ public class LeadServiceImpl implements LeadService {
     if (lead.getStatusSelect() == null || !authorizedStatus.contains(lead.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(com.axelor.apps.crm.exception.IExceptionMessage.LEAD_LOSE_WRONG_STATUS));
+          I18n.get(CrmExceptionMessage.LEAD_LOSE_WRONG_STATUS));
     }
     lead.setStatusSelect(LeadRepository.LEAD_STATUS_LOST);
     lead.setLostReason(lostReason);

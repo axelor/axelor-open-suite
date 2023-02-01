@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,5 +67,26 @@ public class AccountingBatchBankPaymentService extends AccountingBatchService {
     }
 
     return Beans.get(batchClass).run(accountingBatch);
+  }
+
+  public Batch billOfExchange(AccountingBatch accountingBatch) {
+
+    switch (accountingBatch.getBillOfExchangeStepBatchSelect()) {
+      case AccountingBatchRepository.BILL_OF_EXCHANGE_BATCH_STATUS_BOE_GENERATION:
+        if (accountingBatch.getBillOfExchangeDataTypeSelect()
+            == AccountingBatchRepository.BILL_OF_EXCHANGE_DATA_CUSTOMER_INVOICE) {
+          return Beans.get(BatchBillOfExchange.class).run(accountingBatch);
+        } else {
+          throw new IllegalArgumentException("Invalid data type");
+        }
+
+      case AccountingBatchRepository.BILL_OF_EXCHANGE_BATCH_STATUS_SEND_BILLING:
+        return Beans.get(BatchBillOfExchangeSendBilling.class).run(accountingBatch);
+
+      case AccountingBatchRepository.BILL_OF_EXCHANGE_BATCH_STATUS_BANK_ORDER_GENERATION:
+        return Beans.get(BatchBankOrderGenerationBillOfExchange.class).run(accountingBatch);
+      default:
+        throw new IllegalArgumentException("Invalid data type");
+    }
   }
 }

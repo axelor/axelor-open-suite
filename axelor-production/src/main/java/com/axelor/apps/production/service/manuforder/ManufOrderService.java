@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,24 +38,14 @@ public interface ManufOrderService {
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
 
-  public static int ORIGIN_TYPE_MRP = 1;
-  public static int ORIGIN_TYPE_SALE_ORDER = 2;
-  public static int ORIGIN_TYPE_OTHER = 3;
+  public interface ManufOrderOriginType {}
 
-  /**
-   * @param product
-   * @param qtyRequested
-   * @param priority
-   * @param isToInvoice
-   * @param billOfMaterial
-   * @param plannedStartDateT
-   * @param originType
-   *     <li>1 : MRP
-   *     <li>2 : Sale order
-   *     <li>3 : Other
-   * @return
-   * @throws AxelorException
-   */
+  public enum ManufOrderOriginTypeProduction implements ManufOrderOriginType {
+    ORIGIN_TYPE_MRP,
+    ORIGIN_TYPE_SALE_ORDER,
+    ORIGIN_TYPE_OTHER;
+  }
+
   @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
@@ -65,7 +55,7 @@ public interface ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      int originType)
+      ManufOrderOriginType manufOrderOriginType)
       throws AxelorException;
 
   public void createToConsumeProdProductList(ManufOrder manufOrder);
@@ -174,6 +164,8 @@ public interface ManufOrderService {
    */
   void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
+  StockMove getConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
   /**
    * On changing {@link ManufOrder#producedStockMoveLineList}, we also update the stock move.
    *
@@ -181,6 +173,8 @@ public interface ManufOrderService {
    * @throws AxelorException
    */
   void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+  StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   /**
    * Check the realized consumed stock move lines in manuf order has not changed.
@@ -275,4 +269,6 @@ public interface ManufOrderService {
    * @return
    */
   public void createBarcode(ManufOrder manufOrder);
+
+  List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
 }

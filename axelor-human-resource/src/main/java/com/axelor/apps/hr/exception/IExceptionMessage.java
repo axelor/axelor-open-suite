@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,12 @@
  */
 package com.axelor.apps.hr.exception;
 
-/** Interface of Exceptions. Enum all exception of axelor-human-resource. */
+/**
+ * Interface of Exceptions. Enum all exception of axelor-human-resource.
+ *
+ * @deprecated Replaced by {@link HumanResourceExceptionMessage}
+ */
+@Deprecated
 public interface IExceptionMessage {
 
   static final String HR_CONFIG = /*$$(*/
@@ -224,4 +229,6 @@ public interface IExceptionMessage {
 
   static final String NO_TIMESHEET_FOUND_FOR_EMPLOYEE = /*$$(*/
       "No time sheet found for employee %s" /*)*/;
+
+  static final String NO_USER_FOR_EMPLOYEE = /*$$(*/ "Please fill a user for the employee %s" /*)*/;
 }

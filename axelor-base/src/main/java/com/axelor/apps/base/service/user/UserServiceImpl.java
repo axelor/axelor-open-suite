@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -78,8 +78,8 @@ public class UserServiceImpl implements UserService {
 
   private static final String PATTERN_DESCRIPTION =
       PATTERN.pattern().equals(PATTERN_ACCES_RESTRICTION)
-          ? IExceptionMessage.USER_PATTERN_MISMATCH_ACCES_RESTRICTION
-          : IExceptionMessage.USER_PATTERN_MISMATCH_CUSTOM;
+          ? BaseExceptionMessage.USER_PATTERN_MISMATCH_ACCES_RESTRICTION
+          : BaseExceptionMessage.USER_PATTERN_MISMATCH_CUSTOM;
 
   private static final String GEN_CHARS =
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";

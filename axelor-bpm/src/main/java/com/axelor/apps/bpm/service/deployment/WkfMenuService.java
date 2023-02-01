@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashMap;
@@ -53,7 +54,14 @@ public class WkfMenuService {
     String name = MENU_PREFIX + wkfTaskConfig.getId();
     MetaMenu metaMenu = findOrCreateMenu(name);
     metaMenu.setTitle(wkfTaskConfig.getMenuName());
-    metaMenu.setAction(createOrUpdateAction(metaMenu, wkfTaskConfig, false));
+    MetaAction action = createOrUpdateAction(metaMenu, wkfTaskConfig, false);
+    if (action == null) {
+      if (metaMenu.getId() != null) {
+        metaMenuRepository.remove(metaMenu);
+      }
+      return;
+    }
+    metaMenu.setAction(action);
     metaMenu.setParent(null);
     metaMenu.setTagCount(wkfTaskConfig.getDisplayTagCount());
     if (wkfTaskConfig.getParentMenuName() != null) {
@@ -131,6 +139,13 @@ public class WkfMenuService {
     boolean permanent =
         userMenu ? wkfTaskConfig.getUserPermanentMenu() : wkfTaskConfig.getPermanentMenu();
 
+    if (userMenu && query == null) {
+      if (metaAction.getId() != null) {
+        metaActionRepository.remove(metaAction);
+      }
+      return null;
+    }
+
     String xml =
         "<action-view name=\""
             + name
@@ -159,7 +174,9 @@ public class WkfMenuService {
             + "',"
             + permanent
             + ")\" />\n"
-            + (userMenu ? "<context name=\"currentUserId\" expr=\"eval:__user__.id\" />\n" : "")
+            + (userMenu
+                ? "<context name=\"currentUserId\" expr=\"eval:__user__.id\" />\n<context name=\"teamIds\" expr=\"eval:__user__.teamSet.collect{it->it.id}\" />\n"
+                : "")
             + (isJson
                 ? "<context name=\"jsonModel\" expr=\""
                     + wkfTaskConfig.getJsonModelName()
@@ -205,24 +222,37 @@ public class WkfMenuService {
 
   private String createQuery(WkfTaskConfig wkfTaskConfig, boolean userMenu, boolean isJson) {
 
+    Property property = null;
     String query = "self.processInstanceId in (:processInstanceIds)";
     if (isJson) {
       query += " AND self.jsonModel = :jsonModel";
-      if (userMenu) {
-        query += " AND self.attrs." + wkfTaskConfig.getUserPath() + ".id = :currentUserId";
-      }
-    } else if (userMenu) {
+    }
+
+    if (userMenu) {
       String path = wkfTaskConfig.getUserPath();
-      String model = getModelName(wkfTaskConfig);
-      try {
-        Property property = Mapper.of(Class.forName(model)).getProperty(path.split("\\.")[0]);
-        if (property == null) {
-          path = "attrs." + path;
+      String param = ":currentUserId";
+      if (Strings.isNullOrEmpty(path)) {
+        path = wkfTaskConfig.getTeamPath();
+        if (Strings.isNullOrEmpty(path)) {
+          return null;
         }
-      } catch (ClassNotFoundException e) {
-        e.printStackTrace();
+        param = ":teamIds";
       }
-      query += " AND self." + path + ".id = :currentUserId";
+
+      if (!isJson) {
+        String model = getModelName(wkfTaskConfig);
+        try {
+          property = Mapper.of(Class.forName(model)).getProperty(path.split("\\.")[0]);
+        } catch (ClassNotFoundException e) {
+          e.printStackTrace();
+        }
+      }
+
+      if (property == null) {
+        path = "attrs." + path;
+      }
+
+      query += " AND self." + path + ".id in (" + param + ")";
     }
 
     return query;

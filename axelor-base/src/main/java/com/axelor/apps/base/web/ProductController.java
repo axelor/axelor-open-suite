@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
@@ -61,7 +61,7 @@ public class ProductController {
     if (product.getProductVariantConfig() != null) {
       Beans.get(ProductService.class).generateProductVariants(product);
 
-      response.setFlash(I18n.get(IExceptionMessage.PRODUCT_1));
+      response.setFlash(I18n.get(BaseExceptionMessage.PRODUCT_1));
       response.setReload(true);
     }
   }
@@ -101,7 +101,7 @@ public class ProductController {
 
     Beans.get(ProductService.class).updateProductPrice(product);
 
-    response.setFlash(I18n.get(IExceptionMessage.PRODUCT_2));
+    response.setFlash(I18n.get(BaseExceptionMessage.PRODUCT_2));
     response.setReload(true);
   }
 
@@ -154,7 +154,7 @@ public class ProductController {
       if (user.getActiveCompany() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+            I18n.get(BaseExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
       }
 
       String fileLink =

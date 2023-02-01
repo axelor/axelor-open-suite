@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.PartnerSaleService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -110,5 +111,24 @@ public class PartnerSaleController {
 
   public void markupByCustomer(ActionRequest request, ActionResponse response) {
     this.averageByCustomer("markup", request, response);
+  }
+
+  public void checkAnySaleOrderAttached(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (!partner.getIsCustomer()) {
+        long saleOrderCount =
+            Beans.get(SaleOrderRepository.class)
+                .all()
+                .filter("self.clientPartner = :partner")
+                .bind("partner", partner.getId())
+                .count();
+        if (saleOrderCount > 0) {
+          response.setValue("customerCantBeRemoved", true);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

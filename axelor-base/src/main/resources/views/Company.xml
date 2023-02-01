@@ -13,8 +13,7 @@
     onSave="action-company-check-multi-banks" canNew="_canNew">
     <panel name="mainPanel" readonlyIf="$popup()">
       <panel name="logoPanel" colSpan="4">
-        <field name="logo" widget="Image" colSpan="12"
-          onChange="action-company-logo-onchange-update-dimension"/>
+        <field name="logo" widget="Image" colSpan="12"/>
         <field name="width" requiredIf="height"
           onChange="action-company-condition-validate-logo-height-and-width">
           <viewer depends="width"><![CDATA[
@@ -102,11 +101,11 @@
           if="__config__.app.isApp('cash-management')"/>
         <field name="tradingNameSet" canNew="true" form-view="trading-name-form"
           grid-view="trading-name-grid" colSpan="12"
-          if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+          if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
         <field name="tradingNamePrintingSettingsList" canNew="true"
           form-view="trading-name-printing-settings-company-form"
           grid-view="trading-name-printing-settings-company-grid" colSpan="12"
-          if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+          if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
         <field name="weeklyPlanning" title="Weekly planning" canNew="true"
           form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
         <field name="publicHolidayEventsPlanning" form-view="events-planning-form"
@@ -178,16 +177,12 @@
     <call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks"/>
   </action-method>
 
-  <action-method name="action-company-logo-onchange-update-dimension">
-    <call class="com.axelor.apps.base.web.CompanyController" method="updateDimension"/>
-  </action-method>
-
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
     title="Company filters">
     <field name="tradingNameSet" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="tradingNamePrintingSettingsList" hidden="true"
-      if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="customerPaymentDelay" hidden="true"
       if="!__config__.app.isApp('cash-management')"/>
     <field name="supplierPaymentDelay" hidden="true"

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,11 +22,11 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.message.db.Message;
-import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -36,9 +36,6 @@ import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public interface ExpenseService {
-
-  public ExpenseLine getAndComputeAnalyticDistribution(ExpenseLine expenseLine, Expense expense)
-      throws AxelorException;
 
   public ExpenseLine createAnalyticDistributionWithTemplate(ExpenseLine expenseLine)
       throws AxelorException;
@@ -90,8 +87,9 @@ public interface ExpenseService {
    * @param expense
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
-  public void cancelPayment(Expense expense) throws AxelorException;
+  void cancelPayment(Expense expense) throws AxelorException;
+
+  void resetExpensePaymentAfterCancellation(Expense expense);
 
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException;
@@ -100,12 +98,12 @@ public interface ExpenseService {
       throws AxelorException;
 
   /**
-   * Get the expense from user, if no expense is found create one.
+   * Get the expense from employee, if no expense is found create one.
    *
-   * @param user
+   * @param employee
    * @return
    */
-  public Expense getOrCreateExpense(User user);
+  public Expense getOrCreateExpense(Employee employee);
 
   public BigDecimal computePersonalExpenseAmount(Expense expense);
 

@@ -1,0 +1,3 @@
+---
+title: "FixedAsset: Set default value to 0 to avoid saving a wrong default value in the fields Disposal Type and Quantity type on new and ongoing fixed asset"
+type: fix

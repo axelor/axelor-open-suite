@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.productionorder;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginType;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -60,11 +61,10 @@ public interface ProductionOrderService {
    * @param billOfMaterial
    * @param qtyRequested
    * @param startDate
+   * @param endDate
    * @param saleOrder
-   * @param originType
-   *     <li>1 : MRP
-   *     <li>2 : Sale order
-   *     <li>3 : Other
+   * @param saleOrderLine
+   * @param manufOrderOriginType
    * @return
    * @throws AxelorException
    */
@@ -78,7 +78,7 @@ public interface ProductionOrderService {
       LocalDateTime endDate,
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
-      int originType)
+      ManufOrderOriginType manufOrderOriginType)
       throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})

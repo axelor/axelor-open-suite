@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -52,6 +53,11 @@ public interface MoveLineToolService {
   TaxLine getTaxLine(MoveLine moveLine) throws AxelorException;
 
   MoveLine setCurrencyAmount(MoveLine moveLine);
+
+  boolean checkCutOffDates(MoveLine moveLine);
+
+  boolean isEqualTaxMoveLine(
+      Account account, TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml);
 
   void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
 }

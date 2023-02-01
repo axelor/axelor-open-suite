@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,9 +21,12 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.exception.AxelorException;
@@ -58,6 +61,19 @@ public class CancelState extends WorkflowInvoice {
         && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
       cancelMove();
     }
+
+    updateInvoiceFromCancellation();
+
+    workflowService.afterCancel(invoice);
+  }
+
+  public void cancelInvoiceInformation() throws AxelorException {
+    workflowService.beforeCancel(invoice);
+    updateInvoiceFromCancellation();
+    workflowService.afterCancel(invoice);
+  }
+
+  protected void updateInvoiceFromCancellation() throws AxelorException {
     setStatus();
     if (Beans.get(AccountConfigService.class)
         .getAccountConfig(invoice.getCompany())
@@ -70,8 +86,6 @@ public class CancelState extends WorkflowInvoice {
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       invoiceLine.clearBudgetDistributionList();
     }
-
-    workflowService.afterCancel(invoice);
   }
 
   @Transactional
@@ -85,18 +99,24 @@ public class CancelState extends WorkflowInvoice {
     if (invoice.getOldMove() != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICE_CANCEL_1));
+          I18n.get(AccountExceptionMessage.INVOICE_CANCEL_1));
     }
 
     Move move = invoice.getMove();
 
-    invoice.setMove(null);
+    if (move.getStatusSelect() == MoveRepository.STATUS_NEW) {
+      invoice.setMove(null);
+    }
 
     Beans.get(MoveCancelService.class).cancel(move);
   }
 
-  protected void setPfpStatus() {
-    invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
+  protected void setPfpStatus() throws AxelorException {
+    InvoiceToolService.setPfpStatus(invoice);
     invoice.setDecisionPfpTakenDate(null);
+
+    invoice.getInvoiceTermList().stream()
+        .filter(it -> it.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_NO_PFP)
+        .forEach(it -> it.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING));
   }
 }

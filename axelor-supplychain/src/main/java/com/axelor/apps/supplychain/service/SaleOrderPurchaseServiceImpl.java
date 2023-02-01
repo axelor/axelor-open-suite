@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,8 +29,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -95,12 +94,12 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
           throw new AxelorException(
               saleOrderLine,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.SO_PURCHASE_1),
+              I18n.get(SupplychainExceptionMessage.SO_PURCHASE_1),
               saleOrderLine.getProductName());
         }
 
         if (!saleOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
-          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<SaleOrderLine>());
+          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<>());
         }
 
         saleOrderLinesBySupplierPartner.get(supplierPartner).add(saleOrderLine);
@@ -116,9 +115,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder)
       throws AxelorException {
 
-    LOG.debug(
-        "Création d'une commande fournisseur pour le devis client : {}",
-        saleOrder.getSaleOrderSeq());
+    LOG.debug("Creation of a purchase order for the sale order : {}", saleOrder.getSaleOrderSeq());
 
     PurchaseOrder purchaseOrder =
         purchaseOrderSupplychainService.createPurchaseOrder(
@@ -133,8 +130,8 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
             saleOrder.getExternalReference(),
             saleOrder.getDirectOrderLocation()
                 ? saleOrder.getStockLocation()
-                : Beans.get(StockLocationService.class)
-                    .getDefaultReceiptStockLocation(saleOrder.getCompany()),
+                : Beans.get(PurchaseOrderSupplychainService.class)
+                    .getStockLocation(supplierPartner, saleOrder.getCompany()),
             Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,11 +34,16 @@ import java.util.Map;
 
 public class ValueMapperController {
 
+  @SuppressWarnings("unchecked")
   public void execute(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
 
     Map<String, Object> valueMapperMap = (Map<String, Object>) context.get("valueMapper");
+    if (valueMapperMap == null) {
+      return;
+    }
+
     ValueMapper mapper =
         Beans.get(ValueMapperRepository.class)
             .find(Long.parseLong(valueMapperMap.get("id").toString()));
