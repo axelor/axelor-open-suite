@@ -136,7 +136,8 @@ public class AnalyticDistributionLineController {
     Context parentContext = request.getContext().getParent();
     Context grandParentContext = null;
 
-    if (parentContext != null) {
+    if (parentContext != null
+        && AnalyticDistributionTemplate.class.equals(parentContext.getContextClass())) {
       AnalyticDistributionTemplate analyticDistributionTemplate =
           parentContext.asType(AnalyticDistributionTemplate.class);
 
@@ -160,7 +161,8 @@ public class AnalyticDistributionLineController {
         }
 
         grandParentContext = request.getContext().getParent().getParent();
-        if (grandParentContext != null) {
+        if (grandParentContext != null
+            && Account.class.equals(grandParentContext.getContextClass())) {
           Account account = grandParentContext.asType(Account.class);
           List<AnalyticAccount> analyticAccountList =
               Beans.get(AccountAnalyticRulesRepository.class)
