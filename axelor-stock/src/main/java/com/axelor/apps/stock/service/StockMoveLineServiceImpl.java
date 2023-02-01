@@ -508,10 +508,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
           if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             // We dont recompute average price for outgoing lines
-            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine, date, origin, toStatus);
+            this.updateStockLocationLineHistory(
+                fromStockLocation, stockMoveLine, date, origin, toStatus);
           }
           if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-            this.updateAveragePriceLocationLine(
+            this.updateAveragePriceAndLocationLineHistory(
                 toStockLocation, stockMoveLine, fromStatus, toStatus, date, origin);
           }
           weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
@@ -520,10 +521,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             && toStatus == StockMoveRepository.STATUS_CANCELED) {
           // We dont recompute on cancel
           if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-            this.updateWapStockMoveLine(fromStockLocation, stockMoveLine, date, origin, toStatus);
+            this.updateStockLocationLineHistory(
+                fromStockLocation, stockMoveLine, date, origin, toStatus);
           }
           if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-            this.updateWapStockMoveLine(toStockLocation, stockMoveLine, date, origin, toStatus);
+            this.updateStockLocationLineHistory(
+                toStockLocation, stockMoveLine, date, origin, toStatus);
           }
         }
       }
@@ -531,7 +534,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public void updateAveragePriceLocationLine(
+  public void updateAveragePriceAndLocationLineHistory(
       StockLocation stockLocation,
       StockMoveLine stockMoveLine,
       int fromStatus,
@@ -577,7 +580,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
   }
 
-  protected void updateWapStockMoveLine(
+  protected void updateStockLocationLineHistory(
       StockLocation stockLocation,
       StockMoveLine stockMoveLine,
       LocalDate date,
