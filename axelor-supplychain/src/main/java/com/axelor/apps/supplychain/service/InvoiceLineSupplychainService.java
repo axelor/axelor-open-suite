@@ -38,7 +38,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
@@ -55,7 +54,6 @@ import java.util.Map;
 
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
-  protected PurchaseProductService purchaseProductService;
   protected SupplierCatalogService supplierCatalogService;
 
   @Inject
@@ -69,7 +67,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
-      PurchaseProductService purchaseProductService,
       SupplierCatalogService supplierCatalogService,
       TaxService taxService,
       InternationalService internationalService) {
@@ -85,7 +82,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         invoiceLineAnalyticService,
         taxService,
         internationalService);
-    this.purchaseProductService = purchaseProductService;
     this.supplierCatalogService = supplierCatalogService;
   }
 
