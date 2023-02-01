@@ -319,7 +319,7 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
         .all()
         .filter(
             String.format(
-                "self.company = :company AND self.id %s IN :alreadyPresentSearchAnalyticAxes AND self.id NOT IN :alreadyPresentReverseAnalyticAxes",
+                "(self.company = :company OR self.company IS NULL) AND self.id %s IN :alreadyPresentSearchAnalyticAxes AND self.id NOT IN :alreadyPresentReverseAnalyticAxes",
                 isReverseQuery ? "" : "NOT"))
         .bind("company", analyticMoveLineQuery.getCompany())
         .bind("alreadyPresentSearchAnalyticAxes", alreadyPresentSearchAnalyticAxesIds)

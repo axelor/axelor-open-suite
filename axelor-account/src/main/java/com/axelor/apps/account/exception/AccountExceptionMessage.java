@@ -882,6 +882,14 @@ public final class AccountExceptionMessage {
   public static final String MOVE_CANCEL_4 = /*$$(*/
       "The move is accounted and so can not be canceled." /*)*/;
 
+  public static final String MOVE_CANCEL_5 = /*$$(*/
+      "The move is already accounted, to cancel it, please reverse it." /*)*/;
+
+  public static final String MOVE_CANCEL_6 = /*$$(*/ "The move is already cancelled." /*)*/;
+
+  public static final String MOVE_CANCEL_7 = /*$$(*/
+      "One of the move line is reconciled, to cancel this move, please reverse it." /*)*/;
+
   public static final String INVOICE_CANCEL_1 = /*$$(*/
       "Invoice is passed in doubfult debit, and can't be canceled" /*)*/;
 

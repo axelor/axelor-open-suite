@@ -19,10 +19,13 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Notification;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface NotificationService {
 
   void populateNotificationItemList(Notification notification);
 
   void validate(Notification notification) throws AxelorException;
+
+  List<Long> getMoveLines(Notification notification);
 }

@@ -1,0 +1,3 @@
+---
+title: "Accounting batch : can't generate move anymore with an incompatible status between the operation journal and the cut off move status selected"
+type: fix

@@ -36,7 +36,8 @@
       </panel>
       <field name="reportTitle" requiredIf="typeSelect == 3000" colSpan="12"
         showIf="reportExportTypeSelect == 1 &amp;&amp; [23,24,3000].includes(typeSelect)"/>
-      <panel name="customReportTypePanel" colSpan="12" showIf="typeSelect == 3000">
+      <panel name="customReportTypePanel" colSpan="12"
+        showIf="typeSelect == 3000 &amp;&amp; reportExportTypeSelect == 1">
         <panel name="comparisonPanel" stacked="true">
           <field name="comparison" requiredIf="typeSelect == 3000"
             showIf="!useLegacyCustomReports"
