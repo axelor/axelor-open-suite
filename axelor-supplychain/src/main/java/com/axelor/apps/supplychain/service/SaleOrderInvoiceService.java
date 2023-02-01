@@ -231,6 +231,7 @@ public interface SaleOrderInvoiceService {
       SaleOrder saleOrder,
       Map<Long, BigDecimal> qtyToInvoiceMap,
       Map<Long, BigDecimal> priceMap,
+      Map<Long, BigDecimal> qtyMap,
       boolean isPercent)
       throws AxelorException;
 
