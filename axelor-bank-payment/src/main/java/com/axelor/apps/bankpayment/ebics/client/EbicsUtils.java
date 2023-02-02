@@ -37,7 +37,6 @@ package com.axelor.apps.bankpayment.ebics.client;
  */
 
 import com.axelor.app.AppSettings;
-import com.axelor.utils.xml.XPathParse;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;

@@ -30,7 +30,7 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.message.service.TemplateContextService;
 import com.axelor.meta.db.MetaModel;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.utils.template.TemplateMaker;
 import com.google.inject.Inject;
 import java.util.Locale;
 import java.util.Optional;

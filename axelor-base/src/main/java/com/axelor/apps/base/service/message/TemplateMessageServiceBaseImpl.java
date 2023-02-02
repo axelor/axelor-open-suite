@@ -33,7 +33,7 @@ import com.axelor.message.service.TemplateMessageServiceImpl;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.text.Templates;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.utils.template.TemplateMaker;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
