@@ -65,8 +65,8 @@
     <boolean name="enableFreezeFields" transient="true" title="Freeze fields"/>
 
     <track>
-      <field name="desiredDelivDate"/>
-      <field name="estimatedDelivDate"/>
+      <field name="desiredReceiptDate"/>
+      <field name="estimatedReceiptDate"/>
     </track>
 
   </entity>
