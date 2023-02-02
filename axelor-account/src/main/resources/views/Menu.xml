@@ -359,7 +359,7 @@
     title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
     <view type="grid" name="accounting-report-grid"/>
     <view type="form" name="accounting-report-form"/>
-    <view-param name="search-filters" value="accounting-report-filter"/>
+    <view-param name="search-filters" value="accounting-report-filters"/>
     <domain>self.reportType.typeSelect &lt; 1000 or self.reportType.typeSelect &gt;= 2000</domain>
   </action-view>
 
