@@ -147,7 +147,7 @@ public interface StockMoveLineService {
       TrackingNumber trackingNumber)
       throws AxelorException;
 
-  public void updateAveragePriceLocationLine(
+  public void updateAveragePriceAndLocationLineHistory(
       StockLocation stockLocation,
       StockMoveLine stockMoveLine,
       int fromStatus,
