@@ -1,4 +1,0 @@
-"importId";"typeList";"statement"
-"1";"storable";"Cette facture ne comporte que des livraisons de biens."
-"2";"service";"Cette facture ne comporte que des prestations de services."
-"3";"storable, service";"Cette facture comporte des livraisons de biens ainsi que des prestations de services."

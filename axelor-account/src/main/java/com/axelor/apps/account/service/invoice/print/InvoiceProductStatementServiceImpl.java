@@ -9,7 +9,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,33 +40,87 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
 
   protected String getStatement(Invoice invoice, Set<String> productTypes) throws AxelorException {
     if (!productTypes.isEmpty()) {
-      Set<InvoiceProductStatement> invoiceProductStatementList =
+      List<InvoiceProductStatement> invoiceProductStatementList =
           getInvoiceProductStatements(invoice);
       return computeStatement(productTypes, invoiceProductStatementList);
     }
     return "";
   }
 
-  protected Set<InvoiceProductStatement> getInvoiceProductStatements(Invoice invoice)
+  protected List<InvoiceProductStatement> getInvoiceProductStatements(Invoice invoice)
       throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
-    return accountConfig.getStatementsForItemsCategoriesSet();
+    return accountConfig.getStatementsForItemsCategoriesList();
   }
 
   protected String computeStatement(
-      Set<String> productTypes, Set<InvoiceProductStatement> invoiceProductStatementList) {
+      Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
     if (invoiceProductStatementList.isEmpty()) {
       return "";
     }
     String statement = getCorrespondingStatement(productTypes, invoiceProductStatementList);
     if (statement.isEmpty()) {
-      statement = getStatementForOneType(productTypes, invoiceProductStatementList);
+      List<InvoiceProductStatement> minSizeCorrespondingInvoiceProductStatements =
+          getCorrectInvoiceProductStatements(productTypes, invoiceProductStatementList);
+      statement =
+          minSizeCorrespondingInvoiceProductStatements.stream()
+              .findFirst()
+              .map(InvoiceProductStatement::getStatement)
+              .orElse("");
     }
     return statement;
   }
 
+  protected List<InvoiceProductStatement> getCorrectInvoiceProductStatements(
+      Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
+    List<InvoiceProductStatement> correspondingInvoiceProductStatements =
+        getCorrespondingInvoiceProductStatements(productTypes, invoiceProductStatementList);
+    int min = getMinSize(correspondingInvoiceProductStatements);
+    List<InvoiceProductStatement> correspondingInvoiceProductStatementsWithMinSize =
+        getCorrespondingInvoiceProductStatementsWithMinSize(
+            correspondingInvoiceProductStatements, min);
+    correspondingInvoiceProductStatementsWithMinSize.sort(
+        Comparator.comparing(InvoiceProductStatement::getId));
+    return correspondingInvoiceProductStatementsWithMinSize;
+  }
+
+  protected List<InvoiceProductStatement> getCorrespondingInvoiceProductStatementsWithMinSize(
+      List<InvoiceProductStatement> correspondingInvoiceProductStatements, int min) {
+    List<InvoiceProductStatement> minSizeCorrespondingInvoiceProductStatements = new ArrayList<>();
+    for (InvoiceProductStatement invoiceProductStatement : correspondingInvoiceProductStatements) {
+      int typesListSize = getTypesList(invoiceProductStatement).size();
+      if (typesListSize == min) {
+        minSizeCorrespondingInvoiceProductStatements.add(invoiceProductStatement);
+      }
+    }
+    return minSizeCorrespondingInvoiceProductStatements;
+  }
+
+  protected int getMinSize(List<InvoiceProductStatement> correspondingInvoiceProductStatements) {
+    int min = 1000;
+    for (InvoiceProductStatement invoiceProductStatement : correspondingInvoiceProductStatements) {
+      int typesListSize = getTypesList(invoiceProductStatement).size();
+      if (typesListSize < min) {
+        min = typesListSize;
+      }
+    }
+    return min;
+  }
+
+  protected List<InvoiceProductStatement> getCorrespondingInvoiceProductStatements(
+      Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
+    List<InvoiceProductStatement> correspondingStatements = new ArrayList<>();
+    for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
+      Set<String> result = getTypesList(invoiceProductStatement);
+      if (result.stream().anyMatch(productTypes::contains)) {
+        correspondingStatements.add(invoiceProductStatement);
+      }
+    }
+    return correspondingStatements;
+  }
+
   protected String getCorrespondingStatement(
-      Set<String> productTypes, Set<InvoiceProductStatement> invoiceProductStatementList) {
+      Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
     String statement = "";
     for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
       Set<String> result = getTypesList(invoiceProductStatement);
@@ -75,34 +129,6 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
       }
     }
     return statement;
-  }
-
-  protected String getStatementForOneType(
-      Set<String> productTypes, Set<InvoiceProductStatement> invoiceProductStatementList) {
-    if (productTypes.size() != 1) {
-      return "";
-    }
-    int min = getTypeListMinSize(invoiceProductStatementList);
-    List<String> statementList = new ArrayList<>();
-    for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
-      Set<String> result = getTypesList(invoiceProductStatement);
-      if (result.containsAll(productTypes) && result.size() == min) {
-        statementList.add(invoiceProductStatement.getStatement());
-      }
-    }
-    Collections.sort(statementList);
-    return statementList.stream().findFirst().orElse("");
-  }
-
-  protected int getTypeListMinSize(Set<InvoiceProductStatement> invoiceProductStatementList) {
-    int min = 100;
-    for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
-      Set<String> result = getTypesList(invoiceProductStatement);
-      if (result.size() < min) {
-        min = result.size();
-      }
-    }
-    return min;
   }
 
   protected Set<String> getTypesList(InvoiceProductStatement invoiceProductStatement) {

@@ -36,7 +36,4 @@
   <input file="account_assetDisposalReason.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.AssetDisposalReason"/>
 
-  <input file="account_invoiceProductStatement.csv" separator=";"
-    search="self.importId = :importId" type="com.axelor.apps.account.db.InvoiceProductStatement"/>
-
 </csv-inputs>

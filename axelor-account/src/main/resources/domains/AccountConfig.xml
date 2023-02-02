@@ -231,8 +231,8 @@
     <string name="termsAndConditions" large="true" title="Terms and Conditions"/>
     <many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark"
       title="Watermark"/>
-    <many-to-many name="statementsForItemsCategoriesSet"
-      ref="com.axelor.apps.account.db.InvoiceProductStatement"/>
+    <one-to-many name="statementsForItemsCategoriesList"
+      ref="com.axelor.apps.account.db.InvoiceProductStatement" mappedBy="accountConfig"/>
 
     <!-- Invoice mail -->
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"

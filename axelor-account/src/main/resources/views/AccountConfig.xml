@@ -267,7 +267,7 @@
           <field name="displayItemsCategoriesOnPrinting" widget="boolean-switch"/>
           <panel name="statementsPanel" title="Invoice product statements" colSpan="12"
             hideIf="!displayItemsCategoriesOnPrinting">
-            <field name="statementsForItemsCategoriesSet" colSpan="12"
+            <field name="statementsForItemsCategoriesList" colSpan="12"
               title="Statements present in the invoice according to product types."
               help="You can define a statement for a specific combination of product types.">
               <editor>
