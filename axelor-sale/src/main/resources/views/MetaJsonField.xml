@@ -68,6 +68,7 @@
         <field name="showIf"/>
         <field name="hideIf"/>
         <field name="requiredIf"/>
+        <field name="readonlyIf"/>
       </panel>
     </panel-tabs>
     <panel name="attrOptionsPanel" title="Options" sidebar="true" itemSpan="6">
