@@ -7,7 +7,7 @@
 
   <entity name="DayPlanning">
     <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning"/>
-    <string name="name" required="true" namecolumn="true" title="Day"
+    <string name="nameSelect" required="true" namecolumn="true" title="Day"
       selection="hrs.weekly.day.select"/>
     <time name="morningFrom" title="1st Period From"/>
     <time name="morningTo" title="To"/>
