@@ -1,0 +1,3 @@
+---
+title: "Sale Order: Fixed a bug where doing a partial invoicing in percentage could not work"
+type: fix

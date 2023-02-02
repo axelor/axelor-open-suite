@@ -76,6 +76,7 @@ public class SaleOrderController {
 
   private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
   private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
+  private final String SO_LINES_WIZARD_QTY_FIELD = "qty";
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -312,6 +313,7 @@ public class SaleOrderController {
 
       SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
 
+      Map<Long, BigDecimal> qtyMap = new HashMap<>();
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
       Map<Long, BigDecimal> priceMap = new HashMap<>();
 
@@ -327,6 +329,8 @@ public class SaleOrderController {
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
             BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
             priceMap.put(soLineId, priceItem);
+            BigDecimal qtyItem = new BigDecimal(map.get(SO_LINES_WIZARD_QTY_FIELD).toString());
+            qtyMap.put(soLineId, qtyItem);
           }
         }
       }
@@ -334,7 +338,13 @@ public class SaleOrderController {
       // Re-compute amount to invoice if invoicing partially
       amountToInvoice =
           saleOrderInvoiceService.computeAmountToInvoice(
-              amountToInvoice, operationSelect, saleOrder, qtyToInvoiceMap, priceMap);
+              amountToInvoice,
+              operationSelect,
+              saleOrder,
+              qtyToInvoiceMap,
+              priceMap,
+              qtyMap,
+              isPercent);
 
       saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
           saleOrder, amountToInvoice, isPercent);
