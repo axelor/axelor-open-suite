@@ -315,4 +315,7 @@ public interface StockMoveLineService {
       LocalDate date,
       String origin)
       throws AxelorException;
+
+  public BigDecimal computeNewAveragePriceLocationLine(
+      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException;
 }

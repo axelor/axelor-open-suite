@@ -565,7 +565,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockLocationLineService.updateWap(stockLocationLine, avgPrice, stockMoveLine, date, origin);
   }
 
-  protected BigDecimal computeNewAveragePriceLocationLine(
+  @Override
+  public BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     // avgPrice in stock move line is a bigdecimal but is nullable.
