@@ -229,7 +229,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         dateKey = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
       }
       if (dateKey == null) {
-        dateKey = saleOrderLine.getDesiredDelivDate();
+        dateKey = saleOrderLine.getDesiredDeliveryDate();
       }
 
       List<SaleOrderLine> saleOrderLineLists = saleOrderLinePerDateMap.get(dateKey);

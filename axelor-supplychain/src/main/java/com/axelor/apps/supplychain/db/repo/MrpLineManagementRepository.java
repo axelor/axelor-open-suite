@@ -49,11 +49,11 @@ public class MrpLineManagementRepository extends MrpLineRepository {
       mrpLine.setIsOutDayNbBetweenPurchaseAndProposal(
           mrpLine.getProduct() != null
               && mrpLine.getMaturityDate() != null
-              && (purchaseOrder.getDeliveryDate() == null
+              && (purchaseOrder.getEstimatedReceiptDate() == null
                   || mrpLine.getProduct().getMrpFamily() == null
                   || Math.abs(
                           mrpLine.getMaturityDate().toEpochDay()
-                              - purchaseOrder.getDeliveryDate().toEpochDay())
+                              - purchaseOrder.getEstimatedReceiptDate().toEpochDay())
                       > mrpLine.getProduct().getMrpFamily().getDayNbBetweenPurchaseAndProposal()));
       json.put(
           "isOutDayNbBetweenPurchaseAndProposal",

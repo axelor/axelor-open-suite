@@ -497,6 +497,8 @@
           form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedShippingDate"
           onChange="action-sale-order-group-on-estimated-shipping-date-change"/>
+        <field name="estimatedDeliveryDate"
+          onChange="action-sale-order-group-on-estimated-delivery-date-change"/>
         <field name="deliveryCondition" colSpan="12"/>
         <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid"
           grid-view="shipment-mode-grid"/>
@@ -2124,9 +2126,19 @@
     <action name="action-sale-order-supplychain-method-update-stock-reservation-date"/>
   </action-group>
 
+  <action-group name="action-sale-order-group-on-estimated-delivery-date-change">
+    <action name="action-sale-order-method-fill-sale-order-lines-delivery-date"/>
+    <action name="save"/>
+  </action-group>
+
   <action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="fillSaleOrderLinesEstimatedDate"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-fill-sale-order-lines-delivery-date">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="fillSaleOrderLinesDeliveryDate"/>
   </action-method>
 
   <action-attrs name="action-sale-order-template-hide-allocated-qty">

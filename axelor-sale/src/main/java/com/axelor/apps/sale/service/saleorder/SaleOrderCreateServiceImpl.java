@@ -116,6 +116,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setCurrency(currency);
     saleOrder.setExternalReference(externalReference);
     saleOrder.setEstimatedShippingDate(estimatedShippingDate);
+    saleOrder.setEstimatedDeliveryDate(estimatedShippingDate);
     saleOrder.setTaxNumber(taxNumber);
     saleOrder.setFiscalPosition(fiscalPosition);
 

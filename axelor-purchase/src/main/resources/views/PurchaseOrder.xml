@@ -214,8 +214,8 @@
           grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery" colSpan="12">
-        <field name="deliveryDate" colSpan="3"
-          onChange="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date"/>
+        <field name="estimatedReceiptDate" colSpan="3"
+          onChange="action-purchase-order-method-update-purchase-order-lines-estimated-receipt-date"/>
         <field name="stockLocation" canEdit="false" if-module="axelor-supplychain" colSpan="3"
           form-view="stock-location-form" grid-view="stock-location-grid"
           if="__config__.app.isApp('supplychain')"
@@ -906,6 +906,13 @@
     if-module="axelor-supplychain">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
       method="updateEstimatedDelivDate"/>
+  </action-method>
+
+  <action-method
+    name="action-purchase-order-method-update-purchase-order-lines-estimated-receipt-date"
+    if-module="axelor-supplychain">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="updateEstimatedReceiptDate"/>
   </action-method>
 
   <action-record name="action-record-load-dummy-field-confirm-merge-purchaseorder"
