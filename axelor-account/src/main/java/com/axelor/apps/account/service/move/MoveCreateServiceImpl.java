@@ -283,7 +283,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       move.setCurrencyCode(currency.getCodeISO());
     }
 
-    if (partner != null) {
+    if (partner != null && partner.getPaymentCondition() != null) {
       move.setPaymentCondition(partner.getPaymentCondition());
     }
 
