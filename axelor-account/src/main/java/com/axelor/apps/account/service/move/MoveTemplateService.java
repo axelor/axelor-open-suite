@@ -318,7 +318,7 @@ public class MoveTemplateService {
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 moveTemplate.getFullName(),
-                null,
+                moveTemplate.getDescription(),
                 companyBankDetails);
 
         int counter = 1;
@@ -380,6 +380,11 @@ public class MoveTemplateService {
         }
 
         move.setDescription(moveTemplate.getDescription());
+        if (move.getDescription() != null && !move.getDescription().isEmpty()) {
+          for (MoveLine moveline : move.getMoveLineList()) {
+            moveline.setDescription(move.getDescription());
+          }
+        }
         moveList.add(move.getId());
       }
     }

@@ -280,9 +280,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             counter,
             debit,
             credit,
-            StringTool.cutTooLongString(
-                moveLineToolService.determineDescriptionMoveLine(
-                    move.getJournal(), origin, description)),
+            move.getDescription() == null || move.getDescription().isEmpty()
+                ? StringTool.cutTooLongString(
+                    moveLineToolService.determineDescriptionMoveLine(
+                        move.getJournal(), origin, description))
+                : move.getDescription(),
             origin,
             currencyRate.setScale(5, RoundingMode.HALF_UP),
             amountInSpecificMoveCurrency,
