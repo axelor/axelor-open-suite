@@ -121,12 +121,15 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      Move move = null;
 
       this.setParentContextFields(invoiceTerm, request, response);
 
       Invoice invoice = invoiceTerm.getInvoice();
       MoveLine moveLine = invoiceTerm.getMoveLine();
-      Move move = moveLine.getMove();
+      if (moveLine != null && moveLine.getMove() != null) {
+        move = moveLine.getMove();
+      }
 
       if (invoice == null && request.getContext().containsKey("_invoiceId")) {
         invoice =
@@ -390,14 +393,15 @@ public class InvoiceTermController {
       this.setParentContextFields(invoiceTerm, request, response);
 
       MoveLine moveLine = invoiceTerm.getMoveLine();
-
-      Beans.get(InvoiceTermService.class)
-          .computeFinancialDiscount(
-              invoiceTerm,
-              moveLine.getCredit().max(moveLine.getDebit()),
-              moveLine.getFinancialDiscount(),
-              moveLine.getFinancialDiscountTotalAmount(),
-              moveLine.getRemainingAmountAfterFinDiscount());
+      if (moveLine != null && moveLine.getFinancialDiscount() != null) {
+        Beans.get(InvoiceTermService.class)
+            .computeFinancialDiscount(
+                invoiceTerm,
+                moveLine.getCredit().max(moveLine.getDebit()),
+                moveLine.getFinancialDiscount(),
+                moveLine.getFinancialDiscountTotalAmount(),
+                moveLine.getRemainingAmountAfterFinDiscount());
+      }
 
       response.setValues(invoiceTerm);
     } catch (Exception e) {
