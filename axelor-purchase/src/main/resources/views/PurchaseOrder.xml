@@ -162,13 +162,14 @@
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3"/>
         <field name="currency" canEdit="false" colSpan="3" form-view="currency-form"
-          grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
+          grid-view="currency-grid"
+          readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"/>
         <field name="priceList" onSelect="action-purchase-order-method-price-list-domain"
-          colSpan="3" readonlyIf="statusSelect >= 3" form-view="price-list-form"
-          grid-view="price-list-grid" hideIf="company == null"/>
+          colSpan="3"
+          readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"
+          form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null"/>
         <field name="supplierPartner" canEdit="false" hideIf="company == null" colSpan="3"
-          onChange="action-group-purchase-order-partner-onchange"
-          readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"
+          onChange="action-group-purchase-order-partner-onchange" readonlyIf="statusSelect >= 3"
           onSelect="action-set-supplier-partner-domain" form-view="partner-form"
           grid-view="partner-grid"/>
         <field name="contactPartner" onChange="action-record-po-contact-partner-change"
@@ -626,6 +627,8 @@
     <action name="action-purchase-order-record-interco"/>
     <action name="action-purchase-order-record-set-group-product-on-printing"/>
     <action name="action-purchase-order-method-empty-fiscal-position-if-not-compatible"/>
+    <action name="action-purchase-order-method-fiscal-position-on-change"/>
+    <action name="action-purchase-order-method-compute"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-cancel">

@@ -632,16 +632,17 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
         purchaseOrderLine.setTaxEquiv(taxEquiv);
 
-        purchaseOrderLine.setInTaxTotal(
-            purchaseOrderLine
-                .getExTaxTotal()
-                .multiply(purchaseOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
+        BigDecimal exTaxTotal = purchaseOrderLine.getExTaxTotal();
+        BigDecimal companyExTaxTotal = purchaseOrderLine.getCompanyExTaxTotal();
+        BigDecimal purchasePrice =
+            (BigDecimal)
+                productCompanyService.get(
+                    purchaseOrderLine.getProduct(), "purchasePrice", purchaseOrder.getCompany());
+
+        purchaseOrderLine.setInTaxTotal(taxService.convertUnitPrice(false, taxLine, exTaxTotal));
         purchaseOrderLine.setCompanyInTaxTotal(
-            purchaseOrderLine
-                .getCompanyExTaxTotal()
-                .multiply(purchaseOrderLine.getTaxLine().getValue())
-                .setScale(2, RoundingMode.HALF_UP));
+            taxService.convertUnitPrice(false, taxLine, companyExTaxTotal));
+        purchaseOrderLine.setInTaxPrice(taxService.convertUnitPrice(false, taxLine, purchasePrice));
       }
     }
     return purchaseOrderLineList;
