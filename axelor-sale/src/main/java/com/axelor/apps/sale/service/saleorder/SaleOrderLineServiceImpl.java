@@ -1118,15 +1118,24 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
       saleOrderLine.setTaxEquiv(taxEquiv);
 
+      BigDecimal exTaxTotal = saleOrderLine.getExTaxTotal();
+
+      BigDecimal companyExTaxTotal = saleOrderLine.getCompanyExTaxTotal();
+
+      BigDecimal salePrice =
+          (BigDecimal)
+              productCompanyService.get(
+                  saleOrderLine.getProduct(), "salePrice", saleOrder.getCompany());
+
       saleOrderLine.setInTaxTotal(
-          saleOrderLine
-              .getExTaxTotal()
-              .multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100)))
-              .setScale(2, RoundingMode.HALF_UP));
+          taxService.convertUnitPrice(
+              false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
       saleOrderLine.setCompanyInTaxTotal(
-          saleOrderLine
-              .getCompanyExTaxTotal()
-              .multiply(saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100))));
+          taxService.convertUnitPrice(
+              false, taxLine, companyExTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+      saleOrderLine.setInTaxPrice(
+          taxService.convertUnitPrice(
+              false, taxLine, salePrice, appBaseService.getNbDecimalDigitForUnitPrice()));
     }
     return saleOrderLineList;
   }
