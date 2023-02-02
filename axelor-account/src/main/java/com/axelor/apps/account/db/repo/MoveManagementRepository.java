@@ -85,7 +85,7 @@ public class MoveManagementRepository extends MoveRepository {
         InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
 
         for (MoveLine moveLine : moveLineList) {
-          resetMoveLine(moveLine, copy.getDate(), invoiceTermService);
+          resetMoveLine(moveLine, copy.getDate(), invoiceTermService, copy);
           moveLineInvoiceTermService.updateInvoiceTermsParentFields(moveLine);
         }
       }
@@ -98,7 +98,7 @@ public class MoveManagementRepository extends MoveRepository {
   }
 
   public void resetMoveLine(
-      MoveLine moveLine, LocalDate date, InvoiceTermService invoiceTermService)
+      MoveLine moveLine, LocalDate date, InvoiceTermService invoiceTermService, Move move)
       throws AxelorException {
     moveLine.setInvoiceReject(null);
     moveLine.setDate(date);
@@ -111,6 +111,8 @@ public class MoveManagementRepository extends MoveRepository {
     moveLine.setTaxPaymentMoveLineList(null);
     moveLine.setTaxAmount(BigDecimal.ZERO);
     moveLine.setPostedNbr(null);
+    moveLine.setOrigin(move.getOrigin());
+    moveLine.setOriginDate(move.getOriginDate());
 
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
 
