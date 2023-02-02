@@ -55,6 +55,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
@@ -280,7 +281,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             counter,
             debit,
             credit,
-            move.getDescription() == null || move.getDescription().isEmpty()
+            Strings.isNullOrEmpty(move.getDescription())
                 ? StringTool.cutTooLongString(
                     moveLineToolService.determineDescriptionMoveLine(
                         move.getJournal(), origin, description))

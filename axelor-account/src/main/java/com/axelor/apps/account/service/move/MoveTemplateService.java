@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -380,7 +381,7 @@ public class MoveTemplateService {
         }
 
         move.setDescription(moveTemplate.getDescription());
-        if (move.getDescription() != null && !move.getDescription().isEmpty()) {
+        if (!Strings.isNullOrEmpty(move.getDescription())) {
           for (MoveLine moveline : move.getMoveLineList()) {
             moveline.setDescription(move.getDescription());
           }
