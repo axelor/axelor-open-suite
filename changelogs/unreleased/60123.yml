@@ -1,0 +1,3 @@
+---
+title : "Move : Fix fill of origin and origin date on moveLine when we duplicate a move"
+type: fix
