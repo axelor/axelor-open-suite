@@ -1099,13 +1099,19 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
       saleOrderLine.setTaxEquiv(taxEquiv);
 
-      saleOrderLine.setInTaxTotal(
-          saleOrderLine
-              .getExTaxTotal()
-              .multiply(saleOrderLine.getTaxLine().getValue())
-              .setScale(2, RoundingMode.HALF_UP));
+      BigDecimal exTaxTotal = saleOrderLine.getExTaxTotal();
+
+      BigDecimal companyExTaxTotal = saleOrderLine.getCompanyExTaxTotal();
+
+      BigDecimal salePrice =
+          (BigDecimal)
+              productCompanyService.get(
+                  saleOrderLine.getProduct(), "salePrice", saleOrder.getCompany());
+
+      saleOrderLine.setInTaxTotal(taxService.convertUnitPrice(false, taxLine, exTaxTotal));
       saleOrderLine.setCompanyInTaxTotal(
-          saleOrderLine.getCompanyExTaxTotal().multiply(saleOrderLine.getTaxLine().getValue()));
+          taxService.convertUnitPrice(false, taxLine, companyExTaxTotal));
+      saleOrderLine.setInTaxPrice(taxService.convertUnitPrice(false, taxLine, salePrice));
     }
     return saleOrderLineList;
   }

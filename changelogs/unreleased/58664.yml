@@ -1,0 +1,8 @@
+---
+title: "Fiscal position: changed the behavior of fiscal position on Purchase and Sale order"
+type: fix
+description: |
+  Sale and Purchase Order: Refactor of the behavior for Fiscal Position, Currency and price list in Sale and Purchase Order in order to have the same behavior.
+
+  Now the partner is filtered depending on the currency and price list which are readonly if there is an order line.
+  The fiscal position is now editable even if there is an order line. Changing the partner updates the fiscal position and the taxes on lines.
