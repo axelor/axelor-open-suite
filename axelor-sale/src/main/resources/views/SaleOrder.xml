@@ -425,7 +425,7 @@
           onSelect="action-sale-order-attrs-compute-tax-number-domain"
           onChange="action-sale-order-method-empty-fiscal-position-if-not-compatible,action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
         <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
-          readonlyIf="saleOrderLineList.length > 0 || (statusSelect > 1 &amp;&amp; !orderBeingEdited)"
+          readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-supplychain-attrs-fiscal-position-domain"
           onChange="action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
         <panel name="otherInfoPanel" colSpan="3">
@@ -1494,6 +1494,8 @@
     <action
       name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
       if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
+    <action name="action-sale-order-method-fiscal-position-on-change"/>
+    <action name="action-sale-order-method-compute"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -1734,7 +1736,7 @@
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
       if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition == null"/>
     <field name="fiscalPosition" expr="eval: clientPartner?.fiscalPosition"
-      if="__config__.app.isApp('account') &amp;&amp; saleOrderLineList?.isEmpty()"/>
+      if="__config__.app.isApp('account')"/>
     <field name="currency" expr="eval: clientPartner?.currency"
       if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
     <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"

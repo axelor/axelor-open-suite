@@ -231,16 +231,24 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       int operationSelect,
       SaleOrder saleOrder,
       Map<Long, BigDecimal> qtyToInvoiceMap,
-      Map<Long, BigDecimal> priceMap) {
+      Map<Long, BigDecimal> priceMap,
+      Map<Long, BigDecimal> qtyMap,
+      boolean isPercent) {
 
     if (operationSelect == SaleOrderRepository.INVOICE_LINES) {
       amountToInvoice = BigDecimal.ZERO;
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         Long saleOrderLineId = saleOrderLine.getId();
         if (qtyToInvoiceMap.containsKey(saleOrderLineId) && priceMap.containsKey(saleOrderLineId)) {
+          BigDecimal qtyToInvoice = qtyToInvoiceMap.get(saleOrderLineId);
+
+          if (isPercent) {
+            qtyToInvoice =
+                (qtyToInvoice.multiply(qtyMap.get(saleOrderLineId)))
+                    .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+          }
           amountToInvoice =
-              amountToInvoice.add(
-                  qtyToInvoiceMap.get(saleOrderLineId).multiply(priceMap.get(saleOrderLineId)));
+              amountToInvoice.add(qtyToInvoice.multiply(priceMap.get(saleOrderLineId)));
         }
       }
     }
@@ -870,11 +878,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .bind("saleOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .bind("refundOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
             .fetch();
-    if (isPercent) {
-      amountToInvoice =
-          (amountToInvoice.multiply(saleOrder.getExTaxTotal()))
-              .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
-    }
+
     BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
     sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {

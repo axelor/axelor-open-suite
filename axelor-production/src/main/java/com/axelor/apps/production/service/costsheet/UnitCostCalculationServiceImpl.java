@@ -269,7 +269,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
             ? CostSheetService.ORIGIN_BULK_UNIT_COST_CALCULATION
             : CostSheetService.ORIGIN_BILL_OF_MATERIAL;
 
-    BillOfMaterial billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+    BillOfMaterial billOfMaterial = billOfMaterialService.getBOM(product, company);
 
     CostSheet costSheet =
         costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
@@ -601,7 +601,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public Company getSingleCompany(UnitCostCalculation unitCostCalculation) {
     Company company = null;
-    if (this.hasDefaultBOMSelected() && unitCostCalculation.getCompanySet().size() == 1) {
+    if (unitCostCalculation.getCompanySet().size() == 1) {
       Iterator<Company> companyIterator = unitCostCalculation.getCompanySet().iterator();
       company = companyIterator.next();
     }
