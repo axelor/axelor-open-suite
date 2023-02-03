@@ -1,3 +1,18 @@
+## [6.1.30] (2023-02-03)
+
+#### Fixed
+
+* User: fixed active user being able to change its user code.
+* Sale order: fixed a bug where doing a partial invoicing in percentage could not work.
+* Company bank details: fixed company bank details filter in invoice and purchase order form views.
+* Stock move: fixed rounding issues when computing the total to avoid a gap between order/invoice totals and related stock moves totals.
+* Stock move: fixed report not showing manually changed address for customer delivery.
+* Product: updated condition for default value on product pulled off market date.
+* Sale order printing: correctly hide discount related rows when the sale order is configured to hide discounts.
+* Subrogation release: fixed an issue where supplier invoices were retrieved with customer invoices.
+* Account management: fixed an issue preventing any user from adding an account management of type tax in the financial configuration.
+* Purchase order: duplicating a purchase order now correctly resets budget.
+
 ## [6.1.29] (2023-01-19)
 
 #### Fixed
@@ -949,6 +964,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.30]: https://github.com/axelor/axelor-open-suite/compare/v6.1.29...v6.1.30
 [6.1.29]: https://github.com/axelor/axelor-open-suite/compare/v6.1.28...v6.1.29
 [6.1.28]: https://github.com/axelor/axelor-open-suite/compare/v6.1.27...v6.1.28
 [6.1.27]: https://github.com/axelor/axelor-open-suite/compare/v6.1.26...v6.1.27
