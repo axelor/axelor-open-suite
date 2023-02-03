@@ -671,7 +671,6 @@
     <action name="action-move-method-set-moveline-dates"/>
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
-    <action name="action-account-move-group-onsave"/>
   </action-group>
 
   <action-group name="action-move-group-journal-on-change">
