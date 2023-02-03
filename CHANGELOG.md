@@ -1,3 +1,28 @@
+## [6.2.18] (2023-02-03)
+
+#### Fixed
+
+* Accounting report: fixed partner grouping issue on preparatory process for fees declaration.
+* User: fixed active user being able to change its user code.
+* Sale order: fixed a bug where doing a partial invoicing in percentage could not work.
+* Company bank details: fixed company bank details filter in invoice and purchase order form views.
+* Stock move: fixed rounding issues when computing the total to avoid a gap between order/invoice totals and related stock moves totals.
+* Stock move: fixed report not showing manually changed address for customer delivery.
+* Cost calculation: fixed the priority on the bill of materials chosen during the calculation process. This fixes an issue where a bill of materials from another company was used to compute the cost.
+* Fiscal position: changed the behavior of fiscal position on purchase and sale order:
+
+Now the partner is filtered depending on the currency and price list which are readonly if there is an order line.
+The fiscal position is now editable even if there is an order line. Changing the partner updates the fiscal position and the taxes on lines.
+
+* Product: updated condition for default value on product pulled off market date.
+* Manufacturing order: fixed small UI issue in form view.
+* Sale order printing: correctly hide discount related rows when the sale order is configured to hide discounts.
+* Move consolidation: fixed errors during move consolidation happening when analytic distribution line were missing information.
+* Subrogation release: fixed an issue where supplier invoices were retrieved with customer invoices.
+* Account management: fixed an issue preventing any user from adding an account management of type tax in the financial configuration.
+* Purchase order: duplicating a purchase order now correctly resets budget.
+* Bill of materials: fixed an issue where the label 'BOM by default' was displayed on a new bill of materials.
+
 ## [6.2.17] (2023-01-19)
 
 #### Fixed
@@ -845,6 +870,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.18]: https://github.com/axelor/axelor-open-suite/compare/v6.2.17...v6.2.18
 [6.2.17]: https://github.com/axelor/axelor-open-suite/compare/v6.2.16...v6.2.17
 [6.2.16]: https://github.com/axelor/axelor-open-suite/compare/v6.2.15...v6.2.16
 [6.2.15]: https://github.com/axelor/axelor-open-suite/compare/v6.2.14...v6.2.15
