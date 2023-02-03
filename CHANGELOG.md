@@ -1,3 +1,36 @@
+## [6.3.10] (2023-02-03)
+
+#### Fixed
+
+* Accounting report: fixed partner grouping issue on preparatory process for fees declaration.
+* User: fixed active user being able to change its user code.
+* Sale order: fixed a bug where doing a partial invoicing in percentage could not work.
+* Company bank details: fixed company bank details filter in invoice and purchase order form views.
+* Stock move: fixed rounding issues when computing the total to avoid a gap between order/invoice totals and related stock moves totals.
+* Stock move: fixed report not showing manually changed address for customer delivery.
+* Cost calculation: fixed the priority on the bill of materials chosen during the calculation process. This fixes an issue where a bill of materials from another company was used to compute the cost.
+* Fiscal position: changed the behavior of fiscal position on purchase and sale order:
+
+Now the partner is filtered depending on the currency and price list which are readonly if there is an order line.
+The fiscal position is now editable even if there is an order line. Changing the partner updates the fiscal position and the taxes on lines.
+
+* Product: updated condition for default value on product pulled off market date.
+* Accounting report: corrected wrong values in 2054 accounting report.
+* Manufacturing order: fixed small UI issue in form view.
+* Sale order/Purchase order/Invoice line: fixed JNPE error occured when fetching the correct translation for code and description.
+* Sale order printing: correctly hide discount related rows when the sale order is configured to hide discounts.
+* Move consolidation: fixed errors during move consolidation happening when analytic distribution line were missing information.
+* Subrogation release: fixed an issue where supplier invoices were retrieved with customer invoices.
+* Account management: fixed an issue preventing any user from adding an account management of type tax in the financial configuration.
+* Fixed asset category: clear company related fields when changing or clearing the company field to avoid inconsistencies.
+* Fixed asset: clear company related fields when changing or clearing the company field to avoid inconsistencies.
+* Fixed asset: set default value to 0 to avoid saving a wrong default value in the fields Disposal Type and Quantity type on new and ongoing fixed asset.
+* Fixed asset: improved UI for the 'Update depreciating settings' feature.
+* Fixed asset: fixed filter on partner field in form view.
+* Account config: fixed an issue were financial discount related configuration were required.
+* Purchase order: duplicating a purchase order now correctly resets budget.
+* Bill of materials: fixed an issue where the label 'BOM by default' was displayed on a new bill of materials.
+
 ## [6.3.9] (2023-01-19)
 
 #### Fixed
@@ -417,6 +450,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.10]: https://github.com/axelor/axelor-open-suite/compare/v6.3.9...v6.3.10
 [6.3.9]: https://github.com/axelor/axelor-open-suite/compare/v6.3.8...v6.3.9
 [6.3.8]: https://github.com/axelor/axelor-open-suite/compare/v6.3.7...v6.3.8
 [6.3.7]: https://github.com/axelor/axelor-open-suite/compare/v6.3.6...v6.3.7
