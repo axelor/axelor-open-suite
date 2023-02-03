@@ -1,3 +1,15 @@
+## [5.4.34] (2023-02-03)
+
+#### Fixed
+
+* User: fixed active user being able to change its user code.
+* Sale order: fixed a bug where doing a partial invoicing in percentage could not work.
+* Company bank details: fixed company bank details filter in invoice and purchase order form views.
+* Stock move: fixed report not showing manually changed address for customer delivery.
+* Product: updated condition for default value on product pulled off market date.
+* Subrogation release: fixed an issue where supplier invoices were retrieved with customer invoices.
+* Purchase order: duplicating a purchase order now correctly resets budget.
+
 ## [5.4.33] (2023-01-19)
 
 #### Fixed
@@ -819,6 +831,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.34]: https://github.com/axelor/axelor-open-suite/compare/v5.4.33...v5.4.34
 [5.4.33]: https://github.com/axelor/axelor-open-suite/compare/v5.4.32...v5.4.33
 [5.4.32]: https://github.com/axelor/axelor-open-suite/compare/v5.4.31...v5.4.32
 [5.4.31]: https://github.com/axelor/axelor-open-suite/compare/v5.4.30...v5.4.31
