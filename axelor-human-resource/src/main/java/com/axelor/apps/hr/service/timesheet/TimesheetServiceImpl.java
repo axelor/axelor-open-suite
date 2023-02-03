@@ -83,7 +83,6 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -537,7 +536,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     timesheet.setCompany(company);
     timesheet.setFromDate(fromDate);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
-    timesheet.setFullName(computeFullName(timesheet));
 
     return timesheet;
   }
@@ -836,31 +834,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       sum = sum.add(timesheetLine.getHoursDuration());
     }
     return sum;
-  }
-
-  @Override
-  public String computeFullName(Timesheet timesheet) {
-
-    Employee timesheetEmployee = timesheet.getEmployee();
-    LocalDateTime createdOn = timesheet.getCreatedOn();
-
-    if (timesheetEmployee != null && createdOn != null) {
-      return timesheetEmployee.getName()
-          + " "
-          + createdOn.getDayOfMonth()
-          + "/"
-          + createdOn.getMonthValue()
-          + "/"
-          + timesheet.getCreatedOn().getYear()
-          + " "
-          + createdOn.getHour()
-          + ":"
-          + createdOn.getMinute();
-    } else if (timesheetEmployee != null) {
-      return timesheetEmployee.getName() + " N°" + timesheet.getId();
-    } else {
-      return "N°" + timesheet.getId();
-    }
   }
 
   /**

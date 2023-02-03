@@ -39,7 +39,6 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.db.Company;
@@ -80,7 +79,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected FiscalPositionAccountService fiscalPositionAccountService;
   protected AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService;
   protected TaxAccountService taxAccountService;
-  protected InvoiceService invoiceService;
   protected MoveLineToolService moveLineToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineConsolidateService moveLineConsolidateService;
@@ -98,7 +96,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       FiscalPositionAccountService fiscalPositionAccountService,
       AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
       TaxAccountService taxAccountService,
-      InvoiceService invoiceService,
       MoveLineToolService moveLineToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineConsolidateService moveLineConsolidateService,
@@ -113,7 +110,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.fiscalPositionAccountService = fiscalPositionAccountService;
     this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
     this.taxAccountService = taxAccountService;
-    this.invoiceService = invoiceService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineConsolidateService = moveLineConsolidateService;
@@ -221,7 +217,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       String description)
       throws AxelorException {
 
-    amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+    if (amountInSpecificMoveCurrency != null) {
+      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+    }
 
     log.debug(
         "Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",
@@ -258,7 +256,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (currencyRate == null) {
-      if (amountInSpecificMoveCurrency.compareTo(BigDecimal.ZERO) == 0) {
+      if (amountInSpecificMoveCurrency == null
+          || amountInSpecificMoveCurrency.compareTo(BigDecimal.ZERO) == 0) {
         currencyRate = BigDecimal.ONE;
       } else {
         currencyRate =
@@ -611,7 +610,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
       Account account = partnerAccount;
       if (invoiceTerm.getIsHoldBack()) {
-        account = invoiceService.getPartnerAccount(invoice, true);
+        account = accountingSituationService.getPartnerAccount(invoice, true);
         holdBackMoveLine =
             this.createMoveLine(
                 move,
@@ -777,11 +776,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
     newOrUpdatedMoveLine.setVatSystemSelect(vatSystem);
     newOrUpdatedMoveLine.setOrigin(move.getOrigin());
-    newOrUpdatedMoveLine.setDescription(move.getDescription());
-
-    newOrUpdatedMoveLine.setMove(move);
-    newOrUpdatedMoveLine.setOrigin(move.getOrigin());
-    newOrUpdatedMoveLine.setDescription(move.getDescription());
+    newOrUpdatedMoveLine.setDescription(
+        StringTool.cutTooLongString(
+            moveLineToolService.determineDescriptionMoveLine(
+                move.getJournal(), move.getOrigin(), move.getDescription())));
 
     BigDecimal taxLineValue =
         taxLineBeforeReverse != null ? taxLineBeforeReverse.getValue() : taxLine.getValue();
@@ -818,17 +816,15 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
       newOrUpdatedMoveLineRC.setVatSystemSelect(vatSystem);
       newOrUpdatedMoveLineRC.setOrigin(move.getOrigin());
-      newOrUpdatedMoveLineRC.setDescription(move.getDescription());
-
-      newOrUpdatedMoveLineRC.setMove(move);
-      newOrUpdatedMoveLineRC.setOrigin(move.getOrigin());
-      newOrUpdatedMoveLineRC.setDescription(move.getDescription());
+      newOrUpdatedMoveLineRC.setDescription(
+          StringTool.cutTooLongString(
+              moveLineToolService.determineDescriptionMoveLine(
+                  move.getJournal(), move.getOrigin(), move.getDescription())));
 
       newOrUpdatedMoveLineRC.setDebit(newOrUpdatedMoveLineRC.getDebit().add(newMoveLineCredit));
       newOrUpdatedMoveLineRC.setCredit(newOrUpdatedMoveLineRC.getCredit().add(newMoveLineDebit));
 
       newOrUpdatedMoveLineRC.setOriginDate(move.getOriginDate());
-      newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
 
       if (newOrUpdatedMoveLineRC.getPartner() == null) {
         newOrUpdatedMoveLineRC.setPartner(move.getPartner());

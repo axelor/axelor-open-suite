@@ -95,8 +95,11 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(AdvancePayment advancePayment) throws AxelorException {
-
-    moveCancelService.cancel(advancePayment.getMove());
+    Move move = advancePayment.getMove();
+    if (move.getStatusSelect() == MoveRepository.STATUS_NEW) {
+      advancePayment.setMove(null);
+    }
+    moveCancelService.cancel(move);
     advancePayment.setStatusSelect(AdvancePaymentRepository.STATUS_CANCELED);
     advancePaymentRepository.save(advancePayment);
   }

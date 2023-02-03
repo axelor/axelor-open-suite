@@ -510,4 +510,9 @@ public final class BaseExceptionMessage {
       "Error: The type of the field %s is not managed by the adapter" /*)*/;
 
   public static final String COMPANY_MISSING = /*$$(*/ "Please set a company." /*)*/;
+
+  public static final String PRICING_INVALID_DATES = /*$$(*/
+      "The start date cannot be later than the end date." /*)*/;
+
+  public static final String NO_ACTIVE_COMPANY = /*$$(*/ "Please set an active company." /*)*/;
 }

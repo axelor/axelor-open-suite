@@ -27,12 +27,14 @@ import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -466,6 +468,27 @@ public class InvoiceTermController {
         moveLine.setMove(move);
         response.setValue("move", move);
       }
+    }
+  }
+
+  public void addLinkedFiles(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      if (invoiceTerm.getMoveLine() != null
+          && invoiceTerm.getMoveLine().getMove() != null
+          && invoiceTerm.getMoveLine().getMove().getId() != null) {
+        List<DMSFile> dmsFileList =
+            Beans.get(DMSFileRepository.class)
+                .all()
+                .filter(
+                    "self.isDirectory = false AND self.relatedId = "
+                        + invoiceTerm.getMoveLine().getMove().getId()
+                        + " AND self.relatedModel = 'com.axelor.apps.account.db.Move'")
+                .fetch();
+        response.setValue("$invoiceTermMoveFile", dmsFileList);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

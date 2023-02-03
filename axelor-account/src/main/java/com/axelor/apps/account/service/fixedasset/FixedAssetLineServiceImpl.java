@@ -37,7 +37,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +47,7 @@ import org.slf4j.LoggerFactory;
 public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
   protected FixedAssetLineRepository fixedAssetLineRepository;
+  protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected YearService yearService;
   protected PeriodService periodService;
 
@@ -56,9 +56,11 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   @Inject
   public FixedAssetLineServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepository,
+      FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       YearService yearService,
       PeriodService periodService) {
     this.fixedAssetLineRepository = fixedAssetLineRepository;
+    this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.yearService = yearService;
     this.periodService = periodService;
   }
@@ -108,10 +110,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
           previousRealizedLine != null
               ? previousRealizedLine.getDepreciationDate()
               : firstServiceDate;
-      if (nextPlannedDate != null
-          && ChronoUnit.DAYS.between(firstServiceDate, nextPlannedDate) >= 360) {
-        nextPlannedDate = null;
-      }
+
       BigDecimal prorataTemporis =
           Beans.get(FixedAssetLineEconomicComputationServiceImpl.class)
               .computeProrataBetween(
@@ -170,6 +169,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
                 });
       }
     }
+    fixedAssetDerogatoryLineService.copyFixedAssetDerogatoryLineList(fixedAsset, newFixedAsset);
   }
 
   @Override

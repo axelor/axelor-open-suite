@@ -131,6 +131,9 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setIsSelectedOnPaymentSession(false);
     invoiceTerm.setDebtRecoveryBlockingOk(false);
     invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+    invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getCompanyAmount());
+    invoiceTerm.setAmountRemainingAfterFinDiscount(
+        invoiceTerm.getRemainingAmountAfterFinDiscount());
     invoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
     invoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
@@ -182,8 +185,11 @@ public class MoveManagementRepository extends MoveRepository {
 
           if (!moveLine.getAccount().getHasInvoiceTerm()
               && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-            if (moveLine.getInvoiceTermList().stream()
-                .allMatch(invoiceTermService::isNotReadonly)) {
+            if (moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)
+                && moveLine.getInvoiceTermList().stream()
+                        .filter(invoiceTerm -> invoiceTerm.getIsHoldBack())
+                        .count()
+                    == 0) {
               moveLine.clearInvoiceTermList();
             } else {
               throw new AxelorException(

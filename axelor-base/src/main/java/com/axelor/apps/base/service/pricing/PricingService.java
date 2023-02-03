@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.exception.AxelorException;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,4 +62,13 @@ public interface PricingService {
       ProductCategory productCategory,
       String modelName,
       Pricing previousPricing);
+
+  public void historizePricing(Pricing pricing) throws AxelorException;
+
+  public void checkDates(Pricing pricing) throws AxelorException;
+
+  public Pricing recoverPricing(Pricing pricing, Boolean isHistorizeCurrentPricing)
+      throws AxelorException;
+
+  public void historizeCurrentPricing(Pricing currentPricing) throws AxelorException;
 }

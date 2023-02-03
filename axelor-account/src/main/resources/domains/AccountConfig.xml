@@ -209,7 +209,8 @@
       ref="com.axelor.apps.base.db.Product"/>
 
     <!-- Invoice printing -->
-    <boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing"/>
+    <boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing"
+      default="true"/>
     <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
     <boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
     <boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
@@ -217,6 +218,8 @@
       title="Display head office address on invoice printing"/>
     <boolean name="displayStockMoveOnInvoicePrinting"
       title="Display Deliveries information on invoice printing" default="false"/>
+    <boolean name="displayPartnerSirenOnInvoicePrinting"
+      title="Display the SIREN number of the partner on printing" default="true"/>
     <string name="invoiceClientBox" large="true" multiline="true"
       title="Client box in invoice"/>
     <string name="saleInvoiceLegalNote" large="true" multiline="true"
@@ -233,6 +236,8 @@
 
     <boolean name="isManagePassedForPayment" title="Passed for payment"/>
     <boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
+    <boolean name="isManageDaybookInPFP" title="Show daybook moves in PFP menu"
+      help="If this field is activated, daybook moves will been selected too in accounting PFP menu"/>
 
     <!-- Account Report -->
     <integer name="lineMinBeforeLongReportGenerationMessageNumber"

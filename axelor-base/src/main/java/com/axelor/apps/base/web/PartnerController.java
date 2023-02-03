@@ -58,10 +58,10 @@ import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
@@ -233,25 +233,39 @@ public class PartnerController {
             .getSocialNetworkUrl(
                 partner.getName(), partner.getFirstName(), partner.getPartnerTypeSelect());
     response.setAttr("googleLabel", "title", urlMap.get("google"));
-    response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
-  public void findPartnerMails(ActionRequest request, ActionResponse response) {
-    Partner partner = request.getContext().asType(Partner.class);
-    List<Long> idList = Beans.get(PartnerService.class).findPartnerMails(partner);
-
-    List<Message> emailsList = new ArrayList<Message>();
-    for (Long id : idList) {
-      Message message = Beans.get(MessageRepository.class).find(id);
-      if (!emailsList.contains(message)) {
-        emailsList.add(message);
-      }
+  public void findSentMails(ActionRequest request, ActionResponse response) {
+    try {
+      this.findMails(request, response, MessageRepository.TYPE_SENT);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
+  }
 
-    response.setValue("$emailsList", emailsList);
+  public void findReceivedMails(ActionRequest request, ActionResponse response) {
+    try {
+      this.findMails(request, response, MessageRepository.TYPE_RECEIVED);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  private void findMails(ActionRequest request, ActionResponse response, int emailType) {
+    Partner partner = request.getContext().asType(Partner.class);
+    partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    List<Long> idList = Beans.get(PartnerService.class).findPartnerMails(partner, emailType);
+
+    response.setView(
+        ActionView.define(I18n.get("Emails"))
+            .model(Message.class.getName())
+            .add("cards", "message-cards")
+            .add("grid", "message-grid")
+            .add("form", "message-form")
+            .domain("self.id IN (:ids)")
+            .context("ids", !CollectionUtils.isEmpty(idList) ? idList : null)
+            .map());
   }
 
   public void addContactToPartner(ActionRequest request, ActionResponse response) {
@@ -271,21 +285,6 @@ public class PartnerController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void findContactMails(ActionRequest request, ActionResponse response) {
-    Partner partner = request.getContext().asType(Partner.class);
-    List<Long> idList = Beans.get(PartnerService.class).findContactMails(partner);
-
-    List<Message> emailsList = new ArrayList<Message>();
-    for (Long id : idList) {
-      Message message = Beans.get(MessageRepository.class).find(id);
-      if (!emailsList.contains(message)) {
-        emailsList.add(message);
-      }
-    }
-
-    response.setValue("$emailsList", emailsList);
   }
 
   public void checkIbanValidity(ActionRequest request, ActionResponse response)
@@ -316,9 +315,9 @@ public class PartnerController {
 
       Function<String, String> addLi = s -> "<li>".concat(s).concat("</li>");
 
-      response.setAlert(
+      response.setError(
           String.format(
-              BaseExceptionMessage.BANK_DETAILS_2,
+              I18n.get(BaseExceptionMessage.BANK_DETAILS_2),
               "<ul>" + Joiner.on("").join(Iterables.transform(ibanInError, addLi)) + "<ul>"));
     }
   }

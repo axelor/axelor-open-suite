@@ -422,7 +422,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + ((forecastRecapLineType.getStatusSelect() == null
                     || forecastRecapLineType.getStatusSelect().isEmpty())
                 ? ""
-                : "AND self.salesStageSelect IN :statusSelectList");
+                : "AND self.opportunityStatus.id IN :statusSelectList");
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         return "self.mainEmploymentContract.payCompany = :company "
             + "AND self.mainEmploymentContract.monthlyGlobalCost != 0 "

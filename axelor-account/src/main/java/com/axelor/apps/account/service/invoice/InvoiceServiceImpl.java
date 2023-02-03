@@ -36,7 +36,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -168,26 +167,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (alarm != null) {
 
       alarm.setInvoice(invoice);
-    }
-  }
-
-  @Override
-  public Account getPartnerAccount(Invoice invoice, boolean isHoldBack) throws AxelorException {
-    if (invoice.getCompany() == null
-        || invoice.getOperationTypeSelect() == null
-        || invoice.getOperationTypeSelect() == 0
-        || invoice.getPartner() == null) {
-      return null;
-    }
-    AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
-    if (InvoiceToolService.isPurchase(invoice)) {
-      return isHoldBack
-          ? situationService.getHoldBackSupplierAccount(invoice.getPartner(), invoice.getCompany())
-          : situationService.getSupplierAccount(invoice.getPartner(), invoice.getCompany());
-    } else {
-      return isHoldBack
-          ? situationService.getHoldBackCustomerAccount(invoice.getPartner(), invoice.getCompany())
-          : situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
     }
   }
 

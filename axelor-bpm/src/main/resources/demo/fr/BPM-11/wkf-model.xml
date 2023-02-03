@@ -56,10 +56,10 @@
           <camunda:property name="modelType" value="metaModel" />
           <camunda:property name="view" value="campaign-form" />
           <camunda:property name="viewLabel" value="Campaign" />
+          <camunda:property name="itemType" value="panel"/>
+          <camunda:property name="permanent" value="false" />
           <camunda:property name="item" value="actionsPanel" />
           <camunda:property name="hidden" value="true" />
-          <camunda:property name="itemLabel" />
-          <camunda:property name="permanent" value="false" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:sequenceFlow id="Flow_1p21tdg" sourceRef="Event_07cl3a4" targetRef="Activity_0123h4e" />
@@ -127,10 +127,11 @@
           <camunda:property name="modelType" value="metaModel" />
           <camunda:property name="view" value="campaign-form" />
           <camunda:property name="viewLabel" value="Campaign" />
-          <camunda:property name="item" value="cancelBtn" />
-          <camunda:property name="hidden" value="true" />
+          <camunda:property name="itemType" value="button" />
           <camunda:property name="itemLabel" value="Cancel" />
           <camunda:property name="permanent" value="false" />
+          <camunda:property name="item" value="cancelBtn" />
+          <camunda:property name="hidden" value="true" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_14bvda7</bpmn2:incoming>

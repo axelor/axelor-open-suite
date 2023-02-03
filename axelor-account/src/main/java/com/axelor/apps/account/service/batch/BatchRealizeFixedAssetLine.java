@@ -122,7 +122,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
         if (fixedAsset != null
             && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
           fixedAssetSet.add(fixedAsset);
-          fixedAssetLineMoveService.realize(fixedAssetLine, true, true);
+          fixedAssetLineMoveService.realize(fixedAssetLine, true, true, false);
           incrementDone();
           countFixedAssetLineType(fixedAssetLine);
         }

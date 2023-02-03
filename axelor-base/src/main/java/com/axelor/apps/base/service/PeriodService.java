@@ -92,4 +92,6 @@ public interface PeriodService {
    * @param period
    */
   void openPeriod(Period period);
+
+  void closureInProgress(Period period);
 }
