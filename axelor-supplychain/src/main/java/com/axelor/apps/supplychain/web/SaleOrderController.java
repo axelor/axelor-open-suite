@@ -527,6 +527,19 @@ public class SaleOrderController {
     response.setValue("saleOrderLineList", saleOrderLineList);
   }
 
+  public void fillSaleOrderLinesDeliveryDate(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        saleOrderLine.setEstimatedDeliveryDate(saleOrder.getEstimatedDeliveryDate());
+      }
+    }
+
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
   public void notifyStockMoveCreated(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     StockMoveRepository stockMoveRepo = Beans.get(StockMoveRepository.class);

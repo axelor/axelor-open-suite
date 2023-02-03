@@ -373,7 +373,7 @@ public class PurchaseOrderController {
     }
   }
 
-  public void updateEstimatedDelivDate(ActionRequest request, ActionResponse response) {
+  public void updateEstimatedReceiptDate(ActionRequest request, ActionResponse response) {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
@@ -383,7 +383,7 @@ public class PurchaseOrderController {
         if (receiptState != null
             && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED)
             && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_PARTIALLY_RECEIVED)) {
-          purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
+          purchaseOrderLine.setEstimatedReceiptDate(purchaseOrder.getEstimatedReceiptDate());
         }
       }
     }

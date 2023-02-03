@@ -27,7 +27,7 @@ public interface ITranslation {
   public static final String PURCHASE_ORDER_ORDER = /*$$(*/ "PurchaseOrder.order"; /*)*/
   public static final String PURCHASE_ORDER_QUOTE = /*$$(*/ "PurchaseOrder.quote"; /*)*/
   public static final String PURCHASE_ORDER_DELIVERY_DATE = /*$$(*/
-      "PurchaseOrder.deliveryDate"; /*)*/
+      "PurchaseOrder.estimatedReceiptDate"; /*)*/
   public static final String PURCHASE_ORDER_PAYMENT_CONDITION = /*$$(*/
       "PurchaseOrder.paymentCondition"; /*)*/
   public static final String PURCHASE_ORDER_PAYMENT_MODE = /*$$(*/
@@ -79,7 +79,7 @@ public interface ITranslation {
   public static final String PURCHASE_ORDER_STATUS_CANCELED = /*$$(*/
       "PurchaseOrder.statusCanceled"; /*)*/
   public static final String PURCHASE_ORDER_DESIRED_DELIV_DATE = /*$$(*/
-      "PurchaseOrder.desiredDelivDate"; /*)*/
+      "PurchaseOrder.desiredReceiptDate"; /*)*/
   public static final String PURCHASE_ORDER_BUYER = /*$$(*/ "PurchaseOrder.buyer"; /*)*/
   public static final String PURCHASE_ORDER_BUYER_EMAIL = /*$$(*/ "PurchaseOrder.buyerEmail"; /*)*/
   public static final String PURCHASE_ORDER_BUYER_PHONE = /*$$(*/ "PurchaseOrder.buyerPhone"; /*)*/

@@ -41,7 +41,7 @@ public class MrpSaleOrderCheckLateSaleServiceImpl implements MrpSaleOrderCheckLa
       deliveryDate = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
     }
     if (deliveryDate == null) {
-      deliveryDate = saleOrderLine.getDesiredDelivDate();
+      deliveryDate = saleOrderLine.getDesiredDeliveryDate();
     }
 
     // Determine if a line should be created
