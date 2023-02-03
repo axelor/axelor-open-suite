@@ -24,6 +24,8 @@
     <many-to-one name="closedLostOpportunityStatus"
       ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed lost opportunity status"
       required="true"/>
+    <many-to-one name="salesPropositionStatus"
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Sales proposition step" required="true"/>
     <many-to-one name="convertedLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
       title="Converted lead status"/>
     <many-to-one name="lostLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
