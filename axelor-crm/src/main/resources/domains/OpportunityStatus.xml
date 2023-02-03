@@ -8,7 +8,7 @@
   <entity name="OpportunityStatus" lang="java">
 
     <string name="name" title="Name" required="true"/>
-    <integer name="sequence" title="Sequence"/>
+    <integer name="sequence" title="Sequence" unique="true"/>
 
     <finder-method name="findByNextSequence" filter="self.sequence &gt; :sequence"
       using="sequence" orderBy="sequence"/>
