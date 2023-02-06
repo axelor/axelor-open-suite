@@ -20,9 +20,7 @@
       <field name="metaField" grid-view="meta-field-details-grid" canNew="false"
         canEdit="false"
         domain="self.typeName in ('String','Integer','LocalDateTime','Long','Double','LocalTime','ZonedDateTime','BigDecimal','LocalDate')
-        and self.metaModel = :metaModel and not (self.metaModel.name = 'User' and self.name='password')
-        and not (self.metaModel.name = 'Partner' and self.name='fullName')
-        and not (self.metaModel.name = 'Partner' and self.name='simpleFullName')"
+        and self.metaModel = :metaModel and not (self.metaModel.name = 'User' and self.name='password')"
         onChange="action-anonymizer-line-attrs-empty-faker-api-field, action-anonymizer-line-attrs-display-meta-json-field"
         readonlyIf="metaModel == null" hideIf="metaModel == null"/>
       <field name="metaJsonField" hidden="true"
