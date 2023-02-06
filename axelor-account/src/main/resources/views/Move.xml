@@ -69,7 +69,7 @@
         <field name="reference" colSpan="12"/>
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
-            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
+            readonlyIf="moveLineList.length &gt; 0 || statusSelect == 3"
             onChange="action-group-move-company-onchange" form-view="company-form"
             grid-view="company-grid"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
