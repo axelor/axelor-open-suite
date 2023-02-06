@@ -220,6 +220,10 @@
       title="Display Deliveries information on invoice printing" default="false"/>
     <boolean name="displayPartnerSirenOnInvoicePrinting"
       title="Display the SIREN number of the partner on printing" default="true"/>
+    <boolean name="displayItemsCategoriesOnPrinting"
+      title="Display a statement depending on the items category on the print."
+      help="This configuration will allow you to set up the statement to be displayed according to the product category present in the invoice."
+      default="true"/>
     <string name="invoiceClientBox" large="true" multiline="true"
       title="Client box in invoice"/>
     <string name="saleInvoiceLegalNote" large="true" multiline="true"
@@ -227,6 +231,8 @@
     <string name="termsAndConditions" large="true" title="Terms and Conditions"/>
     <many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark"
       title="Watermark"/>
+    <one-to-many name="statementsForItemsCategoriesList"
+      ref="com.axelor.apps.account.db.InvoiceProductStatement" mappedBy="accountConfig"/>
 
     <!-- Invoice mail -->
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"

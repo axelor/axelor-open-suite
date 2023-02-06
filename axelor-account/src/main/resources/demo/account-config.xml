@@ -352,4 +352,10 @@
   <input file="account_financialDiscount.csv" separator=";"
     type="com.axelor.apps.account.db.FinancialDiscount" search="self.importId = :importId"/>
 
+  <input file="account_invoiceProductStatement.csv" separator=";"
+    search="self.importId = :importId" type="com.axelor.apps.account.db.InvoiceProductStatement">
+    <bind to="accountConfig" column="accountConfig_importId"
+      search="self.importId = :accountConfig_importId"/>
+  </input>
+
 </csv-inputs>
