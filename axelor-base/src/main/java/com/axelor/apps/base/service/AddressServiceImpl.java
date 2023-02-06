@@ -269,23 +269,23 @@ public class AddressServiceImpl implements AddressService {
       return "";
     }
 
-    if (address.getAddressL2() != null) {
-      addressString.append(address.getAddressL2()).append("\n");
+    if (StringUtils.notBlank(address.getAddressL2())) {
+      addressString.append(address.getAddressL2()).append(System.lineSeparator());
     }
-    if (address.getAddressL3() != null) {
-      addressString.append(address.getAddressL3()).append("\n");
+    if (StringUtils.notBlank(address.getAddressL3())) {
+      addressString.append(address.getAddressL3()).append(System.lineSeparator());
     }
-    if (address.getAddressL4() != null) {
-      addressString.append(address.getAddressL4()).append("\n");
+    if (StringUtils.notBlank(address.getAddressL4())) {
+      addressString.append(address.getAddressL4()).append(System.lineSeparator());
     }
-    if (address.getAddressL5() != null) {
-      addressString.append(address.getAddressL5()).append("\n");
+    if (StringUtils.notBlank(address.getAddressL5())) {
+      addressString.append(address.getAddressL5()).append(System.lineSeparator());
     }
-    if (address.getAddressL6() != null) {
+    if (StringUtils.notBlank(address.getAddressL6())) {
       addressString.append(address.getAddressL6());
     }
     if (address.getAddressL7Country() != null) {
-      addressString = addressString.append("\n").append(address.getAddressL7Country().getName());
+      addressString.append(System.lineSeparator()).append(address.getAddressL7Country().getName());
     }
 
     return addressString.toString();
