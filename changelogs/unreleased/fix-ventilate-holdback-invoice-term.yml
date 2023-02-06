@@ -1,3 +1,3 @@
 ---
-title: "Invoice : Fix error on ventilation when we have an payment condition with an line with hold back option"
+title: "Invoice : Fix error on ventilation, now the 'has invoice term' field on account is checked"
 type: fix
