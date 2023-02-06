@@ -18,6 +18,7 @@
     <date name="dueDate" title="Due Date" initParam="true"/>
     <date name="cutOffStartDate" title="From date"/>
     <date name="cutOffEndDate" title="To date"/>
+    <boolean name="isCutOffGenerated" default="false"/>
     <integer name="counter" title="Line Nbr." initParam="true"/>
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
@@ -164,6 +165,17 @@
     <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
     <decimal name="remainingAmountAfterFinDiscount"
       title="Remaining amount after Fin. discount"/>
+
+    <!-- Fixed information -->
+    <string name="companyCode"/>
+    <string name="companyName"/>
+    <string name="journalCode"/>
+    <string name="journalName"/>
+    <string name="currencyCode"/>
+    <string name="companyCurrencyCode"/>
+    <string name="fiscalYearCode"/>
+    <date name="accountingDate"/>
+    <boolean name="adjustingMove"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>

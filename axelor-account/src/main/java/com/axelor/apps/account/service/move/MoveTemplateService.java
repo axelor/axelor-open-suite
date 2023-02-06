@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -71,6 +72,8 @@ public class MoveTemplateService {
   protected MoveTemplateRepository moveTemplateRepo;
   protected MoveLineTaxService moveLineTaxService;
 
+  protected List<String> exceptionsList;
+
   @Inject
   public MoveTemplateService(
       MoveCreateService moveCreateService,
@@ -96,6 +99,11 @@ public class MoveTemplateService {
     this.bankDetailsService = bankDetailsService;
     this.moveTemplateRepo = moveTemplateRepo;
     this.moveLineTaxService = moveLineTaxService;
+    this.exceptionsList = Lists.newArrayList();
+  }
+
+  public List<String> getExceptionsList() {
+    return exceptionsList;
   }
 
   @Transactional
@@ -253,10 +261,7 @@ public class MoveTemplateService {
         }
 
         moveLineTaxService.autoTaxLineGenerate(move);
-
-        if (moveTemplate.getAutomaticallyValidate()) {
-          moveValidateService.accounting(move);
-        }
+        manageAccounting(moveTemplate, move);
 
         moveList.add(move.getId());
       }
@@ -374,16 +379,27 @@ public class MoveTemplateService {
 
         move.setDescription(taxLineDescription);
         moveLineTaxService.autoTaxLineGenerate(move);
-
-        if (moveTemplate.getAutomaticallyValidate()) {
-          moveValidateService.accounting(move);
-        }
+        manageAccounting(moveTemplate, move);
 
         move.setDescription(moveTemplate.getDescription());
         moveList.add(move.getId());
       }
     }
     return moveList;
+  }
+
+  protected void manageAccounting(MoveTemplate moveTemplate, Move move) {
+    if (!moveTemplate.getAutomaticallyValidate()) {
+      return;
+    }
+    try {
+      moveValidateService.accounting(move);
+    } catch (AxelorException e) {
+      String message = e.getMessage();
+      if (!exceptionsList.contains(message)) {
+        exceptionsList.add(message);
+      }
+    }
   }
 
   public boolean checkValidity(MoveTemplate moveTemplate) {

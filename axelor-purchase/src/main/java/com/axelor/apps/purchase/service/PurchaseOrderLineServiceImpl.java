@@ -71,8 +71,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Inject protected AppBaseService appBaseService;
 
-  @Inject protected PurchaseProductService productService;
-
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
 
   @Inject protected AppPurchaseService appPurchaseService;

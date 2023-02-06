@@ -128,7 +128,6 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrder.setPaymentCondition(purchaseOrder.getPaymentCondition());
 
     // copy delivery info
-    saleOrder.setDeliveryDate(purchaseOrder.getDeliveryDate());
     saleOrder.setShipmentMode(purchaseOrder.getShipmentMode());
     saleOrder.setFreightCarrierMode(purchaseOrder.getFreightCarrierMode());
 
@@ -179,7 +178,6 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setCompany(intercoCompany);
     purchaseOrder.setContactPartner(saleOrder.getContactPartner());
     purchaseOrder.setCurrency(saleOrder.getCurrency());
-    purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setOrderDate(saleOrder.getCreationDate());
     purchaseOrder.setPriceList(saleOrder.getPriceList());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
@@ -206,7 +204,6 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setPaymentCondition(saleOrder.getPaymentCondition());
 
     // copy delivery info
-    purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setStockLocation(
         Beans.get(PurchaseOrderSupplychainService.class)
             .getStockLocation(saleOrder.getCompany().getPartner(), intercoCompany));
@@ -266,7 +263,7 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderLine.setDiscountAmount(saleOrderLine.getDiscountAmount());
 
     // delivery
-    purchaseOrderLine.setEstimatedDelivDate(saleOrderLine.getEstimatedDelivDate());
+    purchaseOrderLine.setEstimatedDelivDate(saleOrderLine.getDesiredDelivDate());
 
     // compute price discounted
     BigDecimal priceDiscounted =
@@ -317,7 +314,7 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setPriceDiscounted(priceDiscounted);
 
     // delivery
-    saleOrderLine.setEstimatedDelivDate(purchaseOrderLine.getEstimatedDelivDate());
+    saleOrderLine.setDesiredDelivDate(purchaseOrderLine.getDesiredDelivDate());
 
     // tax
     saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());

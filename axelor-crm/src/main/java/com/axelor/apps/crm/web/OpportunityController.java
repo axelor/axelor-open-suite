@@ -24,6 +24,8 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -31,6 +33,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.time.LocalDate;
 
 @Singleton
 public class OpportunityController {
@@ -71,15 +74,47 @@ public class OpportunityController {
     }
   }
 
-  public void createClient(ActionRequest request, ActionResponse response) {
+  public void setStageClosedWon(ActionRequest request, ActionResponse response) {
     try {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
-      opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
-      Beans.get(OpportunityService.class).createClientFromLead(opportunity);
+
+      Beans.get(OpportunityService.class)
+          .setOpportunityStatus(
+              Beans.get(OpportunityRepository.class).find(opportunity.getId()), true);
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setError(e.getMessage());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setStageClosedLost(ActionRequest request, ActionResponse response) {
+    try {
+      Opportunity opportunity = request.getContext().asType(Opportunity.class);
+
+      Beans.get(OpportunityService.class)
+          .setOpportunityStatus(
+              Beans.get(OpportunityRepository.class).find(opportunity.getId()), false);
+      response.setReload(true);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setNextStage(ActionRequest request, ActionResponse response) {
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    Beans.get(OpportunityService.class)
+        .setOpportunityStatusNextStage(
+            Beans.get(OpportunityRepository.class).find(opportunity.getId()));
+    response.setReload(true);
+  }
+
+  public void fillEndDate(ActionRequest request, ActionResponse response) {
+    Opportunity opportunity = request.getContext().asType(Opportunity.class);
+    LocalDate recurringStartDate = opportunity.getRecurringStartDate();
+    int recurringRevanue = opportunity.getExpectedDurationOfRecurringRevenue();
+    if (recurringRevanue != 0 && recurringStartDate != null) {
+      LocalDate newDate = recurringStartDate.plusMonths((long) recurringRevanue);
+      response.setValue("recurringEndDate", newDate);
     }
   }
 }

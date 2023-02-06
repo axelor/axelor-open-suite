@@ -17,18 +17,27 @@
  */
 package com.axelor.apps.crm.service;
 
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public interface OpportunityService {
 
   @Transactional
   public void saveOpportunity(Opportunity opportunity);
 
-  @Transactional(rollbackOn = {Exception.class})
-  public Partner createClientFromLead(Opportunity opportunity) throws AxelorException;
-
   public void setSequence(Opportunity opportunity) throws AxelorException;
+
+  public OpportunityStatus getDefaultOpportunityStatus();
+
+  public void setOpportunityStatus(Opportunity opportunity, boolean isStagedClosedWon)
+      throws AxelorException;
+
+  public void setOpportunityStatusNextStage(Opportunity opportunity);
+
+  @CallMethod
+  public List<Long> getClosedOpportunityStatusIdList();
 }

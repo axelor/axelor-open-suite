@@ -39,13 +39,7 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
   public Query<Contract> prepare(Batch batch) {
     return repository
         .all()
-        .filter(
-            "self.isInvoicingManagement = TRUE "
-                + "AND self.currentContractVersion.automaticInvoicing = TRUE "
-                + "AND self.invoicingDate <= :date "
-                + "AND :batch NOT MEMBER of self.batchSet "
-                + "AND self.statusSelect != :statusSelect "
-                + "AND self.targetTypeSelect = :targetTypeSelect")
+        .filter(this.prepareFilter(true))
         .bind("date", batch.getContractBatch().getInvoicingDate())
         .bind("batch", batch)
         .bind("targetTypeSelect", batch.getContractBatch().getTargetTypeSelect())
@@ -55,5 +49,30 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
   @Override
   public void process(Contract contract) throws AxelorException {
     service.invoicingContract(contract);
+  }
+
+  /**
+   * To prepare filter that is to be used while running batch, set considerBatch = true
+   *
+   * <p>OR
+   *
+   * <p>To display contracts that would be treated by the batch, set considerBatch = false
+   *
+   * @param considerBatch
+   * @return
+   */
+  public String prepareFilter(boolean considerBatch) {
+    StringBuilder filter = new StringBuilder();
+    filter.append(
+        "self.isInvoicingManagement = TRUE "
+            + "AND self.currentContractVersion.automaticInvoicing = TRUE "
+            + "AND self.invoicingDate <= :date "
+            + "AND self.statusSelect != :statusSelect "
+            + "AND self.targetTypeSelect = :targetTypeSelect ");
+
+    filter.append(
+        considerBatch ? "AND :batch NOT MEMBER of self.batchSet" : "AND self.batchSet IS EMPTY");
+
+    return filter.toString();
   }
 }

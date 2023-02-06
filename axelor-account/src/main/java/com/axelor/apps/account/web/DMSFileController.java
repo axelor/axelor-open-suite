@@ -1,0 +1,50 @@
+package com.axelor.apps.account.web;
+
+import com.axelor.common.StringUtils;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import java.util.regex.Pattern;
+
+public class DMSFileController {
+
+  private static final Pattern previewSupportedPattern = Pattern.compile("\\b(?:pdf|image)\\b");
+
+  public void initPdfValues(ActionRequest request, ActionResponse response) {
+    try {
+      DMSFile dmsFile = request.getContext().asType(DMSFile.class);
+      if (dmsFile != null && dmsFile.getId() != null) {
+
+        if ("html".equals(dmsFile.getContentType())) {
+          response.setValue("fileType", "text/html");
+          response.setValue("contentType", "html");
+          response.setValue("typeIcon", "fa fa-file-text-o");
+        }
+        if ("spreadsheet".equals(dmsFile.getContentType())) {
+          response.setValue("fileType", "text/json");
+          response.setValue("contentType", "spreadsheet");
+          response.setValue("typeIcon", "fa fa-file-excel-o");
+        }
+
+        if (dmsFile.getMetaFile() != null) {
+          String fileType = dmsFile.getMetaFile().getFileType();
+          String fileIcon = Beans.get(MetaFiles.class).fileTypeIcon(dmsFile.getMetaFile());
+          response.setValue("fileType", fileType);
+          response.setValue("typeIcon", "fa fa-colored " + fileIcon);
+          response.setValue("metaFile.sizeText", dmsFile.getMetaFile().getSizeText());
+
+          // Put inlineUrl only if preview for that file type is supported, to prevent
+          // auto-downloading
+          if (StringUtils.notBlank(fileType) && previewSupportedPattern.matcher(fileType).find()) {
+            response.setValue("inlineUrl", String.format("ws/dms/inline/%d", dmsFile.getId()));
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+}

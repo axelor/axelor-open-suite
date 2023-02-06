@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
@@ -33,6 +34,8 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 public class VentilateAdvancePaymentState extends VentilateState {
 
+  protected AccountingSituationService accountingSituationService;
+
   @Inject
   public VentilateAdvancePaymentState(
       SequenceService sequenceService,
@@ -43,7 +46,8 @@ public class VentilateAdvancePaymentState extends VentilateState {
       WorkflowVentilationService workflowService,
       UserService userService,
       FixedAssetGenerationService fixedAssetGenerationService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      AccountingSituationService accountingSituationService) {
     super(
         sequenceService,
         moveCreateFromInvoiceService,
@@ -53,7 +57,8 @@ public class VentilateAdvancePaymentState extends VentilateState {
         workflowService,
         userService,
         fixedAssetGenerationService,
-        invoiceTermService);
+        invoiceTermService,
+        accountingSituationService);
   }
 
   @Override

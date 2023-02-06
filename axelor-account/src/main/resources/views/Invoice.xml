@@ -2616,7 +2616,7 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.AnalyticMoveLine" title="Related Analytic Movelines">
     <view type="grid" name="analytic-move-line-invoice-grid"/>
     <view type="form" name="analytic-move-line-move-line-form"/>
-    <domain>self.invoiceLine.invoice.id = :invoiceId</domain>
+    <domain>self.invoiceLine.invoice.id = :invoiceId AND self.typeSelect = 2</domain>
     <context name="invoiceId" expr="eval: __self__?.id != null ? __self__.id : 0"/>
   </action-view>
 

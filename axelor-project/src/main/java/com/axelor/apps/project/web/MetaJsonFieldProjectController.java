@@ -21,7 +21,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.MetaJsonFieldProjectService;
-import com.axelor.common.Inflector;
+import com.axelor.apps.tool.ModelTool;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -98,12 +98,13 @@ public class MetaJsonFieldProjectController {
 
     MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);
 
-    if (StringUtils.isEmpty(jsonField.getTitle())) {
+    String title = jsonField.getTitle();
+    if (StringUtils.isEmpty(title)) {
       return;
     }
 
     String typeSelect = (String) request.getContext().get("typeSelect");
-    String name = Inflector.getInstance().camelize(jsonField.getTitle(), true);
+    String name = ModelTool.normalizeKeyword(title, true);
 
     if (Project.class.equals(request.getContext().getParent().getContextClass())) {
       Long projectId = request.getContext().getParent().asType(Project.class).getId();

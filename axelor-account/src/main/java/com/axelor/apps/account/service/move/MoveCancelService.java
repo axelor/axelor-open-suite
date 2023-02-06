@@ -69,7 +69,8 @@ public class MoveCancelService {
     }
 
     if (move.getPeriod() == null
-        || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+        || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+        || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

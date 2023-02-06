@@ -33,7 +33,8 @@
   </input>
 
   <input file="purchase_supplierCatalog.csv" separator=";"
-    type="com.axelor.apps.purchase.db.SupplierCatalog"/>
+    type="com.axelor.apps.purchase.db.SupplierCatalog"
+    call="com.axelor.apps.purchase.script.ImportSupplierCatalog:importSupplierCatalog"/>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">

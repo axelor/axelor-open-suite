@@ -101,8 +101,8 @@
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"
-          hideIf="accountType.technicalTypeSelect == 'view'"
-          readonlyIf="$isReadOnly || isRegulatoryAccount"/>
+          hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
+          onChange="action-account-group-reconcile-onChange"/>
         <field name="hasInvoiceTerm" widget="boolean-switch" colSpan="3"
           showIf="useForPartnerBalance &amp;&amp; ['payable', 'receivable'].indexOf(accountType.technicalTypeSelect) != -1"
           onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
@@ -115,7 +115,7 @@
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
             onChange="action-group-account-is-tax-authorized-onchange"/>
           <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
-            widget="boolean-switch"/>
+            widget="boolean-switch" onChange="action-account-validate-check-move-tax-required"/>
           <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
           <field name="vatSystemSelect" colSpan="4"
             showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
@@ -123,12 +123,12 @@
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
           hideIf="!accountType || accountType.technicalTypeSelect == 'view'">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
-            onChange="action-account-group-on-change-analytic-distribution-authorized"
-            readonlyIf="$isReadOnly"/>
+            onChange="action-account-group-on-change-analytic-distribution-authorized"/>
           <field name="analyticDistributionRequiredOnInvoiceLines"
             showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
           <field name="analyticDistributionRequiredOnMoveLines"
-            showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
+            showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
+            onChange="action-account-validate-check-move-analytic-required"/>
           <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized"
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
             canEdit="false" canNew="false" onChange="action-account-method-personalize-template"
@@ -152,6 +152,8 @@
         <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
           if="__config__.app.getApp('account').manageCutOffPeriod">
           <field name="manageCutOffPeriod" widget="boolean-switch"/>
+          <field name="hasAutomaticApplicationAccountingDate" widget="boolean-switch"
+            showIf="manageCutOffPeriod"/>
         </panel>
         <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
           if-module="axelor-account" if="__config__.app.isApp('account')" showIf="hasInvoiceTerm">
@@ -233,6 +235,15 @@
     </panel>
   </form>
 
+  <form title="" name="reconcile-wizard-form" model="com.axelor.apps.account.db.Account">
+    <panel name="mainPanel" title="Make entries letterable">
+      <field name="startDate" widget="date" title="Start date of entries to be lettered"
+        type="date"/>
+      <button name="reconcileMovesBtn" title="Make entries letterable"
+        onClick="action-account-method-wizard-reconcile-line"/>
+    </panel>
+  </form>
+
   <action-view name="action-account-view-account-onchange-view"
     title="Financial Accounts" model="com.axelor.apps.account.db.Account">
     <view type="form" name="account-info-form"/>
@@ -296,16 +307,24 @@
 
   <action-group name="action-account-group-on-change-analytic-distribution-authorized">
     <action name="action-account-record-uncheck-analytic-distribution-required"/>
+    <action name="action-account-validate-uncheck-analytic-distribution-authorized"/>
   </action-group>
 
   <action-group name="action-group-account-is-tax-authorized-onchange">
     <action name="action-account-record-uncheck-tax-required"/>
     <action name="action-record-account-tax-system-value"/>
+    <action name="action-account-validate-uncheck-tax-authorized"/>
   </action-group>
 
   <action-group name="action-account-group-company-onChange">
     <action name="action-account-record-clean-analytic"/>
     <action name="action-account-validate"/>
+  </action-group>
+
+  <action-group name="action-account-group-reconcile-onChange">
+    <action name="action-account-validate-check-reconcile"/>
+    <action name="save"/>
+    <action name="action-account-view-reconcile-wizard-form" if="reconcileOk"/>
   </action-group>
 
   <action-record name="action-account-record-new"
@@ -322,6 +341,32 @@
     <error
       message="The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company."
       if="parentAccount != null &amp;&amp; company != null &amp;&amp; parentAccount?.company?.id != company?.id"/>
+  </action-validate>
+
+  <action-validate name="action-account-validate-check-move-tax-required">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="isTaxRequiredOnMoveLine &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+  <action-validate name="action-account-validate-check-move-analytic-required">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="analyticDistributionRequiredOnMoveLines &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+  <action-validate
+    name="action-account-validate-uncheck-analytic-distribution-authorized">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="!analyticDistributionAuthorized &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+
+  <action-validate name="action-account-validate-uncheck-tax-authorized">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="!isTaxAuthorizedOnMoveLine &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+  <action-validate name="action-account-validate-check-reconcile">
+    <alert message="Do you want to make existing accounted moves letterable?" if="reconcileOk"/>
   </action-validate>
 
   <!-- action-record shared among customer/supplier/employee account -->
@@ -445,6 +490,11 @@
     <call class="com.axelor.apps.account.web.AccountController" method="verifyTemplateValues"/>
   </action-method>
 
+  <action-method name="action-account-method-wizard-reconcile-line">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="setAmountRemainingReconciliableMoveLines"/>
+  </action-method>
+
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
     <attribute name="value" for="$isReadOnly"
       expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
@@ -459,6 +509,16 @@
     <view type="grid" name="accounting-report-config-line-account-grid"/>
     <view type="form" name="accounting-report-config-line-form"/>
     <domain>:id MEMBER OF self.accountSet</domain>
+  </action-view>
+
+  <action-view name="action-account-view-reconcile-wizard-form" title=""
+    model="com.axelor.apps.account.db.Account">
+    <view type="form" name="reconcile-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="true"/>
+    <context name="_accountId" expr="eval: __id__"/>
   </action-view>
 
 </object-views>
