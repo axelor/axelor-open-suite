@@ -395,7 +395,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         return "self.company = :company "
             + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
-            + "AND ((:journalIds) IS NULL OR self.journal.id in (:journalIds)) "
+            + "AND (0 in (:journalIds) OR self.journal.id in (:journalIds)) "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
             + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice = self.id "
@@ -447,8 +447,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails)";
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
         return "self.company = :company "
-            + "AND self.journal.id in (:journalIds) "
-            + "AND self.functionalOriginSelect in (:functionalOrigin) "
+            + "AND (0 in (:journalIds) OR self.journal.id in (:journalIds)) "
+            + "AND (0 in (:functionalOrigin) OR self.functionalOriginSelect in (:functionalOrigin)) "
             + " AND self.journal.journalType.technicalTypeSelect = "
             + (forecastRecapLineType.getTypeSelect() == 1
                 ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
@@ -823,8 +823,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .filter(
                   "self.dueDate BETWEEN :fromDate AND :toDate AND self.moveLine.move.company = :company"
                       + " AND self.moveLine.move.journal.journalType.technicalTypeSelect = :journalType"
-                      + " AND self.moveLine.move.journal.id in (:journalIds) "
-                      + " AND self.moveLine.move.functionalOriginSelect in (:functionalOrigin) "
+                      + " AND (0 in (:journalIds) OR self.moveLine.move.journal.id in (:journalIds)) "
+                      + " AND (0 in (:functionalOrigin) OR self.moveLine.move.functionalOriginSelect in (:functionalOrigin)) "
                       + " AND self.moveLine.move.statusSelect IN (:moveStatusList) AND self.amount != 0"
                       + ((CollectionUtils.isNotEmpty(forecastRecap.getBankDetailsSet())
                               && manageMultiBanks)
