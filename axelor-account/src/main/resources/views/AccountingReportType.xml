@@ -80,6 +80,8 @@
   <action-record name="action-accounting-report-type-record-default-on-new"
     model="com.axelor.apps.account.db.AccountingReportType">
     <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="reportExportTypeSelect" expr="eval: _reportExportTypeSelect"
+      if="_reportExportTypeSelect"/>
   </action-record>
 
   <action-method name="action-accounting-report-type-method-default-name">

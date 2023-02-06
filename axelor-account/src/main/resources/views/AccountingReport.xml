@@ -462,6 +462,7 @@
     <field name="detailed" expr="eval: true" if="reportType?.typeSelect in [4]"/>
     <field name="exportTypeSelect" expr="eval: 'pdf'"/>
     <field name="company" expr="reportType?.company"/>
+
   </action-record>
 
   <action-record name="action-accounting-report-record-default"
