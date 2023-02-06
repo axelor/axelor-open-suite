@@ -668,6 +668,8 @@
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-set-moveline-dates"/>
+    <action name="action-move-method-update-currency-rate"/>
+    <action name="action-account-move-method-compute-totals"/>
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-account-move-group-onsave"/>
@@ -1006,6 +1008,11 @@
 
   <action-method name="action-move-method-update-due-date">
     <call class="com.axelor.apps.account.web.MoveController" method="updateDueDate"/>
+  </action-method>
+
+  <action-method name="action-move-method-update-currency-rate">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="updateMoveLinesCurrencyRate"/>
   </action-method>
 
   <action-record name="action-record-initialize-permission-validation-move"
