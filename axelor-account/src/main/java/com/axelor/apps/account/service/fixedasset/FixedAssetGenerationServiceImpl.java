@@ -117,7 +117,9 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       generateAndComputeIfrsFixedAssetLines(fixedAsset);
 
       if (fixedAsset.getFixedAssetCategory() != null
-          && fixedAsset.getFixedAssetCategory().getPeriodicityTypeSelect() == 1) {
+          && fixedAsset.getFixedAssetCategory().getPeriodicityTypeSelect()
+                  == FixedAssetRepository.PERIODICITY_TYPE_MONTH
+              & !fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
         fixedAsset
             .getFiscalFixedAssetLineList()
             .get(0)
