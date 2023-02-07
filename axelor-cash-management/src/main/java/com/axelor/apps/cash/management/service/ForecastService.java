@@ -59,7 +59,7 @@ public class ForecastService {
       forecastRepo.save(forecast);
       if (forecastGenerator.getPeriodicitySelect()
           == ForecastGeneratorRepository.FORECAST_GENERATOR_WEEKLY) {
-        itDate = fromDate.plusWeeks(++count * 1);
+        itDate = fromDate.plusWeeks(++count);
       } else {
         itDate = fromDate.plusMonths(++count * forecastGenerator.getPeriodicitySelect());
       }
