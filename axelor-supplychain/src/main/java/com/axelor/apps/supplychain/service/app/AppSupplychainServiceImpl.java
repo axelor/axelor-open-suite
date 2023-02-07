@@ -44,7 +44,7 @@ public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements App
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateSupplychainConfigurations() {
 
     List<Company> companies = companyRepo.all().filter("self.supplyChainConfig is null").fetch();

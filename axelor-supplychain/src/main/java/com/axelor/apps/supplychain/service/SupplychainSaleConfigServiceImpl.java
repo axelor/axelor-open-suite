@@ -30,7 +30,7 @@ public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
 
   @Inject private AccountingSituationRepository accountingSituationRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateCustomerCredit(SaleConfig saleConfig) {
 
     List<AccountingSituation> accountingSituationList =

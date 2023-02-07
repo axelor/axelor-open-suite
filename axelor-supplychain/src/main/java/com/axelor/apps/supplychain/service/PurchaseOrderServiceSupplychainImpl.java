@@ -195,7 +195,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     return total;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void generateBudgetDistribution(PurchaseOrder purchaseOrder) {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
@@ -284,7 +284,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     purchaseOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void applyToallBudgetDistribution(PurchaseOrder purchaseOrder) {
 
@@ -458,7 +458,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     return exTaxTotal;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder) {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {

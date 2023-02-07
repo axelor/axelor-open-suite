@@ -143,7 +143,7 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected boolean _processStockMove(StockMove stockMove, AccountingBatch accountingBatch) {
     try {
       Journal miscOpeJournal = accountingBatch.getMiscOpeJournal();

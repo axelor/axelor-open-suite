@@ -310,7 +310,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     return invoice;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice) {
     for (Invoice invoice : invoiceList) {

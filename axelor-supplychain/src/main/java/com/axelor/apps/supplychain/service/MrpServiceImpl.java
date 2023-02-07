@@ -202,7 +202,7 @@ public class MrpServiceImpl implements MrpService {
     return mrp.getStatusSelect() == MrpRepository.STATUS_CALCULATION_STARTED;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void startMrp(Mrp mrp) {
 
     mrp.setStartDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
@@ -217,7 +217,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void reset(Mrp mrp) {
     today = appBaseService.getTodayDate(mrp.getStockLocation().getCompany());
 
@@ -282,7 +282,7 @@ public class MrpServiceImpl implements MrpService {
 
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void finish(Mrp mrp) {
 
     log.debug("Finish MRP");
@@ -712,7 +712,7 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void computeCumulativeQty(Product product) {
 
     List<MrpLine> mrpLineList =
@@ -1686,7 +1686,7 @@ public class MrpServiceImpl implements MrpService {
     return mrp;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void onRunnerException(Exception e) {
     TraceBackService.trace(e);
     mailMessageService.sendNotification(
@@ -1701,7 +1701,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void saveErrorInMrp(Mrp mrp, Exception e) {
     mrp.setErrorLog(e.getMessage());
   }

@@ -49,7 +49,7 @@ public class BudgetSupplychainService extends BudgetService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<BudgetLine> updateLines(Budget budget) {
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return super.updateLines(budget);
@@ -168,7 +168,7 @@ public class BudgetSupplychainService extends BudgetService {
     return super.getDate(budgetDistribution);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BigDecimal computeTotalAmountCommitted(Budget budget) {
     List<BudgetLine> budgetLineList = budget.getBudgetLineList();
 
