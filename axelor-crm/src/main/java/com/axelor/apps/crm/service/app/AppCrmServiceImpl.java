@@ -113,7 +113,7 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
 
   @Override
   public OpportunityStatus getSalesPropositionStatus() throws AxelorException {
-    OpportunityStatus salesPropositionStatus = getAppCrm().getClosedLostOpportunityStatus();
+    OpportunityStatus salesPropositionStatus = getAppCrm().getSalesPropositionStatus();
 
     if (salesPropositionStatus == null) {
       throw new AxelorException(
