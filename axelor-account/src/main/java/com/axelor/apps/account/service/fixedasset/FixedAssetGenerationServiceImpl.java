@@ -46,7 +46,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -116,16 +115,6 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
       generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
       generateAndComputeIfrsFixedAssetLines(fixedAsset);
 
-      if (fixedAsset.getFixedAssetCategory() != null
-          && fixedAsset.getFixedAssetCategory().getPeriodicityTypeSelect()
-                  == FixedAssetRepository.PERIODICITY_TYPE_MONTH
-              & !fixedAsset.getFiscalFixedAssetLineList().isEmpty()) {
-        fixedAsset
-            .getFiscalFixedAssetLineList()
-            .get(0)
-            .setDepreciationDate(
-                fixedAsset.getFirstServiceDate().with(TemporalAdjusters.lastDayOfMonth()));
-      }
     } else {
       if (fixedAsset.getFixedAssetLineList() != null) {
         fixedAssetLineService.clear(fixedAsset.getFixedAssetLineList());

@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
@@ -485,6 +486,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
             .equals(getNumberOfDepreciation(fixedAsset).setScale(0, RoundingMode.DOWN))) {
       depreciationDate = computeLastProrataDepreciationDate(fixedAsset);
     } else {
+      if (fixedAsset.getFiscalPeriodicityTypeSelect()
+          == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
+        previousFixedAssetLine.setDepreciationDate(
+            previousFixedAssetLine.getDepreciationDate().with(TemporalAdjusters.lastDayOfMonth()));
+      }
       depreciationDate =
           DateTool.plusMonths(
               previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
