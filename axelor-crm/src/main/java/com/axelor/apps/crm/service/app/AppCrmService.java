@@ -36,4 +36,6 @@ public interface AppCrmService extends AppBaseService {
   OpportunityStatus getClosedWinOpportunityStatus() throws AxelorException;
 
   OpportunityStatus getClosedLostOpportunityStatus() throws AxelorException;
+
+  OpportunityStatus getSalesPropositionStatus() throws AxelorException;
 }

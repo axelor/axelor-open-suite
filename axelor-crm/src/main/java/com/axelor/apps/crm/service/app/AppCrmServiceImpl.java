@@ -110,4 +110,17 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
 
     return closedLostOpportunityStatus;
   }
+
+  @Override
+  public OpportunityStatus getSalesPropositionStatus() throws AxelorException {
+    OpportunityStatus salesPropositionStatus = getAppCrm().getSalesPropositionStatus();
+
+    if (salesPropositionStatus == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(CrmExceptionMessage.CRM_SALES_PROPOSITION_STATUS_MISSING));
+    }
+
+    return salesPropositionStatus;
+  }
 }
