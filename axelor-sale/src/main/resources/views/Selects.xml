@@ -48,12 +48,12 @@
   </selection>
 
   <selection name="product.periodicity.subscription.select">
+    <option value="7">Weekly</option>
     <option value="1">Monthly</option>
     <option value="2">Bi-monthly</option>
     <option value="3">Quarterly</option>
     <option value="6">Half-yearly</option>
     <option value="12">Yearly</option>
-    <option value="7">Weekly</option>
   </selection>
 
   <selection name="sale.subscription.periodicity.type.select">
