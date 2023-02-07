@@ -1,0 +1,17 @@
+bin
+build
+.gradle
+.project
+.classpath
+.settings
+node_modules
+application.min.*
+*.sw[nop]
+*~
+.#*
+[#]*#
+.metadata/
+.idea/
+out/
+*.iml
+*.jar

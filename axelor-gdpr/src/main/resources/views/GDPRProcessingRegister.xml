@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="gdpr-processing-register-grid" title="GDPR Processing Register" canNew="true"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
+    <toolbar>
+      <button onClick="action-gdpr-method-launch-register" name="archiveBtn" title="Archive"
+        icon="fa-cog"/>
+    </toolbar>
+    <field name="name"/>
+    <field name="code"/>
+    <field name="retentionPeriod"/>
+    <field name="status"/>
+    <field name="anonymizer"/>
+    <button onClick="action-gdpr-method-launch-register" name="archiveBtn" title="Archive"
+      icon="fa-cog"/>
+  </grid>
+
+  <form name="gdpr-processing-register-form" title="GDPR Processing Register"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister" width="large">
+    <panel name="GDPRProcessingRegister" title="GDPR Processing Register">
+      <field name="status" widget="NavSelect" colSpan="6" readonly="true" showTitle="false"/>
+      <panel stacked="true">
+        <panel>
+          <button onClick="action-gdpr-record-activate-register,save"
+            name="registerActivateBtn" title="Activate" showIf="status == 0" icon="fa-check"
+            css="btn-success"/>
+          <button onClick="action-gdpr-record-cancel-register,save" name="registerCancelBtn"
+            title="Cancel" showIf="status != 2" icon="fa-times" css="btn-danger"/>
+        </panel>
+        <panel>
+          <button onClick="action-gdpr-record-restore-register,save"
+            name="registerRestoreBtn" title="Restore" hidden="true" showIf="status == 2"/>
+        </panel>
+      </panel>
+
+      <field name="code" colSpan="3"/>
+      <field name="name" colSpan="3"/>
+      <field name="retentionPeriod" colSpan="3"/>
+      <field name="gdprProcessingRegisterRuleList" title="Processing register rules"
+        grid-view="gdpr-processing-register-rule-grid"
+        form-view="gdpr-processing-register-rule-form" colSpan="12"/>
+      <field name="description" widget="html" colSpan="12"/>
+    </panel>
+
+    <panel>
+      <button onClick="save, action-gdpr-method-launch-register" name="archiveBtn"
+        title="Archive" hidden="true" showIf="status == 1" colSpan="3" icon="fa-cog"/>
+    </panel>
+
+    <panel sidebar="true">
+      <field name="anonymizer" type="many-to-one" canNew="true" canEdit="true"
+        form-view="anonymizer-form"/>
+      <panel-dashlet action="action-gdpr-processing-register-log-view" hidden="true"
+        showIf="id != null" canEdit="false"/>
+    </panel>
+
+    <panel-mail>
+      <mail-messages/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <!-- ACTION BUTTONS -->
+  <action-record name="action-gdpr-record-activate-register"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
+    <field name="status" expr="1"/>
+  </action-record>
+
+  <action-record name="action-gdpr-record-cancel-register"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
+    <field name="status" expr="2"/>
+  </action-record>
+
+  <action-record name="action-gdpr-record-restore-register"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
+    <field name="status" expr="0"/>
+  </action-record>
+
+  <action-method name="action-gdpr-method-launch-register">
+    <call class="com.axelor.apps.gdpr.web.GDPRProcessingRegisterController"
+      method="launchProcessingRegister"/>
+  </action-method>
+
+  <action-view name="action-gdpr-processing-register-log-view"
+    title="GDPR Processing Register Log" model="com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog">
+    <view type="grid" name="gdpr-processing-register-log-grid"/>
+    <view type="form" name="gdpr-processing-register-log-form"/>
+    <domain>self.gdprProcessingRegister = :processingRegister</domain>
+    <context name="processingRegister" expr="eval:__this__"/>
+  </action-view>
+</object-views>
