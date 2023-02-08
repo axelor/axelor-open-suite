@@ -21,11 +21,13 @@ import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.HandleExceptionResponse;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -40,19 +42,18 @@ public class ConfiguratorCreatorController {
    *
    * @param request
    * @param response
+   * @throws AxelorException
    */
-  public void updateAndActivate(ActionRequest request, ActionResponse response) {
-    try {
-      ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-      ConfiguratorCreatorService configuratorCreatorService =
-          Beans.get(ConfiguratorCreatorService.class);
-      creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
-      configuratorCreatorService.updateIndicators(creator);
-      configuratorCreatorService.activate(creator);
-      response.setSignal("refresh-app", true);
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
+  @HandleExceptionResponse
+  public void updateAndActivate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+    ConfiguratorCreatorService configuratorCreatorService =
+        Beans.get(ConfiguratorCreatorService.class);
+    creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
+    configuratorCreatorService.updateIndicators(creator);
+    configuratorCreatorService.activate(creator);
+    response.setSignal("refresh-app", true);
   }
 
   /**
@@ -61,26 +62,22 @@ public class ConfiguratorCreatorController {
    *
    * @param request
    * @param response
+   * @throws IOException
    */
-  public void importConfiguratorCreators(ActionRequest request, ActionResponse response) {
-    try {
-      String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
-      String importLog =
-          Beans.get(ConfiguratorCreatorImportService.class).importConfiguratorCreators(pathDiff);
-      response.setValue("importLog", importLog);
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
+  @HandleExceptionResponse
+  public void importConfiguratorCreators(ActionRequest request, ActionResponse response)
+      throws IOException {
+    String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
+    String importLog =
+        Beans.get(ConfiguratorCreatorImportService.class).importConfiguratorCreators(pathDiff);
+    response.setValue("importLog", importLog);
   }
 
+  @HandleExceptionResponse
   public void updateAttributes(ActionRequest request, ActionResponse response) {
-    try {
-      ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-      creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
-      Beans.get(ConfiguratorCreatorService.class).updateAttributes(creator);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
+    ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
+    creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
+    Beans.get(ConfiguratorCreatorService.class).updateAttributes(creator);
+    response.setReload(true);
   }
 }
