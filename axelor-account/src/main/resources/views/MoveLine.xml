@@ -119,7 +119,7 @@
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
     <field name="vatSystemSelect"
-      readonlyIf="move.statusSelect != 1 || account.accountType.technicalTypeSelect != 'tax'"/>
+      readonlyIf="(move.statusSelect != 1 &amp;&amp; move.statusSelect != 5) || account.accountType.technicalTypeSelect != 'tax'"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
@@ -511,7 +511,8 @@
           domain="self.endDate > :date OR self.endDate IS NULL"
           readonlyIf="!account.isTaxAuthorizedOnMoveLine"
           onChange="account-move-line-update-tax-equiv"/>
-        <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1"
+        <field name="vatSystemSelect"
+          readonlyIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
           showIf="account.accountType.technicalTypeSelect == 'tax'"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="reimbursementStatusSelect"
@@ -756,7 +757,8 @@
           domain="self.endDate > :date OR self.endDate IS NULL"
           onChange="account-move-line-update-tax-equiv"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
-        <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1"
+        <field name="vatSystemSelect"
+          readonlyIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
           showIf="account.accountType.technicalTypeSelect == 'tax'"
           requiredIf="account.accountType.technicalTypeSelect == 'tax'"/>
         <field name="reimbursementStatusSelect"
