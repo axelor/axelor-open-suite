@@ -37,7 +37,7 @@
       <button name="showTraceBackBtn" title="Anomalies" colSpan="4"
         onClick="action-batch-show-trace-back,close"/>
       <button name="showInvoiceBtn" title="Invoices" hidden="true" colSpan="4"
-        onClick="action-batch-show-invoice" if-module="axelor-account,close"/>
+        onClick="action-batch-show-invoice,close" if-module="axelor-account"/>
       <button name="showImportHistoryBtn" title="Import Histories" hidden="true" colspan="4"
         onClick="action-view-import-histories,close"/>
       <button name="showLcrAccountedInvoiceBtn" title="Invoices" hidden="true" colspan="4"
