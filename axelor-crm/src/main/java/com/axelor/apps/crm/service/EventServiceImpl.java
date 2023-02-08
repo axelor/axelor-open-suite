@@ -689,7 +689,7 @@ public class EventServiceImpl implements EventService {
   protected void afterCanceled(Event event) {
     LocalDateTime eventDateTime = event.getEndDateTime();
 
-    Lead lead = event.getLead();
+    Lead lead = event.getEventLead();
     if (lead != null
         && lead.getLastEventDateT() != null
         && lead.getLastEventDateT().equals(eventDateTime)) {
@@ -722,7 +722,7 @@ public class EventServiceImpl implements EventService {
 
   @Transactional
   protected void updateLeadLastEventDate(Event event) {
-    Lead lead = event.getLead();
+    Lead lead = event.getEventLead();
     if (lead != null
         && event.getEndDateTime() != null
         && (lead.getLastEventDateT() == null
@@ -757,7 +757,7 @@ public class EventServiceImpl implements EventService {
 
   @Transactional
   protected void updateLeadScheduledEventDate(Event event) {
-    Lead lead = event.getLead();
+    Lead lead = event.getEventLead();
     LocalDateTime startDateTime = event.getStartDateTime();
     if (lead != null
         && startDateTime != null
@@ -780,7 +780,7 @@ public class EventServiceImpl implements EventService {
 
   @Transactional
   protected void updateLeadScheduledEventDateAfterRealized(Event event) {
-    Lead lead = event.getLead();
+    Lead lead = event.getEventLead();
     if (lead != null && event.getStartDateTime() != null && !lead.getEventList().isEmpty()) {
       this.fetchNextEventStartDateT(event, lead.getEventList())
           .ifPresent(lead::setNextScheduledEventDateT);

@@ -61,7 +61,7 @@
       ref="com.axelor.apps.base.db.IndustrySector" massUpdate="true"/>
 
     <one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events"
-      mappedBy="lead"/>
+      mappedBy="eventLead"/>
     <many-to-one name="lostReason" ref="LostReason" title="Lost reason"/>
 
     <string name="lostReasonStr" title="Lost reason" large="true"/>

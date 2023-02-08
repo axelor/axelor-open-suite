@@ -19,4 +19,5 @@ dependencies {
 	api project(":modules:axelor-tool")
 	implementation libs.faker
 	api libs.opencsv
+	api libs.wslite
 }

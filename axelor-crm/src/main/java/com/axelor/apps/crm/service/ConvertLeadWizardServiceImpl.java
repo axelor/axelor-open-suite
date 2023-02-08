@@ -157,7 +157,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   protected EmailAddress createEmailAddress(String address, Lead lead, Partner partner) {
     EmailAddress emailAddress = new EmailAddress();
     emailAddress.setAddress(address);
-    emailAddress.setLead(lead);
+    emailAddress.setEmailAddressLead(lead);
     emailAddress.setPartner(partner);
 
     return emailAddress;
