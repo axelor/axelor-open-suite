@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form title="GDPR Erasure Response" name="gdpr-erasure-response-form"
+    model="com.axelor.apps.gdpr.db.GDPRErasureResponse">
+    <panel name="mainPanel">
+      <field name="responseEmailAddress"/>
+      <field name="gdprRequest"/>
+    </panel>
+  </form>
+</object-views>

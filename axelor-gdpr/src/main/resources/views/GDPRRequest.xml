@@ -17,7 +17,8 @@
 
   <form name="gdpr-request-form" title="GDPR Request" canNew="true"
     model="com.axelor.apps.gdpr.db.GDPRRequest"
-    onNew="action-gdpr-record-gdpr-set-pre-filled-request">
+    onNew="action-gdpr-record-gdpr-set-pre-filled-request"
+    onLoad="action-gdpr-request-attrs-hide-cancel">
 
     <panel name="requestPanel" colSpan="12">
       <field name="typeSelect" colSpan="3" readonlyIf="statusSelect > 0"/>
@@ -172,5 +173,13 @@
     model="com.axelor.apps.gdpr.db.GDPRRequest">
     <field name="accessResponse.sendingDateTime" expr="eval: __datetime__"/>
   </action-record>
+
+  <action-attrs name="action-gdpr-request-attrs-hide-cancel">
+    <attribute for="statusSelect" name="selection-in" expr="eval: [0,1,2]"/>
+    <attribute for="cancelSendResponseButton" name="hidden"
+      expr="eval: (statusSelect == 1 || statusSelect == 2) &amp;&amp; typeSelect == 1"/>
+    <attribute for="cancelButton" name="hidden"
+      expr="eval: (statusSelect == 1 || statusSelect == 2) &amp;&amp; typeSelect == 1"/>
+  </action-attrs>
 
 </object-views>

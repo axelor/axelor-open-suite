@@ -111,8 +111,6 @@ public class GDPRSearchEngineServiceImpl implements GDPRSearchEngineService {
    */
   public Map<String, Object> convertResultToDisplayMap(
       GDPRSearchConfig searchConfig, AuditableModel reference) {
-    Mapper mapper = Mapper.of(reference.getClass());
-    MetaModel metaModel = searchConfig.getMetaModel();
     Context scriptContext = new Context(Mapper.toMap(reference), reference.getClass());
     Map<String, Object> mappedObject = new HashMap<>();
 
