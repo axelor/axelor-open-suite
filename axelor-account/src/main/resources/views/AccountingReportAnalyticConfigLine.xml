@@ -7,6 +7,9 @@
     model="com.axelor.apps.account.db.AccountingReportAnalyticConfigLine">
     <field name="ruleLevel"/>
     <field name="typeSelect"/>
+    <field name="analyticAccount"/>
+    <field name="analyticAccountSet"/>
+    <field name="analyticAccountCode"/>
   </grid>
 
   <form title="Analytic rule" name="accounting-report-analytic-config-line-form"
@@ -17,8 +20,10 @@
       <panel name="analyticAccountPanel" stacked="true" colSpan="12" itemSpan="12">
         <field name="analyticAccountCode" showIf="typeSelect == 1"
           requiredIf="typeSelect == 1"/>
-        <field name="analyticAccountSet" widget="TagSelect" showIf="typeSelect == 2"
-          requiredIf="typeSelect == 2" domain="self.analyticLevel.nbr = :ruleLevel"/>
+        <panel-related name="analyticAccountSetPanel" field="analyticAccountSet"
+          canNew="false" canEdit="false" grid-view="analytic-account-grid"
+          form-view="analytic-account-form" showIf="typeSelect == 2" requiredIf="typeSelect == 2"
+          domain="self.analyticLevel.nbr = :ruleLevel"/>
         <field name="analyticAccount" showIf="typeSelect == 3" requiredIf="typeSelect== 3"
           domain="self.analyticLevel.nbr = :ruleLevel"/>
       </panel>

@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
@@ -55,10 +54,6 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
     SaleOrder saleOrder = createSaleOrder(opportunity, currency);
 
     opportunity.addSaleOrderListItem(saleOrder);
-
-    if (opportunity.getSalesStageSelect() < OpportunityRepository.SALES_STAGE_PROPOSITION) {
-      opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_PROPOSITION);
-    }
 
     saleOrder.setTradingName(opportunity.getTradingName());
 

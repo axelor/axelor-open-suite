@@ -377,7 +377,8 @@
   </action-attrs>
 
   <action-validate name="action-expense-validate-period">
-    <error message="Period is closed" if="period?.statusSelect == 2"/>
+    <error message="Period is closed"
+      if="period?.statusSelect == 2 || period?.statusSelect == 5"/>
   </action-validate>
 
   <action-view name="action-expense-refusal-popup-form" title="Ground for refusal"

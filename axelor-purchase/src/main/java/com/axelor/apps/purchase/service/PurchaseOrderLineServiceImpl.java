@@ -71,8 +71,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Inject protected AppBaseService appBaseService;
 
-  @Inject protected PurchaseProductService productService;
-
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
 
   @Inject protected AppPurchaseService appPurchaseService;
@@ -475,7 +473,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
     purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 
-    purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
+    purchaseOrderLine.setEstimatedReceiptDate(purchaseOrder.getEstimatedReceiptDate());
 
     if (product != null) {
       purchaseOrderLine.setProduct(product);
@@ -652,16 +650,24 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
       purchaseOrderLine.setTaxEquiv(taxEquiv);
 
+      BigDecimal exTaxTotal = purchaseOrderLine.getExTaxTotal();
+
+      BigDecimal companyExTaxTotal = purchaseOrderLine.getCompanyExTaxTotal();
+
+      BigDecimal purchasePrice =
+          (BigDecimal)
+              productCompanyService.get(
+                  purchaseOrderLine.getProduct(), "purchasePrice", purchaseOrder.getCompany());
+
       purchaseOrderLine.setInTaxTotal(
-          purchaseOrderLine
-              .getExTaxTotal()
-              .multiply(purchaseOrderLine.getTaxLine().getValue())
-              .setScale(2, RoundingMode.HALF_UP));
+          taxService.convertUnitPrice(
+              false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
       purchaseOrderLine.setCompanyInTaxTotal(
-          purchaseOrderLine
-              .getCompanyExTaxTotal()
-              .multiply(purchaseOrderLine.getTaxLine().getValue())
-              .setScale(2, RoundingMode.HALF_UP));
+          taxService.convertUnitPrice(
+              false, taxLine, companyExTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+      purchaseOrderLine.setInTaxPrice(
+          taxService.convertUnitPrice(
+              false, taxLine, purchasePrice, appBaseService.getNbDecimalDigitForUnitPrice()));
     }
     return purchaseOrderLineList;
   }

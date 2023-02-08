@@ -836,7 +836,8 @@
 
   <action-record name="action-product-record-reset-end-date"
     model="com.axelor.apps.base.db.Product">
-    <field name="endDate" expr="eval:__config__.date" if="endDate &lt; startDate"/>
+    <field name="endDate" expr="eval:__config__.date"
+      if="startDate != null &amp;&amp; endDate != null &amp;&amp; endDate &lt; startDate"/>
   </action-record>
 
   <action-view name="action-product-view-product-variant" title="Products variants"

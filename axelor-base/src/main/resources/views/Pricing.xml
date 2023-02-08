@@ -78,7 +78,8 @@
         showIf="class1PricingRule || result1PricingRule"
         orderBy="classificationParam1,classificationParam2,classificationParam3,classificationParam4,resultParam1,resultParam2,resultParam3,resultParam4"/>
       <panel-dashlet name="historizedPricingPanel" colSpan="12"
-        title="Historized Pricing" action="action-pricing-view-historized-pricing" hideIf="$popup()"/>
+        title="Historized pricings" action="action-pricing-view-historized-pricing"
+        hideIf="$popup()"/>
     </panel>
   </form>
 

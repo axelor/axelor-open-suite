@@ -90,6 +90,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected BankDetailsService bankDetailsService;
 
+  protected FixedAssetDateService fixedAssetDateService;
+
   private Batch batch;
 
   @Inject
@@ -105,9 +107,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       MoveValidateService moveValidateService,
       MoveLineCreateService moveLineCreateService,
       BatchRepository batchRepository,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      FixedAssetDateService fixedAssetDateService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
-    this.fixedAssetRepo = fixedAssetRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
     this.moveLineRepo = moveLineRepo;
@@ -119,6 +121,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     this.fixedAssetRepo = fixedAssetRepo;
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
+    this.fixedAssetDateService = fixedAssetDateService;
   }
 
   @Override
@@ -331,8 +334,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         BigDecimal amount;
         if ((impairmentValue.signum() > 0 && accountingValue.signum() > 0)
             || (impairmentValue.signum() < 0 && accountingValue.signum() < 0)) {
-          if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
-              || fixedAssetCategory.getAppProvisionTangibleFixedAssetAccount() == null) {
+          if (fixedAssetCategory.getProvisionFixedAssetAccount() == null
+              || fixedAssetCategory.getAppProvisionFixedAssetAccount() == null) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
@@ -340,11 +343,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                     + " / "
                     + I18n.get("Provision Tangible Fixed Asset Account"));
           }
-          debitLineAccount = fixedAssetCategory.getAppProvisionTangibleFixedAssetAccount();
-          creditLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
+          debitLineAccount = fixedAssetCategory.getAppProvisionFixedAssetAccount();
+          creditLineAccount = fixedAssetCategory.getProvisionFixedAssetAccount();
         } else {
-          if (fixedAssetCategory.getProvisionTangibleFixedAssetAccount() == null
-              || fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount() == null) {
+          if (fixedAssetCategory.getProvisionFixedAssetAccount() == null
+              || fixedAssetCategory.getWbProvisionFixedAssetAccount() == null) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING),
@@ -352,8 +355,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                     + " / "
                     + I18n.get("Written-back provision tangible fixed asset account"));
           }
-          debitLineAccount = fixedAssetCategory.getProvisionTangibleFixedAssetAccount();
-          creditLineAccount = fixedAssetCategory.getWbProvisionTangibleFixedAssetAccount();
+          debitLineAccount = fixedAssetCategory.getProvisionFixedAssetAccount();
+          creditLineAccount = fixedAssetCategory.getWbProvisionFixedAssetAccount();
         }
         amount = impairmentValue.abs();
         if (accountingValue.signum() < 0) {
@@ -412,10 +415,12 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     LocalDate date = fixedAssetLine.getDepreciationDate();
 
     if (!isDisposal) {
-      if (fixedAsset.getPeriodicityTypeSelect() == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
+      int periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
+      if (periodicityTypeSelect == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
         date = date.with(TemporalAdjusters.lastDayOfMonth());
       } else {
-        date = date.with(TemporalAdjusters.lastDayOfYear());
+        date =
+            fixedAssetDateService.computeLastDayOfFiscalYear(company, date, periodicityTypeSelect);
       }
     }
 

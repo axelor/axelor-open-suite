@@ -36,7 +36,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -232,16 +231,24 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       int operationSelect,
       SaleOrder saleOrder,
       Map<Long, BigDecimal> qtyToInvoiceMap,
-      Map<Long, BigDecimal> priceMap) {
+      Map<Long, BigDecimal> priceMap,
+      Map<Long, BigDecimal> qtyMap,
+      boolean isPercent) {
 
     if (operationSelect == SaleOrderRepository.INVOICE_LINES) {
       amountToInvoice = BigDecimal.ZERO;
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         Long saleOrderLineId = saleOrderLine.getId();
         if (qtyToInvoiceMap.containsKey(saleOrderLineId) && priceMap.containsKey(saleOrderLineId)) {
+          BigDecimal qtyToInvoice = qtyToInvoiceMap.get(saleOrderLineId);
+
+          if (isPercent) {
+            qtyToInvoice =
+                (qtyToInvoice.multiply(qtyMap.get(saleOrderLineId)))
+                    .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+          }
           amountToInvoice =
-              amountToInvoice.add(
-                  qtyToInvoiceMap.get(saleOrderLineId).multiply(priceMap.get(saleOrderLineId)));
+              amountToInvoice.add(qtyToInvoice.multiply(priceMap.get(saleOrderLineId)));
         }
       }
     }
@@ -360,52 +367,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
     return createdInvoiceLineList;
-  }
-
-  protected List<InvoiceLine> createInvoiceLinesFromSO(
-      Invoice invoice, SaleOrder saleOrder, Product invoicingProduct, BigDecimal percentToInvoice)
-      throws AxelorException {
-
-    List<InvoiceLine> invoiceLineList = new ArrayList<>();
-    BigDecimal lineAmountToInvoice =
-        percentToInvoice
-            .multiply(saleOrder.getInTaxTotal())
-            .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-
-    InvoiceLineGenerator invoiceLineGenerator =
-        new InvoiceLineGenerator(
-            invoice,
-            invoicingProduct,
-            invoicingProduct.getName(),
-            lineAmountToInvoice,
-            lineAmountToInvoice,
-            lineAmountToInvoice,
-            invoicingProduct.getDescription(),
-            BigDecimal.ONE,
-            invoicingProduct.getUnit(),
-            null,
-            InvoiceLineGenerator.DEFAULT_SEQUENCE,
-            BigDecimal.ZERO,
-            PriceListLineRepository.AMOUNT_TYPE_NONE,
-            lineAmountToInvoice,
-            null,
-            false) {
-          @Override
-          public List<InvoiceLine> creates() throws AxelorException {
-
-            InvoiceLine invoiceLine = this.createInvoiceLine();
-
-            List<InvoiceLine> invoiceLines = new ArrayList<>();
-            invoiceLines.add(invoiceLine);
-
-            return invoiceLines;
-          }
-        };
-
-    List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
-    invoiceLineList.addAll(invoiceOneLineList);
-
-    return invoiceLineList;
   }
 
   @Override
@@ -917,11 +878,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .bind("saleOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .bind("refundOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
             .fetch();
-    if (isPercent) {
-      amountToInvoice =
-          (amountToInvoice.multiply(saleOrder.getExTaxTotal()))
-              .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
-    }
+
     BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
     sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {

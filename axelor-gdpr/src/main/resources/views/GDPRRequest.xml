@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+
+  <grid name="gdpr-request-grid" title="GDPR Request" canNew="true"
+    model="com.axelor.apps.gdpr.db.GDPRRequest">
+    <field name="requestDateTime"/>
+    <field name="typeSelect"/>
+    <field name="gdprRequestOrigin"/>
+    <field name="statusSelect"/>
+    <field name="modelSelect"/>
+    <field name="dueSendingDateTime"/>
+  </grid>
+
+  <form name="gdpr-request-form" title="GDPR Request" canNew="true"
+    model="com.axelor.apps.gdpr.db.GDPRRequest"
+    onNew="action-gdpr-record-gdpr-set-pre-filled-request">
+
+    <panel name="requestPanel" colSpan="12">
+      <field name="typeSelect" colSpan="3" readonlyIf="statusSelect > 0"/>
+      <field name="gdprRequestOrigin" requiredIf="statusSelect != 3" colSpan="3"
+        readonlyIf="statusSelect > 0" widget="SuggestBox"/>
+      <field name="statusSelect" widget="navSelect" readonly="true" colSpan="6"
+        showTitle="false"/>
+      <field name="modelSelect" widget="refSelect" showIf="statusSelect > 0"
+        x-related="modelId" title="Reference" colSpan="12" readonly="true"/>
+      <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12" hidden="true"
+        showIf="statusSelect == 0">
+        <field name="__lastName" title="Last name"
+          onChange="action-gdpr-request-group-search-person"/>
+        <field name="__firstName" title="First name"
+          onChange="action-gdpr-request-group-search-person"/>
+        <field name="__email" title="Email" widget="email" colSpan="5"
+          onChange="action-gdpr-request-group-search-person"/>
+        <field name="__phone" title="Phone" widget="phone" colSpan="5"
+          onChange="action-gdpr-request-group-search-person"/>
+
+        <button name="search-person-button" title="Search" icon="fa-search"
+          onClick="action-gdpr-request-group-search-person" colSpan="2"/>
+
+        <panel-related name="gdprSearchResults" title="Results"
+          field="__searchResults" type="one-to-many" target="com.axelor.apps.base.db.Wizard"
+          colSpan="12" grid-view="search-result-grid" canNew="false" canView="false"
+          canRemove="false" canEdit="false">
+        </panel-related>
+
+      </panel>
+
+      <panel colOffset="3">
+        <button name="confirmButton" title="Confirm" icon="fa-check" css="btn-success"
+          prompt="Are you sure to confirm the request ?"
+          onClick="save,action-gdpr-select-person,save,action-gdpr-method-request-generate-response,save"
+          showIf="statusSelect == 0"/>
+
+        <button name="cancelButton" title="Cancel" icon="fa-times" css="btn-danger"
+          prompt="Are you sure to cancel the request ?"
+          onClick="action-gdpr-attrs-gdpr-request-set-status-to-canceled,save"
+          showIf="statusSelect ==0"/>
+
+      </panel>
+    </panel>
+
+    <panel showIf="accessResponse" showTitle="true" title="Response">
+      <field name="accessResponse.dataFile"/>
+      <field name="accessResponse.sendingDateTime" widget="date-time"/>
+      <field name="accessResponse.responseEmailAddress" widget="email"
+        readonlyIf="statusSelect > 1"/>
+      <field name="accessResponse.responseMessage"/>
+    </panel>
+
+    <panel showIf="erasureResponse">
+      <field name="erasureResponse.responseEmailAddress" widget="email"
+        readonlyIf="statusSelect > 1"/>
+      <field name="erasureResponse.sendingDateTime" widget="date-time"/>
+      <field name="erasureResponse.responseMessage"/>
+      <field name="erasureResponse.responseErasureLogList" colSpan="12"/>
+    </panel>
+
+    <panel colOffset="3" showIf="accessResponse != null || erasureResponse != null"
+      colSpan="6">
+      <button name="sendResponseButton" icon="fa-envelope"
+        onClick="save,action-gdpr-group-send-response" css="btn-success" title="Send Response"
+        showIf="statusSelect == 1"/>
+
+      <button name="cancelSendResponseButton" title="Cancel" icon="fa-times" css="btn-danger"
+        prompt="Are you sure to cancel the request ?"
+        onClick="save,action-gdpr-attrs-gdpr-request-set-status-to-canceled,save"
+        showIf="statusSelect ==1"/>
+    </panel>
+
+    <panel sidebar="true">
+      <field name="requestDateTime" readonly="true" colSpan="6"/>
+      <field name="dueSendingDateTime" readonly="true" colSpan="6"/>
+    </panel>
+    <panel-mail sidebar="true">
+      <mail-messages/>
+    </panel-mail>
+
+  </form>
+
+  <!-- Search results -->
+  <grid model="com.axelor.apps.base.db.Wizard" title="result" name="search-result-grid"
+    canEdit="false" edit-icon="false">
+    <field name="selected" widget="RadioSelect"/>
+    <field name="type"/>
+    <field name="typeClass" hidden="true"/>
+    <field name="lastName"/>
+    <field name="firstName"/>
+    <field name="email"/>
+    <field name="phone"/>
+    <field name="objectId" hidden="true"/>
+  </grid>
+
+
+  <!-- NEW -->
+  <action-record name="action-gdpr-record-gdpr-set-pre-filled-request"
+    model="com.axelor.apps.gdpr.db.GDPRRequest">
+    <field name="requestDateTime" expr="eval: __datetime__"/>
+    <field name="dueSendingDateTime"
+      expr="eval: __datetime__.plusDays(__config__.app.getApp('gdpr').getMaxRespondingDays())"/>
+  </action-record>
+
+  <action-record name="action-gdpr-search-form-clear"
+    model="com.axelor.apps.base.db.Wizard">
+    <field name="__searchResults" expr=""/>
+  </action-record>
+
+  <action-method name="action-gdpr-search-person">
+    <call class="com.axelor.apps.gdpr.web.GDPRSearchEngineController" method="searchObject"/>
+  </action-method>
+
+  <action-group name="action-gdpr-request-group-search-person">
+    <action name="action-gdpr-search-form-clear"/>
+    <action name="action-gdpr-search-person"/>
+  </action-group>
+
+  <action-method name="action-gdpr-select-person">
+    <call class="com.axelor.apps.gdpr.web.GDPRSearchEngineController"
+      method="fillReferenceWithData"/>
+  </action-method>
+
+  <!-- CANCEL -->
+  <action-attrs name="action-gdpr-attrs-gdpr-request-set-status-to-canceled">
+    <attribute for="statusSelect" name="value" expr="3"/>
+  </action-attrs>
+
+  <!-- CONFIRM ACCESS -->
+  <action-method name="action-gdpr-method-request-generate-response">
+    <call class="com.axelor.apps.gdpr.web.GDPRRequestController" method="generateResponse"/>
+  </action-method>
+
+  <!-- SEND RESPONSE -->
+
+  <action-group name="action-gdpr-group-send-response">
+    <action name="action-gdpr-validate-required-email_address"/>
+    <action name="action-gdpr-method-send-response"/>
+  </action-group>
+
+  <action-validate name="action-gdpr-validate-required-email_address">
+    <error message="Missing response email address"
+      if="(typeSelect == 0 &amp;&amp; !accessResponse.responseEmailAddress) || (typeSelect == 1 &amp;&amp; !erasureResponse.responseEmailAddress)"/>
+  </action-validate>
+
+  <action-method name="action-gdpr-method-send-response">
+    <call class="com.axelor.apps.gdpr.web.GDPRRequestController" method="sendResponse"/>
+  </action-method>
+
+  <action-record name="action-gdpr-record-request-set-access-sending-date"
+    model="com.axelor.apps.gdpr.db.GDPRRequest">
+    <field name="accessResponse.sendingDateTime" expr="eval: __datetime__"/>
+  </action-record>
+
+</object-views>

@@ -50,6 +50,7 @@
         onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"/>
       <field name="searchLabel"/>
       <field name="letterToInvoice"/>
+      <field name="specificTax"/>
       <field name="moveLineBankStatementQuery" requiredIf="letterToInvoice"
         showIf="letterToInvoice" hidden="true" domain="self.ruleTypeSelect = 3"/>
     </panel>

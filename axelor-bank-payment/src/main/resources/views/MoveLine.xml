@@ -7,7 +7,7 @@
     model="com.axelor.apps.account.db.MoveLine" canDelete="false" canArchive="false" canNew="false">
     <button onClick="action-move-line-method-set-selected,save,reload" name="select"
       title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
-    <button onClick="action-move-line-method-set-selected,save,reload" name="select"
+    <button onClick="action-move-line-method-set-selected,save,reload" name="unselect"
       title="Select / Unselect" icon="fa-minus-circle" showIf="isSelectedBankReconciliation"/>
     <field name="postedNbr"/>
     <field name="name"/>

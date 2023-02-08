@@ -162,7 +162,7 @@ public abstract class AccountingReportValueAbstractService {
       AccountingReportConfigLine groupColumn, AccountingReportConfigLine column) {
     if (groupColumn != null
         && groupColumn.getStyleSelect() == AccountingReportConfigLineRepository.STYLE_NO_STYLE
-        && groupColumn.getPriority() >= column.getPriority()) {
+        && groupColumn.getStylePriority() >= column.getStylePriority()) {
       return groupColumn.getStyleSelect();
     } else {
       return column.getStyleSelect();

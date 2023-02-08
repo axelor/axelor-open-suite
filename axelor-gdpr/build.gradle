@@ -1,0 +1,12 @@
+plugins {
+    id 'com.axelor.app'
+}
+
+axelor {
+    title "Axelor GDPR"
+    description "Axelor GDPR Module"
+}
+
+dependencies {
+    api project(":modules:axelor-base")
+}

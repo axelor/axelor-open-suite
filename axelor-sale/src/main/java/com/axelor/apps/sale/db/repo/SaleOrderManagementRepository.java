@@ -55,7 +55,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setTotalGrossMargin(null);
     copy.setMarginRate(null);
     copy.setEndOfValidityDate(null);
-    copy.setDeliveryDate(null);
+    copy.setEstimatedShippingDate(null);
     copy.setOrderBeingEdited(false);
     if (copy.getAdvancePaymentAmountNeeded().compareTo(copy.getAdvanceTotal()) <= 0) {
       copy.setAdvancePaymentAmountNeeded(BigDecimal.ZERO);
@@ -65,8 +65,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
     if (copy.getSaleOrderLineList() != null) {
       for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-        saleOrderLine.setDesiredDelivDate(null);
-        saleOrderLine.setEstimatedDelivDate(null);
+        saleOrderLine.setDesiredDeliveryDate(null);
+        saleOrderLine.setEstimatedShippingDate(null);
         saleOrderLine.setDiscountDerogation(null);
       }
     }

@@ -167,4 +167,11 @@
     <option value="1">Recompute stock location lines</option>
   </selection>
 
+  <selection name="stock.stock.location.line.history.type.select">
+    <option value="stockMove">Stock move</option>
+    <option value="wapCorrection">Wap correction</option>
+    <option value="cancelation">Cancelation</option>
+    <option value="updateStockLocationFromProduct">Update stock location from product</option>
+  </selection>
+
 </object-views>

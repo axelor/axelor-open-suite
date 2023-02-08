@@ -24,6 +24,7 @@ import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractLineManagementRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
+import com.axelor.apps.contract.service.AnalyticMoveLineContractServiceImpl;
 import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
 import com.axelor.apps.contract.service.ContractLineService;
@@ -32,7 +33,10 @@ import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.contract.service.ContractVersionServiceImpl;
+import com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
+import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 
 public class ContractModule extends AxelorModule {
@@ -45,6 +49,10 @@ public class ContractModule extends AxelorModule {
     bind(ContractLineService.class).to(ContractLineServiceImpl.class);
     bind(ConsumptionLineService.class).to(ConsumptionLineServiceImpl.class);
     bind(ContractBatchRepository.class).to(ContractBatchContractRepository.class);
+    bind(AnalyticMoveLineSupplychainServiceImpl.class)
+        .to(AnalyticMoveLineContractServiceImpl.class);
+    bind(InvoiceLineAnalyticSupplychainServiceImpl.class)
+        .to(InvoiceLineAnalyticContractServiceImpl.class);
     bind(WorkflowCancelServiceSupplychainImpl.class).to(WorkflowCancelServiceContractImpl.class);
     bind(ContractLineRepository.class).to(ContractLineManagementRepository.class);
   }

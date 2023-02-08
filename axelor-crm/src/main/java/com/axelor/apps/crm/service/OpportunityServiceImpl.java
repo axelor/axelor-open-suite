@@ -17,84 +17,48 @@
  */
 package com.axelor.apps.crm.service;
 
-import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
-import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OpportunityServiceImpl implements OpportunityService {
 
-  @Inject protected OpportunityRepository opportunityRepo;
+  protected OpportunityRepository opportunityRepo;
+  protected AddressService addressService;
+  protected OpportunityStatusRepository opportunityStatusRepo;
+  protected AppCrmService appCrmService;
 
-  @Inject protected AddressService addressService;
+  @Inject
+  public OpportunityServiceImpl(
+      OpportunityRepository opportunityRepo,
+      AddressService addressService,
+      OpportunityStatusRepository opportunityStatusRepo,
+      AppCrmService appCrmService) {
+    this.opportunityRepo = opportunityRepo;
+    this.addressService = addressService;
+    this.opportunityStatusRepo = opportunityStatusRepo;
+    this.appCrmService = appCrmService;
+  }
 
   @Transactional
   public void saveOpportunity(Opportunity opportunity) {
     opportunityRepo.save(opportunity);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public Partner createClientFromLead(Opportunity opportunity) throws AxelorException {
-    Lead lead = opportunity.getOpportunityLead();
-    if (lead == null) {
-      throw new AxelorException(
-          opportunity,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(CrmExceptionMessage.LEAD_PARTNER));
-    }
-
-    String name = lead.getFullName();
-
-    Address address = null;
-    if (lead.getPrimaryAddress() != null) {
-      // avoids printing 'null'
-      String addressL6 =
-          lead.getPrimaryPostalCode() == null ? "" : lead.getPrimaryPostalCode() + " ";
-      addressL6 += lead.getPrimaryCity() == null ? "" : lead.getPrimaryCity().getName();
-
-      address =
-          addressService.createAddress(
-              null, null, lead.getPrimaryAddress(), null, addressL6, lead.getPrimaryCountry());
-      address.setFullName(addressService.computeFullName(address));
-    }
-
-    EmailAddress email = null;
-    if (lead.getEmailAddress() != null) {
-      email = new EmailAddress(lead.getEmailAddress().getAddress());
-    }
-
-    Partner partner =
-        Beans.get(PartnerService.class)
-            .createPartner(
-                name,
-                null,
-                lead.getFixedPhone(),
-                lead.getMobilePhone(),
-                email,
-                opportunity.getCurrency(),
-                address,
-                address,
-                true);
-
-    opportunity.setPartner(partner);
-    opportunityRepo.save(opportunity);
-
-    return partner;
   }
 
   @Override
@@ -111,5 +75,51 @@ public class OpportunityServiceImpl implements OpportunityService {
           company != null ? company.getName() : null);
     }
     opportunity.setOpportunitySeq(seq);
+  }
+
+  @Override
+  public OpportunityStatus getDefaultOpportunityStatus() {
+    return opportunityStatusRepo.getDefaultStatus();
+  }
+
+  @Override
+  public void setOpportunityStatus(Opportunity opportunity, boolean isStagedClosedWon)
+      throws AxelorException {
+
+    if (isStagedClosedWon) {
+      opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
+    } else {
+      opportunity.setOpportunityStatus(appCrmService.getClosedLostOpportunityStatus());
+    }
+
+    saveOpportunity(opportunity);
+  }
+
+  @Override
+  public void setOpportunityStatusNextStage(Opportunity opportunity) {
+    OpportunityStatus status = opportunity.getOpportunityStatus();
+    status = Beans.get(OpportunityStatusRepository.class).findByNextSequence(status.getSequence());
+    opportunity.setOpportunityStatus(status);
+    saveOpportunity(opportunity);
+  }
+
+  @Override
+  public List<Long> getClosedOpportunityStatusIdList() {
+    List<Long> closedOpportunityStatusIdList = new ArrayList<>();
+
+    AppCrm appCrm = appCrmService.getAppCrm();
+
+    OpportunityStatus closedWinOpportunityStatus = appCrm.getClosedWinOpportunityStatus();
+    OpportunityStatus closedLostOpportunityStatus = appCrm.getClosedLostOpportunityStatus();
+
+    if (closedWinOpportunityStatus != null) {
+      closedOpportunityStatusIdList.add(closedWinOpportunityStatus.getId());
+    }
+
+    if (closedLostOpportunityStatus != null) {
+      closedOpportunityStatusIdList.add(closedLostOpportunityStatus.getId());
+    }
+
+    return closedOpportunityStatusIdList;
   }
 }

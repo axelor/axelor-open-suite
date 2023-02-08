@@ -40,7 +40,7 @@
     <integer name="stockMoveRealizeOrderSelect" default="1" massUpdate="true"
       selection="production.manuf.order.stock.move.realize.order.select"/>
 
-    <many-to-one name="subcontractors" ref="com.axelor.apps.base.db.Partner"
+    <many-to-one name="subcontractor" ref="com.axelor.apps.base.db.Partner"
       title="Subcontractor"/>
     <many-to-one name="outsourcingStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing stock location"/>

@@ -17,17 +17,23 @@
  */
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class OpportunityManagementRepository extends OpportunityRepository {
+
   @Override
   public Opportunity copy(Opportunity entity, boolean deep) {
     Opportunity copy = super.copy(entity, deep);
-    copy.setSalesStageSelect(OpportunityRepository.SALES_STAGE_NEW);
+    OpportunityStatus status = Beans.get(OpportunityStatusRepository.class).getDefaultStatus();
+    copy.setOpportunityStatus(status);
     copy.setLostReason(null);
     copy.setOpportunitySeq(null);
     return copy;
@@ -36,13 +42,40 @@ public class OpportunityManagementRepository extends OpportunityRepository {
   @Override
   public Opportunity save(Opportunity opportunity) {
     try {
+      OpportunityService opportunityService = Beans.get(OpportunityService.class);
       if (opportunity.getOpportunitySeq() == null) {
-        Beans.get(OpportunityService.class).setSequence(opportunity);
+        opportunityService.setSequence(opportunity);
       }
+
+      if (opportunity.getOpportunityStatus() == null) {
+        opportunity.setOpportunityStatus(opportunityService.getDefaultOpportunityStatus());
+      }
+
       return super.save(opportunity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    try {
+      final String closedWonId = "$closedWonId";
+      final String closedLostId = "$closedLostId";
+
+      AppCrm appCrm = Beans.get(AppCrmService.class).getAppCrm();
+
+      if (appCrm.getClosedWinOpportunityStatus() != null) {
+        json.put(closedWonId, appCrm.getClosedWinOpportunityStatus().getId());
+      }
+
+      if (appCrm.getClosedLostOpportunityStatus() != null) {
+        json.put(closedLostId, appCrm.getClosedLostOpportunityStatus().getId());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+    return super.populate(json, context);
   }
 }

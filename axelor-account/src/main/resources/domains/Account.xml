@@ -43,6 +43,8 @@
     <boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line"
       massUpdate="true"/>
     <boolean name="manageCutOffPeriod" title="Manage Cut off period" massUpdate="true"/>
+    <boolean name="hasAutomaticApplicationAccountingDate"
+      title="Automatic application of accounting date"/>
     <boolean name="hasInvoiceTerm" title="Activate invoice term"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <many-to-one name="serviceType" ref="ServiceType" title="Service type"
@@ -98,7 +100,6 @@
       <field name="serviceType"/>
       <field name="vatSystemSelect"/>
     </track>
-
     <finder-method name="findByAccountType" using="accountType" all="true"/>
 
   </entity>

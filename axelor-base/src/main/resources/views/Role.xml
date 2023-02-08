@@ -6,9 +6,31 @@
 
   <form name="role-form" title="Role" model="com.axelor.auth.db.Role" id="role-form-base">
     <panel-include view="role-form" from="axelor-core"/>
+    <panel-tabs name="rolePanelTab">
+      <panel-dashlet name="roleUserPanel" title="User"
+        action="action-role-view-user-dashlet" colSpan="12"/>
+      <panel-dashlet name="roleGroupPanel" title="Group"
+        action="action-role-view-group-dashlet" colSpan="12"/>
+    </panel-tabs>
     <panel-mail name="mailsPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
   </form>
+
+  <action-view name="action-role-view-group-dashlet" title="Group"
+    model="com.axelor.auth.db.Group">
+    <view type="grid" name="group-grid"/>
+    <view type="form" name="group-form"/>
+    <domain>:role MEMBER OF self.roles</domain>
+    <context name="role" expr="eval:__self__"/>
+  </action-view>
+
+  <action-view name="action-role-view-user-dashlet" title="User"
+    model="com.axelor.auth.db.User">
+    <view type="grid" name="user-grid"/>
+    <view type="form" name="user-form"/>
+    <domain>:role MEMBER OF self.roles</domain>
+    <context name="role" expr="eval:__self__"/>
+  </action-view>
 </object-views>
