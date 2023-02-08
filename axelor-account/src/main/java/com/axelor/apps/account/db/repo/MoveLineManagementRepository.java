@@ -84,10 +84,11 @@ public class MoveLineManagementRepository extends MoveLineRepository {
         long id = (long) json.get("id");
         MoveLine moveLine = this.find(id);
         LocalDate moveDate = LocalDate.parse((String) context.get("_moveDate"));
-
-        json.put(
-            "$cutOffProrataAmount",
-            Beans.get(MoveLineService.class).getCutOffProrataAmount(moveLine, moveDate));
+        MoveLineService moveLineService = Beans.get(MoveLineService.class);
+        moveLine = moveLineService.computeCutOffProrataAmount(moveLine, moveDate);
+        json.put("cutOffProrataAmount", moveLine.getCutOffProrataAmount());
+        json.put("amountBeforeCutOffProrata", moveLine.getAmountBeforeCutOffProrata());
+        json.put("durationCutOffProrata", moveLine.getDurationCutOffProrata());
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

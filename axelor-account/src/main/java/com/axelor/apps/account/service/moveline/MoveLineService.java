@@ -49,6 +49,8 @@ public interface MoveLineService {
 
   BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
 
+  MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
+
   public boolean checkManageAnalytic(Move move) throws AxelorException;
 
   @CallMethod

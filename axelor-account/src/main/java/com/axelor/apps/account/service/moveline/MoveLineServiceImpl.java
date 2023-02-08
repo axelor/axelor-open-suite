@@ -334,6 +334,30 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
+  public MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
+    if (moveDate != null
+        && moveLine.getCutOffStartDate() != null
+        && moveLine.getCutOffEndDate() != null) {
+      BigDecimal daysProrata =
+          BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
+      BigDecimal daysTotal =
+          BigDecimal.valueOf(
+              ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
+
+      if (daysTotal.compareTo(BigDecimal.ZERO) != 0) {
+
+        BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+        moveLine.setCutOffProrataAmount(
+            prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP));
+        moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
+        moveLine.setDurationCutOffProrata(daysProrata.toString() + "/" + daysTotal.toString());
+      }
+    }
+
+    return moveLine;
+  }
+
+  @Override
   public boolean checkManageAnalytic(Move move) throws AxelorException {
     return move != null
         && move.getCompany() != null
