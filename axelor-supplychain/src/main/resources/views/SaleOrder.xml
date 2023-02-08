@@ -247,13 +247,13 @@
   <action-attrs name="action-sale-order-attrs-set-stock-location-domain">
     <attribute name="domain" for="stockLocation"
       if="!tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
-      expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = false&quot;"/>
+      expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="!tradingName?.stockLocationList &amp;&amp; directOrderLocation"
       expr="eval: &quot;self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
-      expr="eval: &quot;self.company = :company AND ((self.typeSelect != 3 and self.usableOnSaleOrder = true AND self.directOrderLocation = false) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;"/>
+      expr="eval: &quot;self.company = :company AND ((self.typeSelect != 3 and self.usableOnSaleOrder = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="tradingName?.stockLocationList &amp;&amp; directOrderLocation"
       expr="eval: &quot;(self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')})&quot;"/>
