@@ -120,7 +120,9 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
     List<Employee> employeeList =
         Beans.get(EmployeeRepository.class)
             .all()
-            .filter("self.mainEmploymentContract.payCompany = ?1", company)
+            .filter(
+                "self.mainEmploymentContract.payCompany = ?1 AND self.archived = false OR self.archived is null",
+                company)
             .fetch();
     for (Employee employee : employeeList) {
       if (employee != null) {
