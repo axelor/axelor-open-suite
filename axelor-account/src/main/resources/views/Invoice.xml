@@ -1824,7 +1824,7 @@ InvoiceSet.length > 0))"
     <view type="grid" name="subrogation-release-grid"/>
     <view type="form" name="subrogation-release-form"/>
     <domain>:_invoice MEMBER OF self.invoiceSet</domain>
-    <context name="_invoice" expr="eval: __this__"/>
+    <context name="_invoice" expr="eval: __this__" if="id != null"/>
   </action-view>
 
   <action-view name="action-invoice-view-reports-wizard" title="Reports"
