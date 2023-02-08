@@ -734,7 +734,7 @@
 "Amount excluding taxes",,,
 "Amount exported for direct debit",,,
 "Amount for each line",,,
-"Amount in Acc. currency",,,
+"Amount in Acc. currency","Amount in move currency",,
 "Amount in currency",,,
 "Amount paid",,,
 "Amount paid / withdrawn",,,

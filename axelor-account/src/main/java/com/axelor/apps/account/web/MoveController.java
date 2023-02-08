@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
@@ -53,6 +54,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -72,6 +74,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -882,5 +885,42 @@ public class MoveController {
         Beans.get(BankDetailsService.class)
             .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     response.setValue("companyBankDetails", defaultBankDetails);
+  }
+
+  public void updateMoveLinesCurrencyRate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+    LocalDate dueDate = this.extractDueDate(request);
+
+    if (move != null
+        && move.getMoveLineList().size() != 0
+        && move.getCurrency() != null
+        && move.getCompanyCurrency() != null) {
+      BigDecimal currencyRate = BigDecimal.ONE;
+      currencyRate =
+          Beans.get(CurrencyService.class)
+              .getCurrencyConversionRate(
+                  move.getCurrency(), move.getCompanyCurrency(), move.getDate());
+
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        BigDecimal debit = moveLine.getDebit();
+        BigDecimal credit = moveLine.getCredit();
+        BigDecimal currencyAmount = BigDecimal.ZERO;
+
+        if (!BigDecimal.ZERO.equals(debit.add(credit))) {
+          currencyAmount = debit.add(credit);
+          currencyAmount = currencyAmount.divide(currencyRate, RoundingMode.HALF_UP);
+        }
+
+        moveLine.setCurrencyAmount(currencyAmount);
+        moveLine.setCurrencyRate(currencyRate);
+
+        moveLine.clearInvoiceTermList();
+        Beans.get(MoveLineInvoiceTermService.class)
+            .generateDefaultInvoiceTerm(moveLine, dueDate, false);
+
+        Beans.get(MoveLineService.class).computeFinancialDiscount(moveLine);
+      }
+    }
   }
 }
