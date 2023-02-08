@@ -35,6 +35,7 @@
 "Allow expense creation",,,
 "Allow negative value for leaves",,,
 "Allow negative values for employee leaves",,,
+"Allow to associate a product to the timesheet line (pre-requisite: only for product type that are services and Activity field is TRUE). Additional configuration can also be found in Application config --> Users/companies --> Companies --> Human resources config.",,,
 "Allow updates via editor",,,
 "Also export already exported payroll preparations",,,
 "Amendment",,,
