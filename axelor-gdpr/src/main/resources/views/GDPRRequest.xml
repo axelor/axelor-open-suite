@@ -5,7 +5,7 @@
   http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 
-  <grid name="gdpr-request-grid" title="GDPR Request" canNew="true"
+  <grid name="gdpr-request-grid" title="Requests" canNew="true"
     model="com.axelor.apps.gdpr.db.GDPRRequest">
     <field name="requestDateTime"/>
     <field name="typeSelect"/>
@@ -15,7 +15,7 @@
     <field name="dueSendingDateTime"/>
   </grid>
 
-  <form name="gdpr-request-form" title="GDPR Request" canNew="true"
+  <form name="gdpr-request-form" title="Request" canNew="true"
     model="com.axelor.apps.gdpr.db.GDPRRequest"
     onNew="action-gdpr-record-gdpr-set-pre-filled-request"
     onLoad="action-gdpr-request-attrs-hide-cancel">

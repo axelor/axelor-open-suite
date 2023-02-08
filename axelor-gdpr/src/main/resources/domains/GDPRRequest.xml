@@ -7,7 +7,7 @@
 
   <entity name="GDPRRequest">
     <integer name="typeSelect" title="Type" selection="gdpr.request.type.select"/>
-    <many-to-one name="gdprRequestOrigin" title="GDPR request origin"
+    <many-to-one name="gdprRequestOrigin" title="Request origin"
       ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin"/>
     <datetime name="requestDateTime" title="Request date"/>
     <datetime name="dueSendingDateTime" title="Due sending date"/>
@@ -28,9 +28,9 @@
 	]]>
     </string>
     <one-to-one name="accessResponse" ref="com.axelor.apps.gdpr.db.GDPRAccessResponse"
-      mappedBy="gdprRequest" title="Access Response"/>
+      mappedBy="gdprRequest" title="Access response"/>
     <one-to-one name="erasureResponse" ref="com.axelor.apps.gdpr.db.GDPRErasureResponse"
-      mappedBy="gdprRequest" title="Erasure Response"/>
+      mappedBy="gdprRequest" title="Erasure response"/>
 
 
     <extra-code> <![CDATA[

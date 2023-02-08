@@ -9,7 +9,7 @@
     extends="com.axelor.apps.gdpr.db.GDPRResponse">
     <one-to-many name="responseErasureLogList"
       ref="com.axelor.apps.gdpr.db.GDPRErasureLog" mappedBy="gdprErasureResponse"
-      title="GDPR Erasure Logs"/>
+      title="GDPR Erasure logs"/>
   </entity>
 
 </domain-models>

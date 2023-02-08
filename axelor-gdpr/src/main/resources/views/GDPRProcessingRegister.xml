@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
   http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="gdpr-processing-register-grid" title="GDPR Processing Register" canNew="true"
+  <grid name="gdpr-processing-register-grid" title="Processing registers" canNew="true"
     model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
     <toolbar>
       <button onClick="action-gdpr-method-launch-register" name="archiveBtn" title="Archive"
@@ -19,7 +19,7 @@
       icon="fa-cog"/>
   </grid>
 
-  <form name="gdpr-processing-register-form" title="GDPR Processing Register"
+  <form name="gdpr-processing-register-form" title="Processing register"
     model="com.axelor.apps.gdpr.db.GDPRProcessingRegister" width="large">
     <panel name="GDPRProcessingRegister" title="GDPR Processing Register">
       <field name="status" widget="NavSelect" colSpan="6" readonly="true" showTitle="false"/>
@@ -40,9 +40,10 @@
       <field name="code" colSpan="3"/>
       <field name="name" colSpan="3"/>
       <field name="retentionPeriod" colSpan="3"/>
-      <field name="gdprProcessingRegisterRuleList" title="Processing register rules"
+      <field name="gdprProcessingRegisterRuleList"
         grid-view="gdpr-processing-register-rule-grid"
-        form-view="gdpr-processing-register-rule-form" colSpan="12"/>
+        form-view="gdpr-processing-register-rule-form" colSpan="12"
+        title="Processing register rule list"/>
       <field name="description" widget="html" colSpan="12"/>
     </panel>
 

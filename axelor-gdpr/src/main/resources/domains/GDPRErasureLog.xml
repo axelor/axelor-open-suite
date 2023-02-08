@@ -8,7 +8,7 @@
     <many-to-one name="modelLog" ref="com.axelor.meta.db.MetaModel" title="Model Log"/>
     <integer name="numberOfrecords" title="Number of records"/>
     <many-to-one name="gdprErasureResponse"
-      ref="com.axelor.apps.gdpr.db.GDPRErasureResponse" title="Erasure Response"/>
+      ref="com.axelor.apps.gdpr.db.GDPRErasureResponse" title="Erasure response"/>
   </entity>
 
 </domain-models>

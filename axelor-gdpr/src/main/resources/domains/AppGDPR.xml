@@ -11,9 +11,9 @@
 
     <many-to-one ref="com.axelor.apps.base.db.Anonymizer" name="anonymizer"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRSearchConfig"
-      name="requestSearchConfig" mappedBy="appGdpr"/>
+      name="requestSearchConfig" mappedBy="appGdpr" title="Search configurations"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin" name="requestOrigin"
-      mappedBy="appGdpr"/>
+      mappedBy="appGdpr" title="Requests origin"/>
     <track>
       <field name="maxRespondingDays" on="UPDATE"/>
     </track>

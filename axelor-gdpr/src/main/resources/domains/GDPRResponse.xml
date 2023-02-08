@@ -10,7 +10,8 @@
     <one-to-one name="gdprRequest" ref="com.axelor.apps.gdpr.db.GDPRRequest"
       title="GDPR Request"/>
     <string name="responseEmailAddress"/>
-    <one-to-one ref="com.axelor.apps.message.db.Message" name="responseMessage"/>
+    <one-to-one ref="com.axelor.apps.message.db.Message" name="responseMessage"
+      title="Response message"/>
     <finder-method name="findByRequest" using="gdprRequest"/>
   </entity>
 

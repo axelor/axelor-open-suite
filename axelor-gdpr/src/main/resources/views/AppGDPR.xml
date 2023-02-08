@@ -10,7 +10,7 @@
 
       <field name="anonymizer" colSpan="12"/>
       <field name="requestOrigin" colSpan="12"/>
-      <field name="requestSearchConfig" colSpan="12" title="Request Search Config"/>
+      <field name="requestSearchConfig" colSpan="12"/>
     </panel>
   </form>
 </object-views>

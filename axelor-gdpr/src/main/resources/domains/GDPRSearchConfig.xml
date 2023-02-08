@@ -8,7 +8,7 @@
   <entity name="GDPRSearchConfig">
     <many-to-one ref="com.axelor.meta.db.MetaModel" name="metaModel" unique="true"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRSearchConfigLine"
-      name="searchConfigLines" mappedBy="searchConfig"/>
+      name="searchConfigLines" mappedBy="searchConfig" title="GDPR Search configuration"/>
     <many-to-one ref="com.axelor.apps.base.db.AppGdpr" name="appGdpr"/>
   </entity>
 
