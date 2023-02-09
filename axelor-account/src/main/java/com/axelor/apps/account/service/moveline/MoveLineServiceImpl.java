@@ -183,7 +183,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
   }
 
-  protected Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
+  @Override
+  public Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
     List<MoveLine> fetchedDebitMoveLineList =
         moveLineLists.getLeft().stream()
@@ -215,7 +216,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
   }
 
-  protected Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>>
+  @Override
+  public Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>>
       getPopulatedReconcilableMoveLineMap(List<MoveLine> moveLineList) {
 
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();

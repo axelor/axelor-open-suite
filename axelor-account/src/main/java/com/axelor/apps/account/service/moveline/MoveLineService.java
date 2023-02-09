@@ -26,6 +26,8 @@ import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface MoveLineService {
 
@@ -63,4 +65,10 @@ public interface MoveLineService {
   void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 
   List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds);
+
+  Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> getPopulatedReconcilableMoveLineMap(
+      List<MoveLine> moveLineList);
+
+  Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists);
 }

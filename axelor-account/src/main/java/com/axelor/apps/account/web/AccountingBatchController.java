@@ -17,14 +17,20 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
+import com.axelor.apps.account.service.batch.BatchAutoMoveLettering;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.App;
@@ -39,7 +45,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AccountingBatchController {
@@ -264,5 +272,74 @@ public class AccountingBatchController {
 
   public void actionAccountingCutOff(ActionRequest request, ActionResponse response) {
     runBatch(AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF, request, response);
+  }
+
+  public void actionAutoMoveLettering(ActionRequest request, ActionResponse response) {
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    BatchAutoMoveLettering service = Beans.get(BatchAutoMoveLettering.class);
+    if (service.existsAlreadyRunning(accountingBatch)) {
+      response.setError(I18n.get(AccountExceptionMessage.BATCH_AUTO_MOVE_LETTERING_ALREADY_EXISTS));
+    }
+    boolean isMoveLinesAwaitingReconcile = service.getIsMoveLinesAwaitingReconcile(accountingBatch);
+    Boolean isShowLinesButtonDisplayed =
+        (Boolean) request.getContext().get("isShowMoveLinesInProposalBtnDisplayed");
+    if (isMoveLinesAwaitingReconcile && !isShowLinesButtonDisplayed) {
+      response.setFlash(
+          I18n.get(AccountExceptionMessage.BATCH_AUTO_MOVE_LETTERING_PENDING_PROPOSAL_EXISTS));
+      response.setValue("$isShowMoveLinesInProposalBtnDisplayed", true);
+    } else {
+      response.setValue("$isShowMoveLinesInProposalBtnDisplayed", false);
+      //runBatch(AccountingBatchRepository.ACTION_AUTO_MOVE_LETTERING, request, response);
+    }
+  }
+
+  public void setLetteringPartnersDomain(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+      AccountManagementAccountService service = Beans.get(AccountManagementAccountService.class);
+      List<Account> accountsBetween =
+          service.getAccountsBetween(
+              accountingBatch.getFromAccount(), accountingBatch.getToAccount());
+      if (CollectionUtils.isNotEmpty(accountsBetween)) {
+        if (service.areAllAccountsOfType(accountsBetween, AccountTypeRepository.TYPE_DEBT)) {
+          response.setAttr("partnerSet", "domain", "self.isSupplier is true");
+        } else if (service.areAllAccountsOfType(
+            accountsBetween, AccountTypeRepository.TYPE_RECEIVABLE)) {
+          response.setAttr("partnerSet", "domain", "self.isCustomer is true");
+        } else {
+          response.setAttr("partnerSet", "domain", null);
+        }
+      } else {
+        response.setAttr("partnerSet", "domain", null);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showMoveLinesInProposal(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+      BatchAutoMoveLettering service = Beans.get(BatchAutoMoveLettering.class);
+
+      ActionView.ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get("Move lines linked to reconcile group proposals"));
+
+      actionViewBuilder.domain(service.getMoveLinesAwaitingReconcileFilters(accountingBatch));
+      for (Map.Entry<String, Object> context :
+          service.getMoveLinesAwaitingReconcileParams(accountingBatch).entrySet()) {
+        actionViewBuilder.context(context.getKey(), context.getValue());
+      }
+
+      actionViewBuilder.model(MoveLine.class.getName());
+      actionViewBuilder.add("grid", "move-line-account-batch-auto-move-lettering-grid");
+      actionViewBuilder.add("form", "move-line-form");
+
+      response.setView(actionViewBuilder.map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

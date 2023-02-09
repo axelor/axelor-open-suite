@@ -299,9 +299,21 @@
     <view-param name="search-filters" value="reconcile-group-filters"/>
   </action-view>
 
+  <menuitem name="account-root-periodic-processing-reconcile-group-proposal"
+    parent="account-root-periodic-processing" title="Reconcile Group proposals"
+    action="account.root.periodic.processing.reconcile.group.proposal" order="4"/>
+
+  <action-view name="account.root.periodic.processing.reconcile.group.proposal"
+    title="Reconcile Group proposals" model="com.axelor.apps.account.db.ReconcileGroup">
+    <view type="grid" name="reconcile-group-grid"/>
+    <view type="form" name="reconcile-group-form"/>
+    <view-param name="search-filters" value="reconcile-group-filters"/>
+    <domain>self.isProposal IS true</domain>
+  </action-view>
+
   <menuitem name="account-root-periodic-processing-overpayment-clearances"
     parent="account-root-periodic-processing" title="Overpayments clearances"
-    action="account.root.periodic.processing.overpayment.clearances" order="4"/>
+    action="account.root.periodic.processing.overpayment.clearances" order="5"/>
 
   <action-view name="account.root.periodic.processing.overpayment.clearances"
     title="Overpayments clearances" model="com.axelor.apps.account.db.AccountClearance">
@@ -312,7 +324,7 @@
 
   <menuitem name="account-root-periodic-processing-shift-irrecoverable"
     parent="account-root-periodic-processing" title="Shift to irrecoverable"
-    action="account.root.periodic.processing.shift.irrecoverable" order="5"/>
+    action="account.root.periodic.processing.shift.irrecoverable" order="6"/>
 
   <action-view name="account.root.periodic.processing.shift.irrecoverable"
     title="Shift to irrecoverable" model="com.axelor.apps.account.db.Irrecoverable">
@@ -323,7 +335,7 @@
 
   <menuitem name="account-root-periodic-processing-cheque-reject"
     parent="account-root-periodic-processing" title="Rejects of cheques"
-    action="account.root.periodic.processing.cheque.reject" order="6"/>
+    action="account.root.periodic.processing.cheque.reject" order="7"/>
 
   <action-view name="account.root.periodic.processing.cheque.reject"
     title="Rejects of cheques" model="com.axelor.apps.account.db.ChequeRejection">
@@ -335,7 +347,7 @@
   </action-view>
 
   <menuitem name="account-root-periodic-processing-annual-processing"
-    parent="account-root-periodic-processing" title="Annual processing" order="7"/>
+    parent="account-root-periodic-processing" title="Annual processing" order="8"/>
 
   <menuitem name="account-root-periodic-processing-annual-processing-year-closure"
     parent="account-root-periodic-processing-annual-processing" title="Year closure"

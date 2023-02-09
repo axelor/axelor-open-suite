@@ -570,6 +570,17 @@ public final class AccountExceptionMessage {
   public static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL = /*$$(*/
       "%d accounts treated successfully," /*)*/;
 
+  /** Batch auto move lettering */
+  public static final String BATCH_AUTO_MOVE_LETTERING_REPORT_TITLE = /*$$(*/
+      "Report for auto move lettering batch: " /*)*/;
+
+  public static final String BATCH_AUTO_MOVE_LETTERING_MOVE_LINE_RECONCILED = /*$$(*/
+      " move line(s) reconciled successfully" /*)*/;
+  public static final String BATCH_AUTO_MOVE_LETTERING_ALREADY_EXISTS = /*$$(*/
+      "An other auto move lettering batch is currently running with the same filters, or with incompatibles common filters." /*)*/;
+  public static final String BATCH_AUTO_MOVE_LETTERING_PENDING_PROPOSAL_EXISTS = /*$$(*/
+      "Warning, there are still reconcile group proposals pending that correspond to the filters you have entered. Do you want to continue ?" /*)*/;
+
   /** Cfonb export service */
   public static final String CFONB_EXPORT_1 = /*$$(*/
       "You must configure a RIB for the reimbursement" /*)*/;
