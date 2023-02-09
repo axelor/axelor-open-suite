@@ -8,8 +8,8 @@
   <entity name="GDPRResponse" lang="java">
     <datetime name="sendingDateTime" title="Sending Date"/>
     <one-to-one name="gdprRequest" ref="com.axelor.apps.gdpr.db.GDPRRequest"
-      title="GDPR Request"/>
-    <string name="responseEmailAddress"/>
+      title="GDPR request"/>
+    <string name="responseEmailAddress" title="Response email address"/>
     <one-to-one ref="com.axelor.apps.message.db.Message" name="responseMessage"
       title="Response message"/>
     <finder-method name="findByRequest" using="gdprRequest"/>

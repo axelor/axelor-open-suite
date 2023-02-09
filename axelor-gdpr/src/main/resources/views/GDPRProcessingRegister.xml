@@ -42,8 +42,7 @@
       <field name="retentionPeriod" colSpan="3"/>
       <field name="gdprProcessingRegisterRuleList"
         grid-view="gdpr-processing-register-rule-grid"
-        form-view="gdpr-processing-register-rule-form" colSpan="12"
-        title="Processing register rule list"/>
+        form-view="gdpr-processing-register-rule-form" colSpan="12"/>
       <field name="description" widget="html" colSpan="12"/>
     </panel>
 

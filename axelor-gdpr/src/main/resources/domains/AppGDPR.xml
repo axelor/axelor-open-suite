@@ -13,7 +13,7 @@
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRSearchConfig"
       name="requestSearchConfig" mappedBy="appGdpr" title="Search configurations"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin" name="requestOrigin"
-      mappedBy="appGdpr" title="Requests origin"/>
+      mappedBy="appGdpr" title="Requests origins"/>
     <track>
       <field name="maxRespondingDays" on="UPDATE"/>
     </track>

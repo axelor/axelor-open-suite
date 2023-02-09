@@ -6,10 +6,11 @@
   <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
 
   <entity name="GDPRSearchConfig">
-    <many-to-one ref="com.axelor.meta.db.MetaModel" name="metaModel" unique="true"/>
+    <many-to-one ref="com.axelor.meta.db.MetaModel" name="metaModel" unique="true"
+      title="Meta model"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRSearchConfigLine"
-      name="searchConfigLines" mappedBy="searchConfig" title="GDPR Search configuration"/>
-    <many-to-one ref="com.axelor.apps.base.db.AppGdpr" name="appGdpr"/>
+      name="searchConfigLines" mappedBy="searchConfig" title="GDPR search configuration lines"/>
+    <many-to-one ref="com.axelor.apps.base.db.AppGdpr" name="appGdpr" title="GDPR app"/>
   </entity>
 
 </domain-models>

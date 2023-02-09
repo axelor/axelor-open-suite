@@ -7,7 +7,7 @@
 
   <entity name="GDPRProcessingRegisterLog">
     <many-to-one ref="com.axelor.apps.gdpr.db.GDPRProcessingRegister"
-      name="gdprProcessingRegister" title="GDPR Processing register"/>
+      name="gdprProcessingRegister" title="GDPR processing register"/>
     <datetime name="processingDate"/>
     <integer name="nbProcessed"/>
 

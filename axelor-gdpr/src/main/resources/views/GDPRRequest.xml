@@ -175,7 +175,9 @@
   </action-record>
 
   <action-attrs name="action-gdpr-request-attrs-hide-cancel">
-    <attribute for="statusSelect" name="selection-in" expr="eval: [0,1,2]"/>
+    <attribute for="statusSelect" name="selection-in"
+      if="(statusSelect == 1 || statusSelect == 2) &amp;&amp; typeSelect == 1"
+      expr="eval: [__repo__(GDPRRequest).REQUEST_STATUS_RECEIVED,__repo__(GDPRRequest).REQUEST_STATUS_CONFIRMED,__repo__(GDPRRequest).REQUEST_STATUS_SENT]"/>
     <attribute for="cancelSendResponseButton" name="hidden"
       expr="eval: (statusSelect == 1 || statusSelect == 2) &amp;&amp; typeSelect == 1"/>
     <attribute for="cancelButton" name="hidden"

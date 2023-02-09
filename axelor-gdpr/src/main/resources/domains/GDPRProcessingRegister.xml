@@ -10,13 +10,14 @@
     <string name="code" required="true" unique="true"/>
     <integer name="retentionPeriod" title="Retention period (in months)" min="0"/>
     <one-to-many name="gdprProcessingRegisterRuleList"
-      ref="com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule" mappedBy="gdprProcessingRegister"/>
+      ref="com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule" mappedBy="gdprProcessingRegister"
+      title="Processing register rules"/>
     <string name="description" large="true"/>
     <integer name="status" selection="gdpr.processing.register.status.select"/>
     <many-to-one ref="com.axelor.apps.base.db.Anonymizer" name="anonymizer"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog"
       name="gdprProcessingRegisterLog" mappedBy="gdprProcessingRegister"
-      title="Processing register rule list"/>
+      title="Processing register logs"/>
 
     <finder-method name="findByStatus" using="status" all="true"/>
 
