@@ -21,22 +21,10 @@
 
   <form name="gdpr-processing-register-form" title="GDPR Processing Register"
     model="com.axelor.apps.gdpr.db.GDPRProcessingRegister" width="large">
-    <panel name="GDPRProcessingRegister" title="GDPR Processing Register">
-      <field name="status" widget="NavSelect" colSpan="6" readonly="true" showTitle="false"/>
-      <panel stacked="true">
-        <panel>
-          <button onClick="action-gdpr-record-activate-register,save"
-            name="registerActivateBtn" title="Activate" showIf="status == 0" icon="fa-check"
-            css="btn-success"/>
-          <button onClick="action-gdpr-record-cancel-register,save" name="registerCancelBtn"
-            title="Cancel" showIf="status != 2" icon="fa-times" css="btn-danger"/>
-        </panel>
-        <panel>
-          <button onClick="action-gdpr-record-restore-register,save"
-            name="registerRestoreBtn" title="Restore" hidden="true" showIf="status == 2"/>
-        </panel>
-      </panel>
-
+    <panel name="statusPanel">
+      <field name="status" widget="NavSelect" readonly="true" showTitle="false"/>
+    </panel>
+    <panel name="gpdrProcessingRegisterPanel" title="GDPR Processing Register">
       <field name="code" colSpan="3"/>
       <field name="name" colSpan="3"/>
       <field name="retentionPeriod" colSpan="3"/>
@@ -44,21 +32,28 @@
         grid-view="gdpr-processing-register-rule-grid"
         form-view="gdpr-processing-register-rule-form" colSpan="12"/>
       <field name="description" widget="html" colSpan="12"/>
+      <panel-dashlet name="logsPanel"
+        action="action-gdpr-processing-register-log-view" hidden="true" showIf="id != null"
+        canEdit="false" colSpan="12"/>
     </panel>
 
-    <panel>
-      <button onClick="save, action-gdpr-method-launch-register" name="archiveBtn"
-        title="Archive" hidden="true" showIf="status == 1" colSpan="3" icon="fa-cog"/>
+    <panel name="sidePanel" sidebar="true">
+      <field name="anonymizer" canNew="true" canEdit="true" form-view="anonymizer-form"/>
+      <button name="registerActivateBtn" onClick="action-gdpr-record-activate-register,save"
+        title="Activate"
+        showIf="status == 0 &amp;&amp; gdprProcessingRegisterRuleList &amp;&amp; gdprProcessingRegisterRuleList.length > 0"
+        icon="fa-check" css="btn-success"/>
+      <button name="archiveBtn" onClick="save, action-gdpr-method-launch-register"
+        title="Archive" hidden="true"
+        showIf="status == 1 &amp;&amp; gdprProcessingRegisterRuleList &amp;&amp; gdprProcessingRegisterRuleList.length > 0"
+        icon="fa-cog"/>
+      <button name="registerCancelBtn" onClick="action-gdpr-record-cancel-register,save"
+        title="Cancel" showIf="id != null &amp;&amp; status == 1" icon="fa-times" css="btn-danger"/>
+      <button onClick="action-gdpr-record-restore-register,save" name="registerRestoreBtn"
+        title="Restore" hidden="true" showIf="status == 2"/>
     </panel>
 
-    <panel sidebar="true">
-      <field name="anonymizer" type="many-to-one" canNew="true" canEdit="true"
-        form-view="anonymizer-form"/>
-      <panel-dashlet action="action-gdpr-processing-register-log-view" hidden="true"
-        showIf="id != null" canEdit="false"/>
-    </panel>
-
-    <panel-mail>
+    <panel-mail name="mainPanel">
       <mail-messages/>
       <mail-followers/>
     </panel-mail>
@@ -90,6 +85,6 @@
     <view type="grid" name="gdpr-processing-register-log-grid"/>
     <view type="form" name="gdpr-processing-register-log-form"/>
     <domain>self.gdprProcessingRegister = :processingRegister</domain>
-    <context name="processingRegister" expr="eval:__this__"/>
+    <context name="processingRegister" expr="eval:__this__" if="id != null"/>
   </action-view>
 </object-views>

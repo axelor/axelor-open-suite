@@ -19,29 +19,30 @@
     model="com.axelor.apps.gdpr.db.GDPRRequest"
     onNew="action-gdpr-record-gdpr-set-pre-filled-request">
 
-    <panel name="requestPanel" colSpan="12">
+    <panel name="statusPanel">
+      <field name="statusSelect" widget="navSelect" readonly="true" colSpan="6"
+        showTitle="false"/>
+    </panel>
+    <panel name="requestPanel" colSpan="12" title="GDPR Request">
       <field name="typeSelect" colSpan="3" readonlyIf="statusSelect > 0"/>
       <field name="gdprRequestOrigin" requiredIf="statusSelect != 3" colSpan="3"
         readonlyIf="statusSelect > 0" widget="SuggestBox"/>
-      <field name="statusSelect" widget="navSelect" readonly="true" colSpan="6"
-        showTitle="false"/>
       <field name="modelSelect" widget="refSelect" showIf="statusSelect > 0"
         x-related="modelId" title="Reference" colSpan="12" readonly="true"/>
       <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12" hidden="true"
         showIf="statusSelect == 0">
         <field name="__lastName" title="Last name"
-          onChange="action-gdpr-request-group-search-person"/>
+          onChange="action-gdpr-request-group-search-person" colSpan="6"/>
         <field name="__firstName" title="First name"
+          onChange="action-gdpr-request-group-search-person" colSpan="6"/>
+        <field name="__email" title="Email" widget="email" colSpan="4"
           onChange="action-gdpr-request-group-search-person"/>
-        <field name="__email" title="Email" widget="email" colSpan="5"
+        <field name="__phone" title="Phone" widget="phone" colSpan="4"
           onChange="action-gdpr-request-group-search-person"/>
-        <field name="__phone" title="Phone" widget="phone" colSpan="5"
-          onChange="action-gdpr-request-group-search-person"/>
+        <button name="searchPersonBtn" title="Search" icon="fa-search"
+          onClick="action-gdpr-request-group-search-person" colSpan="4"/>
 
-        <button name="search-person-button" title="Search" icon="fa-search"
-          onClick="action-gdpr-request-group-search-person" colSpan="2"/>
-
-        <panel-related name="gdprSearchResults" title="Results"
+        <panel-related name="gdprSearchResultsPanel" title="Results"
           field="__searchResults" type="one-to-many" target="com.axelor.apps.base.db.Wizard"
           colSpan="12" grid-view="search-result-grid" canNew="false" canView="false"
           canRemove="false" canEdit="false">
@@ -49,7 +50,7 @@
 
       </panel>
 
-      <panel colOffset="3">
+      <panel name="searchButtonPanel" colOffset="3">
         <button name="confirmButton" title="Confirm" icon="fa-check" css="btn-success"
           prompt="Are you sure to confirm the request ?"
           onClick="save,action-gdpr-select-person,save,action-gdpr-method-request-generate-response,save"
@@ -63,7 +64,7 @@
       </panel>
     </panel>
 
-    <panel showIf="accessResponse" showTitle="true" title="Response">
+    <panel name="accessPanel" showIf="accessResponse" showTitle="true" title="Response">
       <field name="accessResponse.dataFile"/>
       <field name="accessResponse.sendingDateTime" widget="date-time"/>
       <field name="accessResponse.responseEmailAddress" widget="email"
@@ -71,7 +72,7 @@
       <field name="accessResponse.responseMessage"/>
     </panel>
 
-    <panel showIf="erasureResponse">
+    <panel name="erasurePanel" showIf="erasureResponse" title="Response">
       <field name="erasureResponse.responseEmailAddress" widget="email"
         readonlyIf="statusSelect > 1"/>
       <field name="erasureResponse.sendingDateTime" widget="date-time"/>
@@ -79,8 +80,8 @@
       <field name="erasureResponse.responseErasureLogList" colSpan="12"/>
     </panel>
 
-    <panel colOffset="3" showIf="accessResponse != null || erasureResponse != null"
-      colSpan="6">
+    <panel name="sendButtonPanel" colOffset="3"
+      showIf="accessResponse != null || erasureResponse != null" colSpan="6">
       <button name="sendResponseButton" icon="fa-envelope"
         onClick="save,action-gdpr-group-send-response" css="btn-success" title="Send Response"
         showIf="statusSelect == 1"/>
@@ -91,11 +92,12 @@
         showIf="statusSelect ==1"/>
     </panel>
 
-    <panel sidebar="true">
+    <panel name="datePanel" sidebar="true">
       <field name="requestDateTime" readonly="true" colSpan="6"/>
       <field name="dueSendingDateTime" readonly="true" colSpan="6"/>
     </panel>
-    <panel-mail sidebar="true">
+
+    <panel-mail name="mailPanel" sidebar="true">
       <mail-messages/>
     </panel-mail>
 
