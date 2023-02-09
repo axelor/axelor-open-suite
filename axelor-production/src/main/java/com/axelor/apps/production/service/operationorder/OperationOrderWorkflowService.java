@@ -227,6 +227,17 @@ public class OperationOrderWorkflowService {
   public OperationOrder plan(OperationOrder operationOrder, Long cumulatedDuration)
       throws AxelorException {
 
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(OperationOrderRepository.STATUS_DRAFT);
+    authorizedStatus.add(OperationOrderRepository.STATUS_CANCELED);
+
+    if (operationOrder.getStatusSelect() == null
+        || !authorizedStatus.contains(operationOrder.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.OPERATION_ORDER_START_WRONG_STATUS));
+    }
+
     if (CollectionUtils.isEmpty(operationOrder.getToConsumeProdProductList())) {
       Beans.get(OperationOrderService.class).createToConsumeProdProductList(operationOrder);
     }
@@ -391,6 +402,14 @@ public class OperationOrderWorkflowService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void start(OperationOrder operationOrder) throws AxelorException {
+
+    if (operationOrder.getStatusSelect() == null
+        || operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_PLANNED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.OPERATION_ORDER_START_WRONG_STATUS));
+    }
+
     if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS) {
       operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
       operationOrder.setRealStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
@@ -428,7 +447,15 @@ public class OperationOrderWorkflowService {
    * @param operationOrder An operation order
    */
   @Transactional
-  public void pause(OperationOrder operationOrder) {
+  public void pause(OperationOrder operationOrder) throws AxelorException {
+
+    if (operationOrder.getStatusSelect() == null
+        || operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.OPERATION_ORDER_PAUSE_WRONG_STATUS));
+    }
+
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
 
     stopOperationOrderDuration(operationOrder);
@@ -442,7 +469,15 @@ public class OperationOrderWorkflowService {
    * @param operationOrder An operation order
    */
   @Transactional
-  public void resume(OperationOrder operationOrder) {
+  public void resume(OperationOrder operationOrder) throws AxelorException {
+
+    if (operationOrder.getStatusSelect() == null
+        || operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.OPERATION_ORDER_RESUME_WRONG_STATUS));
+    }
+
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
 
     startOperationOrderDuration(operationOrder);
@@ -470,6 +505,14 @@ public class OperationOrderWorkflowService {
 
   @Transactional(rollbackOn = {Exception.class})
   public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
+
+    if (operationOrder.getStatusSelect() == null
+        || operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.OPERATION_ORDER_FINISH_WRONG_STATUS));
+    }
+
     finish(operationOrder);
     Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
   }
@@ -481,6 +524,14 @@ public class OperationOrderWorkflowService {
    */
   @Transactional
   public void cancel(OperationOrder operationOrder) throws AxelorException {
+
+    if (operationOrder.getStatusSelect() == null
+        || operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.OPERATION_ORDER_CANCEL_WRONG_STATUS));
+    }
+
     int oldStatus = operationOrder.getStatusSelect();
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_CANCELED);
 

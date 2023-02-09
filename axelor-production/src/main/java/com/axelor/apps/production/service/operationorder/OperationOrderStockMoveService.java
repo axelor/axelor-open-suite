@@ -23,6 +23,8 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.stock.db.StockConfig;
@@ -34,6 +36,8 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -180,6 +184,14 @@ public class OperationOrderStockMoveService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void partialFinish(OperationOrder operationOrder) throws AxelorException {
+
+    if (operationOrder.getStatusSelect() == null
+        || operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.OPERATION_ORDER_FINISH_WRONG_STATUS));
+    }
+
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);
     ManufOrder manufOrder = operationOrder.getManufOrder();

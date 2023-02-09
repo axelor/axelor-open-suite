@@ -205,6 +205,15 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
   @Override
   public void runUnitCostCalc(UnitCostCalculation unitCostCalculation) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(UnitCostCalculationRepository.STATUS_DRAFT);
+    authorizedStatus.add(UnitCostCalculationRepository.STATUS_COSTS_COMPUTED);
+    if (unitCostCalculation.getStatusSelect() == null
+        || !authorizedStatus.contains(unitCostCalculation.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.UNIT_COST_CALCULATION_RUN_WRONG_STATUS));
+    }
 
     if (!unitCostCalculation.getUnitCostCalcLineList().isEmpty()) {
       clear(unitCostCalculation);
@@ -463,6 +472,14 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   }
 
   public void updateUnitCosts(UnitCostCalculation unitCostCalculation) throws AxelorException {
+
+    if (unitCostCalculation.getStatusSelect() == null
+        || unitCostCalculation.getStatusSelect()
+            != UnitCostCalculationRepository.STATUS_COSTS_COMPUTED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.UNIT_COST_CALCULATION_UPDATE_WRONG_STATUS));
+    }
 
     for (UnitCostCalcLine unitCostCalcLine : unitCostCalculation.getUnitCostCalcLineList()) {
 

@@ -168,6 +168,24 @@ public interface IExceptionMessage {
   String NO_WORK_CENTER_GROUP = /*$$(*/
       "Please fill the work center group with at least one work center." /*)*/;
 
+  static final String OPERATION_ORDER_PLAN_WRONG_STATUS = /*$$(*/
+      "Can only plan drafted or canceled operation order." /*)*/;
+
+  static final String OPERATION_ORDER_START_WRONG_STATUS = /*$$(*/
+      "Can only start planned operation order." /*)*/;
+
+  static final String OPERATION_ORDER_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can not cancel already canceled operation order." /*)*/;
+
+  static final String OPERATION_ORDER_PAUSE_WRONG_STATUS = /*$$(*/
+      "Can only pause in progress operation order." /*)*/;
+
+  static final String OPERATION_ORDER_RESUME_WRONG_STATUS = /*$$(*/
+      "Can only resume in standby operation order." /*)*/;
+
+  static final String OPERATION_ORDER_FINISH_WRONG_STATUS = /*$$(*/
+      "Can only finish in progress operation order." /*)*/;
+
   /** Raw Material RequirementService */
   String RAW_MATERIAL_REQUIREMENT_NO_SEQUENCE = /*$$(*/
       "Error : You must configure a raw material requirement reporting sequence for the company %s" /*)*/;
@@ -184,6 +202,24 @@ public interface IExceptionMessage {
 
   static final String MANUF_STOCK_MOVE_ERROR_1 = /*$$(*/ "All products has been consumed" /*)*/;
 
+  static final String MANUF_ORDER_PLAN_WRONG_STATUS = /*$$(*/
+      "Can only plan drafted or canceled manufacturing order." /*)*/;
+
+  static final String MANUF_ORDER_START_WRONG_STATUS = /*$$(*/
+      "Can only start planned manufacturing order." /*)*/;
+
+  static final String MANUF_ORDER_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can not cancel already canceled manufacturing order." /*)*/;
+
+  static final String MANUF_ORDER_PAUSE_WRONG_STATUS = /*$$(*/
+      "Can only pause in progress manufacturing order." /*)*/;
+
+  static final String MANUF_ORDER_RESUME_WRONG_STATUS = /*$$(*/
+      "Can only resume in standby manufacturing order." /*)*/;
+
+  static final String MANUF_ORDER_FINISH_WRONG_STATUS = /*$$(*/
+      "Can only finish in progress manufacturing order." /*)*/;
+
   static final String UNIT_COST_CALCULATION_IMPORT_FAIL_ERROR = /*$$(*/ "Data import failed" /*)*/;
 
   static final String UNIT_COST_CALCULATION_IMPORT_CSV_ERROR = /*$$(*/
@@ -191,6 +227,12 @@ public interface IExceptionMessage {
 
   static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
       "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
+
+  static final String UNIT_COST_CALCULATION_RUN_WRONG_STATUS = /*$$(*/
+      "Can only run calculation on drafted or computed cost price." /*)*/;
+
+  static final String UNIT_COST_CALCULATION_UPDATE_WRONG_STATUS = /*$$(*/
+      "Can only update on computed cost price." /*)*/;
 
   static final String NO_PRODUCT_SELECTED = /*$$(*/
       "Please select at least one product in the list." /*)*/;
