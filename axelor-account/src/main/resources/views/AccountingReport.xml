@@ -99,7 +99,7 @@
             onChange="action-accounting-report-record-other-period-dates"
             onSelect="action-accounting-report-attrs-other-year-domain"
             grid-view="year-account-grid" form-view="year-account-form" colSpan="6"/>
-          <field name="previousPeriod"
+          <field name="otherPeriod"
             onChange="action-accounting-report-record-other-period-on-change"
             onSelect="action-accounting-report-attrs-other-period-domain" form-view="period-form"
             grid-view="period-grid" canView="false" colSpan="6"/>
