@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -280,11 +281,18 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                     AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                     RoundingMode.HALF_UP);
 
+    User pfpUser = null;
+    if (invoiceTermService.getPfpValidatorUserCondition(move.getInvoice(), moveLine)) {
+      Partner partner = move.getInvoice() != null ? move.getPartner() : moveLine.getPartner();
+
+      pfpUser = invoiceTermService.getPfpValidatorUser(partner, move.getCompany());
+    }
+
     return invoiceTermService.createInvoiceTerm(
         null,
         moveLine,
         move.getPartnerBankDetails(),
-        null,
+        pfpUser,
         move.getPaymentMode(),
         dueDate,
         null,

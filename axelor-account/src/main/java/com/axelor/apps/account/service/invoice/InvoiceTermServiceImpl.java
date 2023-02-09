@@ -223,7 +223,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
 
     User pfpUser = null;
-    if (getPfpValidatorUserCondition(invoice)) {
+    if (getPfpValidatorUserCondition(invoice, null)) {
       pfpUser = getPfpValidatorUser(invoice.getPartner(), invoice.getCompany());
     }
 
@@ -334,14 +334,30 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
-  protected boolean getPfpValidatorUserCondition(Invoice invoice) {
-    return appAccountService.getAppAccount().getActivatePassedForPayment()
-        && (invoice.getCompany().getAccountConfig().getIsManagePassedForPayment()
+  @Override
+  public boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine) {
+    boolean invoiceCondition =
+        invoice != null
+            && invoice.getCompany().getAccountConfig().getIsManagePassedForPayment()
             && (invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
                 || (invoice.getCompany().getAccountConfig().getIsManagePFPInRefund()
                     && invoice.getOperationTypeSelect()
-                        == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)));
+                        == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
+
+    boolean moveLineCondition =
+        invoice == null
+            && moveLine != null
+            && moveLine.getMove() != null
+            && moveLine.getMove().getCompany().getAccountConfig().getIsManagePassedForPayment()
+            && (moveLine.getMove().getJournal().getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+                || (moveLine.getMove().getCompany().getAccountConfig().getIsManagePFPInRefund()
+                    && moveLine.getMove().getJournal().getJournalType().getTechnicalTypeSelect()
+                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE));
+
+    return appAccountService.getAppAccount().getActivatePassedForPayment()
+        && (invoiceCondition || moveLineCondition);
   }
 
   @Override

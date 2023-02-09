@@ -63,6 +63,8 @@ public interface InvoiceTermService {
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount);
 
+  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine);
+
   /**
    * Method that creates a customized invoiceTerm
    *
