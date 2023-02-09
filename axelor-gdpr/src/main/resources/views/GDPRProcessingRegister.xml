@@ -53,7 +53,7 @@
         title="Restore" hidden="true" showIf="status == 2"/>
     </panel>
 
-    <panel-mail name="mainPanel">
+    <panel-mail name="mailPanel">
       <mail-messages/>
       <mail-followers/>
     </panel-mail>
