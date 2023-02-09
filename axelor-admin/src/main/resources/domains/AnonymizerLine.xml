@@ -7,11 +7,11 @@
 
   <entity name="AnonymizerLine">
     <many-to-one name="anonymizer" ref="com.axelor.apps.base.db.Anonymizer"
-      title="Anonymizer"/>
+      title="Pseudonymiser"/>
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"
-      title="Model to anonymize" required="true"/>
+      title="Model to pseudonymise" required="true"/>
     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField"
-      title="Field to anonymize" required="true"/>
+      title="Field to pseudonymise" required="true"/>
     <boolean name="useFakeData" title="Use fake data"/>
     <many-to-one name="fakerApiField" ref="com.axelor.apps.base.db.FakerApiField"
       title="Faker API field"/>

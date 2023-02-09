@@ -13,7 +13,8 @@
       ref="com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule" mappedBy="gdprProcessingRegister"/>
     <string name="description" large="true"/>
     <integer name="status" selection="gdpr.processing.register.status.select"/>
-    <many-to-one ref="com.axelor.apps.base.db.Anonymizer" name="anonymizer"/>
+    <many-to-one ref="com.axelor.apps.base.db.Anonymizer" name="anonymizer"
+      title="Pseudonymiser"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog"
       name="gdprProcessingRegisterLog" mappedBy="gdprProcessingRegister"/>
 
