@@ -15,19 +15,10 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class GDPRProcessingRegisterController {
-
-  protected GDPRProcessingRegisterRepository gdprProcessingRegisterRepository;
-
-  @Inject
-  public GDPRProcessingRegisterController(
-      GDPRProcessingRegisterRepository gdprProcessingRegisterRepository) {
-    this.gdprProcessingRegisterRepository = gdprProcessingRegisterRepository;
-  }
 
   public void addAnonymizer(ActionRequest request, ActionResponse response) {
     Map<String, Object> parent = (Map<String, Object>) request.getContext().get("_parent");
@@ -86,7 +77,7 @@ public class GDPRProcessingRegisterController {
       processingRegisters.add(gdprProcessingRegister);
     } else {
       processingRegisters =
-          gdprProcessingRegisterRepository
+          Beans.get(GDPRProcessingRegisterRepository.class)
               .findByStatus(GDPRProcessingRegisterRepository.PROCESSING_REGISTER_STATUS_ACTIVE)
               .fetch();
     }
