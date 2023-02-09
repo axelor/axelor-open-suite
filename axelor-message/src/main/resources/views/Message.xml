@@ -140,41 +140,6 @@
     </panel>
   </form>
 
-  <cards name="message-cards" title="Emails" css="rect-image"
-    model="com.axelor.apps.message.db.Message" width="100%" orderBy="-sentDateT">
-    <field name="statusSelect"/>
-    <field name="typeSelect"/>
-    <field name="mediaTypeSelect"/>
-    <field name="fromEmailAddress"/>
-    <field name="sentDateT"/>
-    <field name="subject"/>
-    <field name="content"/>
-    <field name="toEmailAddressSet"/>
-    <field name="fromEmailAddress.address"/>
-    <template><![CDATA[
-	   <div class="span12">
-	  	<div class="span2 pull-right">
-			<span class='label label-info' ng-show="record.statusSelect == 1 &amp;&amp; record.sentDateT == null" x-translate>Draft</span>
-			<span class="label label-important" ng-show="record.statusSelect == 2 &amp;&amp; record.sentDateT == null" x-translate>In progress</span>
-			<span class="label label-warning" ng-show="record.statusSelect == 4" x-translate>Deleted</span>
-            <br/>
-             <span ng-show="record.sentDateT != null" ><i class='fa fa-clock-o'></i> <span>{{$fmt('sentDateT')}}</span></span>
-	    </div>
-        <span><strong>{{subject}}</strong></span>
-		<div ng-show="record.toEmailAddressSet &amp;&amp; typeSelect == 2">
-			<strong><span x-translate>To :</span></strong>
-			<span>{{toEmailAddresses}}</span>
-		</div>
-		<div ng-show="record.fromEmailAddress &amp;&amp; typeSelect == 1">
-			<strong><span x-translate>From :</span></strong>
-			<span>{{record.fromEmailAddress.address}}</span>
-		</div>
-         <br/>
-         <div style="max-width: 600px; max-height: 80px; overflow: hidden; text-overflow: ellipsis" ng-bind-html="content" />
-	 <div>
-	]]></template>
-  </cards>
-
   <action-group name="action-group-message-message-onnew">
     <action name="action-message-method-display-generate-message" if="_message != null"/>
     <action name="action-message-record-default" if="_message == null"/>

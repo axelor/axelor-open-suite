@@ -1687,49 +1687,6 @@
     <domain>self.parentPartner = :id</domain>
   </action-view>
 
-  <action-view name="action-partner-view-partner-emails" title="Emails"
-    model="com.axelor.apps.message.db.Message">
-    <view type="cards" name="message-cards"/>
-    <domain>
-      self.mediaTypeSelect = 2
-      AND (self IN (
-      SELECT mr.message
-      FROM MultiRelated mr
-      WHERE
-      mr.relatedToSelect = 'com.axelor.apps.base.db.Partner'
-      AND (mr.relatedToSelectId = :id OR
-      mr.relatedToSelectId IN :contactIds))
-      OR self.fromEmailAddress.id = :emailAddressId
-      OR
-      self.fromEmailAddress.id IN :contactEmailAddressIds)
-    </domain>
-    <context name="id" expr="eval: id == null ? 0 : id"/>
-    <context name="contactIds"
-      expr="eval: contactPartnerSet == null ? [0] : contactPartnerSet.collect{it -> it.id}"/>
-    <context name="emailAddressId"
-      expr="eval: emailAddress?.id == null ? 0 : emailAddress?.id"/>
-    <context name="contactEmailAddressIds"
-      expr="eval: contactPartnerSet == null ? [0] : contactPartnerSet.collect{it -> it.emailAddress?.id}"/>
-  </action-view>
-
-  <action-view name="action-partner-view-contact-emails" title="Emails"
-    model="com.axelor.apps.message.db.Message">
-    <view type="cards" name="message-cards"/>
-    <domain>
-      self.mediaTypeSelect = 2 AND self IN (
-      SELECT mr.message
-      FROM MultiRelated mr
-      WHERE
-      mr.relatedToSelect = 'com.axelor.apps.base.db.Partner'
-      AND mr.relatedToSelectId = :id)
-      OR
-      (self.fromEmailAddress.id = :emailAddressId)
-    </domain>
-    <context name="id" expr="eval: id == null ? 0 : id"/>
-    <context name="emailAddressId"
-      expr="eval: emailAddress?.id == null ? 0 : emailAddress?.id"/>
-  </action-view>
-
   <action-record name="action-record-base-partner-set-business-card"
     model="com.axelor.apps.base.db.Partner">
     <field name="functionBusinessCard" expr="eval: jobTitleFunction.name"
