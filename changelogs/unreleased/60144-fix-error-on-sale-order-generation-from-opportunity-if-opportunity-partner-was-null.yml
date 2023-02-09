@@ -1,3 +1,0 @@
----
-title : "Opportunity/Sale Order: corrected error on sale order generation from opportunity if opportunity partner was null."
-type: fix
