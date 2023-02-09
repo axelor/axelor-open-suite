@@ -31,6 +31,7 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -229,5 +230,18 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
     Beans.get(EmployeeRepository.class).save(employee);
     return newDPAE.getId();
+  }
+
+  @Override
+  public User getUser(Employee employee) throws AxelorException {
+
+    User user = employee.getUser();
+    if (user != null) {
+      return user;
+    }
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_NO_VALUE,
+        I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
+        employee.getName());
   }
 }

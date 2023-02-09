@@ -107,8 +107,6 @@ public interface TimesheetService {
       Product product)
       throws AxelorException;
 
-  public LocalDate getFromPeriodDate();
-
   public Timesheet getCurrentTimesheet();
 
   public Timesheet getCurrentOrCreateTimesheet();

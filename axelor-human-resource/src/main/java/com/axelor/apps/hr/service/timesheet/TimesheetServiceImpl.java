@@ -460,20 +460,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   }
 
   @Override
-  public LocalDate getFromPeriodDate() {
-    Timesheet timesheet =
-        timeSheetRepository
-            .all()
-            .filter("self.user = ?1 ORDER BY self.toDate DESC", AuthUtils.getUser())
-            .fetchOne();
-    if (timesheet != null) {
-      return timesheet.getToDate();
-    } else {
-      return null;
-    }
-  }
-
-  @Override
   public Timesheet getCurrentTimesheet() {
     Timesheet timesheet =
         timeSheetRepository

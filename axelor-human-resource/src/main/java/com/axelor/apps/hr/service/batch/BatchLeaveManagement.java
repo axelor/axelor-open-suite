@@ -26,9 +26,9 @@ import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -56,6 +56,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 
   protected LeaveLineRepository leaveLineRepository;
   protected LeaveManagementRepository leaveManagementRepository;
+  protected EmployeeService employeeService;
 
   @Inject private Provider<LeaveService> leaveServiceProvider;
 
@@ -63,11 +64,13 @@ public class BatchLeaveManagement extends BatchStrategy {
   public BatchLeaveManagement(
       LeaveManagementService leaveManagementService,
       LeaveLineRepository leaveLineRepository,
-      LeaveManagementRepository leaveManagementRepository) {
+      LeaveManagementRepository leaveManagementRepository,
+      EmployeeService employeeService) {
 
     super(leaveManagementService);
     this.leaveLineRepository = leaveLineRepository;
     this.leaveManagementRepository = leaveManagementRepository;
+    this.employeeService = employeeService;
   }
 
   @Override
@@ -188,7 +191,7 @@ public class BatchLeaveManagement extends BatchStrategy {
     LeaveManagement leaveManagement =
         leaveManagementService.createLeaveManagement(
             leaveLine,
-            AuthUtils.getUser(),
+            employeeService.getUser(employee),
             batch.getHrBatch().getComments(),
             null,
             batch.getHrBatch().getStartDate(),
