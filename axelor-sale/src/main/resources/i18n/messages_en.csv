@@ -644,6 +644,7 @@
 "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal.",,,
 "You have to choose at least one sale order",,,
 "You have to choose at least one sale quotation",,,
+"You must fill a partner for the opportunity %s.",,,
 "You must configure a script to fill the created product code.",,,
 "You must configure a script to fill the created product name.",,,
 "You must configure a script to fill the product name in the created sale order line.",,,
