@@ -1,0 +1,6 @@
+---
+title : "Fix security and confidentiality issues with the $emailsList dummy on partners"
+type: fix
+description: |
+  Permissions are not applicable on a dummy filled by a java controller.
+  By replacing it with a dashlet linked to an action-view, this is not longer an issue.

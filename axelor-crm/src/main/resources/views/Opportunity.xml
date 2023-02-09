@@ -266,7 +266,6 @@
             <h4>{{record.name}}</h4>
             <img ng-if="user" ng-src="{{$image('user', 'image')}}">
             <div class="card-body">
-                <p ng-bind-html="record.description"></p>
                 <dl>
                     <dt ng-show="record.partner.name" x-translate>Customer</dt><dd ng-show="record.partner.name">{{record.partner.name}}</dd>
                     <dt ng-show="record.amount" x-translate>Amount</dt><dd ng-show="record.amount">{{$fmt('amount') | currency : record.currency.symbol}}</dd>
@@ -282,7 +281,7 @@
             </div>
 			<div class="card-summary popover">
 			  <p style="margin:2px;">
-              	<span style="word-break:break-all;max-width:250px;">{{description.length>250?description.substring(0,250)+'...':description}}</span>
+              	<span style="word-break:break-all;max-width:250px;" ng-bind-html="description"></span>
               </p>
            </div>
             ]]>
