@@ -4,10 +4,10 @@ import com.axelor.apps.gdpr.service.GDPRSearchEngineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,13 +16,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GDPRSearchEngineController {
-
-  protected GDPRSearchEngineService gdprSearchEngineService;
-
-  @Inject
-  public GDPRSearchEngineController(GDPRSearchEngineService gdprSearchEngineService) {
-    this.gdprSearchEngineService = gdprSearchEngineService;
-  }
 
   /**
    * search in Partner and Lead object with fields
@@ -53,7 +46,7 @@ public class GDPRSearchEngineController {
     } else {
       List<Map<String, Object>> resultList = new ArrayList<>();
       try {
-        resultList = gdprSearchEngineService.searchObject(searchParams);
+        resultList = Beans.get(GDPRSearchEngineService.class).searchObject(searchParams);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
         response.setError(e.getMessage());
