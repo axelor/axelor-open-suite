@@ -15,6 +15,13 @@
     <string name="currentDomain"/>
     <boolean name="orderBy" title="Order by"/>
     <string name="orderByType" selection="order.by.type" title="Order by type" default="asc"/>
+
+    <extra-code>
+		<![CDATA[
+			public static final String ORDER_BY_TYPE_ASC = "asc";
+			public static final String ORDER_BY_TYPE_DESC = "desc";
+		]]>
+    </extra-code>
   </entity>
 
 </domain-models>

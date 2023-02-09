@@ -19,45 +19,39 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.apps.base.db.repo.AdvancedExportLineRepository;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
-import com.axelor.apps.tool.NamingTool;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
+import com.axelor.apps.tool.MetaTool;
 import com.axelor.common.StringUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.db.JpaRepository;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
-import com.axelor.db.hibernate.type.JsonFunction;
+import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.db.mapper.PropertyType;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.repo.MetaFieldRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.db.repo.MetaSelectRepository;
+import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.rpc.filter.Filter;
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.base.Splitter;
 import com.google.inject.Inject;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.persistence.Query;
+import java.util.ListIterator;
+import java.util.StringJoiner;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,316 +60,12 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   private static final Logger log = LoggerFactory.getLogger(AdvancedExportServiceImpl.class);
 
-  @Inject private MetaFieldRepository metaFieldRepo;
-
-  @Inject private MetaModelRepository metaModelRepo;
-
-  @Inject private MetaSelectRepository metaSelectRepo;
+  @Inject private MetaFieldRepository metaFieldRepository;
 
   @Inject private AdvancedExportGeneratorFactory exportGeneratorFactory;
 
-  private LinkedHashSet<String> joinFieldSet = new LinkedHashSet<>(),
-      selectionJoinFieldSet = new LinkedHashSet<>();
-
-  private List<Object> params = null;
-
-  private String exportFileName, language, selectField, aliasName;
-  private boolean isReachMaxExportLimit, isNormalField, isSelectionField = false;
-  private int msi, mt;
-
-  /**
-   * This method split and join the all fields/columns which are selected by user and create the
-   * query.
-   *
-   * @param advancedExport
-   * @param criteria
-   * @return
-   * @throws AxelorException
-   * @throws ClassNotFoundException
-   */
-  @Override
-  public Query getAdvancedExportQuery(AdvancedExport advancedExport, List<Long> recordIds)
-      throws AxelorException {
-
-    StringBuilder selectFieldBuilder = new StringBuilder();
-    StringBuilder orderByFieldBuilder = new StringBuilder();
-
-    joinFieldSet.clear();
-    selectionJoinFieldSet.clear();
-    isNormalField = true;
-    selectField = "";
-    msi = 0;
-    mt = 0;
-    int col = 0;
-    language = Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
-
-    try {
-      if (language == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get("Please select a language on user form."));
-      }
-
-      for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
-        String[] splitField = advancedExportLine.getTargetField().split("\\.");
-        String alias = "Col_" + col;
-
-        createQueryParts(splitField, 0, advancedExport.getMetaModel());
-
-        selectFieldBuilder.append(aliasName + selectField + " AS " + alias + ",");
-
-        if (advancedExportLine.getOrderBy()) {
-          orderByFieldBuilder.append(alias + " " + advancedExportLine.getOrderByType() + ",");
-        }
-        selectField = "";
-        aliasName = "";
-        col++;
-      }
-      if (StringUtils.notEmpty(orderByFieldBuilder)) {
-        orderByFieldBuilder.append("self.id asc,");
-      }
-    } catch (ClassNotFoundException e) {
-      TraceBackService.trace(e);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
-    }
-    return createQuery(
-        createQueryBuilder(advancedExport, selectFieldBuilder, recordIds, orderByFieldBuilder));
-  }
-
-  /**
-   * This method create query parts based on field.
-   *
-   * @param splitField
-   * @param parentIndex
-   * @param metaModel
-   * @throws ClassNotFoundException
-   */
-  private void createQueryParts(String[] splitField, int parentIndex, MetaModel metaModel)
-      throws ClassNotFoundException {
-
-    while (parentIndex <= splitField.length - 1) {
-      MetaField relationalField =
-          metaFieldRepo
-              .all()
-              .filter("self.name = ?1 and self.metaModel = ?2", splitField[parentIndex], metaModel)
-              .fetchOne();
-      MetaModel subMetaModel =
-          metaModelRepo.all().filter("self.name = ?1", relationalField.getTypeName()).fetchOne();
-
-      if (!Strings.isNullOrEmpty(relationalField.getRelationship())) {
-        checkRelationalField(splitField, parentIndex);
-      } else {
-        checkSelectionField(splitField, parentIndex, metaModel);
-        checkNormalField(splitField, parentIndex);
-      }
-      parentIndex += 1;
-      metaModel = subMetaModel;
-    }
-  }
-
-  private void checkRelationalField(String[] splitField, int parentIndex) {
-    String tempAliasName = "";
-    isNormalField = false;
-    if (parentIndex != 0) {
-      tempAliasName = isKeyword(splitField, 0);
-      aliasName = tempAliasName;
-
-      for (int subIndex = 1; subIndex <= parentIndex; subIndex++) {
-        tempAliasName = isKeyword(splitField, subIndex);
-        if (!aliasName.equals(splitField[parentIndex])) {
-          joinFieldSet.add(
-              "LEFT JOIN " + aliasName + "." + splitField[subIndex] + " " + tempAliasName);
-          aliasName = tempAliasName;
-        }
-      }
-    } else {
-      tempAliasName = isKeyword(splitField, parentIndex);
-      joinFieldSet.add("LEFT JOIN self." + splitField[parentIndex] + " " + tempAliasName);
-      aliasName = tempAliasName;
-    }
-  }
-
-  private String isKeyword(String[] fieldNames, int ind) {
-    if (NamingTool.isKeyword(fieldNames[ind])) {
-      return fieldNames[ind] + "_id";
-    }
-    return fieldNames[ind];
-  }
-
-  private void checkSelectionField(String[] fieldName, int index, MetaModel metaModel)
-      throws ClassNotFoundException {
-
-    Class<?> klass = Class.forName(metaModel.getFullName());
-    Mapper mapper = Mapper.of(klass);
-    List<MetaSelect> metaSelectList =
-        metaSelectRepo
-            .all()
-            .filter("self.name = ?", mapper.getProperty(fieldName[index]).getSelection())
-            .fetch();
-
-    if (CollectionUtils.isNotEmpty(metaSelectList)) {
-      isSelectionField = true;
-      String alias = "self";
-      msi++;
-      mt++;
-      if (!isNormalField && index != 0) {
-        alias = aliasName;
-      }
-      addSelectionField(fieldName[index], alias, StringTool.getIdListString(metaSelectList));
-    }
-  }
-
-  private void addSelectionField(String fieldName, String alias, String metaSelectIds) {
-    String selectionJoin =
-        "LEFT JOIN "
-            + "MetaSelectItem "
-            + ("msi_" + (msi))
-            + " ON CAST("
-            + alias
-            + "."
-            + fieldName
-            + " AS text) = "
-            + ("msi_" + (msi))
-            + ".value AND "
-            + ("msi_" + (msi))
-            + ".select IN ("
-            + metaSelectIds
-            + ")";
-
-    if (language.equals(LANGUAGE_FR)) {
-      selectionJoin +=
-          " LEFT JOIN "
-              + "MetaTranslation "
-              + ("mt_" + (mt))
-              + " ON "
-              + ("msi_" + (msi))
-              + ".title = "
-              + ("mt_" + (mt))
-              + ".key AND "
-              + ("mt_" + (mt))
-              + ".language = \'"
-              + language
-              + "\'";
-    }
-    selectionJoinFieldSet.add(selectionJoin);
-  }
-
-  private void checkNormalField(String[] splitField, int parentIndex) {
-
-    if (isSelectionField) {
-      if (parentIndex == 0) {
-        selectField = "";
-      }
-      if (language.equals(LANGUAGE_FR)) {
-        aliasName =
-            "COALESCE ("
-                + "NULLIF"
-                + "("
-                + ("mt_" + (mt))
-                + ".message, '') , "
-                + ("msi_" + (msi))
-                + ".title)";
-        selectField += "";
-      } else {
-        aliasName = ("msi_" + (msi));
-        selectField += ".title";
-      }
-      isSelectionField = false;
-    } else {
-      if (parentIndex == 0) {
-        selectField = "";
-        aliasName = "self";
-      }
-      selectField += "." + splitField[parentIndex];
-    }
-  }
-
-  /**
-   * This method build a dynamic query using <i>StringBuilder</i>.
-   *
-   * @param metaModel
-   * @param selectFieldBuilder
-   * @param selectJoinFieldBuilder
-   * @param selectionFieldBuilder
-   * @param criteria
-   * @param orderByFieldBuilder
-   * @return
-   */
-  private StringBuilder createQueryBuilder(
-      AdvancedExport advancedExport,
-      StringBuilder selectFieldBuilder,
-      List<Long> recordIds,
-      StringBuilder orderByFieldBuilder) {
-
-    String joinField = "", selectionJoinField = "", orderByCol = "";
-
-    joinField = String.join(" ", joinFieldSet);
-    selectionJoinField = String.join(" ", selectionJoinFieldSet);
-
-    params = null;
-    MetaModel metaModel = advancedExport.getMetaModel();
-    String criteria = getCriteria(metaModel, recordIds);
-
-    if (!orderByFieldBuilder.toString().equals(""))
-      orderByCol =
-          " ORDER BY " + orderByFieldBuilder.substring(0, orderByFieldBuilder.length() - 1);
-
-    StringBuilder queryBuilder = new StringBuilder();
-    queryBuilder.append("SELECT NEW List(");
-    queryBuilder.append(selectFieldBuilder.substring(0, selectFieldBuilder.length() - 1));
-    queryBuilder.append(") FROM " + metaModel.getName() + " self ");
-    queryBuilder.append((!Strings.isNullOrEmpty(joinField)) ? joinField + " " : "");
-    queryBuilder.append(
-        (!Strings.isNullOrEmpty(selectionJoinField)) ? selectionJoinField + " " : "");
-    queryBuilder.append((!Strings.isNullOrEmpty(criteria)) ? criteria : "");
-    if (!advancedExport.getIncludeArchivedRecords() && Strings.isNullOrEmpty(criteria)) {
-      queryBuilder.append("WHERE self.archived = 'f' OR self.archived IS NULL");
-    } else if (!advancedExport.getIncludeArchivedRecords() && !Strings.isNullOrEmpty(criteria)) {
-      queryBuilder.append(" AND (self.archived = 'f' OR self.archived IS NULL)");
-    }
-    queryBuilder.append((!Strings.isNullOrEmpty(orderByCol)) ? orderByCol : "");
-
-    return queryBuilder;
-  }
-
-  /**
-   * This method make <i>WHERE</i> clause with criteria.
-   *
-   * @param metaModel
-   * @param criteria
-   * @return
-   */
-  private String getCriteria(MetaModel metaModel, List<Long> recordIds) {
-    String criteria = null;
-    if (recordIds != null) {
-      criteria = recordIds.toString().substring(1, recordIds.toString().length() - 1);
-      log.trace("criteria : {}", recordIds.toString());
-      criteria = " WHERE self.id IN (" + criteria + ")";
-    }
-    Filter filter = getJpaSecurityFilter(metaModel);
-    JoinHelper helper = null;
-    if (filter != null) {
-      String permissionFilter = filter.getQuery();
-      try {
-        helper = new JoinHelper(Class.forName(metaModel.getFullName()));
-        permissionFilter = helper.parse(permissionFilter).toString();
-      } catch (ClassNotFoundException e) {
-        TraceBackService.trace(e, e.getMessage());
-      }
-      if (recordIds == null) {
-        criteria = " WHERE " + permissionFilter;
-      } else {
-        criteria += " AND (" + permissionFilter + ")";
-      }
-      params = filter.getParams();
-    }
-
-    if (helper != null) {
-      criteria = helper.toString() + " " + criteria;
-    }
-
-    return criteria;
-  }
+  private String exportFileName;
+  private boolean isReachMaxExportLimit = false;
 
   @SuppressWarnings("unchecked")
   @Override
@@ -390,22 +80,6 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       log.error(e.getMessage());
     }
     return null;
-  }
-
-  private Query createQuery(StringBuilder queryBuilder) {
-    int n = 0, i = queryBuilder.indexOf("?");
-    while (i > -1) {
-      queryBuilder.replace(i, i + 1, "?" + (++n));
-      i = queryBuilder.indexOf("?", i + 1);
-    }
-    log.debug("query : {}", queryBuilder.toString());
-    Query query = JPA.em().createQuery(queryBuilder.toString(), List.class);
-    if (params != null) {
-      for (i = 0; i < params.size(); i++) {
-        query.setParameter(i + 1, params.get(i));
-      }
-    }
-    return query;
   }
 
   private List<AdvancedExportLine> sortAdvancedExportLineList(
@@ -431,6 +105,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    *
    * @throws AxelorException
    */
+  @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
   public File export(AdvancedExport advancedExport, List<Long> recordIds, String fileType)
       throws AxelorException {
@@ -440,12 +115,192 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
     sortAdvancedExportLineList(advancedExport.getAdvancedExportLineList());
 
-    Query query = getAdvancedExportQuery(advancedExport, recordIds);
+    List<List> outputList = new ArrayList<>();
+    List<? extends Model> modelList;
+    int offset = 0;
+    int maxExportLimit = advancedExport.getMaxExportLimit();
+    List<AdvancedExportLine> advancedExportLineList = advancedExport.getAdvancedExportLineList();
+    int queryFetchSize = advancedExport.getQueryFetchSize();
 
-    File file = exportGenerator.generateFile(query);
-    isReachMaxExportLimit = exportGenerator.getIsReachMaxExportLimit();
+    try {
+      Class<? extends Model> klass =
+          (Class<? extends Model>) Class.forName(advancedExport.getMetaModel().getFullName());
+      Mapper mapper = Mapper.of(klass);
+      Query<? extends Model> query = getQuery(advancedExport, recordIds, klass);
+      sortTargetField(query, advancedExportLineList);
+      while (!(modelList = query.fetch(queryFetchSize, offset)).isEmpty()) {
+        for (Model model : modelList) {
+          if (++offset > maxExportLimit) {
+            isReachMaxExportLimit = true;
+            exportFileName = exportGenerator.getExportFileName();
+            return exportGenerator.generateFile(outputList);
+          }
+          List<String> recordList = new ArrayList<>();
+          for (AdvancedExportLine advancedExportLine : advancedExportLineList) {
+            Object data =
+                findField(
+                    mapper,
+                    Splitter.on(".")
+                        .splitToList(advancedExportLine.getTargetField())
+                        .listIterator(),
+                    model);
+            if (data != null) {
+              recordList.add(data.toString());
+            }
+          }
+          outputList.add(recordList);
+        }
+        JPA.clear();
+      }
+    } catch (ClassNotFoundException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
+
     exportFileName = exportGenerator.getExportFileName();
-    return file;
+    return exportGenerator.generateFile(outputList);
+  }
+
+  protected Object findField(Mapper mapper, ListIterator<String> iter, Object model)
+      throws AxelorException {
+    String prev = iter.next();
+    Property property = mapper.getProperty(prev);
+    if (property == null || property.get(model) == null) {
+      return "";
+    }
+
+    Object lastElement = property.get(model);
+    String selection = property.getSelection();
+    if (StringUtils.notBlank(selection)) {
+      Option selectionItem = MetaStore.getSelectionItem(selection, lastElement.toString());
+      return selectionItem == null ? "" : I18n.get(selectionItem.getTitle());
+    }
+
+    if (property.getTarget() == null) {
+      return lastElement;
+    }
+
+    String lastFieldName = "";
+    while (property.getTarget() != null && iter.hasNext()) {
+      if (property.getType() == PropertyType.MANY_TO_MANY
+          || property.getType() == PropertyType.ONE_TO_MANY) {
+        Integer prevIndex = iter.previousIndex();
+        String relationalField = fetchRelationalFields((Model) model, prev, iter);
+        while (!prevIndex.equals(iter.previousIndex())) {
+          iter.previous();
+        }
+        return relationalField;
+      }
+      lastFieldName = iter.next();
+      model = property.get(model);
+      mapper = Mapper.of(property.getTarget());
+      property = mapper.getProperty(lastFieldName);
+      prev = lastFieldName;
+    }
+
+    selection = property.getSelection();
+    if (StringUtils.notBlank(selection)) {
+      Option selectionItem =
+          MetaStore.getSelectionItem(selection, mapper.get(model, lastFieldName).toString());
+      return selectionItem == null ? "" : I18n.get(selectionItem.getTitle());
+    }
+
+    return mapper.get(model, lastFieldName);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected String fetchRelationalFields(Model model, String fieldName, ListIterator<String> iter)
+      throws AxelorException {
+    MetaField relationalField =
+        metaFieldRepository
+            .all()
+            .filter("self.name = :name AND self.metaModel.name = :modelName")
+            .bind("modelName", EntityHelper.getEntityClass(model).getSimpleName())
+            .bind("name", fieldName)
+            .fetchOne();
+
+    Mapper mapper = Mapper.of(model.getClass());
+    StringJoiner joiner = new StringJoiner("|");
+    Collection<? extends Model> colValue =
+        (Collection<? extends Model>) mapper.get(model, relationalField.getName());
+    if (CollectionUtils.isNotEmpty(colValue)) {
+      String next = iter.next();
+      Collection<Model> col = fetchRelationalFields(colValue, relationalField);
+      for (Model m : col) {
+        mapper = Mapper.of(m.getClass());
+        Object value = mapper.get(m, next);
+        if (value instanceof Collection && ((Collection<String>) value).isEmpty()) {
+          continue;
+        }
+        iter.previous();
+        value = findField(mapper, iter, m);
+        if (value != null && !value.toString().isEmpty()) {
+          joiner.add(value.toString());
+        }
+      }
+      iter.previous();
+    }
+    return joiner.toString();
+  }
+
+  protected void sortTargetField(
+      Query<? extends Model> query, List<AdvancedExportLine> advancedExportLineList) {
+    for (AdvancedExportLine advancedExportLine : advancedExportLineList) {
+      if (advancedExportLine.getOrderBy()) {
+        if (AdvancedExportLineRepository.ORDER_BY_TYPE_ASC.equals(
+            advancedExportLine.getOrderByType())) {
+          query.order(advancedExportLine.getTargetField());
+        } else {
+          query.order("-" + advancedExportLine.getTargetField());
+        }
+      }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected Collection<Model> fetchRelationalFields(
+      Collection<? extends Model> values, MetaField metaField) throws AxelorException {
+    Collection<Model> dbValues = new HashSet<>();
+    String className = MetaTool.computeFullClassName(metaField);
+    for (Model model : values) {
+      try {
+        dbValues.add(JPA.find((Class<Model>) Class.forName(className), model.getId()));
+      } catch (ClassNotFoundException e) {
+        throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+      }
+    }
+    return dbValues;
+  }
+
+  protected Query<? extends Model> getQuery(
+      AdvancedExport advancedExport, List<Long> recordIds, Class<? extends Model> klass) {
+    Query<? extends Model> query = JpaRepository.of(klass).all();
+    StringBuilder filter = new StringBuilder();
+
+    if (!advancedExport.getIncludeArchivedRecords()) {
+      filter.append("self.archived = 'f' OR self.archived IS NULL");
+    }
+
+    if (recordIds != null) {
+      log.trace("criteria : {}", recordIds.toString());
+      if (filter.length() != 0) {
+        filter.append(" AND ");
+      }
+      filter.append(
+          String.format(
+              "self.id IN (%s)",
+              recordIds.toString().substring(1, recordIds.toString().length() - 1)));
+    }
+
+    Filter securityFilter = getJpaSecurityFilter(advancedExport.getMetaModel());
+    if (securityFilter != null) {
+      if (filter.length() != 0) {
+        filter.append(" AND ");
+      }
+      filter.append(securityFilter.getQuery());
+      return query.filter(filter.toString(), securityFilter.getParams());
+    }
+
+    return filter.length() == 0 ? query : query.filter(filter.toString());
   }
 
   @Override
@@ -456,164 +311,6 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   @Override
   public String getExportFileName() {
     return exportFileName;
-  }
-
-  /**
-   * JoinHelper class is used to auto generate <code>LEFT JOIN</code> for association expressions.
-   *
-   * <p>For example:
-   *
-   * <pre>
-   * 	Query<Contact> q = Contact.all().filter("self.title.code = ?1 OR self.age > ?2", "mr", 20);
-   * </pre>
-   *
-   * Results in:
-   *
-   * <pre>
-   * SELECT self FROM Contact self LEFT JOIN self.title _title WHERE _title.code = ?1 OR self.age > ?2
-   * </pre>
-   *
-   * So that all the records are matched even if <code>title</code> field is null.
-   */
-  private static class JoinHelper {
-
-    private Class<?> beanClass;
-
-    private Map<String, String> joins = Maps.newLinkedHashMap();
-
-    private static final Pattern pathPattern =
-        Pattern.compile("self\\." + "((?:[a-zA-Z_]\\w+)(?:(?:\\[\\])?\\.\\w+)*)");
-
-    public JoinHelper(Class<?> beanClass) {
-      this.beanClass = beanClass;
-    }
-
-    /**
-     * Parse the given filter string and return transformed filter expression.
-     *
-     * <p>Automatically calculate <code>LEFT JOIN</code> for association path expressions and the
-     * path expressions are replaced with the join variables.
-     *
-     * @param filter the filter expression
-     * @return the transformed filter expression
-     */
-    private String parse(String filter) {
-
-      String result = "";
-      Matcher matcher = pathPattern.matcher(filter);
-
-      int last = 0;
-      while (matcher.find()) {
-        MatchResult matchResult = matcher.toMatchResult();
-        String alias = joinName(matchResult.group(1));
-        if (alias == null) {
-          alias = "self." + matchResult.group(1);
-        }
-        result += filter.substring(last, matchResult.start()) + alias;
-        last = matchResult.end();
-      }
-      if (last < filter.length()) result += filter.substring(last);
-
-      return result;
-    }
-
-    /**
-     * Automatically generate <code>LEFT JOIN</code> for the given name (association path
-     * expression) and return the join variable.
-     *
-     * @param name the path expression or field name
-     * @return join variable if join is created else returns name
-     */
-    public String joinName(String name) {
-
-      Mapper mapper = Mapper.of(beanClass);
-      String[] path = name.split("\\.");
-      String prefix = null;
-      String variable = name;
-
-      if (path.length > 1) {
-        variable = path[path.length - 1];
-        String joinOn = null;
-        Mapper currentMapper = mapper;
-        for (int i = 0; i < path.length - 1; i++) {
-          String item = path[i].replace("[]", "");
-          Property property = currentMapper.getProperty(item);
-          if (property == null) {
-            throw new org.hibernate.QueryException(
-                "could not resolve property: "
-                    + item
-                    + " of: "
-                    + currentMapper.getBeanClass().getName());
-          }
-
-          if (property.isJson()) {
-            return JsonFunction.fromPath(name).toString();
-          }
-
-          if (prefix == null) {
-            joinOn = "self." + item;
-            prefix = "_" + item;
-          } else {
-            joinOn = prefix + "." + item;
-            prefix = prefix + "_" + item;
-          }
-          if (!joins.containsKey(joinOn)) {
-            joins.put(joinOn, prefix);
-          }
-
-          if (property.getTarget() != null) {
-            currentMapper = Mapper.of(property.getTarget());
-          }
-
-          if (i == path.length - 2) {
-            property = currentMapper.getProperty(variable);
-            if (property == null) {
-              throw new IllegalArgumentException(
-                  String.format(
-                      "No such field '%s' in object '%s'",
-                      variable, currentMapper.getBeanClass().getName()));
-            }
-            if (property.isReference()) {
-              joinOn = prefix + "." + variable;
-              prefix = prefix + "_" + variable;
-              joins.put(joinOn, prefix);
-              return prefix;
-            }
-          }
-        }
-      } else {
-        Property property = mapper.getProperty(name);
-        if (property == null) {
-          throw new IllegalArgumentException(
-              String.format("No such field '%s' in object '%s'", variable, beanClass.getName()));
-        }
-        if (property.isCollection()) {
-          return null;
-        }
-        if (property.getTarget() != null) {
-          prefix = "_" + name;
-          joins.put("self." + name, prefix);
-          return prefix;
-        }
-      }
-
-      if (prefix == null) {
-        prefix = "self";
-      }
-
-      return prefix + "." + variable;
-    }
-
-    @Override
-    public String toString() {
-      if (joins.size() == 0) return "";
-      List<String> joinItems = Lists.newArrayList();
-      for (String key : joins.keySet()) {
-        String val = joins.get(key);
-        joinItems.add("LEFT JOIN " + key + " " + val);
-      }
-      return " " + Joiner.on(" ").join(joinItems);
-    }
   }
 
   @Override
