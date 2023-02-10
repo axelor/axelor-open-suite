@@ -540,7 +540,8 @@
   </action-validate>
 
   <action-validate name="action-account-report-alert-typeselect">
-    <alert message="Please ensure that the moves selected are in the 'Accounted' status for your report to be legally valid."
+    <alert
+      message="Please ensure that the moves selected are in the 'Accounted' status for your report to be legally valid."
       if="reportType?.typeSelect == 12 || reportType?.typeSelect == 15"/>
     <alert
       message="Make sure there isn't another ongoing DAS2 export for this period that has not been exported yet"
