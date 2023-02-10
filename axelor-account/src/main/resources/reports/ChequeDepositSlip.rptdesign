@@ -303,6 +303,50 @@
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">2</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">ChequeDueDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">3</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_4</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">4</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_5</property>
+                    <property name="paramName">DepositSlipId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">5</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -532,7 +576,7 @@
 	Deposit.deposit_date         AS "DepositDate",
 	Deposit.deposit_type         AS "DepositType",
 	Deposit.cheque_count         AS "ChqNbr",
-	Deposit.total_amount         AS "TotalAmount",	
+	(SELECT SUM(PV.paid_amount) FROM account_payment_voucher AS PV WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_due_date = ?)         AS "TotalAmount",
 	BankDetails.iban      		 AS "AccountNbr",
 	Bank.bank_name               AS "BankName",
 	Email.address                AS "Email",
@@ -552,7 +596,7 @@
 	LEFT OUTER JOIN base_address AS Address ON (Company.address = Address.id)
 	LEFT OUTER JOIN message_email_address AS Email ON (CompanyPartner.email_address = Email.id)
 	LEFT OUTER JOIN base_city AS City ON (Address.city = City.id)
-	LEFT OUTER JOIN base_bank_details AS BankDetails ON (Deposit.company_bank_details = BankDetails.id)
+	LEFT OUTER JOIN base_bank_details AS BankDetails ON (BankDetails.id = ?)
 	LEFT OUTER JOIN base_bank AS Bank ON (BankDetails.bank = Bank.id)
 	LEFT OUTER JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 WHERE Deposit.id = ?]]></xml-property>
@@ -2050,7 +2094,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[TOTAL: &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row._outer["SumAmount"]</VALUE-OF>&amp;nbsp;<VALUE-OF>row["CurrencySymbol"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[TOTAL: &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row._outer["TotalAmount"]</VALUE-OF>&amp;nbsp;<VALUE-OF>row["CurrencySymbol"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4496">
