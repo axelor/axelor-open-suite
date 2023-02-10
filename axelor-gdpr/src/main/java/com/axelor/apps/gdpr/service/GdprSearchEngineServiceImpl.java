@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
@@ -50,6 +51,33 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
     }
 
     return results;
+  }
+
+  @Override
+  public Map<String, Object> checkSelectedObject(List<Map<String, Object>> resultList)
+      throws AxelorException {
+    if (resultList == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(GdprExceptionMessage.NO_LINE_SELECTED));
+    }
+
+    List<Map<String, Object>> selectedObjects;
+
+    selectedObjects =
+        resultList.stream()
+            .filter(m -> m.get("selected") != null && (Boolean) m.get("selected"))
+            .collect(Collectors.toList());
+
+    if (selectedObjects.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(GdprExceptionMessage.NO_LINE_SELECTED));
+    } else if (selectedObjects.size() > 1) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(GdprExceptionMessage.TOO_MUCH_LINE_SELECTED));
+    } else {
+      return selectedObjects.get(0);
+    }
   }
 
   /**

@@ -1,4 +1,5 @@
 "key","message","comment","context"
+"<br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>","<br>Correspondance pour la requête :<br>Prénom -> :firstName <br>Nom -> :lastName <br>Email -> :email <br>Téléphone -> :phone <br>",,
 "Access","Accès",,
 "Activate","Activer",,
 "Active","Actif",,
@@ -24,8 +25,7 @@
 "Email","Email",,
 "Erasure","Effacement",,
 "Error occurred","Une erreur est survenue.",,
-"Field of the meta model to bind to the query","Champ du modèle à lier à la requête",,
-"Filter to add to the query","Filtre à ajouter à la requête",,
+"Field displayed in the result of the research","Champ affiché dans le résultat de la requête",,
 "First name","Prénom",,
 "GDPR","RGPD",,
 "GDPR Processing Register Log","Journal registre de traitement",,
@@ -41,6 +41,7 @@
 "Gdpr processing register log list","Journaux du registre de traitement",,
 "Gdpr processing register rule list","Liste de règles du registre de traitement",,
 "Indicate which date should be verified. If one of the date is after the retention date, the data will not be archived.","Indiquer quelle date devrait être vérifiée. Si une des dates est supérieure à la date de rétention, la donnée ne sera pas archivée.",,
+"JPQL filter to add to the query","Filtre JPQL à ajouter à la requête",,
 "Key","Clé",,
 "Label","Etiquette",,
 "Last name","Nom",,

@@ -12,6 +12,13 @@
     model="com.axelor.apps.gdpr.db.GDPRSearchConfig">
     <panel name="mainPanel">
       <field name="metaModel"/>
+
+      <help>
+        <![CDATA[
+          <br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>
+        ]]>
+      </help>
+
       <field name="searchConfigLineList" colSpan="12" showTitle="false">
         <editor colSpan="12">
           <field name="key" colSpan="4"/>

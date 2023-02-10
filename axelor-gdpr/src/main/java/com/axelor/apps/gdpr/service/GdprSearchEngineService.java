@@ -6,6 +6,8 @@ import java.util.Map;
 
 public interface GdprSearchEngineService {
 
-  public List<Map<String, Object>> searchObject(Map<String, Object> searchParams)
+  List<Map<String, Object>> searchObject(Map<String, Object> searchParams) throws AxelorException;
+
+  Map<String, Object> checkSelectedObject(List<Map<String, Object>> resultList)
       throws AxelorException;
 }

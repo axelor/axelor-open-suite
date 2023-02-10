@@ -14,7 +14,7 @@
     <panel name="mainPanel">
       <field name="modelLog"/>
       <field name="numberOfrecords"/>
-      <field name="gdprErasureResponse"/>
+      <field name="gdprResponse" form-view="gdpr-response-form"/>
     </panel>
   </form>
 </object-views>

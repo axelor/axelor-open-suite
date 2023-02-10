@@ -1,4 +1,5 @@
 "key","message","comment","context"
+"<br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>",,,
 "Access",,,
 "Activate",,,
 "Active",,,
@@ -24,8 +25,7 @@
 "Email",,,
 "Erasure",,,
 "Error occurred",,,
-"Field of the meta model to bind to the query",,,
-"Filter to add to the query",,,
+"Field displayed in the result of the research",,,
 "First name",,,
 "GDPR",,,
 "GDPR Processing Register Log",,,
@@ -41,6 +41,7 @@
 "Gdpr processing register log list",,,
 "Gdpr processing register rule list",,,
 "Indicate which date should be verified. If one of the date is after the retention date, the data will not be archived.",,,
+"JPQL filter to add to the query",,,
 "Key",,,
 "Label",,,
 "Last name",,,

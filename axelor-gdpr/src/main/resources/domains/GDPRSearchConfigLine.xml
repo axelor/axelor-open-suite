@@ -10,9 +10,9 @@
       required="true" title="GDPR search configuration"/>
     <string name="key" column="viewKey" selection="gdpr.search.config.line.key.select"
       required="true" help="Name of the key for the search engine" title="Key"/>
-    <string name="query" required="true" help="Filter to add to the query" title="Query"/>
+    <string name="query" required="true" help="JPQL filter to add to the query" title="Query"/>
     <string name="mapping" required="true"
-      help="Field of the meta model to bind to the query" title="Mapping"/>
+      help="Field displayed in the result of the research" title="Mapping"/>
     <unique-constraint columns="key,searchConfig"/>
   </entity>
 
