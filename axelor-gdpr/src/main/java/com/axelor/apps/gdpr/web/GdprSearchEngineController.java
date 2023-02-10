@@ -1,7 +1,8 @@
 package com.axelor.apps.gdpr.web;
 
-import com.axelor.apps.gdpr.service.GDPRSearchEngineService;
+import com.axelor.apps.gdpr.service.GdprSearchEngineService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -13,9 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-public class GDPRSearchEngineController {
+public class GdprSearchEngineController {
 
   /**
    * search in Partner and Lead object with fields
@@ -46,7 +46,7 @@ public class GDPRSearchEngineController {
     } else {
       List<Map<String, Object>> resultList = new ArrayList<>();
       try {
-        resultList = Beans.get(GDPRSearchEngineService.class).searchObject(searchParams);
+        resultList = Beans.get(GdprSearchEngineService.class).searchObject(searchParams);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
         response.setError(e.getMessage());
@@ -62,24 +62,16 @@ public class GDPRSearchEngineController {
    * @param response
    */
   public void fillReferenceWithData(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-
-    List<Map<String, Object>> resultList =
-        (List<Map<String, Object>>) context.get("__searchResults");
-
-    List<Map<String, Object>> selectedObjects =
-        resultList.stream()
-            .filter(m -> m.get("selected") != null && (Boolean) m.get("selected"))
-            .collect(Collectors.toList());
-
-    if (selectedObjects.isEmpty()) {
-      response.setError(I18n.get("Please select a line"));
-    } else if (selectedObjects.size() > 1) {
-      response.setError(I18n.get("Please select only one line"));
-    } else {
-      Map<String, Object> selectedObject = selectedObjects.get(0);
+    try {
+      Context context = request.getContext();
+      List<Map<String, Object>> resultList =
+          (List<Map<String, Object>>) context.get("__searchResults");
+      Map<String, Object> selectedObject =
+          Beans.get(GdprSearchEngineService.class).checkSelectedObject(resultList);
       response.setValue("modelSelect", selectedObject.get("typeClass").toString());
       response.setValue("modelId", selectedObject.get("objectId"));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

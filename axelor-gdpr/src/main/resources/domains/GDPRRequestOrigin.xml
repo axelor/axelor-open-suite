@@ -7,7 +7,7 @@
   <entity name="GDPRRequestOrigin">
     <string name="name" title="Name"/>
     <string name="code" title="Code" unique="true"/>
-    <many-to-one ref="com.axelor.apps.base.db.AppGdpr" name="appGdpr"/>
+    <many-to-one ref="com.axelor.apps.base.db.AppGdpr" name="appGdpr" title="GDPR app"/>
   </entity>
 
 </domain-models>

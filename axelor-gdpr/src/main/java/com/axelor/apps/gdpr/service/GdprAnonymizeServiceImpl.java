@@ -18,12 +18,12 @@ import java.util.Map;
 import java.util.Objects;
 import wslite.json.JSONException;
 
-public class GDPRAnonymizeServiceImpl implements GDPRAnonymizeService {
+public class GdprAnonymizeServiceImpl implements GdprAnonymizeService {
 
   protected MailMessageRepository mailMessageRepository;
 
   @Inject
-  public GDPRAnonymizeServiceImpl(MailMessageRepository mailMessageRepository) {
+  public GdprAnonymizeServiceImpl(MailMessageRepository mailMessageRepository) {
     this.mailMessageRepository = mailMessageRepository;
   }
 
@@ -39,8 +39,7 @@ public class GDPRAnonymizeServiceImpl implements GDPRAnonymizeService {
    */
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   @Override
-  public void anonymizeTrackingDatas(AuditableModel reference)
-      throws JSONException, ClassNotFoundException, IOException {
+  public void anonymizeTrackingDatas(AuditableModel reference) throws IOException {
 
     List<MailMessage> mailMessages = searchTrackingDatas(reference);
 

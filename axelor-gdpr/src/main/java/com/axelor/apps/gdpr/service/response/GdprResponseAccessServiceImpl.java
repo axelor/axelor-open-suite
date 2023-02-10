@@ -1,13 +1,15 @@
-package com.axelor.apps.gdpr.service;
+package com.axelor.apps.gdpr.service.response;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportLineRepository;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
-import com.axelor.apps.gdpr.db.GDPRAccessResponse;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.gdpr.db.GDPRRequest;
-import com.axelor.apps.gdpr.db.repo.GDPRAccessResponseRepository;
+import com.axelor.apps.gdpr.db.GDPRResponse;
+import com.axelor.apps.gdpr.db.repo.GDPRRequestRepository;
+import com.axelor.apps.gdpr.db.repo.GDPRResponseRepository;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
@@ -20,7 +22,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.db.mapper.PropertyType;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.dms.db.repo.GDPRDMSFileRepository;
+import com.axelor.dms.db.repo.GdprDmsFileRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -39,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,46 +51,52 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 
-public class GDPRAccessResponseServiceImpl implements GDPRAccessResponseService {
+public class GdprResponseAccessServiceImpl implements GdprResponseAccessService {
 
   public static final String OUTPUT_FILE_NAME = "data";
   public static final String OUTPUT_EXT = ".zip";
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected GDPRAccessResponseRepository gdprAccessResponseRepository;
+  protected GDPRResponseRepository gdprResponseRepository;
   protected MetaModelRepository metaModelRepo;
-  protected GDPRResponseService gdprResponseService;
+  protected GdprResponseService gdprResponseService;
   protected AdvancedExportService advancedExportService;
   protected AdvancedExportLineRepository advancedExportLineRepository;
   protected AdvancedExportRepository advancedExportRepository;
   protected MessageService messageService;
+  protected TemplateRepository templateRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public GDPRAccessResponseServiceImpl(
-      GDPRAccessResponseRepository gdprAccessResponseRepository,
+  public GdprResponseAccessServiceImpl(
+      GDPRResponseRepository gdprResponseRepository,
       MetaModelRepository metaModelRepo,
-      GDPRResponseService gdprResponseService,
+      GdprResponseService gdprResponseService,
       AdvancedExportService advancedExportService,
       AdvancedExportLineRepository advancedExportLineRepository,
       AdvancedExportRepository advancedExportRepository,
-      MessageService messageService) {
-    this.gdprAccessResponseRepository = gdprAccessResponseRepository;
+      MessageService messageService,
+      TemplateRepository templateRepository,
+      AppBaseService appBaseService) {
+    this.gdprResponseRepository = gdprResponseRepository;
     this.metaModelRepo = metaModelRepo;
     this.gdprResponseService = gdprResponseService;
     this.advancedExportService = advancedExportService;
     this.advancedExportLineRepository = advancedExportLineRepository;
     this.advancedExportRepository = advancedExportRepository;
     this.messageService = messageService;
+    this.templateRepository = templateRepository;
+    this.appBaseService = appBaseService;
   }
 
   @SuppressWarnings("unchecked")
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public GDPRAccessResponse generateAccessResponseDataFile(GDPRRequest gdprRequest)
+  @Transactional(rollbackOn = {Exception.class})
+  public void generateAccessResponseDataFile(GDPRRequest gdprRequest)
       throws AxelorException, ClassNotFoundException, IOException {
 
     List<File> files = new ArrayList<>();
-    GDPRAccessResponse gdprAccessResponse = new GDPRAccessResponse();
+    GDPRResponse gdprResponse = new GDPRResponse();
 
     Class<? extends AuditableModel> modelSelectKlass =
         (Class<? extends AuditableModel>) Class.forName(gdprRequest.getModelSelect());
@@ -101,7 +108,7 @@ public class GDPRAccessResponseServiceImpl implements GDPRAccessResponseService 
 
     gdprResponseService
         .getEmailFromPerson(selectedModel)
-        .ifPresent(gdprAccessResponse::setResponseEmailAddress);
+        .ifPresent(gdprResponse::setResponseEmailAddress);
 
     files.addAll(generateRelatedObjectsCSV(gdprRequest));
 
@@ -111,7 +118,11 @@ public class GDPRAccessResponseServiceImpl implements GDPRAccessResponseService 
 
     String exportFileName =
         OUTPUT_FILE_NAME
-            .concat(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
+            .concat(
+                appBaseService
+                    .getTodayDateTime()
+                    .toLocalDateTime()
+                    .format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
             .concat(OUTPUT_EXT);
 
     File zip = new File(exportFileName);
@@ -120,13 +131,11 @@ public class GDPRAccessResponseServiceImpl implements GDPRAccessResponseService 
 
     addFilesToZip(zip, files);
     Beans.get(MetaFiles.class).upload(zip, dataMetaFile);
-    gdprAccessResponse.setDataFile(dataMetaFile);
-    gdprAccessResponse.setGdprRequest(gdprRequest);
-    gdprAccessResponseRepository.save(gdprAccessResponse);
-    gdprRequest.setAccessResponse(gdprAccessResponse);
-    Beans.get(GDPRAccessResponseRepository.class).save(gdprAccessResponse);
+    gdprResponse.setDataFile(dataMetaFile);
+    gdprRequest.setGdprResponse(gdprResponse);
+    gdprRequest.setStatusSelect(GDPRRequestRepository.REQUEST_STATUS_CONFIRMED);
 
-    return gdprAccessResponse;
+    gdprResponseRepository.save(gdprResponse);
   }
 
   /**
@@ -354,7 +363,7 @@ public class GDPRAccessResponseServiceImpl implements GDPRAccessResponseService 
   protected List<File> searchDMSFile(GDPRRequest gdprRequest) {
 
     List<DMSFile> dmsFiles =
-        Beans.get(GDPRDMSFileRepository.class)
+        Beans.get(GdprDmsFileRepository.class)
             .findByModel(gdprRequest.getModelId(), gdprRequest.getModelSelect());
 
     return dmsFiles.stream()
@@ -363,29 +372,27 @@ public class GDPRAccessResponseServiceImpl implements GDPRAccessResponseService 
         .collect(Collectors.toList());
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   @Override
-  public boolean sendEmailResponse(GDPRAccessResponse gdprAccessResponse)
+  public boolean sendEmailResponse(GDPRResponse gdprResponse)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException, JSONException {
 
-    Template template =
-        Beans.get(TemplateRepository.class)
-            .all()
-            .filter(
-                "self.metaModel = ?",
-                metaModelRepo.findByName(gdprAccessResponse.getClass().getSimpleName()))
-            .fetchOne();
+    String simpleName = gdprResponse.getClass().getSimpleName();
+    MetaModel metaModel = metaModelRepo.findByName(simpleName);
+
+    Template template = templateRepository.all().filter("self.metaModel = ?", metaModel).fetchOne();
 
     if (Objects.nonNull(template)) {
 
       Message message =
-          Beans.get(TemplateMessageServiceImpl.class).generateMessage(gdprAccessResponse, template);
+          Beans.get(TemplateMessageServiceImpl.class).generateMessage(gdprResponse, template);
       Set<MetaFile> metaFiles = Sets.newHashSet();
-      metaFiles.add(gdprAccessResponse.getDataFile());
+      metaFiles.add(gdprResponse.getDataFile());
       messageService.attachMetaFiles(message, metaFiles);
       messageService.sendMessage(message);
-      gdprAccessResponse.setSendingDateTime(LocalDateTime.now());
-      gdprAccessResponse.setResponseMessage(message);
+      gdprResponse.setSendingDateT(appBaseService.getTodayDateTime().toLocalDateTime());
+      gdprResponse.setResponseMessage(message);
       return true;
     }
     return false;

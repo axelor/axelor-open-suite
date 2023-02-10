@@ -9,7 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-public class GDPRDMSFileRepository extends DMSFileRepository {
+public class GdprDmsFileRepository extends DMSFileRepository {
 
   public List<DMSFile> findByModel(Long id, String model) {
     CriteriaBuilder criteriaBuilder = JPA.em().getCriteriaBuilder();

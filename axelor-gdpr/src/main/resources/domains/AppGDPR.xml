@@ -11,10 +11,10 @@
 
     <many-to-one ref="com.axelor.apps.base.db.Anonymizer" name="anonymizer"
       title="Pseudonymizer"/>
-    <one-to-many ref="com.axelor.apps.gdpr.db.GDPRSearchConfig"
-      name="requestSearchConfig" mappedBy="appGdpr"/>
-    <one-to-many ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin" name="requestOrigin"
-      mappedBy="appGdpr"/>
+    <one-to-many ref="com.axelor.apps.gdpr.db.GDPRSearchConfig" name="searchConfigList"
+      mappedBy="appGdpr" title="Search configurations"/>
+    <one-to-many ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin"
+      name="requestOriginList" mappedBy="appGdpr" title="Requests origins"/>
     <track>
       <field name="maxRespondingDays" on="UPDATE"/>
     </track>
