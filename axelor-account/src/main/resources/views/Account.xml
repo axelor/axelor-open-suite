@@ -120,9 +120,9 @@
           <field name="vatSystemSelect" colSpan="4"
             showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
         </panel>
-        <panel if="__config__.app.getApp('account').getManageAnalyticAccounting()"
-          name="analyticSettingsPanel" title="Analytic" colSpan="12"
-          hideIf="!accountType || accountType.technicalTypeSelect == 'view'">
+        <panel
+          if="__config__.app.getApp('account').getManageAnalyticAccounting() || (!accountType &amp;&amp; accountType.technicalTypeSelect != 'view')"
+          name="analyticSettingsPanel" title="Analytic" colSpan="12">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
             onChange="action-account-group-on-change-analytic-distribution-authorized"
             readonlyIf="$isReadOnly"/>
