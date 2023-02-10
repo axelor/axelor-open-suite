@@ -155,7 +155,7 @@
     <option value="2">Accounting value</option>
     <option value="3">Sale value</option>
     <option value="4">Purchase value</option>
-    <option value="5">Wap price of the stock location</option>
+    <option value="5">WAP of the stock location</option>
   </selection>
 
   <selection name="stock.stock.location.printing.type">
