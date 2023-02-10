@@ -42,7 +42,7 @@
           <button name="$tasksDue" title="Tasks due" width="190px" widget="info-button"
             onClick="action-method-show-client-view-tasks-due"/>
         </panel>
-        <panel name="saleOrderPanel" title="Order" if-module="axelor-sale" itemSpan="12"
+        <panel name="saleOrderPanel" title="Sale order" if-module="axelor-sale" itemSpan="12"
           hidden="true">
           <button name="$myQuotation" title="My quotations" width="190px"
             widget="info-button" onClick="action-method-show-client-view-my-quotation"/>
