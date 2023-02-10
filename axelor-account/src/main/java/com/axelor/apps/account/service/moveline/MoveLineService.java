@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Batch;
@@ -65,4 +66,6 @@ public interface MoveLineService {
   void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 
   List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds);
+
+  void computeCutOffProrataAmount(AccountingBatch accountingBatch) throws AxelorException;
 }

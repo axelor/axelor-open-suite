@@ -21,15 +21,12 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveLineControlService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class MoveLineManagementRepository extends MoveLineRepository {
@@ -75,25 +72,5 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
     return super.save(entity);
-  }
-
-  @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    try {
-      if (context.containsKey("_cutOffPreview") && (boolean) context.get("_cutOffPreview")) {
-        long id = (long) json.get("id");
-        MoveLine moveLine = this.find(id);
-        LocalDate moveDate = LocalDate.parse((String) context.get("_moveDate"));
-        MoveLineService moveLineService = Beans.get(MoveLineService.class);
-        moveLine = moveLineService.computeCutOffProrataAmount(moveLine, moveDate);
-        json.put("cutOffProrataAmount", moveLine.getCutOffProrataAmount());
-        json.put("amountBeforeCutOffProrata", moveLine.getAmountBeforeCutOffProrata());
-        json.put("durationCutOffProrata", moveLine.getDurationCutOffProrata());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
-
-    return super.populate(json, context);
   }
 }

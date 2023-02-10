@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.Batch;
@@ -264,5 +265,14 @@ public class AccountingBatchController {
 
   public void actionAccountingCutOff(ActionRequest request, ActionResponse response) {
     runBatch(AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF, request, response);
+  }
+
+  public void computeMoveLineCutOffFields(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+      Beans.get(MoveLineService.class).computeCutOffProrataAmount(accountingBatch);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
