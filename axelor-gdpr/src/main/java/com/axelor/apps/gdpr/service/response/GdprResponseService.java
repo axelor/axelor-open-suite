@@ -1,7 +1,6 @@
 package com.axelor.apps.gdpr.service.response;
 
 import com.axelor.apps.gdpr.db.GDPRRequest;
-import com.axelor.apps.gdpr.db.GDPRResponse;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaField;
@@ -23,9 +22,7 @@ public interface GdprResponseService {
   public AuditableModel extractReferenceFromModelAndId(String model, Long id)
       throws ClassNotFoundException;
 
-  boolean sendEmailResponse(GDPRResponse gdprResponse);
-
-  GDPRResponse generateResponse(GDPRRequest gdprRequest)
+  void generateResponse(GDPRRequest gdprRequest)
       throws AxelorException, IOException, ClassNotFoundException, JSONException;
 
   void sendResponse(GDPRRequest gdprRequest)

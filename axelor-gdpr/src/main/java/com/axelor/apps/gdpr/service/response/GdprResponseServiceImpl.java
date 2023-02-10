@@ -1,7 +1,6 @@
 package com.axelor.apps.gdpr.service.response;
 
 import com.axelor.apps.gdpr.db.GDPRRequest;
-import com.axelor.apps.gdpr.db.GDPRResponse;
 import com.axelor.apps.gdpr.db.repo.GDPRRequestRepository;
 import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
 import com.axelor.apps.message.db.EmailAddress;
@@ -71,14 +70,8 @@ public class GdprResponseServiceImpl implements GdprResponseService {
   }
 
   @Override
-  public boolean sendEmailResponse(GDPRResponse gdprResponse) {
-    return false;
-  }
-
-  @Override
-  public GDPRResponse generateResponse(GDPRRequest gdprRequest)
+  public void generateResponse(GDPRRequest gdprRequest)
       throws AxelorException, IOException, ClassNotFoundException, JSONException {
-    GDPRResponse gdprResponse;
     if (gdprRequest.getTypeSelect() == GDPRRequestRepository.REQUEST_TYPE_ACCESS) {
       gdprResponseAccessService.generateAccessResponseDataFile(gdprRequest);
 
@@ -86,8 +79,6 @@ public class GdprResponseServiceImpl implements GdprResponseService {
       gdprResponseErasureService.createErasureResponse(gdprRequest);
       gdprResponseErasureService.anonymizeTrackingDatas(gdprRequest);
     }
-
-    return null;
   }
 
   @Transactional(rollbackOn = {Exception.class})
