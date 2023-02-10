@@ -51,6 +51,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
@@ -87,6 +88,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected UserRepository userRepo;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -97,7 +99,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
-      InvoicePaymentCreateService invoicePaymentCreateService) {
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      UserRepository userRepo) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -106,6 +109,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.accountConfigService = accountConfigService;
     this.reconcileService = reconcileService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.userRepo = userRepo;
   }
 
   @Override
@@ -1322,45 +1326,43 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public String getPfpValidatorUserDomain(Partner partner, Company company) {
+    List<User> pfpValidatorUserList = userRepo.all().filter("self.isPfpValidator IS TRUE").fetch();
 
-    User pfpValidatorUser = getPfpValidatorUser(partner, company);
-    if (pfpValidatorUser == null) {
+    if (CollectionUtils.isEmpty(pfpValidatorUserList)) {
       return "self.id in (0)";
     }
-    List<SubstitutePfpValidator> substitutePfpValidatorList =
-        pfpValidatorUser.getSubstitutePfpValidatorList();
-    List<User> validPfpValidatorUserList = new ArrayList<>();
-    StringBuilder pfpValidatorUserDomain = new StringBuilder("self.id in ");
+
+    Set<User> validPfpValidatorUserSet = new HashSet<>();
     LocalDate todayDate = appAccountService.getTodayDate(company);
 
-    validPfpValidatorUserList.add(pfpValidatorUser);
+    for (User pfpValidatorUser : pfpValidatorUserList) {
+      validPfpValidatorUserSet.add(pfpValidatorUser);
 
-    for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
-      LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
-      LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
+      for (SubstitutePfpValidator substitutePfpValidator :
+          pfpValidatorUser.getSubstitutePfpValidatorList()) {
+        LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
+        LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
 
-      if (substituteStartDate == null) {
-        if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
-        }
-      } else {
-        if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
-        } else if (substituteStartDate.isBefore(todayDate)
-            && substituteEndDate.isAfter(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        if (substituteStartDate == null) {
+          if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
+            validPfpValidatorUserSet.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+          }
+        } else {
+          if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
+            validPfpValidatorUserSet.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+          } else if (substituteStartDate.isBefore(todayDate)
+              && substituteEndDate.isAfter(todayDate)) {
+            validPfpValidatorUserSet.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+          }
         }
       }
     }
 
-    pfpValidatorUserDomain
-        .append("(")
-        .append(
-            validPfpValidatorUserList.stream()
-                .map(pfpValidator -> pfpValidator.getId().toString())
-                .collect(Collectors.joining(",")))
-        .append(")");
-    return pfpValidatorUserDomain.toString();
+    return String.format(
+        "self.id IN (%s)",
+        validPfpValidatorUserSet.stream()
+            .map(pfpValidator -> pfpValidator.getId().toString())
+            .collect(Collectors.joining(",")));
   }
 
   protected void findInvoiceTermsInInvoice(

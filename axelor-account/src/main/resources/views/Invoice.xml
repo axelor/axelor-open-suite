@@ -1596,7 +1596,6 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-group-ventilate-button">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="save"/>
-    <action name="action-invoice-validate-check-pfp-validator-user"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
@@ -2078,12 +2077,6 @@ InvoiceSet.length > 0))"
     <error
       message="It is not possible to go back to validate status or cancel a ventilated invoice."
       if="statusSelect == 3"/>
-  </action-validate>
-
-  <action-validate name="action-invoice-validate-check-pfp-validator-user">
-    <alert message="At least one pfp validator is missing, do you wish to continue ?"
-      if="com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(__this__, null)
-          &amp;&amp; invoiceTermList.any{it -> !it.pfpValidatorUser}"/>
   </action-validate>
 
   <!-- ACTION METHOD -->
