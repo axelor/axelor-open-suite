@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid model="com.axelor.apps.base.db.AnonymizerLine" title="Pseudonymiser lines"
+  <grid model="com.axelor.apps.base.db.AnonymizerLine" title="Pseudonymizer lines"
     name="anonymizer-line-grid">
     <field name="metaModel"/>
     <field name="metaField"/>
@@ -11,7 +11,7 @@
     <field name="fakerApiField"/>
   </grid>
 
-  <form model="com.axelor.apps.base.db.AnonymizerLine" title="Pseudonymiser line"
+  <form model="com.axelor.apps.base.db.AnonymizerLine" title="Pseudonymizer line"
     name="anonymizer-line-form"
     onLoad="action-data-backup-config-anonymize-line-attr-display-meta-json-field">
     <panel name="mainPanel" itemSpan="4">

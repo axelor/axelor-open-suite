@@ -10,7 +10,7 @@
     <integer name="maxRespondingDays" title="Maximum days to respond" default="30"/>
 
     <many-to-one ref="com.axelor.apps.base.db.Anonymizer" name="anonymizer"
-      title="Pseudonymiser"/>
+      title="Pseudonymizer"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRSearchConfig"
       name="requestSearchConfig" mappedBy="appGdpr"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin" name="requestOrigin"
