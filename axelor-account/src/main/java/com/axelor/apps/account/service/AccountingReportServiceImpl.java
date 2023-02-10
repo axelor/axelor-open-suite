@@ -902,6 +902,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         modelAccountingReportCopy.setTotalCredit(null);
         modelAccountingReportCopy.setTotalDebit(null);
         modelAccountingReportCopy.setBalance(null);
+        modelAccountingReportCopy.setReportType(accountingReportType);
         modelAccountingReportCopy.setDate(accountingReport.getDate());
         modelAccountingReportCopy.setStatusSelect(accountingReport.getStatusSelect());
         Map<String, Object> modelAccountingReportCopyMap = Mapper.toMap(modelAccountingReportCopy);
