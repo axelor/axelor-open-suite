@@ -63,6 +63,7 @@ public interface InvoiceTermService {
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount);
 
+  @CallMethod
   boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine);
 
   /**
