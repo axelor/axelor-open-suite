@@ -756,8 +756,8 @@
 
   <action-validate name="action-move-validate-check-pfp-validator-user">
     <alert message="At least one pfp validator is missing, do you wish to continue ?"
-      if="moveLineList.any{ml -> com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(ml.move?.invoice, ml)}
-          &amp;&amp; !pfpValidatorUser"/>
+      if="moveLineList.any{ml -> com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(ml.move?.invoice, ml)
+          &amp;&amp; !ml.invoiceTermList.any{it -> !it.pfpValidatorUser}}"/>
   </action-validate>
 
   <!-- ACTION RECORD -->
