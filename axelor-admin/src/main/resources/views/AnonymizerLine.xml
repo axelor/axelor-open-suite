@@ -25,11 +25,16 @@
         readonlyIf="metaModel == null" hideIf="metaModel == null"/>
       <field name="metaJsonField" hidden="true"
         onSelect="action-anonymizer-line-attr-on-select-meta-json-field"/>
-      <field name="useFakeData" widget="boolean-switch"/>
+      <field name="useFakeData" widget="boolean-switch"
+        onChange="action-anonymizer-line-attrs-clear-faker-api-field"/>
       <field name="fakerApiField" grid-view="faker-api-field-grid"
         form-view="faker-api-field-form" hidden="true" showIf="useFakeData" requiredIf="useFakeData"/>
     </panel>
   </form>
+
+  <action-attrs name="action-anonymizer-line-attrs-clear-faker-api-field">
+    <attribute for="fakerApiField" name="value" expr="eval: null" if="!useFakeData"/>
+  </action-attrs>
 
   <action-attrs name="action-anonymizer-line-attrs-empty-fields">
     <attribute for="metaField, fakerApiField, metaJsonField" name="value"

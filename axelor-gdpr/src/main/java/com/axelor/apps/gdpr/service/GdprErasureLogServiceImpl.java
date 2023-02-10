@@ -1,19 +1,19 @@
 package com.axelor.apps.gdpr.service;
 
 import com.axelor.apps.gdpr.db.GDPRErasureLog;
-import com.axelor.apps.gdpr.db.GDPRErasureResponse;
+import com.axelor.apps.gdpr.db.GDPRResponse;
 import com.axelor.meta.db.MetaModel;
 
-public class GDPRErasureLogServiceImpl implements GDPRErasureLogService {
+public class GdprErasureLogServiceImpl implements GdprErasureLogService {
 
   @Override
   public GDPRErasureLog createErasureLogLine(
-      GDPRErasureResponse gdprErasureResponse, MetaModel metaModel, Integer numberRecords) {
+      GDPRResponse gdprResponse, MetaModel metaModel, Integer numberRecords) {
 
     GDPRErasureLog gdprErasureLog = new GDPRErasureLog();
     gdprErasureLog.setModelLog(metaModel);
     gdprErasureLog.setNumberOfrecords(numberRecords);
-    gdprErasureLog.setGdprErasureResponse(gdprErasureResponse);
+    gdprErasureLog.setGdprResponse(gdprResponse);
 
     return gdprErasureLog;
   }

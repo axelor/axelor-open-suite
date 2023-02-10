@@ -7,11 +7,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import wslite.json.JSONException;
 
-public interface GDPRAnonymizeService {
+public interface GdprAnonymizeService {
 
-  public static final List<String> excludeFields =
+  List<String> excludeFields =
       Arrays.asList("id", "archived", "version", "statusSelect", "partnerTypeSelect");
 
   /**
@@ -26,12 +25,9 @@ public interface GDPRAnonymizeService {
    * Anonymize tracking datas (track -> oldValue and value)
    *
    * @param reference
-   * @throws JSONException
-   * @throws ClassNotFoundException
    * @throws JsonParseException
    * @throws JsonMappingException
    * @throws IOException
    */
-  void anonymizeTrackingDatas(AuditableModel reference)
-      throws JSONException, ClassNotFoundException, IOException;
+  void anonymizeTrackingDatas(AuditableModel reference) throws IOException;
 }

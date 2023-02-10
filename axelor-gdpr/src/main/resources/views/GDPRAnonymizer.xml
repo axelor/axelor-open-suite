@@ -11,7 +11,7 @@
   </form>
 
   <action-method name="action-gdpr-fill-from-register">
-    <call class="com.axelor.apps.gdpr.web.GDPRProcessingRegisterController"
+    <call class="com.axelor.apps.gdpr.web.GdprProcessingRegisterController"
       method="addAnonymizer"/>
   </action-method>
 

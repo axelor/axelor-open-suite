@@ -1,6 +1,6 @@
 package com.axelor.apps.gdpr.web;
 
-import com.axelor.apps.gdpr.service.GDPRSearchEngineService;
+import com.axelor.apps.gdpr.service.GdprSearchEngineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class GDPRSearchEngineController {
+public class GdprSearchEngineController {
 
   /**
    * search in Partner and Lead object with fields
@@ -46,7 +46,7 @@ public class GDPRSearchEngineController {
     } else {
       List<Map<String, Object>> resultList = new ArrayList<>();
       try {
-        resultList = Beans.get(GDPRSearchEngineService.class).searchObject(searchParams);
+        resultList = Beans.get(GdprSearchEngineService.class).searchObject(searchParams);
       } catch (AxelorException e) {
         TraceBackService.trace(e);
         response.setError(e.getMessage());
