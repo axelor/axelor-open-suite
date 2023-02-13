@@ -379,8 +379,6 @@
   </action-group>
 
   <action-group name="action-crm-group-close-lost-opportunity">
-    <action name="action-method-opportunity-set-stage-closed-lost"/>
-    <action name="save"/>
     <action name="action-opportunity-method-cancel-saleorders"/>
   </action-group>
 
@@ -476,11 +474,10 @@
       if="opportunityStatus != null"/>
   </action-attrs>
 
-  <action-record name="action-opportunity-set-previous-stage"
+  <action-record name="action-opportunity-record-clear-lost-reason"
     model="com.axelor.apps.crm.db.Opportunity">
-    <field name="opportunityStatus"
-      expr="eval: __repo__(OpportunityStatus).findByPreviousSequence(__this__.opportunityStatus.sequence)"/>
-    <field name="lostReason" expr="eval: null" if="salesStageSelect == 6"/>
+    <field name="lostReason" expr="eval: null"
+      if="opportunityStatus.id != __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
   </action-record>
 
   <action-record name="action-opportunity-set-next-stage"
@@ -519,6 +516,7 @@
     <action name="save"/>
     <action name="action-opportunity-view-opportunity-lost-popup-view"
       if="opportunityStatus.id == __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
+    <action name="action-opportunity-record-clear-lost-reason"/>
   </action-group>
 
 </object-views>
