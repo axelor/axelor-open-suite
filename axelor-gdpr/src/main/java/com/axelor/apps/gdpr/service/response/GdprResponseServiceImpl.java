@@ -2,21 +2,17 @@ package com.axelor.apps.gdpr.service.response;
 
 import com.axelor.apps.gdpr.db.GDPRRequest;
 import com.axelor.apps.gdpr.db.repo.GDPRRequestRepository;
-import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import javax.mail.MessagingException;
 import javax.persistence.Query;
 import wslite.json.JSONException;
 
@@ -83,22 +79,12 @@ public class GdprResponseServiceImpl implements GdprResponseService {
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void sendResponse(GDPRRequest gdprRequest)
-      throws AxelorException, JSONException, IOException, ClassNotFoundException,
-          InstantiationException, IllegalAccessException, MessagingException {
-    boolean success;
-
+  public void sendResponse(GDPRRequest gdprRequest) throws AxelorException {
     if (gdprRequest.getTypeSelect() == GDPRRequestRepository.REQUEST_TYPE_ACCESS) {
-      success = gdprResponseAccessService.sendEmailResponse(gdprRequest.getGdprResponse());
+      gdprResponseAccessService.sendEmailResponse(gdprRequest.getGdprResponse());
     } else {
-      success = gdprResponseErasureService.sendEmailResponse(gdprRequest.getGdprResponse());
+      gdprResponseErasureService.sendEmailResponse(gdprRequest.getGdprResponse());
     }
-    if (success) {
-      gdprRequest.setStatusSelect(GDPRRequestRepository.REQUEST_STATUS_SENT);
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(GdprExceptionMessage.MISSING_MAIL_TEMPLATE));
-    }
+    gdprRequest.setStatusSelect(GDPRRequestRepository.REQUEST_STATUS_SENT);
   }
 }
