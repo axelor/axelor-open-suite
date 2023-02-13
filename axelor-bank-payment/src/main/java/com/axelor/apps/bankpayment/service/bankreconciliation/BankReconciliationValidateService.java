@@ -256,6 +256,7 @@ public class BankReconciliationValidateService {
         }
         if (isUnderCorrection) {
           bankReconciliationLine.setIsPosted(true);
+          bankReconciliationLineService.checkAmount(bankReconciliationLine);
           bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
         }
         bankStatementAmountRemaining = bankStatementAmountRemaining.subtract(debit.add(credit));
