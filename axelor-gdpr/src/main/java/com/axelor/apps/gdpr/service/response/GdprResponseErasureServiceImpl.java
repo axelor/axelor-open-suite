@@ -28,6 +28,7 @@ import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.views.Selection;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -204,7 +205,8 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       }
       mapper.set(reference, metaField.getName(), newValue);
 
-    } else if (metaField.getRelationship().equals("OneToOne")) {
+    } else if (metaField.getRelationship().equals("OneToOne")
+        && Strings.isNullOrEmpty(metaField.getMappedBy())) {
 
       anonymizeRelatedObject(gdprResponse, metaField, currentValue);
 
