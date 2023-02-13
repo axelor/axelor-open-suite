@@ -15,6 +15,10 @@
       mappedBy="appGdpr" title="Search configurations"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin"
       name="requestOriginList" mappedBy="appGdpr" title="Requests origins"/>
+    <many-to-one name="accessResponseTemplate" ref="com.axelor.apps.message.db.Template"
+      title="Email template for access request response"/>
+    <many-to-one name="erasureResponseTemplate"
+      ref="com.axelor.apps.message.db.Template" title="Email template for erasure request response"/>
     <track>
       <field name="maxRespondingDays" on="UPDATE"/>
     </track>

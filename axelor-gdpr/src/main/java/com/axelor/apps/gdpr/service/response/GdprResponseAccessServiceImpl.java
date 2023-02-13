@@ -10,11 +10,13 @@ import com.axelor.apps.gdpr.db.GDPRRequest;
 import com.axelor.apps.gdpr.db.GDPRResponse;
 import com.axelor.apps.gdpr.db.repo.GDPRRequestRepository;
 import com.axelor.apps.gdpr.db.repo.GDPRResponseRepository;
+import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
+import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageServiceImpl;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.Inflector;
 import com.axelor.db.Query;
@@ -24,6 +26,8 @@ import com.axelor.db.mapper.PropertyType;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.GdprDmsFileRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
@@ -66,6 +70,8 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
   protected MessageService messageService;
   protected TemplateRepository templateRepository;
   protected AppBaseService appBaseService;
+  protected AppGdprService appGdprService;
+  protected TemplateMessageService templateMessageService;
 
   @Inject
   public GdprResponseAccessServiceImpl(
@@ -77,7 +83,9 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
       AdvancedExportRepository advancedExportRepository,
       MessageService messageService,
       TemplateRepository templateRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AppGdprService appGdprService,
+      TemplateMessageService templateMessageService) {
     this.gdprResponseRepository = gdprResponseRepository;
     this.metaModelRepo = metaModelRepo;
     this.gdprResponseService = gdprResponseService;
@@ -87,6 +95,8 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
     this.messageService = messageService;
     this.templateRepository = templateRepository;
     this.appBaseService = appBaseService;
+    this.appGdprService = appGdprService;
+    this.templateMessageService = templateMessageService;
   }
 
   @SuppressWarnings("unchecked")
@@ -374,27 +384,41 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public boolean sendEmailResponse(GDPRResponse gdprResponse)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, JSONException {
+  public void sendEmailResponse(GDPRResponse gdprResponse) throws AxelorException {
+    Template template = appGdprService.getAppGDPR().getAccessResponseTemplate();
 
-    String simpleName = gdprResponse.getClass().getSimpleName();
-    MetaModel metaModel = metaModelRepo.findByName(simpleName);
+    if (template == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(GdprExceptionMessage.MISSING_ACCESS_REQUEST_RESPONSE_MAIL_TEMPLATE));
+    }
 
-    Template template = templateRepository.all().filter("self.metaModel = ?", metaModel).fetchOne();
+    Message message = generateAndSendMessage(gdprResponse, template);
+    gdprResponse.setSendingDateT(appBaseService.getTodayDateTime().toLocalDateTime());
+    gdprResponse.setResponseMessage(message);
+  }
 
-    if (Objects.nonNull(template)) {
-
-      Message message =
-          Beans.get(TemplateMessageServiceImpl.class).generateMessage(gdprResponse, template);
+  protected Message generateAndSendMessage(GDPRResponse gdprResponse, Template template)
+      throws AxelorException {
+    try {
+      Message message;
+      message = templateMessageService.generateMessage(gdprResponse, template);
       Set<MetaFile> metaFiles = Sets.newHashSet();
       metaFiles.add(gdprResponse.getDataFile());
       messageService.attachMetaFiles(message, metaFiles);
       messageService.sendMessage(message);
-      gdprResponse.setSendingDateT(appBaseService.getTodayDateTime().toLocalDateTime());
-      gdprResponse.setResponseMessage(message);
-      return true;
+      return message;
+    } catch (AxelorException
+        | ClassNotFoundException
+        | InstantiationException
+        | IllegalAccessException
+        | IOException
+        | JSONException e) {
+      throw new AxelorException(
+          e,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          GdprExceptionMessage.SENDING_MAIL_ERROR,
+          e.getMessage());
     }
-    return false;
   }
 }

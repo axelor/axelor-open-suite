@@ -9,24 +9,26 @@ import com.axelor.apps.gdpr.db.GDPRRequest;
 import com.axelor.apps.gdpr.db.GDPRResponse;
 import com.axelor.apps.gdpr.db.repo.GDPRRequestRepository;
 import com.axelor.apps.gdpr.db.repo.GDPRResponseRepository;
+import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
 import com.axelor.apps.gdpr.service.GdprAnonymizeService;
 import com.axelor.apps.gdpr.service.GdprErasureLogService;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.TemplateMessageServiceImpl;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.views.Selection;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -49,6 +51,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
   protected AnonymizeService anonymizeService;
   protected GdprAnonymizeService gdprAnonymizeService;
   protected AppBaseService appBaseService;
+  protected TemplateMessageService templateMessageService;
   private String modelSelect;
 
   @Inject
@@ -60,7 +63,8 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       GdprErasureLogService gdprErasureLogService,
       AnonymizeService anonymizeService,
       GdprAnonymizeService gdprAnonymizeService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      TemplateMessageService templateMessageService) {
     this.metaModelRepo = metaModelRepo;
     this.gdprResponseService = gdprResponseService;
     this.appGDPRService = appGDPRService;
@@ -69,6 +73,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     this.anonymizeService = anonymizeService;
     this.gdprAnonymizeService = gdprAnonymizeService;
     this.appBaseService = appBaseService;
+    this.templateMessageService = templateMessageService;
   }
 
   @Override
@@ -200,7 +205,8 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       }
       mapper.set(reference, metaField.getName(), newValue);
 
-    } else if (metaField.getRelationship().equals("OneToOne")) {
+    } else if (metaField.getRelationship().equals("OneToOne")
+        && Strings.isNullOrEmpty(metaField.getMappedBy())) {
 
       anonymizeRelatedObject(gdprResponse, metaField, currentValue);
 
@@ -255,7 +261,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   @Override
   public void anonymizeTrackingDatas(GDPRRequest gdprRequest)
-      throws ClassNotFoundException, JSONException, IOException {
+      throws ClassNotFoundException, IOException {
     AuditableModel referenceEntity =
         gdprResponseService.extractReferenceFromModelAndId(
             gdprRequest.getModelSelect(), gdprRequest.getModelId());
@@ -264,27 +270,33 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
   }
 
   @Override
-  public boolean sendEmailResponse(GDPRResponse gdprResponse)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException, JSONException {
+  public void sendEmailResponse(GDPRResponse gdprResponse) throws AxelorException {
 
-    Template template =
-        Beans.get(TemplateRepository.class)
-            .all()
-            .filter(
-                "self.metaModel = ?",
-                metaModelRepo.findByName(gdprResponse.getClass().getSimpleName()))
-            .fetchOne();
+    Template template = this.appGDPRService.getAppGDPR().getErasureResponseTemplate();
 
-    if (Objects.nonNull(template)) {
-      Message message =
-          Beans.get(TemplateMessageServiceImpl.class)
-              .generateAndSendMessage(gdprResponse, template);
-      gdprResponse.setSendingDateT(appBaseService.getTodayDateTime().toLocalDateTime());
-      gdprResponse.setResponseMessage(message);
-      return true;
+    if (template == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(GdprExceptionMessage.MISSING_ERASURE_REQUEST_RESPONSE_MAIL_TEMPLATE));
     }
 
-    return false;
+    try {
+      Message message = templateMessageService.generateAndSendMessage(gdprResponse, template);
+      gdprResponse.setSendingDateT(appBaseService.getTodayDateTime().toLocalDateTime());
+      gdprResponse.setResponseMessage(message);
+
+    } catch (AxelorException
+        | MessagingException
+        | JSONException
+        | IOException
+        | ClassNotFoundException
+        | InstantiationException
+        | IllegalAccessException e) {
+      throw new AxelorException(
+          e,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          GdprExceptionMessage.SENDING_MAIL_ERROR,
+          e.getMessage());
+    }
   }
 }
