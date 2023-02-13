@@ -34,11 +34,11 @@
     <button name="next-stage-gridBtn" icon="fa-chevron-circle-right" help="Next stage"
       onClick="action-method-opportunity-set-next-stage"
       hideIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"/>
-    <button name=" closed-wonBtn " icon="fa-check-circle" help="Closed won"
+    <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won"
       onClick="action-group-crm-opportunity-closedwon-click"
       hideIf="$get('opportunityStatus.id') == $closedWonId"/>
     <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
-      onClick="action-group-crm-opportunity-closedlost-click"
+      onClick="action-method-opportunity-set-stage-closed-lost"
       hideIf="$get('opportunityStatus.id') == $closedLostId"/>
   </grid>
 
@@ -68,7 +68,7 @@
       onClick="action-group-crm-opportunity-closedwon-click"
       hideIf="$get('opportunityStatus.id') == $closedWonId"/>
     <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
-      onClick="action-group-crm-opportunity-closedlost-click"
+      onClick="action-method-opportunity-set-stage-closed-lost"
       hideIf="$get('opportunityStatus.id') == $closedLostId"/>
   </grid>
 
@@ -289,7 +289,7 @@
   </kanban>
 
   <form name="opportunity-form-lost-popup" model="com.axelor.apps.crm.db.Opportunity"
-    title="Lost reason" width="large" onSave="action-crm-group-close-lost-opportunity">
+    title="Lost reason" width="large" onSave="action-opportunity-method-cancel-saleorders">
     <panel name="mainPanel">
       <field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
       <field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
@@ -371,15 +371,6 @@
   <action-group name="action-group-crm-opportunity-closedwon-click">
     <action name="action-method-opportunity-set-stage-closed-won"/>
     <action name="save"/>
-  </action-group>
-
-  <action-group name="action-group-crm-opportunity-closedlost-click">
-    <action name="action-method-opportunity-set-stage-closed-lost"/>
-    <action name="save"/>
-  </action-group>
-
-  <action-group name="action-crm-group-close-lost-opportunity">
-    <action name="action-opportunity-method-cancel-saleorders"/>
   </action-group>
 
   <action-view name="action-opportunity-view-schedule-event"
@@ -517,6 +508,7 @@
     <action name="action-opportunity-view-opportunity-lost-popup-view"
       if="opportunityStatus.id == __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
     <action name="action-opportunity-record-clear-lost-reason"/>
+    <action name="save"/>
   </action-group>
 
 </object-views>
