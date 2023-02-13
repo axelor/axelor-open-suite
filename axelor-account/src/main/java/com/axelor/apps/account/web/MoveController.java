@@ -654,6 +654,30 @@ public class MoveController {
     }
   }
 
+  public void applyCutOffDatesInEmptyLines(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveComputeService moveComputeService = Beans.get(MoveComputeService.class);
+
+      if (request.getContext().get("cutOffStartDate") != null
+          && request.getContext().get("cutOffEndDate") != null) {
+        LocalDate cutOffStartDate =
+            LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+        LocalDate cutOffEndDate =
+            LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
+
+        if (moveComputeService.checkManageCutOffDates(move)) {
+          moveComputeService.applyCutOffDates(move, cutOffStartDate, cutOffEndDate);
+
+          response.setValue("moveLineList", move.getMoveLineList());
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void setMoveLineDates(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
