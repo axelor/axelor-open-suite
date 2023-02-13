@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid name="move-template-line-in-amount-grid" title="Move template line"
-    model="com.axelor.apps.account.db.MoveTemplateLine">
+    model="com.axelor.apps.account.db.MoveTemplateLine"
+    onNew="action-attrs-move-template-line-set-required-partner">
     <field name="name"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="account" form-view="account-form" grid-view="account-grid"/>
@@ -32,10 +33,13 @@
   </grid>
 
   <form name="move-template-line-in-amount-form" title="Move template line"
-    model="com.axelor.apps.account.db.MoveTemplateLine">
+    model="com.axelor.apps.account.db.MoveTemplateLine"
+    onNew="action-attrs-move-template-line-set-required-partner"
+    onLoad="action-attrs-move-template-line-set-required-partner">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
+        onSelect="action-attrs-move-template-line-set-required-partner"/>
       <field name="debit" readonlyIf="credit > 0"
         onChange="action-move-template-line-record-update-need-to-check-validity" required="true"/>
       <field name="credit" readonlyIf="debit > 0"
@@ -129,5 +133,10 @@
     <field name="analyticDistributionTemplate"
       expr="eval: account?.analyticDistributionTemplate "/>
   </action-record>
+
+  <action-attrs name="action-attrs-move-template-line-set-required-partner">
+    <attribute for="partner" name="required"
+      expr="eval: [1,2].contains(__parent__?.journal?.journalType?.technicalTypeSelect)"/>
+  </action-attrs>
 
 </object-views>

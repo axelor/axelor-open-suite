@@ -819,6 +819,7 @@
 
   <action-group name="action-account-move-line-onnew-group">
     <action name="action-move-line-record-get-move-informations"/>
+    <action name="action-attrs-move-line-set-required-partner"/>
     <action name="action-move-line-method-get-account-informations"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
@@ -1303,4 +1304,8 @@
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
 
+  <action-attrs name="action-attrs-move-line-set-required-partner">
+    <attribute for="partner" name="required"
+      expr="eval: [1,2].contains(__parent__?.journal?.journalType?.technicalTypeSelect)"/>
+  </action-attrs>
 </object-views>

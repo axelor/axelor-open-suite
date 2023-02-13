@@ -98,7 +98,8 @@
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0" form-view="partner-form"
             grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
-            onChange="action-move-group-partner-onchange"/>
+            onChange="action-move-group-partner-onchange,action-move-attrs-check-journal-technical-type-select"
+            requiredIf="$contains([1,2], journal.journalType.technicalTypeSelect)"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
@@ -336,6 +337,11 @@
         <field name="rejectOk" showIf="rejectOk" readonly="true"/>
         <field name="$periodClosed" hidden="true"/>
         <field name="$simulatedPeriodClosed" hidden="true"/>
+      </panel>
+
+      <panel name="hiddenPanel" hidden="true">
+        <field name="journal.journalType"/>
+        <field name="journal.journalType.technicalTypeSelect"/>
       </panel>
     </panel-tabs>
 
@@ -1160,5 +1166,11 @@
 
   <action-attrs name="action-move-attrs-hide-move-line-partner">
     <attribute for="moveLineList.partner" name="hidden" expr="partner != null"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-record-check-journal-technical-type-select"
+    model="com.axelor.apps.account.db.Move">
+    <attribute name="value" for="$isSaleOrExpenseJournal"
+      expr="eval: [1,2].indexOf(journal?.journalType?.technicalTypeSelect) != -1"/>
   </action-attrs>
 </object-views>
