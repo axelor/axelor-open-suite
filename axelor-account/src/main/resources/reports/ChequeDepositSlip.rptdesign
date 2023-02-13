@@ -142,9 +142,10 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="ChequeDueDate" id="4513">
+        <scalar-parameter name="ChequeDate" id="4513">
             <property name="hidden">false</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">date</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
@@ -316,7 +317,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_3</property>
-                    <property name="paramName">ChequeDueDate</property>
+                    <property name="paramName">ChequeDate</property>
                     <property name="nativeName"></property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">0</property>
@@ -327,7 +328,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_4</property>
-                    <property name="paramName">BankDetailsId</property>
+                    <property name="paramName">DepositSlipId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
@@ -338,11 +339,41 @@
                 </structure>
                 <structure>
                     <property name="name">param_5</property>
-                    <property name="paramName">DepositSlipId</property>
+                    <property name="paramName">BankDetailsId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
                     <property name="position">5</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_6</property>
+                    <property name="paramName">ChequeDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">6</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_7</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="dataType">decimal</property>
+                    <property name="position">7</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_8</property>
+                    <property name="paramName">DepositSlipId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">8</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -575,8 +606,8 @@
 	Deposit.deposit_number       AS "DepositNumber",
 	Deposit.deposit_date         AS "DepositDate",
 	Deposit.deposit_type         AS "DepositType",
-	Deposit.cheque_count         AS "ChqNbr",
-	(SELECT SUM(PV.paid_amount) FROM account_payment_voucher AS PV WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_due_date = ?)         AS "TotalAmount",
+	(SELECT COUNT(PV.id) FROM account_payment_voucher AS PV WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?)         AS "ChqNbr",
+	(SELECT SUM(PV.paid_amount) FROM account_payment_voucher AS PV WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?)         AS "TotalAmount",
 	BankDetails.iban      		 AS "AccountNbr",
 	Bank.bank_name               AS "BankName",
 	Email.address                AS "Email",
@@ -670,7 +701,7 @@ WHERE Deposit.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_3</property>
-                    <property name="paramName">ChequeDueDate</property>
+                    <property name="paramName">ChequeDate</property>
                     <property name="nativeName"></property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">0</property>
@@ -797,7 +828,7 @@ WHERE Deposit.id = ?]]></xml-property>
 	FROM account_payment_voucher AS PV
 	LEFT JOIN base_partner AS Partner ON (PV.partner = Partner.id)
 	LEFT JOIN base_currency AS Currency on PV.currency = Currency.id
-	WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_due_date = ?]]></xml-property>
+	WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

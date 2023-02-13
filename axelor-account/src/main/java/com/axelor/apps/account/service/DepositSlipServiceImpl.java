@@ -81,7 +81,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     for (PaymentVoucher pv : paymentVouchers) {
       Pair<LocalDate, BankDetails> dateByBankDetails =
           new MutablePair<>(
-              pv.getChequeDueDate(),
+              pv.getChequeDate(),
               pv.getDepositBankDetails() != null
                   ? pv.getDepositBankDetails()
                   : pv.getCompanyBankDetails());
@@ -102,17 +102,17 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     return date;
   }
 
-  protected void publish(DepositSlip depositSlip, BankDetails bankDetails, LocalDate chequeDueDate)
+  protected void publish(DepositSlip depositSlip, BankDetails bankDetails, LocalDate chequeDate)
       throws AxelorException {
 
-    String filename = getFilename(depositSlip, bankDetails, chequeDueDate);
+    String filename = getFilename(depositSlip, bankDetails, chequeDate);
 
     deleteExistingPublishDmsFile(depositSlip, filename);
 
     ReportSettings settings = ReportFactory.createReport(getReportName(depositSlip), filename);
     settings.addParam("DepositSlipId", depositSlip.getId());
     settings.addParam("BankDetailsId", bankDetails.getId());
-    settings.addParam("ChequeDueDate", Date.valueOf(chequeDueDate));
+    settings.addParam("ChequeDate", Date.valueOf(chequeDate));
     settings.addParam("Locale", ReportSettings.getPrintingLocale(null));
     settings.addParam(
         "Timezone",
