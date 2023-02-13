@@ -480,6 +480,7 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <field name="opportunityStatus"
       expr="eval: __repo__(OpportunityStatus).findByPreviousSequence(__this__.opportunityStatus.sequence)"/>
+    <field name="lostReason" expr="eval: null" if="salesStageSelect == 6"/>
   </action-record>
 
   <action-record name="action-opportunity-set-next-stage"
