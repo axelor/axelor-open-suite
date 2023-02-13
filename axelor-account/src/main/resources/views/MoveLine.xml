@@ -86,23 +86,24 @@
     <field name="taxLineBeforeReverse" hidden="true"/>
   </grid>
 
-  <grid name="move-line-account-batch-auto-move-lettering-grid" title="Move lines to reconcile"
+  <grid name="move-line-account-batch-auto-move-lettering-grid" title="Move lines reconciled"
     model="com.axelor.apps.account.db.MoveLine" orderBy="reconcileGroup.id">
     <toolbar>
-      <button name="validateAllReconcileGroups" title="Validate all reconcile groups"
+      <button name="validateAllReconcileGroupsBtn" title="Validate all reconcile groups"
         onClick="action-method-batch-auto-lettering-validate-all-reconcile-groups"
-        showIf="isProposal"/>
-      <button name="validateSelectedReconcileGroups"
+        showIf="_isProposal"/>
+      <button name="validateSelectedReconcileGroupsBtn"
         title="Validate selected reconcile groups"
         onClick="action-method-batch-auto-lettering-validate-selected-reconcile-groups"
-        showIf="isProposal"/>
-      <button name="cancelSelectedReconcileGroups" title="Cancel selected reconcile groups"
+        showIf="_isProposal"/>
+      <button name="cancelSelectedReconcileGroupsBtn"
+        title="Cancel selected reconcile groups"
         onClick="action-method-batch-auto-lettering-cancel-selected-reconcile-groups"
-        showIf="isProposal"/>
-      <button name="partiallyValidateSelectedReconcileGroups"
+        showIf="_isProposal"/>
+      <button name="partiallyValidateSelectedReconcileGroupsBtn"
         title="Partially validate selected reconcile groups"
         onClick="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups"
-        showIf="isProposal"/>
+        showIf="_isProposal"/>
     </toolbar>
     <field name="name"/>
     <field name="date"/>
@@ -116,10 +117,12 @@
     <field name="reconcileGroup"/>
     <field name="reconcileGroup.statusSelect"/>
     <field name="externalOrigin"/>
-    <button name="validateReconcileGroup" title="Validate reconcile group"
-      onClick="action-method-batch-auto-lettering-validate-reconcile-group" showIf="isProposal"/>
-    <button name="cancelReconcileGroup" title="Cancel reconcile group" icon="fa-check-circle"
-      onClick="action-method-batch-auto-lettering-cancel-reconcile-group" showIf="isProposal"/>
+    <button name="validateReconcileGroupBtn" title="Validate reconcile group"
+      onClick="action-method-batch-auto-lettering-validate-reconcile-group"
+      showIf="reconcileGroup.isProposal"/>
+    <button name="cancelReconcileGroupBtn" title="Cancel reconcile group"
+      icon="fa-check-circle" onClick="action-method-batch-auto-lettering-cancel-reconcile-group"
+      showIf="reconcileGroup.isProposal"/>
   </grid>
 
   <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine"

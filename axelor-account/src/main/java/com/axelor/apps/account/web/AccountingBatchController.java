@@ -283,13 +283,14 @@ public class AccountingBatchController {
     boolean isMoveLinesAwaitingReconcile = service.getIsMoveLinesAwaitingReconcile(accountingBatch);
     Boolean isShowLinesButtonDisplayed =
         (Boolean) request.getContext().get("isShowMoveLinesInProposalBtnDisplayed");
-    if (isMoveLinesAwaitingReconcile && !isShowLinesButtonDisplayed) {
+    if (isMoveLinesAwaitingReconcile
+        && (isShowLinesButtonDisplayed == null || !isShowLinesButtonDisplayed)) {
       response.setFlash(
           I18n.get(AccountExceptionMessage.BATCH_AUTO_MOVE_LETTERING_PENDING_PROPOSAL_EXISTS));
       response.setValue("$isShowMoveLinesInProposalBtnDisplayed", true);
     } else {
       response.setValue("$isShowMoveLinesInProposalBtnDisplayed", false);
-      //runBatch(AccountingBatchRepository.ACTION_AUTO_MOVE_LETTERING, request, response);
+      runBatch(AccountingBatchRepository.ACTION_AUTO_MOVE_LETTERING, request, response);
     }
   }
 
@@ -333,7 +334,7 @@ public class AccountingBatchController {
       }
 
       actionViewBuilder.model(MoveLine.class.getName());
-      actionViewBuilder.add("grid", "move-line-account-batch-auto-move-lettering-grid");
+      actionViewBuilder.add("grid", "move-line-grid");
       actionViewBuilder.add("form", "move-line-form");
 
       response.setView(actionViewBuilder.map());

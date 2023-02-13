@@ -124,4 +124,6 @@ public interface ReconcileGroupService {
    * @throws AxelorException
    */
   void unletter(ReconcileGroup reconcileGroup) throws AxelorException;
+
+  List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup);
 }

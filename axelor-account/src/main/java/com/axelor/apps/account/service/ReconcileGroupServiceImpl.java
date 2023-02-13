@@ -278,7 +278,8 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     reconcileGroupRepository.save(reconcileGroup);
   }
 
-  protected List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup) {
+  @Override
+  public List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup) {
     return reconcileRepository
         .all()
         .filter("self.reconcileGroup.id = :reconcileGroupId AND self.statusSelect = :confirmed")

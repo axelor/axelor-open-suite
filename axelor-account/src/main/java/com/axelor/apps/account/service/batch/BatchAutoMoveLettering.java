@@ -20,14 +20,18 @@ package com.axelor.apps.account.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReconcileGroupService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -35,12 +39,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,6 +61,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
 
   protected AccountingBatchRepository accountingBatchRepository;
   protected MoveLineRepository moveLineRepository;
+  protected CompanyRepository companyRepository;
 
   protected MoveLineControlService moveLineControlService;
   protected PaymentService paymentService;
@@ -67,6 +74,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
   public BatchAutoMoveLettering(
       AccountingBatchRepository accountingBatchRepository,
       MoveLineRepository moveLineRepository,
+      CompanyRepository companyRepository,
       MoveLineControlService moveLineControlService,
       PaymentService paymentService,
       ReconcileService reconcileService,
@@ -74,6 +82,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     super();
     this.accountingBatchRepository = accountingBatchRepository;
     this.moveLineRepository = moveLineRepository;
+    this.companyRepository = companyRepository;
     this.moveLineControlService = moveLineControlService;
     this.paymentService = paymentService;
     this.reconcileService = reconcileService;
@@ -84,6 +93,8 @@ public class BatchAutoMoveLettering extends BatchStrategy {
   protected void process() {
     accountingBatch = batch.getAccountingBatch();
 
+    initBatch();
+
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = getMoveLinesMap();
     Comparator<MoveLine> moveLineComparator = getMoveLineComparator();
     int reconcileMethodSelect = accountingBatch.getReconcileMethodSelect();
@@ -92,6 +103,9 @@ public class BatchAutoMoveLettering extends BatchStrategy {
 
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
+        findBatch();
+        accountingBatch = batch.getAccountingBatch();
+        accountingBatch.setCompany(companyRepository.find(accountingBatch.getCompany().getId()));
         moveLineLists = moveLineService.findMoveLineLists(moveLineLists);
         List<MoveLine> companyPartnerCreditMoveLineList =
             moveLineLists.getLeft().stream()
@@ -197,46 +211,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
                   creditMoveLine.getName());
             }
           }
-
-          /*if (reconcileMethodSelect
-              == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_AMOUNT) {
-            if (debitMoveLine.getDebit().compareTo(creditMoveLine.getCredit()) == 0) {
-              // reconcile
-            }
-          } else if (reconcileMethodSelect
-              == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_ORIGIN) {
-            if (debitMoveLine.getOrigin().equals(creditMoveLine.getOrigin())) {
-              if (accountingBatch.getIsPartialReconcile()) {
-                // reconcile
-              } else {
-                if (sumDebit.compareTo(sumCredit) == 0) {
-                  // reconcile
-                }
-              }
-            }
-          } else if (reconcileMethodSelect
-              == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_MOVE) {
-            if (sumDebit.compareTo(sumCredit) == 0) {
-              // reconcile
-            }
-          } else if (reconcileMethodSelect
-              == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_ACCOUNT) {
-            if (debitTotalRemaining.compareTo(creditTotalRemaining) == 0) {
-              // reconcile
-            }
-          } else if (reconcileMethodSelect
-              == AccountingBatchRepository
-                  .AUTO_MOVE_LETTERING_RECONCILE_BY_EXTERNAL_IDENTIFIER) {
-            if (debitMoveLine.getExternalOrigin().equals(creditMoveLine.getExternalOrigin())) {
-              if (accountingBatch.getIsPartialReconcile()) {
-                // reconcile
-              } else {
-                if (sumDebit.compareTo(sumCredit) == 0) {
-                  // reconcile
-                }
-              }
-            }
-          }*/
         }
       }
     }
@@ -264,43 +238,44 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     LOG.debug("creditTotalRemaining : {}", creditTotalRemaining);
     BigDecimal nextDebitTotalRemaining = debitTotalRemaining.subtract(amount);
     BigDecimal nextCreditTotalRemaining = creditTotalRemaining.subtract(amount);
+    findBatch();
+    accountingBatch = batch.getAccountingBatch();
+    accountingBatch.setCompany(companyRepository.find(accountingBatch.getCompany().getId()));
+    debitMoveLine = Beans.get(MoveLineRepository.class).find(debitMoveLine.getId());
+    creditMoveLine = Beans.get(MoveLineRepository.class).find(creditMoveLine.getId());
     // Gestion du passage en 580
     if (nextDebitTotalRemaining.compareTo(BigDecimal.ZERO) <= 0
         || nextCreditTotalRemaining.compareTo(BigDecimal.ZERO) <= 0) {
       LOG.debug("last loop");
-      // reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, true);
+      reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, true);
     } else {
-      // reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, false);
+      reconcile = reconcileService.createReconcile(debitMoveLine, creditMoveLine, amount, false);
     }
 
     // End gestion du passage en 580
 
     if (reconcile != null) {
-
       if (accountingBatch.getIsProposal()) {
-        // dont reconcile movelines only update/create reconcilegroup
-        /*ReconcileGroup reconcileGroup =
+        ReconcileGroup reconcileGroup =
             reconcileGroupService.findOrMergeGroup(reconcile).orElse(null);
         if (reconcileGroup == null) {
           reconcileGroup = reconcileGroupService.createReconcileGroup(accountingBatch.getCompany());
           reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PROPOSAL);
         }
         reconcileGroup.setIsProposal(true);
-        reconcile.setReconcileGroup(reconcileGroup);*/
+
+        List<Reconcile> reconcileList = reconcileGroupService.getReconcileList(reconcileGroup);
+        reconcileList.add(reconcile);
+        reconcileGroupService.addToReconcileGroup(reconcileGroup, reconcile);
+
         incrementDone();
-        // nouveaux reconcile groups : status = proposal + isProposal = true
-        // existant, garder status mais isProposal = true
       } else {
-        // reconcile movelines
-        // reconcile groups updated/created
-        // verifier qu'il n'y a pas de reconcile group status = partial, sinon l'update
-        // sinon le créer
-        // reconcileService.confirmReconcile(reconcile, true, true);
+        reconcileService.confirmReconcile(reconcile, true, true);
         incrementDone();
       }
-
-      debitTotalRemaining = debitTotalRemaining.subtract(amount);
-      creditTotalRemaining = creditTotalRemaining.subtract(amount);
+      batch.addReconciledMoveLineSetItem(debitMoveLine);
+      batch.addReconciledMoveLineSetItem(creditMoveLine);
+      batchRepo.save(batch);
 
       LOG.debug("Reconcile : {}", reconcile);
     }
@@ -328,7 +303,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       filters += " AND self.account.code < :toAccountCode";
     }
     if (CollectionUtils.isNotEmpty(accountingBatch.getPartnerSet())) {
-      filters += " AND self.partner IN :partnerSet";
+      filters += " AND self.partner.id IN :partnersIds";
     }
 
     return filters;
@@ -353,7 +328,12 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       params.put("toAccountCode", accountingBatch.getToAccount().getCode());
     }
     if (CollectionUtils.isNotEmpty(accountingBatch.getPartnerSet())) {
-      params.put("partnerSet", accountingBatch.getPartnerSet());
+      params.put(
+          "partnersIds",
+          accountingBatch.getPartnerSet().stream()
+              .distinct()
+              .map(Partner::getId)
+              .collect(Collectors.toList()));
     }
 
     return params;
@@ -471,6 +451,13 @@ public class BatchAutoMoveLettering extends BatchStrategy {
                         || CollectionUtils.containsAny(
                             accountingBatch1.getPartnerSet(), accountingBatch.getPartnerSet())));
     // refaire avec uniquement query
+  }
+
+  @Transactional
+  protected void initBatch() {
+    batch.setWasReconcileProposal(accountingBatch.getIsProposal());
+    batch.setReconciledMoveLineSet(new HashSet<>());
+    batchRepo.save(batch);
   }
 
   /**

@@ -86,6 +86,9 @@
       <button name="showContractBtn" title="Contracts" hidden="true" colSpan="4"
         onClick="action-batch-show-contract,close" if-module="axelor-contract"
         if="__config__.app.isApp('contract')"/>
+      <button name="showReconciledMoveLinesBtn" title="Reconciled move lines" hidden="true"
+        colSpan="6" onClick="action-batch-show-reconciled-move-lines,close"
+        if-module="axelor-account"/>
     </panel>
     <panel name="originPanel" title="Origin" sidebar="true" itemSpan="12">
       <field name="companyCode"/>
@@ -137,6 +140,8 @@
       expr="eval: (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF  || accountingCutOffTypeSelect &gt;= __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) &amp;&amp; (__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY)"/>
     <attribute name="hidden" for="showAccountMoveBtn"
       expr="eval: (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' &amp;&amp; accountingBatch == null) || (__parent__?.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF  &amp;&amp; accountingCutOffTypeSelect &gt;= __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES)"/>
+    <attribute name="hidden" for="showReconciledMoveLinesBtn"
+      expr="eval: __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_AUTO_MOVE_LETTERING"/>
 
     <attribute name="hidden" for="showGeneratedAccountMoveBtn"
       expr="eval: __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF || accountingCutOffTypeSelect &lt; __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES"/>
@@ -195,6 +200,16 @@
     <view type="form" name="move-form"/>
     <domain>:batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-batch-show-reconciled-move-lines"
+    title="Reconciled move lines" model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-account-batch-auto-move-lettering-grid"/>
+    <view type="form" name="move-line-form"/>
+    <domain>self.id IN (:_reconciledMoveLineIdList)</domain>
+    <context name="_reconciledMoveLineIdList"
+      expr="eval: reconciledMoveLineSet?.collect{it.id}"/>
+    <context name="_isProposal" expr="eval: wasReconcileProposal"/>
   </action-view>
 
   <action-view name="action-batch-show-generated-move" title="Moves"
