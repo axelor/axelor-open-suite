@@ -458,6 +458,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   void updateRecipientsTemplatesContext(Set<String> recipients) {
     String contRecipients = String.join(", ", recipients);
 
+    if (templatesContext == null) {
+      templatesContext = Maps.newHashMap();
+    }
     // Creating 2 same keys as it could be useful for a future update
     templatesContext.put("toRecipients", contRecipients);
     templatesContext.put("ccRecipients", contRecipients);
