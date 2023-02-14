@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed error when ventilating a new invoice when the configuration 'has invoice term' field on account was disabled."
-type: fix
