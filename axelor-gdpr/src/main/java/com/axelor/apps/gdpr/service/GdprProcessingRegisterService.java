@@ -1,8 +1,26 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.gdpr.service;
 
 import com.axelor.apps.base.db.Anonymizer;
 import com.axelor.apps.base.db.AnonymizerLine;
 import com.axelor.apps.base.service.app.AnonymizeService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegister;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule;
@@ -26,28 +44,34 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class GDPRProcessingRegisterService implements Callable<List<GDPRProcessingRegister>> {
+public class GdprProcessingRegisterService implements Callable<List<GDPRProcessingRegister>> {
 
   protected AnonymizeService anonymizeService;
   protected GDPRProcessingRegisterLogRepository processingLogRepo;
   protected GDPRProcessingRegisterRepository processingRegisterRepository;
+  protected AppBaseService appBaseService;
+  protected GdprAnonymizeService gdprAnonymizeService;
   protected List<GDPRProcessingRegister> gdprProcessingRegisters;
 
   @Inject
-  public GDPRProcessingRegisterService(
+  public GdprProcessingRegisterService(
       AnonymizeService anonymizeService,
       GDPRProcessingRegisterLogRepository processingLogRepo,
-      GDPRProcessingRegisterRepository processingRegisterRepository) {
+      GDPRProcessingRegisterRepository processingRegisterRepository,
+      AppBaseService appBaseService,
+      GdprAnonymizeService gdprAnonymizeService) {
     this.anonymizeService = anonymizeService;
     this.processingLogRepo = processingLogRepo;
     this.processingRegisterRepository = processingRegisterRepository;
+    this.appBaseService = appBaseService;
+    this.gdprAnonymizeService = gdprAnonymizeService;
   }
 
   public void setGdprProcessingRegister(List<GDPRProcessingRegister> gdprProcessingRegisters) {
@@ -86,7 +110,7 @@ public class GDPRProcessingRegisterService implements Callable<List<GDPRProcessi
   }
 
   public void launchProcessingRegister(GDPRProcessingRegister gdprProcessingRegister)
-      throws ClassNotFoundException, AxelorException {
+      throws ClassNotFoundException, AxelorException, IOException {
 
     List<GDPRProcessingRegisterRule> gdprProcessingRegisterRuleList =
         gdprProcessingRegister.getGdprProcessingRegisterRuleList();
@@ -123,6 +147,10 @@ public class GDPRProcessingRegisterService implements Callable<List<GDPRProcessi
         anonymize(metaModel, model, anonymizer);
         count++;
 
+        if (anonymizer != null) {
+          gdprAnonymizeService.anonymizeTrackingDatas(model);
+        }
+
         if (count % 10 == 0) {
           JPA.clear();
         }
@@ -153,7 +181,7 @@ public class GDPRProcessingRegisterService implements Callable<List<GDPRProcessi
 
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   protected void anonymize(MetaModel metaModel, AuditableModel model, Anonymizer anonymizer)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     if (anonymizer == null) {
       return;
@@ -194,7 +222,7 @@ public class GDPRProcessingRegisterService implements Callable<List<GDPRProcessi
     gdprProcessingRegister = processingRegisterRepository.find(gdprProcessingRegister.getId());
 
     processingLog.setGdprProcessingRegister(gdprProcessingRegister);
-    processingLog.setProcessingDate(LocalDateTime.now());
+    processingLog.setProcessingDateT(appBaseService.getTodayDateTime().toLocalDateTime());
 
     processingLog.setNbProcessed(nbProcessed);
 

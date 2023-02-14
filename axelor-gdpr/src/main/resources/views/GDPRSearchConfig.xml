@@ -3,16 +3,23 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid title="GDPR Search Config" name="gdpr-search-config-grid"
+  <grid title="Search configurations" name="gdpr-search-config-grid"
     model="com.axelor.apps.gdpr.db.GDPRSearchConfig">
     <field name="metaModel"/>
   </grid>
 
-  <form title="GDPR Search Config" name="gdpr-search-config-form"
+  <form title="Search configuration" name="gdpr-search-config-form"
     model="com.axelor.apps.gdpr.db.GDPRSearchConfig">
     <panel name="mainPanel">
       <field name="metaModel"/>
-      <field name="searchConfigLines" colSpan="12" showTitle="false">
+
+      <help>
+        <![CDATA[
+          <br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>
+        ]]>
+      </help>
+
+      <field name="searchConfigLineList" colSpan="12" showTitle="false">
         <editor colSpan="12">
           <field name="key" colSpan="4"/>
           <field name="query" colSpan="4"/>

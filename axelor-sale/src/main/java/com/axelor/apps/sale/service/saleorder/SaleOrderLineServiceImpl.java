@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
-import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCategoryService;
@@ -118,7 +117,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Inject protected ProductCategoryService productCategoryService;
-  @Inject protected PricingRepository pricingRepository;
   @Inject protected ProductCompanyService productCompanyService;
 
   @Override

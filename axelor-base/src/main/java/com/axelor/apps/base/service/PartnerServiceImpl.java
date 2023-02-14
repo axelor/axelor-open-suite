@@ -325,6 +325,7 @@ public class PartnerServiceImpl implements PartnerService {
     return urlMap;
   }
 
+  @Deprecated
   @Override
   public List<Long> findPartnerMails(Partner partner, int emailType) {
     List<Long> idList = new ArrayList<Long>();

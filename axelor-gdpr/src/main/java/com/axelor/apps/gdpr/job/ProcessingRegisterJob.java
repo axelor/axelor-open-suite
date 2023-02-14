@@ -1,11 +1,29 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.gdpr.job;
 
 import com.axelor.apps.gdpr.db.GDPRProcessingRegister;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRepository;
-import com.axelor.apps.gdpr.service.GDPRProcessingRegisterService;
+import com.axelor.apps.gdpr.service.GdprProcessingRegisterService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
+import java.io.IOException;
 import java.util.List;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -17,7 +35,7 @@ public class ProcessingRegisterJob implements Job {
 
   private final Logger log = LoggerFactory.getLogger(ProcessingRegisterJob.class);
 
-  @Inject GDPRProcessingRegisterService processingRegisterService;
+  @Inject GdprProcessingRegisterService processingRegisterService;
   @Inject GDPRProcessingRegisterRepository processingRegisterRepository;
 
   @Override
@@ -32,7 +50,7 @@ public class ProcessingRegisterJob implements Job {
       processingRegister = processingRegisterRepository.find(processingRegister.getId());
       try {
         processingRegisterService.launchProcessingRegister(processingRegister);
-      } catch (ClassNotFoundException | AxelorException e) {
+      } catch (ClassNotFoundException | AxelorException | IOException e) {
         TraceBackService.trace(e);
       }
     }

@@ -103,6 +103,7 @@ public class PricingServiceImpl implements PricingService {
     } else {
       filter.append("AND self.previousPricing is NULL ");
     }
+    filter.append("AND (self.archived = false OR self.archived is null) ");
 
     appendProductFilter(product, productCategory, filter, bindings);
     LOG.debug("Filtering pricing with {}", filter.toString());
@@ -223,7 +224,6 @@ public class PricingServiceImpl implements PricingService {
     if (ObjectUtils.isEmpty(historizedPricing.getEndDate())) {
       historizedPricing.setEndDate(todayDate);
     }
-    checkDates(historizedPricing);
 
     List<PricingLine> pricingLineList = pricing.getPricingLineList();
     for (PricingLine pricingLine : pricingLineList) {

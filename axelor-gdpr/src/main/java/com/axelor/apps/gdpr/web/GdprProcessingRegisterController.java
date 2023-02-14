@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.gdpr.web;
 
 import com.axelor.apps.base.callable.ControllerCallableTool;
@@ -6,8 +23,8 @@ import com.axelor.apps.gdpr.db.GDPRProcessingRegister;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRepository;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRuleRepository;
-import com.axelor.apps.gdpr.service.GDPRAnonymizeService;
-import com.axelor.apps.gdpr.service.GDPRProcessingRegisterService;
+import com.axelor.apps.gdpr.service.GdprAnonymizeService;
+import com.axelor.apps.gdpr.service.GdprProcessingRegisterService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -15,19 +32,10 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GDPRProcessingRegisterController {
-
-  protected GDPRProcessingRegisterRepository gdprProcessingRegisterRepository;
-
-  @Inject
-  public GDPRProcessingRegisterController(
-      GDPRProcessingRegisterRepository gdprProcessingRegisterRepository) {
-    this.gdprProcessingRegisterRepository = gdprProcessingRegisterRepository;
-  }
+public class GdprProcessingRegisterController {
 
   public void addAnonymizer(ActionRequest request, ActionResponse response) {
     Map<String, Object> parent = (Map<String, Object>) request.getContext().get("_parent");
@@ -60,7 +68,7 @@ public class GDPRProcessingRegisterController {
       List<MetaField> metaFields =
           metaModel.getMetaFields().stream()
               .filter(mf -> Objects.isNull(mf.getRelationship()))
-              .filter(mf -> !GDPRAnonymizeService.excludeFields.contains(mf.getName()))
+              .filter(mf -> !GdprAnonymizeService.excludeFields.contains(mf.getName()))
               .collect(Collectors.toList());
 
       for (MetaField metaField : metaFields) {
@@ -86,14 +94,14 @@ public class GDPRProcessingRegisterController {
       processingRegisters.add(gdprProcessingRegister);
     } else {
       processingRegisters =
-          gdprProcessingRegisterRepository
+          Beans.get(GDPRProcessingRegisterRepository.class)
               .findByStatus(GDPRProcessingRegisterRepository.PROCESSING_REGISTER_STATUS_ACTIVE)
               .fetch();
     }
 
     try {
-      GDPRProcessingRegisterService gdprProcessingRegisterService =
-          Beans.get(GDPRProcessingRegisterService.class);
+      GdprProcessingRegisterService gdprProcessingRegisterService =
+          Beans.get(GdprProcessingRegisterService.class);
       gdprProcessingRegisterService.setGdprProcessingRegister(processingRegisters);
 
       ControllerCallableTool<List<GDPRProcessingRegister>> controllerCallableTool =

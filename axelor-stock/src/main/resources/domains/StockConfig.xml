@@ -102,7 +102,7 @@
     <boolean name="displayOrderReferenceAndOrderDate"
       title="Display order reference and order date" default="true"/>
 
-    <integer name="percentToleranceForWapChange" title="Tolerance on WAP price changes (%)."
+    <integer name="percentToleranceForWapChange" title="Tolerance on WAP changes (%)"
       min="0" nullable="true"/>
 
     <extra-code><![CDATA[

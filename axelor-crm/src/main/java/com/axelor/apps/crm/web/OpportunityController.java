@@ -24,7 +24,6 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -82,7 +81,7 @@ public class OpportunityController {
           .setOpportunityStatus(
               Beans.get(OpportunityRepository.class).find(opportunity.getId()), true);
       response.setReload(true);
-    } catch (AxelorException e) {
+    } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
@@ -95,7 +94,7 @@ public class OpportunityController {
           .setOpportunityStatus(
               Beans.get(OpportunityRepository.class).find(opportunity.getId()), false);
       response.setReload(true);
-    } catch (AxelorException e) {
+    } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }

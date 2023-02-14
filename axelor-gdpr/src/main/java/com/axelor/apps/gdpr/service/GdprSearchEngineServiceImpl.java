@@ -1,9 +1,26 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.gdpr.service;
 
 import com.axelor.apps.gdpr.db.GDPRSearchConfig;
 import com.axelor.apps.gdpr.db.GDPRSearchConfigLine;
 import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
-import com.axelor.apps.gdpr.service.app.AppGDPRService;
+import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
@@ -21,16 +38,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
-public class GDPRSearchEngineServiceImpl implements GDPRSearchEngineService {
+public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
 
-  protected AppGDPRService appGDPRService;
+  protected AppGdprService appGDPRService;
   protected MetaModelRepository metaModelRepo;
 
   @Inject
-  public GDPRSearchEngineServiceImpl(
-      AppGDPRService appGDPRService, MetaModelRepository metaModelRepo) {
+  public GdprSearchEngineServiceImpl(
+      AppGdprService appGDPRService, MetaModelRepository metaModelRepo) {
     this.appGDPRService = appGDPRService;
     this.metaModelRepo = metaModelRepo;
   }
@@ -52,6 +70,33 @@ public class GDPRSearchEngineServiceImpl implements GDPRSearchEngineService {
     return results;
   }
 
+  @Override
+  public Map<String, Object> checkSelectedObject(List<Map<String, Object>> resultList)
+      throws AxelorException {
+    if (resultList == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(GdprExceptionMessage.NO_LINE_SELECTED));
+    }
+
+    List<Map<String, Object>> selectedObjects;
+
+    selectedObjects =
+        resultList.stream()
+            .filter(m -> m.get("selected") != null && (Boolean) m.get("selected"))
+            .collect(Collectors.toList());
+
+    if (selectedObjects.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(GdprExceptionMessage.NO_LINE_SELECTED));
+    } else if (selectedObjects.size() > 1) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(GdprExceptionMessage.TOO_MUCH_LINE_SELECTED));
+    } else {
+      return selectedObjects.get(0);
+    }
+  }
+
   /**
    * search using search config
    *
@@ -61,7 +106,7 @@ public class GDPRSearchEngineServiceImpl implements GDPRSearchEngineService {
    */
   public List<Map<String, Object>> bindDataUsingSearchConfig(Map<String, Object> searchParams)
       throws ClassNotFoundException {
-    List<GDPRSearchConfig> searchConfigs = appGDPRService.getAppGDPR().getRequestSearchConfig();
+    List<GDPRSearchConfig> searchConfigs = appGDPRService.getAppGDPR().getSearchConfigList();
 
     List<Map<String, Object>> results = new ArrayList<>();
 
@@ -84,7 +129,7 @@ public class GDPRSearchEngineServiceImpl implements GDPRSearchEngineService {
 
   public String buildSearchQuery(Map<String, Object> searchParams, GDPRSearchConfig searchConfig) {
     StringBuilder query = new StringBuilder();
-    List<GDPRSearchConfigLine> searchConfigLines = searchConfig.getSearchConfigLines();
+    List<GDPRSearchConfigLine> searchConfigLines = searchConfig.getSearchConfigLineList();
 
     for (GDPRSearchConfigLine searchConfigLine : searchConfigLines) {
       String param =
@@ -111,8 +156,6 @@ public class GDPRSearchEngineServiceImpl implements GDPRSearchEngineService {
    */
   public Map<String, Object> convertResultToDisplayMap(
       GDPRSearchConfig searchConfig, AuditableModel reference) {
-    Mapper mapper = Mapper.of(reference.getClass());
-    MetaModel metaModel = searchConfig.getMetaModel();
     Context scriptContext = new Context(Mapper.toMap(reference), reference.getClass());
     Map<String, Object> mappedObject = new HashMap<>();
 
@@ -120,7 +163,7 @@ public class GDPRSearchEngineServiceImpl implements GDPRSearchEngineService {
     mappedObject.put("typeClass", reference.getClass().getName());
     mappedObject.put("objectId", reference.getId());
 
-    for (GDPRSearchConfigLine searchConfigLine : searchConfig.getSearchConfigLines()) {
+    for (GDPRSearchConfigLine searchConfigLine : searchConfig.getSearchConfigLineList()) {
       mappedObject.put(
           searchConfigLine.getKey(), evalField(scriptContext, searchConfigLine.getMapping()));
     }

@@ -244,6 +244,7 @@ public class PartnerController {
     }
   }
 
+  @Deprecated
   public void findReceivedMails(ActionRequest request, ActionResponse response) {
     try {
       this.findMails(request, response, MessageRepository.TYPE_RECEIVED);
