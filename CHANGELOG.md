@@ -1,3 +1,20 @@
+## [6.3.11] (2023-02-14)
+
+#### Fixed
+
+* Studio : Fix editor issues
+
+Fix difficulty to insert fields. Fix crash on click on '+' icon of panel tab.
+
+* Partner: improve email panel
+
+Fixed an issue where permissions were not applied for emails displayed in this panel, also improve display by using a card view.
+
+* Opportunity: lost reason is now correctly cleared when reopening a lost opportunity.
+* Opportunity: fixed description on kanban view.
+* Ticket type: fixed error preventing to show chart information on opening a ticket type form.
+* Meta select: fixed wrong french translation for "Order".
+
 ## [6.3.10] (2023-02-03)
 
 #### Fixed
@@ -450,6 +467,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.11]: https://github.com/axelor/axelor-open-suite/compare/v6.3.10...v6.3.11
 [6.3.10]: https://github.com/axelor/axelor-open-suite/compare/v6.3.9...v6.3.10
 [6.3.9]: https://github.com/axelor/axelor-open-suite/compare/v6.3.8...v6.3.9
 [6.3.8]: https://github.com/axelor/axelor-open-suite/compare/v6.3.7...v6.3.8

@@ -1,6 +1,0 @@
----
-title : "Studio : Fix editor issues"
-type : fix
-description : 
-   Fix difficulty to insert fields.
-   Fix crash on click on '+' icon of panel tab. 
