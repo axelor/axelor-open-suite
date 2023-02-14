@@ -194,10 +194,8 @@
           action="action-invoice-line-view-project-tasks" colSpan="12"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
-        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form"
           onSelect="action-invoice-line-attrs-set-domain-analytic-distribution-template"
@@ -206,37 +204,31 @@
           requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
           form-view="analytic-move-line-move-line-form" colSpan="12"
-          if="__config__.app.getApp('account').getManageAnalyticAccounting()"
           onChange="action-invoice-line-group-analytic-move-line-onchange"/>
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
         <field name="account.analyticDistributionRequiredOnInvoiceLines" hidden="true"/>
@@ -433,6 +425,7 @@
     <action name="action-invoice-line-attrs-display-different-language-message"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-method-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -445,6 +438,7 @@
     <action name="action-invoice-line-attrs-display-different-language-message"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-method-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
@@ -771,5 +765,11 @@
 
   <action-method name="action-invoice-line-method-check-qty">
     <call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="checkQty"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-line-method-set-hidden-analytic-distribution-panel">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="manageInvoiceLineAnalyticVisibility"/>
   </action-method>
 </object-views>

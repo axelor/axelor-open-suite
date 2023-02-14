@@ -625,4 +625,27 @@ public class InvoiceLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void manageInvoiceLineAnalyticVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      Context parentContext = request.getContext().getParent();
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      response.setAttr("analyticDistributionPanel", "hidden", false);
+
+      if (parentContext != null) {
+        Invoice invoice = parentContext.asType(Invoice.class);
+        if (invoice.getCompany() == null
+            || !Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
+            || !Beans.get(AccountConfigService.class)
+                .getAccountConfig(invoice.getCompany())
+                .getManageAnalyticAccounting()
+            || invoiceLine.getAccount() == null
+            || !invoiceLine.getAccount().getAnalyticDistributionAuthorized()) {
+          response.setAttr("analyticDistributionPanel", "hidden", true);
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
