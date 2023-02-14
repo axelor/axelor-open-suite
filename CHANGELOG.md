@@ -1,3 +1,16 @@
+## [6.1.31] (2023-02-14)
+
+#### Fixed
+
+* Studio : Fix editor issues
+
+Fix difficulty to insert fields. Fix crash on click on '+' icon of panel tab.
+
+* Opportunity: lost reason is now correctly cleared when reopening a lost opportunity.
+* Opportunity: fixed description on kanban view.
+* Ticket type: fixed error preventing to show chart information on opening a ticket type form.
+* Meta select: fixed wrong french translation for "Order".
+
 ## [6.1.30] (2023-02-03)
 
 #### Fixed
@@ -964,6 +977,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.31]: https://github.com/axelor/axelor-open-suite/compare/v6.1.30...v6.1.31
 [6.1.30]: https://github.com/axelor/axelor-open-suite/compare/v6.1.29...v6.1.30
 [6.1.29]: https://github.com/axelor/axelor-open-suite/compare/v6.1.28...v6.1.29
 [6.1.28]: https://github.com/axelor/axelor-open-suite/compare/v6.1.27...v6.1.28
