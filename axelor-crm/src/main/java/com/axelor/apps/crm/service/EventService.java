@@ -43,8 +43,6 @@ public interface EventService {
   @CallMethod
   String getInvoicingAddressFullName(Partner partner);
 
-  void manageFollowers(Event event);
-
   void addRecurrentEventsByDays(
       Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate);
 
@@ -74,4 +72,12 @@ public interface EventService {
   void generateRecurrentEvents(Event event, RecurrenceConfiguration conf) throws AxelorException;
 
   public EmailAddress getEmailAddress(Event event);
+
+  public void fillEventDates(Event event) throws AxelorException;
+
+  public void planEvent(Event event);
+
+  public void realizeEvent(Event event);
+
+  public void cancelEvent(Event event);
 }

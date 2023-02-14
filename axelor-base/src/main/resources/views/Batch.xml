@@ -37,7 +37,7 @@
       <button name="showTraceBackBtn" title="Anomalies" colSpan="4"
         onClick="action-batch-show-trace-back,close"/>
       <button name="showInvoiceBtn" title="Invoices" hidden="true" colSpan="4"
-        onClick="action-batch-show-invoice" if-module="axelor-account,close"/>
+        onClick="action-batch-show-invoice,close" if-module="axelor-account"/>
       <button name="showImportHistoryBtn" title="Import Histories" hidden="true" colspan="4"
         onClick="action-view-import-histories,close"/>
       <button name="showLcrAccountedInvoiceBtn" title="Invoices" hidden="true" colspan="4"
@@ -83,6 +83,9 @@
       <button name="showProcessedAccountMoveBtn" title="Processed account moves"
         hidden="true" colSpan="6" onClick="action-batch-show-processed-move,close"
         if-module="axelor-account"/>
+      <button name="showContractBtn" title="Contracts" hidden="true" colSpan="4"
+        onClick="action-batch-show-contract,close" if-module="axelor-contract"
+        if="__config__.app.isApp('contract')"/>
     </panel>
     <panel name="originPanel" title="Origin" sidebar="true" itemSpan="12">
       <field name="companyCode"/>
@@ -153,6 +156,15 @@
       if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
     <attribute name="hidden" for="showImportHistoryBtn" expr="eval: false"
       if="__parent__?._model == 'com.axelor.apps.base.db.ImportBatch'"/>
+
+    <attribute name="hidden" for="showInvoiceBtn"
+      expr="eval: __parent__?.actionSelect != 1"
+      if="__parent__?._model == 'com.axelor.apps.contract.db.ContractBatch'"/>
+
+    <attribute name="hidden" for="showContractBtn"
+      expr="eval: __parent__?.actionSelect != 1"
+      if="__parent__?._model == 'com.axelor.apps.contract.db.ContractBatch'"/>
+
   </action-attrs>
 
   <action-view name="action-batch-show-trace-back" title="Anomalies"
@@ -282,6 +294,14 @@
     <view type="grid" name="batch-import-history-grid"/>
     <view type="form" name="batch-import-history-form"/>
     <domain>:batch = self.batch</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-batch-show-contract" title="Contracts"
+    model="com.axelor.apps.contract.db.Contract">
+    <view type="grid" name="contract-grid"/>
+    <view type="form" name="contract-form"/>
+    <domain>:batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
   </action-view>
 

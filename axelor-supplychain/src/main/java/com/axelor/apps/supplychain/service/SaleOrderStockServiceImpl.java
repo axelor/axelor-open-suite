@@ -223,13 +223,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         continue;
       }
 
-      LocalDate dateKey = saleOrderLine.getEstimatedDelivDate();
+      LocalDate dateKey = saleOrderLine.getEstimatedShippingDate();
 
       if (dateKey == null) {
-        dateKey = saleOrderLine.getSaleOrder().getDeliveryDate();
+        dateKey = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
       }
       if (dateKey == null) {
-        dateKey = saleOrderLine.getDesiredDelivDate();
+        dateKey = saleOrderLine.getDesiredDeliveryDate();
       }
 
       List<SaleOrderLine> saleOrderLineLists = saleOrderLinePerDateMap.get(dateKey);
@@ -339,10 +339,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
           break;
         case SupplyChainConfigRepository.SALE_ORDER_SHIPPING_DATE:
           SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-          if (saleOrderLine == null || saleOrderLine.getEstimatedDelivDate() == null) {
+          if (saleOrderLine == null || saleOrderLine.getEstimatedShippingDate() == null) {
             reservationDateTime = null;
           } else {
-            reservationDateTime = saleOrderLine.getEstimatedDelivDate().atStartOfDay();
+            reservationDateTime = saleOrderLine.getEstimatedShippingDate().atStartOfDay();
           }
           break;
         default:

@@ -44,7 +44,8 @@
         onChange="action-project-planning-time-record-end-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
       <field name="product" canEdit="false"
         onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox"
-        form-view="product-form" grid-view="product-grid" required="true"/>
+        form-view="product-form" grid-view="product-grid" required="true"
+        title="ProjectPlanningTime.Activity"/>
       <field name="isIncludeInTurnoverForecast"/>
       <field name="description" colSpan="12" widget="html"/>
     </panel>
@@ -62,9 +63,10 @@
         target="com.axelor.apps.hr.db.Employee" target-name="name" required="true"
         onSelect="action-project-planning-time-attrs-project-domain"
         onChange="action-project-planning-time-attrs-employee-change"/>
-      <field name="product" canEdit="false" title="Activity" type="many-to-one"
-        target="com.axelor.apps.base.db.Product" target-name="name"
-        onSelect="action-project-planning-time-attrs-domain-product" required="true"/>
+      <field name="product" canEdit="false" title="ProjectPlanningTime.Activity"
+        type="many-to-one" target="com.axelor.apps.base.db.Product" target-name="name"
+        onSelect="action-project-planning-time-attrs-domain-product" required="true"
+        help="The field Activity is filled automatically from the field &quot;Default Activity Product&quot; from the employee form, on the timesheets panel. You can still modify for each task though"/>
       <field name="timepercent" title="Time%" widget="SelectProgress" type="integer"
         selection="project.task.progress.select"/>
       <field name="isIncludeInTurnoverForecast" title="Include in turnover forecast"
@@ -74,17 +76,6 @@
         readonlyIf="fromDate == null || toDate == null || employee == null"/>
       <field name="project" type="many-to-one" target="com.axelor.apps.project.db.Project"
         hidden="true"/>
-    </panel>
-  </form>
-
-  <form name="project-planning-user-select-wizard-form" title="Select users"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-project-planning-time-attrs-default">
-    <panel name="mainPanel">
-      <field name="userSet" title="Users" type="many-to-many" colSpan="12"
-        target="com.axelor.auth.db.User" canNew="false"
-        onSelect="action-project-planning-time-attrs-project-domain"/>
-      <button name="showPlanningBtn" title="Project Planning"
-        onClick="action-project-planning-time-method-show-planning" colSpan="3"/>
     </panel>
   </form>
 
@@ -193,11 +184,6 @@
     <attribute name="hidden" for="removeSelectedPlanningTimeBtn" expr="eval:true"/>
     <attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:true"/>
   </action-attrs>
-
-  <action-method name="action-project-planning-time-method-show-planning">
-    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
-      method="showPlanning"/>
-  </action-method>
 
   <action-method
     name="action-project-planning-time-method-add-multiple-project-planning-time">

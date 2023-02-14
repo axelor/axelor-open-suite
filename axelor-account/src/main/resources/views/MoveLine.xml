@@ -525,9 +525,11 @@
       <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
         if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
-          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"/>
+          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
+          onChange="action-move-line-record-set-cut-off-generated-false"/>
         <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
-          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"/>
+          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
+          onChange="action-move-line-record-set-cut-off-generated-false"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
@@ -645,7 +647,7 @@
     </panel>
     <panel name="detailsPanel">
       <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"
-        readonlyIf="move.period.statusSelect == 2 || $validatePeriod"/>
+        readonlyIf="move.period.statusSelect == 2 || move.period.statusSelect == 5 || $validatePeriod"/>
       <field name="move.period.statusSelect" hidden="true"/>
       <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     </panel>
@@ -774,9 +776,11 @@
       <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
         if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
-          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"/>
+          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
+          onChange="action-move-line-record-set-cut-off-generated-false"/>
         <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
-          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"/>
+          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
+          onChange="action-move-line-record-set-cut-off-generated-false"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
@@ -882,6 +886,7 @@
   <action-group name="action-account-move-line-account-group-on-change">
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <action name="action-move-line-record-set-cut-off-generated-false"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-account-move-line-method-set-partner-readonly"/>
     <action name="action-move-line-method-refresh-account-informations"/>
@@ -898,6 +903,7 @@
     <action name="action-move-live-method-set-hidden-analytic-distribution-panel"/>
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <action name="action-move-line-record-set-cut-off-generated-false"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
     <action name="action-move-line-method-generate-invoice-terms"/>
   </action-group>
@@ -930,6 +936,7 @@
   <action-group name="action-move-line-group-account-onchange">
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <action name="action-move-line-record-set-cut-off-generated-false"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
     <action name="action-move-live-method-set-hidden-analytic-distribution-panel"/>
@@ -1137,6 +1144,11 @@
   <action-record name="action-move-line-record-reset-partner-details"
     model="com.axelor.apps.account.db.MoveLine">
     <field name="partnerFullName,partnerSeq,partnerId" expr="eval: null" if="!partner"/>
+  </action-record>
+
+  <action-record name="action-move-line-record-set-cut-off-generated-false"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="isCutOffGenerated" expr="eval: false"/>
   </action-record>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"

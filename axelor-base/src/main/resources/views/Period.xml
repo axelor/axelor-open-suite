@@ -16,7 +16,7 @@
 
   <form name="period-form" title="Period" model="com.axelor.apps.base.db.Period"
     onLoad="action-attrs-period-hide-linked-adjusting-moves-dashlet">
-    <panel name="mainPanel" readonlyIf="statusSelect == 2">
+    <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 5">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
       <field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"
@@ -52,7 +52,7 @@
   <form name="period-year-form" title="Period" model="com.axelor.apps.base.db.Period"
     onLoad="action-attrs-period-hide-linked-adjusting-moves-dashlet"
     onNew="action-period-record-set-value-onNew">
-    <panel name="mainPanel" readonlyIf="statusSelect == 2">
+    <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 5">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
       <field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"
@@ -73,7 +73,7 @@
       <field name="statusSelect" colSpan="6"/>
       <field name="closureDateTime" colSpan="6" showIf="statusSelect == 2"/>
       <button name="closeBtn" title="Close period" onClick="action-period-group-close"
-        hideIf="statusSelect == 2 || $popup()"
+        hideIf="statusSelect == 2 || statusSelect == 5 || $popup()"
         prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
       <button name="adjustBtn" title="Adjust period"
         onClick="action-validate-period-is-adjusting-year,action-method-period-adjust"
