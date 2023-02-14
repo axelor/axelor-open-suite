@@ -1,3 +1,0 @@
----
-title : "MoveTemplate : Fix fill of payment condition on move and set description of moveTemplate on all moveLine where moveTemplate description is filled"
-type: fix

@@ -13,6 +13,8 @@
     <many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language"
       title="Default Partner language"/>
     <boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
+    <boolean name="emailAccountByCompany" title="Manage mail account by company"
+      default="false"/>
     <boolean name="storeStreets" title="Store streets" default="false"/>
 
     <!-- Interfaces QAS et SVI -->
@@ -178,6 +180,7 @@
       <field name="todayDateT" on="UPDATE"/>
       <field name="defaultPartnerLanguage" on="UPDATE"/>
       <field name="emailAccountByUser" on="UPDATE"/>
+      <field name="emailAccountByCompany" on="UPDATE"/>
 
       <field name="qasWsdlUrl" on="UPDATE"/>
       <field name="mapApiSelect" on="UPDATE"/>

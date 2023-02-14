@@ -92,7 +92,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       Company company,
       Partner contactPartner,
       Currency currency,
-      LocalDate deliveryDate,
+      LocalDate estimatedShippingDate,
       String internalReference,
       String externalReference,
       PriceList priceList,
@@ -115,7 +115,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setContactPartner(contactPartner);
     saleOrder.setCurrency(currency);
     saleOrder.setExternalReference(externalReference);
-    saleOrder.setDeliveryDate(deliveryDate);
+    saleOrder.setEstimatedShippingDate(estimatedShippingDate);
+    saleOrder.setEstimatedDeliveryDate(estimatedShippingDate);
     saleOrder.setTaxNumber(taxNumber);
     saleOrder.setFiscalPosition(fiscalPosition);
 

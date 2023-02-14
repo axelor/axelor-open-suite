@@ -1,0 +1,10 @@
+---
+title: "Interco/PurchaseOrder/SaleOrder: Changed some fields name and linked them in the interco process"
+type: fix
+description: |
+  In Sale order added new field estimatedDeliveryDate.
+  In Purchase Order changed deliveryDate name to estimatedReceiptDate.
+  Theses two fields are related for the interco process.
+  In Sale order line added new field estimatedDeliveryDate and changed desiredDelivDate to desiredDeliveryDate.
+  In Purchase Order line changed desiredDelivDate to desiredReceiptDate and change estimatedDelivDate to estimatedReceiptDate.
+  

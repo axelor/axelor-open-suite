@@ -293,8 +293,9 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     return sumPurchaseOrderQty;
   }
 
-  protected BigDecimal getAvailableQty(
-      Product product, Company company, StockLocation stockLocation) throws AxelorException {
+  @Override
+  public BigDecimal getAvailableQty(Product product, Company company, StockLocation stockLocation)
+      throws AxelorException {
     if (product == null || product.getUnit() == null) {
       return BigDecimal.ZERO;
     }

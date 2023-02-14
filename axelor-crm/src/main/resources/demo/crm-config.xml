@@ -54,9 +54,6 @@
     <bind column="subject" to="subjectTeam"/>
   </input>
 
-  <input file="crm_opportunityType.csv" separator=";"
-    type="com.axelor.apps.crm.db.OpportunityType" search="self.code = :code"/>
-
   <input file="crm_opportunity.csv" separator=";" type="com.axelor.apps.crm.db.Opportunity"
     search="self.importId = :importId"
     call="com.axelor.csv.script.ImportOpportunity:importOpportunity">
@@ -70,5 +67,17 @@
 
   <input file="crm_crmConfig.csv" separator=";" type="com.axelor.apps.crm.db.CrmConfig"
     search="self.importId = :importId"/>
+
+  <input file="crm_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";"/>
+
+  <input file="crm_anonymizerLine.csv" type="com.axelor.apps.base.db.AnonymizerLine"
+    separator=";">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="metaField" column="metaField"
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+    <bind to="anonymizer" column="anonymizer_importId"
+      search="self.importId = :anonymizer_importId"/>
+    <bind to="useFakeData" column="useFakeData"/>
+  </input>
 
 </csv-inputs>

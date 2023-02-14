@@ -37,7 +37,7 @@
     </panel>
     <panel name="indicatorsPanel" colSpan="12">
       <panel name="mainDashboardPanel" colSpan="10" itemSpan="2" colOffset="2">
-        <panel name="purchaseOrderPanel" title="Order" if-module="axelor-purchase"
+        <panel name="purchaseOrderPanel" title="Purchase order" if-module="axelor-purchase"
           itemSpan="12">
           <button name="$orders" title="Orders" width="190px" widget="info-button"
             onClick="action-method-supplier-view-get-purchase-order"/>

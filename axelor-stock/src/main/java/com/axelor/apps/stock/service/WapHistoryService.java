@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockLocationLineHistory;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.WapHistory;
 import java.time.LocalDate;
@@ -32,8 +33,11 @@ public interface WapHistoryService {
    * com.axelor.apps.stock.db.repo.WapHistoryRepository#ORIGIN_MANUAL_CORRECTION}
    *
    * @param stockLocationLine a stock location line with updated WAP
+   * @deprecated This method must no longer be used, as WapHistory is deprecated, please use {@link
+   *     StockLocationLineHistory}
    * @return the saved wap history
    */
+  @Deprecated
   WapHistory saveWapHistory(StockLocationLine stockLocationLine);
 
   /**
@@ -44,8 +48,11 @@ public interface WapHistoryService {
    *
    * @param stockLocationLine a stock location line with updated WAP
    * @param stockMoveLine the stock move line that caused the WAP change
+   * @deprecated This method must no longer be used, as WapHistory is deprecated, please use {@link
+   *     StockLocationLineHistory}
    * @return the saved wap history
    */
+  @Deprecated
   WapHistory saveWapHistory(StockLocationLine stockLocationLine, StockMoveLine stockMoveLine);
 
   /**
@@ -55,7 +62,10 @@ public interface WapHistoryService {
    * @param stockLocationLine
    * @param stockMoveLine
    * @param date
+   * @deprecated This method must no longer be used, as WapHistory is deprecated, please use {@link
+   *     StockLocationLineHistory}
    * @return
    */
+  @Deprecated
   WapHistory saveWapHistory(StockLocationLine stockLocationLine, LocalDate date, String origin);
 }

@@ -107,8 +107,9 @@
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentMode" colSpan="3"
-            readonlyIf="period.statusSelect == 2 || $validatePeriod" form-view="payment-mode-form"
-            grid-view="payment-mode-grid" onChange="action-move-group-payment-mode-onchange"/>
+            readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
+            form-view="payment-mode-form" grid-view="payment-mode-grid"
+            onChange="action-move-group-payment-mode-onchange"/>
           <spacer/>
           <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4"
             form-view="payment-condition-form" grid-view="payment-condition-grid"
@@ -801,7 +802,7 @@
   <action-record name="action-move-account-record-set-journal-technical-type-select"
     model="com.axelor.apps.account.db.Move">
     <field name="$journalTechnicalTypeSelect"
-      expr="eval: journal?.journalType?.technicalTypeSelect"/>
+      expr="eval: journal?.journalType.technicalTypeSelect"/>
   </action-record>
 
   <action-record name="action-move-record-set-payment-mode"

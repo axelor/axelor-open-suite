@@ -174,6 +174,45 @@
     <view-param name="search-filters" value="move-line-filters"/>
   </action-view>
 
+  <menuitem name="account-root-pfp" title="PFP" parent="account-root"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isPfpValidator"
+    order="2"/>
+
+  <menuitem name="account-root-pfp-my-awaiting-pfp" title="My awaiting PFP"
+    action="account.root.my.awaiting.pfp" parent="account-root-pfp"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isPfpValidator"/>
+
+  <action-view name="account.root.my.awaiting.pfp" title="My awaiting PFP"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-pfp-grid"/>
+    <view type="form" name="invoice-term-move-form"/>
+    <view-param name="search-filters" value="supplier-invoices-filters"/>
+    <view-param name="details-view" value="true"/>
+    <domain> self.pfpValidateStatusSelect IN (1,4) AND
+      self.pfpValidatorUser = :_currentUser AND (
+      self.moveLine.move.statusSelect = 3 OR (self.moveLine.move.statusSelect = 2 AND
+      self.moveLine.move.company.accountConfig.isManageDaybookInPFP = true))</domain>
+    <context name="_operationTypeSelect" expr="eval:1"/>
+    <context name="_currentUser" expr="eval:__user__"/>
+  </action-view>
+
+  <menuitem name="account-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
+    action="account.root.pfp.awaiting.pfp" parent="account-root-pfp"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
+
+  <action-view name="account.root.pfp.awaiting.pfp" title="awaitingPfpMenuTitle"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-pfp-grid"/>
+    <view type="form" name="invoice-term-move-form"/>
+    <view-param name="search-filters" value="supplier-invoices-filters"/>
+    <view-param name="details-view" value="true"/>
+    <domain> self.pfpValidateStatusSelect IN (1,4) AND
+      (self.moveLine.move.statusSelect = 3 OR
+      (self.moveLine.move.statusSelect = 2 AND
+      self.moveLine.move.company.accountConfig.isManageDaybookInPFP = true))</domain>
+    <context name="_operationTypeSelect" expr="eval:1"/>
+  </action-view>
+
   <menuitem name="account-root-payments" parent="account-root" title="Payments" order="5"/>
 
   <menuitem name="account-root-payments-payment-session" parent="account-root-payments"
@@ -433,14 +472,28 @@
     <view type="form" name="interbank-code-form"/>
   </action-view>
 
-  <menuitem name="account-root-accounting-conf-report-types"
-    parent="account-conf-reporting" title="Report types"
-    action="account.conf.reporting.accounting.report.types"/>
+  <menuitem name="account-root-accounting-conf-report-types-report"
+    action="account.conf.reporting.accounting.report.types.report" parent="account-conf-reporting"
+    title="Report types"/>
 
-  <action-view name="account.conf.reporting.accounting.report.types"
+  <menuitem name="account-root-accounting-conf-report-types-export"
+    action="account.conf.reporting.accounting.report.types.export" parent="account-conf-reporting"
+    title="Export types"/>
+
+  <action-view name="account.conf.reporting.accounting.report.types.report"
     title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
     <view type="grid" name="accounting-report-type-grid"/>
     <view type="form" name="accounting-report-type-form"/>
+    <domain>self.reportExportTypeSelect = 1</domain>
+    <context name="_reportExportTypeSelect" expr="1"/>
+  </action-view>
+
+  <action-view name="account.conf.reporting.accounting.report.types.export"
+    title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
+    <view type="grid" name="accounting-report-type-grid"/>
+    <view type="form" name="accounting-report-type-form"/>
+    <domain>self.reportExportTypeSelect = 2</domain>
+    <context name="_reportExportTypeSelect" expr="2"/>
   </action-view>
 
   <menuitem name="account-root-budget-management" parent="account-root"
