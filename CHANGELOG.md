@@ -1,3 +1,10 @@
+## [5.4.35] (2023-02-14)
+
+#### Fixed
+
+* Ticket type: fixed error preventing to show chart information on opening a ticket type form.
+* Meta select: fixed wrong french translation for "Order".
+
 ## [5.4.34] (2023-02-03)
 
 #### Fixed
@@ -831,6 +838,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.35]: https://github.com/axelor/axelor-open-suite/compare/v5.4.34...v5.4.35
 [5.4.34]: https://github.com/axelor/axelor-open-suite/compare/v5.4.33...v5.4.34
 [5.4.33]: https://github.com/axelor/axelor-open-suite/compare/v5.4.32...v5.4.33
 [5.4.32]: https://github.com/axelor/axelor-open-suite/compare/v5.4.31...v5.4.32
