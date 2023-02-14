@@ -1,3 +1,20 @@
+## [6.4.6] (2023-02-14)
+
+#### Fixed
+
+* Partner: improve email panel
+
+Fixed an issue where permissions were not applied for emails displayed in this panel, also improve display by using a card view.
+
+* Studio: fixed crash on click on '+' icon of panel tab and add support of 'only if'.
+* Invoice: fixed error when ventilating a new invoice when the configuration 'has invoice term' field on account was disabled.
+* Move: correctly fill origin and origin date on move line when we duplicate a move.
+* Move template: correctly set payment condition on move generation and set description of move template on all move lines where move template description is filled.
+* Opportunity: lost reason is now correctly cleared when reopening a lost opportunity.
+* Opportunity: fixed description on kanban view.
+* Ticket type: fixed error preventing to show chart information on opening a ticket type form.
+* Meta select: fixed wrong french translation for "Order".
+
 ## [6.4.5] (2023-02-03)
 
 #### Fixed
@@ -425,6 +442,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.6]: https://github.com/axelor/axelor-open-suite/compare/v6.4.5...v6.4.6
 [6.4.5]: https://github.com/axelor/axelor-open-suite/compare/v6.4.4...v6.4.5
 [6.4.4]: https://github.com/axelor/axelor-open-suite/compare/v6.4.3...v6.4.4
 [6.4.3]: https://github.com/axelor/axelor-open-suite/compare/v6.4.2...v6.4.3
