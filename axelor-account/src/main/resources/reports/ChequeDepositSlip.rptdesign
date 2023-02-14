@@ -295,12 +295,23 @@
             <list-property name="filter"/>
             <list-property name="parameters">
                 <structure>
+                    <property name="name">param_10</property>
+                    <property name="paramName">ChequeDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
                     <property name="name">param_1</property>
                     <property name="paramName">DepositSlipId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -310,7 +321,7 @@
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
-                    <property name="position">2</property>
+                    <property name="position">3</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -321,7 +332,7 @@
                     <property name="nativeName"></property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">0</property>
-                    <property name="position">3</property>
+                    <property name="position">4</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -332,7 +343,7 @@
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
-                    <property name="position">4</property>
+                    <property name="position">5</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -343,7 +354,7 @@
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
-                    <property name="position">5</property>
+                    <property name="position">6</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -354,7 +365,7 @@
                     <property name="nativeName"></property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">0</property>
-                    <property name="position">6</property>
+                    <property name="position">7</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -362,8 +373,11 @@
                 <structure>
                     <property name="name">param_7</property>
                     <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="position">7</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">8</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -373,7 +387,7 @@
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -604,7 +618,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
 	Deposit.deposit_number       AS "DepositNumber",
-	Deposit.deposit_date         AS "DepositDate",
+	(SELECT to_char(?,'YYYY-MM-DD'))      AS "DepositDate",
 	Deposit.deposit_type         AS "DepositType",
 	(SELECT COUNT(PV.id) FROM account_payment_voucher AS PV WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?)         AS "ChqNbr",
 	(SELECT SUM(PV.paid_amount) FROM account_payment_voucher AS PV WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?)         AS "TotalAmount",
