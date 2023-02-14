@@ -825,7 +825,7 @@ public class MoveLineController {
     }
   }
 
-  public void manageMoveLineAnalytic(ActionRequest request, ActionResponse response) {
+  public void manageMoveLineAnalyticVisibility(ActionRequest request, ActionResponse response) {
     try {
       Context parentContext = request.getContext().getParent();
       MoveLine moveLine = request.getContext().asType(MoveLine.class);

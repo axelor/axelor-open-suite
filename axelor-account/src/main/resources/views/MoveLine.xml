@@ -1318,6 +1318,6 @@
 
   <action-method name="action-move-live-method-set-hidden-analytic-distribution-panel">
     <call class="com.axelor.apps.account.web.MoveLineController"
-      method="manageMoveLineAnalytic"/>
+      method="manageMoveLineAnalyticVisibility"/>
   </action-method>
 </object-views>
