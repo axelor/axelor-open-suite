@@ -1,3 +1,20 @@
+## [6.2.19] (2023-02-14)
+
+#### Fixed
+
+* Studio : Fix editor issues
+
+Fix difficulty to insert fields. Fix crash on click on '+' icon of panel tab.
+
+* Partner: improve email panel
+
+Fixed an issue where permissions were not applied for emails displayed in this panel, also improve display by using a card view.
+
+* Opportunity: lost reason is now correctly cleared when reopening a lost opportunity.
+* Opportunity: fixed description on kanban view.
+* Ticket type: fixed error preventing to show chart information on opening a ticket type form.
+* Meta select: fixed wrong french translation for "Order".
+
 ## [6.2.18] (2023-02-03)
 
 #### Fixed
@@ -870,6 +887,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.19]: https://github.com/axelor/axelor-open-suite/compare/v6.2.18...v6.2.19
 [6.2.18]: https://github.com/axelor/axelor-open-suite/compare/v6.2.17...v6.2.18
 [6.2.17]: https://github.com/axelor/axelor-open-suite/compare/v6.2.16...v6.2.17
 [6.2.16]: https://github.com/axelor/axelor-open-suite/compare/v6.2.15...v6.2.16
