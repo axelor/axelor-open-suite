@@ -112,11 +112,15 @@ public class AccountController {
   public void manageAnalytic(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
+      response.setAttr("analyticSettingsPanel", "hidden", false);
+
       if (account.getCompany() == null
           || !Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
           || !Beans.get(AccountConfigService.class)
               .getAccountConfig(account.getCompany())
-              .getManageAnalyticAccounting()) {
+              .getManageAnalyticAccounting()
+          || account.getAccountType() == null
+          || "view".equals(account.getAccountType().getTechnicalTypeSelect())) {
         response.setAttr("analyticSettingsPanel", "hidden", true);
       }
     } catch (Exception e) {
