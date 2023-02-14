@@ -383,8 +383,28 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    moveLines.addAll(
-        addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
+    if (partnerAccount != null && partnerAccount.getHasInvoiceTerm()) {
+      moveLines.addAll(
+          addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
+    } else {
+      MoveLine moveLine =
+          this.createMoveLine(
+              move,
+              partner,
+              partnerAccount,
+              invoice.getInTaxTotal(),
+              invoice.getCompanyInTaxTotal(),
+              null,
+              isDebitCustomer,
+              invoice.getInvoiceDate(),
+              invoice.getDueDate(),
+              invoice.getOriginDate(),
+              1,
+              origin,
+              null);
+      moveLines.add(moveLine);
+    }
+
     int moveLineId = moveLines.size() + 1;
 
     // Creation of product move lines for each invoice line
