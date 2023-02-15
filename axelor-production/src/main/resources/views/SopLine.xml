@@ -52,7 +52,7 @@
   </form>
 
   <form name="sop-line-generate-mps-forecasts-wizard-form" title="Generate MPS forecasts"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-sop-line-wizard-method-fill-mrp-forecasts">
+    model="com.axelor.message.db.Wizard" onNew="action-sop-line-wizard-method-fill-mrp-forecasts">
     <panel name="wizardPanel" colSpan="12">
       <panel-related name="$mrpForecastPanel" field="$mrpForecasts" canSelect="false"
         editable="true" type="one-to-many" colSpan="12"
@@ -82,7 +82,7 @@
   </form>
 
   <action-view name="action-sop-line-view-open-wizard" title="Generate MPS forecasts"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="sop-line-generate-mps-forecasts-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup" value="true"/>
@@ -125,13 +125,13 @@
   </action-record>
 
   <action-record name="action-sop-line-record-compute-total-price"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <field name="$totalPrice" expr="eval: qty.multiply(new BigDecimal(unitPrice))"
       if="unitPrice != null"/>
   </action-record>
 
   <action-record name="action-sop-line-record-compute-qty"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <field name="qty"
       expr="eval: new BigDecimal(totalPrice).divide(new BigDecimal(unitPrice),0,java.math.RoundingMode.HALF_UP)"
       if="unitPrice != null &amp;&amp; totalPrice != null &amp;&amp; new BigDecimal(unitPrice).compareTo(BigDecimal.ZERO) != 0"/>

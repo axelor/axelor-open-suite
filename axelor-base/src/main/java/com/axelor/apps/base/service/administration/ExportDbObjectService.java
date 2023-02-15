@@ -18,13 +18,9 @@
 package com.axelor.apps.base.service.administration;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.repo.GroupRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.MetaScanner;
@@ -36,6 +32,9 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.meta.loader.ModuleManager;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.xml.XPathParse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -125,7 +124,7 @@ public class ExportDbObjectService {
 
       return metaFile;
 
-    } catch (ParserConfigurationException | SAXException | IOException | AxelorException e) {
+    } catch (ParserConfigurationException | SAXException | IOException e) {
       e.printStackTrace();
     }
     return null;

@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.businessproject.service.app;
 
-import com.axelor.apps.base.db.AppBusinessProject;
-import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.studio.db.AppBusinessProject;
+import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

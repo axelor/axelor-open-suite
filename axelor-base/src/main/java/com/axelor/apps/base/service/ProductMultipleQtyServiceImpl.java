@@ -18,9 +18,9 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.ProductMultipleQty;
-import com.axelor.apps.tool.ContextTool;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.ContextTool;
 import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;

@@ -1,0 +1,16 @@
+---
+name: Axelor Mobile
+code: mobile
+typeSelect: standard
+installOrder: 32
+description: |
+   Axelor Mobile Management
+image: app-mobile.png
+modules: 
+   axelor-mobile
+dependsOn:
+   - sale
+   - expense
+   - leave
+   - timesheet
+sequence: 110

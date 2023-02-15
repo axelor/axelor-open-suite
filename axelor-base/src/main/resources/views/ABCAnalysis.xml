@@ -85,7 +85,7 @@
       canSearch="true" height="800" readonly="true"/>
   </form>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Select Report Format"
+  <form model="com.axelor.message.db.Wizard" title="Select Report Format"
     name="abc-analysis-reports-wizard-form">
     <panel name="mainPanel">
       <field name="$reportTypeSelect" title="Report Type"

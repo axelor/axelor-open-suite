@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <form name="app-supplychain-config-form" title="App Supplychain"
-    model="com.axelor.apps.base.db.AppSupplychain" canDelete="false" canNew="false" width="large">
+    model="com.axelor.studio.db.AppSupplychain" canDelete="false" canNew="false" width="large">
     <panel name="saleOrderPanel" title="Sale order">
       <field name="custStockMoveMgtOnSO"
         readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery"
@@ -95,14 +95,14 @@
 
   <action-record
     name="action-app-supply-chain-record-customer-stock-move-generation-auto"
-    model="com.axelor.apps.base.db.AppSupplychain">
+    model="com.axelor.studio.db.AppSupplychain">
     <field name="customerStockMoveGenerationAuto" expr="eval: false"
       if="isSaleOrderWithoutOutgoingStockMove"/>
   </action-record>
 
   <action-record
     name="action-app-supply-chain-record-supplier-stock-move-generation-auto"
-    model="com.axelor.apps.base.db.AppSupplychain">
+    model="com.axelor.studio.db.AppSupplychain">
     <field name="supplierStockMoveGenerationAuto" expr="eval: false"
       if="isPurchaseOrderWithoutIncomingStockMove"/>
   </action-record>

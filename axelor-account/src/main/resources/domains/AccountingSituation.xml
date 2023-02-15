@@ -50,11 +50,11 @@
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"
       default="false"/>
     <many-to-one name="invoiceMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
     <boolean name="invoiceAutomaticMailOnValidate" title="Send email on invoice validate"
       default="false"/>
     <many-to-one name="invoiceMessageTemplateOnValidate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
 
     <!-- Holdback -->
     <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"

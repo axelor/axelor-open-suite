@@ -39,7 +39,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -57,10 +56,7 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -71,12 +67,16 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Wizard;
+import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -340,7 +340,7 @@ public class ExpenseController {
     return String.format("%s", total);
   }
 
-  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void cancel(ActionRequest request, ActionResponse response) {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
@@ -391,7 +391,7 @@ public class ExpenseController {
   }
 
   // sending expense and sending mail to manager
-  public void send(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void send(ActionRequest request, ActionResponse response) {
 
     try {
       Expense expense = request.getContext().asType(Expense.class);
@@ -427,7 +427,7 @@ public class ExpenseController {
   }
 
   // validating expense and sending mail to applicant
-  public void valid(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void valid(ActionRequest request, ActionResponse response) {
 
     try {
       Expense expense = request.getContext().asType(Expense.class);
@@ -452,7 +452,7 @@ public class ExpenseController {
   }
 
   // refusing expense and sending mail to applicant
-  public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
       Expense expense = request.getContext().asType(Expense.class);

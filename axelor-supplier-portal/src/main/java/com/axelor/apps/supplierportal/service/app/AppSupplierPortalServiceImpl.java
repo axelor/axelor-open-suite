@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.supplierportal.service.app;
 
-import com.axelor.apps.base.db.AppSupplierPortal;
-import com.axelor.apps.base.db.repo.AppSupplierPortalRepository;
+import com.axelor.studio.db.AppSupplierPortal;
+import com.axelor.studio.db.repo.AppSupplierPortalRepository;
 import com.google.inject.Inject;
 
 public class AppSupplierPortalServiceImpl implements AppSupplierPortalService {

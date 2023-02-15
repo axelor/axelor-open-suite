@@ -21,7 +21,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewService;
-import com.axelor.apps.tool.MapTools;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -29,6 +28,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.MapTools;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 

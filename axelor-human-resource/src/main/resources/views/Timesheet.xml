@@ -254,7 +254,7 @@
   </form>
 
   <form name="popup-timesheet-form" title="Select the timesheet you want to edit"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
+    model="com.axelor.message.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
     <panel name="mainPanel">
       <field name="$timesheetSelect" title="Select Timesheet" type="many-to-one"
         target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox"/>

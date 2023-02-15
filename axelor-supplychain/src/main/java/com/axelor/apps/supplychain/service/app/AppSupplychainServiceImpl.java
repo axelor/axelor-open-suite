@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.supplychain.service.app;
 
-import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppSupplychainRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
+import com.axelor.studio.db.AppSupplychain;
+import com.axelor.studio.db.repo.AppSupplychainRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;

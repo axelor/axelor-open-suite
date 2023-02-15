@@ -26,7 +26,7 @@ import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
-import com.axelor.apps.tool.StringTool;
+import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;

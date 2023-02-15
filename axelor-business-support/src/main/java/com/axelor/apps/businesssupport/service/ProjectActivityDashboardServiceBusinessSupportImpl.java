@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.businesssupport.service;
 
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.businesssupport.db.ProjectAnnouncement;
 import com.axelor.apps.businesssupport.db.repo.ProjectAnnouncementRepository;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.mail.db.MailMessage;
+import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;

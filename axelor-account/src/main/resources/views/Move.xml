@@ -532,7 +532,7 @@
 
   <form name="move-wizard-mass-reverse-form" title="Mass Generate Reverse Move"
     onNew="action-move-attrs-set-generate-reverse-wizard-defaults"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <panel name="mainPanel">
       <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
       <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
@@ -1053,7 +1053,7 @@
   </action-view>
 
   <action-view name="action-move-view-open-mass-reverse-wizard"
-    title="Generate Reverse Move" model="com.axelor.apps.base.db.Wizard">
+    title="Generate Reverse Move" model="com.axelor.message.db.Wizard">
     <view type="form" name="move-wizard-mass-reverse-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>

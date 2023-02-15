@@ -583,7 +583,7 @@
 
 
   <form name="project-select-wizard-form" title="Select Projects"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <panel name="mainPanel">
       <field name="projectSet" title="Projects" type="many-to-many" colSpan="12"
         target="com.axelor.apps.project.db.Project" canNew="false"/>
@@ -593,7 +593,7 @@
   </form>
 
   <form name="user-select-wizard-form" title="Select Users"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <panel name="mainPanel">
       <field name="userSet" title="Users" type="many-to-many" colSpan="12"
         target="com.axelor.auth.db.User" canNew="false"
@@ -866,7 +866,7 @@
   </action-view>
 
   <action-view name="action-project-open-popup-select-users" title="Select Users"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="user-select-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
@@ -874,7 +874,7 @@
   </action-view>
 
   <action-view name="action-project-open-popup-select-projects" title="Select Projects"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="project-select-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>

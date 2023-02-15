@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.mobile.web;
 
-import com.axelor.apps.base.db.AppMobile;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.studio.db.AppMobile;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

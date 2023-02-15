@@ -35,7 +35,7 @@
     <many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country"
       title="Country"/>
 
-    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress"
+    <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
       title="Email"/>
     <binary name="picture" title="Picture"/>
 

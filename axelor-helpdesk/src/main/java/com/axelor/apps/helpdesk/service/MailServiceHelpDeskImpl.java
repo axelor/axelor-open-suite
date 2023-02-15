@@ -18,12 +18,15 @@
 package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.base.service.MailServiceBaseImpl;
-import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
+import com.axelor.message.service.MailAccountService;
+import com.axelor.studio.app.service.AppService;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.io.IOException;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -31,6 +34,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 public class MailServiceHelpDeskImpl extends MailServiceBaseImpl {
+
+  @Inject
+  public MailServiceHelpDeskImpl(
+      MailAccountService mailAccountService, AppBaseService appBaseService) {
+    super(mailAccountService, appBaseService);
+  }
 
   @Override
   protected String getSubject(MailMessage message, Model entity) {

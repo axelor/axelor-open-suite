@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
-  <form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase"
+  <form name="app-base-config-form" title="App base" model="com.axelor.studio.db.AppBase"
     width="large" canDelete="false" canNew="false" canCopy="false"
     onSave="action-base-method-model-email-link-onsave">
     <toolbar>
@@ -192,7 +192,7 @@
 
   <!-- ACTION RECORD -->
   <action-record name="action-base-record-set-enable-multi-company"
-    model="com.axelor.apps.base.db.AppBase">
+    model="com.axelor.studio.db.AppBase">
     <field if="!enableMultiCompany &amp;&amp; __repo__(Company).all().count() &gt; 1"
       name="enableMultiCompany" expr="eval: true"/>
   </action-record>

@@ -33,16 +33,8 @@
   <menuitem name="admin-root" title="Application Config" order="-60" icon="fa-gear"
     icon-background="#31b4a9"/>
 
-  <menuitem name="admin-root-app-management" parent="admin-root" order="5"
-    title="Apps management" action="admin.root.app.management"/>
-
-  <action-view name="admin.root.app.management" title="Apps management"
-    model="com.axelor.apps.base.db.App">
-    <view type="cards" name="app-cards"/>
-    <view type="grid" name="app-grid"/>
-    <view type="form" name="app-form"/>
-    <domain>self.isCustom = null OR self.isCustom = false</domain>
-  </action-view>
+  <menuitem id="admin-menu-admin-app-management" name="menu-admin-app-management"
+    parent="admin-root" order="5" title="Apps management" action="menu.admin.app.management"/>
 
   <menuitem name="admin-root-maintenance" parent="admin-root"
     if="__config__.app.isApp('base')" title="Technical maintenance" order="45"/>

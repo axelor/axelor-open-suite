@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppBase;
 import java.util.List;
 
 public class CompanyServiceImpl implements CompanyService {

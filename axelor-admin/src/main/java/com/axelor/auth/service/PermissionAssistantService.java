@@ -17,7 +17,6 @@
  */
 package com.axelor.auth.service;
 
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Permission;
@@ -40,6 +39,7 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaPermissionRepository;
 import com.axelor.meta.db.repo.MetaPermissionRuleRepository;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;

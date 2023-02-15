@@ -361,7 +361,7 @@
   </form>
 
   <form name="generate-random-passwords-wizard" title="Generate random passwords"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <panel name="mainPanel">
       <field name="currentUserPassword" title="Your Password" widget="password"/>
       <button name="generateRandomPasswordsBtn" title="Generate random passwords"
@@ -369,7 +369,7 @@
     </panel>
   </form>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Partner type selection"
+  <form model="com.axelor.message.db.Wizard" title="Partner type selection"
     name="user-partner-type-wizard-form">
     <panel name="mainPanel">
       <field name="$partnerType" title="Partner type" type="integer"
@@ -450,7 +450,7 @@
   </action-group>
 
   <action-view name="action-user-view-user-partner-type-wizard" title="Partner"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="user-partner-type-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>

@@ -19,14 +19,14 @@ package com.axelor.apps.base.rest;
 
 import com.axelor.apps.base.rest.dto.GlobalTranslationsResponse;
 import com.axelor.apps.base.rest.dto.TranslationResponse;
-import com.axelor.apps.tool.api.HttpExceptionHandler;
-import com.axelor.apps.tool.api.ResponseConstructor;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
+import com.axelor.utils.api.HttpExceptionHandler;
+import com.axelor.utils.api.ResponseConstructor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;

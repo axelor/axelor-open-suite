@@ -19,12 +19,12 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.ical.ICalendarException;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.io.IOException;

@@ -25,14 +25,13 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -65,8 +64,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public int sendEmails(PaymentSession paymentSession)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, JSONException {
+      throws ClassNotFoundException, JSONException, IOException {
     if (this.getEmailTemplate(paymentSession) == null) {
       return 0;
     }
@@ -137,8 +135,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
   @Transactional(rollbackOn = {Exception.class})
   protected void sendEmailToPartner(
       PaymentSession paymentSession, Partner partner, List<Long> partnerIdList)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, JSONException {
+      throws ClassNotFoundException, JSONException, IOException {
     if (partner == null || partnerIdList.contains(partner.getId())) {
       return;
     }
@@ -151,8 +148,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
 
   @Transactional(rollbackOn = {Exception.class})
   protected Message createEmail(PaymentSession paymentSession, Partner partner)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, JSONException {
+      throws ClassNotFoundException {
     paymentSession.setPartnerForEmail(partner);
     paymentSessionRepo.save(paymentSession);
 

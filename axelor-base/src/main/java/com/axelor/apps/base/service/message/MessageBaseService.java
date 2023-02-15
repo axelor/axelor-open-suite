@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service.message;
 
-import com.axelor.apps.message.db.Message;
+import com.axelor.message.db.Message;
 
 public interface MessageBaseService {
 

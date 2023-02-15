@@ -18,7 +18,7 @@
 package com.axelor.apps.production.rest.dto;
 
 import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.tool.api.ResponseStructure;
+import com.axelor.utils.api.ResponseStructure;
 
 public class TrackingNumberResponse extends ResponseStructure {
   private final Long trackingNumberId;

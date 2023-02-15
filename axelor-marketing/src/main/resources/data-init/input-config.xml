@@ -12,17 +12,6 @@
     <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
   </input>
 
-  <input file="base_appMarketing.csv" separator=";" type="com.axelor.apps.base.db.App"
-    call="com.axelor.csv.script.ImportApp:importApp">
-    <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
-      eval="dependsOn.split(',') as List"/>
-  </input>
-
-  <input file="base_appMarketing.csv" separator=";"
-    type="com.axelor.apps.base.db.AppMarketing" search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     <bind to="language" eval="'en'"/>
     <bind to="type" eval="'tooltip'"/>

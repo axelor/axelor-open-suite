@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <form name="object-data-anonymize-wizard-form" title="Anonymize data"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-object-data-anonymize-wizard-defaults">
+    model="com.axelor.message.db.Wizard" onNew="action-object-data-anonymize-wizard-defaults">
     <panel name="mainPanel">
       <field name="modelSelect" title="Model" widget="RefSelect" x-related="modelSelectId"
         selection="object.data.config.model.select" selection-in="null" type="string"

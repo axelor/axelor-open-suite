@@ -19,7 +19,6 @@ package com.axelor.apps.crm.web;
 
 import com.axelor.apps.crm.db.Catalog;
 import com.axelor.apps.crm.db.repo.CatalogRepository;
-import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -27,6 +26,7 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.file.PdfTool;
 import java.nio.file.Path;
 
 public class CatalogController {

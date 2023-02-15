@@ -20,14 +20,14 @@ package com.axelor.apps.report.engine;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerServiceImpl;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.utils.StringTool;
 import com.google.common.collect.Maps;
 import java.io.File;
 import java.io.FileInputStream;
@@ -217,7 +217,7 @@ public class ReportSettings {
     String attachmentPath = null;
     try {
       attachmentPath = AppService.getFileUploadDir();
-    } catch (AxelorException e) {
+    } catch (Exception e) {
       TraceBackService.trace(e);
     }
     if (attachmentPath == null) {

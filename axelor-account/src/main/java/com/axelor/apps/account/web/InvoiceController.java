@@ -43,7 +43,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -54,7 +53,6 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -63,10 +61,12 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -133,7 +133,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.MessageExceptionMessage
+                                com.axelor.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -168,7 +168,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.MessageExceptionMessage
+                                com.axelor.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -202,7 +202,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.MessageExceptionMessage
+                                com.axelor.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
