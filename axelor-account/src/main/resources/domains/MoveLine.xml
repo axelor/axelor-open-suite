@@ -178,6 +178,8 @@
     <date name="accountingDate"/>
     <boolean name="adjustingMove"/>
 
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>
     <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>

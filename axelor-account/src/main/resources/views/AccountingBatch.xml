@@ -219,7 +219,7 @@
         <field name="isPartialReconcile" readonlyIf="reconcileMethodSelect NOT IN (1,4)"
           widget="boolean-switch"/>
         <field name="isProposal" widget="boolean-switch"/>
-        <field name="$isShowMoveLinesInProposalBtnDisplayed" type="boolean"/>
+        <field name="$isShowMoveLinesInProposalBtnDisplayed" type="boolean" hidden="true"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>

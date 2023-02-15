@@ -91,19 +91,16 @@
     <toolbar>
       <button name="validateAllReconcileGroupsBtn" title="Validate all reconcile groups"
         onClick="action-method-batch-auto-lettering-validate-all-reconcile-groups"
-        showIf="_isProposal"/>
+        showIf="batch != null"/>
       <button name="validateSelectedReconcileGroupsBtn"
         title="Validate selected reconcile groups"
-        onClick="action-method-batch-auto-lettering-validate-selected-reconcile-groups"
-        showIf="_isProposal"/>
+        onClick="action-method-batch-auto-lettering-validate-selected-reconcile-groups"/>
       <button name="cancelSelectedReconcileGroupsBtn"
         title="Cancel selected reconcile groups"
-        onClick="action-method-batch-auto-lettering-cancel-selected-reconcile-groups"
-        showIf="_isProposal"/>
+        onClick="action-method-batch-auto-lettering-cancel-selected-reconcile-groups"/>
       <button name="partiallyValidateSelectedReconcileGroupsBtn"
         title="Partially validate selected reconcile groups"
-        onClick="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups"
-        showIf="_isProposal"/>
+        onClick="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups"/>
     </toolbar>
     <field name="name"/>
     <field name="date"/>
@@ -117,12 +114,14 @@
     <field name="reconcileGroup"/>
     <field name="reconcileGroup.statusSelect"/>
     <field name="externalOrigin"/>
+    <field name="reconcileGroup.isProposal" hidden="true"/>
     <button name="validateReconcileGroupBtn" title="Validate reconcile group"
-      onClick="action-method-batch-auto-lettering-validate-reconcile-group"
-      showIf="reconcileGroup.isProposal"/>
+      onClick="action-method-batch-auto-lettering-validate-reconcile-group" icon="fa-check-circle"
+      readonlyIf="$get('reconcileGroup.isProposal')" help="Validate reconcile group"/>
     <button name="cancelReconcileGroupBtn" title="Cancel reconcile group"
-      icon="fa-check-circle" onClick="action-method-batch-auto-lettering-cancel-reconcile-group"
-      showIf="reconcileGroup.isProposal"/>
+      readonlyIf="$get('reconcileGroup.isProposal')" icon="fa-minus-circle"
+      onClick="action-method-batch-auto-lettering-cancel-reconcile-group"
+      help="Cancel reconcile group"/>
   </grid>
 
   <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine"
@@ -1329,6 +1328,40 @@
 
   <action-method name="account-move-line-update-tax-equiv">
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxEquiv"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-validate-all-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="validateAllReconcileGroups"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-validate-selected-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="validateSelectedReconcileGroups"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-cancel-selected-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="cancelSelectedReconcileGroups"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="partialValidateSelectedReconcileGroups"/>
+  </action-method>
+
+  <action-method name="action-method-batch-auto-lettering-validate-reconcile-group">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="validateReconcileGroup"/>
+  </action-method>
+
+  <action-method name="action-method-batch-auto-lettering-cancel-reconcile-group">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="cancelReconcileGroup"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"

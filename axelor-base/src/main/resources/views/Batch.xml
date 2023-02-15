@@ -206,10 +206,8 @@
     title="Reconciled move lines" model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-account-batch-auto-move-lettering-grid"/>
     <view type="form" name="move-line-form"/>
-    <domain>self.id IN (:_reconciledMoveLineIdList)</domain>
-    <context name="_reconciledMoveLineIdList"
-      expr="eval: reconciledMoveLineSet?.collect{it.id}"/>
-    <context name="_isProposal" expr="eval: wasReconcileProposal"/>
+    <domain>:batch MEMBER OF self.batchSet</domain>
+    <context name="batch" expr="eval: __self__"/>
   </action-view>
 
   <action-view name="action-batch-show-generated-move" title="Moves"

@@ -84,6 +84,15 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancelProposal(MoveLine moveLine) {
+    if (moveLine.getReconcileGroup() != null && moveLine.getReconcileGroup().getIsProposal()) {
+      moveLine.setReconcileGroup(null);
+      moveLineRepository.save(moveLine);
+    }
+  }
+
+  @Override
   public boolean isBalanced(List<Reconcile> reconcileList) {
     List<MoveLine> debitMoveLineList =
         reconcileList.stream()

@@ -334,7 +334,7 @@ public class AccountingBatchController {
       }
 
       actionViewBuilder.model(MoveLine.class.getName());
-      actionViewBuilder.add("grid", "move-line-grid");
+      actionViewBuilder.add("grid", "move-line-account-batch-auto-move-lettering-grid");
       actionViewBuilder.add("form", "move-line-form");
 
       response.setView(actionViewBuilder.map());
