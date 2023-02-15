@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.stock.db.repo;
 
-import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -26,6 +25,7 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.db.AppStock;
 import com.google.inject.Inject;
 import java.util.Map;
 

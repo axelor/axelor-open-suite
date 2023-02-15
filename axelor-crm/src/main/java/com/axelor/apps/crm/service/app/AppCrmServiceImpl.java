@@ -17,9 +17,7 @@
  */
 package com.axelor.apps.crm.service.app;
 
-import com.axelor.apps.base.db.AppCrm;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppCrmRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.crm.db.CrmConfig;
@@ -31,17 +29,28 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.db.AppCrm;
+import com.axelor.studio.db.repo.AppCrmRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
 public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmService {
 
-  @Inject private CompanyRepository companyRepo;
+  protected CompanyRepository companyRepo;
 
-  @Inject private CrmConfigRepository crmConfigRepo;
+  protected CrmConfigRepository crmConfigRepo;
 
-  @Inject private AppCrmRepository appCrmRepo;
+  protected AppCrmRepository appCrmRepo;
+
+  @Inject
+  public AppCrmServiceImpl(
+      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+    super(appRepo, metaFiles, appVersionService);
+  }
 
   @Override
   @Transactional

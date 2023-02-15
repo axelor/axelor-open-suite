@@ -30,9 +30,6 @@ import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
 import com.axelor.apps.gdpr.service.GdprAnonymizeService;
 import com.axelor.apps.gdpr.service.GdprErasureLogService;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -40,6 +37,9 @@ import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
@@ -54,7 +54,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.mail.MessagingException;
 import org.apache.commons.lang3.StringUtils;
 import wslite.json.JSONException;
 
@@ -302,13 +301,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       gdprResponse.setSendingDateT(appBaseService.getTodayDateTime().toLocalDateTime());
       gdprResponse.setResponseMessage(message);
 
-    } catch (AxelorException
-        | MessagingException
-        | JSONException
-        | IOException
-        | ClassNotFoundException
-        | InstantiationException
-        | IllegalAccessException e) {
+    } catch (JSONException | IOException | ClassNotFoundException e) {
       throw new AxelorException(
           e,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

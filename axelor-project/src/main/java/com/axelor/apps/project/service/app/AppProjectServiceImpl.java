@@ -17,16 +17,25 @@
  */
 package com.axelor.apps.project.service.app;
 
-import com.axelor.apps.base.db.AppProject;
-import com.axelor.apps.base.db.repo.AppProjectRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.db.AppProject;
+import com.axelor.studio.db.repo.AppProjectRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProjectService {
 
-  @Inject private AppProjectRepository appProjectRepo;
+  protected AppProjectRepository appProjectRepo;
+
+  @Inject
+  public AppProjectServiceImpl(
+      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+    super(appRepo, metaFiles, appVersionService);
+  }
 
   @Override
   public AppProject getAppProject() {

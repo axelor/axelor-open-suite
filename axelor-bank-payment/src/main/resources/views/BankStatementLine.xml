@@ -68,7 +68,7 @@
   </form>
 
   <form name="bank-statement-line-print-wizard-form" title="Bank Statement line print wizard"
-    model="com.axelor.apps.base.db.Wizard"
+    model="com.axelor.message.db.Wizard"
     onNew="action-attrs-bank-payment-bank-statement-line-print-wizard-on-new">
     <panel name="mainPanel" colSpan="12">
       <field name="$fromDate" title="From" type="date" required="true"/>
@@ -85,7 +85,7 @@
   </form>
 
   <action-view name="action-view-bankpayment-bank-statement-line-print-wizard"
-    title="Bank statement line print wizard" model="com.axelor.apps.base.db.Wizard">
+    title="Bank statement line print wizard" model="com.axelor.message.db.Wizard">
     <view type="form" name="bank-statement-line-print-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="true"/>

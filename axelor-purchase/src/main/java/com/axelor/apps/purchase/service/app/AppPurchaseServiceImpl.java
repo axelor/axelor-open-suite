@@ -17,13 +17,16 @@
  */
 package com.axelor.apps.purchase.service.app;
 
-import com.axelor.apps.base.db.AppPurchase;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppPurchaseRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.db.AppPurchase;
+import com.axelor.studio.db.repo.AppPurchaseRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -32,11 +35,17 @@ import java.util.List;
 @Singleton
 public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPurchaseService {
 
-  @Inject private AppPurchaseRepository appPurchaseRepo;
+  protected AppPurchaseRepository appPurchaseRepo;
 
-  @Inject private CompanyRepository companyRepo;
+  protected CompanyRepository companyRepo;
 
-  @Inject private PurchaseConfigRepository purchaseConfigRepo;
+  protected PurchaseConfigRepository purchaseConfigRepo;
+
+  @Inject
+  public AppPurchaseServiceImpl(
+      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+    super(appRepo, metaFiles, appVersionService);
+  }
 
   @Override
   public AppPurchase getAppPurchase() {

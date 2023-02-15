@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.quality.service.app;
 
-import com.axelor.apps.base.db.AppQuality;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.studio.db.AppQuality;
 
 public interface AppQualityService extends AppBaseService {
 

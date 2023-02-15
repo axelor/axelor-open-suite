@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.production.service.app;
 
-import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.production.db.ProductionConfig;
@@ -25,6 +24,11 @@ import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.db.AppProduction;
+import com.axelor.studio.db.repo.AppRepository;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -33,6 +37,12 @@ import java.util.List;
 public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppProductionService {
 
   public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
+
+  @Inject
+  public AppProductionServiceImpl(
+      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+    super(appRepo, metaFiles, appVersionService);
+  }
 
   @Override
   public AppProduction getAppProduction() {

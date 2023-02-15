@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.talent.service;
 
-import com.axelor.apps.message.db.Message;
+import com.axelor.message.db.Message;
 
 public interface JobPositionService {
 

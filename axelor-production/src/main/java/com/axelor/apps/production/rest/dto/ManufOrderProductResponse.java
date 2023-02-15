@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
-import com.axelor.apps.tool.api.ResponseStructure;
+import com.axelor.utils.api.ResponseStructure;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.math.BigDecimal;
 

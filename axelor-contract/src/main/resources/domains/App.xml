@@ -3,12 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.0.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="App" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.AppContract" name="appContract"
-      mappedBy="app"/>
+    <one-to-one ref="com.axelor.studio.db.AppContract" name="appContract" mappedBy="app"/>
 
   </entity>
 

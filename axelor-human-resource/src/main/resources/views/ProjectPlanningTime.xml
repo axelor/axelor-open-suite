@@ -51,7 +51,7 @@
     </panel>
   </form>
 
-  <form name="project-planning-time-wizard-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="project-planning-time-wizard-form" model="com.axelor.message.db.Wizard"
     title="Project planning time" onNew="action-project-planning-time-attrs-default">
     <panel name="mainPanel">
       <field name="fromDate" required="true" type="datetime" title="From"/>
@@ -80,7 +80,7 @@
   </form>
 
   <action-view name="action-project-view-add-multiple-project-planning-time"
-    title="Planned Time Planning" model="com.axelor.apps.base.db.Wizard">
+    title="Planned Time Planning" model="com.axelor.message.db.Wizard">
     <view type="form" name="project-planning-time-wizard-form"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>

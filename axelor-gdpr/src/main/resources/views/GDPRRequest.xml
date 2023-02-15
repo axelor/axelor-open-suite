@@ -45,7 +45,7 @@
           onClick="action-gdpr-request-group-search-person" colSpan="4"/>
 
         <panel-related name="gdprSearchResultsPanel" title="Results"
-          field="__searchResults" type="one-to-many" target="com.axelor.apps.base.db.Wizard"
+          field="__searchResults" type="one-to-many" target="com.axelor.message.db.Wizard"
           colSpan="12" grid-view="search-result-grid" canNew="false" canView="false"
           canRemove="false" canEdit="false">
         </panel-related>
@@ -99,7 +99,7 @@
   </form>
 
   <!-- Search results -->
-  <grid model="com.axelor.apps.base.db.Wizard" title="result" name="search-result-grid"
+  <grid model="com.axelor.message.db.Wizard" title="result" name="search-result-grid"
     canEdit="false" edit-icon="false">
     <field name="selected" widget="RadioSelect"/>
     <field name="type"/>
@@ -120,7 +120,7 @@
   </action-record>
 
   <action-record name="action-gdpr-search-form-clear"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <field name="__searchResults" expr=""/>
   </action-record>
 

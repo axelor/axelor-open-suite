@@ -238,7 +238,7 @@
     action="stock.root.stock.per.day" order="32"/>
 
   <action-view name="stock.root.stock.per.day" title="Stock availability"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="stock-move-wizard-stock-per-day"/>
   </action-view>
 

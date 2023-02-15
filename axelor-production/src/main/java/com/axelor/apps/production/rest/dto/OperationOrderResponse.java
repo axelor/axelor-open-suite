@@ -18,7 +18,7 @@
 package com.axelor.apps.production.rest.dto;
 
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.tool.api.ResponseStructure;
+import com.axelor.utils.api.ResponseStructure;
 
 public class OperationOrderResponse extends ResponseStructure {
 

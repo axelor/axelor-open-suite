@@ -17,17 +17,19 @@
  */
 package com.axelor.apps.base.service.message;
 
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.EmailAccount;
-import com.axelor.apps.message.db.repo.EmailAccountRepository;
-import com.axelor.apps.message.exception.MessageExceptionMessage;
-import com.axelor.apps.message.service.MailAccountServiceImpl;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.EmailAccount;
+import com.axelor.message.db.repo.EmailAccountRepository;
+import com.axelor.message.db.repo.EmailAddressRepository;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.exception.MessageExceptionMessage;
+import com.axelor.message.service.MailAccountServiceImpl;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.db.AppBase;
+import com.axelor.utils.service.CipherService;
 import com.google.inject.Inject;
 
 public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
@@ -37,12 +39,19 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
   @Inject protected AppBaseService appBaseService;
 
   @Inject
-  public MailAccountServiceBaseImpl(UserService userService) {
+  public MailAccountServiceBaseImpl(
+      EmailAccountRepository mailAccountRepo,
+      CipherService cipherService,
+      EmailAddressRepository emailAddressRepo,
+      MessageRepository messageRepo,
+      MetaFiles metaFiles,
+      UserService userService) {
+    super(mailAccountRepo, cipherService, emailAddressRepo, messageRepo, metaFiles);
     this.userService = userService;
   }
 
   @Override
-  public void checkDefaultMailAccount(EmailAccount mailAccount) throws AxelorException {
+  public void checkDefaultMailAccount(EmailAccount mailAccount) {
 
     AppBase appBase = appBaseService.getAppBase();
     if (appBase.getEmailAccountByUser() || appBase.getEmailAccountByCompany()) {
@@ -66,14 +75,41 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
         Long count = mailAccountRepo.all().filter(query).count();
 
         if (count > 0) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
+          throw new IllegalStateException(I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
         }
       }
     } else {
-      super.checkDefaultMailAccount(mailAccount);
+      try {
+        super.checkDefaultMailAccount(mailAccount);
+      } catch (Exception e) {
+        throw new IllegalStateException(e);
+      }
     }
+  }
+
+  protected String mailAccountQuery(EmailAccount mailAccount) {
+    String query = null;
+    if (mailAccount.getIsDefault()) {
+      query = "self.isDefault = true";
+      if (mailAccount.getId() != null) {
+        query += " AND self.id != " + mailAccount.getId();
+      }
+
+      Integer serverTypeSelect = mailAccount.getServerTypeSelect();
+      if (serverTypeSelect == EmailAccountRepository.SERVER_TYPE_SMTP) {
+        query += " AND self.serverTypeSelect = " + EmailAccountRepository.SERVER_TYPE_SMTP + " ";
+      } else if (serverTypeSelect == EmailAccountRepository.SERVER_TYPE_IMAP
+          || serverTypeSelect == EmailAccountRepository.SERVER_TYPE_POP) {
+        query +=
+            " AND (self.serverTypeSelect = "
+                + EmailAccountRepository.SERVER_TYPE_IMAP
+                + " OR "
+                + "self.serverTypeSelect = "
+                + EmailAccountRepository.SERVER_TYPE_POP
+                + ") ";
+      }
+    }
+    return query;
   }
 
   @Override

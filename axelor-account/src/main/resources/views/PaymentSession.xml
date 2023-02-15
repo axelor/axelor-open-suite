@@ -169,7 +169,7 @@
   </form>
 
 
-  <form name="payment-session-print-wizard-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="payment-session-print-wizard-form" model="com.axelor.message.db.Wizard"
     title="Payment session print wizard">
     <panel name="mainPanel">
       <field name="_exportTypeSelect" type="string" title="Export format"
@@ -247,7 +247,7 @@
   </action-validate>
 
   <action-view name="action-view-account-payment-session-print-wizard"
-    title="Payment session print wizard" model="com.axelor.apps.base.db.Wizard">
+    title="Payment session print wizard" model="com.axelor.message.db.Wizard">
     <view type="form" name="payment-session-print-wizard-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="false"/>
@@ -403,7 +403,7 @@
   </action-view>
 
   <action-view name="action-payment-session-view-all-sent-emails" title="Emails"
-    model="com.axelor.apps.message.db.Message">
+    model="com.axelor.message.db.Message">
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
     <domain>self.mediaTypeSelect = 2 AND self.id IN (SELECT message.id FROM MultiRelated as related

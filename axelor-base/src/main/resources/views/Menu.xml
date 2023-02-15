@@ -705,6 +705,24 @@
     <view type="form" name="birt-template-form"/>
   </action-view>
 
+  <menuitem name="mail-conf-template-rules" parent="mail-conf" title="Template Rules"
+    action="admin.root.templating.template.rules" order="10"/>
+
+  <action-view name="admin.root.templating.template.rules" title="Template Rules"
+    model="com.axelor.apps.base.db.TemplateRule">
+    <view type="grid" name="template-rule-grid"/>
+    <view type="form" name="template-rule-form"/>
+  </action-view>
+
+  <menuitem name="mail-root-email-conf-routing" parent="mail-conf" title="Routings"
+    action="mail.root.email.conf.routing" order="30"/>
+
+  <action-view name="mail.root.email.conf.routing" title="Routings"
+    model="com.axelor.apps.base.db.Routing">
+    <view type="grid"/>
+    <view type="form"/>
+  </action-view>
+
   <menuitem name="admin-root-maintenance-trace-back" parent="admin-root-maintenance"
     title="Tracebacks" action="admin.root.maintenance.trace.back"/>
 
@@ -736,7 +754,7 @@
     title="Convert demo file" action="admin.root.convert.demo.file"/>
 
   <action-view name="admin.root.convert.demo.file" title="Convert demo file"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="convert-demo-file-wizard-form"/>
   </action-view>
 
@@ -744,7 +762,7 @@
     title="Import demo data" action="admin.root.import.demo.data"/>
 
   <action-view name="admin.root.import.demo.data" title="Import demo data"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="import-demo-data-wizard-form"/>
   </action-view>
 
@@ -787,7 +805,7 @@
   <menuitem title="DMS Import" name="menu-dms-import-wizard"
     parent="admin-root-maintenance" action="menu.dms.import.wizard"/>
 
-  <action-view name="menu.dms.import.wizard" model="com.axelor.apps.base.db.Wizard"
+  <action-view name="menu.dms.import.wizard" model="com.axelor.message.db.Wizard"
     title="DMS Import">
     <view name="dms-import-wizard-form" type="form"/>
     <view-param name="show-confirm" value="false"/>
@@ -912,7 +930,7 @@
     parent="admin-root-maintenance" action="admin.global.tracking.log.show"/>
 
   <action-view name="admin.global.tracking.log.show" title="Global tracking logs"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="global-tracking-log-view-wizard-form"/>
   </action-view>
 

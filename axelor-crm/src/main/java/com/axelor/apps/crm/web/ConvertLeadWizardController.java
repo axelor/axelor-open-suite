@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.crm.web;
 
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -26,7 +25,6 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
-import com.axelor.apps.tool.service.ConvertBinaryToMetafileService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -38,6 +36,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.studio.db.AppBase;
+import com.axelor.utils.service.ConvertBinaryToMetafileService;
 import com.google.inject.Singleton;
 import java.util.Map;
 
@@ -241,7 +241,7 @@ public class ConvertLeadWizardController {
     Lead lead = null;
 
     if (context.getParent() != null
-        && context.getParent().get("_model").equals("com.axelor.apps.base.db.Wizard")) {
+        && context.getParent().get("_model").equals("com.axelor.message.db.Wizard")) {
       context = context.getParent();
     }
 

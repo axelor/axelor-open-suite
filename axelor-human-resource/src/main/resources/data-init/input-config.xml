@@ -12,61 +12,6 @@
     <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
   </input>
 
-  <input file="base_appEmployee.csv" separator=";" type="com.axelor.apps.base.db.App"
-    call="com.axelor.csv.script.ImportApp:importApp">
-    <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
-      eval="dependsOn.split(',') as List"/>
-  </input>
-
-  <input file="base_appEmployee.csv" separator=";" type="com.axelor.apps.base.db.AppEmployee"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
-  <input file="base_appLeave.csv" separator=";" type="com.axelor.apps.base.db.App"
-    call="com.axelor.csv.script.ImportApp:importApp">
-    <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
-      eval="dependsOn.split(',') as List"/>
-  </input>
-
-  <input file="base_appLeave.csv" separator=";" type="com.axelor.apps.base.db.AppLeave"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
-  <input file="base_appExpense.csv" separator=";" type="com.axelor.apps.base.db.App"
-    call="com.axelor.csv.script.ImportApp:importApp">
-    <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
-      eval="dependsOn.split(',') as List"/>
-  </input>
-
-  <input file="base_appExpense.csv" separator=";" type="com.axelor.apps.base.db.AppExpense"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
-  <input file="base_appTimesheet.csv" separator=";" type="com.axelor.apps.base.db.App"
-    call="com.axelor.csv.script.ImportApp:importApp">
-    <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
-      eval="dependsOn.split(',') as List"/>
-  </input>
-
-  <input file="base_appTimesheet.csv" separator=";"
-    type="com.axelor.apps.base.db.AppTimesheet" search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
-  <input file="base_appExtraHours.csv" separator=";" type="com.axelor.apps.base.db.App"
-    call="com.axelor.csv.script.ImportApp:importApp">
-    <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
-      eval="dependsOn.split(',') as List"/>
-  </input>
-
-  <input file="base_appExtraHours.csv" separator=";"
-    type="com.axelor.apps.base.db.AppExtraHours" search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
   <input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"/>
 
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">

@@ -20,9 +20,9 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.utils.QueryBuilder;
 import com.google.inject.persist.Transactional;
 
 public interface TimesheetLineBusinessService {

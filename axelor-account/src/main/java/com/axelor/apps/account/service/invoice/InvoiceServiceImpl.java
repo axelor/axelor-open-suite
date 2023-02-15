@@ -64,9 +64,6 @@ import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.ModelTool;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -74,6 +71,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.ModelTool;
+import com.axelor.utils.StringTool;
+import com.axelor.utils.ThrowConsumer;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -928,14 +928,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   private Pair<Integer, Integer> massProcess(
-      Collection<? extends Number> invoiceIds, ThrowConsumer<Invoice> consumer, int statusSelect) {
+      Collection<? extends Number> invoiceIds,
+      ThrowConsumer<Invoice, Exception> consumer,
+      int statusSelect) {
     IntCounter doneCounter = new IntCounter();
 
     int errorCount =
         ModelTool.apply(
             Invoice.class,
             invoiceIds,
-            new ThrowConsumer<Invoice>() {
+            new ThrowConsumer<Invoice, Exception>() {
               @Override
               public void accept(Invoice invoice) throws Exception {
                 if (invoice.getStatusSelect() == statusSelect) {

@@ -7,8 +7,8 @@
     model="com.axelor.apps.crm.db.CrmReporting">
     <field name="typeSelect"/>
     <field name="companySet" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="agencySet" if="__config__.app.getApp('crm').getAgenciesManagement()"/>
-    <field name="teamSet" if="__config__.app.getApp('base').getTeamManagement()"/>
+    <field name="agencySet" if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
+    <field name="teamSet" if="__config__.app.getApp('base')?.getTeamManagement()"/>
     <field name="countrySet"/>
     <field name="industrySectorSet"/>
     <field name="categorySet"/>

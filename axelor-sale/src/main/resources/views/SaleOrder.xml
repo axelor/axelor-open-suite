@@ -133,7 +133,7 @@
     <field name="fullName"/>
   </calendar>
 
-  <form name="sale-order-merge-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="sale-order-merge-form" model="com.axelor.message.db.Wizard"
     title="Merge sale orders" width="large">
     <panel-related name="saleOrderToMergePanel" field="$saleOrderToMerge"
       form-view="sale-order-form" title="Sale orders to merge" colSpan="12" type="many-to-many"
@@ -145,7 +145,7 @@
     </panel>
   </form>
 
-  <form name="sale-quotation-merge-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="sale-quotation-merge-form" model="com.axelor.message.db.Wizard"
     title="Merge quotations" width="large">
     <panel-related name="saleQuotationToMergePanel" field="$saleQuotationToMerge"
       form-view="sale-order-form" title="Quotations to merge" colSpan="12" type="many-to-many"
@@ -157,7 +157,7 @@
     </panel>
   </form>
 
-  <form name="sale-order-merge-confirm-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="sale-order-merge-confirm-form" model="com.axelor.message.db.Wizard"
     title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-saleorder">
     <panel name="mainPanel" colSpan="6" colOffset="3">
       <field name="priceListToCheck" hidden="true" colSpan="12"/>
@@ -184,7 +184,7 @@
     </panel>
   </form>
 
-  <form name="sale-order-template-wizard-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="sale-order-template-wizard-form" model="com.axelor.message.db.Wizard"
     title="Create the quotation"
     onNew="action-sale-order-attrs-template-deafult-currency,action-sale-order-method-fill-price-list">
     <panel name="mainPanel">
@@ -1133,7 +1133,7 @@
   </action-attrs>
 
   <form name="sale-order-reports-wizard-form" title="Reports"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-sale-order-reports-wizard-attrs">
+    model="com.axelor.message.db.Wizard" onNew="action-sale-order-reports-wizard-attrs">
     <panel name="mainPanel">
       <panel name="ReportTypePanel" colSpan="6">
         <field name="$reportType" title="Report type" type="integer"
@@ -1150,7 +1150,7 @@
   </form>
 
   <action-view name="action-sale-order-view-reports-wizard" title="Reports"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="sale-order-reports-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="false"/>
@@ -1655,12 +1655,12 @@
   </action-record>
 
   <action-view name="action-open-sale-order-merge-form" title="Merge sale orders"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="sale-order-merge-form"/>
   </action-view>
 
   <action-view name="action-open-sale-quotation-merge-form" title="Merge sale quotation"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="sale-quotation-merge-form"/>
   </action-view>
 
@@ -1686,7 +1686,7 @@
   </action-method>
 
   <action-record name="action-record-load-dummy-field-confirm-merge-saleorder"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
     <field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
     <field name="locationToCheck" expr="eval: contextLocationToCheck"/>

@@ -259,9 +259,9 @@
       <field name="team" canEdit="false" colSpan="6" form-view="team-form"
         grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
       <field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"
-        if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+        if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
       <field name="agency" colSpan="6" form-view="agency-form" grid-view="agency-grid"
-        if="__config__.app.getApp('crm').getAgenciesManagement()"/>
+        if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
       <field name="contactDate" colSpan="6"/>
       <field name="lastEventDateT" readonly="true"/>
       <field name="nextScheduledEventDateT" readonly="true"/>
@@ -421,7 +421,7 @@
   </action-view>
 
   <action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.message.db.Wizard">
     <view type="form" name="convert-lead-wizard-form"/>
     <context name="_lead" expr="eval: __self__"/>
     <context name="_primaryAddress" expr="eval: primaryAddress"/>
@@ -481,7 +481,7 @@
   <!-- PORTLET -->
 
   <action-view name="action-lead-view-sent-emails" title="Sent emails"
-    model="com.axelor.apps.message.db.Message">
+    model="com.axelor.message.db.Message">
     <view type="cards" name="message-cards"/>
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
@@ -495,7 +495,7 @@
   </action-view>
 
   <action-view name="action-lead-view-received-emails" title="Received emails"
-    model="com.axelor.apps.message.db.Message">
+    model="com.axelor.message.db.Message">
     <view type="cards" name="message-cards"/>
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>

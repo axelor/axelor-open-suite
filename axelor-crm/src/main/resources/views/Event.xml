@@ -218,7 +218,7 @@
     <panel title="Guests" name="addGuestsPanel" sidebar="true" canCollapse="true"
       hideIf="typeSelect == 5">
       <field name="$guestEmail" title="Add a guest" colSpan="12" type="many-to-one"
-        target="com.axelor.apps.message.db.EmailAddress" canNew="true"
+        target="com.axelor.message.db.EmailAddress" canNew="true"
         onChange="action-event-method-add-email-guest"/>
       <field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
         <editor layout="table" x-show-titles="false">
@@ -389,7 +389,7 @@
   </action-group>
 
   <action-view name="action-event-view-modifications-recurrence"
-    title="Apply modifications" model="com.axelor.apps.base.db.Wizard">
+    title="Apply modifications" model="com.axelor.message.db.Wizard">
     <view type="form" name="modifications-assistant-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>
@@ -418,7 +418,7 @@
     <context name="_relatedToSelectId" expr="eval: relatedToSelectId"/>
   </action-view>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Apply modifications"
+  <form model="com.axelor.message.db.Wizard" title="Apply modifications"
     name="modifications-assistant-form">
     <panel name="wizardPanel">
       <button name="applyToThisBtn" title="Apply changes to this event only" onClick="close"
@@ -520,7 +520,7 @@
   <action-record name="action-event-record-default-duration"
     model="com.axelor.apps.crm.db.Event">
     <field name="duration"
-      expr="eval: com.axelor.apps.tool.date.DurationTool.computeDuration(startDateTime, endDateTime)"
+      expr="eval: com.axelor.utils.date.DurationTool.computeDuration(startDateTime, endDateTime)"
       if="startDateTime &amp;&amp; endDateTime"/>
   </action-record>
 

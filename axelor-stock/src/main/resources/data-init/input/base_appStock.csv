@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Stock";"stock";3;"Stock configuration";"app-stock.png";"axelor-stock";"base";14

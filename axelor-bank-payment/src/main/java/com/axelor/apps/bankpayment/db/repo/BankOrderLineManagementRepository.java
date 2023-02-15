@@ -19,7 +19,7 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
-import com.axelor.apps.tool.StringTool;
+import com.axelor.utils.StringTool;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;

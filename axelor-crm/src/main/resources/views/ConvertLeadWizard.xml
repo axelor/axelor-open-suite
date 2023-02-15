@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <form name="convert-lead-wizard-form" title="Convert lead"
-    model="com.axelor.apps.base.db.Wizard" width="large"
+    model="com.axelor.message.db.Wizard" width="large"
     onNew="action-convert-lead-wizard-method-set-defaults" canSave="false">
     <toolbar>
       <button name="validateBtn"

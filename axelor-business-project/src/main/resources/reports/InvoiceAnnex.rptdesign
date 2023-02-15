@@ -1719,7 +1719,7 @@ JOIN project_project project ON project.id = invproj.project
 JOIN base_product product ON product.id = line.product
 JOIN meta_select mselect ON (mselect.name = 'hr.time.logging.preference.select')
 LEFT JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND select_item.value = project.unit_on_printing
-JOIN base_app_base base ON base.id = 1
+JOIN studio_app_base base ON base.id = 1
 JOIN base_unit product_unit ON product_unit.id = product.unit
 WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
         </oda-data-set>
@@ -1813,7 +1813,7 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT conv.coef, conv.start_unit, conv.end_unit, invproj.invoice
 FROM base_unit_conversion conv, businessproject_invoicing_project invproj
-JOIN base_app_base base ON base.id = 1
+JOIN studio_app_base base ON base.id = 1
 JOIN project_project project ON project.id = invproj.project
 JOIN base_unit raw_unit ON raw_unit.id = base.unit_hours
 JOIN meta_select mselect ON (mselect.name = 'hr.time.logging.preference.select')

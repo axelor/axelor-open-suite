@@ -332,8 +332,8 @@ import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
-import com.axelor.apps.message.service.TemplateMessageService;
-import com.axelor.apps.message.service.TemplateMessageServiceImpl;
+import com.axelor.message.service.TemplateMessageService;
+import com.axelor.message.service.TemplateMessageServiceImpl;
 
 public class AccountModule extends AxelorModule {
 

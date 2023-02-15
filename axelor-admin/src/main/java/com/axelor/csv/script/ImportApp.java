@@ -18,9 +18,9 @@
 package com.axelor.csv.script;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.App;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.db.App;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.io.File;

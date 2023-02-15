@@ -19,15 +19,18 @@ package com.axelor.apps.account.service.app;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
-import com.axelor.apps.base.db.AppAccount;
-import com.axelor.apps.base.db.AppBudget;
-import com.axelor.apps.base.db.AppInvoice;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppAccountRepository;
-import com.axelor.apps.base.db.repo.AppBudgetRepository;
-import com.axelor.apps.base.db.repo.AppInvoiceRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.db.AppAccount;
+import com.axelor.studio.db.AppBudget;
+import com.axelor.studio.db.AppInvoice;
+import com.axelor.studio.db.repo.AppAccountRepository;
+import com.axelor.studio.db.repo.AppBudgetRepository;
+import com.axelor.studio.db.repo.AppInvoiceRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -36,15 +39,21 @@ import java.util.List;
 @Singleton
 public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAccountService {
 
-  @Inject private AppAccountRepository appAccountRepo;
+  protected AppAccountRepository appAccountRepo;
 
-  @Inject private AppBudgetRepository appBudgetRepo;
+  protected AppBudgetRepository appBudgetRepo;
 
-  @Inject private AppInvoiceRepository appInvoiceRepo;
+  protected AppInvoiceRepository appInvoiceRepo;
 
-  @Inject private AccountConfigRepository accountConfigRepo;
+  protected AccountConfigRepository accountConfigRepo;
 
-  @Inject private CompanyRepository companyRepo;
+  protected CompanyRepository companyRepo;
+
+  @Inject
+  public AppAccountServiceImpl(
+      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+    super(appRepo, metaFiles, appVersionService);
+  }
 
   @Override
   public AppAccount getAppAccount() {

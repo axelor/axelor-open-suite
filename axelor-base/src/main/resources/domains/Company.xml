@@ -57,7 +57,7 @@
       title="Attached partners"/>
 
     <string name="timezone" title="Time Zone" selection="company.timezone.select"/>
-    <one-to-many name="emailAccountList" ref="com.axelor.apps.message.db.EmailAccount"
+    <one-to-many name="emailAccountList" ref="com.axelor.message.db.EmailAccount"
       title="Email accounts" mappedBy="company"/>
     <extra-code><![CDATA[
 
