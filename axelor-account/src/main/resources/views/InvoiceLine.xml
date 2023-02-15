@@ -425,7 +425,7 @@
     <action name="action-invoice-line-attrs-display-different-language-message"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
-    <action name="action-invoice-line-method-set-hidden-analytic-distribution-panel"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -438,7 +438,7 @@
     <action name="action-invoice-line-attrs-display-different-language-message"/>
     <action name="action-invoice-line-method-manage-invoice-line-axis"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
-    <action name="action-invoice-line-method-set-hidden-analytic-distribution-panel"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-product-onchange">
@@ -767,9 +767,8 @@
     <call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="checkQty"/>
   </action-method>
 
-  <action-method
-    name="action-invoice-line-method-set-hidden-analytic-distribution-panel">
-    <call class="com.axelor.apps.account.web.InvoiceLineController"
-      method="manageInvoiceLineAnalyticVisibility"/>
-  </action-method>
+  <action-attrs name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel">
+    <attribute for="analyticDistributionPanel" name="hidden"
+      expr="eval: !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || !account?.analyticDistributionAuthorized"/>
+  </action-attrs>
 </object-views>
