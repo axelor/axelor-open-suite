@@ -5,11 +5,11 @@
 
   <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
 
-  <entity name="GDPRResponse" lang="java">
+  <entity name="GDPRResponse">
     <integer name="typeSelect" title="Type" selection="gdpr.request.type.select"/>
     <datetime name="sendingDateT" title="Sending date"/>
     <string name="responseEmailAddress" title="Response email address"/>
-    <many-to-one ref="com.axelor.apps.message.db.Message" name="responseMessage"
+    <many-to-one ref="com.axelor.message.db.Message" name="responseMessage"
       title="Response message"/>
     <many-to-one name="dataFile" ref="com.axelor.meta.db.MetaFile" title="Data file"/>
     <one-to-many name="responseErasureLogList"

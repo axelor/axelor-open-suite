@@ -22,13 +22,16 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
+import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppExpense;
 import com.axelor.studio.db.AppLeave;
 import com.axelor.studio.db.AppTimesheet;
 import com.axelor.studio.db.repo.AppExpenseRepository;
 import com.axelor.studio.db.repo.AppLeaveRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppTimesheetRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -45,18 +48,26 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
   private AppLeaveRepository appLeaveRepo;
   private AppExpenseRepository appExpenseRepo;
 
-  @Inject private CompanyRepository companyRepo;
+  protected CompanyRepository companyRepo;
 
-  @Inject private HRConfigRepository hrConfigRepo;
+  protected HRConfigRepository hrConfigRepo;
 
   @Inject
   public AppHumanResourceServiceImpl(
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
       AppTimesheetRepository appTimesheetRepo,
       AppLeaveRepository appLeaveRepo,
-      AppExpenseRepository appExpense) {
+      AppExpenseRepository appExpenseRepo,
+      CompanyRepository companyRepo,
+      HRConfigRepository hrConfigRepo) {
+    super(appRepo, metaFiles, appVersionService);
     this.appTimesheetRepo = appTimesheetRepo;
     this.appLeaveRepo = appLeaveRepo;
-    this.appExpenseRepo = appExpense;
+    this.appExpenseRepo = appExpenseRepo;
+    this.companyRepo = companyRepo;
+    this.hrConfigRepo = hrConfigRepo;
   }
 
   @Override

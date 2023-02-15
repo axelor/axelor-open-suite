@@ -26,7 +26,7 @@ import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
-import com.axelor.apps.tool.service.ListToolService;
+import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
 import java.util.List;
 

@@ -208,7 +208,7 @@
     action="stock.root.stock.details.by.product"/>
 
   <action-view name="stock.root.stock.details.by.product"
-    title="Stock details by product" model="com.axelor.apps.base.db.Wizard">
+    title="Stock details by product" model="com.axelor.message.db.Wizard">
     <view type="form" name="supplychain-stock-details-by-product-form"/>
     <context name="_isFromMenu" expr="eval: true"/>
   </action-view>

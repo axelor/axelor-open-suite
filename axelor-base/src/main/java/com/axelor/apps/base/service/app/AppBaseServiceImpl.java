@@ -27,11 +27,15 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.axelor.meta.MetaFiles;
 import com.axelor.studio.app.service.AppServiceImpl;
+import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.utils.date.DateTool;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -44,6 +48,12 @@ import javax.inject.Singleton;
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
 
   protected static String DEFAULT_LOCALE = "en";
+
+  @Inject
+  public AppBaseServiceImpl(
+      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+    super(appRepo, metaFiles, appVersionService);
+  }
 
   @Override
   public AppBase getAppBase() {

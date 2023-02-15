@@ -22,7 +22,10 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -32,11 +35,17 @@ import java.util.List;
 @Singleton
 public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleService {
 
-  @Inject private AppSaleRepository appSaleRepo;
+  protected AppSaleRepository appSaleRepo;
 
-  @Inject private CompanyRepository companyRepo;
+  protected CompanyRepository companyRepo;
 
-  @Inject private SaleConfigRepository saleConfigRepo;
+  protected SaleConfigRepository saleConfigRepo;
+
+  @Inject
+  public AppSaleServiceImpl(
+      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+    super(appRepo, metaFiles, appVersionService);
+  }
 
   @Override
   public AppSale getAppSale() {

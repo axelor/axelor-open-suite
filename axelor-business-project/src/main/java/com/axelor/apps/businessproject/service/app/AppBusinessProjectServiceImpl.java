@@ -18,8 +18,11 @@
 package com.axelor.apps.businessproject.service.app;
 
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -27,7 +30,13 @@ import com.google.inject.Singleton;
 public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
     implements AppBusinessProjectService {
 
-  @Inject private AppBusinessProjectRepository appBusinessProjectRepo;
+  protected AppBusinessProjectRepository appBusinessProjectRepo;
+
+  @Inject
+  public AppBusinessProjectServiceImpl(
+      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+    super(appRepo, metaFiles, appVersionService);
+  }
 
   @Override
   public AppBusinessProject getAppBusinessProject() {

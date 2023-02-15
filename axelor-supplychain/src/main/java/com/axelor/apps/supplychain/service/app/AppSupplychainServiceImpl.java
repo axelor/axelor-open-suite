@@ -22,7 +22,10 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppSupplychain;
+import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppSupplychainRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -32,11 +35,17 @@ import java.util.List;
 @Singleton
 public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements AppSupplychainService {
 
-  @Inject private AppSupplychainRepository appSupplychainRepo;
+  protected AppSupplychainRepository appSupplychainRepo;
 
-  @Inject private CompanyRepository companyRepo;
+  protected CompanyRepository companyRepo;
 
-  @Inject private SupplyChainConfigRepository supplyChainConfigRepo;
+  protected SupplyChainConfigRepository supplyChainConfigRepo;
+
+  @Inject
+  public AppSupplychainServiceImpl(
+      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+    super(appRepo, metaFiles, appVersionService);
+  }
 
   @Override
   public AppSupplychain getAppSupplychain() {

@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.crm.web;
 
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;

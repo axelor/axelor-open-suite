@@ -12,13 +12,13 @@
       search="self.metaModel.name = :metaModel AND self.name = :metaField"/>
   </input>
 
-  <input file="base_appGdpr.csv" separator=";" type="com.axelor.apps.base.db.App"
+  <input file="base_appGdpr.csv" separator=";" type="com.axelor.studio.db.App"
     search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp">
     <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
       eval="dependsOn.split(',') as List"/>
   </input>
 
-  <input file="base_appGdpr.csv" separator=";" type="com.axelor.apps.base.db.AppGdpr"
+  <input file="base_appGdpr.csv" separator=";" type="com.axelor.studio.db.AppGdpr"
     search="self.app.code = :code">
     <bind to="app" column="code" search="self.code = :code"/>
   </input>
@@ -28,7 +28,7 @@
     <bind to="appGdpr" column="appGdpr" search="self.app.code = :appGdpr" update="true"/>
   </input>
 
-  <input file="gdpr_template.csv" separator=";" type="com.axelor.apps.message.db.Template"
+  <input file="gdpr_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name"/>
 
   <input file="gdpr-search-config.csv" separator=";"
