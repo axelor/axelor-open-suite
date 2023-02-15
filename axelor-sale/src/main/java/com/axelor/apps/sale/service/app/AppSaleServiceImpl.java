@@ -43,8 +43,16 @@ public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleSer
 
   @Inject
   public AppSaleServiceImpl(
-      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      AppSaleRepository appSaleRepo,
+      CompanyRepository companyRepo,
+      SaleConfigRepository saleConfigRepo) {
     super(appRepo, metaFiles, appVersionService);
+    this.appSaleRepo = appSaleRepo;
+    this.companyRepo = companyRepo;
+    this.saleConfigRepo = saleConfigRepo;
   }
 
   @Override

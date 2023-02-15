@@ -32,7 +32,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppCrm;
-import com.axelor.studio.db.repo.AppCrmRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -44,12 +43,16 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
 
   protected CrmConfigRepository crmConfigRepo;
 
-  protected AppCrmRepository appCrmRepo;
-
   @Inject
   public AppCrmServiceImpl(
-      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      CompanyRepository companyRepo,
+      CrmConfigRepository crmConfigRepo) {
     super(appRepo, metaFiles, appVersionService);
+    this.companyRepo = companyRepo;
+    this.crmConfigRepo = crmConfigRepo;
   }
 
   @Override

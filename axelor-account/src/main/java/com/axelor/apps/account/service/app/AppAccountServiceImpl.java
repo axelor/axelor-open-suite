@@ -51,8 +51,20 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
 
   @Inject
   public AppAccountServiceImpl(
-      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      AppAccountRepository appAccountRepo,
+      AppBudgetRepository appBudgetRepo,
+      AppInvoiceRepository appInvoiceRepo,
+      AccountConfigRepository accountConfigRepo,
+      CompanyRepository companyRepo) {
     super(appRepo, metaFiles, appVersionService);
+    this.appAccountRepo = appAccountRepo;
+    this.appBudgetRepo = appBudgetRepo;
+    this.appInvoiceRepo = appInvoiceRepo;
+    this.accountConfigRepo = accountConfigRepo;
+    this.companyRepo = companyRepo;
   }
 
   @Override

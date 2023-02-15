@@ -34,8 +34,12 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
 
   @Inject
   public AppBusinessProjectServiceImpl(
-      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      AppBusinessProjectRepository appBusinessProjectRepo) {
     super(appRepo, metaFiles, appVersionService);
+    this.appBusinessProjectRepo = appBusinessProjectRepo;
   }
 
   @Override

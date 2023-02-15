@@ -43,8 +43,16 @@ public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPur
 
   @Inject
   public AppPurchaseServiceImpl(
-      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      AppPurchaseRepository appPurchaseRepo,
+      CompanyRepository companyRepo,
+      PurchaseConfigRepository purchaseConfigRepo) {
     super(appRepo, metaFiles, appVersionService);
+    this.appPurchaseRepo = appPurchaseRepo;
+    this.companyRepo = companyRepo;
+    this.purchaseConfigRepo = purchaseConfigRepo;
   }
 
   @Override

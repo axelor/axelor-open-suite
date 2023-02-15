@@ -33,8 +33,12 @@ public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProj
 
   @Inject
   public AppProjectServiceImpl(
-      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      AppProjectRepository appProjectRepo) {
     super(appRepo, metaFiles, appVersionService);
+    this.appProjectRepo = appProjectRepo;
   }
 
   @Override
