@@ -227,6 +227,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   @Override
   @Transactional
   public void retrieveEligibleTerms(PaymentSession paymentSession) {
+
+    List<Long> partnerIdList =
+        paymentSession.getPartnerSet().stream().map(Partner::getId).collect(Collectors.toList());
+    if (CollectionUtils.isEmpty(partnerIdList)) {
+      partnerIdList.add((long) 0);
+    }
     List<InvoiceTerm> eligibleInvoiceTermList =
         invoiceTermRepository
             .all()
@@ -250,6 +256,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind(
                 "pfpValidateStatusPartiallyValidated",
                 InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)
+            .bind("partnerIds", partnerIdList)
             .fetch();
 
     eligibleInvoiceTermList = this.filterNotAwaitingPayment(eligibleInvoiceTermList);
@@ -272,7 +279,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
     String termsMoveLineCondition =
-        " AND ((self.moveLine.partner.isCustomer = TRUE "
+        " AND (0 in (:partnerIds) OR self.moveLine.move.partner.id in (:partnerIds))"
+            + " AND ((self.moveLine.partner.isCustomer = TRUE "
             + " AND :partnerTypeSelect = :partnerTypeClient"
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginClient)"
             + " OR ( self.moveLine.partner.isSupplier = TRUE "
