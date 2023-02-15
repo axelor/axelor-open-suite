@@ -117,9 +117,9 @@
     <field name="reconcileGroup.isProposal" hidden="true"/>
     <button name="validateReconcileGroupBtn" title="Validate reconcile group"
       onClick="action-method-batch-auto-lettering-validate-reconcile-group" icon="fa-check-circle"
-      readonlyIf="$get('reconcileGroup.isProposal')" help="Validate reconcile group"/>
+      readonlyIf="!$get('reconcileGroup.isProposal')" help="Validate reconcile group"/>
     <button name="cancelReconcileGroupBtn" title="Cancel reconcile group"
-      readonlyIf="$get('reconcileGroup.isProposal')" icon="fa-minus-circle"
+      readonlyIf="!$get('reconcileGroup.isProposal')" icon="fa-minus-circle"
       onClick="action-method-batch-auto-lettering-cancel-reconcile-group"
       help="Cancel reconcile group"/>
   </grid>
@@ -1351,7 +1351,7 @@
   <action-method
     name="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups">
     <call class="com.axelor.apps.account.web.BatchAccountController"
-      method="partialValidateSelectedReconcileGroups"/>
+      method="partialReconcileSelectedMoveLines"/>
   </action-method>
 
   <action-method name="action-method-batch-auto-lettering-validate-reconcile-group">

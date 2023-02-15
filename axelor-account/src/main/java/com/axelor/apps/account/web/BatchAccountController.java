@@ -139,10 +139,27 @@ public class BatchAccountController {
     }
   }
 
-  public void partialValidateSelectedReconcileGroups(
-      ActionRequest request, ActionResponse response) {
+  public void partialReconcileSelectedMoveLines(ActionRequest request, ActionResponse response) {
     try {
-      System.out.println("");
+      MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
+      ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      List<MoveLine> moveLineList =
+          idList.stream()
+              .map(id -> moveLineRepository.find(id.longValue()))
+              .collect(Collectors.toList());
+      if (CollectionUtils.isEmpty(moveLineList)) {
+        return;
+      }
+      if (moveLineList.stream()
+          .anyMatch(
+              moveLine ->
+                  moveLine.getReconcileGroup() != null
+                      && moveLine.getReconcileGroup().getIsProposal())) {
+        response.setError("Some selected MoveLines already have a proposal ReconcileGroup");
+      }
+      reconcileGroupService.createProposal(moveLineList);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -86,7 +86,9 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancelProposal(MoveLine moveLine) {
-    if (moveLine.getReconcileGroup() != null && moveLine.getReconcileGroup().getIsProposal()) {
+    if (moveLine.getReconcileGroup() != null
+        && moveLine.getReconcileGroup().getStatusSelect()
+            == ReconcileGroupRepository.STATUS_PROPOSAL) {
       moveLine.setReconcileGroup(null);
       moveLineRepository.save(moveLine);
     }
@@ -295,5 +297,32 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         .bind("reconcileGroupId", reconcileGroup.getId())
         .bind("confirmed", ReconcileRepository.STATUS_CONFIRMED)
         .fetch();
+  }
+
+  @Override
+  @Transactional
+  public void createProposal(List<MoveLine> moveLineList) {
+    ReconcileGroup reconcileGroup =
+        moveLineList.stream()
+            .filter(
+                moveLine ->
+                    moveLine.getReconcileGroup() != null
+                        && moveLine.getReconcileGroup().getStatusSelect()
+                            == ReconcileGroupRepository.STATUS_PARTIAL)
+            .map(MoveLine::getReconcileGroup)
+            .findFirst()
+            .orElse(null);
+    if (reconcileGroup == null) {
+      reconcileGroup = createReconcileGroup(moveLineList.get(0).getMove().getCompany());
+      reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PROPOSAL);
+    }
+    reconcileGroup.setIsProposal(true);
+
+    for (MoveLine moveLine : moveLineList) {
+      if (moveLine.getReconcileGroup() == null) {
+        moveLine.setReconcileGroup(reconcileGroup);
+        moveLineRepository.save(moveLine);
+      }
+    }
   }
 }

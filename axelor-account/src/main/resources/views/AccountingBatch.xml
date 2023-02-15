@@ -216,7 +216,8 @@
           canEdit="false" colSpan="12"/>
         <field name="orderBySelect" widget="MultiSelect"/>
         <field name="reconcileMethodSelect" widget="RadioSelect"/>
-        <field name="isPartialReconcile" readonlyIf="reconcileMethodSelect NOT IN (1,4)"
+        <field name="isPartialReconcile"
+          readonlyIf="reconcileMethodSelect != 1 &amp;&amp; reconcileMethodSelect != 4"
           widget="boolean-switch"/>
         <field name="isProposal" widget="boolean-switch"/>
         <field name="$isShowMoveLinesInProposalBtnDisplayed" type="boolean" hidden="true"/>

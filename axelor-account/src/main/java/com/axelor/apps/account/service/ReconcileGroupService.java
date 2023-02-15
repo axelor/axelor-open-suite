@@ -129,4 +129,6 @@ public interface ReconcileGroupService {
   void unletter(ReconcileGroup reconcileGroup) throws AxelorException;
 
   List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup);
+
+  void createProposal(List<MoveLine> moveLineList);
 }
