@@ -299,7 +299,7 @@
 
   <form name="incl-analytic-distribution-move-line-form"
     model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false"
-    onLoad="action-record-initialize-permission-validation-move-line,action-move-live-method-set-hidden-analytic-distribution-panel">
+    onLoad="action-record-initialize-permission-validation-move-line,action-move-live-attrs-set-hidden-analytic-distribution-panel">
     <panel name="analyticDistributionPanel" title="Analytic distribution"
       readonlyIf="move.period.statusSelect == 2 || $validatePeriod">
       <field name="analyticDistributionTemplate"
@@ -867,7 +867,7 @@
     <action name="action-move-line-method-hide-axis-analytic-account"/>
     <action name="action-move-line-account-method-get-validate-period"/>
     <action name="action-record-analytic-distribution-type-select"/>
-    <action name="action-move-live-method-set-hidden-analytic-distribution-panel"/>
+    <action name="action-move-live-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-account-moveline-usher-process-onchange">
@@ -900,7 +900,7 @@
   <action-group name="action-account-move-line-move-form-account-group-on-change">
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
-    <action name="action-move-live-method-set-hidden-analytic-distribution-panel"/>
+    <action name="action-move-live-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-record-set-cut-off-generated-false"/>
@@ -939,7 +939,7 @@
     <action name="action-move-line-record-set-cut-off-generated-false"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
-    <action name="action-move-live-method-set-hidden-analytic-distribution-panel"/>
+    <action name="action-move-live-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-move-line-group-analytic-distribution-template-onchange">
@@ -1316,8 +1316,8 @@
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
 
-  <action-method name="action-move-live-method-set-hidden-analytic-distribution-panel">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="manageMoveLineAnalyticVisibility"/>
-  </action-method>
+  <action-attrs name="action-move-live-attrs-set-hidden-analytic-distribution-panel">
+    <attribute for="analyticDistributionPanel" name="hidden"
+      expr="eval: !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || !account?.analyticDistributionAuthorized"/>
+  </action-attrs>
 </object-views>

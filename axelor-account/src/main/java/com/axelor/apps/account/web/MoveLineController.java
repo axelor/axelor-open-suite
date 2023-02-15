@@ -36,7 +36,6 @@ import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServ
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
@@ -818,29 +817,6 @@ public class MoveLineController {
             response.setValue("taxLine", taxLine);
             response.setValue("taxEquiv", taxEquiv);
           }
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void manageMoveLineAnalyticVisibility(ActionRequest request, ActionResponse response) {
-    try {
-      Context parentContext = request.getContext().getParent();
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      response.setAttr("analyticDistributionPanel", "hidden", false);
-
-      if (parentContext != null) {
-        Move move = parentContext.asType(Move.class);
-        if (move.getCompany() == null
-            || !Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
-            || !Beans.get(AccountConfigService.class)
-                .getAccountConfig(move.getCompany())
-                .getManageAnalyticAccounting()
-            || moveLine.getAccount() == null
-            || !moveLine.getAccount().getAnalyticDistributionAuthorized()) {
-          response.setAttr("analyticDistributionPanel", "hidden", true);
         }
       }
     } catch (Exception e) {
