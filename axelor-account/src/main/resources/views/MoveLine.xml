@@ -304,9 +304,9 @@
         </viewer>
       </field>
       <panel name="datesPanel" colSpan="12">
-        <field name="date" onChange="account-move-line-group-date-onchange"/>
+        <field name="date" onChange="account-move-line-group-date-onchange" readonly="true"/>
         <field name="dueDate" showIf="dueDate"/>
-        <field name="originDate"/>
+        <field name="originDate" readonly="true"/>
       </panel>
       <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form"
         grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
@@ -469,9 +469,9 @@
         </viewer>
       </field>
       <panel name="datesPanel" colSpan="12">
-        <field name="date" onChange="account-move-line-group-date-onchange"/>
+        <field name="date" onChange="account-move-line-group-date-onchange" readonly="true"/>
         <field name="dueDate" showIf="dueDate"/>
-        <field name="originDate"/>
+        <field name="originDate" readonly="true"/>
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
         onSelect="action-move-line-attrs-domain-account" canEdit="false"

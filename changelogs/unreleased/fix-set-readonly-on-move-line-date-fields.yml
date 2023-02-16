@@ -1,0 +1,3 @@
+---
+title: "Move lines : Set readonly on date fields to prevent move line having different dates than it's move'."
+type: fix
