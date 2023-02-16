@@ -690,7 +690,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
   }
 
-  protected LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+  @Override
+  public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     switch (paymentSession.getMoveAccountingDateSelect()) {
       case PaymentSessionRepository.MOVE_ACCOUNTING_DATE_PAYMENT:
         return paymentSession.getPaymentDate();

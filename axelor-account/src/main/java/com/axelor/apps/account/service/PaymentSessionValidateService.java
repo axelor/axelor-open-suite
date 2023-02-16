@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface PaymentSessionValidateService {
@@ -42,4 +43,6 @@ public interface PaymentSessionValidateService {
   boolean isEmpty(PaymentSession paymentSession);
 
   public List<InvoiceTerm> getInvoiceTermsWithInActiveBankDetails(PaymentSession paymentSession);
+
+  public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm);
 }
