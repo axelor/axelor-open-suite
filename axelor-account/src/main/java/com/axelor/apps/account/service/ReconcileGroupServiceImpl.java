@@ -85,13 +85,42 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void cancelProposal(MoveLine moveLine) {
-    if (moveLine.getReconcileGroup() != null
-        && moveLine.getReconcileGroup().getStatusSelect()
-            == ReconcileGroupRepository.STATUS_PROPOSAL) {
-      moveLine.setReconcileGroup(null);
-      moveLineRepository.save(moveLine);
+  public void cancelProposal(ReconcileGroup reconcileGroup) {
+    if (reconcileGroup != null) {
+      if (reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_PROPOSAL) {
+        remove(reconcileGroup);
+      } else if (reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_PARTIAL) {
+        List<Reconcile> reconcileList =
+            reconcileRepository
+                .all()
+                .filter(
+                    "self.reconcileGroup.id = :reconcileGroupId AND self.statusSelect = :statusDraft")
+                .bind("reconcileGroupId", reconcileGroup.getId())
+                .bind("statusDraft", ReconcileRepository.STATUS_DRAFT)
+                .fetch();
+        for (Reconcile reconcile : reconcileList) {
+          reconcile.getCreditMoveLine().setReconcileGroup(null);
+          reconcile.getDebitMoveLine().setReconcileGroup(null);
+          reconcileGroup.setIsProposal(false);
+          reconcileRepository.remove(reconcile);
+        }
+      }
     }
+  }
+
+  protected void remove(ReconcileGroup reconcileGroup) {
+    List<Reconcile> reconcileList =
+        reconcileRepository
+            .all()
+            .filter("self.reconcileGroup.id = :reconcileGroupId")
+            .bind("reconcileGroupId", reconcileGroup.getId())
+            .fetch();
+    for (Reconcile reconcile : reconcileList) {
+      reconcile.getDebitMoveLine().setReconcileGroup(null);
+      reconcile.getCreditMoveLine().setReconcileGroup(null);
+      reconcileRepository.remove(reconcile);
+    }
+    reconcileGroupRepository.remove(reconcileGroup);
   }
 
   @Override
@@ -250,7 +279,8 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         && isBalanced(reconcileList)
         && status == ReconcileGroupRepository.STATUS_PARTIAL) {
       validate(reconcileGroup, reconcileList);
-    } else if (status == ReconcileGroupRepository.STATUS_BALANCED) {
+    } else if ((CollectionUtils.isEmpty(reconcileList) || !isBalanced(reconcileList))
+        && status == ReconcileGroupRepository.STATUS_BALANCED) {
       // it is not balanced or the collection is empty.
       if (CollectionUtils.isEmpty(reconcileList)) {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
@@ -323,6 +353,22 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         moveLine.setReconcileGroup(reconcileGroup);
         moveLineRepository.save(moveLine);
       }
+    }
+  }
+
+  @Override
+  @Transactional
+  public void removeDraftReconciles(ReconcileGroup reconcileGroup) {
+    List<Reconcile> reconcilesToRemove =
+        reconcileRepository
+            .all()
+            .filter("self.reconcileGroup.id = :reconcileGroupId AND self.statusSelect = :draft")
+            .bind("reconcileGroupId", reconcileGroup.getId())
+            .bind("draft", ReconcileRepository.STATUS_DRAFT)
+            .fetch();
+
+    for (Reconcile reconcile : reconcilesToRemove) {
+      reconcileRepository.remove(reconcile);
     }
   }
 }

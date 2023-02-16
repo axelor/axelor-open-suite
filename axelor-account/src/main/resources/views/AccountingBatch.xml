@@ -34,9 +34,9 @@
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
         showIf="actionSelect == 14"/>
       <field name="tradingNameSet" colSpan="12" grid-view="trading-name-grid"
-        form-view="trading-name-form" domain=":company member of self.companySet" canNew="false"
-        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()" hidden="true"
-        canEdit="false"/>
+        widget="TagSelect" form-view="trading-name-form" domain=":company member of self.companySet"
+        canNew="false" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+        hidden="true" canEdit="false"/>
       <field name="archived" title="Archived"/>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -207,15 +207,16 @@
         <field name="endDate" requiredIf="actionSelect == 27"
           onChange="action-accounting-batch-condition-reconcile-dates"/>
         <field name="fromAccount" requiredIf="actionSelect == 27 &amp;&amp; toAccount == null"
-          domain="self.statusSelect = 1 AND self.reconcileOk IS true"/>
+          domain="self.statusSelect = 1 AND self.reconcileOk IS true AND self.company = :company"/>
         <field name="toAccount" requiredIf="actionSelect == 27 &amp;&amp; fromAccount == null"
-          domain="self.statusSelect = 1 AND self.reconcileOk IS true"/>
-        <panel-related field="partnerSet" form-view="partner-form"
-          grid-view="partner-grid" widget="TagSelect"
+          domain="self.statusSelect = 1 AND self.reconcileOk IS true AND self.company = :company"/>
+        <field name="partnerSet" form-view="partner-form" grid-view="partner-grid"
+          widget="TagSelect"
           onSelect="action-accounting-batch-method-auto-lettering-set-partner-domain" canNew="false"
           canEdit="false" colSpan="12"/>
         <field name="orderBySelect" widget="MultiSelect"/>
-        <field name="reconcileMethodSelect" widget="RadioSelect"/>
+        <field name="reconcileMethodSelect" widget="RadioSelect"
+          onChange="action-accounting-batch-record-auto-lettering-set-partial-false"/>
         <field name="isPartialReconcile"
           readonlyIf="reconcileMethodSelect != 1 &amp;&amp; reconcileMethodSelect != 4"
           widget="boolean-switch"/>
@@ -395,6 +396,12 @@
       if="miscOpeJournal?.authorizeSimulatedMove"/>
     <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_DAYBOOK"
       if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook"/>
+  </action-record>
+
+  <action-record
+    name="action-accounting-batch-record-auto-lettering-set-partial-false"
+    model="com.axelor.apps.account.db.AccountingBatch">
+    <field name="isPartialReconcile" expr="eval: false"/>
   </action-record>
 
   <!-- ACTION METHOD -->

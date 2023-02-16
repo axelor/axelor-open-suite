@@ -38,7 +38,7 @@ public interface ReconcileGroupService {
   void validate(ReconcileGroup reconcileGroup, List<Reconcile> reconcileList)
       throws AxelorException;
 
-  void cancelProposal(MoveLine moveLine);
+  void cancelProposal(ReconcileGroup reconcileGroup);
 
   /**
    * Check if the given reconcile lines are balanced.
@@ -131,4 +131,6 @@ public interface ReconcileGroupService {
   List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup);
 
   void createProposal(List<MoveLine> moveLineList);
+
+  void removeDraftReconciles(ReconcileGroup reconcileGroup);
 }

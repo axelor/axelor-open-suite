@@ -148,6 +148,17 @@ public class AccountingBatchController {
       Batch batch =
           batchControllerCallableTool.runInSeparateThread(accountingBatchService, response);
       if (batch != null) {
+        ActionView.ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get("Move lines reconciled"));
+
+        actionViewBuilder.domain(":batch MEMBER OF self.batchSet");
+        actionViewBuilder.context("batch", batch);
+
+        actionViewBuilder.model(MoveLine.class.getName());
+        actionViewBuilder.add("grid", "move-line-account-batch-auto-move-lettering-grid");
+        actionViewBuilder.add("form", "move-line-form");
+
+        response.setView(actionViewBuilder.map());
         response.setFlash(batch.getComments());
       }
     } catch (Exception e) {
@@ -301,18 +312,16 @@ public class AccountingBatchController {
       List<Account> accountsBetween =
           service.getAccountsBetween(
               accountingBatch.getFromAccount(), accountingBatch.getToAccount());
+      String domain = ":company MEMBER OF self.companySet";
       if (CollectionUtils.isNotEmpty(accountsBetween)) {
         if (service.areAllAccountsOfType(accountsBetween, AccountTypeRepository.TYPE_DEBT)) {
-          response.setAttr("partnerSet", "domain", "self.isSupplier is true");
+          domain += " AND self.isSupplier is true";
         } else if (service.areAllAccountsOfType(
             accountsBetween, AccountTypeRepository.TYPE_RECEIVABLE)) {
-          response.setAttr("partnerSet", "domain", "self.isCustomer is true");
-        } else {
-          response.setAttr("partnerSet", "domain", null);
+          domain += " AND self.isCustomer is true";
         }
-      } else {
-        response.setAttr("partnerSet", "domain", null);
       }
+      response.setAttr("partnerSet", "domain", domain);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

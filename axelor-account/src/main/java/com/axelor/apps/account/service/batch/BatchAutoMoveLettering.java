@@ -96,10 +96,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
 
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       Comparator<MoveLine> moveLineComparator = getMoveLineComparator();
-      findBatch();
-      accountingBatch = batch.getAccountingBatch();
-      accountingBatch.setCompany(companyRepository.find(accountingBatch.getCompany().getId()));
-      moveLineLists = moveLineService.findMoveLineLists(moveLineLists);
       List<MoveLine> companyPartnerCreditMoveLineList =
           moveLineLists.getLeft().stream()
               .filter(moveLine -> moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0)
@@ -131,39 +127,47 @@ public class BatchAutoMoveLettering extends BatchStrategy {
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
 
-      BigDecimal sumDebit =
-          debitMoveLines.stream()
-              .map(MoveLine::getDebit)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
-      BigDecimal sumCredit =
-          creditMoveLines.stream()
-              .map(MoveLine::getCredit)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
+      boolean isBalanced = debitTotalRemaining.compareTo(creditTotalRemaining) == 0;
 
+      Map<MoveLine, BigDecimal> debitRemaining = new HashMap<>();
+      for (MoveLine debitMoveLine : debitMoveLines) {
+        debitRemaining.put(debitMoveLine, debitMoveLine.getAmountRemaining());
+      }
       for (MoveLine creditMoveLine : creditMoveLines) {
+        BigDecimal creditRemaining = creditMoveLine.getAmountRemaining();
         for (MoveLine debitMoveLine : debitMoveLines) {
+          BigDecimal debit = debitMoveLine.getDebit();
+          BigDecimal credit = creditMoveLine.getCredit();
+          BigDecimal nextCreditRemaining = creditRemaining.subtract(debit);
+          BigDecimal nextDebitRemaining = debitRemaining.get(debitMoveLine).subtract(credit);
+          if (!isBalanced
+              && (nextCreditRemaining.signum() < 0 || nextDebitRemaining.signum() < 0)) {
+            continue;
+          }
+
+          debitMoveLine = moveLineRepository.find(debitMoveLine.getId());
+          creditMoveLine = moveLineRepository.find(creditMoveLine.getId());
+
           boolean reconcileByAmount =
               reconcileMethodSelect
                       == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_AMOUNT
-                  && debitMoveLine.getDebit().compareTo(creditMoveLine.getCredit()) == 0;
+                  && debit.compareTo(credit) == 0;
           boolean reconcileByOrigin =
               reconcileMethodSelect
                       == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_ORIGIN
                   && debitMoveLine.getOrigin() != null
                   && creditMoveLine.getOrigin() != null
                   && debitMoveLine.getOrigin().equals(creditMoveLine.getOrigin())
-                  && (accountingBatch.getIsPartialReconcile()
-                      || sumDebit.compareTo(sumCredit) == 0);
+                  && (accountingBatch.getIsPartialReconcile() || debit.compareTo(credit) == 0);
           boolean reconcileByBalancedMove =
               reconcileMethodSelect
                       == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_MOVE
-                  && sumDebit.compareTo(sumCredit) == 0;
+                  && willMakeBalancedMove(creditMoveLine)
+                  && willMakeBalancedMove(debitMoveLine);
           boolean reconcileByBalancedAccount =
               reconcileMethodSelect
                       == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_ACCOUNT
-                  && debitTotalRemaining.compareTo(creditTotalRemaining) == 0;
+                  && isBalanced;
           boolean reconcileByExternalIdentifier =
               reconcileMethodSelect
                       == AccountingBatchRepository
@@ -171,8 +175,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
                   && debitMoveLine.getExternalOrigin() != null
                   && creditMoveLine.getExternalOrigin() != null
                   && debitMoveLine.getExternalOrigin().equals(creditMoveLine.getExternalOrigin())
-                  && (accountingBatch.getIsPartialReconcile()
-                      || sumDebit.compareTo(sumCredit) == 0);
+                  && (accountingBatch.getIsPartialReconcile() || debit.compareTo(credit) == 0);
 
           if (reconcileByAmount
               || reconcileByOrigin
@@ -181,6 +184,8 @@ public class BatchAutoMoveLettering extends BatchStrategy {
               || reconcileByExternalIdentifier) {
             try {
               reconcile(debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+              creditRemaining = nextCreditRemaining;
+              debitRemaining.replace(debitMoveLine, nextDebitRemaining);
             } catch (Exception e) {
               TraceBackService.trace(
                   new Exception(
@@ -230,8 +235,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     findBatch();
     accountingBatch = batch.getAccountingBatch();
     accountingBatch.setCompany(companyRepository.find(accountingBatch.getCompany().getId()));
-    debitMoveLine = moveLineRepository.find(debitMoveLine.getId());
-    creditMoveLine = moveLineRepository.find(creditMoveLine.getId());
     // Gestion du passage en 580
     if (nextDebitTotalRemaining.compareTo(BigDecimal.ZERO) <= 0
         || nextCreditTotalRemaining.compareTo(BigDecimal.ZERO) <= 0) {
@@ -255,16 +258,18 @@ public class BatchAutoMoveLettering extends BatchStrategy {
         List<Reconcile> reconcileList = reconcileGroupService.getReconcileList(reconcileGroup);
         reconcileList.add(reconcile);
         reconcileGroupService.addToReconcileGroup(reconcileGroup, reconcile);
-
-        incrementDone();
       } else {
+        ReconcileGroup reconcileGroup =
+            reconcileGroupService.findOrMergeGroup(reconcile).orElse(null);
         reconcileService.confirmReconcile(reconcile, true, true);
-        incrementDone();
+        reconcileGroupService.removeDraftReconciles(reconcileGroup);
       }
       debitMoveLine.addBatchSetItem(batch);
       creditMoveLine.addBatchSetItem(batch);
       moveLineRepository.save(debitMoveLine);
       moveLineRepository.save(creditMoveLine);
+      incrementDone();
+      incrementDone();
 
       LOG.debug("Reconcile : {}", reconcile);
     }
@@ -280,16 +285,16 @@ public class BatchAutoMoveLettering extends BatchStrategy {
 
   protected String getMoveLinesToReconcileFilter(AccountingBatch accountingBatch) {
     String filters =
-        "self.amountRemaining != 0 AND self.move.statusSelect IN (:moveDaybookStatus, :moveAccountedStatus) AND self.move.company = :company AND self.date > :startDate AND self.date < :endDate";
+        "self.amountRemaining != 0 AND self.move.statusSelect IN (:moveDaybookStatus, :moveAccountedStatus) AND self.move.company = :company AND self.date >= :startDate AND self.date <= :endDate";
 
     if (CollectionUtils.isNotEmpty(accountingBatch.getTradingNameSet())) {
       filters += " AND self.move.tradingName IN :tradingNameSet";
     }
     if (accountingBatch.getFromAccount() != null) {
-      filters += " AND self.account.code > :fromAccountCode";
+      filters += " AND self.account.code >= :fromAccountCode";
     }
     if (accountingBatch.getToAccount() != null) {
-      filters += " AND self.account.code < :toAccountCode";
+      filters += " AND self.account.code <= :toAccountCode";
     }
     if (CollectionUtils.isNotEmpty(accountingBatch.getPartnerSet())) {
       filters += " AND self.partner.id IN :partnersIds";
@@ -348,6 +353,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
 
   protected Comparator<MoveLine> getMoveLineComparator() {
     Comparator<MoveLine> moveLineComparator = null;
+    Comparator nullSafeComparator = Comparator.nullsLast(Comparator.naturalOrder());
 
     String[] orderBySelect = accountingBatch.getOrderBySelect().split(", ");
 
@@ -356,20 +362,20 @@ public class BatchAutoMoveLettering extends BatchStrategy {
         case AccountingBatchRepository.AUTO_MOVE_LETTERING_ORDER_BY_ACCOUNTING_DATE:
           moveLineComparator =
               i == 0
-                  ? Comparator.comparing(MoveLine::getDate)
-                  : moveLineComparator.thenComparing(MoveLine::getDate);
+                  ? Comparator.comparing(MoveLine::getDate, nullSafeComparator)
+                  : moveLineComparator.thenComparing(MoveLine::getDate, nullSafeComparator);
           break;
         case AccountingBatchRepository.AUTO_MOVE_LETTERING_ORDER_BY_ORIGIN:
           moveLineComparator =
               i == 0
-                  ? Comparator.comparing(MoveLine::getOrigin)
-                  : moveLineComparator.thenComparing(MoveLine::getOrigin);
+                  ? Comparator.comparing(MoveLine::getOrigin, nullSafeComparator)
+                  : moveLineComparator.thenComparing(MoveLine::getOrigin, nullSafeComparator);
           break;
         case AccountingBatchRepository.AUTO_MOVE_LETTERING_ORDER_BY_DUE_DATE:
           moveLineComparator =
               i == 0
-                  ? Comparator.comparing(MoveLine::getDueDate)
-                  : moveLineComparator.thenComparing(MoveLine::getDueDate);
+                  ? Comparator.comparing(MoveLine::getDueDate, nullSafeComparator)
+                  : moveLineComparator.thenComparing(MoveLine::getDueDate, nullSafeComparator);
           break;
         case AccountingBatchRepository.AUTO_MOVE_LETTERING_ORDER_BY_PAYMENT_MODE:
           moveLineComparator =
@@ -439,6 +445,15 @@ public class BatchAutoMoveLettering extends BatchStrategy {
                         || CollectionUtils.isEmpty(accountingBatch.getPartnerSet())
                         || CollectionUtils.containsAny(
                             accountingBatch1.getPartnerSet(), accountingBatch.getPartnerSet())));
+  }
+
+  protected boolean willMakeBalancedMove(MoveLine moveLine) {
+    BigDecimal amountMoveRemaining =
+        moveLine.getMove().getMoveLineList().stream()
+            .map(MoveLine::getAmountRemaining)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    return moveLine.getAmountRemaining().compareTo(amountMoveRemaining) == 0;
   }
 
   /**
