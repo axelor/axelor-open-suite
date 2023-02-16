@@ -2,7 +2,7 @@
 name: Recruitment
 code: recruitment
 typeSelect: standard
-installOrder: 21
+installOrder: 2230
 description: |
     Recruitment
 image: app-recruitment.png

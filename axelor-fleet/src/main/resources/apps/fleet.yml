@@ -2,7 +2,7 @@
 name: Fleet
 code: fleet
 typeSelect: standard
-installOrder: 26
+installOrder: 2260
 description: |
    Fleet management
 image: app-fleet.png

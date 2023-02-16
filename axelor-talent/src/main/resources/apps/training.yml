@@ -2,7 +2,7 @@
 name: Training
 code: training
 typeSelect: standard
-installOrder: 20
+installOrder: 2210
 description: |
     Training
 image: app-training.png

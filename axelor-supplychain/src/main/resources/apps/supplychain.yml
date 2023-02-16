@@ -2,7 +2,7 @@
 name: Supplychain
 code: supplychain
 typeSelect: standard
-installOrder: 12
+installOrder: 2120
 description: |
     Supplychain management
 image: app-supplychain.png

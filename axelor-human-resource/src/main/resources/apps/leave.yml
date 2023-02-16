@@ -2,7 +2,7 @@
 name: Leave Management
 code: leave
 typeSelect: standard
-installOrder: 13
+installOrder: 2140
 description: |
    Leave Management
 image: app-leave.png

@@ -2,7 +2,7 @@
 name: Purchase Request
 code: purchase-request
 typeSelect: standard
-installOrder: 6
+installOrder: 2070
 description: |
    Purchase Request Configuration
 image: app-purchase-request.png

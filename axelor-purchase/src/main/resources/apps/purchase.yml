@@ -2,7 +2,7 @@
 name: Purchase
 code: purchase
 typeSelect: standard
-installOrder: 5
+installOrder: 2060
 description: |
    Purchase configuration
 image: app-purchase.png
