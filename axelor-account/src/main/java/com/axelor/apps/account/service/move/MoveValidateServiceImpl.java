@@ -205,6 +205,19 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           move.getReference());
     }
 
+    if (move.getMoveLineList().stream()
+        .anyMatch(
+            moveLine ->
+                moveLine.getDate() == null
+                    || moveLine.getOriginDate() == null
+                    || moveLine.getDate().compareTo(move.getDate()) != 0
+                    || moveLine.getOriginDate().compareTo(move.getOriginDate()) != 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_13),
+          move.getReference());
+    }
+
     checkClosurePeriod(move);
     checkInactiveAnalyticJournal(move);
     checkInactiveAccount(move);

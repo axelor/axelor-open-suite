@@ -1,0 +1,3 @@
+---
+title: "Moves : On check preconditions for any move process, prevent it's move lines from having a different date/origin date than itself."
+type: fix

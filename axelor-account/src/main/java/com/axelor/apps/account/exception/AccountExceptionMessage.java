@@ -317,6 +317,8 @@ public final class AccountExceptionMessage {
       "Accounting move can not be accounted because its fiscal period is closed." /*)*/;
   public static final String MOVE_12 = /*$$(*/
       "The currency is missing on the account move %s" /*)*/;
+  public static final String MOVE_13 = /*$$(*/
+      "An incoherence has been detected between the date and origin date of the move %s and the corresponding dates of its move lines. Those dates must be same." /*)*/;
   public static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
   public static final String MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL = /*$$(*/
