@@ -107,13 +107,14 @@
       <button name="searchEligibleTermsBtn" title="Search due Terms"
         onClick="action-group-payment-session-search-eligible-terms"
         hideIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
-      <button name="refreshEligibleTermsBtn" title="Refresh terms list"
-        showIf="id &amp;&amp; sessionTotalAmount > 0 &amp;&amp; statusSelect == 1"
-        onClick="action-method-payment-session-search-eligible-terms"/>
+      <spacer/>
       <button name="selectAllBtn" title="Select all"
         onClick="action-payment-session-method-select-all" colSpan="3" hidden="true"/>
       <button name="unselectAllBtn" title="Unselect all"
         onClick="action-payment-session-method-unselect-all" colSpan="3" hidden="true"/>
+      <button name="refreshEligibleTermsBtn" title="Refresh terms list"
+        showIf="id &amp;&amp; sessionTotalAmount > 0 &amp;&amp; statusSelect == 1"
+        onClick="action-method-payment-session-search-eligible-terms"/>
       <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
         showIf="id" colSpan="12" canSearch="true" height="600" readonlyIf="statusSelect > 1"/>
       <panel-dashlet
@@ -212,6 +213,7 @@
   <action-group name="action-group-payment-session-on-load">
     <action name="action-payment-session-method-set-has-invoice-term-selected"/>
     <action name="action-payment-session-record-set-session-total-amount-btn"/>
+    <action name="action-payment-session-method-set-button-attrs"/>
   </action-group>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
