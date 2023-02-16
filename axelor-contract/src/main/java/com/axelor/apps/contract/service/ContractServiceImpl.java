@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -404,6 +405,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     for (ContractLine line : additionalLines) {
       InvoiceLine invLine = generate(invoice, line);
       invLine.setContractLine(line);
+      if (!CollectionUtils.isEmpty(invLine.getAnalyticMoveLineList())) {
+        for (AnalyticMoveLine analyticMoveLine : invLine.getAnalyticMoveLineList()) {
+          analyticMoveLine.setContractLine(line);
+        }
+      }
       contractLineRepo.save(line);
     }
 
@@ -448,6 +454,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         tmp = this.contractLineService.computeTotal(tmp);
         InvoiceLine invLine = generate(invoice, tmp);
         invLine.setContractLine(line);
+        if (!CollectionUtils.isEmpty(invLine.getAnalyticMoveLineList())) {
+          for (AnalyticMoveLine analyticMoveLine : invLine.getAnalyticMoveLineList()) {
+            analyticMoveLine.setContractLine(line);
+          }
+        }
       }
     }
 

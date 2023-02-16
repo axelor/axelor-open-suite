@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -204,7 +204,11 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
     javax.persistence.Query clearWapHistoryLinesQuery =
         JPA.em().createNativeQuery("Delete FROM stock_wap_history");
 
+    javax.persistence.Query clearStockLocationsHistoryLinesQuery =
+        JPA.em().createNativeQuery("Delete FROM stock_stock_location_line_history");
+
     JPA.runInTransaction(clearWapHistoryLinesQuery::executeUpdate);
+    JPA.runInTransaction(clearStockLocationsHistoryLinesQuery::executeUpdate);
   }
 
   protected Query<StockMove> buildQueryFetchStockMoveFromGroup(StockMoveGroup stockMoveGroup) {

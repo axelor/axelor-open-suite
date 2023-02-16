@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,7 +33,6 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
@@ -103,15 +102,15 @@ public class PurchaseOrderController {
   }
 
   public void getStockLocation(ActionRequest request, ActionResponse response) {
-
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-
-    if (purchaseOrder.getCompany() != null) {
-
-      response.setValue(
-          "stockLocation",
-          Beans.get(StockLocationService.class)
-              .getDefaultReceiptStockLocation(purchaseOrder.getCompany()));
+    try {
+      Company company = purchaseOrder.getCompany();
+      StockLocation stockLocation =
+          Beans.get(PurchaseOrderSupplychainService.class)
+              .getStockLocation(purchaseOrder.getSupplierPartner(), company);
+      response.setValue("stockLocation", stockLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -282,7 +281,7 @@ public class PurchaseOrderController {
     if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existLocationDiff)) {
       // Need to display intermediate screen to select some values
       ActionViewBuilder confirmView =
-          ActionView.define("Confirm merge purchase order")
+          ActionView.define(I18n.get("Confirm merge purchase order"))
               .model(Wizard.class.getName())
               .add("form", "purchase-order-merge-confirm-form")
               .param("popup", "true")
@@ -324,7 +323,7 @@ public class PurchaseOrderController {
       if (purchaseOrder != null) {
         // Open the generated purchase order in a new tab
         response.setView(
-            ActionView.define("Purchase order")
+            ActionView.define(I18n.get("Purchase order"))
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-grid")
                 .add("form", "purchase-order-form")
@@ -374,7 +373,7 @@ public class PurchaseOrderController {
     }
   }
 
-  public void updateEstimatedDelivDate(ActionRequest request, ActionResponse response) {
+  public void updateEstimatedReceiptDate(ActionRequest request, ActionResponse response) {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
@@ -384,7 +383,7 @@ public class PurchaseOrderController {
         if (receiptState != null
             && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED)
             && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_PARTIALLY_RECEIVED)) {
-          purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
+          purchaseOrderLine.setEstimatedReceiptDate(purchaseOrder.getEstimatedReceiptDate());
         }
       }
     }
@@ -465,6 +464,19 @@ public class PurchaseOrderController {
           .isGoodAmountBudgetDistribution(purchaseOrder)) {
         response.setAlert(I18n.get(ITranslation.PURCHASE_ORDER_BUDGET_DISTRIBUTIONS_SUM_NOT_EQUAL));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getFromStockLocation(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    try {
+      Company company = purchaseOrder.getCompany();
+      StockLocation fromStockLocation =
+          Beans.get(PurchaseOrderSupplychainService.class)
+              .getFromStockLocation(purchaseOrder.getSupplierPartner(), company);
+      response.setValue("fromStockLocation", fromStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

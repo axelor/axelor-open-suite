@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -739,8 +739,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
     Move purchaseMove = reconcile.getCreditMoveLine().getMove();
-    if ((purchaseMove.getJournal().getJournalType() != null
-            && !purchaseMove.getJournal().getJournalType().getCode().equals("ACH"))
+    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")
         || purchaseMove.getPartner() == null) {
       return;
     }

@@ -390,7 +390,7 @@
 
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
-        readonlyIf="!id" onClick="save,action-invoice-view-reports-wizard"/>
+        readonlyIf="!id" onClick="action-invoice-group-report-button"/>
     </toolbar>
 
     <menubar>
@@ -666,7 +666,7 @@
             form-view="invoice-form" grid-view="invoice-grid"/>
           <panel-related name="refundInvoiceListPanel" field="refundInvoiceList"
             readonly="true"
-            showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12"
+            showIf="refundInvoiceList != null &amp;&amp; refundInvoiceList.length > 0" colSpan="12"
             form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
         </panel>
         <field name="paymentDelayReason" canNew="false" canEdit="false"
@@ -740,6 +740,11 @@ InvoiceSet.length > 0))"
           if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
           <field name="legalNotice" requiredIf="financialDiscount" widget="html" colSpan="12"
             showTitle="false"/>
+        </panel>
+        <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
+        <panel name="invoiceProductStatementPanel" title="Invoice Product Statement"
+          colSpan="12" showIf="company.accountConfig.displayItemsCategoriesOnPrinting">
+          <field name="invoiceProductStatement" readonly="true" showTitle="false" colSpan="12"/>
         </panel>
       </panel>
       <panel name="automaticMailPanel" title="Automatic mail"
@@ -1106,8 +1111,8 @@ InvoiceSet.length > 0))"
         onChange="action-group-account-invoice-company-onchange" form-view="company-form"
         grid-view="company-grid" readonlyIf="statusSelect != 1"/>
       <field name="companyBankDetails" canEdit="false" widget="SuggestBox"
-        onSelect="action-invoice-attrs-domain-company-bank-details" form-view="bank-details-form"
-        grid-view="bank-details-grid"/>
+        onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
+        form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="fiscalPosition" grid-view="fiscal-position-grid"
         form-view="fiscal-position-form" canNew="false" canEdit="false"
         onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
@@ -1664,6 +1669,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
+    <action name="action-invoice-method-check-invoice-lines-analytic-distribution"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-ventilate"/>
     <action name="save"/>
@@ -1674,6 +1680,7 @@ InvoiceSet.length > 0))"
     <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
+    <action name="action-invoice-method-check-invoice-lines-analytic-distribution"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-validate-and-ventilate"/>
   </action-group>
@@ -2251,6 +2258,12 @@ InvoiceSet.length > 0))"
       method="updateLinesAfterFiscalPositionChange"/>
   </action-method>
 
+  <action-method
+    name="action-invoice-method-check-invoice-lines-analytic-distribution">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="checkInvoiceLinesAnalyticDistribution"/>
+  </action-method>
+
   <action-method name="action-invoice-method-check-invoice-lines-cut-off-dates">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="checkInvoiceLinesCutOffDates"/>
@@ -2608,7 +2621,7 @@ InvoiceSet.length > 0))"
     model="com.axelor.apps.account.db.AnalyticMoveLine" title="Related Analytic Movelines">
     <view type="grid" name="analytic-move-line-invoice-grid"/>
     <view type="form" name="analytic-move-line-move-line-form"/>
-    <domain>self.invoiceLine.invoice.id = :invoiceId</domain>
+    <domain>self.invoiceLine.invoice.id = :invoiceId AND self.typeSelect = 2</domain>
     <context name="invoiceId" expr="eval: __self__?.id != null ? __self__.id : 0"/>
   </action-view>
 
@@ -2664,6 +2677,16 @@ InvoiceSet.length > 0))"
     <context name="_invoiceId" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-invoice-view-show-related-invoice-terms-by-reason"
+    title="Invoice term in dispute" model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-move-line-invoice-grid"/>
+    <view type="form" name="invoice-term-invoice-form"/>
+    <domain>self.reasonOfRefusalToPayStr = :_reasonOfRefusalToPayName AND (:_company is null OR
+      self.company = :_company)</domain>
+    <context name="_reasonOfRefusalToPayName" expr="eval: reasonOfRefusalToPayName"/>
+    <context name="_company" expr="eval: _company"/>
+  </action-view>
+
   <action-method name="action-customer-invoice-line-menu">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="showCustomerInvoiceLines"/>
@@ -2673,5 +2696,10 @@ InvoiceSet.length > 0))"
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="showSupplierInvoiceLines"/>
   </action-method>
+
+  <action-group name="action-invoice-group-report-button">
+    <action name="save"/>
+    <action name="action-invoice-view-reports-wizard"/>
+  </action-group>
 
 </object-views>

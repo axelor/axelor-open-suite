@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.advanced.imports;
+
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
 
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileField;
@@ -773,7 +775,7 @@ public class ValidatorService {
             .all()
             .filter(
                 "self.type = ?1 AND self.model = ?2 AND self.targetModel = ?3",
-                "many-to-many",
+                MANY_TO_MANY,
                 modelName,
                 targetModelName)
             .count()
@@ -783,7 +785,7 @@ public class ValidatorService {
 
     MetaJsonField jsonField = new MetaJsonField();
     jsonField.setName(fieldName);
-    jsonField.setType("many-to-many");
+    jsonField.setType(MANY_TO_MANY);
     jsonField.setTitle(Inflector.getInstance().titleize(simpleModelName));
     jsonField.setSequence(sequence);
     jsonField.setModel(modelName);

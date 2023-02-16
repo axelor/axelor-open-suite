@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,7 @@ import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -48,6 +49,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -416,7 +418,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       throws AxelorException {
 
     if (company == null) {
-      company = AuthUtils.getUser().getActiveCompany();
+      company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
     }
 
     BillOfMaterial billOfMaterial = null;
@@ -447,6 +449,51 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
             defaultBOM != null ? defaultBOM.getId() : 0,
             BillOfMaterialRepository.STATUS_APPLICABLE)
         .fetch();
+  }
+
+  protected BillOfMaterial getAnyBOM(Product originalProduct, Company company) {
+    return billOfMaterialRepo
+        .all()
+        .filter(
+            "self.product = ?1 AND self.company = ?2 AND self.statusSelect = ?3",
+            originalProduct,
+            company,
+            BillOfMaterialRepository.STATUS_APPLICABLE)
+        .order("id")
+        .fetchOne();
+  }
+
+  @Override
+  public BillOfMaterial getBOM(Product originalProduct, Company company) throws AxelorException {
+
+    if (company == null) {
+      company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+    }
+
+    BillOfMaterial billOfMaterial = null;
+    if (originalProduct != null) {
+
+      // First we try to search for company specific default BOM in the the original product.
+      Object obj =
+          productCompanyService.getWithNoDefault(originalProduct, "defaultBillOfMaterial", company);
+
+      if (obj != null) {
+        billOfMaterial = (BillOfMaterial) obj;
+      }
+      // If we can't find any
+      if (billOfMaterial == null) {
+        // Get any BOM with original product and company.
+        billOfMaterial = getAnyBOM(originalProduct, company);
+      }
+
+      // If we can't find any again, then we take the default bom of the original product regardless
+      // of the company
+      if (billOfMaterial == null) {
+        billOfMaterial = originalProduct.getDefaultBillOfMaterial();
+      }
+    }
+
+    return billOfMaterial;
   }
 
   @Override

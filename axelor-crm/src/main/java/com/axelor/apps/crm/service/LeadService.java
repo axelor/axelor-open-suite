@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,24 +19,13 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.LostReason;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 
 public interface LeadService {
-
-  /**
-   * Convert lead into a partner
-   *
-   * @param lead
-   * @return
-   * @throws AxelorException
-   */
-  @Transactional(rollbackOn = {Exception.class})
-  public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
-      throws AxelorException;
 
   /**
    * Get sequence for partner
@@ -68,14 +57,6 @@ public interface LeadService {
   public boolean isThereDuplicateLead(Lead lead);
 
   /**
-   * Set the lead status to In Process.
-   *
-   * @param lead
-   * @throws AxelorException if the lead wasn't new nor assigned.
-   */
-  void startLead(Lead lead) throws AxelorException;
-
-  /**
    * Set the lead to the current user and change status to Assigned.
    *
    * @param lead
@@ -92,20 +73,15 @@ public interface LeadService {
   void assignToMeMultipleLead(List<Lead> leadList) throws AxelorException;
 
   /**
-   * Recycle the lead if it was lost, change the status to In Process.
-   *
-   * @param lead
-   * @throws AxelorException if the lead wasn't lost.
-   */
-  void recycleLead(Lead lead) throws AxelorException;
-
-  /**
    * Set the lead status to lost and set the lost reason with the given lost reason.
    *
    * @param lead a context lead object
    * @param lostReason the specified lost reason
    */
-  public void loseLead(Lead lead, LostReason lostReason) throws AxelorException;
+  public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
+      throws AxelorException;
 
   public String processFullName(String enterpriseName, String name, String firstName);
+
+  public LeadStatus getDefaultLeadStatus();
 }

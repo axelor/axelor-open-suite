@@ -39,10 +39,11 @@
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-BillSubscription-form" />
           <camunda:property name="viewLabel" value="Bill subscription" />
-          <camunda:property name="item" value="buttonSubscribe" />
-          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemType" value="button" />
           <camunda:property name="itemLabel" value="Subscribe" />
           <camunda:property name="permanent" value="false" />
+          <camunda:property name="item" value="buttonSubscribe" />
+          <camunda:property name="hidden" value="false" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_03up0om</bpmn2:incoming>
@@ -65,14 +66,16 @@
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-BillSubscription-form" />
           <camunda:property name="viewLabel" value="Bill subscription" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Cancel" />
+          <camunda:property name="permanent" value="false" />
           <camunda:property name="item" value="buttonCancel" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Cancel" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Subscribe" />
           <camunda:property name="permanent" value="false" />
           <camunda:property name="item" value="buttonSubscribe" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Subscribe" />
-          <camunda:property name="permanent" value="false" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_0pyo3ig</bpmn2:incoming>
@@ -113,14 +116,16 @@
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-BillSubscription-form" />
           <camunda:property name="viewLabel" value="Bill subscription" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Hold" />
+          <camunda:property name="permanent" value="false" />
           <camunda:property name="item" value="buttonHold" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Hold" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Cancel" />
           <camunda:property name="permanent" value="false" />
           <camunda:property name="item" value="buttonCancel" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Cancel" />
-          <camunda:property name="permanent" value="false" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_0ubk5aa</bpmn2:incoming>
@@ -173,10 +178,11 @@
           <camunda:property name="modelName" value="CreditCardBillSubcription" />
           <camunda:property name="modelLabel" value="Credit card bill subscription" />
           <camunda:property name="modelType" value="metaJsonModel" />
-          <camunda:property name="item" value="buttonEnd" />
-          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemType" value="button" />
           <camunda:property name="itemLabel" value="End" />
           <camunda:property name="permanent" value="false" />
+          <camunda:property name="item" value="buttonEnd" />
+          <camunda:property name="hidden" value="false" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_158m4m4</bpmn2:incoming>
@@ -192,10 +198,11 @@
           <camunda:property name="modelName" value="CreditCardBillSubcription" />
           <camunda:property name="modelLabel" value="Credit card bill subscription" />
           <camunda:property name="modelType" value="metaJsonModel" />
-          <camunda:property name="item" value="buttonStart" />
-          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemType" value="button" />
           <camunda:property name="itemLabel" value="Start" />
           <camunda:property name="permanent" value="false" />
+          <camunda:property name="item" value="buttonStart" />
+          <camunda:property name="hidden" value="false" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_0fnw8c8</bpmn2:incoming>
@@ -227,10 +234,11 @@
           <camunda:property name="modelName" value="ElectricityBillSubscription" />
           <camunda:property name="modelLabel" value="Electricity bill subscription" />
           <camunda:property name="modelType" value="metaJsonModel" />
-          <camunda:property name="item" value="buttonStart" />
-          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemType" value="button" />
           <camunda:property name="itemLabel" value="Start" />
           <camunda:property name="permanent" value="false" />
+          <camunda:property name="item" value="buttonStart" />
+          <camunda:property name="hidden" value="false" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_0lmfcpn</bpmn2:incoming>
@@ -246,10 +254,11 @@
           <camunda:property name="modelName" value="ElectricityBillSubscription" />
           <camunda:property name="modelLabel" value="Electricity bill subscription" />
           <camunda:property name="modelType" value="metaJsonModel" />
-          <camunda:property name="item" value="buttonEnd" />
-          <camunda:property name="hidden" value="false" />
+          <camunda:property name="itemType" value="button" />
           <camunda:property name="itemLabel" value="End" />
           <camunda:property name="permanent" value="false" />
+          <camunda:property name="item" value="buttonEnd" />
+          <camunda:property name="hidden" value="false" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_1bx9mei</bpmn2:incoming>

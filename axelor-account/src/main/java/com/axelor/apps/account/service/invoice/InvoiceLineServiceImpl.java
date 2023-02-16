@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -39,6 +40,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -50,6 +52,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +70,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected AccountConfigService accountConfigService;
   protected InvoiceLineAnalyticService invoiceLineAnalyticService;
   protected TaxService taxService;
+  protected InternationalService internationalService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -79,7 +83,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       InvoiceLineAnalyticService invoiceLineAnalyticService,
-      TaxService taxService) {
+      TaxService taxService,
+      InternationalService internationalService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
@@ -91,6 +96,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.accountConfigService = accountConfigService;
     this.invoiceLineAnalyticService = invoiceLineAnalyticService;
     this.taxService = taxService;
+    this.internationalService = internationalService;
   }
 
   @Override
@@ -538,6 +544,17 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
+  public boolean checkAnalyticDistribution(InvoiceLine invoiceLine) {
+    return invoiceLine == null
+        || (CollectionUtils.isNotEmpty(invoiceLine.getAnalyticMoveLineList())
+            && invoiceLineAnalyticService.validateAnalyticMoveLines(
+                invoiceLine.getAnalyticMoveLineList()))
+        || invoiceLine.getAccount() == null
+        || !invoiceLine.getAccount().getAnalyticDistributionAuthorized()
+        || !invoiceLine.getAccount().getAnalyticDistributionRequiredOnInvoiceLines();
+  }
+
+  @Override
   public boolean checkCutOffDates(InvoiceLine invoiceLine) {
     return invoiceLine == null
         || invoiceLine.getAccount() == null
@@ -598,13 +615,56 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
               isPurchase,
               invoiceLine.getFixedAssets());
       invoiceLine.setAccount(account);
+
+      BigDecimal exTaxTotal = invoiceLine.getExTaxTotal();
+
+      BigDecimal companyExTaxTotal = invoiceLine.getCompanyExTaxTotal();
+
+      BigDecimal price = getPrice(invoice, invoiceLine);
+
       invoiceLine.setInTaxTotal(
-          invoiceLine
-              .getExTaxTotal()
-              .multiply(invoiceLine.getTaxRate().divide(new BigDecimal(100)))
-              .setScale(2, RoundingMode.HALF_UP));
-      invoiceLine.setCompanyInTaxTotal(invoiceLine.getInTaxTotal());
+          taxService.convertUnitPrice(
+              false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+      invoiceLine.setCompanyInTaxTotal(
+          taxService.convertUnitPrice(
+              false, taxLine, companyExTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+      invoiceLine.setInTaxPrice(
+          taxService.convertUnitPrice(
+              false, taxLine, price, appBaseService.getNbDecimalDigitForUnitPrice()));
     }
     return invoiceLineList;
+  }
+
+  protected BigDecimal getPrice(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException {
+    BigDecimal price = null;
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      price =
+          (BigDecimal)
+              productCompanyService.get(
+                  invoiceLine.getProduct(), "purchasePrice", invoice.getCompany());
+    }
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      price =
+          (BigDecimal)
+              productCompanyService.get(
+                  invoiceLine.getProduct(), "salePrice", invoice.getCompany());
+    }
+    return price;
+  }
+
+  @Override
+  public Map<String, String> getProductDescriptionAndNameTranslation(
+      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException {
+
+    Product product = invoiceLine.getProduct();
+
+    if (product == null) {
+      return Collections.emptyMap();
+    }
+
+    return internationalService.getProductDescriptionAndNameTranslation(
+        product, invoice.getPartner(), userLanguage);
   }
 }

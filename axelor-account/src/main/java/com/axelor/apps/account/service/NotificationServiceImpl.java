@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -283,5 +283,19 @@ public class NotificationServiceImpl implements NotificationService {
       }
     }
     return null;
+  }
+
+  @Override
+  public List<Long> getMoveLines(Notification notification) {
+    List<Long> moveLineIdList = new ArrayList<Long>();
+    for (NotificationItem notificationItem : notification.getNotificationItemList()) {
+      if (notificationItem.getMove() == null) {
+        continue;
+      }
+      for (MoveLine moveLine : notificationItem.getMove().getMoveLineList()) {
+        moveLineIdList.add(moveLine.getId());
+      }
+    }
+    return moveLineIdList;
   }
 }

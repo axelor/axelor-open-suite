@@ -35,5 +35,17 @@
       eval="projectTaskPrioritySet.split('\\|') as List"/>
   </input>
 
+  <input file="project_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";"/>
+
+  <input file="project_anonymizerLine.csv" type="com.axelor.apps.base.db.AnonymizerLine"
+    separator=";">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="metaField" column="metaField"
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+    <bind to="anonymizer" column="anonymizer_importId"
+      search="self.importId = :anonymizer_importId"/>
+    <bind to="useFakeData" column="useFakeData"/>
+  </input>
+
 </csv-inputs>
 

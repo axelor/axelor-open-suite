@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -70,8 +70,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected PriceListService priceListService;
 
   @Inject protected AppBaseService appBaseService;
-
-  @Inject protected PurchaseProductService productService;
 
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
 
@@ -475,7 +473,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
     purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 
-    purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
+    purchaseOrderLine.setEstimatedReceiptDate(purchaseOrder.getEstimatedReceiptDate());
 
     if (product != null) {
       purchaseOrderLine.setProduct(product);
@@ -652,16 +650,24 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
       purchaseOrderLine.setTaxEquiv(taxEquiv);
 
+      BigDecimal exTaxTotal = purchaseOrderLine.getExTaxTotal();
+
+      BigDecimal companyExTaxTotal = purchaseOrderLine.getCompanyExTaxTotal();
+
+      BigDecimal purchasePrice =
+          (BigDecimal)
+              productCompanyService.get(
+                  purchaseOrderLine.getProduct(), "purchasePrice", purchaseOrder.getCompany());
+
       purchaseOrderLine.setInTaxTotal(
-          purchaseOrderLine
-              .getExTaxTotal()
-              .multiply(purchaseOrderLine.getTaxLine().getValue())
-              .setScale(2, RoundingMode.HALF_UP));
+          taxService.convertUnitPrice(
+              false, taxLine, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
       purchaseOrderLine.setCompanyInTaxTotal(
-          purchaseOrderLine
-              .getCompanyExTaxTotal()
-              .multiply(purchaseOrderLine.getTaxLine().getValue())
-              .setScale(2, RoundingMode.HALF_UP));
+          taxService.convertUnitPrice(
+              false, taxLine, companyExTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice()));
+      purchaseOrderLine.setInTaxPrice(
+          taxService.convertUnitPrice(
+              false, taxLine, purchasePrice, appBaseService.getNbDecimalDigitForUnitPrice()));
     }
     return purchaseOrderLineList;
   }

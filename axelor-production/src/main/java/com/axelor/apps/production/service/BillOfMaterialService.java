@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -76,6 +76,18 @@ public interface BillOfMaterialService {
 
   List<BillOfMaterial> getAlternativesBOM(Product originalProduct, Company company)
       throws AxelorException;
+
+  /**
+   * This method will return a BOM fetched by priority that goes like this 1) search for company
+   * specific default BOM in the the original product 2) Any BOM with original product and company.
+   * 3) Default bom of the original product regardless of the company
+   *
+   * @param originalProduct
+   * @param company
+   * @return Bom found
+   * @throws AxelorException
+   */
+  public BillOfMaterial getBOM(Product originalProduct, Company company) throws AxelorException;
 
   /**
    * Returns all the products from boms

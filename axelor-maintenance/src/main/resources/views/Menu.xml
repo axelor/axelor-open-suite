@@ -66,12 +66,12 @@
   </action-view>
 
   <menuitem name="maintenance-root-manuf-order" parent="maintenance-root" order="33"
-    title="Manufacturing orders" action="maintenance.manufacturing.root.manuf.order"/>
+    title="Maintenance order" action="maintenance.manufacturing.root.manuf.order"/>
 
   <action-view name="maintenance.manufacturing.root.manuf.order"
-    title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder">
+    title="Maintenance orders" model="com.axelor.apps.production.db.ManufOrder">
     <view type="grid" name="maintenance-manuf-order-grid"/>
-    <view type="form" name="manuf-order-form"/>
+    <view type="form" name="maintenance-manuf-order-form"/>
     <view-param name="search-filters" value="manuf-order-filters"/>
     <domain>self.typeSelect = 3</domain>
     <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
@@ -92,7 +92,13 @@
   </action-view>
 
   <menuitem name="maintenance-root-config-machines" parent="maintenance-root-config"
-    order="10" title="Machines" action="manufacturing.conf.machine"/>
+    order="10" title="Machines" action="maintenance.root.config.machines"/>
+
+  <action-view name="maintenance.root.config.machines" title="Machines"
+    model="com.axelor.apps.production.db.Machine">
+    <view type="grid" name="machine-grid"/>
+    <view type="form" name="maintenance-machine-form"/>
+  </action-view>
 
   <menuitem name="maintenance-root-config-prod-process" parent="maintenance-root-config"
     order="15" title="Production processes" action="maintenance.manufacturing.root.prod.process"/>
@@ -100,7 +106,7 @@
   <action-view name="maintenance.manufacturing.root.prod.process"
     title="Production processes" model="com.axelor.apps.production.db.ProdProcess">
     <view type="grid" name="maintenance-prod-process-grid"/>
-    <view type="form" name="prod-process-form"/>
+    <view type="form" name="maintenance-prod-process-form"/>
     <domain>self.typeSelect = 3</domain>
     <context name="_maintenance" expr="eval: true"/>
   </action-view>
@@ -112,7 +118,7 @@
   <action-view name="maintenance.manufacturing.root.bill.of.material"
     title="Bills of materials" model="com.axelor.apps.production.db.BillOfMaterial">
     <view type="grid" name="maintenance-bill-of-material-grid"/>
-    <view type="form" name="bill-of-material-form"/>
+    <view type="form" name="maintenance-bill-of-material-form"/>
     <domain>self.defineSubBillOfMaterial = true AND self.personalized = false AND self.typeSelect =
       3</domain>
     <context name="_maintenance" expr="eval: true"/>
@@ -133,6 +139,19 @@
     <view type="grid" name="prod-process-grid"/>
     <view type="form" name="prod-process-form"/>
     <domain>self.typeSelect = 1</domain>
+  </action-view>
+
+  <action-view id="maintenance.manufacturing.root.general.bill.of.material"
+    name="manufacturing.root.general.bill.of.material" title="General BoM"
+    model="com.axelor.apps.production.db.BillOfMaterial">
+    <view type="grid" name="bill-of-material-grid"/>
+    <view type="form" name="bill-of-material-form"/>
+    <view-param name="search-filters" value="bill-of-material-filters"/>
+    <domain><![CDATA[
+      self.defineSubBillOfMaterial = true
+      AND self.personalized = false
+      AND self.typeSelect != 3
+    ]]></domain>
   </action-view>
 
 </object-views>

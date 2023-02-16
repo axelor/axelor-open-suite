@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.MoveTemplateType;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
@@ -31,6 +32,7 @@ import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -38,6 +40,8 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -50,6 +54,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,8 +70,10 @@ public class MoveTemplateService {
   protected AnalyticMoveLineService analyticMoveLineService;
   protected TaxService taxService;
   protected BankDetailsService bankDetailsService;
+  protected MoveTemplateRepository moveTemplateRepo;
+  protected MoveLineTaxService moveLineTaxService;
 
-  @Inject protected MoveTemplateRepository moveTemplateRepo;
+  protected List<String> exceptionsList;
 
   @Inject
   public MoveTemplateService(
@@ -78,7 +85,10 @@ public class MoveTemplateService {
       AnalyticMoveLineService analyticMoveLineService,
       TaxService taxService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      MoveTemplateRepository moveTemplateRepo,
+      MoveLineTaxService moveLineTaxService) {
+
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
@@ -88,6 +98,13 @@ public class MoveTemplateService {
     this.taxService = taxService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.bankDetailsService = bankDetailsService;
+    this.moveTemplateRepo = moveTemplateRepo;
+    this.moveLineTaxService = moveLineTaxService;
+    this.exceptionsList = Lists.newArrayList();
+  }
+
+  public List<String> getExceptionsList() {
+    return exceptionsList;
   }
 
   @Transactional
@@ -118,11 +135,15 @@ public class MoveTemplateService {
     return new ArrayList<>();
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public List<Long> generateMove(MoveTemplate moveTemplate, List<HashMap<String, Object>> dataList)
       throws AxelorException {
     List<Long> moveList = new ArrayList<>();
     BigDecimal hundred = new BigDecimal(100);
+
+    if (CollectionUtils.isEmpty(dataList)) {
+      return moveList;
+    }
+
     for (HashMap<String, Object> data : dataList) {
       LocalDate moveDate = LocalDate.parse(data.get("date").toString(), DateTimeFormatter.ISO_DATE);
       boolean isDebit = false;
@@ -185,73 +206,74 @@ public class MoveTemplateService {
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
-          partner = null;
-          if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.DEBIT)) {
-            isDebit = true;
-            if (moveTemplateLine.getHasPartnerToDebit()) {
-              partner = debitPartner;
+          if (!AccountTypeRepository.TYPE_TAX.equals(
+              moveTemplateLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+            partner = null;
+            if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.DEBIT)) {
+              isDebit = true;
+              if (moveTemplateLine.getHasPartnerToDebit()) {
+                partner = debitPartner;
+              }
+            } else if (moveTemplateLine
+                .getDebitCreditSelect()
+                .equals(MoveTemplateLineRepository.CREDIT)) {
+              isDebit = false;
+              if (moveTemplateLine.getHasPartnerToCredit()) {
+                partner = creditPartner;
+              }
             }
-          } else if (moveTemplateLine
-              .getDebitCreditSelect()
-              .equals(MoveTemplateLineRepository.CREDIT)) {
-            isDebit = false;
-            if (moveTemplateLine.getHasPartnerToCredit()) {
-              partner = creditPartner;
+
+            BigDecimal amount =
+                moveBalance
+                    .multiply(moveTemplateLine.getPercentage())
+                    .divide(hundred, RoundingMode.HALF_UP);
+
+            MoveLine moveLine =
+                moveLineCreateService.createMoveLine(
+                    move,
+                    partner,
+                    moveTemplateLine.getAccount(),
+                    amount,
+                    isDebit,
+                    moveDate,
+                    moveDate,
+                    counter,
+                    origin,
+                    moveTemplateLine.getName());
+            move.getMoveLineList().add(moveLine);
+
+            Tax tax = moveTemplateLine.getTax();
+
+            if (tax != null) {
+              TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
+              if (taxLine != null) {
+                moveLine.setTaxLine(taxLine);
+                moveLine.setTaxRate(taxLine.getValue());
+                moveLine.setTaxCode(tax.getCode());
+                moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+              }
             }
+            moveLine.setAnalyticDistributionTemplate(
+                moveTemplateLine.getAnalyticDistributionTemplate());
+            moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+
+            counter++;
           }
-
-          BigDecimal amount =
-              moveBalance
-                  .multiply(moveTemplateLine.getPercentage())
-                  .divide(hundred, RoundingMode.HALF_UP);
-
-          MoveLine moveLine =
-              moveLineCreateService.createMoveLine(
-                  move,
-                  partner,
-                  moveTemplateLine.getAccount(),
-                  amount,
-                  isDebit,
-                  moveDate,
-                  moveDate,
-                  counter,
-                  origin,
-                  moveTemplateLine.getName());
-          move.getMoveLineList().add(moveLine);
-
-          Tax tax = moveTemplateLine.getTax();
-
-          if (tax != null) {
-            TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
-            if (taxLine != null) {
-              moveLine.setTaxLine(taxLine);
-              moveLine.setTaxRate(taxLine.getValue());
-              moveLine.setTaxCode(tax.getCode());
-            }
-          }
-
-          moveLine.setAnalyticDistributionTemplate(
-              moveTemplateLine.getAnalyticDistributionTemplate());
-          moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
-
-          counter++;
         }
 
-        if (moveTemplate.getAutomaticallyValidate()) {
-          moveValidateService.accounting(move);
-        }
+        moveLineTaxService.autoTaxLineGenerate(move);
+        manageAccounting(moveTemplate, move);
 
-        moveRepo.save(move);
         moveList.add(move.getId());
       }
     }
     return moveList;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public List<Long> generateMove(LocalDate moveDate, List<HashMap<String, Object>> moveTemplateList)
       throws AxelorException {
     List<Long> moveList = new ArrayList<>();
+    String taxLineDescription = "";
 
     for (HashMap<String, Object> moveTemplateMap : moveTemplateList) {
 
@@ -271,6 +293,7 @@ public class MoveTemplateService {
                   .mapToInt(Integer::parseInt)
                   .toArray();
         }
+        Partner moveTemplatePartner = fillPartnerWithMoveTemplate(moveTemplate);
 
         BankDetails companyBankDetails = null;
         if (moveTemplate != null
@@ -278,7 +301,12 @@ public class MoveTemplateService {
             && moveTemplate.getJournal().getCompany() != null) {
           companyBankDetails =
               bankDetailsService.getDefaultCompanyBankDetails(
-                  moveTemplate.getJournal().getCompany(), null, null, null);
+                  moveTemplate.getJournal().getCompany(),
+                  moveTemplatePartner == null || moveTemplatePartner.getOutPaymentMode() == null
+                      ? null
+                      : moveTemplatePartner.getOutPaymentMode(),
+                  moveTemplatePartner,
+                  null);
         }
 
         Move move =
@@ -286,64 +314,98 @@ public class MoveTemplateService {
                 moveTemplate.getJournal(),
                 moveTemplate.getJournal().getCompany(),
                 null,
-                null,
+                moveTemplatePartner,
                 moveDate,
                 moveDate,
-                null,
+                moveTemplatePartner == null || moveTemplatePartner.getOutPaymentMode() == null
+                    ? null
+                    : moveTemplatePartner.getOutPaymentMode(),
                 null,
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 moveTemplate.getFullName(),
-                null,
+                moveTemplate.getDescription(),
                 companyBankDetails);
 
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
+          if (!AccountTypeRepository.TYPE_TAX.equals(
+              moveTemplateLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+            BigDecimal amount = moveTemplateLine.getDebit().add(moveTemplateLine.getCredit());
 
-          BigDecimal amount = moveTemplateLine.getDebit().add(moveTemplateLine.getCredit());
+            MoveLine moveLine =
+                moveLineCreateService.createMoveLine(
+                    move,
+                    moveTemplateLine.getPartner(),
+                    moveTemplateLine.getAccount(),
+                    amount,
+                    moveTemplateLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
+                    moveDate,
+                    moveDate,
+                    counter,
+                    moveTemplate.getFullName(),
+                    moveTemplateLine.getName());
+            move.getMoveLineList().add(moveLine);
 
-          MoveLine moveLine =
-              moveLineCreateService.createMoveLine(
-                  move,
-                  moveTemplateLine.getPartner(),
-                  moveTemplateLine.getAccount(),
-                  amount,
-                  moveTemplateLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
-                  moveDate,
-                  moveDate,
-                  counter,
-                  moveTemplate.getFullName(),
-                  moveTemplateLine.getName());
-          move.getMoveLineList().add(moveLine);
+            Tax tax = moveTemplateLine.getTax();
 
-          Tax tax = moveTemplateLine.getTax();
-
-          if (tax != null) {
-            TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
-            if (taxLine != null) {
-              moveLine.setTaxLine(taxLine);
-              moveLine.setTaxRate(taxLine.getValue());
-              moveLine.setTaxCode(tax.getCode());
+            if (tax != null) {
+              TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
+              if (taxLine != null) {
+                moveLine.setTaxLine(taxLine);
+                moveLine.setTaxRate(taxLine.getValue());
+                moveLine.setTaxCode(tax.getCode());
+                moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+              }
             }
+
+            moveLine.setAnalyticDistributionTemplate(
+                moveTemplateLine.getAnalyticDistributionTemplate());
+            moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+            counter++;
+          } else {
+            taxLineDescription = moveTemplateLine.getName();
           }
-
-          moveLine.setAnalyticDistributionTemplate(
-              moveTemplateLine.getAnalyticDistributionTemplate());
-          moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
-
-          counter++;
         }
 
-        if (moveTemplate.getAutomaticallyValidate()) {
-          moveValidateService.accounting(move);
+        if (ObjectUtils.notEmpty(move)
+            && ObjectUtils.notEmpty(move.getMoveLineList())
+            && ObjectUtils.notEmpty(move.getMoveLineList().get(0).getPartner())) {
+          move.getMoveLineList().get(0).getPartner().getBankDetailsList().stream()
+              .filter(it -> it.getIsDefault() && it.getActive())
+              .findFirst()
+              .ifPresent(move::setPartnerBankDetails);
         }
 
-        moveRepo.save(move);
+        move.setDescription(taxLineDescription);
+        moveLineTaxService.autoTaxLineGenerate(move);
+        manageAccounting(moveTemplate, move);
+
+        move.setDescription(moveTemplate.getDescription());
+        if (!Strings.isNullOrEmpty(move.getDescription())) {
+          for (MoveLine moveline : move.getMoveLineList()) {
+            moveline.setDescription(move.getDescription());
+          }
+        }
         moveList.add(move.getId());
       }
     }
     return moveList;
+  }
+
+  protected void manageAccounting(MoveTemplate moveTemplate, Move move) {
+    if (!moveTemplate.getAutomaticallyValidate()) {
+      return;
+    }
+    try {
+      moveValidateService.accounting(move);
+    } catch (AxelorException e) {
+      String message = e.getMessage();
+      if (!exceptionsList.contains(message)) {
+        exceptionsList.add(message);
+      }
+    }
   }
 
   public boolean checkValidity(MoveTemplate moveTemplate) {
@@ -430,5 +492,19 @@ public class MoveTemplateService {
     values.put("$difference", difference);
 
     return values;
+  }
+
+  public Partner fillPartnerWithMoveTemplate(MoveTemplate moveTemplate) {
+    Partner partner = null;
+
+    if (moveTemplate.getMoveTemplateLineList().stream()
+            .filter(it -> it.getPartner() != null)
+            .map(it -> it.getPartner())
+            .distinct()
+            .count()
+        == 1) {
+      partner = moveTemplate.getMoveTemplateLineList().get(0).getPartner();
+    }
+    return partner;
   }
 }

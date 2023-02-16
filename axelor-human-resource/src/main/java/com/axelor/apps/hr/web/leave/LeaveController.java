@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -157,7 +157,8 @@ public class LeaveController {
               .add("form", "leave-request-form")
               .param("search-filters", "leave-request-filters");
 
-      actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
+      actionView.domain(
+          "(self.statusSelect = 1 OR self.statusSelect = 3 OR self.statusSelect = 4)");
 
       if (employee == null || !employee.getHrManager()) {
         actionView
