@@ -1,0 +1,3 @@
+---
+title: "Invoice Term/MoveLine: fix rounding percentage errors"
+type: fix

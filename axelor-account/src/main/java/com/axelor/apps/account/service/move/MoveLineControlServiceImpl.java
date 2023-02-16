@@ -122,6 +122,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
                           invoiceTermService.computeCustomizedPercentageUnscaled(
                               it.getAmount(), invoiceAttached.getInTaxTotal()))
                   .reduce(BigDecimal.ZERO, BigDecimal::add)
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
                   .compareTo(new BigDecimal(100))
               != 0) {
         throw new AxelorException(
