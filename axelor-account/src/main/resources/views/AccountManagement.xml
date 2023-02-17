@@ -78,9 +78,9 @@
     <extend
       target="//panel[@name='paymentConfigPanel']/field[@name='globalAccountingCashAccount']">
       <attribute name="showIf"
-        value="paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5)"/>
+        value="paymentMode.canSelectInPaymentSession || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5)"/>
       <attribute name="requiredIf"
-        value="typeSelect == 3 &amp;&amp; (paymentMode.accountingMethodSelect == 3 || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
+        value="typeSelect == 3 &amp;&amp; (paymentMode.canSelectInPaymentSession || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
       <insert position="after">
         <field name="chequeDepositJournal"
           domain="self.company = :company AND self.statusSelect = 1 AND self.journalType.technicalTypeSelect = 4"
@@ -95,6 +95,7 @@
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="paymentMode.inOutSelect" hidden="true"/>
         <field name="paymentMode.accountingTriggerSelect" hidden="true"/>
+        <field name="paymentMode.canSelectInPaymentSession" hidden="true"/>
       </insert>
     </extend>
     <extend target="//panel[@name='purchaseConfig2Panel']/field[@name='purchaseAccount']">
