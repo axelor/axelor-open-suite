@@ -19,7 +19,7 @@ package com.axelor.apps.gdpr.service.response;
 
 import com.axelor.apps.base.db.Anonymizer;
 import com.axelor.apps.base.db.AnonymizerLine;
-import com.axelor.apps.base.service.app.AnonymizeService;
+import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.gdpr.db.GDPRErasureLog;
 import com.axelor.apps.gdpr.db.GDPRRequest;

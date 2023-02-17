@@ -677,4 +677,45 @@
     <option value="1">Advanced import</option>
   </selection>
 
+  <selection name="permission.assistant.type.select">
+    <option value="1">Groups</option>
+    <option value="2">Roles</option>
+  </selection>
+
+  <selection name="object.data.config.model.select">
+    <option value="com.axelor.auth.db.User">User</option>
+  </selection>
+
+  <selection name="object.data.export.format.select">
+    <option value="csv">CSV</option>
+    <option value="xlsx">Excel</option>
+  </selection>
+
+  <selection name="data.config.line.type.select">
+    <option value="0">Path</option>
+    <option value="1">Query</option>
+  </selection>
+
+  <selection name="data.config.line.reset.path.select">
+    <option value="0">None</option>
+    <option value="1">Replace</option>
+    <option value="2">Delete</option>
+  </selection>
+
+  <selection name="data.backup.status.select">
+    <option value="0">Draft</option>
+    <option value="1">In Progress</option>
+    <option value="2">Backup Created</option>
+    <option value="3">Backup Restored</option>
+    <option value="4">Backup Restore Error</option>
+    <option value="5">Error</option>
+  </selection>
+
+  <selection name="global.tracking.log.type.select">
+    <option value="1">CREATE</option>
+    <option value="3">UPDATE</option>
+    <option value="4">DELETE</option>
+    <option value="5">EXPORT</option>
+  </selection>
+
 </object-views>

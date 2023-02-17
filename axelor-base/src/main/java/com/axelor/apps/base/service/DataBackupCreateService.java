@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.app;
+package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.AnonymizerLine;
 import com.axelor.apps.base.db.DataBackup;
@@ -488,7 +488,7 @@ public class DataBackupCreateService {
               if (headerFlag) {
                 if (byteArrFieldFlag) {
                   csvInput.setCallable(
-                      "com.axelor.apps.base.service.app.DataBackupRestoreService:importObjectWithByteArray");
+                      "com.axelor.apps.base.service.DataBackupRestoreService:importObjectWithByteArray");
                   byteArrFieldFlag = false;
                 }
                 csvWriter.writeNext(headerArr.toArray(new String[headerArr.size()]), true);
@@ -518,7 +518,7 @@ public class DataBackupCreateService {
         }
         if (byteArrFieldFlag) {
           csvInput.setCallable(
-              "com.axelor.apps.base.service.app.DataBackupRestoreService:importObjectWithByteArray");
+              "com.axelor.apps.base.service.DataBackupRestoreService:importObjectWithByteArray");
           byteArrFieldFlag = false;
         }
         csvWriter.writeNext(headerArr.toArray(new String[headerArr.size()]), true);

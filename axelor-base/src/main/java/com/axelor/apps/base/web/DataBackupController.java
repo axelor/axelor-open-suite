@@ -18,7 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.DataBackup;
-import com.axelor.apps.base.service.app.DataBackupService;
+import com.axelor.apps.base.service.DataBackupService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
