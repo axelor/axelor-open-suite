@@ -18,4 +18,7 @@
     <bind to="app" column="code" search="self.code = :code"/>
   </input>
 
+  <input file="base_fakerApiField.csv" type="com.axelor.apps.base.db.FakerApiField"
+    search="self.importId = :importId" update="false"/>
+
 </csv-inputs>

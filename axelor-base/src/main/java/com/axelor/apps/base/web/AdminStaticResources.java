@@ -15,18 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.app;
+package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.FakerApiField;
-import com.axelor.exception.AxelorException;
+import com.axelor.web.StaticResourceProvider;
+import java.util.List;
 
-public interface FakerService {
-  /**
-   * Generate fake values depending on the class and method name given with the Faker API .
-   *
-   * @param fakerApiField
-   * @return
-   * @throws AxelorException if the class or method given doesn't exist.
-   */
-  String generateFakeData(FakerApiField fakerApiField) throws AxelorException;
+public class AdminStaticResources implements StaticResourceProvider {
+
+  @Override
+  public void register(List<String> resources) {
+    resources.add("admin/css/custom-width.css");
+    resources.add("admin/css/app-cards.css");
+  }
 }
