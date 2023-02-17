@@ -142,10 +142,10 @@
 
   <action-group name="action-group-message-message-onnew">
     <action name="action-message-method-display-generate-message" if="_message != null"/>
-    <action name="action-message-record-default"/>
-    <action name="action-message-record-mail-account"/>
-    <action name="action-message-record-get-signature"/>
-    <action name="action-message-record-default-media-type"/>
+    <action name="action-message-record-default" if="_message == null"/>
+    <action name="action-message-record-mail-account" if="_message == null"/>
+    <action name="action-message-record-get-signature" if="_message == null"/>
+    <action name="action-message-record-default-media-type" if="_message == null"/>
   </action-group>
 
   <action-group name="action-group-message-message-send-click">
@@ -174,11 +174,17 @@
   <action-record name="action-message-record-mail-account"
     model="com.axelor.apps.message.db.Message">
     <field name="mailAccount"
-      expr="eval: __repo__(EmailAccount).all().filter('self.isDefault = true and self.user = ?1',senderUser).fetchOne()"
-      if="__config__.app.getApp('base')?.getEmailAccountByUser()"/>
+      expr="eval:
+        __repo__(EmailAccount).all().filter('self.isDefault = true and self.user =
+        ?1',senderUser).fetchOne()"
+      if="__config__.app.getApp('base').getEmailAccountByUser()"/>
     <field name="mailAccount"
       expr="eval: __repo__(EmailAccount).all().filter('self.isDefault = true').fetchOne()"
-      if="!__config__.app.getApp('base')?.getEmailAccountByUser()"/>
+      if="!__config__.app.getApp('base').getEmailAccountByUser() &amp;&amp;
+          !__config__.app.getApp('base').getEmailAccountByCompany()"/>
+    <field name="mailAccount"
+      expr="eval: __repo__(EmailAccount).all().filter('self.isDefault = true and (self.user IS NULL OR self.user = ?1) and (self.company IS NULL OR self.company = ?2)',senderUser,company).fetchOne()"
+      if="__config__.app.getApp('base').getEmailAccountByUser() &amp;&amp; __config__.app.getApp('base').getEmailAccountByCompany() &amp;&amp; company != null"/>
   </action-record>
 
   <action-record name="action-message-record-get-signature"

@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
@@ -27,7 +28,8 @@ import java.time.LocalDate;
 
 public interface FixedAssetLineMoveService {
 
-  void realize(FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove)
+  void realize(
+      FixedAssetLine fixedAssetLine, boolean isBatch, boolean generateMove, boolean isDisposal)
       throws AxelorException;
 
   /**
@@ -96,4 +98,7 @@ public interface FixedAssetLineMoveService {
    * @param batch
    */
   void setBatch(Batch batch);
+
+  Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated, boolean isDisposal)
+      throws AxelorException;
 }

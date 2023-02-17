@@ -18,16 +18,10 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
-import java.util.Map;
 
 public interface PurchaseProductService {
-
-  public Map<String, Object> getDiscountsFromCatalog(
-      SupplierCatalog supplierCatalog, BigDecimal price);
-
   /**
    * Search for the last shipping coef in purchase order line.
    *

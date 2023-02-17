@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
-import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCategoryService;
@@ -89,6 +88,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected SaleOrderService saleOrderService;
   protected PricingService pricingService;
   protected TaxService taxService;
+  protected SaleOrderMarginService saleOrderMarginService;
 
   @Inject
   public SaleOrderLineServiceImpl(
@@ -101,7 +101,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderService saleOrderService,
       PricingService pricingService,
-      TaxService taxService) {
+      TaxService taxService,
+      SaleOrderMarginService saleOrderMarginService) {
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.productMultipleQtyService = productMultipleQtyService;
@@ -112,10 +113,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     this.saleOrderService = saleOrderService;
     this.pricingService = pricingService;
     this.taxService = taxService;
+    this.saleOrderMarginService = saleOrderMarginService;
   }
 
   @Inject protected ProductCategoryService productCategoryService;
-  @Inject protected PricingRepository pricingRepository;
   @Inject protected ProductCompanyService productCompanyService;
 
   @Override
@@ -399,7 +400,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     map.put("companyInTaxTotal", companyInTaxTotal);
     map.put("subTotalCostPrice", subTotalCostPrice);
 
-    map.putAll(this.computeSubMargin(saleOrder, saleOrderLine));
+    map.putAll(saleOrderMarginService.getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine));
 
     return map;
   }
@@ -625,63 +626,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     return saleOrder;
-  }
-
-  @Override
-  public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException {
-
-    HashMap<String, BigDecimal> map = new HashMap<>();
-
-    BigDecimal subTotalCostPrice = BigDecimal.ZERO;
-    BigDecimal subTotalGrossProfit = BigDecimal.ZERO;
-    BigDecimal subMarginRate = BigDecimal.ZERO;
-    BigDecimal subTotalMarkup = BigDecimal.ZERO;
-    BigDecimal totalWT = BigDecimal.ZERO;
-
-    if (saleOrderLine.getProduct() != null
-        && ((BigDecimal)
-                    productCompanyService.get(
-                        saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
-                .compareTo(BigDecimal.ZERO)
-            != 0
-        && saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
-
-      totalWT =
-          currencyService.getAmountCurrencyConvertedAtDate(
-              saleOrder.getCurrency(),
-              saleOrder.getCompany().getCurrency(),
-              saleOrderLine.getExTaxTotal(),
-              null);
-
-      logger.debug("Total WT in company currency: {}", totalWT);
-      subTotalCostPrice = saleOrderLine.getSubTotalCostPrice();
-      logger.debug("Subtotal cost price: {}", subTotalCostPrice);
-      subTotalGrossProfit = totalWT.subtract(subTotalCostPrice);
-      logger.debug("Subtotal gross margin: {}", subTotalGrossProfit);
-      subMarginRate =
-          subTotalGrossProfit
-              .multiply(new BigDecimal(100))
-              .divide(totalWT, 2, RoundingMode.HALF_UP);
-      logger.debug("Subtotal gross margin rate: {}", subMarginRate);
-
-      if (subTotalCostPrice.compareTo(BigDecimal.ZERO) != 0) {
-        subTotalMarkup =
-            subTotalGrossProfit
-                .multiply(new BigDecimal(100))
-                .divide(subTotalCostPrice, 2, RoundingMode.HALF_UP);
-        logger.debug("Subtotal markup: {}", subTotalMarkup);
-      }
-    }
-
-    saleOrderLine.setSubTotalGrossMargin(subTotalGrossProfit);
-    saleOrderLine.setSubMarginRate(subMarginRate);
-    saleOrderLine.setSubTotalMarkup(subTotalMarkup);
-
-    map.put("subTotalGrossMargin", subTotalGrossProfit);
-    map.put("subMarginRate", subMarginRate);
-    map.put("subTotalMarkup", subTotalMarkup);
-    return map;
   }
 
   @Override

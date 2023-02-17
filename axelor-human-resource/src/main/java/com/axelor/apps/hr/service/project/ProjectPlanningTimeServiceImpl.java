@@ -22,6 +22,8 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -29,6 +31,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -52,6 +55,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected PublicHolidayHrService holidayService;
   protected ProductRepository productRepo;
   protected EmployeeRepository employeeRepo;
+  protected TimesheetLineRepository timesheetLineRepository;
 
   @Inject
   public ProjectPlanningTimeServiceImpl(
@@ -61,7 +65,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       WeeklyPlanningService weeklyPlanningService,
       PublicHolidayHrService holidayService,
       ProductRepository productRepo,
-      EmployeeRepository employeeRepo) {
+      EmployeeRepository employeeRepo,
+      TimesheetLineRepository timesheetLineRepository) {
     super();
     this.planningTimeRepo = planningTimeRepo;
     this.projectRepo = projectRepo;
@@ -70,6 +75,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.holidayService = holidayService;
     this.productRepo = productRepo;
     this.employeeRepo = employeeRepo;
+    this.timesheetLineRepository = timesheetLineRepository;
   }
 
   @Override
@@ -206,5 +212,18 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
           planningTimeRepo.find(Long.parseLong(line.get("id").toString()));
       planningTimeRepo.remove(projectPlanningTime);
     }
+  }
+
+  @Override
+  public BigDecimal getDurationForCustomer(ProjectTask projectTask) {
+    String query =
+        "SELECT SUM(self.durationForCustomer) FROM TimesheetLine AS self WHERE self.timesheet.statusSelect = :statusSelect AND self.projectTask = :projectTask";
+    BigDecimal durationForCustomer =
+        JPA.em()
+            .createQuery(query, BigDecimal.class)
+            .setParameter("statusSelect", TimesheetRepository.STATUS_VALIDATED)
+            .setParameter("projectTask", projectTask)
+            .getSingleResult();
+    return durationForCustomer != null ? durationForCustomer : BigDecimal.ZERO;
   }
 }

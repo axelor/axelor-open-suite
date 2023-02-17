@@ -43,6 +43,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">15</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -220,7 +223,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/65-crm</property>
+            <property name="odaUser">arthur</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">YXJ0aHVycHdk</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -678,10 +683,22 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="heading">companyVatSystemSelect</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">products_type</property>
+                    <property name="columnName">display_siren</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_siren</text-property>
+                    <text-property name="heading">display_siren</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invoice_product_statement</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">products_type</text-property>
-                    <text-property name="heading">products_type</text-property>
+                    <text-property name="displayName">invoice_product_statement</text-property>
+                    <text-property name="heading">invoice_product_statement</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">displayItemsCategoriesOnPrinting</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">displayItemsCategoriesOnPrinting</text-property>
+                    <text-property name="heading">displayItemsCategoriesOnPrinting</text-property>
                 </structure>
             </list-property>
             <list-property name="filter"/>
@@ -1025,9 +1042,19 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">65</property>
-                        <property name="name">products_type</property>
+                        <property name="position">66</property>
+                        <property name="name">display_siren</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">67</property>
+                        <property name="name">invoice_product_statement</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">68</property>
+                        <property name="name">displayItemsCategoriesOnPrinting</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1489,11 +1516,25 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">65</property>
-                    <property name="name">products_type</property>
-                    <property name="nativeName">products_type</property>
+                    <property name="position">66</property>
+                    <property name="name">display_siren</property>
+                    <property name="nativeName">display_siren</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">67</property>
+                    <property name="name">invoice_product_statement</property>
+                    <property name="nativeName">invoice_product_statement</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">68</property>
+                    <property name="name">displayItemsCategoriesOnPrinting</property>
+                    <property name="nativeName">displayItemsCategoriesOnPrinting</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select distinct Invoice.id as inv_id, 
@@ -1561,19 +1602,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 	Invoice.legal_notice as "legal_notice",
 	SupplierAccountingSituation.vat_system_select as "supplierVatSystemSelect",
 	CompanyAccountingSituation.vat_system_select as "companyVatSystemSelect",
-	(SELECT CASE 
-	WHEN every(bp.product_type_select LIKE 'storable') IS TRUE THEN 'storable'
-	ELSE (
-		CASE WHEN every(bp.product_type_select LIKE 'service') IS TRUE THEN 'service'
-  			ELSE (
-  				CASE WHEN every(bp.product_type_select IS NULL) IS TRUE THEN null 
-  				ELSE 'serviceAndStorable'
-  				END)
-  		END
-		)
-	END
-	FROM account_invoice_line AS ail left join base_product AS bp on ail.product = bp.id
-	WHERE ail.invoice = Invoice.id) as "products_type"
+	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
+	Invoice.invoice_product_statement,
+	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_app_sale as AppSale on true
@@ -4063,9 +4094,8 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                 <structure>
                     <property name="name">invoice_date</property>
                     <text-property name="displayName">invoice_date</text-property>
-                    <expression name="expression" type="javascript">if(dataSetRow["invoice_date"] != null ){ dataSetRow["invoice_date"];}else{new Date();}</expression>
+                    <expression name="expression" type="javascript">dataSetRow["invoice_date"]</expression>
                     <property name="dataType">date</property>
-                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">operation_sub_type_select</property>
@@ -4092,10 +4122,22 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">partnerSeq</property>
+                    <text-property name="displayName">partnerSeq</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["partnerSeq"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
                     <property name="name">title_select</property>
                     <text-property name="displayName">title_select</text-property>
                     <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
                     <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">siren</property>
+                    <text-property name="displayName">siren</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["siren"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">contactName</property>
@@ -4123,10 +4165,9 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">due_date</property>
-                    <text-property name="displayName">DueDate</text-property>
+                    <text-property name="displayName">due_date</text-property>
                     <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
                     <property name="dataType">date</property>
-                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">currencyCode</property>
@@ -4159,9 +4200,27 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
                     <property name="name">iban</property>
                     <text-property name="displayName">iban</text-property>
                     <expression name="expression" type="javascript">dataSetRow["iban"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">specific_note_on_invoice</property>
+                    <text-property name="displayName">specific_note_on_invoice</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["specific_note_on_invoice"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -4195,6 +4254,12 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">partner_tax_nbr</property>
+                    <text-property name="displayName">partner_tax_nbr</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["partner_tax_nbr"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
                     <property name="name">external_reference</property>
                     <text-property name="displayName">external_reference</text-property>
                     <expression name="expression" type="javascript">dataSetRow["external_reference"]</expression>
@@ -4211,6 +4276,12 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <text-property name="displayName">footer</text-property>
                     <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">logoPosition</property>
+                    <text-property name="displayName">logoPosition</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">ClientBox</property>
@@ -4243,6 +4314,12 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">displayPartnerSeqOnPrinting</property>
+                    <text-property name="displayName">displayPartnerSeqOnPrinting</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["displayPartnerSeqOnPrinting"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
                     <property name="name">hideDiscount</property>
                     <text-property name="displayName">hideDiscount</text-property>
                     <expression name="expression" type="javascript">dataSetRow["hideDiscount"]</expression>
@@ -4267,57 +4344,6 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">logoPosition</property>
-                    <text-property name="displayName">logoPosition</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">partner_tax_nbr</property>
-                    <text-property name="displayName">partner_tax_nbr</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["partner_tax_nbr"]</expression>
-                    <property name="dataType">string</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">partnerSeq</property>
-                    <text-property name="displayName">partnerSeq</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["partnerSeq"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">displayPartnerSeqOnPrinting</property>
-                    <text-property name="displayName">displayPartnerSeqOnPrinting</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["displayPartnerSeqOnPrinting"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_height</property>
-                    <text-property name="displayName">logo_height</text-property>
-                    <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
-                    <property name="dataType">string</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_width</property>
-                    <text-property name="displayName">logo_width</text-property>
-                    <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100%'}</expression>
-                    <property name="dataType">string</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_height_1</property>
-                    <text-property name="displayName">logo_height</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_width_1</property>
-                    <text-property name="displayName">logo_width</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
                     <property name="name">amount_remaining</property>
                     <text-property name="displayName">amount_remaining</text-property>
                     <expression name="expression" type="javascript">dataSetRow["amount_remaining"]</expression>
@@ -4336,40 +4362,34 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">delivery_address_str</property>
+                    <text-property name="displayName">delivery_address_str</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_address_str"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
                     <property name="name">displayHeadOfficeAddress</property>
                     <text-property name="displayName">displayHeadOfficeAddress</text-property>
                     <expression name="expression" type="javascript">dataSetRow["displayHeadOfficeAddress"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">specific_note_on_invoice</property>
-                    <text-property name="displayName">specific_note_on_invoice</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["specific_note_on_invoice"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">enablePackMangement</property>
                     <text-property name="displayName">enablePackMangement</text-property>
                     <expression name="expression" type="javascript">dataSetRow["enablePackMangement"]</expression>
-                    <property name="dataType">boolean</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">ManageFinancialDiscount</property>
+                    <text-property name="displayName">ManageFinancialDiscount</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ManageFinancialDiscount"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">contactPartnerTitleSelect</property>
                     <text-property name="displayName">contactPartnerTitleSelect</text-property>
                     <expression name="expression" type="javascript">dataSetRow["contactPartnerTitleSelect"]</expression>
                     <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">invoice_date_1</property>
-                    <text-property name="displayName">invoice_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["invoice_date"]</expression>
-                    <property name="dataType">date</property>
-                </structure>
-                <structure>
-                    <property name="name">delivery_address_str</property>
-                    <text-property name="displayName">delivery_address_str</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["delivery_address_str"]</expression>
-                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">originalInvoice</property>
@@ -4384,16 +4404,16 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">enablePackMangement_1</property>
-                    <text-property name="displayName">enablePackMangement</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["enablePackMangement"]</expression>
-                    <property name="dataType">integer</property>
+                    <property name="name">StockMoveRealDate</property>
+                    <text-property name="displayName">StockMoveRealDate</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
+                    <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">displayStockMoveOnInvoicePrinting</property>
-                    <text-property name="displayName">displayStockMoveOnInvoicePrinting</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["displayStockMoveOnInvoicePrinting"]</expression>
-                    <property name="dataType">integer</property>
+                    <property name="name">StockMoveSeq</property>
+                    <text-property name="displayName">StockMoveSeq</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">isAppSupplyChainActive</property>
@@ -4408,28 +4428,10 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">siren</property>
-                    <text-property name="displayName">siren</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["siren"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">ManageFinancialDiscount</property>
-                    <text-property name="displayName">ManageFinancialDiscount</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["ManageFinancialDiscount"]</expression>
+                    <property name="name">displayStockMoveOnInvoicePrinting</property>
+                    <text-property name="displayName">displayStockMoveOnInvoicePrinting</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["displayStockMoveOnInvoicePrinting"]</expression>
                     <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">StockMoveRealDate</property>
-                    <text-property name="displayName">StockMoveRealDate</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveRealDate"]</expression>
-                    <property name="dataType">date</property>
-                </structure>
-                <structure>
-                    <property name="name">StockMoveSeq</property>
-                    <text-property name="displayName">StockMoveSeq</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["StockMoveSeq"]</expression>
-                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">legal_notice</property>
@@ -4447,6 +4449,24 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="name">companyVatSystemSelect</property>
                     <text-property name="displayName">companyVatSystemSelect</text-property>
                     <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">display_siren</property>
+                    <text-property name="displayName">display_siren</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_siren"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">invoice_product_statement</property>
+                    <text-property name="displayName">invoice_product_statement</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["invoice_product_statement"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">displayItemsCategoriesOnPrinting</property>
+                    <text-property name="displayName">displayItemsCategoriesOnPrinting</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["displayItemsCategoriesOnPrinting"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
             </list-property>
@@ -4942,7 +4962,7 @@ else {
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">params["Locale"].value != 'fr'|| !row["siren"]</expression>
+                                    <expression name="valueExpr" type="javascript">!row["siren"] || row["display_siren"] == 0</expression>
                                 </structure>
                             </list-property>
                             <cell id="5972">
@@ -7435,10 +7455,22 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
+                    <property name="name">status_select</property>
+                    <text-property name="displayName">status_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
                     <property name="name">invoice_date</property>
                     <text-property name="displayName">invoice_date</text-property>
                     <expression name="expression" type="javascript">dataSetRow["invoice_date"]</expression>
                     <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">operation_sub_type_select</property>
+                    <text-property name="displayName">operation_sub_type_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["operation_sub_type_select"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">partner_type_select</property>
@@ -7459,10 +7491,22 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">partnerSeq</property>
+                    <text-property name="displayName">partnerSeq</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["partnerSeq"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
                     <property name="name">title_select</property>
                     <text-property name="displayName">title_select</text-property>
                     <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
                     <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">siren</property>
+                    <text-property name="displayName">siren</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["siren"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">contactName</property>
@@ -7525,9 +7569,27 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
                     <property name="name">iban</property>
                     <text-property name="displayName">iban</text-property>
                     <expression name="expression" type="javascript">dataSetRow["iban"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">specific_note_on_invoice</property>
+                    <text-property name="displayName">specific_note_on_invoice</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["specific_note_on_invoice"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -7549,9 +7611,21 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">specific_notes</property>
+                    <text-property name="displayName">specific_notes</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["specific_notes"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
                     <property name="name">internal_reference</property>
                     <text-property name="displayName">internal_reference</text-property>
                     <expression name="expression" type="javascript">dataSetRow["internal_reference"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">partner_tax_nbr</property>
+                    <text-property name="displayName">partner_tax_nbr</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["partner_tax_nbr"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -7571,6 +7645,12 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <text-property name="displayName">footer</text-property>
                     <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">logoPosition</property>
+                    <text-property name="displayName">logoPosition</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">ClientBox</property>
@@ -7597,6 +7677,18 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
+                    <property name="name">termsAndConditions</property>
+                    <text-property name="displayName">termsAndConditions</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["termsAndConditions"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">displayPartnerSeqOnPrinting</property>
+                    <text-property name="displayName">displayPartnerSeqOnPrinting</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["displayPartnerSeqOnPrinting"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
                     <property name="name">hideDiscount</property>
                     <text-property name="displayName">hideDiscount</text-property>
                     <expression name="expression" type="javascript">dataSetRow["hideDiscount"]</expression>
@@ -7609,38 +7701,6 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">status_select</property>
-                    <text-property name="displayName">status_select</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["status_select"]</expression>
-                    <property name="dataType">integer</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">termsAndConditions</property>
-                    <text-property name="displayName">termsAndConditions</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["termsAndConditions"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">operation_sub_type_select</property>
-                    <text-property name="displayName">operation_sub_type_select</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["operation_sub_type_select"]</expression>
-                    <property name="dataType">string</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">operation_sub_type_select_1</property>
-                    <text-property name="displayName">operation_sub_type_select</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["operation_sub_type_select"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">specific_notes</property>
-                    <text-property name="displayName">specific_notes</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["specific_notes"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">subscription_from_date</property>
                     <text-property name="displayName">subscription_from_date</text-property>
                     <expression name="expression" type="javascript">dataSetRow["subscription_from_date"]</expression>
@@ -7651,42 +7711,6 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <text-property name="displayName">subscription_to_date</text-property>
                     <expression name="expression" type="javascript">dataSetRow["subscription_to_date"]</expression>
                     <property name="dataType">date</property>
-                </structure>
-                <structure>
-                    <property name="name">partnerSeq</property>
-                    <text-property name="displayName">partnerSeq</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["partnerSeq"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_height</property>
-                    <text-property name="displayName">logo_height</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_width</property>
-                    <text-property name="displayName">logo_width</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">partner_tax_nbr</property>
-                    <text-property name="displayName">partner_tax_nbr</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["partner_tax_nbr"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">logoPosition</property>
-                    <text-property name="displayName">logoPosition</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">displayPartnerSeqOnPrinting</property>
-                    <text-property name="displayName">displayPartnerSeqOnPrinting</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["displayPartnerSeqOnPrinting"]</expression>
-                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">amount_remaining</property>
@@ -7707,22 +7731,16 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">displayHeadOfficeAddress</property>
-                    <text-property name="displayName">displayHeadOfficeAddress</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["displayHeadOfficeAddress"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">specific_note_on_invoice</property>
-                    <text-property name="displayName">specific_note_on_invoice</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["specific_note_on_invoice"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">delivery_address_str</property>
                     <text-property name="displayName">delivery_address_str</text-property>
                     <expression name="expression" type="javascript">dataSetRow["delivery_address_str"]</expression>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">displayHeadOfficeAddress</property>
+                    <text-property name="displayName">displayHeadOfficeAddress</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["displayHeadOfficeAddress"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">enablePackMangement</property>
@@ -7732,6 +7750,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                 </structure>
                 <structure>
                     <property name="name">ManageFinancialDiscount</property>
+                    <text-property name="displayName">ManageFinancialDiscount</text-property>
                     <expression name="expression" type="javascript">dataSetRow["ManageFinancialDiscount"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
@@ -7802,10 +7821,22 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">products_type</property>
-                    <text-property name="displayName">products_type</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["products_type"]</expression>
+                    <property name="name">display_siren</property>
+                    <text-property name="displayName">display_siren</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_siren"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">invoice_product_statement</property>
+                    <text-property name="displayName">invoice_product_statement</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["invoice_product_statement"]</expression>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">displayItemsCategoriesOnPrinting</property>
+                    <text-property name="displayName">displayItemsCategoriesOnPrinting</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["displayItemsCategoriesOnPrinting"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <structure name="toc"/>
@@ -10208,34 +10239,21 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                 <cell id="5935"/>
                                 <cell id="5936"/>
                             </row>
-                            <row id="5971">
+                            <row id="5982">
                                 <property name="height">0.609cm</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["operation_type_select"] != 3 || params["Locale"].value != 'fr'</expression>
+                                        <expression name="valueExpr" type="javascript">row["operation_type_select"] != 3 || !row["invoice_product_statement"] || !row["displayItemsCategoriesOnPrinting"]</expression>
                                     </structure>
                                 </list-property>
-                                <cell id="5972">
+                                <cell id="5983">
                                     <property name="colSpan">8</property>
                                     <property name="rowSpan">1</property>
                                     <text id="5981">
                                         <property name="fontSize">8pt</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
-
-if(row["products_type"] == 'storable'){
-	"Cette facture ne comporte que des livraisons de bien."
-}
-
-if(row["products_type"] == 'service'){
-	"Cette facture ne comporte que des prestations de services."
-}
-
-if(row["products_type"] == 'serviceAndStorable'){
-	"Cette facture comporte des livraisons de bien ainsi que des prestations de services."
-}
-</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["invoice_product_statement"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5980"/>

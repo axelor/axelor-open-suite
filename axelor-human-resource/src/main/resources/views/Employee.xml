@@ -81,7 +81,6 @@
             <field name="fixedPhone" widget="phone" colSpan="4"
               x-placeholder-number-type="FIXED_LINE"/>
             <field name="mobilePhone" widget="phone" colSpan="4"/>
-            <field name="fax" widget="phone" colSpan="4"/>
           </panel>
         </editor>
       </field>
@@ -268,7 +267,6 @@
               <field name="fixedPhone" widget="phone" colSpan="4"
                 x-placeholder-number-type="FIXED_LINE"/>
               <field name="mobilePhone" widget="phone" colSpan="4"/>
-              <field name="fax" widget="phone" colSpan="4"/>
             </panel>
           </editor>
         </field>

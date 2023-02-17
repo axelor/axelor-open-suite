@@ -437,11 +437,11 @@ public class SaleOrderController {
     List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
     response.setAttr(
-        "operationSelect",
+        "$operationSelect",
         "value",
         operationSelectValues.stream().min(Integer::compareTo).orElse(null));
 
-    response.setAttr("operationSelect", "selection-in", operationSelectValues);
+    response.setAttr("$operationSelect", "selection-in", operationSelectValues);
   }
 
   /**
@@ -503,7 +503,7 @@ public class SaleOrderController {
         saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
         saleOrderLineList.add(saleOrderLineMap);
       }
-      response.setValue("amountToInvoice", BigDecimal.ZERO);
+      response.setValue("$amountToInvoice", BigDecimal.ZERO);
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -519,8 +519,21 @@ public class SaleOrderController {
         Integer deliveryState = saleOrderLine.getDeliveryState();
         if (!deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED)
             && !deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED)) {
-          saleOrderLine.setEstimatedDelivDate(saleOrder.getDeliveryDate());
+          saleOrderLine.setEstimatedShippingDate(saleOrder.getEstimatedShippingDate());
         }
+      }
+    }
+
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
+  public void fillSaleOrderLinesDeliveryDate(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        saleOrderLine.setEstimatedDeliveryDate(saleOrder.getEstimatedDeliveryDate());
       }
     }
 

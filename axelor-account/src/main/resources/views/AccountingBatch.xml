@@ -143,6 +143,7 @@
           domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'equity' OR self.accountType.technicalTypeSelect = 'provision' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation' OR self.accountType.technicalTypeSelect = 'currentAsset' OR self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable' OR self.accountType.technicalTypeSelect = 'tax' OR self.accountType.technicalTypeSelect = 'cash')"
           showIf="openYear"/>
         <field name="generateResultMove" showIf="openYear"/>
+        <field name="includeSpecialAccounts" showIf="openYear &amp;&amp; generateResultMove"/>
         <field name="resultMoveDescription" showIf="generateResultMove"/>
         <field name="generateGeneralLedger" showIf="openYear"/>
         <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>

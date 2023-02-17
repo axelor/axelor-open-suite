@@ -155,7 +155,7 @@
     <option value="2">Accounting value</option>
     <option value="3">Sale value</option>
     <option value="4">Purchase value</option>
-    <option value="5">Wap price of the stock location</option>
+    <option value="5">WAP of the stock location</option>
   </selection>
 
   <selection name="stock.stock.location.printing.type">
@@ -165,6 +165,13 @@
 
   <selection name="stock.batch.action.select">
     <option value="1">Recompute stock location lines</option>
+  </selection>
+
+  <selection name="stock.stock.location.line.history.type.select">
+    <option value="stockMove">Stock move</option>
+    <option value="wapCorrection">Wap correction</option>
+    <option value="cancelation">Cancelation</option>
+    <option value="updateStockLocationFromProduct">Update stock location from product</option>
   </selection>
 
 </object-views>

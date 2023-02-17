@@ -85,4 +85,7 @@ public interface SupplierCatalogService {
       ActionRequest request,
       ActionResponse response)
       throws AxelorException;
+
+  public BigDecimal getPurchasePrice(SupplierCatalog supplierCatalog, Company company)
+      throws AxelorException;
 }

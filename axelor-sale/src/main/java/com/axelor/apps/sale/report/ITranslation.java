@@ -53,7 +53,6 @@ public interface ITranslation {
   public static final String SALES_ORDER_SALEMAN_NAME = /*$$(*/ "SaleOrder.salemanName"; /*)*/
   public static final String SALES_ORDER_SALEMAN_EMAIL = /*$$(*/ "SaleOrder.salemanEmail"; /*)*/
   public static final String SALES_ORDER_SALEMAN_PHONE = /*$$(*/ "SaleOrder.salemanPhone"; /*)*/
-  public static final String SALES_ORDER_DELIVERY_DATE = /*$$(*/ "SaleOrder.deliveryDate"; /*)*/
   public static final String SALES_ORDER_END_VALIDITY_DATE = /*$$(*/
       "SaleOrder.endOfValidityDate"; /*)*/
   public static final String SALES_ORDER_DELIVERY_CONDITION = /*$$(*/

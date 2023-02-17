@@ -17,13 +17,16 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportType;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -35,17 +38,23 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
   protected AccountingReportService accountingReportService;
   protected AccountingReportRepository accountingReportRepo;
   protected AccountingReportTypeRepository accountingReportTypeRepo;
+  protected AccountConfigService accountConfigService;
+  protected AccountRepository accountRepository;
 
   @Inject
   public BatchPrintAccountingReportServiceImpl(
       AppAccountService appAccountService,
       AccountingReportService accountingReportService,
       AccountingReportRepository accountingReportRepo,
-      AccountingReportTypeRepository accountingReportTypeRepo) {
+      AccountingReportTypeRepository accountingReportTypeRepo,
+      AccountConfigService accountConfigService,
+      AccountRepository accountRepository) {
     this.appAccountService = appAccountService;
     this.accountingReportService = accountingReportService;
     this.accountingReportRepo = accountingReportRepo;
     this.accountingReportTypeRepo = accountingReportTypeRepo;
+    this.accountConfigService = accountConfigService;
+    this.accountRepository = accountRepository;
   }
 
   @Transactional
@@ -56,11 +65,16 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     accountingReport.setCompany(accountingBatch.getCompany());
     if (accountingReport.getCompany() != null) {
       accountingReport.setCurrency(accountingReport.getCompany().getCurrency());
+      AccountConfig accountConfig =
+          accountConfigService.getAccountConfig(accountingReport.getCompany());
+      if (accountConfig != null) {
+        accountingReport.setJournal(accountConfig.getReportedBalanceJournal());
+      }
     }
     if (accountingBatch.getYear() != null) {
       accountingReport.setDateFrom(accountingBatch.getYear().getReportedBalanceDate());
+      accountingReport.setDate(accountingBatch.getYear().getReportedBalanceDate());
     }
-    accountingReport.setDate(appAccountService.getTodayDateTime().toLocalDate());
     accountingReport.setDateTo(accountingReport.getDate());
     accountingReport.setPeriod(accountingBatch.getPeriod());
     AccountingReportType accountingReportType = new AccountingReportType();
@@ -74,6 +88,10 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
 
     accountingReport.setDisplayClosingAccountingMoves(accountingBatch.getCloseYear());
     accountingReport.setDisplayOpeningAccountingMoves(accountingBatch.getOpenYear());
+
+    accountingReport.setExcludeViewAccount(true);
+    accountingReport.setExcludeCommitmentSpecialAccount(
+        !accountingBatch.getIncludeSpecialAccounts());
 
     accountingReportService.buildQuery(accountingReport);
 

@@ -237,10 +237,6 @@
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools">
-        <item name="scheduleEventItem" title="saleOrder.scheduleEvent"
-          hideIf="clientPartner == null" action="action-sale-order-view-schedule-event"/>
-        <item name="sendEmailItem" title="Send email" hideIf="clientPartner == null"
-          action="save,action-send-by-email-with-template"/>
         <item name="defineAsTemplateItem" title="Define as template"
           hideIf="clientPartner == null" action="save,action-sale-order-method-generate-template"/>
         <item name="allocateAllItem" title="Allocate all"
@@ -499,7 +495,10 @@
         <field name="toStockLocation" canEdit="false"
           domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true"
           form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="deliveryDate" onChange="action-sale-order-group-on-delivery-date-change"/>
+        <field name="estimatedShippingDate"
+          onChange="action-sale-order-group-on-estimated-shipping-date-change"/>
+        <field name="estimatedDeliveryDate"
+          onChange="action-sale-order-group-on-estimated-delivery-date-change"/>
         <field name="deliveryCondition" colSpan="12"/>
         <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid"
           grid-view="shipment-mode-grid"/>
@@ -548,7 +547,8 @@
           <field name="productionNote" showTitle="false" colSpan="12" widget="Html"/>
         </panel>
         <panel-dashlet name="manufOrdersPanel"
-          action="action-sale-order-view-manuf-orders" colSpan="12"/>
+          action="action-sale-order-view-manuf-orders" colSpan="12"
+          showIf="statusSelect == 3 || statusSelect == 4"/>
       </panel>
 
       <panel name="businessProjectPanel" title="Business project"
@@ -619,7 +619,7 @@
         if-module="axelor-supplychain" view="incl-sale-order-subscrption-form"/>
       <panel-dashlet if="__config__.app.isApp('supplychain')"
         name="generatedPurchaseOrderPanel" title="Generated purchase orders"
-        action="action-sale-order-view-show-generated-po"/>
+        action="action-sale-order-view-show-generated-po" hideIf="statusSelect &lt;= 2"/>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -1104,15 +1104,15 @@
     <panel>
       <panel showFrame="false" colSpan="12">
         <field name="advancePaymentAmountNeeded" readonly="true"/>
-        <field name="isPercent" title="Is amount in % ?" type="boolean"/>
+        <field name="$isPercent" title="Is amount in % ?" type="boolean"/>
       </panel>
       <panel name="amountToInvoicePanel" showFrame="false">
-        <field name="amountToInvoice" title="Adv. payment amount" type="decimal"
+        <field name="$amountToInvoice" title="Adv. payment amount" type="decimal"
           onChange="action-sale-order-attrs-amount-to-invoice" colSpan="12"/>
       </panel>
       <spacer/>
       <panel name="amountToInvoiceHiddenPanel" hidden="true" showFrame="false">
-        <field name="amountToInvoice" title="Adv. payment amount" colSpan="12"
+        <field name="$amountToInvoice" title="Adv. payment amount" colSpan="12"
           css="font-orange" type="decimal" onChange="action-sale-order-attrs-amount-to-invoice"/>
       </panel>
     </panel>
@@ -1895,7 +1895,8 @@
     <field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="specificPackage" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <field name="deliveryDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="estimatedShippingDate" hidden="true"
+      if="!__config__.app.isApp('supplychain')"/>
     <field name="deliveryCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="shipmentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -1931,17 +1932,6 @@
       <domain>self.statusSelect = 3 and self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>
-
-  <action-view name="action-sale-order-view-schedule-event" title="Schedule Event"
-    model="com.axelor.apps.crm.db.Event">
-    <view type="form" name="event-form"/>
-    <context name="_saleOrder"
-      expr="eval:_ids != null ? __repo__(SaleOrder).find(_ids.get(0)) : __this__"/>
-    <context name="_clientPartner"
-      expr="eval: _ids != null ? __repo__(SaleOrder).find(_ids.get(0)).clientPartner : __self__.clientPartner"/>
-    <context name="_contactPartner"
-      expr="eval: _ids != null ? __repo__(SaleOrder).find(_ids.get(0)).contactPartner : __self__.contactPartner"/>
-  </action-view>
 
   <action-view name="action-sale-order-view-register-advance-payment"
     title="Register a deposit" model="com.axelor.apps.sale.db.AdvancePayment">
@@ -2132,15 +2122,25 @@
       expr="eval: (statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || (orderBeingEdited &amp;&amp; __repo__(SaleOrder).STATUS_ORDER_CONFIRMED)) &amp;&amp; saleOrderLineList?.any{it.discountsNeedReview}"/>
   </action-attrs>
 
-  <action-group name="action-sale-order-group-on-delivery-date-change">
+  <action-group name="action-sale-order-group-on-estimated-shipping-date-change">
     <action name="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
     <action name="save"/>
     <action name="action-sale-order-supplychain-method-update-stock-reservation-date"/>
   </action-group>
 
+  <action-group name="action-sale-order-group-on-estimated-delivery-date-change">
+    <action name="action-sale-order-method-fill-sale-order-lines-delivery-date"/>
+    <action name="save"/>
+  </action-group>
+
   <action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="fillSaleOrderLinesEstimatedDate"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-fill-sale-order-lines-delivery-date">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="fillSaleOrderLinesDeliveryDate"/>
   </action-method>
 
   <action-attrs name="action-sale-order-template-hide-allocated-qty">
