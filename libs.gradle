@@ -51,7 +51,7 @@ libs.jdom = 'jdom:jdom:1.1'
 libs.xalan = dependencies.create('xalan:xalan:2.7.2') {
   exclude group: 'xml-apis', module: 'xml-apis'
 }
-libs.xmlbeans = 'org.apache.xmlbeans:xmlbeans:5.1.1'
+libs.xmlbeans = 'org.apache.xmlbeans:xmlbeans:3.1.0'
 libs.xmlsec = 'org.apache.santuario:xmlsec:1.4.3'
 
 libs.jaxws_api = 'javax.xml.ws:jaxws-api:2.3.1'
