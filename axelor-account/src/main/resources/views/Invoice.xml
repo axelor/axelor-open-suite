@@ -1539,6 +1539,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-attrs-in-ati"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+    <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
