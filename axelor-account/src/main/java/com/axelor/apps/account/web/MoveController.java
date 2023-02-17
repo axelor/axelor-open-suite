@@ -56,6 +56,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -924,14 +925,26 @@ public class MoveController {
                   move.getCurrency(), move.getCompanyCurrency(), move.getDate());
 
       for (MoveLine moveLine : move.getMoveLineList()) {
-        BigDecimal debit = moveLine.getDebit();
-        BigDecimal credit = moveLine.getCredit();
         BigDecimal currencyAmount = BigDecimal.ZERO;
 
-        if (!BigDecimal.ZERO.equals(debit.add(credit))) {
-          currencyAmount = debit.add(credit);
-          currencyAmount = currencyAmount.divide(currencyRate, RoundingMode.HALF_UP);
+        if (BigDecimal.ZERO.compareTo(moveLine.getDebit().add(moveLine.getCredit())) == 0) {
+          if (moveLine.getAccount() != null) {
+            switch (moveLine.getAccount().getCommonPosition()) {
+              case 1:
+                moveLine.setCredit(moveLine.getCurrencyAmount().multiply(currencyRate));
+                break;
+              case 2:
+                moveLine.setDebit(moveLine.getCurrencyAmount().multiply(currencyRate));
+                break;
+              default:
+                break;
+            }
+          }
         }
+        currencyAmount = moveLine.getDebit().add(moveLine.getCredit());
+        currencyAmount =
+            currencyAmount.divide(
+                currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
         moveLine.setCurrencyAmount(currencyAmount);
         moveLine.setCurrencyRate(currencyRate);
