@@ -19,13 +19,11 @@
     <boolean name="isManageCatalogs" title="Manage catalogs" default="false"/>
     <boolean name="agenciesManagement" title="Agencies management"/>
     <many-to-one name="closedWinOpportunityStatus"
-      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed win opportunity status"
-      required="true"/>
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed win opportunity status"/>
     <many-to-one name="closedLostOpportunityStatus"
-      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed lost opportunity status"
-      required="true"/>
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed lost opportunity status"/>
     <many-to-one name="salesPropositionStatus"
-      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Sales proposition step" required="true"/>
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Sales proposition step"/>
     <many-to-one name="convertedLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
       title="Converted lead status"/>
     <many-to-one name="lostLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
