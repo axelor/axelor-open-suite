@@ -667,7 +667,7 @@ public class MoveController {
             LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
 
         if (moveComputeService.checkManageCutOffDates(move)) {
-          moveComputeService.applyCutOffDates(move, cutOffStartDate, cutOffEndDate);
+          moveComputeService.applyCutOffDatesInEmptyLines(move, cutOffStartDate, cutOffEndDate);
 
           response.setValue("moveLineList", move.getMoveLineList());
         }
