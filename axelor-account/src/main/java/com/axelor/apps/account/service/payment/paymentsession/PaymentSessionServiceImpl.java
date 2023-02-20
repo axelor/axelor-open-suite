@@ -269,19 +269,26 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.dueDate <= :paymentDatePlusMargin "
             + " AND self.moveLine.move.currency = :currency "
             + " AND self.bankDetails IS NOT NULL "
-            + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
     String termsMoveLineCondition =
-        " AND ((self.moveLine.partner.isCustomer = TRUE "
+        " AND (((self.moveLine.partner.isCustomer = TRUE "
+            + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
             + " AND :partnerTypeSelect = :partnerTypeClient"
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginClient)"
             + " OR ( self.moveLine.partner.isSupplier = TRUE "
+            + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
             + " AND :partnerTypeSelect = :partnerTypeSupplier "
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier "
             + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
             + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE  "
             + " OR (self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE "
-            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated))))) ";
+            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated))))) "
+            + " OR (self.moveLine.partner.isCustomer = TRUE AND self.moveLine.partner.isSupplier = TRUE AND self.moveLine.partner.isCompensation = TRUE "
+            + " AND (self.moveLine.move.functionalOriginSelect = :functionalOriginClient OR (self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier "
+            + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
+            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE  "
+            + " OR (self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE "
+            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated)))))))";
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"
             + " AND self.amountRemaining > 0"
@@ -368,6 +375,15 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     LocalDate financialDiscountDeadlineDate = invoiceTerm.getFinancialDiscountDeadlineDate();
     boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
 
+    if ((paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
+            && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
+        || (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER
+            && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                == MoveRepository.FUNCTIONAL_ORIGIN_SALE)) {
+      isSignedNegative = !isSignedNegative;
+    }
+
     invoiceTerm.setPaymentSession(paymentSession);
     invoiceTerm.setIsSelectedOnPaymentSession(true);
     if (isSignedNegative) {
@@ -397,6 +413,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     if (invoiceTerm.getMoveLine() != null) {
       if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
           == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+
         isSignedNegative =
             invoiceTerm
                     .getMoveLine()

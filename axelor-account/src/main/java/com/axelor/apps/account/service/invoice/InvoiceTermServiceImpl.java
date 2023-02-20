@@ -1098,10 +1098,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     for (Partner partner : partnerList) {
 
       List<InvoiceTerm> invoiceTermFromInvoiceList =
-          getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(invoiceTermList, partner, true);
+          getInvoiceTermsInvoiceSortedByDueDateAndByPartner(invoiceTermList, partner);
       List<InvoiceTerm> invoiceTermFromRefundList =
-          getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(
-              invoiceTermList, partner, false);
+          getInvoiceTermsRefundSortedByDueDateAndByPartner(invoiceTermList, partner);
       int invoiceCounter = 0;
       int refundCounter = 0;
       InvoiceTerm invoiceTermFromInvoice = null;
@@ -1133,14 +1132,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         .collect(Collectors.toList());
   }
 
-  protected List<InvoiceTerm> getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(
-      List<InvoiceTerm> invoiceTermList, Partner partner, boolean isInvoice) {
+  protected List<InvoiceTerm> getInvoiceTermsInvoiceSortedByDueDateAndByPartner(
+      List<InvoiceTerm> invoiceTermList, Partner partner) {
     return invoiceTermList.stream()
         .filter(
-            it ->
-                ((it.getAmountPaid().signum() > 0 && isInvoice)
-                        || (it.getAmountPaid().signum() < 0 && !isInvoice))
-                    && it.getMoveLine().getPartner().equals(partner))
+            it -> it.getAmountPaid().signum() > 0 && it.getMoveLine().getPartner().equals(partner))
+        .sorted(Comparator.comparing(InvoiceTerm::getDueDate))
+        .collect(Collectors.toList());
+  }
+
+  protected List<InvoiceTerm> getInvoiceTermsRefundSortedByDueDateAndByPartner(
+      List<InvoiceTerm> invoiceTermList, Partner partner) {
+    return invoiceTermList.stream()
+        .filter(
+            it -> it.getAmountPaid().signum() < 0 && it.getMoveLine().getPartner().equals(partner))
         .sorted(Comparator.comparing(InvoiceTerm::getDueDate))
         .collect(Collectors.toList());
   }
