@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.dmn.service;
 
+import com.axelor.apps.bpm.db.WkfDmnModel;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 
@@ -30,4 +31,6 @@ public interface DmnService {
       String searchOperator,
       String ifMultiple,
       String resultVar);
+
+  public void renameDiagramIds(WkfDmnModel wkfDmnModel);
 }

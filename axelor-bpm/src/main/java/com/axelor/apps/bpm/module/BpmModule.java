@@ -20,8 +20,10 @@ package com.axelor.apps.bpm.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.baml.service.BamlService;
 import com.axelor.apps.baml.service.BamlServiceImpl;
+import com.axelor.apps.bpm.db.repo.BpmWkfDmnModelRepository;
 import com.axelor.apps.bpm.db.repo.BpmWkfInstanceRepository;
 import com.axelor.apps.bpm.db.repo.BpmWkfModelRepository;
+import com.axelor.apps.bpm.db.repo.WkfDmnModelRepository;
 import com.axelor.apps.bpm.db.repo.WkfInstanceRepository;
 import com.axelor.apps.bpm.db.repo.WkfModelRepository;
 import com.axelor.apps.bpm.listener.ServerStartListener;
@@ -77,6 +79,7 @@ public class BpmModule extends AxelorModule {
     bind(WkfProcessApplication.class);
     bind(WkfInstanceRepository.class).to(BpmWkfInstanceRepository.class);
     bind(WkfModelRepository.class).to(BpmWkfModelRepository.class);
+    bind(WkfDmnModelRepository.class).to(BpmWkfDmnModelRepository.class);
     bind(WkfCommonService.class).to(WkfCommonServiceImpl.class);
     bind(WkfDisplayService.class).to(WkfDisplayServiceImpl.class);
     bind(WkfModelService.class).to(WkfModelServiceImpl.class);
