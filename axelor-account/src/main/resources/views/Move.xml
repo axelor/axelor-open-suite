@@ -346,6 +346,47 @@
     </panel-mail>
   </form>
 
+  <form name="move-mass-entry-form" title="Mass entry move" canArchive="false"
+    model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
+    onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
+    onSave="action-account-move-group-onsave">
+
+    <panel name="mainPanel" colSpan="12">
+      <panel name="moveDetailsPanel" colSpan="9">
+        <field name="reference" colSpan="12"/>
+        <panel name="moveContentPanel" colSpan="12">
+          <field name="company" canEdit="false" widget="SuggestBox"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
+            onChange="action-group-move-company-onchange" form-view="company-form"
+            grid-view="company-grid"/>
+          <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
+            canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
+            onChange="action-move-group-journal-on-change" colSpan="3"/>
+          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
+            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
+          <panel name="datePanel" showFrame="false" colSpan="12" itemSpan="3">
+            <field name="date"
+              readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+              onChange="action-group-move-date-onchange"/>
+          </panel>
+          <field name="currency"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
+            colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
+        </panel>
+      </panel>
+    </panel>
+
+    <panel>
+      <panel-related name="moveLineListPanel" field="moveLineList" editable="true"
+        colSpan="12" height="6" canNew="true" canRemove="true"
+        grid-view="move-line-mass-entry-move-grid" form-view="move-line-move-form"
+        onChange="action-move-group-move-line-list-onchange"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+    </panel>
+  </form>
+
   <form name="move-simplified-form" title="Account move"
     model="com.axelor.apps.account.db.Move" width="large" onLoad="action-account-move-group-onload"
     onSave="action-account-move-group-onsave" onNew="action-account-move-onnew-group"

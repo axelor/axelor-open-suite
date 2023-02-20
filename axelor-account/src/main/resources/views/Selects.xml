@@ -535,6 +535,12 @@
     <option value='9'>Irrecoverable</option>
   </selection>
 
+  <selection name='iaccount.move.input.action.select'>
+    <option value='1'>Ligne</option>
+    <option value='2'>Contrepartie</option>
+    <option value='3'>Ecrirture</option>
+  </selection>
+
   <selection name="account.year.period.duration.select">
     <option value="0">One time global period</option>
     <option value="1">1 Month</option>

@@ -152,6 +152,18 @@
       expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
+  <menuitem name="account-root-move-mass-entry-move" parent="account-root-move"
+    title="Mass Entry Moves" action="account.root.move.mass.entry.move" order="0"/>
+
+  <action-view name="account.root.move.mass.entry.move" title="Mass Entry"
+    model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-grid"/>
+    <view type="form" name="move-mass-entry-form"/>
+    <view-param name="search-filters" value="move-filters"/>
+    <context name="_isActivateSimulatedMoves"
+      expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+  </action-view>
+
   <menuitem name="account-root-move-simplified-move" parent="account-root-move"
     title="Simplified Moves" action="account.root.move.move.simplifed" order="0"/>
 

@@ -169,6 +169,30 @@
     <field name="taxLineBeforeReverse" hidden="true"/>
   </grid>
 
+  <grid name="move-line-mass-entry-move-grid" model="com.axelor.apps.account.db.MoveLine"
+    title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-group-mass-entry">
+    <field name="counter" hidden="true"/>
+    <field name="inputAction" required="true" selection="iaccount.move.input.action.select"
+      onChange="action-move-line-method-fill-fields"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      onSelect="action-account-move-line-partner-group"
+      onChange="action-move-line-record-reset-partner-details" width="120" canEdit="false"
+      readonly="false"/>
+    <field name="date" width="100" onChange="account-move-line-group-date-onchange"
+      hidden="false"/>
+    <field name="account" form-view="account-form" grid-view="account-grid"
+      onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
+      readonlyIf="amountPaid &gt; 0" onChange="action-account-move-line-account-group-on-change"/>
+    <field name="debit"
+      onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
+      width="90" readonlyIf="amountPaid &gt; 0"/>
+    <field name="credit"
+      onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
+      width="90" readonlyIf="amountPaid &gt; 0"/>
+    <field name="description"
+      requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
+  </grid>
+
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false" groupBy="account"
     expandable="true" canArchive="false">

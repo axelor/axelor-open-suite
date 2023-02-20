@@ -20,6 +20,8 @@
     <date name="cutOffEndDate" title="To date"/>
     <boolean name="isCutOffGenerated" default="false"/>
     <integer name="counter" title="Line Nbr." initParam="true"/>
+    <integer name="inputAction" title="Input action"
+      selection="iaccount.move.input.action.select"/>
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>
