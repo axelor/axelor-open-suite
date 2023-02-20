@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="AppMobileSettings">
+
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+
+    <boolean name="isStockAppEnable" title="Stock" default="false"/>
+    <boolean name="isProductionAppEnable" title="Manufacturing" default="false"/>
+
+    <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
+
+    <boolean name="isLoginUserQrcodeEnable" title="Use qrCode for user connection"
+      default="false"
+      help="Allows users to fill in the username field on the login page with the qr code present on the user's form view."/>
+
+    <boolean name="manageCarrierOption" title="Manage carrier option" default="false"
+      help="Allow users to manage carrier option for customer deliveries."/>
+
+    <!-- Tracker messages settings -->
+    <boolean name="isTrackerMessageOnStockApp" title="Enable tracker messages."
+      default="false"
+      help="Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application."/>
+    <boolean name="isTrackerMessageOnProductionApp" title="Enable tracker messages."
+      default="false"
+      help="Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application."/>
+
+    <track>
+      <field name="isStockAppEnable"/>
+      <field name="isProductionAppEnable"/>
+      <field name="isLoginUserQrcodeEnable"/>
+      <field name="isTrackerMessageOnStockApp"/>
+      <field name="isTrackerMessageOnProductionApp"/>
+    </track>
+  </entity>
+</domain-models>

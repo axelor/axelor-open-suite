@@ -1,16 +1,13 @@
 ---
-name: Axelor Mobile
-code: mobile
+name: Axelor Mobile Settings
+code: mobile-settings
 typeSelect: standard
-installOrder: 32
+installOrder: 2300
 description: |
-   Axelor Mobile Management
+  Axelor Mobile Settings
 image: app-mobile.png
-modules: 
-   axelor-mobile
+modules:
+  axelor-mobile
 dependsOn:
-   - sale
-   - expense
-   - leave
-   - timesheet
-sequence: 110
+  - base
+sequence: 120

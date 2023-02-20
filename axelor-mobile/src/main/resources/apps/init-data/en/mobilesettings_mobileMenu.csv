@@ -1,0 +1,8 @@
+"importId";"technicalName";"name"
+"1";"stock_menu_product";"Product"
+"2";"stock_menu_stock_correction";"Stock correction"
+"3";"stock_menu_internal_move";"Internal move"
+"4";"stock_menu_customer_delivery";"Customer delivery"
+"5";"stock_menu_supplier_arrival";"Supplier arrival"
+"6";"stock_menu_inventory";"Inventory"
+"7";"manufacturing_menu_manufacturing_order";"Manufacturing order"
