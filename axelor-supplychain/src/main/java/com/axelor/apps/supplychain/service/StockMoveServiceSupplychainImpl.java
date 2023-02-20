@@ -215,8 +215,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void plan(StockMove stockMove) throws AxelorException {
     super.plan(stockMove);
 
-    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()
-        && appSupplyChainService.isApp("supplychain")) {
+    if (appSupplyChainService.isApp("supplychain")
+        && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       reservedQtyService.updateReservedQuantity(stockMove, StockMoveRepository.STATUS_PLANNED);
     }
   }
@@ -354,8 +354,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       throws AxelorException {
     StockMoveLine newStockMoveLine = super.copySplittedStockMoveLine(stockMoveLine);
 
-    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()
-        && appSupplyChainService.isApp("supplychain")) {
+    if (appSupplyChainService.isApp("supplychain")
+        && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       BigDecimal requestedReservedQty =
           stockMoveLine
               .getRequestedReservedQty()
