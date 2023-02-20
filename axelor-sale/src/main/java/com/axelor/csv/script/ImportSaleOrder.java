@@ -17,6 +17,7 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
@@ -24,7 +25,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.Map;
 

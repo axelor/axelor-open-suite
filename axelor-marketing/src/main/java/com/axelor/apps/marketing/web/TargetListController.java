@@ -18,10 +18,10 @@
 package com.axelor.apps.marketing.web;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.marketing.db.TargetList;
 import com.axelor.apps.marketing.service.TargetListService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;

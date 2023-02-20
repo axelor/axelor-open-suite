@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.base.service.filesourceconnector;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.FileSourceConnector;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
 import com.axelor.apps.base.service.filesourceconnector.models.FileTransfertSession;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import java.util.List;
 

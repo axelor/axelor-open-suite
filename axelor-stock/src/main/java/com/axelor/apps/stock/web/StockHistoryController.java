@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.service.StockHistoryService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.PartnerStockSettings;
@@ -24,7 +25,6 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Predicates;
 import com.google.inject.Inject;

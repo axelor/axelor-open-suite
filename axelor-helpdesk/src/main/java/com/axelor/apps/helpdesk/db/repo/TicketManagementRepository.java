@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.helpdesk.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.service.TicketService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 
 public class TicketManagementRepository extends TicketRepository {

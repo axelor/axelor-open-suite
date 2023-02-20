@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.purchase.service.print;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.exception.AxelorException;
 import java.io.IOException;
 import java.util.List;
 

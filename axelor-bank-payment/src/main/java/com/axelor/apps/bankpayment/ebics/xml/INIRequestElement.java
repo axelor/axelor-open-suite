@@ -40,7 +40,7 @@ import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.client.UnsecuredRequestElement;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.lang.invoke.MethodHandles;
 import javax.xml.XMLConstants;
 import org.slf4j.Logger;

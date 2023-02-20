@@ -17,8 +17,8 @@
  */
 package com.axelor.meta.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.IMessage;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaGroupMenuAssistantRepository;

@@ -18,7 +18,7 @@
 package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.util.List;
 
 public interface InvoiceServiceSupplychain {

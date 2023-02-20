@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.gdpr.job;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegister;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRepository;
 import com.axelor.apps.gdpr.service.GdprProcessingRegisterService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.util.List;

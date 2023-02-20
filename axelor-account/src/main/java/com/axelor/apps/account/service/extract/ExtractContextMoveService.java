@@ -18,7 +18,7 @@
 package com.axelor.apps.account.service.extract;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.rpc.Context;
 import java.time.LocalDate;
 import java.util.Map;

@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.sale.service.config;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class SaleConfigServiceImpl implements SaleConfigService {

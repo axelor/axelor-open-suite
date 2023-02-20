@@ -18,11 +18,11 @@
 package com.axelor.apps.cash.management.web;
 
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.cash.management.service.CashManagementChartService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

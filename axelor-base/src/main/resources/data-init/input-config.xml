@@ -88,4 +88,7 @@
 
   <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
 
+  <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"
+    search="self.name = :name"/>
+
 </csv-inputs>

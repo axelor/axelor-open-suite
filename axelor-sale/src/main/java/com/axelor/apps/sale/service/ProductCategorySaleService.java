@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.exception.AxelorException;
 
 public interface ProductCategorySaleService {
 

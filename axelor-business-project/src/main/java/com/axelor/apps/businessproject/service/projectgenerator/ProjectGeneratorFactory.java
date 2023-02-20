@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.businessproject.service.projectgenerator;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryAlone;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorFactoryPhase;
@@ -25,8 +27,6 @@ import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectG
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;

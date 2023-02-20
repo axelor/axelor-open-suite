@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.PrintTemplateLine;
@@ -27,7 +28,6 @@ import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.axelor.message.service.TemplateContextService;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.utils.template.TemplateMaker;

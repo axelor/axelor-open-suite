@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.ebics.service;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;

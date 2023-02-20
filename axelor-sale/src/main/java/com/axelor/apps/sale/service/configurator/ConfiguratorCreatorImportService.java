@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
-import com.axelor.exception.AxelorException;
 import java.io.IOException;
 import java.io.InputStream;
 

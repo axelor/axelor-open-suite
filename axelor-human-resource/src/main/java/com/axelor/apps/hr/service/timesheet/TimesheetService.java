@@ -19,6 +19,7 @@ package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
@@ -26,7 +27,6 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.message.db.Message;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;

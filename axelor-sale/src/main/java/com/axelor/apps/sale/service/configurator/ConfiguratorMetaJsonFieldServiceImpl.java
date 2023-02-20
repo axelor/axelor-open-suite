@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
 import com.axelor.utils.MetaTool;

@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.gdpr.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.gdpr.db.GDPRSearchConfig;
 import com.axelor.apps.gdpr.db.GDPRSearchConfigLine;
 import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
@@ -24,8 +26,6 @@ import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;

@@ -21,6 +21,7 @@ import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LI
 import static com.axelor.utils.date.DateTool.toDate;
 import static com.axelor.utils.date.DateTool.toLocalDateT;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisLine;
 import com.axelor.apps.base.db.Product;
@@ -36,7 +37,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;

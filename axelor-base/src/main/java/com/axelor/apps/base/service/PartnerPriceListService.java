@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.exception.AxelorException;
 
 public interface PartnerPriceListService {
 

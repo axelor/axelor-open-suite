@@ -15,17 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.exception.service;
+package com.axelor.apps.base.service.exception;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.TraceBack;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.TraceBack;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
 import java.io.PrintWriter;
@@ -273,7 +273,7 @@ public class TraceBackService {
    * @return the tracebacks count
    */
   public long countMessageTraceBack(Model model) {
-    return createTraceBackQuery(model, "com.axelor.exception.AxelorMessageException").count();
+    return createTraceBackQuery(model, "com.axelor.apps.base.AxelorMessageException").count();
   }
 
   /**
@@ -283,7 +283,7 @@ public class TraceBackService {
    * @return empty if no tracebacks were found, else the found traceback
    */
   public Optional<TraceBack> findLastAlertTraceBack(Model model) {
-    return getLastTraceBack(model, "com.axelor.exception.AxelorAlertException");
+    return getLastTraceBack(model, "com.axelor.apps.base.AxelorAlertException");
   }
 
   /**
@@ -293,7 +293,7 @@ public class TraceBackService {
    * @return empty if no tracebacks were found, else the found traceback
    */
   public Optional<TraceBack> findLastMessageTraceBack(Model model) {
-    return getLastTraceBack(model, "com.axelor.exception.AxelorMessageException");
+    return getLastTraceBack(model, "com.axelor.apps.base.AxelorMessageException");
   }
 
   protected Optional<TraceBack> getLastTraceBack(Model model, String className) {

@@ -18,7 +18,7 @@
 package com.axelor.apps.account.service.invoice.workflow;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 public abstract class WorkflowInvoice {
 

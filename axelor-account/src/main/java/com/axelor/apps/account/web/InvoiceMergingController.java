@@ -27,8 +27,8 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingService.InvoiceMerg
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.AuditableModel;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Wizard;

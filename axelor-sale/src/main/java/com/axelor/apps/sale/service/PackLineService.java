@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
-import com.axelor.exception.AxelorException;
 
 public interface PackLineService {
 

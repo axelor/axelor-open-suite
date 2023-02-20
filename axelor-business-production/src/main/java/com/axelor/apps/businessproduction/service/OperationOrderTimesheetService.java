@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface OperationOrderTimesheetService {

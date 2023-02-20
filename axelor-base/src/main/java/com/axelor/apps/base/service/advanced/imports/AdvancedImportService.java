@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.base.service.advanced.imports;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.axelor.utils.reader.DataReaderService;
 
 public interface AdvancedImportService {

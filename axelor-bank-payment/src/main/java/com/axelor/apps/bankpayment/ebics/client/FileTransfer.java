@@ -51,7 +51,7 @@ import com.axelor.apps.bankpayment.ebics.xml.ReceiptResponseElement;
 import com.axelor.apps.bankpayment.ebics.xml.TransferResponseElement;
 import com.axelor.apps.bankpayment.ebics.xml.UInitializationRequestElement;
 import com.axelor.apps.bankpayment.ebics.xml.UTransferRequestElement;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

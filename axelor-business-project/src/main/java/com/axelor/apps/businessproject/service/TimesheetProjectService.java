@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 
 public interface TimesheetProjectService {

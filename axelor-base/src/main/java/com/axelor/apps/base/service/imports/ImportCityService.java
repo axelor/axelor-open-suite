@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.base.service.imports;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.service.imports.ImportCityServiceImpl.GEONAMES_FILE;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
 import java.util.Map;

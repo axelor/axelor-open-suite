@@ -68,7 +68,7 @@
   </action-validate>
 
   <action-view name="action-view-account-fec-import-anomalies-panel-dashlet"
-    title="Anomalies" model="com.axelor.exception.db.TraceBack">
+    title="Anomalies" model="com.axelor.apps.base.db.TraceBack">
     <view type="grid" name="trace-back-lite-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.refId = :id AND self.ref = 'com.axelor.apps.account.db.FECImport'</domain>

@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.marketing.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.marketing.db.TargetList;
-import com.axelor.exception.AxelorException;
 import java.util.Set;
 
 public interface TargetListService {

@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;

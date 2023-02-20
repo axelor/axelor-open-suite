@@ -19,8 +19,8 @@ package com.axelor.apps.account.service.payment.paymentsession;
 
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface PaymentSessionValidateService {

@@ -18,8 +18,8 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

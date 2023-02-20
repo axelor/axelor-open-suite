@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.supplychain.db.MrpLine;
-import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import java.util.List;
 import java.util.Map;

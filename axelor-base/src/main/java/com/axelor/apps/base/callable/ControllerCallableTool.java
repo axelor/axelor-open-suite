@@ -18,7 +18,7 @@
 package com.axelor.apps.base.callable;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;

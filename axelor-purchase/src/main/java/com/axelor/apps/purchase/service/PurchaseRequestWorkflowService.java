@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseRequest;
-import com.axelor.exception.AxelorException;
 
 public interface PurchaseRequestWorkflowService {
   /**

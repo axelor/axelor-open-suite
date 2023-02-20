@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;

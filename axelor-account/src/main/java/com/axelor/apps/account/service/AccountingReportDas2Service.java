@@ -18,7 +18,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
 import java.util.List;

@@ -23,9 +23,9 @@ import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.service.AccountingReportPrintServiceImpl;
 import com.axelor.apps.account.service.custom.AccountingReportValueService;
 import com.axelor.apps.bankpayment.report.IReport;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 public class AccountingReportPrintServiceBankPaymentImpl extends AccountingReportPrintServiceImpl {

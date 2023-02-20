@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import java.io.IOException;
 import java.math.BigDecimal;

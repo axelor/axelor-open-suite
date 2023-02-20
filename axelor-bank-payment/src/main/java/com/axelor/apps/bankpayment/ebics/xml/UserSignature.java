@@ -41,7 +41,7 @@ import com.axelor.apps.account.ebics.schema.s001.UserSignatureDataSigBookType;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import java.util.Base64;
 import javax.xml.XMLConstants;

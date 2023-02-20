@@ -18,7 +18,7 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 public interface BankOrderMoveService {
 

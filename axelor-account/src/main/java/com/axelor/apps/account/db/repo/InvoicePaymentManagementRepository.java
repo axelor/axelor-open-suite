@@ -19,7 +19,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 

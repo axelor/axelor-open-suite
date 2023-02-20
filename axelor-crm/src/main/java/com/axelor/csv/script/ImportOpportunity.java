@@ -17,9 +17,9 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.OpportunityService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 

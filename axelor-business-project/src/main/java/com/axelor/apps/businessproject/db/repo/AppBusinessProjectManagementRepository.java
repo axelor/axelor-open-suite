@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.businessproject.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;

@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.production.service.configurator;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ConfiguratorProdProduct;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
 
 public interface ConfiguratorProdProductService {

@@ -18,8 +18,8 @@
 package com.axelor.apps.cash.management.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

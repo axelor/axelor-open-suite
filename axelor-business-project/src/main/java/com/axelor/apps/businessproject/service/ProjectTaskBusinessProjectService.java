@@ -19,13 +19,13 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.QueryBuilder;
 import com.google.inject.persist.Transactional;

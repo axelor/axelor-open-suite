@@ -19,7 +19,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;

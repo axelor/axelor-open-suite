@@ -17,6 +17,7 @@
  */
 package com.axelor.auth.service;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Permission;
@@ -26,7 +27,6 @@ import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;
 import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.auth.db.repo.RoleRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;

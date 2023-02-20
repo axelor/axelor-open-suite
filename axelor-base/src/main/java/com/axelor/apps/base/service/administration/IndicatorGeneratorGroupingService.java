@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.IndicatorGeneratorGrouping;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorGroupingRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.utils.file.CsvTool;

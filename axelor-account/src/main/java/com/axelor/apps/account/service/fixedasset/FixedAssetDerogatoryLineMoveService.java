@@ -20,8 +20,8 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 
 public interface FixedAssetDerogatoryLineMoveService {

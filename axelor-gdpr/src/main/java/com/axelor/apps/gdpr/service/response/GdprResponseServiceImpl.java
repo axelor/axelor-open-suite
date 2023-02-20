@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.gdpr.service.response;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.gdpr.db.GDPRRequest;
 import com.axelor.apps.gdpr.db.repo.GDPRRequestRepository;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;

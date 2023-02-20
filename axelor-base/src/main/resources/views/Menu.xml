@@ -727,7 +727,7 @@
     title="Tracebacks" action="admin.root.maintenance.trace.back"/>
 
   <action-view name="admin.root.maintenance.trace.back" title="Tracebacks"
-    model="com.axelor.exception.db.TraceBack">
+    model="com.axelor.apps.base.db.TraceBack">
     <view type="grid" name="trace-back-grid"/>
     <view type="form" name="trace-back-form"/>
   </action-view>

@@ -47,7 +47,7 @@ import com.axelor.apps.bankpayment.ebics.xml.INIRequestElement;
 import com.axelor.apps.bankpayment.ebics.xml.KeyManagementResponseElement;
 import com.axelor.apps.bankpayment.ebics.xml.SPRRequestElement;
 import com.axelor.apps.bankpayment.ebics.xml.SPRResponseElement;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

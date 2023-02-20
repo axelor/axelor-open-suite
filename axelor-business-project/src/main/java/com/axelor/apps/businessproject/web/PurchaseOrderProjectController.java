@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.ProjectAnalyticMoveLineService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

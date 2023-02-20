@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 

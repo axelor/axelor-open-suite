@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.purchase.script;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.util.Map;
 

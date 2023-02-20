@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.sale.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PostPersist;
 

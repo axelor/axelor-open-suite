@@ -37,7 +37,7 @@ package com.axelor.apps.bankpayment.ebics.xml;
  */
 
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 /**
  * The <code>HPBRequestElement</code> is the element to be sent when a HPB request is needed to

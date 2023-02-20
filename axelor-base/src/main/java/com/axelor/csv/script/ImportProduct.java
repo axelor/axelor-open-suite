@@ -17,11 +17,11 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;

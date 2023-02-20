@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.base.service.wizard;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
 import java.lang.invoke.MethodHandles;
 import java.util.List;

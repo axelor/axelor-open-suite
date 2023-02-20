@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.sale.service.config;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleConfig;
-import com.axelor.exception.AxelorException;
 
 public interface SaleConfigService {
 

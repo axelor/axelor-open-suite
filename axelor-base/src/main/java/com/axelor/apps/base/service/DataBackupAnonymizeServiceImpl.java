@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AnonymizerLine;
 import com.axelor.apps.base.db.DataBackup;
 import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.apps.base.db.repo.AnonymizerLineRepository;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.utils.ComputeNameTool;
 import java.util.ArrayList;

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.quality.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.ControlPoint;
 import com.axelor.apps.quality.db.ControlPointModel;
 import com.axelor.apps.quality.db.QualityControl;
@@ -28,7 +29,6 @@ import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.db.repo.QualityCorrectiveActionRepository;
 import com.axelor.apps.quality.db.repo.QualityMeasuringPointRepository;
 import com.axelor.apps.quality.service.app.AppQualityService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;

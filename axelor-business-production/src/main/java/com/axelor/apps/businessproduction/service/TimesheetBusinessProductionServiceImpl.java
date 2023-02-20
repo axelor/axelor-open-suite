@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
@@ -33,7 +34,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.db.repo.UserRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;

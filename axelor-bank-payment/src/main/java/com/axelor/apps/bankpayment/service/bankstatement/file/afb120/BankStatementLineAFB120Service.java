@@ -26,11 +26,11 @@ import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Rep
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.math.BigDecimal;

@@ -18,8 +18,8 @@
 package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.service.PurchaseProductService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

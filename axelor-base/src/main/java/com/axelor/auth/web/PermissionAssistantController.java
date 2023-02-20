@@ -17,11 +17,11 @@
  */
 package com.axelor.auth.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.PermissionAssistant;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;
 import com.axelor.auth.service.PermissionAssistantService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;

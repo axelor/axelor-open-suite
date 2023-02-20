@@ -19,7 +19,7 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

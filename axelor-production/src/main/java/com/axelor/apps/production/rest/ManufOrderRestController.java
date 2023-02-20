@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductGetRequest;
@@ -32,7 +33,6 @@ import com.axelor.apps.production.rest.dto.WastedProductPutRequest;
 import com.axelor.apps.production.rest.dto.WastedProductResponse;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;

@@ -18,7 +18,7 @@
 package com.axelor.apps.account.service.invoice.workflow.cancel;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 public class WorkflowCancelServiceImpl implements WorkflowCancelService {
   @Override

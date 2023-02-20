@@ -19,8 +19,8 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.SubrogationRelease;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.exception.AxelorException;
 import java.io.IOException;
 import java.util.List;
 

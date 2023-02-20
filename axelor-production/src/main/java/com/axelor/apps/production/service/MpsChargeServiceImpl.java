@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.MpsCharge;
 import com.axelor.apps.production.db.MpsWeeklySchedule;
 import com.axelor.apps.production.db.repo.MpsChargeRepository;
 import com.axelor.apps.production.db.repo.MpsWeeklyScheduleRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.base.service.user;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;

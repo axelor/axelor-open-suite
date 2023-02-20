@@ -17,20 +17,20 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ModelEmailLink;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.ModelEmailLinkRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.EmailAddress;

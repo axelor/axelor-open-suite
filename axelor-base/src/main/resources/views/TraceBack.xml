@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="trace-back-grid" title="TraceBack" model="com.axelor.exception.db.TraceBack"
+  <grid name="trace-back-grid" title="TraceBack" model="com.axelor.apps.base.db.TraceBack"
     orderBy="-id" canDelete="false" canNew="false" canSave="false" canEdit="false">
     <toolbar>
       <button name="cancel" title="" hidden="true" onClick=""/>
@@ -18,7 +18,7 @@
     <field name="exception"/>
   </grid>
 
-  <grid name="trace-back-lite-grid" title="TraceBack" model="com.axelor.exception.db.TraceBack"
+  <grid name="trace-back-lite-grid" title="TraceBack" model="com.axelor.apps.base.db.TraceBack"
     orderBy="-id" canDelete="false" canNew="false" canSave="false" canEdit="false">
     <toolbar>
       <button name="cancel" title="" hidden="true" onClick=""/>
@@ -29,7 +29,7 @@
     <field name="message" width="1000"/>
   </grid>
 
-  <form name="trace-back-form" title="TraceBack" model="com.axelor.exception.db.TraceBack"
+  <form name="trace-back-form" title="TraceBack" model="com.axelor.apps.base.db.TraceBack"
     onLoad="action-trace-back-load" canNew="false" canEdit="false" canSave="false" canCopy="false"
     canDelete="false">
     <toolbar>
@@ -82,11 +82,11 @@
   </action-attrs>
 
   <action-method name="action-traceback-show-reference">
-    <call class="com.axelor.exception.web.TraceBackController" method="showReference"/>
+    <call class="com.axelor.apps.base.web.TraceBackController" method="showReference"/>
   </action-method>
 
   <action-method name="action-trace-back-method-print-trace-back">
-    <call class="com.axelor.apps.base.web.TracebackController" method="printTraceback"/>
+    <call class="com.axelor.apps.base.web.TraceBackController" method="printTraceback"/>
   </action-method>
 
 </object-views>

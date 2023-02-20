@@ -18,13 +18,13 @@
 package com.axelor.apps.quality.service.print;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.quality.db.QualityControl;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.apps.quality.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.file.PdfTool;
 import com.google.inject.Inject;

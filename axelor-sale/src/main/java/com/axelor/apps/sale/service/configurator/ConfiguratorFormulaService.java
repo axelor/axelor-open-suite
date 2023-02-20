@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
-import com.axelor.exception.AxelorException;
 
 public interface ConfiguratorFormulaService {
 

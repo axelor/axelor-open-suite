@@ -20,7 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.service.ProductCategoryDomainCreatorService;
 import com.axelor.apps.base.service.ProductCategoryService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

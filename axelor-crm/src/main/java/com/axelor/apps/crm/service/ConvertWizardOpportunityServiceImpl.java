@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.Map;
 

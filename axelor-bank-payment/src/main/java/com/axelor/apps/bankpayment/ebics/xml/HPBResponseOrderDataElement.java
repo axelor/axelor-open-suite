@@ -40,7 +40,7 @@ import com.axelor.apps.account.ebics.schema.h003.HPBResponseOrderDataDocument;
 import com.axelor.apps.account.ebics.schema.h003.HPBResponseOrderDataType;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 /**
  * The <code>HPBResponseOrderDataElement</code> contains the public bank keys in encrypted mode. The

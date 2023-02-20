@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockHistoryLine;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
 import java.time.LocalDate;

@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
 
   <grid name="trace-back-account-consistency-grid" title="TraceBack"
-    model="com.axelor.exception.db.TraceBack" orderBy="-id" canDelete="false" canNew="false"
+    model="com.axelor.apps.base.db.TraceBack" orderBy="-id" canDelete="false" canNew="false"
     canSave="false" canEdit="false">
     <hilite color="danger" if="typeSelect == 0"/>
     <field name="id"/>

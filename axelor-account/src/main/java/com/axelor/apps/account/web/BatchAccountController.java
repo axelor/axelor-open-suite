@@ -20,7 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.batch.BatchControlMovesConsistency;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;

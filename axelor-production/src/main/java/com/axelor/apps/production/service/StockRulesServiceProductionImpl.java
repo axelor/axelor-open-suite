@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -27,7 +28,6 @@ import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.db.repo.TemplateRepository;

@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.gdpr.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Anonymizer;
 import com.axelor.apps.base.db.AnonymizerLine;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegister;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule;
@@ -32,8 +34,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.MailMessageService;

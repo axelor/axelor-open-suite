@@ -18,8 +18,8 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.AnalyticLevel;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import java.util.Map;
 
 public class ImportAnalyticLevel {

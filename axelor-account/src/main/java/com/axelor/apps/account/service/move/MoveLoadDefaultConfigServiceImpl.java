@@ -29,10 +29,10 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 public class MoveLoadDefaultConfigServiceImpl implements MoveLoadDefaultConfigService {

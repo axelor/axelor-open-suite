@@ -19,13 +19,13 @@ package com.axelor.apps.contract.web;
 
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.batch.BatchContractFactoryInvoicing;
 import com.axelor.apps.contract.batch.service.BatchContractService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;

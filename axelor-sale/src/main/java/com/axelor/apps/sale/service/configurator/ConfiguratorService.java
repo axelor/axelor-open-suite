@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
 import java.lang.reflect.InvocationTargetException;

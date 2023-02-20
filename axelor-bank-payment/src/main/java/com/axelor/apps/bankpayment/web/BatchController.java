@@ -18,10 +18,10 @@
 package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentService;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

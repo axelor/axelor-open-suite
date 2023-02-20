@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -29,7 +30,6 @@ import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 public class ProjectContractServiceImpl extends ContractServiceImpl {

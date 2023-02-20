@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.hr.service.lunch.voucher;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
-import com.axelor.exception.AxelorException;
 
 public interface LunchVoucherMgtLineService {
 

@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.projectdms.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.exception.AxelorException;
 import javax.mail.MessagingException;
 
 public interface DMSFileService {

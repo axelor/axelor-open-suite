@@ -17,14 +17,14 @@
  */
 package com.axelor.apps.maintenance.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.maintenance.db.EquipementMaintenance;
 import com.axelor.apps.maintenance.db.Imaintenance;
 import com.axelor.apps.maintenance.exception.MaintenanceExceptionMessage;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;

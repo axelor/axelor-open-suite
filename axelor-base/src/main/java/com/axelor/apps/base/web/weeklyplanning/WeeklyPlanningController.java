@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.base.web.weeklyplanning;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

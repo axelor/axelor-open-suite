@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.repo.BudgetRepository;
 import com.axelor.apps.account.service.BudgetService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

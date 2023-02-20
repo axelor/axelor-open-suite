@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.hr.service.lunch.voucher;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
-import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface LunchVoucherAdvanceService {

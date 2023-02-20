@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.production.service.productionorder;
 
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.rpc.Context;
 
 public interface ProductionOrderWizardService {

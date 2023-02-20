@@ -30,9 +30,9 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;

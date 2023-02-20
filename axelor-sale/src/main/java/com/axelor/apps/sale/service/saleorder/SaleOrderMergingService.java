@@ -19,12 +19,12 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxNumber;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import java.util.List;

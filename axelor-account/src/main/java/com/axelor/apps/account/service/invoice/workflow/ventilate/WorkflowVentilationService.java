@@ -18,7 +18,7 @@
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 public interface WorkflowVentilationService {
 

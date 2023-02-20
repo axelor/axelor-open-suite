@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import javax.persistence.PersistenceException;

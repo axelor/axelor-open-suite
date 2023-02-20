@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.production.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.exception.AxelorException;
 
 public interface OperationOrderRestService {
 

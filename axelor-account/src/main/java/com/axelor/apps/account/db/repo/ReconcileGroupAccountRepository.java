@@ -19,7 +19,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.service.ReconcileGroupSequenceService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import javax.persistence.PersistenceException;

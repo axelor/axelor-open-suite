@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.contract.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.ConsumptionLine;
 import com.axelor.apps.contract.service.ConsumptionLineService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

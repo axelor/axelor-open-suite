@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
@@ -24,7 +25,6 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 
 public class ProductionOrderSaleOrderServiceBusinessImpl

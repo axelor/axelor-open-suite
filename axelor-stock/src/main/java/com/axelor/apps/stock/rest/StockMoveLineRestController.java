@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.stock.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePutRequest;
 import com.axelor.apps.stock.rest.dto.StockMoveLineResponse;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;

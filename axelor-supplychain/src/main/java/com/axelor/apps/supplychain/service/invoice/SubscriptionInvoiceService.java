@@ -18,8 +18,8 @@
 package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface SubscriptionInvoiceService {

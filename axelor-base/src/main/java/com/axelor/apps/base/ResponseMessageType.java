@@ -15,17 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.exception;
+package com.axelor.apps.base;
 
-import com.axelor.auth.AuthModule;
-import com.axelor.db.JpaModule;
-import com.google.inject.AbstractModule;
+import com.axelor.rpc.ActionResponse;
+import java.util.function.BiConsumer;
 
-public class TestModule extends AbstractModule {
+public enum ResponseMessageType {
+  INFORMATION(ActionResponse::setInfo),
+  WARNING(ActionResponse::setAlert),
+  ERROR(ActionResponse::setError),
+  NOTIFICATION(ActionResponse::setNotify);
 
-  @Override
-  protected void configure() {
-    install(new JpaModule("testUnit", true, true));
-    install(new AuthModule());
+  private BiConsumer<ActionResponse, String> messageMethod;
+
+  ResponseMessageType(BiConsumer<ActionResponse, String> messageMethod) {
+    this.messageMethod = messageMethod;
+  }
+
+  public void setMessage(ActionResponse response, String message) {
+    messageMethod.accept(response, message);
   }
 }

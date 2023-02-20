@@ -18,10 +18,10 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.ObjectDataConfigExport;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 
 public class ObjectDataConfigExportManagementRepository extends ObjectDataConfigExportRepository {
 

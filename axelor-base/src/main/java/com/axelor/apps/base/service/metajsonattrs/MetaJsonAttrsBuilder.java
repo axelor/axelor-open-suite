@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service.metajsonattrs;
 
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -19,13 +19,13 @@ package com.axelor.apps.contract.batch;
 
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.batch.BatchStrategy;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.translation.ITranslation;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;

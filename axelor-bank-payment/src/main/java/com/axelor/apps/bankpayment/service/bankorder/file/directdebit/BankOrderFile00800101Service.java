@@ -50,10 +50,10 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.RemittanceInformatio
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.SequenceType1Code;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.ServiceLevel2Code;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.ServiceLevel3Choice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;

@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface PurchaseRequestService {

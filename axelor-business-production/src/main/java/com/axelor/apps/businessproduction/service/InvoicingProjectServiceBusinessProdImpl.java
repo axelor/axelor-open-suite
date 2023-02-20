@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -25,7 +26,6 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBusinessProject;
 import com.google.inject.persist.Transactional;

@@ -20,13 +20,13 @@ package com.axelor.apps.sale.service.configurator;
 import static com.axelor.utils.MetaJsonFieldType.MANY_TO_MANY;
 import static com.axelor.utils.MetaJsonFieldType.ONE_TO_MANY;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;

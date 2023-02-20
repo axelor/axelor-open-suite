@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.IndicatorGeneratorService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;

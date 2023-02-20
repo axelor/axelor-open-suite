@@ -18,8 +18,8 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 
 public interface InvoiceVisibilityService {
   boolean isPfpButtonVisible(Invoice invoice, User user, boolean litigation) throws AxelorException;
