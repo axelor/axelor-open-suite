@@ -348,8 +348,8 @@
 
   <form name="move-mass-entry-form" title="Mass entry move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
-    onSave="action-account-move-group-onsave">
+    onNew="action-account-move-onnew-mass-entry-group"
+    onLoad="action-account-move-group-mass-entry-onload" onSave="action-account-move-group-onsave">
 
     <panel name="mainPanel" colSpan="12">
       <panel name="moveDetailsPanel" colSpan="9">
@@ -379,7 +379,7 @@
 
     <panel>
       <panel-related name="moveLineListPanel" field="moveLineList" editable="true"
-        colSpan="12" height="6" canNew="true" canRemove="true"
+        colSpan="12" height="20" canNew="true" canRemove="true"
         grid-view="move-line-mass-entry-move-grid" form-view="move-line-move-form"
         onChange="action-move-group-move-line-list-onchange"/>
     </panel>
@@ -623,10 +623,51 @@
     <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
+  <action-group name="action-account-move-onnew-mass-entry-group">
+    <action name="default-move-record"/>
+    <action name="default-move-record-currency"/>
+    <action name="action-move-record-journal"/>
+    <action name="action-move-account-record-set-journal-technical-type-select"/>
+    <action name="action-move-method-get-period"/>
+    <action name="action-move-attrs-adjusting-move"/>
+    <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
+    <action name="action-attrs-move-hide-trading-name"/>
+    <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
+    <action name="action-method-initialize-permission-validation-move"/>
+    <action name="action-move-attrs-check-period-and-status"/>
+    <action name="action-move-attrs-set-functional-origin-select-domain"/>
+    <action name="action-move-attrs-set-functional-origin-select"/>
+    <action name="action-move-attrs-manage-bank-details"/>
+    <action name="action-move-method-check-period-permissions"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
+  </action-group>
+
   <action-group name="action-account-move-group-onload">
     <action name="action-move-attrs-set-company-currency-code-iso"/>
     <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
+    <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-account-move-method-compute-totals"/>
+    <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
+    <action name="action-attrs-move-hide-trading-name"/>
+    <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
+    <action name="action-move-account-record-set-journal-technical-type-select"/>
+    <action name="action-method-initialize-permission-validation-move"/>
+    <action name="action-move-attrs-check-related-cut-off-moves"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <action name="action-move-account-record-set-journal-technical-type-select"/>
+    <action name="action-move-attrs-check-period-and-status"/>
+    <action name="action-move-attrs-set-functional-origin-select-domain"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-move-attrs-hide-move-line-partner"/>
+    <action name="action-move-attrs-manage-bank-details"/>
+    <action name="action-method-hide-axis-analytic-account-move-line"/>
+  </action-group>
+
+  <action-group name="action-account-move-group-mass-entry-onload">
+    <action name="action-move-attrs-set-company-currency-code-iso"/>
+    <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-account-move-method-compute-totals"/>
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>

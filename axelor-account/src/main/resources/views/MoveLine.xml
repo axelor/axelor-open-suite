@@ -170,10 +170,10 @@
   </grid>
 
   <grid name="move-line-mass-entry-move-grid" model="com.axelor.apps.account.db.MoveLine"
-    title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-group-mass-entry">
-    <field name="counter" hidden="true"/>
+    title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-mass-entry-group">
+    <field name="counter" width="80" readonly="true"/>
     <field name="inputAction" required="true" selection="iaccount.move.input.action.select"
-      onChange="action-move-line-method-fill-fields"/>
+      onChange="action-move-line-record-increment-counter"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-account-move-line-partner-group"
       onChange="action-move-line-record-reset-partner-details" width="120" canEdit="false"
@@ -865,6 +865,27 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
+  <action-group name="action-account-move-line-onnew-mass-entry-group">
+    <action name="action-move-line-record-get-move-informations"/>
+    <action name="action-move-line-method-get-account-informations"/>
+    <action name="action-move-line-record-compute-counter"/>
+    <action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-method-hide-axis-analytic-account"/>
+    <action name="action-move-line-group-analytic-distribution-template-onchange"/>
+    <action name="action-move-line-record-get-first-move-line-informations"/>
+    <action name="action-move-line-method-get-creditdebit-balance"/>
+    <action name="action-move-line-attrs-hidden-reconcileLists"/>
+    <action name="action-move-line-record-set-partner"/>
+    <action name="action-move-line-method-set-is-other-currency"/>
+    <action name="action-move-line-method-set-currencyRate"/>
+    <action name="action-move-line-record-set-currencyAmount"/>
+    <action name="action-move-line-method-description-required"/>
+    <action name="action-move-line-record-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-move-line-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+  </action-group>
+
   <action-group name="action-group-account-moveline-debitcredit-onchange">
     <action name="action-move-line-debit-credit-validate"/>
     <action name="action-move-line-debit-credit-clean"/>
@@ -1338,5 +1359,17 @@
     <domain>self.moveLine.id = :_moveLineId</domain>
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
+
+  <action-record name="action-move-line-record-compute-counter"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="counter" expr="eval: __parent__?.moveLineList?.max { it.counter }?.counter"/>
+  </action-record>
+
+  <action-record name="action-move-line-record-increment-counter"
+    model="com.axelor.apps.account.db.MoveLine">
+    <field name="counter"
+      expr="eval: __parent__?.moveLineList?.max { it.counter }?.counter + 1" if="inputAction == 3"/>
+    <field name="inputAction" expr="1" if="inputAction == 3"/>
+  </action-record>
 
 </object-views>
