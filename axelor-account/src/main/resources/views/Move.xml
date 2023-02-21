@@ -638,6 +638,7 @@
     <action name="action-account-accounting-prompt"
       if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
     <action name="action-move-validate-check-pfp-validator-user"/>
+    <action name="action-move-method-apply-cut-off-dates-in-empty-lines"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
@@ -655,6 +656,7 @@
   </action-group>
 
   <action-group name="action-move-account-group-simulate">
+    <action name="action-move-method-apply-cut-off-dates-in-empty-lines"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-set-status-simulate"/>
   </action-group>
@@ -999,6 +1001,11 @@
 
   <action-method name="action-move-method-apply-cut-off-dates">
     <call class="com.axelor.apps.account.web.MoveController" method="applyCutOffDates"/>
+  </action-method>
+
+  <action-method name="action-move-method-apply-cut-off-dates-in-empty-lines">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="applyCutOffDatesInEmptyLines"/>
   </action-method>
 
   <action-method name="action-move-method-round-invoice-term-percentages">
