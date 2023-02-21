@@ -85,7 +85,7 @@ public class SupplychainBatchService extends AbstractBatchService {
     return Beans.get(BatchUpdateStockHistory.class).run(supplychainBatch);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public SupplychainBatch createNewSupplychainBatch(int action, Company company) {
     if (company != null) {
       SupplychainBatch supplychainBatch = new SupplychainBatch();
