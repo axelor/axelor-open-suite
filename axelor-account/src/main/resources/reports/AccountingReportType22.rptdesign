@@ -962,7 +962,7 @@ FROM
 	UNION ALL
 	SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
 			0 AS depreciation_a,
-            FixedAssetLine.depreciation + ABS(FixedAssetLine.impairment_value) AS depreciation_b,
+            FixedAssetLine.depreciation + FixedAssetLine.impairment_value AS depreciation_b,
 			0 AS depreciation_c,
 			0 AS impairment_value_a,
 			0 AS impairment_value_b,
