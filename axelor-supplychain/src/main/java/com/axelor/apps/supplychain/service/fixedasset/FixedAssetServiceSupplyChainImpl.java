@@ -54,7 +54,7 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
         accountConfigService);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public List<FixedAsset> createFixedAssets(Invoice invoice) throws AxelorException {
 

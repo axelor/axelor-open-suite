@@ -236,7 +236,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateToConfirmedStatus(SaleOrder saleOrder) throws AxelorException {
     if (saleOrder.getStatusSelect() == null
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_COMPLETED) {
