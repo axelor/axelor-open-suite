@@ -197,6 +197,7 @@ import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.matcher.Matchers;
+import org.hibernate.cfg.AvailableSettings;
 
 public class BaseModule extends AxelorModule {
 
@@ -270,7 +271,7 @@ public class BaseModule extends AxelorModule {
     bind(ProductCategoryService.class).to(ProductCategoryServiceImpl.class);
     bind(GlobalTrackingLogService.class).to(GlobalTrackingLogServiceImpl.class);
     if (AppSettings.get()
-        .get("hibernate.session_factory.interceptor", "")
+        .get(AvailableSettings.INTERCEPTOR, "")
         .equals(GlobalAuditInterceptor.class.getName())) {
       bind(ExportObserver.class);
     }

@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -95,7 +96,7 @@ public class TraceBackController {
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .addParam("TracebackId", traceBackId)
             .addParam("SDKVersion", VersionUtils.getVersion().toString())
-            .addParam("AOSVersion", AppSettings.get().get("application.version"))
+            .addParam("AOSVersion", AppSettings.get().get(AvailableAppSettings.APPLICATION_VERSION))
             .addParam("HeaderHeight", headerHeight)
             .addParam("FooterHeight", footerHeight)
             .generate()

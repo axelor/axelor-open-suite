@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -69,7 +70,7 @@ public class UserController {
   }
 
   public void applyApplicationMode(ActionRequest request, ActionResponse response) {
-    String applicationMode = AppSettings.get().get("application.mode", "prod");
+    String applicationMode = AppSettings.get().get(AvailableAppSettings.APPLICATION_MODE, "prod");
     if ("dev".equals(applicationMode)) {
       response.setAttr("testingPanel", "hidden", false);
     }
@@ -180,7 +181,7 @@ public class UserController {
   public void setDefaultUserMethod(ActionRequest request, ActionResponse response) {
     try {
       AppSettings appSettings = AppSettings.get();
-      response.setValue("language", appSettings.get("application.locale"));
+      response.setValue("language", appSettings.get(AvailableAppSettings.APPLICATION_LOCALE));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

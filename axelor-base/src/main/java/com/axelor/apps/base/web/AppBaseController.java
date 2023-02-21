@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -82,7 +83,7 @@ public class AppBaseController {
   }
 
   public void applyApplicationMode(ActionRequest request, ActionResponse response) {
-    String applicationMode = AppSettings.get().get("application.mode", "prod");
+    String applicationMode = AppSettings.get().get(AvailableAppSettings.APPLICATION_MODE, "prod");
     if ("dev".equals(applicationMode)) {
       response.setAttr("mainPanel", "hidden", false);
     }

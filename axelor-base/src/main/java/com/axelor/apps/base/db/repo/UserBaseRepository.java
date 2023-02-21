@@ -18,6 +18,7 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
@@ -34,11 +35,11 @@ public class UserBaseRepository extends UserRepository {
   public User save(User user) {
     try {
       AppSettings appSettings = AppSettings.get();
-      String defaultLanguage = appSettings.get("application.locale");
+      String defaultLanguage = appSettings.get(AvailableAppSettings.APPLICATION_LOCALE);
       if (user.getId() == null
           && !(defaultLanguage == null || "".equals(defaultLanguage))
           && (user.getLanguage() == null || "".contentEquals(user.getLanguage()))) {
-        user.setLanguage(appSettings.get("application.locale"));
+        user.setLanguage(appSettings.get(AvailableAppSettings.APPLICATION_LOCALE));
       }
       if (user.getPartner() != null
           && user.getPartner().getEmailAddress() != null

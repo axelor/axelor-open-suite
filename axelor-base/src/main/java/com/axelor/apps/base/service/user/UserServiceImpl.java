@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.user;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -74,7 +75,8 @@ public class UserServiceImpl implements UserService {
   private static final Pattern PATTERN =
       Pattern.compile(
           MoreObjects.firstNonNull(
-              AppSettings.get().get("user.password.pattern"), PATTERN_ACCES_RESTRICTION));
+              AppSettings.get().get(AvailableAppSettings.USER_PASSWORD_PATTERN),
+              PATTERN_ACCES_RESTRICTION));
 
   private static final String PATTERN_DESCRIPTION =
       PATTERN.pattern().equals(PATTERN_ACCES_RESTRICTION)

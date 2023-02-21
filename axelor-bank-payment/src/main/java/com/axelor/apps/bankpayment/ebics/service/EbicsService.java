@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.ebics.service;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsPartnerService;
@@ -80,9 +81,12 @@ public class EbicsService {
   public EbicsService() {
 
     AppSettings settings = AppSettings.get();
-    String name = settings.get("application.name") + " " + settings.get("application.version");
-    String language = settings.get("application.locale");
-    String instituteID = settings.get("application.author");
+    String name =
+        settings.get(AvailableAppSettings.APPLICATION_NAME)
+            + " "
+            + settings.get(AvailableAppSettings.APPLICATION_VERSION);
+    String language = settings.get(AvailableAppSettings.APPLICATION_LOCALE);
+    String instituteID = settings.get(AvailableAppSettings.APPLICATION_AUTHOR);
 
     defaultProduct = new EbicsProduct(name, language, instituteID);
   }

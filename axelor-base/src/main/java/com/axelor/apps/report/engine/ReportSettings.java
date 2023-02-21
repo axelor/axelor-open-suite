@@ -18,6 +18,7 @@
 package com.axelor.apps.report.engine;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerServiceImpl;
@@ -206,10 +207,10 @@ public class ReportSettings {
 
     AppSettings appSettings = AppSettings.get();
 
-    return this.addParam("DefaultDriver", appSettings.get("db.default.driver"))
-        .addParam("DBName", appSettings.get("db.default.url"))
-        .addParam("UserName", appSettings.get("db.default.user"))
-        .addParam("Password", appSettings.get("db.default.password"));
+    return this.addParam("DefaultDriver", appSettings.get(AvailableAppSettings.DB_DEFAULT_DRIVER))
+        .addParam("DBName", appSettings.get(AvailableAppSettings.DB_DEFAULT_URL))
+        .addParam("UserName", appSettings.get(AvailableAppSettings.DB_DEFAULT_USER))
+        .addParam("Password", appSettings.get(AvailableAppSettings.DB_DEFAULT_PASSWORD));
   }
 
   protected ReportSettings addAttachmentPath() {

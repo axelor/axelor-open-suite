@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Language;
@@ -72,7 +73,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       todayDateTime = DateTool.getTodayDateTime(company.getTimezone());
     }
 
-    String applicationMode = AppSettings.get().get("application.mode", "prod");
+    String applicationMode = AppSettings.get().get(AvailableAppSettings.APPLICATION_MODE, "prod");
 
     if ("dev".equals(applicationMode)) {
       User user = AuthUtils.getUser();
