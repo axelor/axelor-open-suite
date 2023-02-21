@@ -671,6 +671,14 @@
     <action name="action-move-method-set-moveline-dates"/>
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-move-method-check-dates"/>
+    <action name="action-move-method-check-period-permissions"/>
+    <action name="action-move-method-check-remove-lines"/>
+    <action name="action-move-method-update-partner" if="id != null"/>
+    <action name="action-move-method-update-invoice-terms"/>
+    <action name="action-move-method-round-invoice-term-percentages" if="id != null"/>
+    <action name="action-move-method-update-due-date"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-move-group-journal-on-change">
