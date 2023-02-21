@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.custom;
 
 import com.axelor.apps.account.db.Account;
@@ -39,6 +56,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class AccountingReportValueMoveLineServiceImpl extends AccountingReportValueAbstractService
     implements AccountingReportValueMoveLineService {
@@ -445,13 +463,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       Set<AnalyticAccount> analyticAccountSet,
       LocalDate startDate,
       LocalDate endDate) {
-    if (column.getComputePreviousYear()) {
-      startDate = startDate.minusYears(1);
-      endDate = endDate.minusYears(1);
-    } else if (this.isComputeOnOtherPeriod(groupColumn, column)) {
-      startDate = accountingReport.getOtherDateFrom();
-      endDate = accountingReport.getOtherDateTo();
-    }
+    Pair<LocalDate, LocalDate> dates =
+        this.getDates(accountingReport, groupColumn, column, startDate, endDate);
 
     return this.buildMoveLineQuery(
         accountingReport,
@@ -461,8 +474,23 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         groupColumn,
         column,
         line,
-        startDate,
-        endDate);
+        dates.getLeft(),
+        dates.getRight());
+  }
+
+  protected Pair<LocalDate, LocalDate> getDates(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      LocalDate startDate,
+      LocalDate endDate) {
+    if (column.getComputePreviousYear()) {
+      return Pair.of(startDate.minusYears(1), endDate.minusYears(1));
+    } else if (this.isComputeOnOtherPeriod(groupColumn, column)) {
+      return Pair.of(accountingReport.getOtherDateFrom(), accountingReport.getOtherDateTo());
+    } else {
+      return Pair.of(startDate, endDate);
+    }
   }
 
   protected boolean isComputeOnOtherPeriod(
@@ -530,13 +558,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     List<String> queryList =
         new ArrayList<>(Collections.singletonList("self.move.statusSelect IN :statusList"));
 
-    if (accountingReport.getDateFrom() != null) {
-      queryList.add("(self.date IS NULL OR self.date >= :dateFrom)");
-    }
-
-    if (accountingReport.getDateTo() != null) {
-      queryList.add("(self.date IS NULL OR self.date <= :dateTo)");
-    }
+    this.addDateQueries(queryList, accountingReport);
 
     if (accountingReport.getJournal() != null) {
       queryList.add("(self.move.journal IS NULL OR self.move.journal >= :journal)");
@@ -584,6 +606,16 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     }
 
     return String.join(" AND ", queryList);
+  }
+
+  protected void addDateQueries(List<String> queryList, AccountingReport accountingReport) {
+    if (accountingReport.getDateFrom() != null) {
+      queryList.add("(self.date IS NULL OR self.date >= :dateFrom)");
+    }
+
+    if (accountingReport.getDateTo() != null) {
+      queryList.add("(self.date IS NULL OR self.date <= :dateTo)");
+    }
   }
 
   protected BigDecimal getResultFromMoveLine(

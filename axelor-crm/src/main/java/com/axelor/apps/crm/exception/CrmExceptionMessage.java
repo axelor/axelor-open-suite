@@ -120,4 +120,7 @@ public final class CrmExceptionMessage {
   /** CRM Reporting */
   public static final String CRM_REPORTING_TYPE_SELECT_MISSING = /*$$(*/
       "Crm Reporting type is missing!" /*)*/;
+
+  public static final String CRM_SALES_PROPOSITION_STATUS_MISSING = /*$$(*/
+      "Please fill sales proposition status in App CRM configuration." /*)*/;
 }

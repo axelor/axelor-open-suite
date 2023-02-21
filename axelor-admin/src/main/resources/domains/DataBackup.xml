@@ -19,7 +19,7 @@
     <boolean name="checkAllErrorFirst" title="Check all error first"/>
     <boolean name="isProcessEmptyTable" title="Generate csv file for empty tables"/>
     <many-to-one name="anonymizer" ref="com.axelor.apps.base.db.Anonymizer"
-      title="Anonymizer"/>
+      title="Pseudonymizer"/>
     <extra-code>
       <![CDATA[
 				// DATABACKUP STATUS

@@ -183,6 +183,12 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
       this.saveSaleOrderPDFAsAttachment(saleOrder);
     }
+
+    Opportunity opportunity = saleOrder.getOpportunity();
+    if (opportunity != null) {
+      opportunity.setOpportunityStatus(appCrmService.getSalesPropositionStatus());
+    }
+
     saleOrderRepo.save(saleOrder);
   }
 

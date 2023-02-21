@@ -390,7 +390,7 @@
 
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
-        readonlyIf="!id" onClick="save,action-invoice-view-reports-wizard"/>
+        readonlyIf="!id" onClick="action-invoice-group-report-button"/>
     </toolbar>
 
     <menubar>
@@ -740,6 +740,11 @@ InvoiceSet.length > 0))"
           if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
           <field name="legalNotice" requiredIf="financialDiscount" widget="html" colSpan="12"
             showTitle="false"/>
+        </panel>
+        <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
+        <panel name="invoiceProductStatementPanel" title="Invoice Product Statement"
+          colSpan="12" showIf="company.accountConfig.displayItemsCategoriesOnPrinting">
+          <field name="invoiceProductStatement" readonly="true" showTitle="false" colSpan="12"/>
         </panel>
       </panel>
       <panel name="automaticMailPanel" title="Automatic mail"
@@ -2347,7 +2352,7 @@ InvoiceSet.length > 0))"
     <view type="grid" name="subrogation-release-grid"/>
     <view type="form" name="subrogation-release-form"/>
     <domain>:_invoice MEMBER OF self.invoiceSet</domain>
-    <context name="_invoice" expr="eval: __this__"/>
+    <context name="_invoice" expr="eval: __this__" if="id != null"/>
   </action-view>
 
   <action-view name="action-invoice-view-reports-wizard" title="Reports"
@@ -2635,8 +2640,8 @@ InvoiceSet.length > 0))"
     <field name="legalNotice" expr="eval: partner.financialDiscount.legalNotice"
       if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountDeadlineDate"
-      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__)"
-      if="dueDate"/>
+      expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__, financialDiscount)"
+      if="dueDate &amp;&amp; id != null &amp;&amp; financialDiscount != null"/>
     <field name="financialDiscount" expr="eval: null"
       if="!partner || !partner.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: 0"
@@ -2691,5 +2696,10 @@ InvoiceSet.length > 0))"
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="showSupplierInvoiceLines"/>
   </action-method>
+
+  <action-group name="action-invoice-group-report-button">
+    <action name="save"/>
+    <action name="action-invoice-view-reports-wizard"/>
+  </action-group>
 
 </object-views>

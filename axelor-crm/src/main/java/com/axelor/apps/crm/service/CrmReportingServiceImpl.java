@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -61,18 +61,17 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       boolean isPartner = crmReporting.getTypeSelect().equals(Partner.class.getName());
       boolean isOpportunity = false;
 
-      switch (className) {
-        case OPPORTUNITY:
+      if (className.equals(OPPORTUNITY) || className.equals(EVENT)) {
+
+        if (isPartner) {
+          model = PARTNER.toLowerCase();
+        } else {
+          model = LEAD.toLowerCase();
+        }
+
+        if (className.equals(OPPORTUNITY)) {
           isOpportunity = true;
-        case EVENT:
-          if (isPartner) {
-            model = PARTNER.toLowerCase();
-          } else {
-            model = LEAD.toLowerCase();
-          }
-          break;
-        default:
-          break;
+        }
       }
 
       this.prepareQuery(crmReporting, isPartner, model);

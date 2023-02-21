@@ -1438,7 +1438,7 @@ Duration.value as "durationValue", Duration.type_select as "durationType",
 SaleOrder.estimated_shipping_date as "estimatedShippingDate", SaleOrder.delivery_condition as "deliveryCondition",
 SaleOrder.hide_discount as "hideDiscount", SaleConfig.display_product_code_on_printing as "displayProductCodeOnPrinting", 
 SaleConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting",
-SaleConfig.display_estim_ship_date_on_printing as "displayEstimShipDateOnPrinting", 
+SaleConfig.display_estim_ship_date_on_printing as "displayEstimShipDateOnPrinting",
 SaleOrder.sale_order_type_select,SaleOrder.status_select, SaleOrder.specific_notes,
 SaleOrder.version_number as "versionNumber",
 PrintingSettings.logo_position_select as "logoPosition",
@@ -7072,7 +7072,7 @@ if(row._outer._outer["hideDiscount"] == 1){
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer["Column Binding_tot_all_sub"] == 0 || row._outer["in_ati"]</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row._outer["Column Binding_tot_all_sub"] == 0 || row._outer["in_ati"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -7123,7 +7123,7 @@ if(row._outer._outer["hideDiscount"] == 1){
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["sale_order_type_select"] == 2 || row["Column Binding_tot_all_sub"] == 0 || row["in_ati"]</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row["Column Binding_tot_all_sub"] == 0 || row["in_ati"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="boundDataColumns">
@@ -7545,7 +7545,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer["Column Binding_tot_all_sub"] == 0</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row._outer["Column Binding_tot_all_sub"] == 0</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -7593,7 +7593,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || row._outer["sale_order_type_select"] == 2 || (row["Column Binding_tot_all_sub"]== 0)</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]== 1 || (row["Column Binding_tot_all_sub"]== 0)</expression>
                             </structure>
                         </list-property>
                         <list-property name="boundDataColumns">

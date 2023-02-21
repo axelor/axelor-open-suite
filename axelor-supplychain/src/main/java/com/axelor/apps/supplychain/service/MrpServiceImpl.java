@@ -793,13 +793,13 @@ public class MrpServiceImpl implements MrpService {
 
     PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 
-    LocalDate maturityDate = purchaseOrderLine.getEstimatedDelivDate();
+    LocalDate maturityDate = purchaseOrderLine.getEstimatedReceiptDate();
 
     if (maturityDate == null) {
-      maturityDate = purchaseOrder.getDeliveryDate();
+      maturityDate = purchaseOrder.getEstimatedReceiptDate();
     }
     if (maturityDate == null) {
-      maturityDate = purchaseOrderLine.getDesiredDelivDate();
+      maturityDate = purchaseOrderLine.getDesiredReceiptDate();
     }
     maturityDate = this.computeMaturityDate(maturityDate, purchaseOrderMrpLineType);
 
@@ -963,7 +963,7 @@ public class MrpServiceImpl implements MrpService {
       maturityDate = saleOrder.getEstimatedShippingDate();
     }
     if (maturityDate == null) {
-      maturityDate = saleOrderLine.getDesiredDelivDate();
+      maturityDate = saleOrderLine.getDesiredDeliveryDate();
     }
     maturityDate = this.computeMaturityDate(maturityDate, saleOrderMrpLineType);
 

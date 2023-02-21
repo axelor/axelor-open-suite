@@ -54,6 +54,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
@@ -279,9 +280,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             counter,
             debit,
             credit,
-            StringTool.cutTooLongString(
-                moveLineToolService.determineDescriptionMoveLine(
-                    move.getJournal(), origin, description)),
+            Strings.isNullOrEmpty(move.getDescription())
+                ? StringTool.cutTooLongString(
+                    moveLineToolService.determineDescriptionMoveLine(
+                        move.getJournal(), origin, description))
+                : move.getDescription(),
             origin,
             currencyRate.setScale(5, RoundingMode.HALF_UP),
             amountInSpecificMoveCurrency,
@@ -380,8 +383,28 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    moveLines.addAll(
-        addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
+    if (partnerAccount != null && partnerAccount.getHasInvoiceTerm()) {
+      moveLines.addAll(
+          addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
+    } else {
+      MoveLine moveLine =
+          this.createMoveLine(
+              move,
+              partner,
+              partnerAccount,
+              invoice.getInTaxTotal(),
+              invoice.getCompanyInTaxTotal(),
+              null,
+              isDebitCustomer,
+              invoice.getInvoiceDate(),
+              invoice.getDueDate(),
+              invoice.getOriginDate(),
+              1,
+              origin,
+              null);
+      moveLines.add(moveLine);
+    }
+
     int moveLineId = moveLines.size() + 1;
 
     // Creation of product move lines for each invoice line

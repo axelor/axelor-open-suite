@@ -106,7 +106,7 @@ public class IntercoServiceImpl implements IntercoService {
             intercoCompany,
             purchaseOrder.getContactPartner(),
             purchaseOrder.getCurrency(),
-            purchaseOrder.getDeliveryDate(),
+            purchaseOrder.getEstimatedReceiptDate(),
             null,
             null,
             purchaseOrder.getPriceList(),
@@ -215,6 +215,8 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setAmountToBeSpreadOverTheTimetable(
         saleOrder.getAmountToBeSpreadOverTheTimetable());
 
+    purchaseOrder.setEstimatedReceiptDate(saleOrder.getEstimatedDeliveryDate());
+
     // create lines
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList != null) {
@@ -263,7 +265,8 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderLine.setDiscountAmount(saleOrderLine.getDiscountAmount());
 
     // delivery
-    purchaseOrderLine.setEstimatedDelivDate(saleOrderLine.getDesiredDelivDate());
+    purchaseOrderLine.setEstimatedReceiptDate(saleOrderLine.getEstimatedDeliveryDate());
+    purchaseOrderLine.setDesiredReceiptDate(saleOrderLine.getDesiredDeliveryDate());
 
     // compute price discounted
     BigDecimal priceDiscounted =
@@ -314,7 +317,8 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setPriceDiscounted(priceDiscounted);
 
     // delivery
-    saleOrderLine.setDesiredDelivDate(purchaseOrderLine.getDesiredDelivDate());
+    saleOrderLine.setDesiredDeliveryDate(purchaseOrderLine.getDesiredReceiptDate());
+    saleOrderLine.setEstimatedDeliveryDate(purchaseOrderLine.getEstimatedReceiptDate());
 
     // tax
     saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());

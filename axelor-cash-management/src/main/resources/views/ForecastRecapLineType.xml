@@ -35,6 +35,9 @@
         onChange="action-forecast-recap-line-type-record-set-status-select" widget="TagSelect"/>
       <field name="statusSelect" showIf="elementSelect == 8" widget="MultiSelect"
         selection="iaccount.move.status.select" selection-in="[1,2,3,5]"/>
+      <field name="journalSet" showIf="elementSelect == 1 || elementSelect == 8"
+        widget="TagSelect" domain="self.statusSelect = 1" canNew="false"/>
+      <field name="functionalOriginSelect" showIf="elementSelect == 8" widget="MultiSelect"/>
       <field name="payDaySelect" showIf="elementSelect == 7"/>
       <field name="estimatedDuration" showIf="elementSelect == 2 || elementSelect == 3"/>
     </panel>

@@ -46,7 +46,7 @@ import com.google.inject.persist.Transactional;
 public class SaleOrderWorkflowServiceBusinessProductionImpl
     extends SaleOrderWorkflowServiceProductionImpl {
 
-  private AnalyticMoveLineRepository analyticMoveLineRepository;
+  protected final AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
   public SaleOrderWorkflowServiceBusinessProductionImpl(

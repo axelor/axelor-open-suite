@@ -63,6 +63,8 @@
 
     <unique-constraint columns="code,company"/>
 
+    <finder-method name="findByAccountType" using="accountType" all="true"/>
+
     <extra-code><![CDATA[
 
       	// COMMON POSITION
@@ -100,7 +102,6 @@
       <field name="serviceType"/>
       <field name="vatSystemSelect"/>
     </track>
-    <finder-method name="findByAccountType" using="accountType" all="true"/>
 
   </entity>
 

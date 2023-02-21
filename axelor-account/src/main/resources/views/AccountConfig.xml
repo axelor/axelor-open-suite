@@ -264,6 +264,18 @@
             if="__config__.app.isApp('supplychain')"/>
           <field name="displayPartnerSirenOnInvoicePrinting" widget="boolean-switch"
             colSpan="12"/>
+          <field name="displayItemsCategoriesOnPrinting" widget="boolean-switch"/>
+          <panel name="statementsPanel" title="Invoice product statements" colSpan="12"
+            hideIf="!displayItemsCategoriesOnPrinting">
+            <field name="statementsForItemsCategoriesList" colSpan="12"
+              title="Statements present in the invoice according to product types."
+              help="You can define a statement for a specific combination of product types.">
+              <editor>
+                <field name="typeList" widget="MultiSelect" colSpan="4"/>
+                <field name="statement" colSpan="8" height="1"/>
+              </editor>
+            </field>
+          </panel>
           <field name="invoiceWatermark" widget="Image"/>
           <field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
           <field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>

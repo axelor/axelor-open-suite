@@ -43,13 +43,14 @@ public class InvoiceControlServiceImpl implements InvoiceControlService {
 
       StringBuilder query =
           new StringBuilder(
-              "self.supplierInvoiceNb = :supplierInvoiceNb AND self.partner = :partnerId AND YEAR(self.originDate) = :yearOriginDate AND self.statusSelect != :statusSelect");
+              "self.supplierInvoiceNb = :supplierInvoiceNb AND self.partner = :partnerId AND YEAR(self.originDate) = :yearOriginDate AND self.statusSelect != :statusSelect AND self.operationTypeSelect = :operationTypeSelect");
       Map<String, Object> params = new HashMap<String, Object>();
 
       params.put("supplierInvoiceNb", invoice.getSupplierInvoiceNb());
       params.put("partnerId", invoice.getPartner().getId());
       params.put("yearOriginDate", invoice.getOriginDate().getYear());
       params.put("statusSelect", InvoiceRepository.STATUS_CANCELED);
+      params.put("operationTypeSelect", invoice.getOperationTypeSelect());
 
       if (invoice.getId() != null) {
         query.append(" AND self.id != :invoiceId");
