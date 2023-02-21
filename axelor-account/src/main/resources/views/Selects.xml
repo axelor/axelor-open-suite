@@ -50,9 +50,10 @@
   </selection>
 
   <selection name='account.reconcile.group.status.select'>
-    <option value='1'>Temporary</option>
-    <option value='2'>Final</option>
-    <option value="3">Unlettered</option>
+    <option order="1" value="4">Proposal</option>
+    <option order="2" value='1'>Partial</option>
+    <option order="3" value='2'>Balanced</option>
+    <option order="4" value="3">Unlettered</option>
   </selection>
 
   <selection name='account.journal.status.select'>
@@ -225,6 +226,7 @@
     <option value="24">Exchanges</option>
     <option value="25">Moves consistency control</option>
     <option value="26">Accounting cut-off</option>
+    <option value="27">Auto move lettering</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -236,6 +238,22 @@
   <selection name="iaccount.account.batch.transfer.customer.reimbursement.type.select">
     <option value="1">Customer refund</option>
     <option value="2">Partner credit balance reimbursement</option>
+  </selection>
+
+  <selection name="iaccount.account.batch.auto.move.lettering.order.by.select">
+    <option value="0">Accounting date</option>
+    <option value="1">Origin</option>
+    <option value="2">Due date</option>
+    <option value="3">Payment mode</option>
+    <option value="4">Line label</option>
+  </selection>
+
+  <selection name="iaccount.account.batch.auto.move.lettering.reconcile.method.select">
+    <option value="0">Reconcile by amount</option>
+    <option value="1">Reconcile by origin</option>
+    <option value="2">Reconcile by balanced move</option>
+    <option value="3">Reconcile by balanced account</option>
+    <option value="4">Reconcile by external identifier</option>
   </selection>
 
   <selection name="ireimbursement.batch.type.select">

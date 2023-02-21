@@ -442,7 +442,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
         ReconcileGroup reconcileGroup = moveLine.getReconcileGroup();
         if (reconcileGroup != null
-            && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_FINAL) {
+            && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_BALANCED) {
           items[13] = reconcileGroup.getCode();
           items[14] =
               reconcileGroup

@@ -86,6 +86,44 @@
     <field name="taxLineBeforeReverse" hidden="true"/>
   </grid>
 
+  <grid name="move-line-account-batch-auto-move-lettering-grid" title="Move lines reconciled"
+    model="com.axelor.apps.account.db.MoveLine" orderBy="reconcileGroup.id" groupBy="reconcileGroup">
+    <toolbar>
+      <button name="validateAllReconcileGroupsBtn" title="Validate all reconcile groups"
+        onClick="action-method-batch-auto-lettering-validate-all-reconcile-groups"
+        showIf="batch != null"/>
+      <button name="validateSelectedReconcileGroupsBtn"
+        title="Validate selected reconcile groups"
+        onClick="action-method-batch-auto-lettering-validate-selected-reconcile-groups"/>
+      <button name="cancelSelectedReconcileGroupsBtn"
+        title="Cancel selected reconcile groups"
+        onClick="action-method-batch-auto-lettering-cancel-selected-reconcile-groups"/>
+      <button name="partiallyValidateSelectedReconcileGroupsBtn"
+        title="Temporarily reconcile selected lines"
+        onClick="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups"/>
+    </toolbar>
+    <field name="name"/>
+    <field name="date"/>
+    <field name="dueDate"/>
+    <field name="move.paymentMode"/>
+    <field name="origin"/>
+    <field name="partner"/>
+    <field name="account"/>
+    <field name="debit"/>
+    <field name="credit"/>
+    <field name="reconcileGroup"/>
+    <field name="reconcileGroup.statusSelect"/>
+    <field name="externalOrigin"/>
+    <field name="reconcileGroup.isProposal" hidden="true"/>
+    <button name="validateReconcileGroupBtn" title="Validate reconcile group"
+      onClick="action-method-batch-auto-lettering-validate-reconcile-group" icon="fa-check-circle"
+      readonlyIf="!$get('reconcileGroup.isProposal')" help="Validate reconcile group"/>
+    <button name="cancelReconcileGroupBtn" title="Cancel reconcile group"
+      readonlyIf="!$get('reconcileGroup.isProposal')" icon="fa-minus-circle"
+      onClick="action-method-batch-auto-lettering-cancel-reconcile-group"
+      help="Cancel reconcile group"/>
+  </grid>
+
   <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine"
     title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-group">
     <field name="counter" hidden="true" width="80"/>
@@ -1290,6 +1328,40 @@
 
   <action-method name="account-move-line-update-tax-equiv">
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxEquiv"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-validate-all-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="validateAllReconcileGroups"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-validate-selected-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="validateSelectedReconcileGroups"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-cancel-selected-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="cancelSelectedReconcileGroups"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="partialReconcileSelectedMoveLines"/>
+  </action-method>
+
+  <action-method name="action-method-batch-auto-lettering-validate-reconcile-group">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="validateReconcileGroup"/>
+  </action-method>
+
+  <action-method name="action-method-batch-auto-lettering-cancel-reconcile-group">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="cancelReconcileGroup"/>
   </action-method>
 
   <action-view name="action-move-line-view-open-move" title="Account move"

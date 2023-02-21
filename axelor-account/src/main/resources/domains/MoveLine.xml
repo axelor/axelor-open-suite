@@ -24,6 +24,7 @@
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>
     <string name="origin" title="moveLine.origin" initParam="true"/>
+    <string name="externalOrigin" title="External origin"/>
 
     <one-to-many name="debitReconcileList" orphanRemoval="false" ref="Reconcile"
       title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
@@ -176,6 +177,8 @@
     <string name="fiscalYearCode"/>
     <date name="accountingDate"/>
     <boolean name="adjustingMove"/>
+
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>
