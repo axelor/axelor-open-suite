@@ -853,6 +853,7 @@
   </action-group>
 
   <action-group name="action-account-moveline-onload-group">
+    <action name="action-attrs-move-line-set-required-partner"/>
     <action name="action-record-analytic-distribution-type-select"/>
     <action name="action-account-move-line-method-display-invoice-term-warning-message"/>
     <action name="action-move-line-attrs-readonly"/>
@@ -866,6 +867,7 @@
     <action name="action-account-move-line-method-display-invoice-term-warning-message"/>
     <action name="action-move-line-attrs-readonly"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
+    <action name="action-attrs-move-line-set-required-partner"/>
     <action name="action-move-line-method-description-required"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
     <action name="action-move-line-account-method-get-validate-period"/>

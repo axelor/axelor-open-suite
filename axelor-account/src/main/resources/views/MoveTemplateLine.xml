@@ -38,8 +38,7 @@
     onLoad="action-attrs-move-template-line-set-required-partner">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
-        onSelect="action-attrs-move-template-line-set-required-partner"/>
+      <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
       <field name="debit" readonlyIf="credit > 0"
         onChange="action-move-template-line-record-update-need-to-check-validity" required="true"/>
       <field name="credit" readonlyIf="debit > 0"
@@ -136,7 +135,8 @@
 
   <action-attrs name="action-attrs-move-template-line-set-required-partner">
     <attribute for="partner" name="required"
-      expr="eval: [1,2].contains(__parent__?.journal?.journalType?.technicalTypeSelect)"/>
+      expr="eval: [1,2].contains(__parent__?.journal?.journalType?.technicalTypeSelect)"
+      if="__parent__._model == 'com.axelor.apps.account.db.MoveTemplate'"/>
   </action-attrs>
 
 </object-views>

@@ -696,7 +696,6 @@
     <action name="action-move-record-set-payment-mode"/>
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
-    <action name="action-move-attrs-set-required-partner"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-move-attrs-hide-move-line-partner"/>
     <action name="action-move-method-fill-company-bank-details"/>
@@ -1168,11 +1167,5 @@
 
   <action-attrs name="action-move-attrs-hide-move-line-partner">
     <attribute for="moveLineList.partner" name="hidden" expr="partner != null"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-attrs-set-required-partner"
-    model="com.axelor.apps.account.db.Move">
-    <attribute name="required" for="partner"
-      expr="eval: [1,2].contains(journal?.journalType?.technicalTypeSelect)"/>
   </action-attrs>
 </object-views>
