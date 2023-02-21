@@ -185,7 +185,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             + "AND self.cutOffEndDate > :date)";
 
     if (company != null) {
-      queryStr += " AND self.company = :company";
+      queryStr += " AND self.move.company = :company";
     }
 
     Query<MoveLine> moveLineQuery =
