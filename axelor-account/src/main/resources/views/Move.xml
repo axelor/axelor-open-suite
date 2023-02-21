@@ -637,6 +637,7 @@
   <action-group name="action-account-move-group-accounting-click">
     <action name="action-account-accounting-prompt"
       if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
+    <action name="action-move-validate-check-pfp-validator-user"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
@@ -753,6 +754,12 @@
   <action-validate name="action-move-validate-check-term-in-payment">
     <error message="$paymentConditionChangeError"
       if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
+  </action-validate>
+
+  <action-validate name="action-move-validate-check-pfp-validator-user">
+    <alert message="At least one pfp validator is missing, do you wish to continue ?"
+      if="moveLineList.any{ml -> com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(ml.move?.invoice, ml)
+          &amp;&amp; ml.invoiceTermList.any{it -> !it.pfpValidatorUser}}"/>
   </action-validate>
 
   <!-- ACTION RECORD -->
