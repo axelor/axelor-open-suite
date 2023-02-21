@@ -544,7 +544,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateSupplierAdvancePayment(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException {
