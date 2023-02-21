@@ -148,17 +148,20 @@ public class AccountingBatchController {
       Batch batch =
           batchControllerCallableTool.runInSeparateThread(accountingBatchService, response);
       if (batch != null) {
-        ActionView.ActionViewBuilder actionViewBuilder =
-            ActionView.define(I18n.get("Move lines reconciled"));
+        if (accountingBatch.getActionSelect()
+            == AccountingBatchRepository.ACTION_AUTO_MOVE_LETTERING) {
+          ActionView.ActionViewBuilder actionViewBuilder =
+              ActionView.define(I18n.get("Move lines reconciled"));
 
-        actionViewBuilder.domain(":batch MEMBER OF self.batchSet");
-        actionViewBuilder.context("batch", batch);
+          actionViewBuilder.domain(":batch MEMBER OF self.batchSet");
+          actionViewBuilder.context("batch", batch);
 
-        actionViewBuilder.model(MoveLine.class.getName());
-        actionViewBuilder.add("grid", "move-line-account-batch-auto-move-lettering-grid");
-        actionViewBuilder.add("form", "move-line-form");
+          actionViewBuilder.model(MoveLine.class.getName());
+          actionViewBuilder.add("grid", "move-line-account-batch-auto-move-lettering-grid");
+          actionViewBuilder.add("form", "move-line-form");
 
-        response.setView(actionViewBuilder.map());
+          response.setView(actionViewBuilder.map());
+        }
         response.setFlash(batch.getComments());
       }
     } catch (Exception e) {
