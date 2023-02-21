@@ -3,6 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
 
+  <input file="studio_appGdpr.csv" separator=";" type="com.axelor.studio.db.AppGdpr"
+    search="self.app.code = :code">
+    <bind to="app" column="code" search="self.code = :code"/>
+  </input>
+
   <input file="gdpr-anonymizer.csv" separator=";" type="com.axelor.apps.base.db.Anonymizer"/>
 
   <input file="gdpr-anonymizer-lines.csv" separator=";"
@@ -10,17 +15,6 @@
     <bind column="metaModel" to="metaModel" search="self.name = :metaModel"/>
     <bind column="metaField" to="metaField"
       search="self.metaModel.name = :metaModel AND self.name = :metaField"/>
-  </input>
-
-  <input file="base_appGdpr.csv" separator=";" type="com.axelor.studio.db.App"
-    search="self.code = :code" call="com.axelor.csv.script.ImportApp:importApp">
-    <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
-      eval="dependsOn.split(',') as List"/>
-  </input>
-
-  <input file="base_appGdpr.csv" separator=";" type="com.axelor.studio.db.AppGdpr"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
   </input>
 
   <input file="gdpr-request-origin.csv" separator=";"
@@ -33,8 +27,8 @@
 
   <input file="gdpr-search-config.csv" separator=";"
     type="com.axelor.apps.gdpr.db.GDPRSearchConfig">
-    <bind column="metaModel" to="metaModel" search="self.name = :metaModel"/>
     <bind to="appGdpr" column="appGdpr" search="self.app.code = :appGdpr" update="true"/>
+    <bind column="metaModel" to="metaModel" search="self.name = :metaModel"/>
   </input>
 
   <input file="gdpr-search-config-line.csv" separator=";"
