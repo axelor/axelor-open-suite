@@ -326,7 +326,8 @@ public class MoveLineServiceImpl implements MoveLineService {
         BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
     BigDecimal daysTotal =
         BigDecimal.valueOf(
-            ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
+                ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()))
+            .add(BigDecimal.ONE);
     if (daysTotal.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
     }
