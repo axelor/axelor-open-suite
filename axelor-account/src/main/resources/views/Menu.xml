@@ -437,7 +437,7 @@
     title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
     <view type="grid" name="accounting-report-grid"/>
     <view type="form" name="accounting-report-form"/>
-    <view-param name="search-filters" value="accounting-report-filter"/>
+    <view-param name="search-filters" value="accounting-report-filters"/>
     <domain>self.reportType.typeSelect &lt; 1000 or self.reportType.typeSelect &gt;= 2000</domain>
   </action-view>
 
@@ -472,14 +472,28 @@
     <view type="form" name="interbank-code-form"/>
   </action-view>
 
-  <menuitem name="account-root-accounting-conf-report-types"
-    parent="account-conf-reporting" title="Report types"
-    action="account.conf.reporting.accounting.report.types"/>
+  <menuitem name="account-root-accounting-conf-report-types-report"
+    action="account.conf.reporting.accounting.report.types.report" parent="account-conf-reporting"
+    title="Report types"/>
 
-  <action-view name="account.conf.reporting.accounting.report.types"
+  <menuitem name="account-root-accounting-conf-report-types-export"
+    action="account.conf.reporting.accounting.report.types.export" parent="account-conf-reporting"
+    title="Export types"/>
+
+  <action-view name="account.conf.reporting.accounting.report.types.report"
     title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
     <view type="grid" name="accounting-report-type-grid"/>
     <view type="form" name="accounting-report-type-form"/>
+    <domain>self.reportExportTypeSelect = 1</domain>
+    <context name="_reportExportTypeSelect" expr="1"/>
+  </action-view>
+
+  <action-view name="account.conf.reporting.accounting.report.types.export"
+    title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
+    <view type="grid" name="accounting-report-type-grid"/>
+    <view type="form" name="accounting-report-type-form"/>
+    <domain>self.reportExportTypeSelect = 2</domain>
+    <context name="_reportExportTypeSelect" expr="2"/>
   </action-view>
 
   <menuitem name="account-root-budget-management" parent="account-root"

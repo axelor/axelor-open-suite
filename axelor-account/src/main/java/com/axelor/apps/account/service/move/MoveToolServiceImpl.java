@@ -595,8 +595,8 @@ public class MoveToolServiceImpl implements MoveToolService {
   public boolean isSimulatedMovePeriodClosed(Move move) {
     return move.getPeriod() != null
         && (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS
-            || (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
-                && move.getStatusSelect() == MoveRepository.STATUS_SIMULATED));
+            || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED)
+        && move.getStatusSelect() == MoveRepository.STATUS_SIMULATED;
   }
 
   public List<MoveLine> getToReconcileDebitMoveLines(Move move) {

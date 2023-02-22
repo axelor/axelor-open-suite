@@ -34,8 +34,6 @@ import com.google.inject.servlet.RequestScoped;
 @RequestScoped
 public class VentilateAdvancePaymentState extends VentilateState {
 
-  protected AccountingSituationService accountingSituationService;
-
   @Inject
   public VentilateAdvancePaymentState(
       SequenceService sequenceService,

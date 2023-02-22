@@ -58,8 +58,8 @@
           grid-view="accounting-report-config-line-grid"/>
       </panel>
     </panel>
-    <panel sidebar="true" itemSpan="12">
-      <field name="template" widget="binary-link"/>
+    <panel sidebar="true" itemSpan="12" showIf="reportExportTypeSelect">
+      <field name="template" widget="binary-link" hideIf="reportExportTypeSelect == 2"/>
       <field name="useLegacyCustomReports"
         help="To use legacy custom reports, you have to put the old rptdesign file as a template"/>
     </panel>
@@ -80,6 +80,8 @@
   <action-record name="action-accounting-report-type-record-default-on-new"
     model="com.axelor.apps.account.db.AccountingReportType">
     <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="reportExportTypeSelect" expr="eval: _reportExportTypeSelect"
+      if="_reportExportTypeSelect"/>
   </action-record>
 
   <action-method name="action-accounting-report-type-method-default-name">

@@ -14,9 +14,9 @@
     <bind to="createdOn"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(creationDate)"
       column="creationDate"/>
-    <bind to="deliveryDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDate(deliveryDate)"
-      column="deliveryDate"/>
+    <bind to="estimatedReceiptDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedReceiptDate)"
+      column="estimatedReceiptDate"/>
     <bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)"
       column="orderDate"/>
   </input>
@@ -53,9 +53,9 @@
     <bind to="createdOn"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(creationDate)"
       column="creationDate"/>
-    <bind to="deliveryDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDate(deliveryDate)"
-      column="deliveryDate"/>
+    <bind to="estimatedReceiptDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedReceiptDate)"
+      column="estimatedReceiptDate"/>
     <bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)"
       column="orderDate"/>
   </input>

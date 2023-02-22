@@ -109,6 +109,7 @@
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
 
     <date name="estimatedShippingDate" title="Estimated shipping date"/>
+    <date name="estimatedDeliveryDate" title="Estimated delivery date"/>
     <string name="deliveryCondition" title="Delivery conditions" large="true"
       multiline="true"/>
     <string name="specificPackage" title="Specific package" large="true" multiline="true"/>

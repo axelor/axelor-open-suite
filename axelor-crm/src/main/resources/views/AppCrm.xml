@@ -17,6 +17,7 @@
       <field name="agenciesManagement" widget="boolean-switch"/>
       <field name="closedWinOpportunityStatus"/>
       <field name="closedLostOpportunityStatus"/>
+      <field name="salesPropositionStatus"/>
       <field name="convertedLeadStatus" required="true"/>
       <field name="lostLeadStatus" required="true"/>
     </panel>

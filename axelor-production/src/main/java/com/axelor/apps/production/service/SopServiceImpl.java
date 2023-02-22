@@ -172,8 +172,8 @@ public class SopServiceImpl implements SopService {
       actualCurrency = currencyRepo.find(actualCurrency.getId());
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         LocalDate usedDate =
-            saleOrderLine.getDesiredDelivDate() != null
-                ? saleOrderLine.getDesiredDelivDate()
+            saleOrderLine.getDesiredDeliveryDate() != null
+                ? saleOrderLine.getDesiredDeliveryDate()
                 : saleOrderLine.getEstimatedShippingDate() != null
                     ? saleOrderLine.getEstimatedShippingDate()
                     : saleOrderLine.getSaleOrder().getEstimatedShippingDate() != null

@@ -37,6 +37,7 @@
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="estimatedShippingDate"/>
+    <field name="estimatedDeliveryDate"/>
     <field name="availableStatus" if="__config__.app.isApp('supplychain')">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
@@ -62,6 +63,7 @@
     <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="estimatedShippingDate"/>
+    <field name="estimatedDeliveryDate"/>
     <field name="saleOrder.confirmationDateTime"/>
   </grid>
 
@@ -327,10 +329,11 @@
           target="com.axelor.apps.base.db.Currency"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery">
-        <field name="desiredDelivDate" readonlyIf="$availabiltyRequest"/>
+        <field name="desiredDeliveryDate" readonlyIf="$availabiltyRequest"/>
         <field name="estimatedShippingDate"
           onChange="action-sale-order-line-group-deliv-estimated-date-onchange"
           readonlyIf="$availabiltyRequest"/>
+        <field name="estimatedDeliveryDate" readonlyIf="$availabiltyRequest"/>
         <field name="deliveredQty" readonly="true" hidden="true"/>
         <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
           widget="info-button"

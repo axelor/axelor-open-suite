@@ -30,7 +30,7 @@
     <many-to-one name="buyerUser" ref="com.axelor.auth.db.User" title="Buyer"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       required="true"/>
-    <date name="deliveryDate" title="Estimated delivery Date"/>
+    <date name="estimatedReceiptDate" title="Estimated receipt date"/>
     <date name="orderDate" title="Order Date"/>
     <one-to-many name="purchaseOrderLineList" mappedBy="purchaseOrder"
       ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Products list"/>
@@ -119,7 +119,7 @@
       <field name="purchaseOrderSeq"/>
       <field name="supplierPartner"/>
       <field name="statusSelect" on="UPDATE"/>
-      <field name="deliveryDate"/>
+      <field name="estimatedReceiptDate"/>
       <message if="true" on="CREATE">Purchase order created</message>
       <message if="statusSelect == 1" tag="important">Draft</message>
       <message if="statusSelect == 2" tag="important">Requested</message>
