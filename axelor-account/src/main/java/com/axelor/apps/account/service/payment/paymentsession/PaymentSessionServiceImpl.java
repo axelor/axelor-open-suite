@@ -421,19 +421,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   @Override
   public void removeNegativeLines(PaymentSession paymentSession) throws AxelorException {
-    Query<InvoiceTerm> invoiceTermQuery =
-        invoiceTermRepository
-            .all()
-            .filter(
-                "self.paymentSession = :paymentSession "
-                    + "AND self.isSelectedOnPaymentSession IS TRUE "
-                    + "AND self.partner IN ("
-                    + "SELECT it.partner FROM InvoiceTerm it "
-                    + "WHERE it.paymentSession = :paymentSession AND it.isSelectedOnPaymentSession IS TRUE "
-                    + "GROUP BY it.partner HAVING SUM(it.paymentAmount) < 0)")
-            .bind("paymentSession", paymentSession)
-            .order("id");
-
+    Query<InvoiceTerm> invoiceTermQuery = this.getNegativeBalanceInvoiceTermQuery(paymentSession);
     List<InvoiceTerm> invoiceTermList;
     int offset = 0;
 
@@ -446,6 +434,20 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     }
 
     paymentSession = paymentSessionRepository.find(paymentSession.getId());
-    computeTotalPaymentSession(paymentSession);
+    this.computeTotalPaymentSession(paymentSession);
+  }
+
+  protected Query<InvoiceTerm> getNegativeBalanceInvoiceTermQuery(PaymentSession paymentSession) {
+    return invoiceTermRepository
+        .all()
+        .filter(
+            "self.paymentSession = :paymentSession "
+                + "AND self.isSelectedOnPaymentSession IS TRUE "
+                + "AND self.partner IN ("
+                + "SELECT it.partner FROM InvoiceTerm it "
+                + "WHERE it.paymentSession = :paymentSession AND it.isSelectedOnPaymentSession IS TRUE "
+                + "GROUP BY it.partner HAVING SUM(it.paymentAmount) < 0)")
+        .bind("paymentSession", paymentSession)
+        .order("id");
   }
 }
