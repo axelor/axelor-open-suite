@@ -172,8 +172,8 @@
   <grid name="move-line-mass-entry-move-grid" model="com.axelor.apps.account.db.MoveLine"
     title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-mass-entry-group">
     <field name="counter" width="80" readonly="true"/>
-    <field name="inputAction" required="true" selection="iaccount.move.input.action.select"
-      onChange="action-move-line-record-increment-counter"/>
+    <field name="inputAction" selection="iaccount.move.input.action.select"
+      onChange="action-move-line-group-input-action-onchange" readonly="true" required="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-account-move-line-partner-group"
       onChange="action-move-line-record-reset-partner-details" width="120" canEdit="false"
@@ -869,6 +869,8 @@
     <action name="action-move-line-record-get-move-informations"/>
     <action name="action-move-line-method-get-account-informations"/>
     <action name="action-move-line-record-compute-counter"/>
+    <action name="action-move-line-attrs-set-readonly-first-move-line"
+      if="eval: __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
@@ -1360,9 +1362,18 @@
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
 
+  <action-group name="action-move-line-group-input-action-onchange">
+    <action name="action-move-line-record-increment-counter"/>
+    <action name="action-move-line-method-exception-counterpart"/>
+    <action name="action-move-line-method-automatic-taxline-generation"/>
+    <action name="action-move-line-method-generate-counterpart"/>
+  </action-group>
+
   <action-record name="action-move-line-record-compute-counter"
     model="com.axelor.apps.account.db.MoveLine">
     <field name="counter" expr="eval: __parent__?.moveLineList?.max { it.counter }?.counter"/>
+    <field name="counter" expr="1" if="eval: __parent__?.moveLineList.size() == 0"/>
+    <field name="inputAction" expr="1"/>
   </action-record>
 
   <action-record name="action-move-line-record-increment-counter"
@@ -1371,5 +1382,22 @@
       expr="eval: __parent__?.moveLineList?.max { it.counter }?.counter + 1" if="inputAction == 3"/>
     <field name="inputAction" expr="1" if="inputAction == 3"/>
   </action-record>
+
+  <action-method name="action-move-line-method-exception-counterpart">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="exceptionCounterpart"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-automatic-taxline-generation">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="autoTaxLineGenerate"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-generate-counterpart">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="generateCounterpart"/>
+  </action-method>
+
+  <action-attrs name="action-move-line-attrs-set-readonly-first-move-line">
+    <attribute for="inputAction" name="readonly" expr="false"/>
+    <attribute for="inputAction" name="focus" expr="true"/>
+  </action-attrs>
 
 </object-views>

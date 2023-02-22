@@ -823,4 +823,28 @@ public class MoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void exceptionCounterpart(ActionRequest request, ActionResponse response) {
+    try {
+      System.out.println("exceptionCounterpart");
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void autoTaxLineGenerate(ActionRequest request, ActionResponse response) {
+    try {
+      System.out.println("autoTaxLineGenerate");
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateCounterpart(ActionRequest request, ActionResponse response) {
+    try {
+      System.out.println("generateCounterpart");
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
