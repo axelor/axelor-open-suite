@@ -269,7 +269,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     if (invoice != null) {
 
       // do not create empty invoices
-      if (ObjectUtils.isEmpty(invoice.getInvoiceLineList())) {
+      if (invoice.getInvoiceLineList() == null || invoice.getInvoiceLineList().isEmpty()) {
         return null;
       }
       this.extendInternalReference(stockMove, invoice);
