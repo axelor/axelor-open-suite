@@ -114,6 +114,9 @@
         onClick="action-payment-session-method-select-all" colSpan="3" hidden="true"/>
       <button name="unselectAllBtn" title="Unselect all"
         onClick="action-payment-session-method-unselect-all" colSpan="3" hidden="true"/>
+      <button name="removeNegativeLinesBtn" title="Remove all negative lines"
+        onClick="save,action-payment-session-method-remove-negative-lines"
+        showIf="id &amp;&amp; statusSelect == 1"/>
       <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
         showIf="id" colSpan="12" canSearch="true" height="600" readonlyIf="statusSelect > 1"/>
       <panel-dashlet
@@ -342,6 +345,11 @@
   <action-method name="action-payment-session-method-process-invoice-terms">
     <call class="com.axelor.apps.account.web.PaymentSessionController"
       method="processInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-payment-session-method-remove-negative-lines">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="removeNegativeLines"/>
   </action-method>
 
   <action-group name="action-group-payment-session-search-eligible-terms">

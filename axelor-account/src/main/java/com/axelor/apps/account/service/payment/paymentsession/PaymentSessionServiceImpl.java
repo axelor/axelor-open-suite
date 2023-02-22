@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -416,5 +417,35 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       }
     }
     return isSignedNegative;
+  }
+
+  @Override
+  public void removeNegativeLines(PaymentSession paymentSession) throws AxelorException {
+    Query<InvoiceTerm> invoiceTermQuery =
+        invoiceTermRepository
+            .all()
+            .filter(
+                "self.paymentSession = :paymentSession "
+                    + "AND self.isSelectedOnPaymentSession IS TRUE "
+                    + "AND self.partner IN ("
+                    + "SELECT it.partner FROM InvoiceTerm it "
+                    + "WHERE it.paymentSession = :paymentSession AND it.isSelectedOnPaymentSession IS TRUE "
+                    + "GROUP BY it.partner HAVING SUM(it.paymentAmount) < 0)")
+            .bind("paymentSession", paymentSession)
+            .order("id");
+
+    List<InvoiceTerm> invoiceTermList;
+    int offset = 0;
+
+    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+        .isEmpty()) {
+      invoiceTermService.toggle(invoiceTermList, false);
+
+      offset += invoiceTermList.size();
+      JPA.clear();
+    }
+
+    paymentSession = paymentSessionRepository.find(paymentSession.getId());
+    computeTotalPaymentSession(paymentSession);
   }
 }

@@ -828,4 +828,9 @@
     <option value="2" order="2">Multiple accounts</option>
     <option value="3" order="1">Single account</option>
   </selection>
+
+  <selection name="payment.session.dashlet.status.select">
+    <option value="1" color="red">Error</option>
+    <option value="2" color="green">Ready</option>
+  </selection>
 </object-views>

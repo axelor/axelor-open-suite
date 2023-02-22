@@ -1328,6 +1328,9 @@ public final class AccountExceptionMessage {
   public static final String PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE = /*$$(*/
       "The balance of the retrieved invoice terms for the partner %s and this bank details is negative while it shouldn't be in regards to the payment mode used %s. This/These invoice(s) term(s) must be unselected to obtain a positive balance before proceeding to the validation of the session." /*)*/;
 
+  public static final String PAYMENT_SESSION_NEGATIVE_LINES_REMOVED = /*$$(*/
+      "All negative balance partners have been removed successfully." /*)*/;
+
   public static final String SPECIFIC_ANALYTIC_DISTRIBUTION_TEMPLATE = /*$$(*/
       "Specific Analytic Distribution Template" /*)*/;
 
