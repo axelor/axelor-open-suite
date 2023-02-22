@@ -1,0 +1,3 @@
+---
+title : "Move : Fix readonly form when we try to create a new move and the current user doesn't have active company"
+type: fix
