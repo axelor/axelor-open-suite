@@ -116,11 +116,13 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       throws AxelorException {
     Invoice invoice =
         super.createInvoiceFromPurchaseOrder(stockMove, purchaseOrder, qtyToInvoiceMap);
-    Project project = purchaseOrder.getProject();
-    if (project != null) {
-      invoice.setProject(project);
+    if (invoice != null) {
+      Project project = purchaseOrder.getProject();
+      if (project != null) {
+        invoice.setProject(project);
+      }
+      invoiceRepository.save(invoice);
     }
-    invoiceRepository.save(invoice);
     return invoice;
   }
 }
