@@ -557,9 +557,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     String description = this.getMoveLineDescription(paymentSession);
 
     this.generateCashMoveLine(
-        move, null, this.getCashAccount(paymentSession, true), paymentAmount, description, out);
+        move, null, this.getCashAccount(paymentSession, true), paymentAmount, description, !out);
     this.generateCashMoveLine(
-        move, null, this.getCashAccount(paymentSession, false), paymentAmount, description, !out);
+        move, null, this.getCashAccount(paymentSession, false), paymentAmount, description, out);
 
     moveRepo.save(move);
 
