@@ -353,27 +353,35 @@
 
     <panel name="mainPanel" colSpan="12">
       <panel name="moveDetailsPanel" colSpan="9">
-        <field name="reference" colSpan="12"/>
-        <panel name="moveContentPanel" colSpan="12">
+        <field name="reference" colSpan="8" hideIf="id == null"/>
+        <panel name="moveContentPanel" colSpan="8">
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             onChange="action-group-move-company-onchange" form-view="company-form"
-            grid-view="company-grid"/>
+            grid-view="company-grid" colSpan="6"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
-            onChange="action-move-group-journal-on-change" colSpan="3"/>
-          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
-            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
-          <panel name="datePanel" showFrame="false" colSpan="12" itemSpan="3">
-            <field name="date"
-              readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-              onChange="action-group-move-date-onchange"/>
-          </panel>
+            onChange="action-move-group-journal-on-change" colSpan="6"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
+            colSpan="6" onChange="action-move-record-set-currency-code" required="true"/>
+          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="6"
+            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
         </panel>
+      </panel>
+
+      <panel name="otherDetailsPanel" colSpan="3"
+        readonlyIf="statusSelect == 3 &amp;&amp; !validatePeriod">
+        <button name="controlMove" title="Control moves consistency" onClick="" colSpan="12"
+          showIf="true"/>
+        <button name="validate" title="Validate" readonlyIf="$validatePeriod" onClick=""
+          colSpan="12" hideIf="false"/>
+        <button name="showMoveLines" title="Show move lines" readonlyIf="$validatePeriod"
+          onClick="" colSpan="12" showIf="true"/>
+      </panel>
+
+      <panel name="HiddenPanel" hidden="true">
       </panel>
     </panel>
 
