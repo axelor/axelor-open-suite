@@ -63,4 +63,7 @@ public interface MoveLineService {
   void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 
   List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds);
+
+  void computeNewCurrencyRateOnMoveLineList(
+      Move move, BigDecimal newCurrencyRate, LocalDate dueDate) throws AxelorException;
 }

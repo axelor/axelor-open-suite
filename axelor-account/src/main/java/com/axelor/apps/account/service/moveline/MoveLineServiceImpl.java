@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
@@ -434,5 +435,41 @@ public class MoveLineServiceImpl implements MoveLineService {
       moveLineList.add(moveLine);
     }
     return moveLineList;
+  }
+
+  @Override
+  public void computeNewCurrencyRateOnMoveLineList(
+      Move move, BigDecimal newCurrencyRate, LocalDate dueDate) throws AxelorException {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      BigDecimal currencyAmount = BigDecimal.ZERO;
+
+      if (BigDecimal.ZERO.compareTo(moveLine.getDebit().add(moveLine.getCredit())) == 0) {
+        if (moveLine.getAccount() != null) {
+          switch (moveLine.getAccount().getCommonPosition()) {
+            case 1:
+              moveLine.setCredit(moveLine.getCurrencyAmount().multiply(newCurrencyRate));
+              break;
+            case 2:
+              moveLine.setDebit(moveLine.getCurrencyAmount().multiply(newCurrencyRate));
+              break;
+            default:
+              break;
+          }
+        }
+      }
+      currencyAmount = moveLine.getDebit().add(moveLine.getCredit());
+      currencyAmount =
+          currencyAmount.divide(
+              newCurrencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
+      moveLine.setCurrencyAmount(currencyAmount);
+      moveLine.setCurrencyRate(newCurrencyRate);
+
+      moveLine.clearInvoiceTermList();
+      Beans.get(MoveLineInvoiceTermService.class)
+          .generateDefaultInvoiceTerm(moveLine, dueDate, false);
+
+      Beans.get(MoveLineService.class).computeFinancialDiscount(moveLine);
+    }
   }
 }
