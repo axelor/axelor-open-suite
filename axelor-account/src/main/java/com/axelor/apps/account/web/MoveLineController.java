@@ -38,10 +38,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLineControlService;
-import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
-import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.move.*;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -68,7 +65,9 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -826,7 +825,18 @@ public class MoveLineController {
 
   public void exceptionCounterpart(ActionRequest request, ActionResponse response) {
     try {
-      System.out.println("exceptionCounterpart");
+      Context parentContext = request.getContext().getParent();
+      if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
+        Move move = parentContext.asType(Move.class);
+        Move lastMoveLineMove =
+            move.getMoveLineList().get(move.getMoveLineList().size() - 1).getMove();
+        move.setPaymentMode(
+            lastMoveLineMove != null && lastMoveLineMove.getPaymentMode() != null
+                ? lastMoveLineMove.getPaymentMode()
+                : null);
+
+        Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -835,6 +845,36 @@ public class MoveLineController {
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response) {
     try {
       System.out.println("autoTaxLineGenerate");
+
+      Context parentContext = request.getContext().getParent();
+      MoveLine counterPartMoveLine = request.getContext().asType(MoveLine.class);
+
+      if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
+        Move move = parentContext.asType(Move.class);
+        Move moveCounterPartToGenerate = move;
+        List<MoveLine> moveLineList = new ArrayList<>();
+        move.getMoveLineList()
+            .forEach(
+                moveLine -> {
+                  if (Objects.equals(moveLine.getCounter(), counterPartMoveLine.getCounter())) {
+                    moveLineList.add(moveLine);
+                  }
+                });
+        moveCounterPartToGenerate.setMoveLineList(moveLineList);
+
+        if (moveCounterPartToGenerate.getMoveLineList() != null
+            && !moveCounterPartToGenerate.getMoveLineList().isEmpty()
+            && (moveCounterPartToGenerate.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+                || moveCounterPartToGenerate
+                    .getStatusSelect()
+                    .equals(MoveRepository.STATUS_SIMULATED))) {
+          Beans.get(MoveLineTaxService.class).autoTaxLineGenerate(moveCounterPartToGenerate);
+
+          if (request.getContext().get("_source").equals("autoTaxLineGenerateBtn")) {
+            response.setReload(true);
+          }
+        }
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -845,6 +885,20 @@ public class MoveLineController {
       System.out.println("generateCounterpart");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
+    Context parentContext = request.getContext().getParent();
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+    if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
+      Move move = parentContext.asType(Move.class);
+      response.setAttr(
+          "pfpValidatorUser",
+          "domain",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUserDomain(moveLine.getPartner(), move.getCompany()));
     }
   }
 }
