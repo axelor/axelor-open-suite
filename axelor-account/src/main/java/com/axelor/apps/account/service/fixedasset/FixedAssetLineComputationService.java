@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,4 +66,14 @@ public interface FixedAssetLineComputationService {
    * @param prorata
    */
   void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata);
+
+  FixedAssetLine createFixedAssetLine(
+      FixedAsset fixedAsset,
+      LocalDate depreciationDate,
+      BigDecimal depreciation,
+      BigDecimal cumulativeDepreciation,
+      BigDecimal accountingValue,
+      BigDecimal depreciationBase,
+      int typeSelect,
+      int statusSelect);
 }

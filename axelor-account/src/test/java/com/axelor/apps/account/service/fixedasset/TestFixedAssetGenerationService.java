@@ -49,6 +49,8 @@ public class TestFixedAssetGenerationService {
   protected AccountConfigService accountConfigService;
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected FixedAssetDateService fixedAssetDateService;
+  protected FixedAssetLineGenerationService fixedAssetLineGenerationService;
+  protected FixedAssetImportService fixedAssetImportService;
   protected FixedAssetLineRepository fixedAssetLineRepo;
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
   protected SequenceService sequenceService;
@@ -78,6 +80,7 @@ public class TestFixedAssetGenerationService {
     fixedAssetFailOverControlService = mock(FixedAssetFailOverControlService.class);
     fixedAssetValidateService = mock(FixedAssetValidateService.class);
     fixedAssetDateService = mock(FixedAssetDateService.class);
+    fixedAssetImportService = mock(FixedAssetImportService.class);
 
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
@@ -85,13 +88,16 @@ public class TestFixedAssetGenerationService {
     when(fixedAssetLineServiceFactory.getFixedAssetComputationService(
             any(FixedAsset.class), any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);
+    fixedAssetLineGenerationService =
+        new FixedAssetLineGenerationServiceImpl(
+            fixedAssetLineService, fixedAssetDerogatoryLineService, fixedAssetLineServiceFactory);
     fixedAssetGenerationService =
         new FixedAssetGenerationServiceImpl(
+            fixedAssetLineGenerationService,
+            fixedAssetImportService,
             fixedAssetDateService,
             fixedAssetLineService,
-            fixedAssetDerogatoryLineService,
             fixedAssetRepo,
-            fixedAssetLineServiceFactory,
             sequenceService,
             accountConfigService,
             appBaseService,

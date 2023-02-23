@@ -17,6 +17,10 @@
  */
 package com.axelor.studio.service.builder;
 
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_ONE;
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_ONE;
+import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_ONE;
+
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -519,7 +523,8 @@ public class ChartBuilderService {
   @CallMethod
   public String getDefaultTarget(MetaJsonField metaJsonField) {
 
-    if (!"many-to-one,one-to-one,json-many-to-one".contains(metaJsonField.getType())) {
+    if (!Arrays.asList(MANY_TO_ONE, ONE_TO_ONE, JSON_MANY_TO_ONE)
+        .contains(metaJsonField.getType())) {
       return metaJsonField.getName();
     }
 

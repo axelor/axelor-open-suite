@@ -38,6 +38,7 @@ package com.axelor.apps.bankpayment.ebics.client;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.tool.xml.XPathParse;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -58,6 +59,13 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.utils.IgnoreAllErrorHandler;
 import org.apache.xpath.XPathAPI;
@@ -72,6 +80,11 @@ import org.w3c.dom.traversal.NodeIterator;
  * @author hachani
  */
 public class EbicsUtils {
+
+  private static final String HTTP_PROXY_HOST = "http.proxy.host";
+  private static final String HTTP_PROXY_PORT = "http.proxy.port";
+  private static final String HTTP_PROXY_AUTH_USER = "http.proxy.auth.user";
+  private static final String HTTP_PROXY_AUTH_PASSWORD = "http.proxy.auth.password";
 
   /**
    * Compresses an input of byte array
@@ -341,5 +354,38 @@ public class EbicsUtils {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, "http.code.error[Code:%s]", httpCode);
     }
+  }
+
+  /**
+   * * To set proxy settings in HttpClientBuilder
+   *
+   * @param client
+   */
+  public static void setProxy(HttpClientBuilder client) {
+
+    final AppSettings appSettings = AppSettings.get();
+    String proxyHost = appSettings.get(HTTP_PROXY_HOST);
+    int proxyPort = appSettings.getInt(HTTP_PROXY_PORT, 0);
+
+    if (StringUtils.isBlank(proxyHost) || proxyPort == 0) {
+      return;
+    }
+
+    HttpHost proxy = new HttpHost(proxyHost.trim(), proxyPort);
+    DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+    client.setRoutePlanner(routePlanner);
+
+    String userName = appSettings.get(HTTP_PROXY_AUTH_USER);
+    String userPassword = appSettings.get(HTTP_PROXY_AUTH_PASSWORD);
+
+    if (StringUtils.isBlank(userName) || StringUtils.isBlank(userPassword)) {
+      return;
+    }
+
+    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    credentialsProvider.setCredentials(
+        new AuthScope(proxy),
+        new UsernamePasswordCredentials(userName.trim(), userPassword.trim()));
+    client.setDefaultCredentialsProvider(credentialsProvider);
   }
 }

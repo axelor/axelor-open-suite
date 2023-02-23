@@ -282,6 +282,9 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_RECONCILIATION_CANNOT_DELETE_UNDER_CORRECTION = /*$$(*/
       "Selected bank reconciliation is under correction and can not be deleted" /*)*/;
 
+  public static final String BANK_RECONCILIATION_NO_DISTRIBUTION_GENERATED_MOVE_LINE = /*$$(*/
+      "The analytic distribution is required in the move lines for account %s but no template has been set in the account configuration" /*)*/;
+
   /** Bank Statement Query */
   public static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/
       "Sequence is already used" /*)*/;

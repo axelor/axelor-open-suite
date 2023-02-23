@@ -1,0 +1,3 @@
+---
+title : "StockMove : Fix invoice creation when we try to purchase a sale order"
+type: fix

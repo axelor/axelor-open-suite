@@ -69,6 +69,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     moveRemoveService.deleteMultiple(
         getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
 
+    period = periodRepo.find(period.getId());
     super.close(period);
   }
 
@@ -76,7 +77,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     return moveRepository
         .all()
         .filter(
-            "self.period.id = ?1 AND self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)))",
+            "self.period.id = ?1 AND self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)",
             period.getId(),
             status)
         .order("date")

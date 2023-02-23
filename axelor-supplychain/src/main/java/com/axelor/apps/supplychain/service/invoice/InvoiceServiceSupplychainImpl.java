@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -82,12 +83,13 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      InvoiceLineRepository invoiceLineRepo,
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      IntercoService intercoService,
       TaxService taxService,
+      InvoiceProductStatementService invoiceProductStatementService,
+      InvoiceLineRepository invoiceLineRepo,
+      IntercoService intercoService,
       StockMoveRepository stockMoveRepository) {
     super(
         validateFactory,
@@ -103,7 +105,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceTermService,
         invoiceTermPfpService,
         appBaseService,
-        taxService);
+        taxService,
+        invoiceProductStatementService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;

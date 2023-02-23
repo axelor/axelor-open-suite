@@ -17,6 +17,14 @@
  */
 package com.axelor.studio.service.builder;
 
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_ONE;
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_ONE_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_ONE;
+import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_ONE;
+
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -286,25 +294,25 @@ public class ActionScriptBuilderService {
             : inflector.dasherize(line.getMetaField().getRelationship());
 
     switch (type) {
-      case "many-to-one":
+      case MANY_TO_ONE:
         subCode = addM2OBinding(line, true, true);
         break;
-      case "many-to-many":
+      case MANY_TO_MANY:
         subCode = addM2MBinding(line);
         break;
-      case "one-to-many":
+      case ONE_TO_MANY:
         subCode = addO2MBinding(line, target);
         break;
-      case "one-to-one":
+      case ONE_TO_ONE:
         subCode = addM2OBinding(line, true, true);
         break;
-      case "json-many-to-one":
+      case JSON_MANY_TO_ONE:
         subCode = addJsonM2OBinding(line, true, true);
         break;
-      case "json-many-to-many":
+      case JSON_MANY_TO_MANY:
         subCode = addJsonM2MBinding(line);
         break;
-      case "json-one-to-many":
+      case JSON_ONE_TO_MANY:
         subCode = addJsonO2MBinding(line);
         break;
       default:

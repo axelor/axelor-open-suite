@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.crm.message;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
@@ -29,6 +31,8 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.SendMailQueueService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.google.inject.Inject;
@@ -59,38 +63,34 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
     // Get template depending on event type
     Template template = null;
+    Company company = event.getUser().getActiveCompany();
 
-    switch (event.getTypeSelect()) {
-      case EventRepository.TYPE_EVENT:
-        template =
-            Beans.get(CrmConfigService.class)
-                .getCrmConfig(event.getUser().getActiveCompany())
-                .getEventTemplate();
-        break;
+    if (company != null) {
+      switch (event.getTypeSelect()) {
+        case ICalendarEventRepository.TYPE_EVENT:
+          template = Beans.get(CrmConfigService.class).getCrmConfig(company).getEventTemplate();
+          break;
 
-      case EventRepository.TYPE_CALL:
-        template =
-            Beans.get(CrmConfigService.class)
-                .getCrmConfig(event.getUser().getActiveCompany())
-                .getCallTemplate();
-        break;
+        case ICalendarEventRepository.TYPE_CALL:
+          template = Beans.get(CrmConfigService.class).getCrmConfig(company).getCallTemplate();
+          break;
 
-      case EventRepository.TYPE_MEETING:
-        template =
-            Beans.get(CrmConfigService.class)
-                .getCrmConfig(event.getUser().getActiveCompany())
-                .getMeetingTemplate();
-        break;
+        case ICalendarEventRepository.TYPE_MEETING:
+          template = Beans.get(CrmConfigService.class).getCrmConfig(company).getMeetingTemplate();
+          break;
 
-      case EventRepository.TYPE_TASK:
-        template =
-            Beans.get(CrmConfigService.class)
-                .getCrmConfig(event.getUser().getActiveCompany())
-                .getTaskTemplate();
-        break;
+        case ICalendarEventRepository.TYPE_TASK:
+          template = Beans.get(CrmConfigService.class).getCrmConfig(company).getTaskTemplate();
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(CrmExceptionMessage.EVENT_USER_NO_ACTIVE_COMPANY),
+          event.getUser().getName());
     }
 
     Message message = Beans.get(TemplateMessageService.class).generateMessage(event, template);

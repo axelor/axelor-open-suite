@@ -322,10 +322,10 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         continue;
       }
 
-      LocalDate dateKey = purchaseOrderLine.getEstimatedDelivDate();
+      LocalDate dateKey = purchaseOrderLine.getEstimatedReceiptDate();
 
       if (dateKey == null) {
-        dateKey = purchaseOrderLine.getPurchaseOrder().getDeliveryDate();
+        dateKey = purchaseOrderLine.getPurchaseOrder().getEstimatedReceiptDate();
       }
 
       List<PurchaseOrderLine> purchaseOrderLineLists = purchaseOrderLinePerDateMap.get(dateKey);

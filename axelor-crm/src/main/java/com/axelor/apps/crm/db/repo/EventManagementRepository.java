@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.service.CalendarService;
-import com.axelor.apps.crm.service.EventService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -41,24 +40,14 @@ public class EventManagementRepository extends EventRepository {
 
   @Override
   public Event copy(Event entity, boolean deep) {
-    int eventType = entity.getTypeSelect();
-    switch (eventType) {
-      case 1: // call
-      case 2: // metting
-        break;
-      case 3: // task s
-        entity.setStatusSelect(EventRepository.STATUS_NOT_STARTED);
-        break;
-    }
-    return super.copy(entity, deep);
+    Event event = super.copy(entity, deep);
+    event.setStatusSelect(EventRepository.STATUS_PLANNED);
+    return event;
   }
 
   @Override
   public Event save(Event entity) {
-    if (entity.getTypeSelect() == EventRepository.TYPE_MEETING) {
-      super.save(entity);
-      Beans.get(EventService.class).manageFollowers(entity);
-    }
+
     User creator = entity.getCreatedBy();
     if (creator == null) {
       creator = AuthUtils.getUser();

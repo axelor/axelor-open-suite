@@ -23,10 +23,12 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.repo.StockLocationLineHistoryRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StockLocationLineService {
@@ -245,7 +247,9 @@ public interface StockLocationLineService {
    *
    * @param stockLocationLine stock location line to updated.
    * @param wap weighted average price which will update the field avgPrice.
+   * @deprecated Please use updateHistory this method will not create a proper history
    */
+  @Deprecated
   void updateWap(StockLocationLine stockLocationLine, BigDecimal wap);
 
   /**
@@ -254,7 +258,9 @@ public interface StockLocationLineService {
    * @param stockLocationLine stock location line to updated.
    * @param wap weighted average price which will update the field avgPrice.
    * @param stockMoveLine the move line responsible for the WAP change.
+   * @deprecated Please use updateHistory this method will not create a proper history
    */
+  @Deprecated
   void updateWap(StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine);
 
   /**
@@ -265,11 +271,29 @@ public interface StockLocationLineService {
    * @param wap
    * @param stockMoveLine
    * @param date
+   * @deprecated Please use updateHistory this method will not create a proper history
    */
+  @Deprecated
   void updateWap(
       StockLocationLine stockLocationLine,
       BigDecimal wap,
       StockMoveLine stockMoveLine,
       LocalDate date,
       String origin);
+
+  /**
+   * Update stock location line history
+   *
+   * @param stockLocationLine must not be null
+   * @param stockMoveLine can be null
+   * @param dateT can be null but will be by default todayDate
+   * @param origin can be null
+   * @param typeSelect must not be null (see {@link StockLocationLineHistoryRepository})
+   */
+  void updateHistory(
+      StockLocationLine stockLocationLine,
+      StockMoveLine stockMoveLine,
+      LocalDateTime dateT,
+      String origin,
+      String typeSelect);
 }

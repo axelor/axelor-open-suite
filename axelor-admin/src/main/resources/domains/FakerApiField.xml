@@ -7,8 +7,8 @@
 
   <entity name="FakerApiField">
     <string name="name" title="Name" namecolumn="true"/>
-    <string name="className" title="Class name"/>
-    <string name="methodName" title="Method name"/>
+    <string name="className" title="Class name" required="true"/>
+    <string name="methodName" title="Method name" required="true"/>
   </entity>
 
 </domain-models>
