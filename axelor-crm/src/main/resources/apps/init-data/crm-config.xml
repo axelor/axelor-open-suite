@@ -14,8 +14,20 @@
   <input file="crm_leadStatus.csv" separator=";" type="com.axelor.apps.crm.db.LeadStatus"
     search="self.importId = :importId"/>
 
+
   <input file="crm_opportunityStatus.csv" separator=";"
     type="com.axelor.apps.crm.db.OpportunityStatus" search="self.importId = :importId"/>
+
+
+  <input file="crm_partnerStatus.csv" separator=";"
+    type="com.axelor.apps.crm.db.PartnerStatus" search="self.importId = :importId"/>
+
+  <input file="base_appCrm_leadStatus.csv" separator=";" type="com.axelor.studio.db.AppCrm"
+    search="self.app.code = :code" update="true"/>
+
+
+  <input file="base_appCrm_partnerStatus.csv" separator=";"
+    type="com.axelor.apps.base.db.AppCrm" search="self.app.code = :code" update="true"/>
 
   <input file="studio_appCrm.csv" separator=";" type="com.axelor.studio.db.AppCrm"
     search="self.app.code = :code">

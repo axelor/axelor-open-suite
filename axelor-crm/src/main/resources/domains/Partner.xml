@@ -28,6 +28,10 @@
       title="partner.manager" massUpdate="true" index="false"/>
     <many-to-one name="agency" ref="com.axelor.apps.crm.db.Agency" title="Agency"/>
 
+    <!-- <many-to-one ref="com.axelor.apps.crm.db.PartnerStatus" name="partnerStatus" title="Partner
+      status"/> <many-to-one name="lostReason" ref="LostReason" title="Lost reason"/> <string name="lostReasonStr"
+      title="Lost reason" large="true"/> -->
+
     <extra-code>
     <![CDATA[
 		//partner size select

@@ -208,6 +208,15 @@
     <view type="form" name="opportunity-status-form"/>
   </action-view>
 
+  <menuitem name="crm-conf-partner-status" parent="crm-conf" title="Partner status"
+    action="crm.conf.partner.status" order="16"/>
+
+  <action-view name="crm.conf.opportunity.status" title="Opportunity status"
+    model="com.axelor.apps.crm.db.PartnerStatus">
+    <view type="grid" name="partner-status-grid"/>
+    <view type="form" name="partner-status-form"/>
+  </action-view>
+
   <menuitem name="admin-root-batch-crm" parent="admin-root-batch" title="CRM batches"
     action="admin.root.batch.crm" if="__config__.app.isApp('crm')" order="800"/>
 
