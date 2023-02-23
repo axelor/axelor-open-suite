@@ -573,6 +573,7 @@
 "The partner's language is different from the current language. Description and product name are in :","La langue du tiers est différente de la langue actuelle. La description et le nom du produit est en :",,
 "The sale order was canceled","Le devis ou la commande client a été annulé(e)",,
 "The script must be written in","Le script doit être écrit en",,
+"The selected price list is no longer valid, Do you still want to continue?",,,
 "The syntax of the script is correct.","La syntaxe du script est correcte.",,
 "The tax number must be the same for all sale orders","Le numéro de TVA doit être la même pour toutes les commandes clients",,
 "The total amount of quotation is zero. Do you want to proceed ?","Le total de la commande vaut zéro. Souhaitez-vous confirmer la commande ?",,
