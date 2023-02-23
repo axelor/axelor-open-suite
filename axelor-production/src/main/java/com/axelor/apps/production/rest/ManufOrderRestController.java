@@ -82,6 +82,9 @@ public class ManufOrderRestController {
         new ManufOrderProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
   }
 
+  @Operation(
+      summary = "Fetch produced product",
+      tags = {"Manuf Order"})
   @Path("/produced-products/fetch")
   @POST
   @HttpExceptionHandler
@@ -102,6 +105,9 @@ public class ManufOrderRestController {
         new ManufOrderProductListResponse(producedProductList, requestBody.fetchManufOrder()));
   }
 
+  @Operation(
+      summary = "Update product quantity",
+      tags = {"Manuf Order"})
   @Path("/update-product-qty")
   @PUT
   @HttpExceptionHandler
@@ -121,6 +127,9 @@ public class ManufOrderRestController {
         new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 
+  @Operation(
+      summary = "Update manufacturing order status",
+      tags = {"Manuf Order"})
   @Path("/{manufOrderId}")
   @PUT
   @HttpExceptionHandler
@@ -142,6 +151,9 @@ public class ManufOrderRestController {
         new ManufOrderResponse(manufOrder));
   }
 
+  @Operation(
+      summary = "Add wasted product",
+      tags = {"Manuf Order"})
   @Path("/{manufOrderId}/waste-product/")
   @POST
   @HttpExceptionHandler
@@ -165,6 +177,9 @@ public class ManufOrderRestController {
         new WastedProductResponse(prodProduct));
   }
 
+  @Operation(
+      summary = "Update wasted product quantity",
+      tags = {"Manuf Order"})
   @Path("/waste-product/{prodProductId}")
   @PUT
   @HttpExceptionHandler
@@ -185,6 +200,9 @@ public class ManufOrderRestController {
         new WastedProductResponse(prodProduct));
   }
 
+  @Operation(
+      summary = "Add product",
+      tags = {"Manuf Order"})
   @Path("/{manufOrderId}/add-product/")
   @POST
   @HttpExceptionHandler

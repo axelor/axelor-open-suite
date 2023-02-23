@@ -27,6 +27,7 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
+import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -40,6 +41,9 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class OperationOrderRestController {
 
+  @Operation(
+      summary = "Update operation order status",
+      tags = {"Operation order"})
   @Path("/{operationOrderId}")
   @PUT
   @HttpExceptionHandler
