@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.Batch;
@@ -51,6 +52,8 @@ public interface MoveLineService {
 
   BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
 
+  MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
+
   public boolean checkManageAnalytic(Move move) throws AxelorException;
 
   @CallMethod
@@ -71,4 +74,6 @@ public interface MoveLineService {
 
   Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists);
+
+  void computeCutOffProrataAmount(AccountingBatch accountingBatch) throws AxelorException;
 }

@@ -180,6 +180,12 @@
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
+    <!-- CUTOFF -->
+    <decimal name="cutOffProrataAmount" title="Prorata amount" scale="2" precision="20"/>
+    <decimal name="amountBeforeCutOffProrata" title="Original amount" scale="2"
+      precision="20"/>
+    <string name="durationCutOffProrata" title="Prorata duration"/>
+
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>
     <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>
