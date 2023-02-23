@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.helpdesk.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.TimerHistory;
 import com.axelor.apps.base.db.repo.TimerHistoryRepository;
@@ -27,7 +28,6 @@ import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;

@@ -156,6 +156,8 @@ import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.base.service.exception.HandleExceptionResponse;
+import com.axelor.apps.base.service.exception.HandleExceptionResponseImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorServiceImpl;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
@@ -195,11 +197,17 @@ import com.axelor.report.ReportGenerator;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.inject.matcher.Matchers;
 
 public class BaseModule extends AxelorModule {
 
   @Override
   protected void configure() {
+    bindInterceptor(
+        Matchers.any(),
+        Matchers.annotatedWith(HandleExceptionResponse.class),
+        new HandleExceptionResponseImpl());
+
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
     bind(UserService.class).to(UserServiceImpl.class);

@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;

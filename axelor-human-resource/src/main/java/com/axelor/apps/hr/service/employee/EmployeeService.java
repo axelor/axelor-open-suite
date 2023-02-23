@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.hr.service.employee;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;

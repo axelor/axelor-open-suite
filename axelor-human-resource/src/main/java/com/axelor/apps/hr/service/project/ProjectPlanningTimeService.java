@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.hr.service.project;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;

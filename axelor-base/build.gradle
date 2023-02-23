@@ -15,8 +15,6 @@ axelor {
 }
 
 dependencies {
-	api project(":modules:axelor-exception")
-
 	implementation libs.commons_lang3
 	implementation libs.commons_math3
 	implementation libs.commons_validator
@@ -43,7 +41,6 @@ dependencies {
 
 	api libs.tika
 
-	api project(":modules:axelor-exception")
 	if (file("../../axelor-studio").exists()) {
 		api project(":modules:axelor-studio")
 	}

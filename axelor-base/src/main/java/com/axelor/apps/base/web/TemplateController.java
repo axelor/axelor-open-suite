@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateService;

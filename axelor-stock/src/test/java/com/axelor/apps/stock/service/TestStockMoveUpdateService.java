@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.exception.AxelorException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

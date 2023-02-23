@@ -18,7 +18,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Notification;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.util.List;
 
 public interface NotificationService {

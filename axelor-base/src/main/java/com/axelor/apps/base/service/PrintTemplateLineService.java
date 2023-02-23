@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PrintTemplateLine;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaModel;
 import java.io.IOException;
 

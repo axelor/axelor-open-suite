@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.projectdms.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.projectdms.exception.ProjectDmsExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.EmailAddress;

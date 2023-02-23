@@ -168,7 +168,7 @@
   </action-attrs>
 
   <action-view name="action-batch-show-trace-back" title="Anomalies"
-    model="com.axelor.exception.db.TraceBack">
+    model="com.axelor.apps.base.db.TraceBack">
     <view type="grid" name="trace-back-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.batchId = :id</domain>

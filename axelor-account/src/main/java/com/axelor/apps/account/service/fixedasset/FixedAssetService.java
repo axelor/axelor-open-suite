@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

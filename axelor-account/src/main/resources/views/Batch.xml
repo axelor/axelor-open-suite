@@ -53,7 +53,7 @@
   </action-group>
 
   <action-view name="action-batch-show-trace-back-account-consistency" title="Anomalies"
-    model="com.axelor.exception.db.TraceBack">
+    model="com.axelor.apps.base.db.TraceBack">
     <view type="grid" name="trace-back-account-consistency-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.batchId = :id</domain>

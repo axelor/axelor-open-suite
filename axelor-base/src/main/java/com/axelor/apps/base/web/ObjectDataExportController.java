@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ObjectDataConfig;
 import com.axelor.apps.base.db.ObjectDataConfigExport;
 import com.axelor.apps.base.db.repo.ObjectDataConfigRepository;
 import com.axelor.apps.base.service.ObjectDataAnonymizeService;
 import com.axelor.apps.base.service.ObjectDataExportService;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;

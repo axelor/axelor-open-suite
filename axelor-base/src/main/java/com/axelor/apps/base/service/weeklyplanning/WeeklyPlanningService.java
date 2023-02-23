@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.base.service.weeklyplanning;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;

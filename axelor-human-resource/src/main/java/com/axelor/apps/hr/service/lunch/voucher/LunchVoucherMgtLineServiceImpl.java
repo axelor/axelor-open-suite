@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.hr.service.lunch.voucher;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
@@ -27,8 +29,6 @@ import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.service.EmployeeComputeDaysLeaveLunchVoucherService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.RoundingMode;

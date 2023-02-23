@@ -19,7 +19,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 public interface AnalyticAxisControlService {
 

@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.base.service.filesourceconnector.models;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.FileSourceConnector;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;

@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AnonymizerLine;
 import com.axelor.apps.base.db.DataBackup;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface DataBackupAnonymizeService {

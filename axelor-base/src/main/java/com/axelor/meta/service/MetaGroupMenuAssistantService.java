@@ -18,12 +18,12 @@
 package com.axelor.meta.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.RoleRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;

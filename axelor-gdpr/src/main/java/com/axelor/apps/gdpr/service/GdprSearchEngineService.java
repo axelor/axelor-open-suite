@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.gdpr.service;
 
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.util.List;
 import java.util.Map;
 

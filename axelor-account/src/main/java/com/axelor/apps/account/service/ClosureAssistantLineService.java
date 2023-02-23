@@ -19,7 +19,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.ClosureAssistant;
 import com.axelor.apps.account.db.ClosureAssistantLine;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.util.List;
 import java.util.Map;
 

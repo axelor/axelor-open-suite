@@ -18,8 +18,8 @@
 package com.axelor.apps.account.service.invoice.print;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

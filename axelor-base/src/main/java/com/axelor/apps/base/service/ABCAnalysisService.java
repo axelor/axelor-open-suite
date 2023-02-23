@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface ABCAnalysisService {

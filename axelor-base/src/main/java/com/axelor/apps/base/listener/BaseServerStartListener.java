@@ -18,10 +18,10 @@
 package com.axelor.apps.base.listener;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.event.Observes;
 import com.axelor.events.StartupEvent;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.App;
 import com.axelor.studio.db.repo.AppRepository;
