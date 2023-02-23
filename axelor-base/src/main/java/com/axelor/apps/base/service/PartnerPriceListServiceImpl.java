@@ -108,7 +108,8 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
         priceListSet.stream()
             .filter(
                 priceList ->
-                    (priceList.getApplicationBeginDate() == null
+                    priceList.getIsActive()
+                        && (priceList.getApplicationBeginDate() == null
                             || priceList
                                     .getApplicationBeginDate()
                                     .compareTo(
