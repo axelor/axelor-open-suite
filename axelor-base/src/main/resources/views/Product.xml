@@ -341,7 +341,8 @@
           <field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
           <button name="showAllStockMoveLineBtn" title="Show all stock moves" colSpan="6"
             onClick="action-product-view-stock-move-line"/>
-          <field name="avgPrice" hideIf="!stockManaged"/>
+          <field name="avgPrice" hideIf="!stockManaged"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'avgPrice'})"/>
           <spacer name="avgPriceSpacer"/>
           <panel-dashlet name="productStockPanel" colSpan="12"
             action="action-product-view-stock" showIf="id &amp;&amp; stockManaged"/>
