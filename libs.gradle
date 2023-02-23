@@ -90,4 +90,4 @@ libs.camunda_engine_plugin_spin = 'org.camunda.bpm:camunda-engine-plugin-spin:7.
 
 libs.camunda_spin_dataformat_json_jackson = 'org.camunda.spin:camunda-spin-dataformat-json-jackson:1.18.0'
 
-libs.swagger_jaxrs = 'io.swagger.core.v3:swagger-jaxrs2:2.1.2'
+libs.swagger_jaxrs = 'io.swagger.core.v3:swagger-jaxrs2:2.2.8'

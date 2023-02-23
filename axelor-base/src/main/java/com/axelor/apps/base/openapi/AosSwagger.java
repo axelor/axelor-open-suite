@@ -62,6 +62,7 @@ public class AosSwagger {
       LOG.info(I18n.get(BaseExceptionMessage.SWAGGER_NO_RESOURCE_PACKAGES));
       return Collections.emptySet();
     }
+    resourcePackages = resourcePackages.replaceAll("\\s", "");
     String[] packagesList = resourcePackages.split(",");
 
     return Set.of(packagesList);
