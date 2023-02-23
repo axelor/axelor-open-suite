@@ -14,12 +14,22 @@
   <input file="crm_leadStatus.csv" separator=";" type="com.axelor.apps.crm.db.LeadStatus"
     search="self.importId = :importId"/>
 
-  <input file="base_appCrm_leadStatus.csv" separator=";" type="com.axelor.studio.db.AppCrm"
-    search="self.app.code = :code" update="true"/>
+  <input file="crm_opportunityStatus.csv" separator=";"
+    type="com.axelor.apps.crm.db.OpportunityStatus" search="self.importId = :importId"/>
 
   <input file="studio_appCrm.csv" separator=";" type="com.axelor.studio.db.AppCrm"
     search="self.app.code = :code">
     <bind to="app" column="code" search="self.code = :code"/>
+    <bind to="closedWinOpportunityStatus" column="closedWinOpportunityStatus_importId"
+      search="self.importId = :closedWinOpportunityStatus_importId"/>
+    <bind to="closedLostOpportunityStatus" column="closedLostOpportunityStatus_importId"
+      search="self.importId = :closedLostOpportunityStatus_importId"/>
+    <bind to="salesPropositionStatus" column="salesPropositionStatus_importId"
+      search="self.importId = :salesPropositionStatus_importId"/>
+    <bind to="convertedLeadStatus" column="convertedLeadStatus_importId"
+      search="self.importId = :convertedLeadStatus_importId"/>
+    <bind to="lostLeadStatus" column="lostLeadStatus_importId"
+      search="self.importId = :lostLeadStatus_importId"/>
   </input>
 
 </csv-inputs>
