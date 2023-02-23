@@ -101,11 +101,14 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       StockMove stockMove, SaleOrder saleOrder, Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
     Invoice invoice = super.createInvoiceFromSaleOrder(stockMove, saleOrder, qtyToInvoiceMap);
-    Project project = saleOrder.getProject();
-    if (project != null) {
-      invoice.setProject(project);
+
+    if (invoice != null) {
+      Project project = saleOrder.getProject();
+      if (project != null) {
+        invoice.setProject(project);
+      }
+      invoiceRepository.save(invoice);
     }
-    invoiceRepository.save(invoice);
     return invoice;
   }
 
@@ -116,11 +119,13 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       throws AxelorException {
     Invoice invoice =
         super.createInvoiceFromPurchaseOrder(stockMove, purchaseOrder, qtyToInvoiceMap);
-    Project project = purchaseOrder.getProject();
-    if (project != null) {
-      invoice.setProject(project);
+    if (invoice != null) {
+      Project project = purchaseOrder.getProject();
+      if (project != null) {
+        invoice.setProject(project);
+      }
+      invoiceRepository.save(invoice);
     }
-    invoiceRepository.save(invoice);
     return invoice;
   }
 }

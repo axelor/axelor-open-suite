@@ -558,9 +558,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     String description = this.getMoveLineDescription(paymentSession);
 
     this.generateCashMoveLine(
-        move, null, this.getCashAccount(paymentSession, true), paymentAmount, description, out);
+        move, null, this.getCashAccount(paymentSession, true), paymentAmount, description, !out);
     this.generateCashMoveLine(
-        move, null, this.getCashAccount(paymentSession, false), paymentAmount, description, !out);
+        move, null, this.getCashAccount(paymentSession, false), paymentAmount, description, out);
 
     moveRepo.save(move);
 
@@ -691,7 +691,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
   }
 
-  protected LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+  @Override
+  public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     switch (paymentSession.getMoveAccountingDateSelect()) {
       case PaymentSessionRepository.MOVE_ACCOUNTING_DATE_PAYMENT:
         return paymentSession.getPaymentDate();

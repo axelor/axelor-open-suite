@@ -734,7 +734,7 @@
 "All the move's unsaved modifications will be lost, do you wish to continue ? Also you will need to manually refresh the move when the process is done.",,,
 "Allocate per partner",,,
 "Allocated amount",,,
-"Allow accounting daybook",,,
+"Allow accounting daybook?",,,
 "Allow cancelation of ventilated invoice",,,
 "Allow payments greater than due amount",,,
 "Allowed Financial discount account on deliveries/invoice",,,

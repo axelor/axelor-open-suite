@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -131,9 +130,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
         aliasName = "";
         col++;
       }
-      if (StringUtils.notEmpty(orderByFieldBuilder)) {
-        orderByFieldBuilder.append("self.id asc,");
-      }
+      orderByFieldBuilder.append("self.id asc,");
+
     } catch (ClassNotFoundException e) {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);

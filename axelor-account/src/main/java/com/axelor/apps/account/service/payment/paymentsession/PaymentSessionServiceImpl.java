@@ -65,15 +65,18 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected PaymentSessionRepository paymentSessionRepository;
   protected InvoiceTermRepository invoiceTermRepository;
   protected InvoiceTermService invoiceTermService;
+  protected PaymentSessionValidateService paymentSessionValidateService;
 
   @Inject
   public PaymentSessionServiceImpl(
       PaymentSessionRepository paymentSessionRepository,
       InvoiceTermRepository invoiceTermRepository,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      PaymentSessionValidateService paymentSessionValidateService) {
     this.paymentSessionRepository = paymentSessionRepository;
     this.invoiceTermRepository = invoiceTermRepository;
     this.invoiceTermService = invoiceTermService;
+    this.paymentSessionValidateService = paymentSessionValidateService;
   }
 
   @Override
@@ -364,7 +367,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   protected void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     LocalDate nextSessionDate = paymentSession.getNextSessionDate();
-    LocalDate paymentDate = paymentSession.getPaymentDate();
+    LocalDate paymentDate =
+        paymentSessionValidateService.getAccountingDate(paymentSession, invoiceTerm);
     LocalDate financialDiscountDeadlineDate = invoiceTerm.getFinancialDiscountDeadlineDate();
     boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
 
@@ -378,6 +382,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     }
 
     if (invoiceTerm.getApplyFinancialDiscount() && financialDiscountDeadlineDate != null) {
+
       if (invoiceTerm.getFinancialDiscountAmount().compareTo(invoiceTerm.getAmountRemaining())
           > 0) {
         invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
