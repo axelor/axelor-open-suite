@@ -21,6 +21,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.OpportunityStatus;
+import com.axelor.apps.crm.db.PartnerStatus;
 import com.axelor.studio.db.AppCrm;
 
 public interface AppCrmService extends AppBaseService {
@@ -38,4 +39,8 @@ public interface AppCrmService extends AppBaseService {
   OpportunityStatus getClosedLostOpportunityStatus() throws AxelorException;
 
   OpportunityStatus getSalesPropositionStatus() throws AxelorException;
+
+  PartnerStatus getClosedWinPartnerStatus() throws AxelorException;
+
+  PartnerStatus getClosedLostPartnerStatus() throws AxelorException;
 }

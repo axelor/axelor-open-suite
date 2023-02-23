@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.crm.db.CrmConfig;
 import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.OpportunityStatus;
+import com.axelor.apps.crm.db.PartnerStatus;
 import com.axelor.apps.crm.db.repo.CrmConfigRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.db.Query;
@@ -138,5 +139,31 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
     }
 
     return salesPropositionStatus;
+  }
+
+  @Override
+  public PartnerStatus getClosedWinPartnerStatus() throws AxelorException {
+    PartnerStatus closedLostPartnerStatus = getAppCrm().getClosedLostPartnerStatus();
+
+    if (closedLostPartnerStatus == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(CrmExceptionMessage.CRM_CLOSED_LOST_PARTNER_STATUS_MISSING));
+    }
+
+    return closedLostPartnerStatus;
+  }
+
+  @Override
+  public PartnerStatus getClosedLostPartnerStatus() throws AxelorException {
+    PartnerStatus closedWinPartnerStatus = getAppCrm().getClosedWinPartnerStatus();
+
+    if (closedWinPartnerStatus == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(CrmExceptionMessage.CRM_CLOSED_WIN_PARTNER_STATUS_MISSING));
+    }
+
+    return closedWinPartnerStatus;
   }
 }

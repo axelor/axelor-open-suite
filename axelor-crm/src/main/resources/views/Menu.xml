@@ -211,7 +211,7 @@
   <menuitem name="crm-conf-partner-status" parent="crm-conf" title="Partner status"
     action="crm.conf.partner.status" order="16"/>
 
-  <action-view name="crm.conf.opportunity.status" title="Opportunity status"
+  <action-view name="crm.conf.partner.status" title="Partner status"
     model="com.axelor.apps.crm.db.PartnerStatus">
     <view type="grid" name="partner-status-grid"/>
     <view type="form" name="partner-status-form"/>
