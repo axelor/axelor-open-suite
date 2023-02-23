@@ -182,10 +182,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             + "AND self.move.statusSelect IN (2, 3, 5) "
             + "AND self.account.manageCutOffPeriod IS TRUE "
             + "AND self.cutOffStartDate != null AND self.cutOffEndDate != null "
-            + "AND self.cutOffEndDate > :date)";
+            + "AND self.cutOffEndDate > :date";
 
     if (company != null) {
-      queryStr += " AND self.move.company = :company";
+      queryStr += " AND self.move.company = :company ";
     }
 
     Query<MoveLine> moveLineQuery =
@@ -202,7 +202,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             .bind("date", moveDate);
 
     if (company != null) {
-      moveLineQuery.bind("company", company.getId());
+      moveLineQuery.bind("company", company);
     }
 
     return moveLineQuery.order("id");
