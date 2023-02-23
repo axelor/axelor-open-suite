@@ -7,7 +7,7 @@
     name="move-line-query-line-grid" editable="true">
     <button name="selectBtn" onClick="action-move-line-query-line-group-set-isselected"
       title="Select / Unselect" icon="fa-check-circle" showIf="!isSelected"/>
-    <button name="selectBtn" onClick="action-move-line-query-line-group-set-isselected"
+    <button name="unselectBtn" onClick="action-move-line-query-line-group-set-isselected"
       title="Select / Unselect" icon="fa-minus-circle" showIf="isSelected"/>
     <field name="moveLine.reconcileGroup" width="120"/>
     <field name="moveLine" readonly="true"/>

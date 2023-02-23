@@ -40,6 +40,7 @@ import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
@@ -92,7 +93,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       PriceListService priceListService,
       ProductCompanyService productCompanyService,
       SupplychainBatchRepository supplychainBatchRepo,
-      SupplyChainConfigService supplychainConfigService) {
+      SupplyChainConfigService supplychainConfigService,
+      StockLocationLineHistoryService stockLocationLineHistoryService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -104,7 +106,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         weightedAveragePriceService,
         trackingNumberRepo,
         productCompanyService,
-        shippingCoefService);
+        shippingCoefService,
+        stockLocationLineHistoryService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.supplychainBatchRepo = supplychainBatchRepo;

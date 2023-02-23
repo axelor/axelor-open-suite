@@ -24,12 +24,11 @@ import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.message.service.MailAccountServiceImpl;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import java.util.List;
 
 public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
@@ -45,37 +44,32 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
   @Override
   public void checkDefaultMailAccount(EmailAccount mailAccount) throws AxelorException {
 
-    if (appBaseService.getAppBase().getEmailAccountByUser()
-        && mailAccount.getIsDefault()
-        && mailAccount.getUser() != null) {
-      String query = "self.user = ?1 AND self.isDefault = true";
-      List<Object> params = Lists.newArrayList();
-      params.add(mailAccount.getUser());
-      if (mailAccount.getId() != null) {
-        query += " AND self.id != ?2";
-        params.add(mailAccount.getId());
-      }
+    AppBase appBase = appBaseService.getAppBase();
+    if (appBase.getEmailAccountByUser() || appBase.getEmailAccountByCompany()) {
+      String query = this.mailAccountQuery(mailAccount);
+      if (!query.isEmpty()) {
+        if (appBase.getEmailAccountByUser()) {
+          query +=
+              " AND self.user"
+                  + ((mailAccount.getUser() != null)
+                      ? ".id = " + mailAccount.getUser().getId()
+                      : " IS NULL");
+        }
 
-      Integer serverTypeSelect = mailAccount.getServerTypeSelect();
-      if (serverTypeSelect == EmailAccountRepository.SERVER_TYPE_SMTP) {
-        query += " AND self.serverTypeSelect = " + EmailAccountRepository.SERVER_TYPE_SMTP + " ";
-      } else if (serverTypeSelect == EmailAccountRepository.SERVER_TYPE_IMAP
-          || serverTypeSelect == EmailAccountRepository.SERVER_TYPE_POP) {
-        query +=
-            " AND (self.serverTypeSelect = "
-                + EmailAccountRepository.SERVER_TYPE_IMAP
-                + " OR "
-                + "self.serverTypeSelect = "
-                + EmailAccountRepository.SERVER_TYPE_POP
-                + ") ";
-      }
+        if (appBase.getEmailAccountByCompany()) {
+          query +=
+              " AND self.company"
+                  + ((mailAccount.getCompany() != null)
+                      ? ".id = " + mailAccount.getCompany().getId()
+                      : " IS NULL");
+        }
+        Long count = mailAccountRepo.all().filter(query).count();
 
-      Long count = mailAccountRepo.all().filter(query, params.toArray()).count();
-
-      if (count > 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
+        if (count > 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
+        }
       }
     } else {
       super.checkDefaultMailAccount(mailAccount);
@@ -86,34 +80,79 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
   public EmailAccount getDefaultSender() {
 
     AppBase appBase = appBaseService.getAppBase();
-    if (appBase != null && appBase.getEmailAccountByUser()) {
-      return mailAccountRepo
-          .all()
-          .filter(
-              "self.user = ?1 AND self.isDefault = true AND self.serverTypeSelect = ?2",
-              userService.getUser(),
-              EmailAccountRepository.SERVER_TYPE_SMTP)
-          .fetchOne();
+    if (!appBase.getEmailAccountByUser() && !appBase.getEmailAccountByCompany()) {
+      return super.getDefaultSender();
     }
 
-    return super.getDefaultSender();
+    EmailAccount emailAccount = null;
+    User user = userService.getUser();
+    if (appBase.getEmailAccountByUser() && user != null) {
+      emailAccount =
+          mailAccountRepo
+              .all()
+              .filter(
+                  "self.user = ?1 AND self.isDefault = true AND self.serverTypeSelect = ?2",
+                  user,
+                  EmailAccountRepository.SERVER_TYPE_SMTP)
+              .fetchOne();
+    }
+
+    if (emailAccount == null
+        && appBase.getEmailAccountByCompany()
+        && user != null
+        && user.getActiveCompany() != null) {
+      emailAccount =
+          mailAccountRepo
+              .all()
+              .filter(
+                  "self.company = ?1 AND self.isDefault = true AND self.serverTypeSelect = ?2",
+                  user.getActiveCompany(),
+                  EmailAccountRepository.SERVER_TYPE_SMTP)
+              .fetchOne();
+    }
+
+    return emailAccount;
   }
 
   @Override
   public EmailAccount getDefaultReader() {
 
-    if (appBaseService.getAppBase().getEmailAccountByUser()) {
-      return mailAccountRepo
-          .all()
-          .filter(
-              "self.user = ?1 AND self.isDefault = true"
-                  + " AND (self.serverTypeSelect = ?2 OR self.serverTypeSelect = ?3)",
-              userService.getUser(),
-              EmailAccountRepository.SERVER_TYPE_IMAP,
-              EmailAccountRepository.SERVER_TYPE_POP)
-          .fetchOne();
+    AppBase appBase = appBaseService.getAppBase();
+    if (!appBase.getEmailAccountByUser() && !appBase.getEmailAccountByCompany()) {
+      return super.getDefaultReader();
     }
 
-    return super.getDefaultReader();
+    User user = userService.getUser();
+    EmailAccount emailAccount = null;
+    if (appBase.getEmailAccountByUser() && user != null) {
+      emailAccount =
+          mailAccountRepo
+              .all()
+              .filter(
+                  "self.user = ?1 AND self.isDefault = true"
+                      + " AND (self.serverTypeSelect = ?2 OR self.serverTypeSelect = ?3)",
+                  user,
+                  EmailAccountRepository.SERVER_TYPE_IMAP,
+                  EmailAccountRepository.SERVER_TYPE_POP)
+              .fetchOne();
+    }
+
+    if (emailAccount == null
+        && appBase.getEmailAccountByCompany()
+        && user != null
+        && user.getActiveCompany() != null) {
+      emailAccount =
+          mailAccountRepo
+              .all()
+              .filter(
+                  "self.company = ?1 AND self.isDefault = true"
+                      + " AND (self.serverTypeSelect = ?2 OR self.serverTypeSelect = ?3)",
+                  user.getActiveCompany(),
+                  EmailAccountRepository.SERVER_TYPE_IMAP,
+                  EmailAccountRepository.SERVER_TYPE_POP)
+              .fetchOne();
+    }
+
+    return emailAccount;
   }
 }

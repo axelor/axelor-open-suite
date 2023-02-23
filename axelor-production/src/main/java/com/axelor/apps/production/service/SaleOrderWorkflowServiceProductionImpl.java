@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -50,23 +51,24 @@ public class SaleOrderWorkflowServiceProductionImpl
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
+      AppCrmService appCrmService,
       UserService userService,
       SaleOrderLineService saleOrderLineService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
-      ProductionOrderSaleOrderService productionOrderSaleOrderService,
-      AppProductionService appProductionService,
       PartnerSupplychainService partnerSupplychainService,
       SaleConfigService saleConfigService,
-      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService) {
-
+      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService,
+      ProductionOrderSaleOrderService productionOrderSaleOrderService,
+      AppProductionService appProductionService) {
     super(
         sequenceService,
         partnerRepo,
         saleOrderRepo,
         appSaleService,
+        appCrmService,
         userService,
         saleOrderLineService,
         saleOrderStockService,
@@ -76,7 +78,6 @@ public class SaleOrderWorkflowServiceProductionImpl
         partnerSupplychainService,
         saleConfigService,
         saleOrderCheckAnalyticService);
-
     this.productionOrderSaleOrderService = productionOrderSaleOrderService;
     this.appProductionService = appProductionService;
   }

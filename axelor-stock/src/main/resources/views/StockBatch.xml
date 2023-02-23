@@ -57,10 +57,4 @@
       message="This batch will recompute stock location quantities and reset all WAP history lines, are you sure you want to continue ?"/>
   </action-validate>
 
-  <action-method name="action-production-batch-method-show-valuation">
-    <call class="com.axelor.apps.production.web.ProductionBatchController"
-      method="showValuation"/>
-  </action-method>
-
-
 </object-views>

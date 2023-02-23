@@ -19,7 +19,8 @@
     <bind to="user" search="self.importId = :userImportId" update="true"/>
     <bind to="createdBy"
       eval="call:com.axelor.csv.script.ImportLead:importCreatedBy(userImportId)"/>
-    <bind to="statusSelect" column="statusSelect" eval="1" if="statusSelect == null"/>
+    <bind to="leadStatus" column="leadStatus" search="self.importId = :leadStatus" eval="1"
+      if="leadStatus == null"/>
   </input>
 
 </csv-inputs>

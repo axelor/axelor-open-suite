@@ -40,6 +40,8 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -71,6 +73,8 @@ public class MoveTemplateService {
   protected MoveTemplateRepository moveTemplateRepo;
   protected MoveLineTaxService moveLineTaxService;
 
+  protected List<String> exceptionsList;
+
   @Inject
   public MoveTemplateService(
       MoveCreateService moveCreateService,
@@ -96,6 +100,11 @@ public class MoveTemplateService {
     this.bankDetailsService = bankDetailsService;
     this.moveTemplateRepo = moveTemplateRepo;
     this.moveLineTaxService = moveLineTaxService;
+    this.exceptionsList = Lists.newArrayList();
+  }
+
+  public List<String> getExceptionsList() {
+    return exceptionsList;
   }
 
   @Transactional
@@ -253,10 +262,7 @@ public class MoveTemplateService {
         }
 
         moveLineTaxService.autoTaxLineGenerate(move);
-
-        if (moveTemplate.getAutomaticallyValidate()) {
-          moveValidateService.accounting(move);
-        }
+        manageAccounting(moveTemplate, move);
 
         moveList.add(move.getId());
       }
@@ -318,7 +324,7 @@ public class MoveTemplateService {
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 moveTemplate.getFullName(),
-                null,
+                moveTemplate.getDescription(),
                 companyBankDetails);
 
         int counter = 1;
@@ -374,16 +380,32 @@ public class MoveTemplateService {
 
         move.setDescription(taxLineDescription);
         moveLineTaxService.autoTaxLineGenerate(move);
-
-        if (moveTemplate.getAutomaticallyValidate()) {
-          moveValidateService.accounting(move);
-        }
+        manageAccounting(moveTemplate, move);
 
         move.setDescription(moveTemplate.getDescription());
+        if (!Strings.isNullOrEmpty(move.getDescription())) {
+          for (MoveLine moveline : move.getMoveLineList()) {
+            moveline.setDescription(move.getDescription());
+          }
+        }
         moveList.add(move.getId());
       }
     }
     return moveList;
+  }
+
+  protected void manageAccounting(MoveTemplate moveTemplate, Move move) {
+    if (!moveTemplate.getAutomaticallyValidate()) {
+      return;
+    }
+    try {
+      moveValidateService.accounting(move);
+    } catch (AxelorException e) {
+      String message = e.getMessage();
+      if (!exceptionsList.contains(message)) {
+        exceptionsList.add(message);
+      }
+    }
   }
 
   public boolean checkValidity(MoveTemplate moveTemplate) {

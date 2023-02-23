@@ -140,8 +140,6 @@ public interface TimesheetService {
 
   public BigDecimal computeTimeSpent(Project project);
 
-  public String computeFullName(Timesheet timesheet);
-
   public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
 
   public BigDecimal computePeriodTotal(Timesheet timesheet);

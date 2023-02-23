@@ -36,7 +36,8 @@
     <field name="inTaxPrice" x-scale="2"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
-    <field name="estimatedDelivDate"/>
+    <field name="estimatedShippingDate"/>
+    <field name="estimatedDeliveryDate"/>
     <field name="availableStatus" if="__config__.app.isApp('supplychain')">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
@@ -61,7 +62,8 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
     <field name="exTaxTotal" aggregate="sum"/>
-    <field name="estimatedDelivDate"/>
+    <field name="estimatedShippingDate"/>
+    <field name="estimatedDeliveryDate"/>
     <field name="saleOrder.confirmationDateTime"/>
   </grid>
 
@@ -327,10 +329,11 @@
           target="com.axelor.apps.base.db.Currency"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery">
-        <field name="desiredDelivDate" readonlyIf="$availabiltyRequest"/>
-        <field name="estimatedDelivDate"
+        <field name="desiredDeliveryDate" readonlyIf="$availabiltyRequest"/>
+        <field name="estimatedShippingDate"
           onChange="action-sale-order-line-group-deliv-estimated-date-onchange"
           readonlyIf="$availabiltyRequest"/>
+        <field name="estimatedDeliveryDate" readonlyIf="$availabiltyRequest"/>
         <field name="deliveredQty" readonly="true" hidden="true"/>
         <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
           widget="info-button"
@@ -1002,7 +1005,8 @@
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-fill-estimated-date">
-    <attribute name="value" expr="eval: __parent__?.deliveryDate" for="estimatedDelivDate"
+    <attribute name="value" expr="eval: __parent__?.estimatedShippingDate"
+      for="estimatedShippingDate"
       if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; deliveryState &lt; 2"/>
   </action-attrs>
 

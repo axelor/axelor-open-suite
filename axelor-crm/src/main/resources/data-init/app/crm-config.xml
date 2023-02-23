@@ -11,4 +11,10 @@
     <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
   </input>
 
+  <input file="crm_leadStatus.csv" separator=";" type="com.axelor.apps.crm.db.LeadStatus"
+    search="self.importId = :importId"/>
+
+  <input file="base_appCrm_leadStatus.csv" separator=";" type="com.axelor.apps.base.db.AppCrm"
+    search="self.app.code = :code" update="true"/>
+
 </csv-inputs>

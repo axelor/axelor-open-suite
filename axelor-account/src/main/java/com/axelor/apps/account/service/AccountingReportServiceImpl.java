@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -60,6 +61,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,9 +126,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (accountingReport.getReportType().getTypeSelect()
         == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
       fileLink = accountingReportDas2Service.printPreparatoryProcessDeclaration(accountingReport);
+    } else if (accountingReport.getReportType().getTypeSelect()
+            == AccountingReportRepository.REPORT_CUSTOM_STATE
+        && !accountingReport.getReportType().getUseLegacyCustomReports()) {
+      fileLink = accountingReportPrintService.printCustomReport(accountingReport);
     } else {
       fileLink = accountingReportPrintService.print(accountingReport);
     }
+    accountingReport = accountingReportRepo.find(accountingReport.getId());
     setStatus(accountingReport);
     return fileLink;
   }
@@ -135,6 +142,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public MetaFile export(AccountingReport accountingReport) throws AxelorException, IOException {
 
     int typeSelect = accountingReport.getReportType().getTypeSelect();
+
     if (typeSelect == AccountingReportRepository.EXPORT_N4DS) {
       return accountingReportDas2Service.exportN4DSFile(accountingReport);
     } else {
@@ -195,7 +203,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getCurrency() != null) {
-      this.addParams("self.move.companyCurrency = ?%d", accountingReport.getCurrency());
+      this.addParams("self.move.currency = ?%d", accountingReport.getCurrency());
     }
 
     if (accountingReport.getDateFrom() != null) {
@@ -225,6 +233,23 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
               + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
           accountingReport.getAccountSet());
+    }
+
+    List<String> technicalTypeToExclude = new ArrayList<>();
+    if (accountingReport.getExcludeViewAccount()) {
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_VIEW + "'");
+    }
+    if (accountingReport.getExcludeCommitmentSpecialAccount()) {
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_COMMITMENT + "'");
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_SPECIAL + "'");
+    }
+    if (!CollectionUtils.isEmpty(technicalTypeToExclude)) {
+      this.addParams(
+          String.format(
+              "self.account.accountType.technicalTypeSelect not in (%s)",
+              technicalTypeToExclude.stream()
+                  .map(String::valueOf)
+                  .collect(Collectors.joining(","))));
     }
 
     if (accountingReport.getPartnerSet() != null && !accountingReport.getPartnerSet().isEmpty()) {

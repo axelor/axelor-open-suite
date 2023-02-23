@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.tool.MassUpdateTool;
 import com.axelor.common.ObjectUtils;
@@ -37,6 +38,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
@@ -261,6 +263,18 @@ public class AccountController {
           account.getAnalyticDistributionTemplate());
       analyticDistributionTemplateService.validateTemplatePercentages(
           account.getAnalyticDistributionTemplate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setAmountRemainingReconciliableMoveLines(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      Beans.get(MoveLineToolService.class).setAmountRemainingReconciliableMoveLines(context);
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

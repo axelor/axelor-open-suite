@@ -36,7 +36,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -45,6 +44,7 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
@@ -113,6 +113,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected TaxService taxService;
+  protected InvoiceProductStatementService invoiceProductStatementService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -129,7 +130,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      TaxService taxService) {
+      TaxService taxService,
+      InvoiceProductStatementService invoiceProductStatementService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -145,6 +147,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.appBaseService = appBaseService;
     this.taxService = taxService;
+    this.invoiceProductStatementService = invoiceProductStatementService;
   }
 
   // WKF
@@ -168,26 +171,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (alarm != null) {
 
       alarm.setInvoice(invoice);
-    }
-  }
-
-  @Override
-  public Account getPartnerAccount(Invoice invoice, boolean isHoldBack) throws AxelorException {
-    if (invoice.getCompany() == null
-        || invoice.getOperationTypeSelect() == null
-        || invoice.getOperationTypeSelect() == 0
-        || invoice.getPartner() == null) {
-      return null;
-    }
-    AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
-    if (InvoiceToolService.isPurchase(invoice)) {
-      return isHoldBack
-          ? situationService.getHoldBackSupplierAccount(invoice.getPartner(), invoice.getCompany())
-          : situationService.getSupplierAccount(invoice.getPartner(), invoice.getCompany());
-    } else {
-      return isHoldBack
-          ? situationService.getHoldBackCustomerAccount(invoice.getPartner(), invoice.getCompany())
-          : situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
     }
   }
 
@@ -263,6 +246,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     Invoice invoice1 = invoiceGenerator.generate();
     invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+    invoice1.setInvoiceProductStatement(
+        invoiceProductStatementService.getInvoiceProductStatement(invoice1));
     return invoice1;
   }
 
