@@ -18,14 +18,12 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.base.db.Company;
@@ -36,12 +34,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AnalyticDistributionLineController {
@@ -129,60 +122,29 @@ public class AnalyticDistributionLineController {
   }
 
   public void setAnalyticAccountDomain(ActionRequest request, ActionResponse response) {
-    String domain = "null";
-    List<Long> analyticAccountIdList = new ArrayList<>();
     AnalyticDistributionLine analyticDistributionLine =
         request.getContext().asType(AnalyticDistributionLine.class);
     Context parentContext = request.getContext().getParent();
     Context grandParentContext = null;
+    Account account = null;
 
     if (parentContext != null
         && AnalyticDistributionTemplate.class.equals(parentContext.getContextClass())) {
       AnalyticDistributionTemplate analyticDistributionTemplate =
           parentContext.asType(AnalyticDistributionTemplate.class);
 
-      if (analyticDistributionTemplate != null
-          && analyticDistributionTemplate.getCompany() != null) {
-        domain =
-            "(self.company is null OR self.company.id = "
-                + analyticDistributionTemplate.getCompany().getId()
-                + ") AND self.analyticAxis.id ";
-        if (analyticDistributionLine.getAnalyticAxis() != null) {
-          domain += "= " + analyticDistributionLine.getAnalyticAxis().getId();
-        } else {
-          domain +=
-              "in ("
-                  + Beans.get(AccountConfigRepository.class)
-                      .findByCompany(analyticDistributionTemplate.getCompany())
-                      .getAnalyticAxisByCompanyList().stream()
-                      .map(it -> it.getAnalyticAxis().getId().toString())
-                      .collect(Collectors.toList())
-                  + ")";
-        }
-
-        grandParentContext = request.getContext().getParent().getParent();
-        if (grandParentContext != null
-            && Account.class.equals(grandParentContext.getContextClass())) {
-          Account account = grandParentContext.asType(Account.class);
-          List<AnalyticAccount> analyticAccountList =
-              Beans.get(AccountAnalyticRulesRepository.class)
-                  .findAnalyticAccountByAccounts(account);
-          if (CollectionUtils.isNotEmpty(analyticAccountList)) {
-            for (AnalyticAccount analyticAccount : analyticAccountList) {
-              analyticAccountIdList.add(analyticAccount.getId());
-            }
-
-            domain += " AND self.id in (";
-            String idList = Joiner.on(",").join(analyticAccountIdList);
-            domain += idList + ")";
-          } else {
-            domain += " AND self.id in (0)";
-          }
-        }
+      grandParentContext = request.getContext().getParent().getParent();
+      if (grandParentContext != null
+          && Account.class.equals(grandParentContext.getContextClass())) {
+        account = grandParentContext.asType(Account.class);
       }
-    }
+      String domain =
+          Beans.get(AnalyticAccountService.class)
+              .getAnalyticAccountDomain(
+                  analyticDistributionTemplate, analyticDistributionLine, account);
 
-    response.setAttr("analyticAccount", "domain", domain);
-    response.setAttr("analyticAccountSet", "domain", domain);
+      response.setAttr("analyticAccount", "domain", domain);
+      response.setAttr("analyticAccountSet", "domain", domain);
+    }
   }
 }

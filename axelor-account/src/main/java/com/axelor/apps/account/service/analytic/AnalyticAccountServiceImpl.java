@@ -17,11 +17,21 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticDistributionLine;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.base.db.Company;
+import com.axelor.common.ObjectUtils;
+import com.axelor.inject.Beans;
+import com.google.common.base.Joiner;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -83,5 +93,51 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
       return domain;
     }
     return null;
+  }
+
+  @Override
+  public String getAnalyticAccountDomain(
+      AnalyticDistributionTemplate analyticDistributionTemplate,
+      AnalyticDistributionLine analyticDistributionLine,
+      Account account) {
+    String domain = "null";
+    List<Long> analyticAccountIdList = new ArrayList<>();
+
+    if (analyticDistributionTemplate != null && analyticDistributionTemplate.getCompany() != null) {
+      domain =
+          "(self.company is null OR self.company.id = "
+              + analyticDistributionTemplate.getCompany().getId()
+              + ") AND self.analyticAxis.id ";
+      if (analyticDistributionLine.getAnalyticAxis() != null) {
+        domain += "= " + analyticDistributionLine.getAnalyticAxis().getId();
+      } else {
+        domain +=
+            "in ("
+                + Beans.get(AccountConfigRepository.class)
+                    .findByCompany(analyticDistributionTemplate.getCompany())
+                    .getAnalyticAxisByCompanyList().stream()
+                    .map(it -> it.getAnalyticAxis().getId().toString())
+                    .collect(Collectors.toList())
+                + ")";
+      }
+
+      if (ObjectUtils.notEmpty(account)) {
+        List<AnalyticAccount> analyticAccountList =
+            Beans.get(AccountAnalyticRulesRepository.class).findAnalyticAccountByAccounts(account);
+        if (CollectionUtils.isNotEmpty(analyticAccountList)) {
+          for (AnalyticAccount analyticAccount : analyticAccountList) {
+            analyticAccountIdList.add(analyticAccount.getId());
+          }
+
+          domain += " AND self.id in (";
+          String idList = Joiner.on(",").join(analyticAccountIdList);
+          domain += idList + ")";
+        } else {
+          domain += " AND self.id in (0)";
+        }
+      }
+    }
+
+    return domain;
   }
 }
