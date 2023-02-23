@@ -1,0 +1,3 @@
+---
+title: "Invoice: fix an issue occurring when computing financial discount deadline date"
+type: fix
