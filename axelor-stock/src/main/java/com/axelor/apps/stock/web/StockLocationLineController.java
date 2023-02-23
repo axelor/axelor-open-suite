@@ -20,6 +20,7 @@ package com.axelor.apps.stock.web;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.service.WapHistoryService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -32,6 +33,8 @@ public class StockLocationLineController {
       StockLocationLine stockLocationLine = request.getContext().asType(StockLocationLine.class);
       stockLocationLine =
           Beans.get(StockLocationLineRepository.class).find(stockLocationLine.getId());
+      Beans.get(WeightedAveragePriceService.class)
+          .computeAvgPriceForProduct(stockLocationLine.getProduct());
       Beans.get(WapHistoryService.class).saveWapHistory(stockLocationLine);
       response.setReload(true);
     } catch (Exception e) {
