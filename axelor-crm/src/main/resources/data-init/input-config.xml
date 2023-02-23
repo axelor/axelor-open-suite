@@ -12,9 +12,6 @@
     <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
   </input>
 
-  <input file="crm_opportunityStatus.csv" separator=";"
-    type="com.axelor.apps.crm.db.OpportunityStatus" search="self.importId = :importId"/>
-
   <input file="crm_eventCategory.csv" separator=";"
     type="com.axelor.apps.crm.db.EventCategory" search="self.importId = :importId"/>
 
