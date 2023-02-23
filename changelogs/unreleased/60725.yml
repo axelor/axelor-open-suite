@@ -1,0 +1,3 @@
+---
+title: "StockLocationLine: Updating the pmp from the stock location line will update the pmp on the product"
+type: fix
