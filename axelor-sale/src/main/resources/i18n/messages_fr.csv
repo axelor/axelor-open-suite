@@ -538,6 +538,7 @@
 "The field %s is of type %s, but the configured script returned value is of type %s.","Le champ %s est de type %s, mais le résultat du script est de type %s.",,
 "The sale order was canceled","Le devis ou la commande client a été annulé(e)",,
 "The script must be written in","Le script doit être écrit en",,
+"The selected price list is no longer valid, Do you still want to continue?",,,
 "The syntax of the script is correct.","La syntaxe du script est correcte.",,
 "The total amount of quotation is zero. Do you want to proceed ?","Le total de la commande vaut zéro. Souhaitez-vous confirmer la commande ?",,
 "The width can be specified as percentage or fixed value.The fix width can be either in 'px' or 'em', 'px' is assumed if not specified.","La largeur peut être spécifiée en pourcentage ou en valeur fixe. La largeur fixe peut être soit en 'px' soit en 'em' (par défaut la largeur est en 'px').",,

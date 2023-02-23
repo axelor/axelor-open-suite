@@ -538,6 +538,7 @@
 "The field %s is of type %s, but the configured script returned value is of type %s.",,,
 "The sale order was canceled",,,
 "The script must be written in",,,
+"The selected price list is no longer valid, Do you still want to continue?",,,
 "The syntax of the script is correct.",,,
 "The total amount of quotation is zero. Do you want to proceed ?",,,
 "The width can be specified as percentage or fixed value.The fix width can be either in 'px' or 'em', 'px' is assumed if not specified.",,,
