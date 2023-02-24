@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.common.ObjectUtils;
-import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -38,10 +37,17 @@ import org.apache.commons.collections.CollectionUtils;
 public class AnalyticAccountServiceImpl implements AnalyticAccountService {
 
   protected AnalyticAccountRepository analyticAccountRepository;
+  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
+  protected AccountConfigRepository accountConfigRepository;
 
   @Inject
-  public AnalyticAccountServiceImpl(AnalyticAccountRepository analyticAccountRepository) {
+  public AnalyticAccountServiceImpl(
+      AnalyticAccountRepository analyticAccountRepository,
+      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      AccountConfigRepository accountConfigRepository) {
     this.analyticAccountRepository = analyticAccountRepository;
+    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
+    this.accountConfigRepository = accountConfigRepository;
   }
 
   @Override
@@ -113,8 +119,7 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
       } else {
         domain +=
             "in ("
-                + Beans.get(AccountConfigRepository.class)
-                    .findByCompany(analyticDistributionTemplate.getCompany())
+                + accountConfigRepository.findByCompany(analyticDistributionTemplate.getCompany())
                     .getAnalyticAxisByCompanyList().stream()
                     .map(it -> it.getAnalyticAxis().getId().toString())
                     .collect(Collectors.toList())
@@ -123,7 +128,7 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
 
       if (ObjectUtils.notEmpty(account)) {
         List<AnalyticAccount> analyticAccountList =
-            Beans.get(AccountAnalyticRulesRepository.class).findAnalyticAccountByAccounts(account);
+            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(account);
         if (CollectionUtils.isNotEmpty(analyticAccountList)) {
           for (AnalyticAccount analyticAccount : analyticAccountList) {
             analyticAccountIdList.add(analyticAccount.getId());
