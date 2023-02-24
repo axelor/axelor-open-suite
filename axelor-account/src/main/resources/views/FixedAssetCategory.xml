@@ -73,13 +73,13 @@
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
             form-view="account-form" grid-view="account-grid"
             requiredIf="fixedAssetType.technicalTypeSelect &gt; 1"/>
-          <field name="provisionTangibleFixedAssetAccount"
+          <field name="provisionFixedAssetAccount"
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
             form-view="account-form"/>
-          <field name="appProvisionTangibleFixedAssetAccount"
+          <field name="appProvisionFixedAssetAccount"
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"
             form-view="account-form"/>
-          <field name="wbProvisionTangibleFixedAssetAccount"
+          <field name="wbProvisionFixedAssetAccount"
             domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
             form-view="account-form"/>
         </panel>

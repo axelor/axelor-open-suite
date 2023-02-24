@@ -101,10 +101,10 @@
       <field name="product" canEdit="false"
         onChange="action-bill-of-material-record-product-unit,action-bill-of-material-record-set-dummy-field"
         domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND self.dtype = 'Product'"
-        form-view="product-form" grid-view="product-grid"/>
+        form-view="product-form" grid-view="product-grid" required="true"/>
       <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"
         canNew="true" onChange="action-bill-of-material-method-validate-prod-process"
-        domain="(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)"/>
+        onSelect="action-bill-of-material-attrs-set-prod-process-domain"/>
       <field name="qty" colSpan="3"/>
       <field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"
         canEdit="false" required="true"/>
@@ -128,7 +128,7 @@
         </field>
         <panel-related name="billOfMaterialSetPanel" field="billOfMaterialSet"
           title="Components" colSpan="12" height="15" orderBy="priority"
-          domain="self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id)"
+          onSelect="action-bill-of-material-attrs-set-bill-of-material-domain"
           form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"
           onChange="action-bill-of-material-record-count-number-of-components"
           canSelect="$canSelect"/>
@@ -384,6 +384,22 @@
     <field name="prodResidualProductList" hidden="true"
       if="!__config__.app.getApp('production')?.getManageResidualProductOnBom()"/>
   </search-filters>
+
+  <action-attrs name="action-bill-of-material-attrs-set-bill-of-materail-domain">
+    <attribute name="domain" for="billOfMaterialSet"
+      expr="eval: &quot;self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id)&quot;"/>
+    <attribute name="domain" for="billOfMaterialSet"
+      expr="eval: &quot;self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION}&quot;"
+      if="__config__.app.isApp('maintenance')"/>
+  </action-attrs>
+
+  <action-attrs name="action-bill-of-material-attrs-set-prod-process-domain">
+    <attribute name="domain" for="prodProcess"
+      expr="eval: &quot;(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)&quot;"/>
+    <attribute name="domain" for="prodProcess"
+      expr="eval: &quot;(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION}&quot;"
+      if="__config__.app.isApp('maintenance')"/>
+  </action-attrs>
 </object-views>
 
 

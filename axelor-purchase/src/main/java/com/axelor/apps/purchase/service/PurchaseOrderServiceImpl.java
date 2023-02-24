@@ -221,7 +221,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setCompany(company);
     purchaseOrder.setContactPartner(contactPartner);
     purchaseOrder.setCurrency(currency);
-    purchaseOrder.setDeliveryDate(deliveryDate);
+    purchaseOrder.setEstimatedReceiptDate(deliveryDate);
     purchaseOrder.setInternalReference(internalReference);
     purchaseOrder.setExternalReference(externalReference);
     purchaseOrder.setOrderDate(orderDate);

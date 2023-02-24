@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
-import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -37,55 +36,7 @@ public interface FixedAssetGenerationService {
    */
   FixedAsset generateAndComputeLines(FixedAsset fixedAsset) throws AxelorException;
 
-  /**
-   * Generate and computes derogatoryLines for fixedAsset
-   *
-   * @param fixedAsset
-   */
-  void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset);
-
-  /**
-   * Generate and computes fiscalFixedAssetLines for fixedAsset
-   *
-   * @param fixedAsset
-   * @throws AxelorException
-   */
-  void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset) throws AxelorException;
-
-  /**
-   * Generate and computes fixedAssetLines for fixedAsset
-   *
-   * @param fixedAsset
-   * @throws AxelorException
-   */
-  void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) throws AxelorException;
-
-  /**
-   * Generate and computes fixedAssetLines for fixedAsset but instead of generate the initial fixed
-   * asset line, it starts from fixedAssetLine.
-   *
-   * @param fixedAsset
-   * @throws AxelorException
-   */
-  void generateAndComputeFixedAssetLinesStartingWith(
-      FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException;
-
-  /**
-   * Allow to create fixed asset from invoice
-   *
-   * @param invoice
-   * @return
-   * @throws AxelorException
-   */
   List<FixedAsset> createFixedAssets(Invoice invoice) throws AxelorException;
-
-  /**
-   * Generates and compute ifrs lines for fixedAsset
-   *
-   * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
-   */
-  void generateAndComputeIfrsFixedAssetLines(FixedAsset fixedAsset) throws AxelorException;
 
   /**
    * This method will generate a fixed asset based on the moveLine. fixetAsset.name =

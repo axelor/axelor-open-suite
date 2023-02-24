@@ -120,7 +120,7 @@ public class ProjectServiceImpl implements ProjectService {
     return projectRepository.save(project);
   }
 
-  private String getUniqueProjectName(Partner partner) {
+  protected String getUniqueProjectName(Partner partner) {
     String baseName = String.format(I18n.get("%s project"), partner.getName());
     long count =
         projectRepository.all().filter(String.format("self.name LIKE '%s%%'", baseName)).count();
@@ -237,7 +237,6 @@ public class ProjectServiceImpl implements ProjectService {
     project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
     project.setImputable(projectTemplate.getImputable());
     project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
-    project.setExcludePlanning(projectTemplate.getExcludePlanning());
     project.setProjectStatus(getDefaultProjectStatus());
     project.setProjectTaskStatusSet(
         new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));

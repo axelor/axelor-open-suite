@@ -18,11 +18,11 @@
 package com.axelor.apps.crm.message;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.Message;
@@ -67,19 +67,19 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
 
     if (company != null) {
       switch (event.getTypeSelect()) {
-        case EventRepository.TYPE_EVENT:
+        case ICalendarEventRepository.TYPE_EVENT:
           template = Beans.get(CrmConfigService.class).getCrmConfig(company).getEventTemplate();
           break;
 
-        case EventRepository.TYPE_CALL:
+        case ICalendarEventRepository.TYPE_CALL:
           template = Beans.get(CrmConfigService.class).getCrmConfig(company).getCallTemplate();
           break;
 
-        case EventRepository.TYPE_MEETING:
+        case ICalendarEventRepository.TYPE_MEETING:
           template = Beans.get(CrmConfigService.class).getCrmConfig(company).getMeetingTemplate();
           break;
 
-        case EventRepository.TYPE_TASK:
+        case ICalendarEventRepository.TYPE_TASK:
           template = Beans.get(CrmConfigService.class).getCrmConfig(company).getTaskTemplate();
           break;
 

@@ -221,7 +221,7 @@ public class MailServiceMessageImpl extends MailServiceImpl {
     return sender;
   }
 
-  private MailReader getMailReader(EmailAccount emailAccount) {
+  protected MailReader getMailReader(EmailAccount emailAccount) {
 
     if (readerAccount == null
         || !readerAccount.getId().equals(emailAccount.getId())

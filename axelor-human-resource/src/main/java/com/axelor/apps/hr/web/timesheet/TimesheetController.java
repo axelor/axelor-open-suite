@@ -33,6 +33,7 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.user.UserHrService;
@@ -557,7 +558,9 @@ public class TimesheetController {
       if (user != null) {
         Company company = user.getActiveCompany();
         if (company != null && company.getHrConfig() != null) {
-          showActivity = !company.getHrConfig().getUseUniqueProductForTimesheet();
+          showActivity =
+              !company.getHrConfig().getUseUniqueProductForTimesheet()
+                  && Beans.get(AppHumanResourceService.class).getAppTimesheet().getEnableActivity();
         }
       }
     }

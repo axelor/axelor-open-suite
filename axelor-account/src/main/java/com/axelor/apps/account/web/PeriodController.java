@@ -60,7 +60,8 @@ public class PeriodController {
             "temporarilyCloseBtn",
             "hidden",
             period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
-                || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED);
+                || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
+                || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS);
         response.setAttr(
             "openBtn",
             "hidden",
@@ -70,7 +71,10 @@ public class PeriodController {
       }
       if (periodServiceAccount.isManageClosedPeriod(period, user)) {
         response.setAttr(
-            "closeBtn", "hidden", period.getStatusSelect() == PeriodRepository.STATUS_CLOSED);
+            "closeBtn",
+            "hidden",
+            period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
+                || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS);
         response.setAttr(
             "openBtn",
             "hidden",
@@ -103,7 +107,8 @@ public class PeriodController {
       if (period != null) {
         boolean isReadOnly =
             period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-                || period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED;
+                || period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
+                || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS;
 
         Boolean isInMove =
             (Beans.get(PeriodControlService.class).isLinkedToMove(period)

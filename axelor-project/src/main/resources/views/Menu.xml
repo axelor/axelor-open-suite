@@ -20,6 +20,14 @@
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjects"/>
   </action-method>
 
+  <menuitem name="project-all-tree" parent="menu-project-root" order="13"
+    title="Projects tree" action="project.all.tree"/>
+  <action-view name="project.all.tree" title="Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="tree" name="project-tree"/>
+    <view-param name="forceTitle" value="true"/>
+  </action-view>
+
   <menuitem name="project-task-all" parent="menu-project-root" order="15" title="Tasks"
     action="project.task.all"/>
   <action-method name="project.task.all">

@@ -118,7 +118,7 @@ public class LunchVoucherAdvanceController {
     }
   }
 
-  private String getTimezone(LunchVoucherAdvance lunchVoucherAdvance) {
+  protected String getTimezone(LunchVoucherAdvance lunchVoucherAdvance) {
     if (lunchVoucherAdvance.getEmployee() == null
         || lunchVoucherAdvance.getEmployee().getUser() == null
         || lunchVoucherAdvance.getEmployee().getUser().getActiveCompany() == null) {

@@ -271,4 +271,6 @@ public interface ManufOrderService {
   public void createBarcode(ManufOrder manufOrder);
 
   List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
+
+  public BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException;
 }

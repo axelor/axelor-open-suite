@@ -17,11 +17,18 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public interface ProductStockLocationService {
 
   Map<String, Object> computeIndicators(Long productId, Long companyId, Long stockLocationId)
+      throws AxelorException;
+
+  BigDecimal getAvailableQty(Product product, Company company, StockLocation stockLocation)
       throws AxelorException;
 }

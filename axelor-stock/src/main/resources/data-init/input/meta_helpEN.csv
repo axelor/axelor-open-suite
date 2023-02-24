@@ -14,6 +14,6 @@
 "axelor-stock";"TrackingNumberConfiguration";"tracking-number-configuration-form";"saleAutoTrackingNbrOrderSelect";"Enables to specify whether, in the case of sale, the most ancient (FIFO) or most recent (LIFO) tracking number will be selected. "
 "axelor-stock";"TrackingNumberConfiguration";"tracking-number-configuration-form";"saleQtyByTracking";"Enables to specify the product quantity (in product unit) which will be batched under the same tracking number. By default, this number is set to 1. "
 "axelor-stock";"StockConfig";"stock-config-form";"realizeStockMovesUponParcelPalletCollection";"If this option is activated, when a logistic form goes to the collected status, the customer delivery automatically changes to the status ""Realized""."
-"axelor-stock";"StockConfig";"stock-config-form";"freightCarrierCustomerAccountNumberList";"Allows you to enter your customer number to the carriers companies.
-"
+"axelor-stock";"StockConfig";"stock-config-form";"freightCarrierCustomerAccountNumberList";"Allows you to enter your customer number to the carriers companies."
 "axelor-stock";"StockConfig";"stock-config-form";"stockMoveAutomaticMail";"By checking this box, an email will automatically be sent when performing a stock movement. You can select the message template that will be sent."
+"axelor-stock";"StockConfig";"stock-config-form";"percentToleranceForWapChange";"This configuration allows you to define a tolerance limit when calculating the WAP. If the change in the WAP exceeds the defined percentage, the user will be alert."
