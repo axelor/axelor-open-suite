@@ -122,29 +122,33 @@ public class AnalyticDistributionLineController {
   }
 
   public void setAnalyticAccountDomain(ActionRequest request, ActionResponse response) {
-    AnalyticDistributionLine analyticDistributionLine =
-        request.getContext().asType(AnalyticDistributionLine.class);
-    Context parentContext = request.getContext().getParent();
-    Context grandParentContext = null;
-    Account account = null;
+    try {
+      AnalyticDistributionLine analyticDistributionLine =
+          request.getContext().asType(AnalyticDistributionLine.class);
+      Context parentContext = request.getContext().getParent();
+      Context grandParentContext = null;
+      Account account = null;
 
-    if (parentContext != null
-        && AnalyticDistributionTemplate.class.equals(parentContext.getContextClass())) {
-      AnalyticDistributionTemplate analyticDistributionTemplate =
-          parentContext.asType(AnalyticDistributionTemplate.class);
+      if (parentContext != null
+          && AnalyticDistributionTemplate.class.equals(parentContext.getContextClass())) {
+        AnalyticDistributionTemplate analyticDistributionTemplate =
+            parentContext.asType(AnalyticDistributionTemplate.class);
 
-      grandParentContext = request.getContext().getParent().getParent();
-      if (grandParentContext != null
-          && Account.class.equals(grandParentContext.getContextClass())) {
-        account = grandParentContext.asType(Account.class);
+        grandParentContext = parentContext.getParent();
+        if (grandParentContext != null
+            && Account.class.equals(grandParentContext.getContextClass())) {
+          account = grandParentContext.asType(Account.class);
+        }
+        String domain =
+            Beans.get(AnalyticAccountService.class)
+                .getAnalyticAccountDomain(
+                    analyticDistributionTemplate, analyticDistributionLine, account);
+
+        response.setAttr("analyticAccount", "domain", domain);
+        response.setAttr("analyticAccountSet", "domain", domain);
       }
-      String domain =
-          Beans.get(AnalyticAccountService.class)
-              .getAnalyticAccountDomain(
-                  analyticDistributionTemplate, analyticDistributionLine, account);
-
-      response.setAttr("analyticAccount", "domain", domain);
-      response.setAttr("analyticAccountSet", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
