@@ -367,7 +367,9 @@ public class MoveController {
     Move move = request.getContext().asType(Move.class);
     if (move != null) {
       try {
-        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(move.getCompany(), move.getJournal());
         response.setAttr("partner", "domain", domain);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
