@@ -52,7 +52,7 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public GlobalTrackingLog createExportLog(MetaModel model, MetaFile metaFile) {
 
     GlobalTrackingLog log = new GlobalTrackingLog();
@@ -81,7 +81,7 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void removeGlobalTrackingLogs(List<GlobalTrackingLog> globalTrackingLogList) {
     for (GlobalTrackingLog globalTrackingLog : globalTrackingLogList) {
       MetaFile metaFile = globalTrackingLog.getMetaFile();

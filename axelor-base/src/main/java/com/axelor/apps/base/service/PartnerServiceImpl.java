@@ -384,7 +384,7 @@ public class PartnerServiceImpl implements PartnerService {
     return partnerAddress;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   @Override
   public void resetDefaultAddress(Partner partner, String addrTypeQuery) {
 
@@ -499,7 +499,7 @@ public class PartnerServiceImpl implements PartnerService {
         "self.partner.id = ?1 AND self.isDefaultAddr = true");
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   @Override
   public Partner savePartner(Partner partner) {
     return partnerRepo.save(partner);
@@ -540,7 +540,7 @@ public class PartnerServiceImpl implements PartnerService {
     return new String(Str);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   @Override
   public void convertToIndividualPartner(Partner partner) {
     partner.setIsContact(false);

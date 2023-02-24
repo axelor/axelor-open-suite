@@ -34,7 +34,7 @@ public class ClearMessage {
 
   // Delete all mail messages generated on import
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Object clearAllMailMessages(Object bean, Map<String, Object> values) {
 
     for (MailMessage mailMessage : mailRepo.all().fetch()) {

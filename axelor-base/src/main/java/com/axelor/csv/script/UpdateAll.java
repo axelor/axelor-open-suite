@@ -34,7 +34,7 @@ public class UpdateAll {
 
   @Inject private PeriodRepository periodRepo;
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Object updatePeriod(Object bean, Map<String, Object> values) {
     try {
       assert bean instanceof Company;

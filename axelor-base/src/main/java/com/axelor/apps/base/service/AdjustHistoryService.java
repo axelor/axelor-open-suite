@@ -33,7 +33,7 @@ public class AdjustHistoryService {
     this.adjustHistoryRepo = adjustHistoryRepo;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void setStartDate(Year year) {
     AdjustHistory adjustHistory = new AdjustHistory();
     adjustHistory.setFiscalYear(year);
@@ -41,7 +41,7 @@ public class AdjustHistoryService {
     adjustHistoryRepo.save(adjustHistory);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void setStartDate(Period period) {
     AdjustHistory adjustHistory = new AdjustHistory();
     adjustHistory.setPeriod(period);
@@ -49,7 +49,7 @@ public class AdjustHistoryService {
     adjustHistoryRepo.save(adjustHistory);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public AdjustHistory setEndDate(Year year) {
     AdjustHistory adjustHistory =
         adjustHistoryRepo
@@ -62,7 +62,7 @@ public class AdjustHistoryService {
     return adjustHistory;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void setEndDate(Period period) {
     AdjustHistory adjustHistory =
         adjustHistoryRepo

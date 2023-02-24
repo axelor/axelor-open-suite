@@ -86,7 +86,7 @@ public abstract class AbstractTimerService implements TimerService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void cancel(Timer timer) {
     List<TimerHistory> histories = timerHistoryRepository.findByTimer(timer).fetch();
     histories.forEach(timerHistoryRepository::remove);

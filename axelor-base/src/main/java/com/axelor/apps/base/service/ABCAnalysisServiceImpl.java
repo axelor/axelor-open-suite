@@ -109,7 +109,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void reset(ABCAnalysis abcAnalysis) {
     abcAnalysisLineRepository
         .all()
@@ -139,7 +139,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void start(ABCAnalysis abcAnalysis) {
     abcAnalysis.setStatusSelect(ABCAnalysisRepository.STATUS_ANALYZING);
     abcAnalysisRepository.save(abcAnalysis);
@@ -247,7 +247,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     return Optional.of(abcAnalysisLine);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void setQtyWorth(
       ABCAnalysisLine abcAnalysisLine, BigDecimal decimalQty, BigDecimal decimalWorth) {
     abcAnalysisLine.setDecimalQty(decimalQty);
@@ -273,7 +273,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void analyzeLine(ABCAnalysisLine abcAnalysisLine) {
     computePercentage(abcAnalysisLine);
     setABCAnalysisClass(abcAnalysisLine);
@@ -344,7 +344,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     this.cumulatedWorth = this.cumulatedWorth.add(cumulatedWorth);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void finish(ABCAnalysis abcAnalysis) {
     abcAnalysis.setStatusSelect(ABCAnalysisRepository.STATUS_FINISHED);
     abcAnalysisRepository.save(abcAnalysis);

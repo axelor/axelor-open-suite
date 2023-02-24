@@ -146,7 +146,7 @@ public abstract class CurrencyConversionService {
    * @param appBase
    * @param variations
    */
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void createCurrencyConversionLine(
       Currency currencyFrom,
       Currency currencyTo,
@@ -194,7 +194,7 @@ public abstract class CurrencyConversionService {
       int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void saveCurrencyConversionLine(CurrencyConversionLine ccl) {
     cclRepo.save(ccl);
   }

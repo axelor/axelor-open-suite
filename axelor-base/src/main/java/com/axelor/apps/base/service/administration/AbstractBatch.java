@@ -245,12 +245,12 @@ public abstract class AbstractBatch {
     checkPoint();
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected Batch checkPoint() {
     return findBatch();
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void unarchived() {
     try {
       final Class<? extends Model> entityClass = EntityHelper.getEntityClass(model);

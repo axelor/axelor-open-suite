@@ -37,7 +37,7 @@ public class TranslationRestServiceImpl implements TranslationRestService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Integer createNewTranslation(Map<String, String> translationMap, String language)
       throws AxelorException {
     Iterator<String> keys = translationMap.keySet().iterator();

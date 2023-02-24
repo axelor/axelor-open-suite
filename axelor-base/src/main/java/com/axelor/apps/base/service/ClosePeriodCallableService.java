@@ -65,7 +65,7 @@ public class ClosePeriodCallableService implements Callable<Period> {
             period.getClass());
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void onRunnerException(Exception e) {
     TraceBackService.trace(e);
     Beans.get(MailMessageService.class)

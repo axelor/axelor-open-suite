@@ -83,7 +83,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Message createMessage(
       String model,
       long id,
