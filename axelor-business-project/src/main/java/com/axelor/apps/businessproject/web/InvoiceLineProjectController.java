@@ -51,7 +51,7 @@ public class InvoiceLineProjectController {
     }
   }
 
-  private void setCustomerInvoiceLineProject(
+  protected void setCustomerInvoiceLineProject(
       ActionRequest request, ActionResponse response, Project project) {
 
     List<Map<String, Object>> customerInvoiceLineSet =
@@ -110,7 +110,7 @@ public class InvoiceLineProjectController {
     }
   }
 
-  private void setSupplierInvoiceLineProject(
+  protected void setSupplierInvoiceLineProject(
       ActionRequest request, ActionResponse response, Project project) {
 
     List<Map<String, Object>> supplierInvoiceLineSet =

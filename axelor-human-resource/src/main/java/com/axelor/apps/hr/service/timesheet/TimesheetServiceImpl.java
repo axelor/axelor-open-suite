@@ -764,7 +764,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.setProjectTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
   }
 
-  private Project findProject(Long projectId) {
+  protected Project findProject(Long projectId) {
     Project project;
     final long startTime = System.currentTimeMillis();
     while ((project = projectRepo.find(projectId)) == null
@@ -777,7 +777,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     return project;
   }
 
-  private void sleep() {
+  protected void sleep() {
     try {
       Thread.sleep(ENTITY_FIND_INTERVAL);
     } catch (InterruptedException e) {

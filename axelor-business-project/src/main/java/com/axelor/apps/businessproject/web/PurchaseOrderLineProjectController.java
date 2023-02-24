@@ -55,7 +55,7 @@ public class PurchaseOrderLineProjectController {
     }
   }
 
-  private void setProject(ActionRequest request, ActionResponse response, Project project) {
+  protected void setProject(ActionRequest request, ActionResponse response, Project project) {
 
     List<Map<String, Object>> purchaseOrderLineSet =
         (List<Map<String, Object>>) request.getContext().get("purchaseOrderLineSet");

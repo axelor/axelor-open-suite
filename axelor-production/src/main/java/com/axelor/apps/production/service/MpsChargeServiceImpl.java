@@ -84,7 +84,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
     return totalHoursCountYearMonthForMpsWeeklySchedualMap;
   }
 
-  private BigDecimal countTotalHoursForGivenMonth(
+  protected BigDecimal countTotalHoursForGivenMonth(
       MpsWeeklySchedule mpsWeeklySchedule, YearMonth yearMonth) {
 
     Integer weekCountForLastDayOfMonth =
@@ -100,7 +100,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
     return totalHoursCountForGivenMonth;
   }
 
-  private BigDecimal countTotalHoursForExtraDaysInMonth(
+  protected BigDecimal countTotalHoursForExtraDaysInMonth(
       MpsWeeklySchedule mpsWeeklySchedule, YearMonth yearMonth) {
 
     BigDecimal totalHours = BigDecimal.ZERO;

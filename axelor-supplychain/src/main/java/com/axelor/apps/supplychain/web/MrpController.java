@@ -143,7 +143,7 @@ public class MrpController {
     }
   }
 
-  private String getTimezone(Mrp mrp) {
+  protected String getTimezone(Mrp mrp) {
     if (mrp.getStockLocation() == null || mrp.getStockLocation().getCompany() == null) {
       return null;
     }

@@ -146,7 +146,7 @@ public class EmployeeController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  private String getTimezone(User user) {
+  protected String getTimezone(User user) {
     if (user == null || user.getActiveCompany() == null) {
       return null;
     }

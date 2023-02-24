@@ -26,7 +26,7 @@ import javax.persistence.PostPersist;
 public class ConfiguratorCreatorListener {
 
   @PostPersist
-  private void onPostPersist(ConfiguratorCreator creator) {
+  protected void onPostPersist(ConfiguratorCreator creator) {
     try {
       Beans.get(ConfiguratorCreatorService.class).init(creator);
     } catch (Exception e) {

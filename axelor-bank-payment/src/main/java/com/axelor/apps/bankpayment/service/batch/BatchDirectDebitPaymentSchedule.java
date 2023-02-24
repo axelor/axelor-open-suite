@@ -172,7 +172,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
     processQuery(queryBuilder);
   }
 
-  private void processQuery(QueryBuilder<PaymentScheduleLine> queryBuilder) {
+  protected void processQuery(QueryBuilder<PaymentScheduleLine> queryBuilder) {
     Query<PaymentScheduleLine> query = queryBuilder.build();
 
     List<PaymentScheduleLine> paymentScheduleLineList;

@@ -676,6 +676,13 @@ public class PaymentVoucherConfirmService {
               .findFirst()
               .orElse(null);
       if (accountManagement != null) {
+        if (financialDiscountAccount.getVatSystemSelect() == null
+            || financialDiscountAccount.getVatSystemSelect() == 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+              financialDiscountAccount.getCode());
+        }
         int vatSystem = financialDiscountAccount.getVatSystemSelect();
         MoveLine financialDiscountVatMoveLine =
             moveLineCreateService.createMoveLine(

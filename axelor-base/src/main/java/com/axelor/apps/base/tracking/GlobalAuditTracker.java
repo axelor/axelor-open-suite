@@ -147,7 +147,7 @@ public class GlobalAuditTracker {
     }
   }
 
-  private boolean canTrack(GlobalTrackingConfigurationLine confLine, int typeSelect) {
+  protected boolean canTrack(GlobalTrackingConfigurationLine confLine, int typeSelect) {
 
     switch (typeSelect) {
       case GlobalTrackingLogRepository.TYPE_CREATE:

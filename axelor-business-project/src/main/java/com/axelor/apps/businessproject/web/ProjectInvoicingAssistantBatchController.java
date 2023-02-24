@@ -112,7 +112,7 @@ public class ProjectInvoicingAssistantBatchController {
     }
   }
 
-  private void showRecords(
+  protected void showRecords(
       ActionRequest request, ActionResponse response, Map<String, Object> values)
       throws ClassNotFoundException {
 

@@ -109,7 +109,7 @@ public class PermissionAssistantService {
           /*$$(*/ "Readonly If" /*)*/,
           /*$$(*/ "Hide If" /*)*/);
 
-  private String getFileName(PermissionAssistant assistant) {
+  protected String getFileName(PermissionAssistant assistant) {
 
     String userCode = assistant.getCreatedBy().getCode();
     String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
@@ -149,7 +149,7 @@ public class PermissionAssistantService {
     return strings.stream().map(bundle::getString).collect(Collectors.toList());
   }
 
-  private void writeGroup(CSVWriter csvWriter, PermissionAssistant assistant) {
+  protected void writeGroup(CSVWriter csvWriter, PermissionAssistant assistant) {
 
     String[] groupRow = null;
     Integer count = header.size();
@@ -186,7 +186,7 @@ public class PermissionAssistantService {
         ((MetaField) field1).getName().compareTo(((MetaField) field2).getName());
   }
 
-  private void writeObject(
+  protected void writeObject(
       CSVWriter csvWriter, PermissionAssistant assistant, Integer size, ResourceBundle bundle) {
 
     MetaField userField = assistant.getMetaField();
@@ -246,7 +246,7 @@ public class PermissionAssistantService {
     }
   }
 
-  private String getPermissionName(MetaField userField, String objectName, String suffix) {
+  protected String getPermissionName(MetaField userField, String objectName, String suffix) {
 
     String permName = "perm." + objectName + "." + suffix;
     if (userField != null) {
@@ -256,7 +256,7 @@ public class PermissionAssistantService {
     return permName;
   }
 
-  private String getFieldTitle(MetaField field, ResourceBundle bundle) {
+  protected String getFieldTitle(MetaField field, ResourceBundle bundle) {
 
     String title = field.getLabel();
     if (!Strings.isNullOrEmpty(title)) {
@@ -269,7 +269,7 @@ public class PermissionAssistantService {
     return title;
   }
 
-  private int writeFieldPermission(MetaField field, String[] row, int colIndex, String permName) {
+  protected int writeFieldPermission(MetaField field, String[] row, int colIndex, String permName) {
 
     MetaPermissionRule rule =
         ruleRepository
@@ -296,7 +296,7 @@ public class PermissionAssistantService {
     return colIndex;
   }
 
-  private int writePermission(
+  protected int writePermission(
       MetaModel object, MetaField userField, String[] row, int colIndex, String permName) {
 
     Permission perm = permissionRepository.findByName(permName);
@@ -372,7 +372,7 @@ public class PermissionAssistantService {
     return true;
   }
 
-  private boolean checkHeaderRow(Collection<String> headerRow, ResourceBundle bundle) {
+  protected boolean checkHeaderRow(Collection<String> headerRow, ResourceBundle bundle) {
     Collection<String> translatedHeader = getTranslatedStrings(header, bundle);
     Collection<String> translatedGroupHeader = getTranslatedStrings(groupHeader, bundle);
 
@@ -515,7 +515,7 @@ public class PermissionAssistantService {
     return roleMap;
   }
 
-  private String checkObject(String objectName) {
+  protected String checkObject(String objectName) {
 
     MetaModel model = modelRepository.all().filter("self.fullName = ?1", objectName).fetchOne();
 
@@ -527,7 +527,7 @@ public class PermissionAssistantService {
     return objectName;
   }
 
-  private void processGroupCSV(
+  protected void processGroupCSV(
       CSVReader csvReader,
       String[] groupRow,
       Map<String, Group> groupMap,
@@ -569,7 +569,7 @@ public class PermissionAssistantService {
     }
   }
 
-  private void processRoleCSV(
+  protected void processRoleCSV(
       CSVReader csvReader,
       String[] roleRow,
       Map<String, Role> roleMap,

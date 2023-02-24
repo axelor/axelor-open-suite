@@ -239,7 +239,7 @@ public class ProjectedStockController {
     response.setData(dataList);
   }
 
-  private LocalDate addInterElementForProjectedStockChart(
+  protected LocalDate addInterElementForProjectedStockChart(
       List<Map<String, Object>> dataList, MrpLine lastMrpLine, LocalDate mrpDate, MrpLine mrpLine) {
     while (mrpDate.isBefore(mrpLine.getMaturityDate())) {
       mrpDate = mrpDate.plusDays(1);

@@ -371,7 +371,7 @@ public class SaleOrderLineController {
     }
   }
 
-  private void compute(ActionResponse response, SaleOrder saleOrder, SaleOrderLine orderLine)
+  protected void compute(ActionResponse response, SaleOrder saleOrder, SaleOrderLine orderLine)
       throws AxelorException {
 
     Map<String, BigDecimal> map =

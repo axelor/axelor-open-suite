@@ -236,7 +236,7 @@ public class ContractController {
     }
   }
 
-  private LocalDate getTodayDate(Company company) {
+  protected LocalDate getTodayDate(Company company) {
     return Beans.get(AppBaseService.class).getTodayDate(company);
   }
 

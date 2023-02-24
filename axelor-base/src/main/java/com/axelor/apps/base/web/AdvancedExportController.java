@@ -133,7 +133,7 @@ public class AdvancedExportController {
     }
   }
 
-  private String getFieldTitle(Inflector inflector, String fieldName) {
+  protected String getFieldTitle(Inflector inflector, String fieldName) {
     return inflector.humanize(fieldName);
   }
 
@@ -187,7 +187,7 @@ public class AdvancedExportController {
     }
   }
 
-  private void advancedExport(ActionRequest request, ActionResponse response, String fileType)
+  protected void advancedExport(ActionRequest request, ActionResponse response, String fileType)
       throws AxelorException, IOException {
 
     AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
@@ -196,7 +196,7 @@ public class AdvancedExportController {
     getAdvancedExportFile(request, response, advancedExport, fileType);
   }
 
-  private void getAdvancedExportFile(
+  protected void getAdvancedExportFile(
       ActionRequest request,
       ActionResponse response,
       AdvancedExport advancedExport,
@@ -328,7 +328,7 @@ public class AdvancedExportController {
     }
   }
 
-  private void downloadExportFile(ActionResponse response, MetaFile exportFile) {
+  protected void downloadExportFile(ActionResponse response, MetaFile exportFile) {
     if (exportFile != null) {
       response.setView(
           ActionView.define(I18n.get("Export file"))

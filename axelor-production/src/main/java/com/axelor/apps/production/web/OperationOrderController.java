@@ -224,7 +224,7 @@ public class OperationOrderController {
     }
   }
 
-  private String getTimezone(OperationOrder operationOrder) {
+  protected String getTimezone(OperationOrder operationOrder) {
     if (operationOrder.getManufOrder() == null
         || operationOrder.getManufOrder().getCompany() == null) {
       return null;

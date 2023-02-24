@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 
 public interface MoveViewHelperService {
 
-  String filterPartner(Move move);
+  String filterPartner(Company company, Journal journal);
 
   Move updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(Move move) throws AxelorException;
 }

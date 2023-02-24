@@ -55,7 +55,7 @@ public class SaleOrderLineProjectController {
     }
   }
 
-  private void setProject(ActionRequest request, ActionResponse response, Project project) {
+  protected void setProject(ActionRequest request, ActionResponse response, Project project) {
     List<Map<String, Object>> saleOrderLineSet =
         (List<Map<String, Object>>) request.getContext().get("salesOrderLineSet");
     if (saleOrderLineSet == null || saleOrderLineSet.isEmpty()) {

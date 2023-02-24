@@ -609,7 +609,7 @@ public class ExpenseController {
     }
   }
 
-  private void setExpense(ActionRequest request, ExpenseLine expenseLine) {
+  protected void setExpense(ActionRequest request, ExpenseLine expenseLine) {
 
     Context parent = request.getContext().getParent();
 

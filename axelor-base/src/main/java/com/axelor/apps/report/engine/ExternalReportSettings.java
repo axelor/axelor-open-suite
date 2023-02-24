@@ -95,7 +95,7 @@ public class ExternalReportSettings extends ReportSettings {
     return this.url;
   }
 
-  private String computeParam(String param) throws UnsupportedEncodingException {
+  protected String computeParam(String param) throws UnsupportedEncodingException {
     Object paramValue = params.get(param);
     if (paramValue != null) {
       return "&" + param + "=" + URLEncoder.encode(paramValue.toString(), "UTF-8");
@@ -104,7 +104,7 @@ public class ExternalReportSettings extends ReportSettings {
     }
   }
 
-  private ReportSettings addAxelorReportPath(String rptdesign) {
+  protected ReportSettings addAxelorReportPath(String rptdesign) {
 
     AppSettings appsSettings = AppSettings.get();
 

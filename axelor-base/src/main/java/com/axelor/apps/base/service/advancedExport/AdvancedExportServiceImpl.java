@@ -148,7 +148,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    * @param metaModel
    * @throws ClassNotFoundException
    */
-  private void createQueryParts(String[] splitField, int parentIndex, MetaModel metaModel)
+  protected void createQueryParts(String[] splitField, int parentIndex, MetaModel metaModel)
       throws ClassNotFoundException {
 
     while (parentIndex <= splitField.length - 1) {
@@ -171,7 +171,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     }
   }
 
-  private void checkRelationalField(String[] splitField, int parentIndex) {
+  protected void checkRelationalField(String[] splitField, int parentIndex) {
     String tempAliasName = "";
     isNormalField = false;
     if (parentIndex != 0) {
@@ -193,14 +193,14 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     }
   }
 
-  private String isKeyword(String[] fieldNames, int ind) {
+  protected String isKeyword(String[] fieldNames, int ind) {
     if (NamingTool.isKeyword(fieldNames[ind])) {
       return fieldNames[ind] + "_id";
     }
     return fieldNames[ind];
   }
 
-  private void checkSelectionField(String[] fieldName, int index, MetaModel metaModel)
+  protected void checkSelectionField(String[] fieldName, int index, MetaModel metaModel)
       throws ClassNotFoundException {
 
     Class<?> klass = Class.forName(metaModel.getFullName());
@@ -223,7 +223,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     }
   }
 
-  private void addSelectionField(String fieldName, String alias, String metaSelectIds) {
+  protected void addSelectionField(String fieldName, String alias, String metaSelectIds) {
     String selectionJoin =
         "LEFT JOIN "
             + "MetaSelectItem "
@@ -258,7 +258,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     selectionJoinFieldSet.add(selectionJoin);
   }
 
-  private void checkNormalField(String[] splitField, int parentIndex) {
+  protected void checkNormalField(String[] splitField, int parentIndex) {
 
     if (isSelectionField) {
       if (parentIndex == 0) {
@@ -299,7 +299,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    * @param orderByFieldBuilder
    * @return
    */
-  private StringBuilder createQueryBuilder(
+  protected StringBuilder createQueryBuilder(
       AdvancedExport advancedExport,
       StringBuilder selectFieldBuilder,
       List<Long> recordIds,
@@ -343,7 +343,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    * @param criteria
    * @return
    */
-  private String getCriteria(MetaModel metaModel, List<Long> recordIds) {
+  protected String getCriteria(MetaModel metaModel, List<Long> recordIds) {
     String criteria = null;
     if (recordIds != null) {
       criteria = recordIds.toString().substring(1, recordIds.toString().length() - 1);
@@ -390,7 +390,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     return null;
   }
 
-  private Query createQuery(StringBuilder queryBuilder) {
+  protected Query createQuery(StringBuilder queryBuilder) {
     int n = 0, i = queryBuilder.indexOf("?");
     while (i > -1) {
       queryBuilder.replace(i, i + 1, "?" + (++n));
@@ -495,7 +495,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
      * @param filter the filter expression
      * @return the transformed filter expression
      */
-    private String parse(String filter) {
+    protected String parse(String filter) {
 
       String result = "";
       Matcher matcher = pathPattern.matcher(filter);

@@ -58,7 +58,7 @@ public class MrpLineController {
 
   @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
-  private void toggle(ActionRequest request, ActionResponse response, boolean proposalToProcess) {
+  protected void toggle(ActionRequest request, ActionResponse response, boolean proposalToProcess) {
     try {
       List<Integer> mrpLineIds = (List<Integer>) request.getContext().get("_ids");
 

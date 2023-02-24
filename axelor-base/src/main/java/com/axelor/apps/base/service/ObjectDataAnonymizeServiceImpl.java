@@ -89,7 +89,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     }
   }
 
-  private String getPath(DataConfigLine line) throws AxelorException {
+  protected String getPath(DataConfigLine line) throws AxelorException {
 
     String metaModelName = line.getMetaModel().getName();
 

@@ -779,7 +779,7 @@ public class ICalendarService {
     }
   }
 
-  private VEvent updateEvent(VEvent source, VEvent target, boolean keepRemote)
+  protected VEvent updateEvent(VEvent source, VEvent target, boolean keepRemote)
       throws IOException, URISyntaxException, ParseException {
 
     final String[] names = {

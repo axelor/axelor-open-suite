@@ -85,7 +85,7 @@ public class QualityControlPrintServiceImpl {
         .addFormat(format);
   }
 
-  private String getTimezone(QualityControl qualityControl) {
+  protected String getTimezone(QualityControl qualityControl) {
     return projectService.getTimeZone(qualityControl.getProject());
   }
 }

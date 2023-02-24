@@ -65,7 +65,7 @@ public class AssistantReportInvoiceController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  private String getDateString(AssistantReportInvoice assistant) {
+  protected String getDateString(AssistantReportInvoice assistant) {
     return assistant.getFromDate().format(dtFormater) + assistant.getToDate().format(dtFormater);
   }
 
