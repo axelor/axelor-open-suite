@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -64,16 +63,12 @@ public class AccountService {
   public static final int MAX_LEVEL_OF_ACCOUNT = 20;
 
   protected AccountRepository accountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AccountConfigService accountConfigService;
 
   @Inject
   public AccountService(
-      AccountRepository accountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
-      AccountConfigService accountConfigService) {
+      AccountRepository accountRepository, AccountConfigService accountConfigService) {
     this.accountRepository = accountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.accountConfigService = accountConfigService;
   }
 
