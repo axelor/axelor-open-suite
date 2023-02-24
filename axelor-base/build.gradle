@@ -48,7 +48,7 @@ dependencies {
 		api "com.axelor.addons:axelor-studio:1.0.0-SNAPSHOT"
 	}
 	implementation libs.faker
-	api libs.opencsv
+	api libs.commons_csv
 	api libs.wslite
 
 	implementation libs.logback
