@@ -1,3 +1,0 @@
----
-title : "PaymentSesion : Fix move generation on payment session when we use global accounting method"
-type: fix
