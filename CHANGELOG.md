@@ -1,3 +1,20 @@
+## [6.1.32] (2023-02-24)
+
+#### Fixed
+
+* Accounting report: fixed advanced search feature on grid view.
+* Stock move: fixed error on invoice creation when we try to invoice a stock move generated from a purchase order.
+* Stock move: fixed an error blocking stock move planification when app supplychain is not initialized.
+* Stock move: fixed error message when trying to create partial invoice with a quantity equals to 0.
+* Leave request: fixed the message informing the user of a negative number of leaves available.
+* Followers: fixed a bug where a NPE could occur if default mail message template was null.
+* Supplychain: improved error management to avoid creating inconsistencies in database.
+* Price lists: in a sale order, correctly check if the price list is active before allowing it to be selected.
+* DMN: Fix model change issue.
+* Unify the sale orders and deliveries menu entries: now the menu entries at the top are the same as the menu entries at the side.
+* Advanced export: fix duplicate lines when exporting a large amount of data.
+* Invoice: fixed an error that happened when selecting a Partner.
+
 ## [6.1.31] (2023-02-14)
 
 #### Fixed
@@ -977,6 +994,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.32]: https://github.com/axelor/axelor-open-suite/compare/v6.1.31...v6.1.32
 [6.1.31]: https://github.com/axelor/axelor-open-suite/compare/v6.1.30...v6.1.31
 [6.1.30]: https://github.com/axelor/axelor-open-suite/compare/v6.1.29...v6.1.30
 [6.1.29]: https://github.com/axelor/axelor-open-suite/compare/v6.1.28...v6.1.29

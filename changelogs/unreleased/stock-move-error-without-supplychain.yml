@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed an error blocking stock move planification when app supplychain is not initialized."
-type: fix
