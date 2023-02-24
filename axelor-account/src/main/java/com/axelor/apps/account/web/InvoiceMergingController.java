@@ -44,7 +44,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceMergingController {
 
-  private String getMergeConfirmFormViewName(InvoiceMergingResult result) {
+  protected String getMergeConfirmFormViewName(InvoiceMergingResult result) {
     if (result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
       return "supplier-invoices-merge-confirm-form";
     }

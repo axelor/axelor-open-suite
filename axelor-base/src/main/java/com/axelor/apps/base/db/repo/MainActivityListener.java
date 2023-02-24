@@ -26,7 +26,7 @@ public class MainActivityListener {
 
   @PrePersist
   @PreUpdate
-  private void computeFullName(MainActivity mainActivity) throws AxelorException {
+  protected void computeFullName(MainActivity mainActivity) throws AxelorException {
     if (mainActivity != null) {
       mainActivity.setFullName(mainActivity.getCode() + " - " + mainActivity.getShortName());
     }

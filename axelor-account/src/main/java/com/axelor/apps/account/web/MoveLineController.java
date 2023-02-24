@@ -256,7 +256,9 @@ public class MoveLineController {
     Move move = request.getContext().getParent().asType(Move.class);
     try {
       if (move != null) {
-        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(move.getCompany(), move.getJournal());
         response.setAttr("partner", "domain", domain);
       }
     } catch (Exception e) {
@@ -779,7 +781,7 @@ public class MoveLineController {
     }
   }
 
-  private LocalDate extractDueDate(ActionRequest request) {
+  protected LocalDate extractDueDate(ActionRequest request) {
     Context parentContext = request.getContext().getParent();
 
     if (parentContext == null) {

@@ -121,7 +121,7 @@ public class AppServiceImpl implements AppService {
     return appRepo.save(app);
   }
 
-  private void importData(App app, String dataDir, boolean useLang) throws IOException {
+  protected void importData(App app, String dataDir, boolean useLang) throws IOException {
 
     String modules = app.getModules();
     if (modules == null) {
@@ -142,7 +142,7 @@ public class AppServiceImpl implements AppService {
     }
   }
 
-  private void importPerConfig(String appCode, File dataDir) {
+  protected void importPerConfig(String appCode, File dataDir) {
 
     try {
       File[] configs =
@@ -165,7 +165,7 @@ public class AppServiceImpl implements AppService {
     }
   }
 
-  private String getLanguage(App app) {
+  protected String getLanguage(App app) {
 
     String lang = app.getLanguageSelect();
 
@@ -176,7 +176,7 @@ public class AppServiceImpl implements AppService {
     return lang;
   }
 
-  private void importParentData(App app) throws AxelorException, IOException {
+  protected void importParentData(App app) throws AxelorException, IOException {
 
     List<App> depends = getDepends(app, true);
 
@@ -188,7 +188,7 @@ public class AppServiceImpl implements AppService {
     }
   }
 
-  private App importDataInit(App app) throws IOException {
+  protected App importDataInit(App app) throws IOException {
 
     String lang = getLanguage(app);
     if (lang == null) {
@@ -204,7 +204,7 @@ public class AppServiceImpl implements AppService {
     return app;
   }
 
-  private void runImport(File config, File data) {
+  protected void runImport(File config, File data) {
 
     log.debug(
         "Running import with config path: {}, data path: {}",
@@ -234,7 +234,8 @@ public class AppServiceImpl implements AppService {
     }
   }
 
-  private File extract(String module, String dirName, String lang, String code) throws IOException {
+  protected File extract(String module, String dirName, String lang, String code)
+      throws IOException {
     String dirNamePattern = dirName.replaceAll("/|\\\\", "(/|\\\\\\\\)");
     List<URL> files = new ArrayList<>();
     files.addAll(MetaScanner.findAll(module, dirNamePattern, code + "(-+.*)?" + CONFIG_PATTERN));
@@ -277,7 +278,7 @@ public class AppServiceImpl implements AppService {
     return MetaScanner.findAll(module, fileNamePattern, "(.+?)");
   }
 
-  private void copy(InputStream in, File toDir, String name) throws IOException {
+  protected void copy(InputStream in, File toDir, String name) throws IOException {
     File dst = FileUtils.getFile(toDir, name);
     com.google.common.io.Files.createParentDirs(dst);
     FileOutputStream out = new FileOutputStream(dst);
@@ -288,7 +289,7 @@ public class AppServiceImpl implements AppService {
     }
   }
 
-  private void clean(File file) {
+  protected void clean(File file) {
     if (file.isDirectory()) {
       for (File child : file.listFiles()) {
         clean(child);
@@ -409,7 +410,7 @@ public class AppServiceImpl implements AppService {
     return appsList;
   }
 
-  private int compare(App app1, App app2) {
+  protected int compare(App app1, App app2) {
     Integer order1 = app1.getInstallOrder();
     Integer order2 = app2.getInstallOrder();
 
@@ -509,7 +510,7 @@ public class AppServiceImpl implements AppService {
     }
   }
 
-  private void copyStream(InputStream stream, File file) throws IOException {
+  protected void copyStream(InputStream stream, File file) throws IOException {
     if (stream != null) {
       try (FileOutputStream out = new FileOutputStream(file)) {
         ByteStreams.copy(stream, out);
@@ -566,7 +567,7 @@ public class AppServiceImpl implements AppService {
     return saveApp(app);
   }
 
-  private void importParentRoles(App app) throws AxelorException, IOException {
+  protected void importParentRoles(App app) throws AxelorException, IOException {
 
     List<App> depends = getDepends(app, true);
 
