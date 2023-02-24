@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,6 +45,9 @@ public interface WkfInstanceService {
   public boolean isActiveTask(String processInstanceId, String taskId);
 
   @CallMethod
+  public boolean isActiveModelTask(Model model, String taskId);
+
+  @CallMethod
   public List<String> findProcessInstanceByNode(
       String nodeKey, String processId, String type, boolean permanent);
 
@@ -55,6 +58,8 @@ public interface WkfInstanceService {
   public String getInstanceXml(String instanceId);
 
   public boolean isActivatedTask(String processInstanceId, String taskId);
+
+  public boolean isActivatedModelTask(Model model, String taskId);
 
   public void restart(String processInstanceId, String activityId);
 

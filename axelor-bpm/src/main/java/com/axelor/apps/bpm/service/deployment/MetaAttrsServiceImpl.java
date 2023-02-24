@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.slf4j.Logger;
@@ -52,6 +53,16 @@ public class MetaAttrsServiceImpl implements MetaAttrsService {
       "com.axelor.inject.Beans.get("
           + WkfInstanceService.class.getName()
           + ").isActivatedTask(processInstanceId, '%s')";
+
+  public static final String META_ATTRS_RELATED_FIELD_CONDITION =
+      "com.axelor.inject.Beans.get("
+          + WkfInstanceService.class.getName()
+          + ").isActiveModelTask(%s, '%s')";
+
+  public static final String META_ATTRS_RELATED_FIELD_CONDITION_PERMANENT =
+      "com.axelor.inject.Beans.get("
+          + WkfInstanceService.class.getName()
+          + ").isActivatedModelTask(%s, '%s')";
 
   @Inject protected MetaModelRepository metaModelRepository;
 
@@ -75,6 +86,7 @@ public class MetaAttrsServiceImpl implements MetaAttrsService {
 
     String model = null;
     String view = null;
+    String relatedField = null;
     String item = null;
     String roles = null;
     String permanent = null;
@@ -93,11 +105,15 @@ public class MetaAttrsServiceImpl implements MetaAttrsService {
         case "model":
           model = getModel(value);
           view = null;
+          relatedField = null;
           item = null;
           roles = null;
           break;
         case "view":
           view = value;
+          break;
+        case "relatedField":
+          relatedField = value;
           break;
         case "item":
           item = value;
@@ -108,6 +124,10 @@ public class MetaAttrsServiceImpl implements MetaAttrsService {
         case "modelName":
           break;
         case "modelType":
+          break;
+        case "modelLabel":
+          break;
+        case "itemType":
           break;
         case "itemLabel":
           break;
@@ -122,9 +142,20 @@ public class MetaAttrsServiceImpl implements MetaAttrsService {
             metaAttrs.setField(item);
             metaAttrs.setRoles(findRoles(roles));
             if (permanent != null && permanent.equals("true")) {
-              metaAttrs.setCondition(String.format(META_ATTRS_CONDITION_PERMANENT, taskName));
+              if (!StringUtils.isEmpty(relatedField)) {
+                metaAttrs.setCondition(
+                    String.format(
+                        META_ATTRS_RELATED_FIELD_CONDITION_PERMANENT, relatedField, taskName));
+              } else {
+                metaAttrs.setCondition(String.format(META_ATTRS_CONDITION_PERMANENT, taskName));
+              }
             } else {
-              metaAttrs.setCondition(String.format(META_ATTRS_CONDITION, taskName));
+              if (!StringUtils.isEmpty(relatedField)) {
+                metaAttrs.setCondition(
+                    String.format(META_ATTRS_RELATED_FIELD_CONDITION, relatedField, taskName));
+              } else {
+                metaAttrs.setCondition(String.format(META_ATTRS_CONDITION, taskName));
+              }
             }
             metaAttrs.setValue(value);
             metaAttrs.setName(name);

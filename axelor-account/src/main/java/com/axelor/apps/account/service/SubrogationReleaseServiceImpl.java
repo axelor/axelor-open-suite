@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -100,6 +100,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             .all()
             .filter(
                 "self.company = :company AND self.partner.factorizedCustomer = TRUE "
+                    + "AND self.operationTypeSelect in (:clientRefund, :clientSale) "
                     + "AND self.statusSelect = :invoiceStatusVentilated "
                     + "AND self.id not in ("
                     + "		select Invoices.id "
@@ -116,6 +117,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             .order("dueDate")
             .order("invoiceId");
     query.bind("company", company);
+    query.bind("clientRefund", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+    query.bind("clientSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
     query.bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED);
     query.bind(
         "subrogationReleaseStatusTransmitted", SubrogationReleaseRepository.STATUS_TRANSMITTED);

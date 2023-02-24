@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,28 +20,49 @@ package com.axelor.apps.sale.service.saleorder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderService {
 
-  @Inject protected SaleOrderCreateService saleOrderCreateService;
+  protected SaleOrderCreateService saleOrderCreateService;
 
-  @Inject protected SaleOrderRepository saleOrderRepo;
+  protected SaleOrderRepository saleOrderRepo;
 
-  @Inject protected AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public OpportunitySaleOrderServiceImpl(
+      SaleOrderCreateService saleOrderCreateService,
+      SaleOrderRepository saleOrderRepo,
+      AppBaseService appBaseService) {
+    this.saleOrderCreateService = saleOrderCreateService;
+    this.saleOrderRepo = saleOrderRepo;
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException {
+    if (opportunity.getPartner() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SaleExceptionMessage.OPPORTUNITY_PARTNER_MISSING),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          opportunity.getName());
+    }
+
     Currency currency = null;
     Company company = opportunity.getCompany();
     if (opportunity.getCurrency() != null) {
@@ -55,10 +76,6 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
     SaleOrder saleOrder = createSaleOrder(opportunity, currency);
 
     opportunity.addSaleOrderListItem(saleOrder);
-
-    if (opportunity.getSalesStageSelect() < OpportunityRepository.SALES_STAGE_PROPOSITION) {
-      opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_PROPOSITION);
-    }
 
     saleOrder.setTradingName(opportunity.getTradingName());
 

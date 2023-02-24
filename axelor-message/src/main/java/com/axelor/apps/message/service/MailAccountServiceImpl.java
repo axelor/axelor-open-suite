@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,7 +37,6 @@ import com.axelor.mail.MailReader;
 import com.axelor.mail.Pop3Account;
 import com.axelor.mail.SmtpAccount;
 import com.axelor.meta.MetaFiles;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -82,12 +81,25 @@ public class MailAccountServiceImpl implements MailAccountService {
   @Override
   public void checkDefaultMailAccount(EmailAccount mailAccount) throws AxelorException {
 
+    String query = this.mailAccountQuery(mailAccount);
+
+    if (!query.isEmpty()) {
+      Long count = mailAccountRepo.all().filter(query).count();
+
+      if (count > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
+      }
+    }
+  }
+
+  protected String mailAccountQuery(EmailAccount mailAccount) {
+    String query = null;
     if (mailAccount.getIsDefault()) {
-      String query = "self.isDefault = true";
-      List<Object> params = Lists.newArrayList();
+      query = "self.isDefault = true";
       if (mailAccount.getId() != null) {
-        query += " AND self.id != ?1";
-        params.add(mailAccount.getId());
+        query += " AND self.id != " + mailAccount.getId();
       }
 
       Integer serverTypeSelect = mailAccount.getServerTypeSelect();
@@ -103,14 +115,8 @@ public class MailAccountServiceImpl implements MailAccountService {
                 + EmailAccountRepository.SERVER_TYPE_POP
                 + ") ";
       }
-
-      Long count = mailAccountRepo.all().filter(query, params.toArray()).count();
-      if (count > 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
-      }
     }
+    return query;
   }
 
   @Override

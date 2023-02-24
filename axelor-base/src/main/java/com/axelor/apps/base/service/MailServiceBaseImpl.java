@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -206,8 +206,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Query<Partner> query2 = Query.of(Partner.class);
 
     if (!isBlank(filter2)) {
-      if (partnerPermissionFilter != null) {
-        query2.filter(filter2, partnerPermissionFilter.getParams());
+      if (partnerPermissionFilter != null && partnerPermissionFilter.getParams() != null) {
+        query2.filter(filter2, partnerPermissionFilter.getParams().toArray());
       } else {
         query2.filter(filter2);
       }
@@ -458,6 +458,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   void updateRecipientsTemplatesContext(Set<String> recipients) {
     String contRecipients = String.join(", ", recipients);
 
+    if (templatesContext == null) {
+      templatesContext = Maps.newHashMap();
+    }
     // Creating 2 same keys as it could be useful for a future update
     templatesContext.put("toRecipients", contRecipients);
     templatesContext.put("ccRecipients", contRecipients);

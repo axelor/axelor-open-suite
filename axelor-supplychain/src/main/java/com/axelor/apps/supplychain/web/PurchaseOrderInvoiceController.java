@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -72,7 +72,7 @@ public class PurchaseOrderInvoiceController {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       response.setView(
-          ActionView.define("Invoicing")
+          ActionView.define(I18n.get("Invoicing"))
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-invoicing-wizard-form")
               .param("popup", "reload")
@@ -125,7 +125,7 @@ public class PurchaseOrderInvoiceController {
 
   public void setWizardDefaultValues(ActionRequest request, ActionResponse response) {
     try {
-      response.setAttr("operationSelect", "value", "1");
+      response.setAttr("$operationSelect", "value", "1");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

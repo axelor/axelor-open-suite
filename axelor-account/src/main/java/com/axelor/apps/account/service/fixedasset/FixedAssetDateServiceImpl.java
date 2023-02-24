@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -93,20 +93,32 @@ public class FixedAssetDateServiceImpl implements FixedAssetDateService {
       Company company, LocalDate date, Integer periodicityTypeSelect) {
 
     if (periodicityTypeSelect == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
-      Period period = periodService.getPeriod(date, company, YearRepository.TYPE_FISCAL);
-      if (period == null) {
-        // Last day of the month of date
-        return computeLastDayOfPeriodicity(periodicityTypeSelect, date);
-      }
-      return period.getToDate();
+      return computeLastDayOfFiscalPeriod(company, date, periodicityTypeSelect);
     } else {
-      Year year = yearService.getYear(date, company, YearRepository.TYPE_FISCAL);
-      if (year == null) {
-        // Last day of the year of date
-        return computeLastDayOfPeriodicity(periodicityTypeSelect, date);
-      }
-      return year.getToDate();
+      return computeLastDayOfFiscalYear(company, date, periodicityTypeSelect);
     }
+  }
+
+  @Override
+  public LocalDate computeLastDayOfFiscalPeriod(
+      Company company, LocalDate date, Integer periodicityTypeSelect) {
+    Period period = periodService.getPeriod(date, company, YearRepository.TYPE_FISCAL);
+    if (period == null) {
+      // Last day of the month of date
+      return computeLastDayOfPeriodicity(periodicityTypeSelect, date);
+    }
+    return period.getToDate();
+  }
+
+  @Override
+  public LocalDate computeLastDayOfFiscalYear(
+      Company company, LocalDate date, Integer periodicityTypeSelect) {
+    Year year = yearService.getYear(date, company, YearRepository.TYPE_FISCAL);
+    if (year == null) {
+      // Last day of the year of date
+      return computeLastDayOfPeriodicity(periodicityTypeSelect, date);
+    }
+    return year.getToDate();
   }
 
   @Override

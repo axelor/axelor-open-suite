@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -726,14 +726,21 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     Move paymentMove = expense.getPaymentMove();
     if (paymentMove != null) {
-      expense.setPaymentMove(null);
+      if (paymentMove.getStatusSelect() == MoveRepository.STATUS_NEW) {
+        expense.setPaymentMove(null);
+      }
       Beans.get(MoveCancelService.class).cancel(paymentMove);
     }
+    resetExpensePaymentAfterCancellation(expense);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void resetExpensePaymentAfterCancellation(Expense expense) {
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setPaymentDate(null);
     expense.setPaymentAmount(BigDecimal.ZERO);
-    expenseRepository.save(expense);
   }
 
   @Override

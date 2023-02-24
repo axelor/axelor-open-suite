@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,7 @@ import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
+import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
@@ -92,7 +93,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       PriceListService priceListService,
       ProductCompanyService productCompanyService,
       SupplychainBatchRepository supplychainBatchRepo,
-      SupplyChainConfigService supplychainConfigService) {
+      SupplyChainConfigService supplychainConfigService,
+      StockLocationLineHistoryService stockLocationLineHistoryService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -104,7 +106,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         weightedAveragePriceService,
         trackingNumberRepo,
         productCompanyService,
-        shippingCoefService);
+        shippingCoefService,
+        stockLocationLineHistoryService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.supplychainBatchRepo = supplychainBatchRepo;
@@ -601,7 +604,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
 
     if ((isOutMove && supplyChainConfig.getHasOutSmForStorableProduct())
-        || (isInMove && supplyChainConfig.getHasInSmForStorableProduct())) {
+        || (isInMove && supplyChainConfig.getHasInSmForStorableProduct())
+        || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
       storableFilter =
           " self.productTypeSelect = '" + ProductRepository.PRODUCT_TYPE_STORABLE + "'";
       return "(" + storableFilter + checkQtyFilterStr + ")";
@@ -615,7 +619,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     final boolean isOutMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING;
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
     if ((isOutMove && supplyChainConfig.getHasOutSmForNonStorableProduct())
-        || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())) {
+        || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())
+        || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
       return " self.productTypeSelect = '" + ProductRepository.PRODUCT_TYPE_SERVICE + "'";
     }
     return "";

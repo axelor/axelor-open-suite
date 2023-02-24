@@ -41,6 +41,19 @@
 
      	]]></extra-code>
 
+    <track>
+      <field name="name"/>
+      <field name="concernedModel"/>
+      <field name="typeSelect"/>
+      <field name="formula"/>
+      <field name="company"/>
+      <field name="fieldToPopulate" on="UPDATE"/>
+      <field name="fieldTypeSelect" on="UPDATE"/>
+      <field name="operatorSelect" on="UPDATE"/>
+      <field name="tempVarName" on="UPDATE"/>
+      <field name="metaJsonField" on="UPDATE"/>
+      <field name="scale" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

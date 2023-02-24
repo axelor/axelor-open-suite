@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,6 +67,7 @@ import org.slf4j.LoggerFactory;
 public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected int jpaLimit = 20;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
@@ -175,7 +176,7 @@ public class MoveLineServiceImpl implements MoveLineService {
         log.debug(e.getMessage());
       } finally {
         i++;
-        if (i % 20 == 0) {
+        if (i % jpaLimit == 0) {
           JPA.clear();
         }
       }

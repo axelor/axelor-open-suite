@@ -1,0 +1,3 @@
+---
+title : "Fixed asset : for negative assets, fix derogatoryAmount and incomeDepreciationAmount"
+type: fix

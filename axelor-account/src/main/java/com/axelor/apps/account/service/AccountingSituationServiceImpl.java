@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,11 +20,13 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -308,5 +310,25 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
       return invoiceLineTax.getVatSystemSelect();
     }
     return AccountRepository.VAT_SYSTEM_DEFAULT;
+  }
+
+  @Override
+  public Account getPartnerAccount(Invoice invoice, boolean isHoldBack) throws AxelorException {
+    if (invoice.getCompany() == null
+        || invoice.getOperationTypeSelect() == null
+        || invoice.getOperationTypeSelect() == 0
+        || invoice.getPartner() == null) {
+      return null;
+    }
+
+    if (InvoiceToolService.isPurchase(invoice)) {
+      return isHoldBack
+          ? this.getHoldBackSupplierAccount(invoice.getPartner(), invoice.getCompany())
+          : this.getSupplierAccount(invoice.getPartner(), invoice.getCompany());
+    } else {
+      return isHoldBack
+          ? this.getHoldBackCustomerAccount(invoice.getPartner(), invoice.getCompany())
+          : this.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
+    }
   }
 }

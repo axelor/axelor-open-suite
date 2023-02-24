@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,13 +19,16 @@ package com.axelor.apps.bankpayment.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
+import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
@@ -56,6 +59,9 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       MoveRepository moveRepository,
       MoveLineCreateService moveLineCreateService,
       ExtractContextMoveService extractContextMoveService,
+      CancelFactory cancelFactory,
+      InvoicePaymentRepository invoicePaymentRepository,
+      InvoicePaymentCancelService invoicePaymentCancelService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository) {
     super(
@@ -64,7 +70,10 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         moveValidateService,
         moveRepository,
         moveLineCreateService,
-        extractContextMoveService);
+        extractContextMoveService,
+        cancelFactory,
+        invoicePaymentRepository,
+        invoicePaymentCancelService);
     this.bankReconciliationService = bankReconciliationService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
   }

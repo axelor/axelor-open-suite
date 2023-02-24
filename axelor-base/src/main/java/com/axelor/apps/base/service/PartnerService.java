@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,11 +62,10 @@ public interface PartnerService {
 
   Map<String, String> getSocialNetworkUrl(String name, String firstName, Integer typeSelect);
 
-  List<Long> findPartnerMails(Partner partner);
+  @Deprecated
+  List<Long> findPartnerMails(Partner partner, int emailType);
 
-  List<Long> findContactMails(Partner partner);
-
-  List<Long> findMailsFromPartner(Partner partner);
+  List<Long> findMailsFromPartner(Partner partner, int emailType);
 
   void resetDefaultAddress(Partner partner, String addrTypeQuery);
 

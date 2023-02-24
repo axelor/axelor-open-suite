@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -101,11 +101,14 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       StockMove stockMove, SaleOrder saleOrder, Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
     Invoice invoice = super.createInvoiceFromSaleOrder(stockMove, saleOrder, qtyToInvoiceMap);
-    Project project = saleOrder.getProject();
-    if (project != null) {
-      invoice.setProject(project);
+
+    if (invoice != null) {
+      Project project = saleOrder.getProject();
+      if (project != null) {
+        invoice.setProject(project);
+      }
+      invoiceRepository.save(invoice);
     }
-    invoiceRepository.save(invoice);
     return invoice;
   }
 
@@ -116,11 +119,13 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       throws AxelorException {
     Invoice invoice =
         super.createInvoiceFromPurchaseOrder(stockMove, purchaseOrder, qtyToInvoiceMap);
-    Project project = purchaseOrder.getProject();
-    if (project != null) {
-      invoice.setProject(project);
+    if (invoice != null) {
+      Project project = purchaseOrder.getProject();
+      if (project != null) {
+        invoice.setProject(project);
+      }
+      invoiceRepository.save(invoice);
     }
-    invoiceRepository.save(invoice);
     return invoice;
   }
 }

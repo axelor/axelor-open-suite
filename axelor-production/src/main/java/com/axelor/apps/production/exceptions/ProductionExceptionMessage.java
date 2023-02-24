@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -279,4 +279,8 @@ public final class ProductionExceptionMessage {
   public static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_DEST_STOCK_LOCATION =
       /*$$(*/
       "The produced product stock location is missing in the prod process" /*)*/;
+
+  public static final String GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO =
+      /*$$(*/
+      "The quantity of the bill of material %s is equal to zero." /*)*/;
 }

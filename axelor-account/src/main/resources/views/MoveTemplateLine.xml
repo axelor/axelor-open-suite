@@ -48,9 +48,11 @@
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
       <field name="analyticDistributionTemplate"
         if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+        showIf="account.analyticDistributionAuthorized"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form"/>
       <field name="isValid" readonly="true" hidden="true"/>
+      <field name="account.analyticDistributionAuthorized" hidden="true"/>
     </panel>
   </form>
 
@@ -73,9 +75,11 @@
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
       <field name="analyticDistributionTemplate"
         if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+        showIf="account.analyticDistributionAuthorized"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form"/>
       <field name="isValid" readonly="true" hidden="true"/>
+      <field name="account.analyticDistributionAuthorized" hidden="true"/>
     </panel>
   </form>
 

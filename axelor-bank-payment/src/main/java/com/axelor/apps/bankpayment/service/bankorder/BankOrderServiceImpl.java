@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,9 +23,9 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.PaymentSessionCancelService;
-import com.axelor.apps.account.service.PaymentSessionValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -261,7 +261,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrderLineService.checkPreconditions(bankOrderLine);
       totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
       bankOrderLineService.checkBankDetails(
-          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder());
+          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder(), bankOrderLine);
     }
     if (!totalAmount.equals(arithmeticTotal)) {
       throw new AxelorException(
@@ -316,21 +316,22 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   protected BankOrder generateMoves(BankOrder bankOrder) throws AxelorException {
-    switch (bankOrder.getFunctionalOriginSelect()) {
-      case BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION:
-        PaymentSession paymentSession =
-            paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
-        if (paymentSession != null) {
-          Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
-          break;
-        }
-        // TODO other cases
-      default:
-        bankOrderMoveService.generateMoves(bankOrder);
-        bankOrder.setAreMovesGenerated(true);
-        validatePayment(bankOrder);
+    if (bankOrder
+        .getFunctionalOriginSelect()
+        .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION)) {
+      PaymentSession paymentSession =
+          paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
+
+      if (paymentSession != null) {
+        Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
+        return bankOrderRepo.find(bankOrder.getId());
+      }
     }
+
+    bankOrderMoveService.generateMoves(bankOrder);
+    bankOrder.setAreMovesGenerated(true);
+    validatePayment(bankOrder);
 
     return bankOrderRepo.find(bankOrder.getId());
   }

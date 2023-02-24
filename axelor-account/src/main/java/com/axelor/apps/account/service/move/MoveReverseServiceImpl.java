@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,16 +18,20 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
+import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -52,6 +56,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected MoveRepository moveRepository;
   protected MoveLineCreateService moveLineCreateService;
   protected ExtractContextMoveService extractContextMoveService;
+  protected CancelFactory cancelFactory;
+  protected InvoicePaymentRepository invoicePaymentRepository;
+  protected InvoicePaymentCancelService invoicePaymentCancelService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -60,13 +67,19 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       MoveValidateService moveValidateService,
       MoveRepository moveRepository,
       MoveLineCreateService moveLineCreateService,
-      ExtractContextMoveService extractContextMoveService) {
+      ExtractContextMoveService extractContextMoveService,
+      CancelFactory cancelFactory,
+      InvoicePaymentRepository invoicePaymentRepository,
+      InvoicePaymentCancelService invoicePaymentCancelService) {
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.moveLineCreateService = moveLineCreateService;
     this.extractContextMoveService = extractContextMoveService;
+    this.cancelFactory = cancelFactory;
+    this.invoicePaymentRepository = invoicePaymentRepository;
+    this.invoicePaymentCancelService = invoicePaymentCancelService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -116,14 +129,13 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
       AnalyticMoveLineRepository analyticMoveLineRepository =
           Beans.get(AnalyticMoveLineRepository.class);
+      newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
       List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
       if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
         for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
           analyticMoveLineList.add(analyticMoveLineRepository.copy(analyticMoveLine, true));
         }
       } else if (moveLine.getAnalyticDistributionTemplate() != null) {
-        newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
-
         analyticMoveLineList =
             Beans.get(AnalyticMoveLineService.class)
                 .generateLines(
@@ -152,6 +164,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         }
       }
 
+      cancelInvoicePayment(move);
+
       if (validatedMove && isAutomaticReconcile) {
         if (isDebit) {
           reconcileService.reconcile(moveLine, newMoveLine, false, true);
@@ -165,7 +179,25 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       moveValidateService.accounting(newMove);
     }
 
+    if (move.getInvoice() != null) {
+      cancelFactory.getCanceller(move.getInvoice()).cancelInvoiceInformation();
+    }
+
     return moveRepository.save(newMove);
+  }
+
+  protected void cancelInvoicePayment(Move move) throws AxelorException {
+    InvoicePayment invoicePayment =
+        invoicePaymentRepository
+            .all()
+            .filter("self.move.id = :moveId AND self.statusSelect != :statusSelect")
+            .bind("moveId", move.getId())
+            .bind("statusSelect", InvoicePaymentRepository.STATUS_CANCELED)
+            .fetchOne();
+
+    if (invoicePayment != null) {
+      invoicePaymentCancelService.updateCancelStatus(invoicePayment);
+    }
   }
 
   @Override
