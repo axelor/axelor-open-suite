@@ -827,22 +827,23 @@ public class MoveLineController {
 
   public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
+      AccountService accountService = Beans.get(AccountService.class);
+
       if (Move.class.equals(request.getContext().getContextClass())) {
         Move move = request.getContext().asType(Move.class);
         if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
           for (MoveLine moveLine : move.getMoveLineList()) {
             if (moveLine != null && moveLine.getAccount() != null) {
-              Beans.get(AccountService.class)
-                  .checkAnalyticAxis(
-                      moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+              accountService.checkAnalyticAxis(
+                  moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
             }
           }
         }
       } else {
         MoveLine moveLine = request.getContext().asType(MoveLine.class);
         if (moveLine != null && moveLine.getAccount() != null) {
-          Beans.get(AccountService.class)
-              .checkAnalyticAxis(moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+          accountService.checkAnalyticAxis(
+              moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
         }
       }
     } catch (Exception e) {
