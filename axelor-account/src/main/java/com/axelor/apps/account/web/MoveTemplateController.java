@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveTemplateService;
+import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -152,7 +153,9 @@ public class MoveTemplateController {
     try {
       MoveTemplate moveTemplate = request.getContext().getParent().asType(MoveTemplate.class);
       if (moveTemplate != null) {
-        String domain = Beans.get(MoveTemplateService.class).filterPartner(moveTemplate);
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(moveTemplate.getCompany(), moveTemplate.getJournal());
         response.setAttr("partner", "domain", domain);
       }
     } catch (Exception e) {
