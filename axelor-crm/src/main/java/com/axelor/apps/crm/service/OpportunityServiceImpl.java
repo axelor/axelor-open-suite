@@ -56,7 +56,7 @@ public class OpportunityServiceImpl implements OpportunityService {
     this.appCrmService = appCrmService;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void saveOpportunity(Opportunity opportunity) {
     opportunityRepo.save(opportunity);
   }

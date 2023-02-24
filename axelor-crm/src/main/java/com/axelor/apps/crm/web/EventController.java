@@ -241,7 +241,7 @@ public class EventController {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void deleteThis(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);
@@ -256,7 +256,7 @@ public class EventController {
     response.setReload(true);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void deleteNext(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);
@@ -273,7 +273,7 @@ public class EventController {
     response.setReload(true);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void deleteAll(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     EventRepository eventRepository = Beans.get(EventRepository.class);

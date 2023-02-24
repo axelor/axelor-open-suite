@@ -86,7 +86,7 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void saveEvent(Event event) {
     eventRepo.save(event);
   }
@@ -129,7 +129,7 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void addRecurrentEventsByDays(
       Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate) {
     Event lastEvent = event;
@@ -158,7 +158,7 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void addRecurrentEventsByWeeks(
       Event event,
       int periodicity,
@@ -206,7 +206,7 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void addRecurrentEventsByMonths(
       Event event,
       int periodicity,
@@ -275,7 +275,7 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void addRecurrentEventsByYears(
       Event event, int periodicity, int endType, int repetitionsNumber, LocalDate endDate) {
     Event lastEvent = event;
@@ -304,7 +304,7 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void applyChangesToAll(Event event) {
 
     Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
