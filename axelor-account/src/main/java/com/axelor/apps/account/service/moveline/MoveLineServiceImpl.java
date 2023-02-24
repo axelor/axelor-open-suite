@@ -78,6 +78,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
+  protected MoveLineService moveLineService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -89,7 +91,9 @@ public class MoveLineServiceImpl implements MoveLineService {
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
-      MoveLineControlService moveLineControlService) {
+      MoveLineControlService moveLineControlService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      MoveLineService moveLineService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -99,6 +103,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.accountConfigService = accountConfigService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
+    this.moveLineService = moveLineService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
   }
 
   @Override
@@ -466,10 +472,9 @@ public class MoveLineServiceImpl implements MoveLineService {
       moveLine.setCurrencyRate(newCurrencyRate);
 
       moveLine.clearInvoiceTermList();
-      Beans.get(MoveLineInvoiceTermService.class)
-          .generateDefaultInvoiceTerm(moveLine, dueDate, false);
+      moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
 
-      Beans.get(MoveLineService.class).computeFinancialDiscount(moveLine);
+      moveLineService.computeFinancialDiscount(moveLine);
     }
   }
 }
