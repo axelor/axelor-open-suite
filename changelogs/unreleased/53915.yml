@@ -1,0 +1,3 @@
+---
+title: "Invoice: printing a report will open the correct one even if another report have the same file name."
+type: fix
