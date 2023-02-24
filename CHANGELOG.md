@@ -1,3 +1,25 @@
+## [6.2.20] (2023-02-24)
+
+#### Fixed
+
+* Accounting report: fixed advanced search feature on grid view.
+* Stock move: fixed error on invoice creation when we try to invoice a stock move generated from a purchase order.
+* Stock move: fixed an error blocking stock move planification when app supplychain is not initialized.
+* Stock move: fixed error message when trying to create partial invoice with a quantity equals to 0.
+* Leave request: fixed the message informing the user of a negative number of leaves available.
+* Followers: fixed a bug where a NPE could occur if default mail message template was null.
+* MRP: Improve proposals generation process performance.
+* Supplychain: improved error management to avoid creating inconsistencies in database.
+* Move template line: selecting a partner is now correctly filtered on non-contact partners.
+* Price lists: in a sale order, correctly check if the price list is active before allowing it to be selected.
+* DMN: fixed model change issue.
+* Stock location line: updating the WAP from the stock location line will now correctly update the WAP on the product.
+* Unify the sale orders and deliveries menu entries: now the menu entries at the top are the same as the menu entries at the side.
+* Move: correctly retrieves the analytic distribution template when reversing a move.
+* Advanced export: fix duplicate lines when exporting a large amount of data.
+* Invoice: fixed an error that happened when selecting a Partner.
+* Accounting Batch: fix trading name field display.
+
 ## [6.2.19] (2023-02-14)
 
 #### Fixed
@@ -887,6 +909,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.20]: https://github.com/axelor/axelor-open-suite/compare/v6.2.19...v6.2.20
 [6.2.19]: https://github.com/axelor/axelor-open-suite/compare/v6.2.18...v6.2.19
 [6.2.18]: https://github.com/axelor/axelor-open-suite/compare/v6.2.17...v6.2.18
 [6.2.17]: https://github.com/axelor/axelor-open-suite/compare/v6.2.16...v6.2.17
