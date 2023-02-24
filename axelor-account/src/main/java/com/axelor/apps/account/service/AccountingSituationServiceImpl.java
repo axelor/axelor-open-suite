@@ -20,7 +20,10 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
@@ -30,6 +33,7 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -232,22 +236,77 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
   }
 
   @Override
-  public int determineVatSystemSelect(AccountingSituation accountingSituation, int vatSystem)
+  public int determineVatSystemSelect(AccountingSituation accountingSituation, Account account)
       throws AxelorException {
-    int vatSystemSelect = 0;
+
     if (accountingSituation != null) {
-      if (accountingSituation.getVatSystemSelect()
-          == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-        vatSystemSelect = vatSystem;
-      } else if (accountingSituation.getVatSystemSelect()
-          == AccountingSituationRepository.VAT_DELIVERY) {
-        vatSystemSelect = 1;
-      } else {
-        vatSystemSelect = vatSystem;
+      if (accountingSituation != null
+          && (accountingSituation.getVatSystemSelect() == null
+              || accountingSituation.getVatSystemSelect()
+                  == AccountingSituationRepository.VAT_SYSTEM_DEFAULT)) {
+        if (account.getVatSystemSelect() == null
+            || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT_PARTNER),
+              account.getCode(),
+              accountingSituation.getPartner().getFullName());
+        } else {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_PARTNER),
+              accountingSituation.getPartner().getFullName());
+        }
       }
-    } else {
-      vatSystemSelect = vatSystem;
+      if (accountingSituation.getVatSystemSelect() == AccountingSituationRepository.VAT_DELIVERY) {
+        return AccountRepository.VAT_SYSTEM_GOODS;
+      } else if (account.getVatSystemSelect() == null
+          || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+            account.getCode());
+      }
+      return account.getVatSystemSelect();
     }
-    return vatSystemSelect;
+    return AccountRepository.VAT_SYSTEM_DEFAULT;
+  }
+
+  @Override
+  public int determineVatSystemSelect(
+      AccountingSituation accountingSituation, InvoiceLineTax invoiceLineTax)
+      throws AxelorException {
+
+    if (accountingSituation != null) {
+      if (accountingSituation != null
+          && (accountingSituation.getVatSystemSelect() == null
+              || accountingSituation.getVatSystemSelect()
+                  == AccountingSituationRepository.VAT_SYSTEM_DEFAULT)) {
+        if (invoiceLineTax.getVatSystemSelect() == null
+            || invoiceLineTax.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_INVOICE_TAX_PARTNER),
+              invoiceLineTax.getInvoice().getInvoiceId(),
+              accountingSituation.getPartner().getFullName());
+        } else {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_PARTNER),
+              accountingSituation.getPartner().getFullName());
+        }
+      }
+      if (accountingSituation.getVatSystemSelect() == AccountingSituationRepository.VAT_DELIVERY) {
+        return AccountRepository.VAT_SYSTEM_GOODS;
+      } else if (invoiceLineTax.getVatSystemSelect() == null
+          || invoiceLineTax.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_INVOICE_TAX),
+            invoiceLineTax.getInvoice().getInvoiceId());
+      }
+      return invoiceLineTax.getVatSystemSelect();
+    }
+    return AccountRepository.VAT_SYSTEM_DEFAULT;
   }
 }
