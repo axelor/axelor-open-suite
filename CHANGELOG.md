@@ -1,3 +1,17 @@
+## [5.4.36] (2023-02-24)
+
+#### Fixed
+
+* Accounting report: fixed advanced search feature on grid view.
+* Stock move: fixed error on invoice creation when we try to invoice a stock move generated from a purchase order.
+* Stock move: fixed error message when trying to create partial invoice with a quantity equals to 0.
+* Leave request: fixed the message informing the user of a negative number of leaves available.
+* Product: fixed an error occurring when accessing a product form view.
+* Supplychain: improved error management to avoid creating inconsistencies in database.
+* Unify the sale orders and deliveries menu entries: now the menu entries at the top are the same as the menu entries at the side.
+* Advanced export: fix duplicate lines when exporting a large amount of data.
+* Invoice: fixed an error that happened when selecting a Partner.
+
 ## [5.4.35] (2023-02-14)
 
 #### Fixed
@@ -838,6 +852,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.36]: https://github.com/axelor/axelor-open-suite/compare/v5.4.35...v5.4.36
 [5.4.35]: https://github.com/axelor/axelor-open-suite/compare/v5.4.34...v5.4.35
 [5.4.34]: https://github.com/axelor/axelor-open-suite/compare/v5.4.33...v5.4.34
 [5.4.33]: https://github.com/axelor/axelor-open-suite/compare/v5.4.32...v5.4.33

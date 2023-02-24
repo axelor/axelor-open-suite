@@ -1,3 +1,0 @@
----
-title : "StockMove : Fix partial invoice creation of stockMove without quantity to invoice"
-type: fix
