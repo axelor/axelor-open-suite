@@ -1,3 +1,0 @@
----
-title: "Followers: Fixed a bug where NPE that could occurs if default mail message template was null"
-type: fix

@@ -1,3 +1,33 @@
+## [6.4.7] (2023-02-24)
+
+#### Fixed
+
+* Accounting report: fixed advanced search feature on grid view.
+* Payment session: Fix compute financial discount when the accounting date is linked to the original document
+* French translation: corrected several spelling mistakes.
+* App base config: added missing translation for Nb of digits for tax rate.
+* Stock move: fixed error on invoice creation when we try to invoice a stock move generated from a purchase order.
+* Stock move: fixed an error blocking stock move planification when app supplychain is not initialized.
+* Stock move: fixed error message when trying to create partial invoice with a quantity equals to 0.
+* Leave request: fixed the message informing the user of a negative number of leaves available.
+* Followers: fixed a bug where a NPE could occur if default mail message template was null.
+* Invoice: fixed the duplicate supplier invoice warning so it does not trigger for an invoice and its own refund.
+* Invoice: fixed an issue occurring when computing financial discount deadline date.
+* Invoice: fixed an error that happened when selecting a Partner.
+* Payment session: fixed move generation on payment session when we use global accounting method.
+* MRP: Improve proposals generation process performance.
+* Supplychain: improved error management to avoid creating inconsistencies in database.
+* Move template line: selecting a partner is now correctly filtered on non-contact partners.
+* Price lists: in a sale order, correctly check if the price list is active before allowing it to be selected.
+* Move: improve error messages at tax generation.
+* Stock location line: updating the WAP from the stock location line will now correctly update the WAP on the product.
+* Unify the sale orders and deliveries menu entries: now the menu entries at the top are the same as the menu entries at the side.
+* BPM | DMN: Make it able to get model if modified and fix model change issue in DMN editor.
+* Move: correctly retrieves the analytic distribution template when reversing a move.
+* Advanced export: fix duplicate lines when exporting a large amount of data.
+* Production batch: fixed running 'Work in progress valuation' batch process from the form view.
+* Accounting Batch: fixed trading name field display.
+
 ## [6.4.6] (2023-02-14)
 
 #### Fixed
@@ -442,6 +472,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.7]: https://github.com/axelor/axelor-open-suite/compare/v6.4.6...v6.4.7
 [6.4.6]: https://github.com/axelor/axelor-open-suite/compare/v6.4.5...v6.4.6
 [6.4.5]: https://github.com/axelor/axelor-open-suite/compare/v6.4.4...v6.4.5
 [6.4.4]: https://github.com/axelor/axelor-open-suite/compare/v6.4.3...v6.4.4
