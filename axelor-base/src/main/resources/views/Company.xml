@@ -42,7 +42,7 @@
       </panel>
     </panel>
     <panel sidebar="true" name="modulesConfigPanel" title="Modules configurations"
-      hideIf="$popup()">
+      hideIf="!id || $popup()">
       <button name="accountConfigBtn" title="Account config" width="100%" colSpan="6"
         onClick="action-company-view-account-config" if-module="axelor-account"
         if="__config__.app.isApp('account')"/>
