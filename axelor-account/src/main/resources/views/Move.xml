@@ -99,7 +99,8 @@
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0" form-view="partner-form"
             grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
-            onChange="action-move-group-partner-onchange"/>
+            onChange="action-move-group-partner-onchange"
+            requiredIf="$contains([1,2], journal.journalType.technicalTypeSelect)"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
@@ -338,6 +339,11 @@
         <field name="rejectOk" showIf="rejectOk" readonly="true"/>
         <field name="$periodClosed" hidden="true"/>
         <field name="$simulatedPeriodClosed" hidden="true"/>
+      </panel>
+
+      <panel name="hiddenPanel" hidden="true">
+        <field name="journal.journalType"/>
+        <field name="journal.journalType.technicalTypeSelect"/>
       </panel>
     </panel-tabs>
 
