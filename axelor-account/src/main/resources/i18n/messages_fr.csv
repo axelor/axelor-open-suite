@@ -2965,7 +2965,7 @@
 "State %s unknown for treatment %s","Statut %s inconnu pour le traitement %s",,
 "Statement","Mention",,
 "Statements for items categories list","Mentions pour la catégorie des produits",,
-"Statements present in the invoice according to product types.","Mentions légales en fonction du type de produit présent dans la facture.",,
+"Statements present in the invoice according to product types","Mentions légales en fonction du type de produit présent dans la facture",,
 "Status","Statut",,
 "Status select","Statut",,
 "Style",,,

@@ -2965,7 +2965,7 @@
 "State %s unknown for treatment %s",,,
 "Statement",,,
 "Statements for items categories list",,,
-"Statements present in the invoice according to product types.",,,
+"Statements present in the invoice according to product types",,,
 "Status",,,
 "Status select",,,
 "Style",,,
