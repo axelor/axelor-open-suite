@@ -2,6 +2,6 @@
 title: "Password : passwords fields are now encrypted"
 type: fix
 description: |
-  Concerned models : Email Account, Ebics User, Calendar and Partner
+  Concerned models : Ebics User, Calendar and Partner
   You can now encrypt old fields by using this task : 
   gradlew database --encrypt
