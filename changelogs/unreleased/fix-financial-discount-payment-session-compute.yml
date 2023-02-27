@@ -1,3 +1,0 @@
----
-title: "PaymentSession: Fix compute financial discount when the accounting date is linked to the original document"
-type: fix

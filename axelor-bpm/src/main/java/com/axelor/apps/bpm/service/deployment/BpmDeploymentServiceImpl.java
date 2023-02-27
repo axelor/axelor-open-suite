@@ -214,7 +214,7 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
     }
   }
 
-  private MigrationPlan createMigrationPlan(
+  protected MigrationPlan createMigrationPlan(
       ProcessEngine engine, ProcessDefinition oldDefinition, ProcessDefinition newDefinition) {
 
     Map<String, String> processMap = migrationMap.get(newDefinition.getKey());
@@ -293,7 +293,7 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
     }
   }
 
-  private void addProcessConfig(BpmnModelInstance bpmInstance, WkfProcess process) {
+  protected void addProcessConfig(BpmnModelInstance bpmInstance, WkfProcess process) {
 
     BaseElement processElement = bpmInstance.getModelElementById(process.getName());
     ExtensionElements extensionElements = processElement.getExtensionElements();
@@ -349,7 +349,7 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
     return configMap;
   }
 
-  private WkfProcessConfig getProcessCofig(
+  protected WkfProcessConfig getProcessCofig(
       Map<String, WkfProcessConfig> configMap, ModelElementInstance configParam) {
 
     String metaModel =

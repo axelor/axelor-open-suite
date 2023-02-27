@@ -146,7 +146,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     return stringBuilder.toString();
   }
 
-  private String getReportName(DepositSlip depositSlip) throws AxelorException {
+  protected String getReportName(DepositSlip depositSlip) throws AxelorException {
     switch (depositSlip.getPaymentModeTypeSelect()) {
       case PaymentModeRepository.TYPE_CHEQUE:
         return IReport.CHEQUE_DEPOSIT_SLIP;

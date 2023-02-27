@@ -235,7 +235,7 @@ public class BatchDebtRecovery extends BatchStrategy {
     JPA.runInTransaction(query::executeUpdate);
   }
 
-  private String getBatchSetTableName(Model model) {
+  protected String getBatchSetTableName(Model model) {
     String modelTableName = EntityHelper.getEntityClass(model).getAnnotation(Table.class).name();
     return modelTableName + "_BATCH_SET";
   }

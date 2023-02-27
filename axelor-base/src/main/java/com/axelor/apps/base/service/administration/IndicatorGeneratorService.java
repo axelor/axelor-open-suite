@@ -108,7 +108,7 @@ public class IndicatorGeneratorService {
   }
 
   @SuppressWarnings("deprecation")
-  private void transformQueryResult(Query query) {
+  protected void transformQueryResult(Query query) {
     query.unwrap(org.hibernate.query.Query.class).setResultTransformer(new DataSetTransformer());
   }
 
