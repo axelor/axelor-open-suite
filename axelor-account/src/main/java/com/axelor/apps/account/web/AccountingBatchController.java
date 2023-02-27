@@ -314,7 +314,7 @@ public class AccountingBatchController {
               accountingBatch.getFromAccount(), accountingBatch.getToAccount());
       String domain = ":company MEMBER OF self.companySet";
       if (CollectionUtils.isNotEmpty(accountsBetween)) {
-        if (service.areAllAccountsOfType(accountsBetween, AccountTypeRepository.TYPE_DEBT)) {
+        if (service.areAllAccountsOfType(accountsBetween, AccountTypeRepository.TYPE_PAYABLE)) {
           domain += " AND self.isSupplier is true";
         } else if (service.areAllAccountsOfType(
             accountsBetween, AccountTypeRepository.TYPE_RECEIVABLE)) {
