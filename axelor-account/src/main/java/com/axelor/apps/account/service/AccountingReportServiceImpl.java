@@ -651,7 +651,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   protected void buildAnalyticMoveLineQuery(AccountingReport accountingReport) {
     this.initQuery();
 
-    this.addParams("self.moveLine.move.companyCurrency = ?%d", accountingReport.getCurrency());
+    if (accountingReport.getCurrency() != null) {
+      this.addParams("self.moveLine.move.companyCurrency = ?%d", accountingReport.getCurrency());
+    }
 
     if (accountingReport.getJournal() != null) {
       this.addParams("self.moveLine.move.journal = ?%d", accountingReport.getJournal());
