@@ -17,10 +17,10 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.service.InventoryService;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Map;

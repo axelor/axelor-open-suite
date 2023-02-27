@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service.imports;
 
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

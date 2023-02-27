@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
-import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 

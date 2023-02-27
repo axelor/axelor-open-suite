@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.EmploymentContractService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;

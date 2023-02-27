@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.rest;
 
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.util.Map;
 
 public interface TranslationRestService {

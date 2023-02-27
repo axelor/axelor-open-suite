@@ -32,7 +32,7 @@ import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -129,14 +129,13 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
       AnalyticMoveLineRepository analyticMoveLineRepository =
           Beans.get(AnalyticMoveLineRepository.class);
+      newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
       List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
       if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
         for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
           analyticMoveLineList.add(analyticMoveLineRepository.copy(analyticMoveLine, true));
         }
       } else if (moveLine.getAnalyticDistributionTemplate() != null) {
-        newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
-
         analyticMoveLineList =
             Beans.get(AnalyticMoveLineService.class)
                 .generateLines(

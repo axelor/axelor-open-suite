@@ -39,6 +39,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -46,6 +48,7 @@ import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -53,12 +56,9 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Wizard;
@@ -563,7 +563,7 @@ public class InvoiceController {
     }
   }
 
-  private String buildMassMessage(int doneCount, int errorCount) {
+  protected String buildMassMessage(int doneCount, int errorCount) {
     StringBuilder sb = new StringBuilder();
     sb.append(
         String.format(
@@ -583,7 +583,7 @@ public class InvoiceController {
     return sb.toString();
   }
 
-  private void massProcess(
+  protected void massProcess(
       ActionRequest request,
       ActionResponse response,
       Function<Collection<? extends Number>, Pair<Integer, Integer>> function) {

@@ -17,17 +17,16 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import javax.persistence.PostUpdate;
 
 public class BankDetailsListener {
   @PostUpdate
-  private void onPostUpdate(BankDetails bankDetails) throws AxelorException {
+  protected void onPostUpdate(BankDetails bankDetails) throws AxelorException {
     if (bankDetails.getActive()) {
       Company company = bankDetails.getCompany();
 

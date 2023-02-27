@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;

@@ -48,7 +48,7 @@ import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.io.IOUtils;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.io.ByteArrayOutputStream;
 import org.jdom.JDOMException;
 

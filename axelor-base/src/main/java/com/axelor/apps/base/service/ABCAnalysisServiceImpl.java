@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
 import com.axelor.apps.base.db.ABCAnalysisLine;
@@ -29,14 +30,13 @@ import com.axelor.apps.base.db.repo.ABCAnalysisClassRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisLineRepository;
 import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
@@ -96,7 +96,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     return abcAnalysisClassList;
   }
 
-  private ABCAnalysisClass createAbcClass(
+  protected ABCAnalysisClass createAbcClass(
       String name, Integer sequence, BigDecimal worth, BigDecimal qty) {
     ABCAnalysisClass abcAnalysisClass = new ABCAnalysisClass();
 
@@ -145,7 +145,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     abcAnalysisRepository.save(abcAnalysis);
   }
 
-  private void getAbcAnalysisClassList(ABCAnalysis abcAnalysis) {
+  protected void getAbcAnalysisClassList(ABCAnalysis abcAnalysis) {
     Query<ABCAnalysisClass> abcAnalysisClassQuery =
         abcAnalysisClassRepository
             .all()
@@ -281,7 +281,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     abcAnalysisLineRepository.save(abcAnalysisLine);
   }
 
-  private void computePercentage(ABCAnalysisLine abcAnalysisLine) {
+  protected void computePercentage(ABCAnalysisLine abcAnalysisLine) {
     BigDecimal qty = BigDecimal.ZERO;
     if (totalQty.compareTo(BigDecimal.ZERO) > 0) {
       qty =
@@ -336,11 +336,11 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     this.totalWorth = this.totalWorth.add(totalWorth);
   }
 
-  private void incCumulatedQty(BigDecimal cumulatedQty) {
+  protected void incCumulatedQty(BigDecimal cumulatedQty) {
     this.cumulatedQty = this.cumulatedQty.add(cumulatedQty);
   }
 
-  private void incCumulatedWorth(BigDecimal cumulatedWorth) {
+  protected void incCumulatedWorth(BigDecimal cumulatedWorth) {
     this.cumulatedWorth = this.cumulatedWorth.add(cumulatedWorth);
   }
 

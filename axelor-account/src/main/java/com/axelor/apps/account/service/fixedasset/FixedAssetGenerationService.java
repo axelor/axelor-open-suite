@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.util.List;
 
 public interface FixedAssetGenerationService {

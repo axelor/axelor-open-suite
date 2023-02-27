@@ -130,7 +130,7 @@ public class ExportDbObjectService {
     return null;
   }
 
-  private void writeObjects(File objectFile) {
+  protected void writeObjects(File objectFile) {
     try {
       List<? extends MetaMenu> menuList =
           Beans.get(MetaMenuRepository.class)
@@ -148,7 +148,7 @@ public class ExportDbObjectService {
     }
   }
 
-  private void generateMenuGraph(List<? extends MetaMenu> menuList) {
+  protected void generateMenuGraph(List<? extends MetaMenu> menuList) {
     // log.debug("Checking menu list: {}",menuList);
     for (MetaMenu menu : menuList) {
       String model = menu.getAction() != null ? menu.getAction().getModel() : null;
@@ -170,7 +170,7 @@ public class ExportDbObjectService {
   }
 
   @SuppressWarnings("unchecked")
-  private void updateFieldData(MetaAction action) {
+  protected void updateFieldData(MetaAction action) {
     String[] objectName = action.getModel().split("\\.");
     String objName = objectName[objectName.length - 1];
     Map<String, Object> moduleMap = (Map<String, Object>) objectMap.get(objName);
@@ -218,7 +218,7 @@ public class ExportDbObjectService {
     objectList.add(action.getModel());
   }
 
-  private String getActionUrl(MetaAction action) {
+  protected String getActionUrl(MetaAction action) {
 
     String url = AppSettings.get().getBaseURL() + "#/ds";
     String viewType = getActionViewType(action.getXml());
@@ -264,7 +264,7 @@ public class ExportDbObjectService {
   }
 
   @SuppressWarnings("unchecked")
-  private void updateObjectMap(List<String> modules, SAXParser parser, XmlHandler xmlHandler)
+  protected void updateObjectMap(List<String> modules, SAXParser parser, XmlHandler xmlHandler)
       throws SAXException, IOException {
     for (String module : modules) {
 
@@ -285,7 +285,7 @@ public class ExportDbObjectService {
     }
   }
 
-  private Object updateObjectModel(
+  protected Object updateObjectModel(
       List<Map<String, String>> fieldList, String objectName, String moduleName) {
 
     for (Map<String, String> field : fieldList) {

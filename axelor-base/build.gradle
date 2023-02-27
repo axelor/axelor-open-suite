@@ -15,8 +15,6 @@ axelor {
 }
 
 dependencies {
-    api project(":modules:axelor-admin")
-
 	implementation libs.commons_lang3
 	implementation libs.commons_math3
 	implementation libs.commons_validator
@@ -42,4 +40,14 @@ dependencies {
 	testImplementation libs.mockito
 
 	api libs.tika
+
+	if (file("../../axelor-studio").exists()) {
+		api project(":modules:axelor-studio")
+	}
+	else {
+		api "com.axelor.addons:axelor-studio:1.0.0-SNAPSHOT"
+	}
+	implementation libs.faker
+	api libs.opencsv
+	api libs.wslite
 }

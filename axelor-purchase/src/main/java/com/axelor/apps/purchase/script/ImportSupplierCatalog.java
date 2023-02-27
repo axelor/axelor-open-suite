@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.purchase.script;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.Map;
 

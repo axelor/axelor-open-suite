@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.suppliermanagement.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.suppliermanagement.exceptions.SupplierManagementExceptionMessage;
 import com.axelor.apps.suppliermanagement.service.PurchaseOrderSupplierService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;

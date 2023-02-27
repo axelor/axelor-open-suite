@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ModelEmailLink;
-import com.axelor.exception.AxelorException;
 
 public interface ModelEmailLinkService {
 

@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.crm.service.config;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.crm.db.CrmConfig;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 
 public class CrmConfigService {

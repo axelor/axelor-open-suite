@@ -18,11 +18,11 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.report.ReportGenerator;
 import com.google.common.base.Preconditions;

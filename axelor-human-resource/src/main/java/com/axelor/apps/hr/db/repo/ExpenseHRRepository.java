@@ -18,11 +18,11 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;

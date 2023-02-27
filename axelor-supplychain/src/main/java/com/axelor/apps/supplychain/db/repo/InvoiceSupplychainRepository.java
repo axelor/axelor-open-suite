@@ -20,9 +20,9 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 

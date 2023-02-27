@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.gdpr.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.gdpr.db.GDPRRequest;
 import com.axelor.apps.gdpr.db.repo.GDPRRequestRepository;
 import com.axelor.apps.gdpr.service.response.GdprResponseService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

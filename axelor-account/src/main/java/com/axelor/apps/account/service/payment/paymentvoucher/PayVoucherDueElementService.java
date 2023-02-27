@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.payment.paymentvoucher;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 public interface PayVoucherDueElementService {
 

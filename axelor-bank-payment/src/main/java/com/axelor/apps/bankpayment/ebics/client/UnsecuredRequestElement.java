@@ -47,9 +47,9 @@ import com.axelor.apps.account.ebics.schema.h003.ProductElementType;
 import com.axelor.apps.account.ebics.schema.h003.UnsecuredRequestStaticHeaderType;
 import com.axelor.apps.bankpayment.ebics.xml.DefaultEbicsRootElement;
 import com.axelor.apps.bankpayment.ebics.xml.EbicsXmlFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import java.util.Optional;
 
 /**

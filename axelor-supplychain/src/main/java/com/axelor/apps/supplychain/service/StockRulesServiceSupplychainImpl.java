@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -38,8 +40,6 @@ import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.MessageRepository;
@@ -200,7 +200,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
    * @param product
    * @return
    */
-  private BigDecimal getDefaultSupplierMinQty(Product product) {
+  protected BigDecimal getDefaultSupplierMinQty(Product product) {
     Partner defaultSupplierPartner = product.getDefaultSupplierPartner();
     if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
       List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();

@@ -17,9 +17,9 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.MetaScanner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;

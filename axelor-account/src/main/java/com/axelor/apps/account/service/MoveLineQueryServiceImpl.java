@@ -22,10 +22,10 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.List;
 

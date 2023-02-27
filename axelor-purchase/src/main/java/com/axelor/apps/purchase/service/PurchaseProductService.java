@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 
 public interface PurchaseProductService {

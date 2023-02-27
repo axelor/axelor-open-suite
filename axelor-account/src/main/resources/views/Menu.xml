@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <menuitem name="invoice-root" title="Invoicing" order="-100"
     if="__config__.app.isApp('invoice')" icon="fa-file-text-o" icon-background="#31b4a9"/>
@@ -437,7 +437,7 @@
     title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
     <view type="grid" name="accounting-report-grid"/>
     <view type="form" name="accounting-report-form"/>
-    <view-param name="search-filters" value="accounting-report-filter"/>
+    <view-param name="search-filters" value="accounting-report-filters"/>
     <domain>self.reportType.typeSelect &lt; 1000 or self.reportType.typeSelect &gt;= 2000</domain>
   </action-view>
 

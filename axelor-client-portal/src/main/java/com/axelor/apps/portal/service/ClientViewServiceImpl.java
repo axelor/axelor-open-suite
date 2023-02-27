@@ -375,7 +375,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     return filters;
   }
 
-  private void addPermissionFilter(List<Filter> filters, Filter filterFromPermission) {
+  protected void addPermissionFilter(List<Filter> filters, Filter filterFromPermission) {
     if (filterFromPermission != null) {
       filters.add(filterFromPermission);
     }

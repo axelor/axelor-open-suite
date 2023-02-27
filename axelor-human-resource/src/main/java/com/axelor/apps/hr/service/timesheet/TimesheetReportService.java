@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetReport;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import java.util.List;

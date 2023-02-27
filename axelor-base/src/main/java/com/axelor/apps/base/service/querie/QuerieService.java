@@ -17,14 +17,14 @@
  */
 package com.axelor.apps.base.service.querie;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Querie;
 import com.axelor.apps.base.db.repo.QuerieRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModel;
 import com.google.common.collect.Lists;

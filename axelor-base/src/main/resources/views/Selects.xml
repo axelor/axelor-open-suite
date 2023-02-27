@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -548,7 +548,8 @@
     <option value="3">End of pack</option>
   </selection>
 
-  <selection name='trace.back.origin.select' id="trace.back.origin.select.base">
+  <selection name='trace.back.origin.select'>
+    <option value="default">Default</option>
     <option value="import">Importing</option>
   </selection>
 
@@ -675,6 +676,101 @@
   <selection name="import.batch.action.select">
     <option value="0">Import</option>
     <option value="1">Advanced import</option>
+  </selection>
+
+  <selection name="permission.assistant.type.select">
+    <option value="1">Groups</option>
+    <option value="2">Roles</option>
+  </selection>
+
+  <selection name="object.data.config.model.select">
+    <option value="com.axelor.auth.db.User">User</option>
+  </selection>
+
+  <selection name="object.data.export.format.select">
+    <option value="csv">CSV</option>
+    <option value="xlsx">Excel</option>
+  </selection>
+
+  <selection name="data.config.line.type.select">
+    <option value="0">Path</option>
+    <option value="1">Query</option>
+  </selection>
+
+  <selection name="data.config.line.reset.path.select">
+    <option value="0">None</option>
+    <option value="1">Replace</option>
+    <option value="2">Delete</option>
+  </selection>
+
+  <selection name="data.backup.status.select">
+    <option value="0">Draft</option>
+    <option value="1">In Progress</option>
+    <option value="2">Backup Created</option>
+    <option value="3">Backup Restored</option>
+    <option value="4">Backup Restore Error</option>
+    <option value="5">Error</option>
+  </selection>
+
+  <selection name="global.tracking.log.type.select">
+    <option value="1">CREATE</option>
+    <option value="3">UPDATE</option>
+    <option value="4">DELETE</option>
+    <option value="5">EXPORT</option>
+  </selection>
+
+  <selection name='trace.back.type.select'>
+    <option value='0'>Technical anomaly</option>
+    <option value='1'>Functional anomaly</option>
+  </selection>
+
+  <selection name='trace.back.category.select'>
+    <option value='1'>Missing field</option>
+    <option value='2'>Non-unique key</option>
+    <option value='3'>No Return Value</option>
+    <option value='4'>Configuration problem</option>
+    <option value='5'>Inconsistency</option>
+  </selection>
+
+  <selection name="permission.assistant.type.select">
+    <option value="1">Groups</option>
+    <option value="2">Roles</option>
+  </selection>
+
+  <selection name="object.data.config.model.select">
+    <option value="com.axelor.auth.db.User">User</option>
+  </selection>
+
+  <selection name="object.data.export.format.select">
+    <option value="csv">CSV</option>
+    <option value="xlsx">Excel</option>
+  </selection>
+
+  <selection name="data.config.line.type.select">
+    <option value="0">Path</option>
+    <option value="1">Query</option>
+  </selection>
+
+  <selection name="data.config.line.reset.path.select">
+    <option value="0">None</option>
+    <option value="1">Replace</option>
+    <option value="2">Delete</option>
+  </selection>
+
+  <selection name="data.backup.status.select">
+    <option value="0">Draft</option>
+    <option value="1">In Progress</option>
+    <option value="2">Backup Created</option>
+    <option value="3">Backup Restored</option>
+    <option value="4">Backup Restore Error</option>
+    <option value="5">Error</option>
+  </selection>
+
+  <selection name="global.tracking.log.type.select">
+    <option value="1">CREATE</option>
+    <option value="3">UPDATE</option>
+    <option value="4">DELETE</option>
+    <option value="5">EXPORT</option>
   </selection>
 
 </object-views>

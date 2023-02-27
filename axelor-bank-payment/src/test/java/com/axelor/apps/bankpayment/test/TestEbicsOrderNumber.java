@@ -18,7 +18,7 @@
 package com.axelor.apps.bankpayment.test;
 
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import org.junit.Assert;
 import org.junit.Test;
 

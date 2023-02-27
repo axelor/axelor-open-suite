@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.supplychain.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.supplychain.rest.dto.SupplychainStockProductResponse;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.ResponseConstructor;
 import java.util.Map;

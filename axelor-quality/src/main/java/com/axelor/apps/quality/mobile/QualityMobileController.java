@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.quality.mobile;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.quality.db.QualityControl;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.service.QualityControlService;
 import com.axelor.apps.quality.service.app.AppQualityService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

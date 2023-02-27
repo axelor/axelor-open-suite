@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.gdpr.service.response;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.gdpr.db.GDPRRequest;
 import com.axelor.auth.db.AuditableModel;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaField;
 import java.io.IOException;
 import java.util.List;

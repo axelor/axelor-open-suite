@@ -18,10 +18,10 @@
 package com.axelor.apps.report.engine;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ReportingTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.net.URLService;
@@ -95,7 +95,7 @@ public class ExternalReportSettings extends ReportSettings {
     return this.url;
   }
 
-  private String computeParam(String param) throws UnsupportedEncodingException {
+  protected String computeParam(String param) throws UnsupportedEncodingException {
     Object paramValue = params.get(param);
     if (paramValue != null) {
       return "&" + param + "=" + URLEncoder.encode(paramValue.toString(), "UTF-8");
@@ -104,7 +104,7 @@ public class ExternalReportSettings extends ReportSettings {
     }
   }
 
-  private ReportSettings addAxelorReportPath(String rptdesign) {
+  protected ReportSettings addAxelorReportPath(String rptdesign) {
 
     AppSettings appsSettings = AppSettings.get();
 

@@ -17,9 +17,9 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
-import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.util.Map;
 
