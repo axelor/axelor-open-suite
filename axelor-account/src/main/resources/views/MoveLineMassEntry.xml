@@ -3,9 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-  <grid name="move-line-mass-entry-move-grid" model="com.axelor.apps.account.db.MoveLine"
-    title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-mass-entry-group">
-    <field name="counter" width="50" readonly="true"/>
+  <grid name="move-line-mass-entry-move-grid"
+    model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
+    onNew="action-account-move-line-onnew-mass-entry-group">
+    <field name="temporaryMoveNumber" width="50" readonly="true"/>
     <field name="inputAction" selection="iaccount.move.input.action.select"
       onChange="action-move-line-group-input-action-onchange" readonly="true" required="true"
       width="50"/>
@@ -13,9 +14,9 @@
     <field name="originDate" onChange=""/>
     <field name="origin" onChange=""/>
     <field name="move.description" onChange="" readonly="false"/>
-    <field name="move.paymentCondition" readonly="false" form-view="payment-condition-form"
+    <field name="movePaymentCondition" readonly="false" form-view="payment-condition-form"
       grid-view="payment-condition-grid" onChange=""/>
-    <field name="move.paymentMode" readonly="false" form-view="payment-mode-form"
+    <field name="movePaymentMode" readonly="false" form-view="payment-mode-form"
       grid-view="payment-mode-grid" onChange="action-move-line-group-payment-mode-onchange"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
@@ -55,22 +56,20 @@
       onSelect="action-move-line-method-domain-pfp-validator-user-on-select" onChange=""
       canEdit="false"/>
     <field name="partner.bankDetails"/>
-    <field name="vatSystemSelect"
-      readonlyIf="move.statusSelect != 1 || account.accountType.technicalTypeSelect != 'tax'"/>
+    <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1"/>
     <field name="move.statusSelect"/>
     <field name="move.technicalOriginSelect" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
     <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
-    <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
   </grid>
 
   <action-group name="action-account-move-line-onnew-mass-entry-group">
     <action name="action-move-line-record-get-move-informations-mass-entry"/>
     <action name="action-move-line-method-get-account-informations"/>
-    <action name="action-move-line-record-compute-counter"/>
+    <action name="action-move-line-record-compute-temporaryMoveNumber"/>
     <action name="action-move-line-attrs-set-readonly-first-move-line"
-      if="eval: __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
+      if="eval: __parent__?.moveLineMassEntryList != null &amp;&amp; __parent__?.moveLineMassEntryList.size() != 0"/>
     <action name="action-move-line-attrs-set-hidden-cut-off"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
@@ -105,7 +104,7 @@
   </action-group>
 
   <action-group name="action-move-line-group-input-action-onchange">
-    <action name="action-move-line-record-increment-counter"/>
+    <action name="action-move-line-record-increment-temporaryMoveNumber"/>
     <action name="action-move-line-method-exception-counterpart" if="inputAction == 2"/>
     <action name="action-move-line-method-automatic-taxline-generation" if="inputAction == 2"/>
     <action name="action-move-line-method-generate-counterpart" if="inputAction == 2"/>
@@ -119,27 +118,28 @@
   </action-record>
 
   <action-record name="action-move-line-record-get-move-informations-mass-entry"
-    model="com.axelor.apps.account.db.MoveLine">
+    model="com.axelor.apps.account.db.MoveLineMassEntry">
     <field name="partner" expr="eval: __parent__?.partner"/>
     <field name="date" expr="eval: __parent__?.date"/>
     <field name="dueDate" expr="eval: __parent__?.date"/>
     <field name="originDate" expr="eval: __parent__?.originDate"/>
     <field name="origin" expr="eval: __parent__?.origin"/>
-    <field name="$journalTechnicalTypeSelect"
-      expr="eval: journal?.journalType.technicalTypeSelect"/>
   </action-record>
 
-  <action-record name="action-move-line-record-compute-counter"
+  <action-record name="action-move-line-record-compute-temporaryMoveNumber"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="counter" expr="eval: __parent__?.moveLineList?.max { it.counter }?.counter"/>
-    <field name="counter" expr="1" if="eval: __parent__?.moveLineList.size() == 0"/>
+    <field name="temporaryMoveNumber"
+      expr="eval: __parent__?.moveLineMassEntryList?.max { it.temporaryMoveNumber }?.temporaryMoveNumber"/>
+    <field name="temporaryMoveNumber" expr="1"
+      if="eval: __parent__?.moveLineMassEntryList.size() == 0"/>
     <field name="inputAction" expr="1"/>
   </action-record>
 
-  <action-record name="action-move-line-record-increment-counter"
+  <action-record name="action-move-line-record-increment-temporaryMoveNumber"
     model="com.axelor.apps.account.db.MoveLine">
-    <field name="counter"
-      expr="eval: __parent__?.moveLineList?.max { it.counter }?.counter + 1" if="inputAction == 3"/>
+    <field name="temporaryMoveNumber"
+      expr="eval: __parent__?.moveLineMassEntryList?.max { it.temporaryMoveNumber }?.temporaryMoveNumber + 1"
+      if="inputAction == 3"/>
     <field name="inputAction" expr="1" if="inputAction == 3"/>
   </action-record>
 
