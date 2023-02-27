@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.*;
@@ -41,11 +42,11 @@ public class MoveLineMassEntryController {
       Context parentContext = request.getContext().getParent();
       if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);
-        Move lastMoveLineMove =
-            move.getMoveLineList().get(move.getMoveLineList().size() - 1).getMove();
+        MoveLineMassEntry lastMoveLineMassEntry =
+            move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
         move.setPaymentMode(
-            lastMoveLineMove != null && lastMoveLineMove.getPaymentMode() != null
-                ? lastMoveLineMove.getPaymentMode()
+            lastMoveLineMassEntry != null && lastMoveLineMassEntry.getMovePaymentMode() != null
+                ? lastMoveLineMassEntry.getMovePaymentMode()
                 : null);
 
         Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
@@ -56,6 +57,7 @@ public class MoveLineMassEntryController {
   }
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response) {
+    // TODO Not used
     try {
       System.out.println("autoTaxLineGenerate");
 
@@ -94,6 +96,7 @@ public class MoveLineMassEntryController {
   }
 
   public void generateCounterpart(ActionRequest request, ActionResponse response) {
+    // TODO Not used
     try {
       System.out.println("generateCounterpart");
     } catch (Exception e) {
@@ -102,6 +105,7 @@ public class MoveLineMassEntryController {
   }
 
   public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
+    // TODO Not used
     Context parentContext = request.getContext().getParent();
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
