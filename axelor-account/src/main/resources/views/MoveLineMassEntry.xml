@@ -144,15 +144,18 @@
   </action-record>
 
   <action-method name="action-move-line-method-exception-counterpart">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="exceptionCounterpart"/>
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="exceptionCounterpart"/>
   </action-method>
 
   <action-method name="action-move-line-method-automatic-taxline-generation">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="autoTaxLineGenerate"/>
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="autoTaxLineGenerate"/>
   </action-method>
 
   <action-method name="action-move-line-method-generate-counterpart">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="generateCounterpart"/>
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="generateCounterpart"/>
   </action-method>
 
   <action-attrs name="action-move-line-attrs-set-readonly-first-move-line">
@@ -167,7 +170,7 @@
   </action-group>
 
   <action-method name="action-move-line-method-domain-pfp-validator-user-on-select">
-    <call class="com.axelor.apps.account.web.MoveLineController"
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
       method="setPfpValidatorUserDomain"/>
   </action-method>
 
