@@ -1042,6 +1042,7 @@
     <field name="dueDate" expr="eval: __parent__?.date"/>
     <field name="originDate" expr="eval: __parent__?.originDate"/>
     <field name="origin" expr="eval: __parent__?.origin"/>
+    <field name="description" expr="eval: __parent__?.description"/>
   </action-record>
 
   <action-record name="action-move-line-record-financial-discount"
