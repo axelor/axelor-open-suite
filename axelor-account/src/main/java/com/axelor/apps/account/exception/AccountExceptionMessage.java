@@ -1544,4 +1544,7 @@ public final class AccountExceptionMessage {
 
   public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
       "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
+
+  public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS = /*$$(*/
+      "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account." /*)*/;
 }

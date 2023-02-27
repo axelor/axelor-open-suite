@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -823,6 +824,32 @@ public class MoveLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
+    try {
+      AccountService accountService = Beans.get(AccountService.class);
+
+      if (Move.class.equals(request.getContext().getContextClass())) {
+        Move move = request.getContext().asType(Move.class);
+        if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+          for (MoveLine moveLine : move.getMoveLineList()) {
+            if (moveLine != null && moveLine.getAccount() != null) {
+              accountService.checkAnalyticAxis(
+                  moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+            }
+          }
+        }
+      } else {
+        MoveLine moveLine = request.getContext().asType(MoveLine.class);
+        if (moveLine != null && moveLine.getAccount() != null) {
+          accountService.checkAnalyticAxis(
+              moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

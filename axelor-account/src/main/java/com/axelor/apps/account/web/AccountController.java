@@ -105,7 +105,8 @@ public class AccountController {
   public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      Beans.get(AccountService.class).checkAnalyticAxis(account);
+      Beans.get(AccountService.class)
+          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -261,6 +262,8 @@ public class AccountController {
           Beans.get(AnalyticDistributionTemplateService.class);
       analyticDistributionTemplateService.verifyTemplateValues(
           account.getAnalyticDistributionTemplate());
+      Beans.get(AccountService.class)
+          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
       analyticDistributionTemplateService.validateTemplatePercentages(
           account.getAnalyticDistributionTemplate());
     } catch (Exception e) {
