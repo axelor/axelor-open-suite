@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQueryService {
 
@@ -100,7 +101,10 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
       return getAndQuery(query, searchAnalyticMoveLineQueryParameterList);
     }
 
-    return getOrQuery(query, searchAnalyticMoveLineQueryParameterList);
+    if (ObjectUtils.notEmpty(searchAnalyticMoveLineQueryParameterList)) {
+      query += " AND (" + getOrQuery(searchAnalyticMoveLineQueryParameterList) + ")";
+    }
+    return query;
   }
 
   protected String filterReversedLines() {
@@ -112,10 +116,7 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
   }
 
   protected String getOrQuery(
-      String query, List<AnalyticMoveLineQueryParameter> searchAnalyticMoveLineQueryParameterList) {
-    if (searchAnalyticMoveLineQueryParameterList.size() > 0) {
-      query += " AND (";
-    }
+      List<AnalyticMoveLineQueryParameter> searchAnalyticMoveLineQueryParameterList) {
 
     List<String> paramFilter = new ArrayList<>();
     for (AnalyticMoveLineQueryParameter parameter : searchAnalyticMoveLineQueryParameterList) {
@@ -130,8 +131,7 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
 
       paramFilter.add(q);
     }
-    query += paramFilter.stream().collect(Collectors.joining(" OR ")) + ")";
-    return query;
+    return paramFilter.stream().collect(Collectors.joining(" OR "));
   }
 
   protected String getAndQuery(
@@ -175,11 +175,11 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
       }
     }
 
-    return query
-        + " AND "
-        + String.format(
-            "self.moveLine.id in (%s)",
-            filteredList.stream().map(String::valueOf).collect(Collectors.joining(",")));
+    return String.format(
+        "%s AND self.moveLine.id in (%s) AND (%s)",
+        query,
+        StringUtils.join(filteredList, ","),
+        getOrQuery(searchAnalyticMoveLineQueryParameterList));
   }
 
   protected String getStatusQuery(AnalyticMoveLineQuery analyticMoveLineQuery, String query) {
@@ -303,20 +303,23 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
   @Override
   public List<AnalyticAxis> getAvailableAnalyticAxes(
       AnalyticMoveLineQuery analyticMoveLineQuery, boolean isReverseQuery) {
-    String alreadyPresentSearchAnalyticAxesIds =
+    List<Long> alreadyPresentSearchAnalyticAxesIds =
         this.getAlreadyPresentAnalyticAxesIds(
             analyticMoveLineQuery.getSearchAnalyticMoveLineQueryParameterList());
-    String alreadyPresentReverseAnalyticAxesIds =
-        isReverseQuery
-            ? this.getAlreadyPresentAnalyticAxesIds(
-                analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())
-            : "0";
+    List<Long> alreadyPresentReverseAnalyticAxesIds = new ArrayList<>();
+    if (isReverseQuery) {
+      alreadyPresentReverseAnalyticAxesIds.addAll(
+          this.getAlreadyPresentAnalyticAxesIds(
+              analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList()));
+    } else {
+      alreadyPresentReverseAnalyticAxesIds.add(0L);
+    }
 
     return analyticAxisRepo
         .all()
         .filter(
             String.format(
-                "self.company = :company AND self.id %s IN (:alreadyPresentSearchAnalyticAxes) AND self.id NOT IN (:alreadyPresentReverseAnalyticAxes)",
+                "(self.company = :company OR self.company IS NULL) AND self.id %s IN :alreadyPresentSearchAnalyticAxes AND self.id NOT IN :alreadyPresentReverseAnalyticAxes",
                 isReverseQuery ? "" : "NOT"))
         .bind("company", analyticMoveLineQuery.getCompany())
         .bind("alreadyPresentSearchAnalyticAxes", alreadyPresentSearchAnalyticAxesIds)
@@ -324,16 +327,15 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
         .fetch();
   }
 
-  protected String getAlreadyPresentAnalyticAxesIds(
+  protected List<Long> getAlreadyPresentAnalyticAxesIds(
       List<AnalyticMoveLineQueryParameter> analyticMoveLineQueryParameterList) {
-    String alreadyPresentAnalyticAxesIds =
+    List<Long> alreadyPresentAnalyticAxesIds =
         analyticMoveLineQueryParameterList.stream()
             .map(AnalyticMoveLineQueryParameter::getAnalyticAxis)
             .filter(Objects::nonNull)
             .map(AnalyticAxis::getId)
-            .map(Objects::toString)
-            .collect(Collectors.joining(","));
-
-    return alreadyPresentAnalyticAxesIds.isEmpty() ? "0" : alreadyPresentAnalyticAxesIds;
+            .collect(Collectors.toList());
+    alreadyPresentAnalyticAxesIds.add(0L);
+    return alreadyPresentAnalyticAxesIds;
   }
 }

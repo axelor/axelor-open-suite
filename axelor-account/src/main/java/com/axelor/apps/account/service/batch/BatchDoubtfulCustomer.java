@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,14 +22,15 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -257,13 +258,13 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 
     AccountingService.setUpdateCustomerAccount(true);
 
-    String comment = I18n.get(IExceptionMessage.BATCH_DOUBTFUL_1) + " :\n";
-    comment +=
-        String.format("\t" + I18n.get(IExceptionMessage.BATCH_DOUBTFUL_2) + "\n", batch.getDone());
+    String comment = I18n.get(AccountExceptionMessage.BATCH_DOUBTFUL_1) + " :\n";
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(AccountExceptionMessage.BATCH_DOUBTFUL_2) + "\n", batch.getDone());
+    comment +=
+        String.format(
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     comment += String.format("\t* ------------------------------- \n");
     comment += String.format("\t* %s ", updateCustomerAccountLog);

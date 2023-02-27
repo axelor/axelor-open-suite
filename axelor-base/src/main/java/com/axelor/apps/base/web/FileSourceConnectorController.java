@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,9 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.FileSourceConnector;
 import com.axelor.apps.base.db.repo.FileSourceConnectorRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.translation.ITranslation;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -38,11 +38,11 @@ public class FileSourceConnectorController {
       if (fileSourceConnector != null) {
 
         if (Beans.get(FileSourceConnectorService.class).isValid(fileSourceConnector)) {
-          response.setFlash(I18n.get(ITranslation.BASE_FILE_SOURCE_CONNECTOR_SUCCESS_CONNECTION));
+          response.setInfo(I18n.get(ITranslation.BASE_FILE_SOURCE_CONNECTOR_SUCCESS_CONNECTION));
           return;
         }
       }
-      response.setFlash(I18n.get(ITranslation.BASE_FILE_SOURCE_CONNECTOR_FAILED_CONNECTION));
+      response.setInfo(I18n.get(ITranslation.BASE_FILE_SOURCE_CONNECTOR_FAILED_CONNECTION));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

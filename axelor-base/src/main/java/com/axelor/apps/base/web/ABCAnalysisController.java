@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,14 +17,14 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
 import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -58,7 +58,11 @@ public class ABCAnalysisController {
 
   public void setSequence(ActionRequest request, ActionResponse response) {
     ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
-    Beans.get(ABCAnalysisServiceImpl.class).setSequence(abcAnalysis);
+    try {
+      Beans.get(ABCAnalysisServiceImpl.class).setSequence(abcAnalysis);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
     response.setValue("abcAnalysisSeq", abcAnalysis.getAbcAnalysisSeq());
   }
 

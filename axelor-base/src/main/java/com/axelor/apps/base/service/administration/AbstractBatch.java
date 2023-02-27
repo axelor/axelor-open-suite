@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,17 +20,17 @@ package com.axelor.apps.base.service.administration;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.MetaSelectTool;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.MetaSelectTool;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
@@ -106,7 +106,7 @@ public abstract class AbstractBatch {
   public Batch run(AuditableModel model) {
     Preconditions.checkNotNull(model);
     if (threadBatchId.get() != null) {
-      throw new IllegalStateException(I18n.get(IExceptionMessage.ABSTRACT_BATCH_2));
+      throw new IllegalStateException(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_2));
     }
 
     if (isRunnable(model)) {
@@ -124,7 +124,7 @@ public abstract class AbstractBatch {
         unarchived();
       }
     } else {
-      throw new RuntimeException(I18n.get(IExceptionMessage.ABSTRACT_BATCH_1));
+      throw new RuntimeException(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_1));
     }
   }
 
@@ -262,11 +262,11 @@ public abstract class AbstractBatch {
     }
   }
 
-  private Long getDuring() {
+  protected Long getDuring() {
     return ChronoUnit.SECONDS.between(batch.getStartDate(), batch.getEndDate());
   }
 
-  private void associateModel() throws IllegalAccessException {
+  protected void associateModel() throws IllegalAccessException {
     LOG.debug("ASSOCIATE batch:{} TO model:{}", batch, model);
 
     for (Field field : batch.getClass().getDeclaredFields()) {
@@ -287,7 +287,7 @@ public abstract class AbstractBatch {
     }
   }
 
-  private boolean isAssociable(Field field) {
+  protected boolean isAssociable(Field field) {
     return field.getType().equals(EntityHelper.getEntityClass(model));
   }
 

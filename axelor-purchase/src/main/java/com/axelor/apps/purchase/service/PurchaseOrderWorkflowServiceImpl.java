@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -54,7 +54,7 @@ public class PurchaseOrderWorkflowServiceImpl implements PurchaseOrderWorkflowSe
         || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_CANCELED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_DRAFT_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_DRAFT_WRONG_STATUS));
     }
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
@@ -69,7 +69,7 @@ public class PurchaseOrderWorkflowServiceImpl implements PurchaseOrderWorkflowSe
         || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_REQUESTED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_VALIDATE_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_VALIDATE_WRONG_STATUS));
     }
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
@@ -91,7 +91,7 @@ public class PurchaseOrderWorkflowServiceImpl implements PurchaseOrderWorkflowSe
         || purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_VALIDATED) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_FINISH_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_FINISH_WRONG_STATUS));
     }
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_FINISHED);
@@ -109,7 +109,7 @@ public class PurchaseOrderWorkflowServiceImpl implements PurchaseOrderWorkflowSe
         || !authorizedStatus.contains(purchaseOrder.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_CANCEL_WRONG_STATUS));
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_CANCEL_WRONG_STATUS));
     }
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_CANCELED);

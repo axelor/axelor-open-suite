@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
@@ -34,8 +36,6 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -152,9 +152,9 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     if (root == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
+          I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
     }
-    return ActionView.define("Tasks")
+    return ActionView.define(I18n.get("Tasks"))
         .model(ProjectTask.class.getName())
         .add("grid", "project-task-grid")
         .add("form", "project-task-form")
@@ -162,7 +162,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         .domain("self.parentTask = " + root.getId());
   }
 
-  private void updateTask(ProjectTask root, ProjectTask childTask, SaleOrderLine orderLine)
+  protected void updateTask(ProjectTask root, ProjectTask childTask, SaleOrderLine orderLine)
       throws AxelorException {
     childTask.setParentTask(root);
     childTask.setQuantity(orderLine.getQty());

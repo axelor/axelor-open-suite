@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,8 +18,8 @@
 package com.axelor.apps.account.service.invoice.print;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

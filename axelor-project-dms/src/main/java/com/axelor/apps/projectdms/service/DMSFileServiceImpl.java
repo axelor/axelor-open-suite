@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,20 +17,20 @@
  */
 package com.axelor.apps.projectdms.service;
 
-import com.axelor.apps.message.db.EmailAccount;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.service.MailAccountService;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.projectdms.exception.IExceptionMessage;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.projectdms.exception.ProjectDmsExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.EmailAccount;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.repo.EmailAddressRepository;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MessageService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -91,7 +91,7 @@ public class DMSFileServiceImpl implements DMSFileService {
     messageService.sendByEmail(message);
   }
 
-  private EmailAddress getEmailAddress(User user) throws AxelorException {
+  protected EmailAddress getEmailAddress(User user) throws AxelorException {
 
     EmailAddress emailAddress = null;
 
@@ -108,7 +108,7 @@ public class DMSFileServiceImpl implements DMSFileService {
     if (emailAddress == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LOCKED_BY_USER_EMAIL_NOT_CONFIGURED),
+          I18n.get(ProjectDmsExceptionMessage.LOCKED_BY_USER_EMAIL_NOT_CONFIGURED),
           user.getCode());
     }
 

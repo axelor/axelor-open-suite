@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceLine" lang="java"
-    implements="com.axelor.apps.account.db.repo.AnalyticLine">
+  <entity name="InvoiceLine" implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 
@@ -74,7 +73,7 @@
 
     <integer name="typeSelect" title="Type" selection="line.type.select"/>
 
-    <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
+    <decimal name="taxRate" scale="10" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
     <string name="name" title="Name" search="invoice,productName">
             <![CDATA[

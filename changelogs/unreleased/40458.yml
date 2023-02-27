@@ -1,3 +1,0 @@
----
-title: "fix service injection causing bad perfs during CustomerCredit calculation"
-type: fix

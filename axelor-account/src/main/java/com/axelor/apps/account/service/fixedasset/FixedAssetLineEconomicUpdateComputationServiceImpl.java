@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,10 +20,10 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.date.DateTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.utils.date.DateTool;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -109,7 +109,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
-        fixedAsset,
+        fixedAsset.getPeriodicityTypeSelect(),
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
@@ -125,8 +125,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNumberOfDepreciation() - this.listSizeAfterClear;
+  protected BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation())
+        .subtract(BigDecimal.valueOf(this.listSizeAfterClear));
   }
 
   @Override
@@ -142,7 +143,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
-        fixedAsset,
+        fixedAsset.getPeriodicityTypeSelect(),
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
@@ -150,7 +151,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
     return fixedAssetDateService.computeLastDayOfPeriodicity(
-        fixedAsset,
+        fixedAsset.getPeriodicityTypeSelect(),
         DateTool.plusMonths(
             firstPlannedFixedAssetLine.getDepreciationDate(), fixedAsset.getPeriodicityInMonth()));
   }
@@ -166,10 +167,11 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   @Override
-  protected int numberOfDepreciationDone(FixedAsset fixedAsset) {
-    return getFixedAssetLineList(fixedAsset).size()
-        - listSizeAfterClear
-        + fixedAsset.getNbrOfPastDepreciations();
+  protected BigDecimal numberOfDepreciationDone(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(
+        getFixedAssetLineList(fixedAsset).size()
+            - listSizeAfterClear
+            + fixedAsset.getNbrOfPastDepreciations());
   }
 
   @Override
@@ -177,10 +179,10 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     return false;
   }
 
-  private void prepareRecomputation(FixedAsset fixedAsset) throws AxelorException {
+  protected void prepareRecomputation(FixedAsset fixedAsset) throws AxelorException {
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
     if (fixedAsset.getCorrectedAccountingValue() == null
-        || fixedAsset.getCorrectedAccountingValue().signum() <= 0) {
+        || fixedAsset.getCorrectedAccountingValue().signum() == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           "You can not call this implementation without a corrected accounting value");
@@ -211,7 +213,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     this.canGenerateLines = true;
   }
 
-  private void clearPlannedFixedAssetLineListExcept(
+  protected void clearPlannedFixedAssetLineListExcept(
       List<FixedAssetLine> fixedAssetLineList, FixedAssetLine firstPlannedFixedAssetLine) {
     // We remove all fixedAssetLine that are not realized but we keep first planned line.
     List<FixedAssetLine> linesToRemove =
@@ -229,15 +231,17 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     fixedAssetLineService.clear(linesToRemove);
   }
 
-  private void recomputeFirstPlannedLine(
+  protected void recomputeFirstPlannedLine(
       List<FixedAssetLine> fixedAssetLineList,
       FixedAssetLine firstPlannedFixedAssetLine,
       BigDecimal correctedAccountingValue) {
     firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
-    firstPlannedFixedAssetLine.setImpairmentValue(
+    BigDecimal impairmentValue =
         firstPlannedFixedAssetLine
             .getAccountingValue()
-            .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue()));
+            .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue());
+    firstPlannedFixedAssetLine.setImpairmentValue(impairmentValue);
+    BigDecimal depreciation = firstPlannedFixedAssetLine.getDepreciation();
     Optional<FixedAssetLine> previousLastRealizedFAL =
         fixedAssetLineService.findNewestFixedAssetLine(
             fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
@@ -246,13 +250,11 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
           previousLastRealizedFAL
               .get()
               .getCumulativeDepreciation()
-              .add(firstPlannedFixedAssetLine.getDepreciation())
-              .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
+              .add(depreciation)
+              .add(impairmentValue));
     } else {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
-          BigDecimal.ZERO
-              .add(firstPlannedFixedAssetLine.getDepreciation())
-              .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
+          BigDecimal.ZERO.add(depreciation).add(impairmentValue));
     }
   }
 
@@ -262,8 +264,8 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNbrOfPastDepreciations();
+  protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNbrOfPastDepreciations());
   }
 
   @Override
@@ -280,5 +282,11 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   @Override
   protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
     return fixedAsset.getFailOverDepreciationEndDate();
+  }
+
+  @Override
+  protected int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset) {
+
+    return fixedAsset.getFirstDepreciationDateInitSelect();
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.bankorder;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
@@ -28,14 +29,14 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -57,6 +58,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       ExpenseService expenseService,
       BankOrderMoveService bankOrderMoveService,
       AppBaseService appBaseService,
+      PaymentSessionCancelService paymentSessionCancelService,
       PaymentSessionRepository paymentSessionRepo) {
     super(
         bankOrderRepo,
@@ -69,6 +71,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         bankOrderLineOriginService,
         bankOrderMoveService,
         appBaseService,
+        paymentSessionCancelService,
         paymentSessionRepo);
     this.expenseService = expenseService;
   }
@@ -96,10 +99,11 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void cancelPayment(BankOrder bankOrder) throws AxelorException {
-    super.cancelPayment(bankOrder);
+  public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException {
+    bankOrder = super.cancelPayment(bankOrder);
+
     if (!Beans.get(AppService.class).isApp("employee")) {
-      return;
+      return bankOrder;
     }
     List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
@@ -112,5 +116,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         expenseService.cancelPayment(expense);
       }
     }
+
+    return bankOrder;
   }
 }

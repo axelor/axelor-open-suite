@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,11 +24,11 @@ import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -51,10 +51,10 @@ public class BankStatementController {
       BankStatementService bankStatementService = Beans.get(BankStatementService.class);
       bankStatement = bankStatementRepo.find(bankStatement.getId());
       bankStatementService.runImport(bankStatement, true);
-      bankStatementService.checkImport(bankStatement);
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e, ExceptionOriginRepository.BANK_STATEMENT);
+      TraceBackService.trace(
+          response, e, ExceptionOriginRepository.BANK_STATEMENT, ResponseMessageType.ERROR);
     }
     response.setReload(true);
   }
@@ -125,14 +125,14 @@ public class BankStatementController {
         } else {
           int errorNB = bankStatementRemoveService.deleteMultiple(statementIds);
           if (errorNB > 0) {
-            response.setFlash(
+            response.setInfo(
                 String.format(I18n.get(IExceptionMessage.STATEMENT_REMOVE_NOT_OK_NB), errorNB));
           } else {
-            response.setFlash(I18n.get(IExceptionMessage.STATEMENT_REMOVE_OK));
+            response.setInfo(I18n.get(IExceptionMessage.STATEMENT_REMOVE_OK));
             response.setReload(true);
           }
         }
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_STATEMENT_TO_REMOVE));
+      } else response.setInfo(I18n.get(IExceptionMessage.NO_STATEMENT_TO_REMOVE));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(

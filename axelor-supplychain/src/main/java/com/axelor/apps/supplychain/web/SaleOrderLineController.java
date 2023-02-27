@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,24 +18,24 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -136,7 +136,7 @@ public class SaleOrderLineController {
       if (product == null || !product.getStockManaged()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
       }
       Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, newReservedQty);
     } catch (Exception e) {
@@ -170,7 +170,7 @@ public class SaleOrderLineController {
       if (product == null || !product.getStockManaged()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
       }
       Beans.get(ReservedQtyService.class).requestQty(saleOrderLine);
       response.setReload(true);
@@ -194,7 +194,7 @@ public class SaleOrderLineController {
       if (product == null || !product.getStockManaged()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
       }
       Beans.get(ReservedQtyService.class).cancelReservation(saleOrderLine);
       response.setReload(true);
@@ -313,7 +313,7 @@ public class SaleOrderLineController {
       if (product == null || !product.getStockManaged()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
       }
       Beans.get(ReservedQtyService.class).allocateAll(saleOrderLine);
       response.setReload(true);

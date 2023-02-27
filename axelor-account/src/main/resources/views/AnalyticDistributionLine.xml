@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="analytic-distribution-line-grid" title="Analytic distribution lines"
     model="com.axelor.apps.account.db.AnalyticDistributionLine" groupBy="analyticAxis">
@@ -91,8 +91,8 @@
 
   <action-attrs name="action-attrs-domain-axis-distribution-line">
     <attribute name="domain" for="analyticAxis"
-      expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id} &quot;"
-      if="__parent__ &amp;&amp; __parent__.company"/>
+      expr="eval: &quot; self.id in (${__repo__(AccountConfig).findByCompany(__parent__.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
+      if="__parent__ &amp;&amp; __parent__.company &amp;&amp; __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticAxisByCompanyList"/>
     <attribute name="domain" for="analyticAxis" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
   </action-attrs>
@@ -102,7 +102,8 @@
       expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id}) AND self.analyticAxis.id = ${__this__?.analyticAxis.id}&quot;"
       if="__parent__ &amp;&amp; __parent__.company &amp;&amp; analyticAxis"/>
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id}&quot;"
+      expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id})
+      	AND self.analyticAxis.id in (${__repo__(AccountConfig).findByCompany(__parent__.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
       if="__parent__ &amp;&amp; __parent__.company &amp;&amp; !analyticAxis"/>
     <attribute name="domain" for="analyticAccount" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>
@@ -110,7 +111,8 @@
       expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id}) AND self.analyticAxis.id = ${__this__?.analyticAxis.id}&quot;"
       if="__parent__ &amp;&amp; __parent__.company &amp;&amp; analyticAxis"/>
     <attribute name="domain" for="analyticAccountSet"
-      expr="eval: &quot;self.company is null OR self.company.id = ${__parent__?.company?.id}&quot;"
+      expr="eval: &quot;(self.company is null OR self.company.id = ${__parent__?.company?.id})
+      	AND self.analyticAxis.id in (${__repo__(AccountConfig).findByCompany(__parent__.company).analyticAxisByCompanyList.collect{it.analyticAxis.id}.join(',')}) &quot;"
       if="__parent__ &amp;&amp; __parent__.company &amp;&amp; !analyticAxis"/>
     <attribute name="domain" for="analyticAccountSet" expr="eval: null"
       if="!(__parent__ &amp;&amp; __parent__.company)"/>

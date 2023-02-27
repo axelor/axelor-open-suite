@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="analytic-move-line-query-grid" title="Analytic review"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery" x-selector="checkbox">
@@ -9,8 +9,6 @@
     <field name="tradingName"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <button name="filterAnalyticMoveLineBtn"
-      onClick="save,action-analytic-move-line-query-method-show-filtered-lines" icon="fa-search"/>
   </grid>
 
   <form name="analytic-move-line-query-form" title="Analytic review"
@@ -105,7 +103,7 @@
   <action-record name="action-analytic-move-line-query-record-default"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery">
     <field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany"/>
-    <field name="toDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="toDate" expr="eval:__config__.date"/>
   </action-record>
 
   <action-record name="action-analytic-move-line-query-record-company-onchange"

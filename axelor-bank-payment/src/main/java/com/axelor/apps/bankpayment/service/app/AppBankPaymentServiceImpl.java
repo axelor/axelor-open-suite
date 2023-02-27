@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,11 +19,14 @@ package com.axelor.apps.bankpayment.service.app;
 
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentConfigRepository;
-import com.axelor.apps.base.db.AppBankPayment;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppBankPaymentRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.db.AppBankPayment;
+import com.axelor.studio.db.repo.AppBankPaymentRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -37,10 +40,14 @@ public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements App
   protected CompanyRepository companyRepo;
 
   @Inject
-  AppBankPaymentServiceImpl(
+  public AppBankPaymentServiceImpl(
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
       AppBankPaymentRepository appBankPaymentRepo,
       BankPaymentConfigRepository bankPaymentConfigRepo,
       CompanyRepository companyRepo) {
+    super(appRepo, metaFiles, appVersionService);
     this.appBankPaymentRepo = appBankPaymentRepo;
     this.bankPaymentConfigRepo = bankPaymentConfigRepo;
     this.companyRepo = companyRepo;

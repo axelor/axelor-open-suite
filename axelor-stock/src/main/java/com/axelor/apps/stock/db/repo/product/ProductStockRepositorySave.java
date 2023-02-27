@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ import com.google.inject.Inject;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.ListUtils;
 
 public class ProductStockRepositorySave {
 
@@ -49,13 +50,12 @@ public class ProductStockRepositorySave {
     Set<MetaField> specificProductFieldSet =
         appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
     if (ObjectUtils.isEmpty(specificProductFieldSet)
-        || !appBaseService.getAppBase().getEnableMultiCompany()
-        || ObjectUtils.isEmpty(product.getProductCompanyList())) {
+        || !appBaseService.getAppBase().getEnableMultiCompany()) {
       return;
     }
 
     List<Company> productCompanies =
-        product.getProductCompanyList().stream()
+        ListUtils.emptyIfNull(product.getProductCompanyList()).stream()
             .map(ProductCompany::getCompany)
             .collect(Collectors.toList());
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.repo.MachineToolRepository;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -42,14 +43,16 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
       OperationOrderDurationRepository operationOrderDurationRepo,
       AppProductionService appProductionService,
       MachineToolRepository machineToolRepo,
-      WeeklyPlanningService weeklyPlanningService) {
+      WeeklyPlanningService weeklyPlanningService,
+      ProdProcessLineService prodProcessLineService) {
     super(
         operationOrderStockMoveService,
         operationOrderRepo,
         operationOrderDurationRepo,
         appProductionService,
         machineToolRepo,
-        weeklyPlanningService);
+        weeklyPlanningService,
+        prodProcessLineService);
   }
 
   /**

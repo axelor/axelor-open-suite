@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,7 @@ public class ProjectManagementRepository extends ProjectRepository {
 
   @Inject ProjectTaskService projectTaskService;
 
-  private void setAllProjectFullName(Project project) {
+  protected void setAllProjectFullName(Project project) {
     String projectCode =
         (Strings.isNullOrEmpty(project.getCode())) ? "" : project.getCode() + " - ";
     project.setFullName(projectCode + project.getName());
@@ -67,5 +67,12 @@ public class ProjectManagementRepository extends ProjectRepository {
     setAllProjectFullName(project);
     project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
     return super.save(project);
+  }
+
+  @Override
+  public Project copy(Project entity, boolean deep) {
+    Project project = super.copy(entity, false);
+    project.setCode(null);
+    return project;
   }
 }

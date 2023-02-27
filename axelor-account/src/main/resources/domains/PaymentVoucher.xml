@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentVoucher" sequential="true" lang="java">
+  <entity name="PaymentVoucher" sequential="true">
 
     <string name="ref" title="Reference" namecolumn="true" required="false"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"
@@ -94,6 +94,7 @@
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_CONFIRMED = 2;
+		public static final int STATUS_CANCELED = 3;
 
 	   	// OPERATION TYPE SELECT
 		public static final int OPERATION_TYPE_SUPPLIER_PURCHASE = 1;

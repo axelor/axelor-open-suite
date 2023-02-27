@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
@@ -30,7 +32,7 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
@@ -38,8 +40,6 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -79,7 +79,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     if (prodProcessLine.getWorkCenter() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
           prodProcessLine.getProdProcess() != null
               ? prodProcessLine.getProdProcess().getCode()
               : "null",
@@ -216,7 +216,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     if (Duration.between(fromDateTime, toDateTime).toDays() > 20) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
+          I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
     }
 
     List<OperationOrder> operationOrderListTemp =
@@ -311,7 +311,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     if (Duration.between(fromDateTime, toDateTime).toDays() > 500) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
+          I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
     }
 
     List<OperationOrder> operationOrderListTemp =

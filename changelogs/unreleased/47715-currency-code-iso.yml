@@ -1,6 +1,0 @@
----
-title: "Currency : Add a new field ISO Code"
-type: feature
-description: |
-  The old field code is now only used for labelling.
-  The new field ISO code is used for retrieving currency values.

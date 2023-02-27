@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -56,6 +56,7 @@
 
   <selection name="meta.schedule.job.select" id="supplychain.meta.schedule.job.select">
     <option value="com.axelor.apps.supplychain.job.BillSubJob">com.axelor.apps.supplychain.job.BillSubJob</option>
+    <option value="com.axelor.apps.supplychain.job.MrpJob">com.axelor.apps.supplychain.job.MrpJob</option>
   </selection>
 
   <selection name="meta.schedule.batch.service.select"

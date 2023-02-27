@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,17 +26,17 @@ import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.callable.ControllerCallableTool;
-import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.App;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
@@ -118,7 +118,7 @@ public class AccountingBatchController {
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
     accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
     Batch batch = Beans.get(AccountingBatchService.class).billOfExchange(accountingBatch);
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -140,7 +140,7 @@ public class AccountingBatchController {
       Batch batch =
           batchControllerCallableTool.runInSeparateThread(accountingBatchService, response);
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -155,7 +155,7 @@ public class AccountingBatchController {
     accountingBatch = Beans.get(AccountingBatchRepository.class).find(accountingBatch.getId());
     Batch batch =
         Beans.get(AccountingBatchService.class).blockCustomersWithLatePayments(accountingBatch);
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) response.setInfo(batch.getComments());
     response.setReload(true);
   }
 
@@ -175,12 +175,12 @@ public class AccountingBatchController {
       Batch batch =
           batchControllerCallableTool.runInSeparateThread(accountingBatchService, response);
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
       response.setReload(true);
       if (batch != null) {
         response.setView(
-            ActionView.define("Batch")
+            ActionView.define(I18n.get("Batch"))
                 .model(Batch.class.getName())
                 .add("form", "batch-form")
                 .param("popup-save", "true")
@@ -244,7 +244,9 @@ public class AccountingBatchController {
           }
         } else {
           if (Beans.get(AccountingReportToolService.class)
-              .isThereAlreadyDraftReportInPeriod(accountingReport)) {
+                  .isThereAlreadyDraftReportInPeriod(accountingReport)
+              && accountingReport.getReportType().getTypeSelect()
+                  == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
             response.setError(
                 I18n.get(
                     "There is already an ongoing accounting report of this type in draft status for this same period."));

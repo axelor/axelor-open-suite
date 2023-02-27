@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,20 +17,20 @@
  */
 package com.axelor.apps.base.service.imports;
 
-import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
-import com.axelor.apps.tool.net.URLService;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
+import com.axelor.studio.db.AppBase;
+import com.axelor.utils.net.URLService;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.BufferedReader;
@@ -146,7 +146,7 @@ public class ImportCityServiceImpl implements ImportCityService {
           this.getClass().getResourceAsStream("/import-configs/" + typeSelect + "-config.xml");
 
       if (bindFileInputStream == null) {
-        printWriter.append(I18n.get(IExceptionMessage.IMPORTER_3) + "\n");
+        printWriter.append(I18n.get(BaseExceptionMessage.IMPORTER_3) + "\n");
       }
 
       try (FileOutputStream outputStream = new FileOutputStream(configFile)) {
@@ -279,7 +279,8 @@ public class ImportCityServiceImpl implements ImportCityService {
                 break;
 
               default:
-                printWriter.append(I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
+                printWriter.append(
+                    I18n.get(BaseExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
             }
 
             LOG.debug("Length of file : {}", cityTextFile.length());
@@ -291,10 +292,10 @@ public class ImportCityServiceImpl implements ImportCityService {
       FileUtils.forceDelete(tempDir);
 
     } catch (UnknownHostException hostExp) {
-      printWriter.append(I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR) + "\n");
+      printWriter.append(I18n.get(BaseExceptionMessage.SERVER_CONNECTION_ERROR) + "\n");
     } catch (IOException e) {
       printWriter.append(
-          String.format(I18n.get(IExceptionMessage.NO_DATA_FILE_FOUND), downloadUrl) + "\n");
+          String.format(I18n.get(BaseExceptionMessage.NO_DATA_FILE_FOUND), downloadUrl) + "\n");
     }
     return metaFile;
   }
@@ -331,7 +332,7 @@ public class ImportCityServiceImpl implements ImportCityService {
       if (!txtFileFound) {
         printWriter.append(
             String.format(
-                    I18n.get(IExceptionMessage.NO_TEXT_FILE_FOUND),
+                    I18n.get(BaseExceptionMessage.NO_TEXT_FILE_FOUND),
                     requiredFileName,
                     dataFile.getFileName())
                 + "\n");
@@ -491,19 +492,19 @@ public class ImportCityServiceImpl implements ImportCityService {
       case DUMP:
         downloadUrl = appBase.getGeoNamesDumpUrl();
         if (StringUtils.isEmpty(downloadUrl)) {
-          printWriter.append(I18n.get(IExceptionMessage.GEONAMES_DUMP_URL_NOT_SPECIFIED) + "\n");
+          printWriter.append(I18n.get(BaseExceptionMessage.GEONAMES_DUMP_URL_NOT_SPECIFIED) + "\n");
         }
         break;
 
       case ZIP:
         downloadUrl = appBase.getGeoNamesZipUrl();
         if (StringUtils.isEmpty(downloadUrl)) {
-          printWriter.append(I18n.get(IExceptionMessage.GEONAMES_ZIP_URL_NOT_SPECIFIED) + "\n");
+          printWriter.append(I18n.get(BaseExceptionMessage.GEONAMES_ZIP_URL_NOT_SPECIFIED) + "\n");
         }
         break;
 
       default:
-        printWriter.append(I18n.get(IExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
+        printWriter.append(I18n.get(BaseExceptionMessage.INVALID_GEONAMES_IMPORT_FILE) + "\n");
     }
 
     return downloadUrl;
@@ -568,7 +569,7 @@ public class ImportCityServiceImpl implements ImportCityService {
           }
           importHistoryList.add(this.importCity(typeSelect + "-dump", dataFile));
         } else {
-          printWriter.append(I18n.get(IExceptionMessage.INVALID_DATA_FILE_EXTENSION) + "\n");
+          printWriter.append(I18n.get(BaseExceptionMessage.INVALID_DATA_FILE_EXTENSION) + "\n");
         }
       }
     } catch (Exception e) {

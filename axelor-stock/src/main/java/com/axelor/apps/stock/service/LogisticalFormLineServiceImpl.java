@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,12 +22,12 @@ import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.exception.LogisticalFormError;
-import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.script.ScriptHelper;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -99,7 +99,7 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
     if (!Strings.isNullOrEmpty(dimensions) && !DIMENSIONS_PATTERN.matcher(dimensions).matches()) {
       throw new LogisticalFormError(
           logisticalFormLine,
-          I18n.get(IExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS),
+          I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS),
           logisticalFormLine.getSequence() + 1);
     }
   }

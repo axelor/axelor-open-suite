@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,8 +20,8 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.apps.tool.ModelTool;
 import com.axelor.inject.Beans;
+import com.axelor.utils.ModelTool;
 import java.util.List;
 
 public class ContractVersionRepository extends AbstractContractVersionRepository {

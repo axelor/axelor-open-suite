@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,27 +43,28 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -460,7 +461,7 @@ public class IrrecoverableService {
               new AxelorException(
                   e,
                   e.getCategory(),
-                  I18n.get(IExceptionMessage.IRRECOVERABLE_1),
+                  I18n.get(AccountExceptionMessage.IRRECOVERABLE_1),
                   paymentScheduleLine.getName()),
               ExceptionOriginRepository.IRRECOVERABLE,
               irrecoverable.getId());
@@ -471,7 +472,8 @@ public class IrrecoverableService {
           TraceBackService.trace(
               new Exception(
                   String.format(
-                      I18n.get(IExceptionMessage.IRRECOVERABLE_1), paymentScheduleLine.getName()),
+                      I18n.get(AccountExceptionMessage.IRRECOVERABLE_1),
+                      paymentScheduleLine.getName()),
                   e),
               ExceptionOriginRepository.IRRECOVERABLE,
               irrecoverable.getId());
@@ -508,8 +510,8 @@ public class IrrecoverableService {
       throw new AxelorException(
           irrecoverable,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IRRECOVERABLE_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.IRRECOVERABLE_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     moveValidateService.accounting(move);
     irrecoverable.getMoveSet().add(move);
@@ -537,8 +539,8 @@ public class IrrecoverableService {
       throw new AxelorException(
           irrecoverable,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IRRECOVERABLE_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.IRRECOVERABLE_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     moveValidateService.accounting(move);
 
@@ -748,7 +750,7 @@ public class IrrecoverableService {
 
     BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 
-    BigDecimal divid = taxRate.add(BigDecimal.ONE);
+    BigDecimal divid = taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE);
 
     // Montant hors-Taxe
     BigDecimal irrecoverableAmount =
@@ -869,7 +871,8 @@ public class IrrecoverableService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             invoice.getMove().getOrigin() + ":" + irrecoverableName,
-            invoice.getInvoiceId());
+            invoice.getInvoiceId(),
+            invoice.getCompanyBankDetails());
     move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
     int seq = 1;
 
@@ -924,12 +927,24 @@ public class IrrecoverableService {
             invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
         if (AccountTypeRepository.TYPE_TAX.equals(
             invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+          if (invoiceMoveLine.getAccount().getVatSystemSelect() == null
+              || invoiceMoveLine.getAccount().getVatSystemSelect() == 0) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+                invoiceMoveLine.getAccount().getCode());
+          }
           debitMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
                   payerPartner,
                   taxAccountService.getAccount(
-                      invoiceMoveLine.getTaxLine().getTax(), company, false, false),
+                      invoiceMoveLine.getTaxLine().getTax(),
+                      company,
+                      move.getJournal(),
+                      invoiceMoveLine.getAccount().getVatSystemSelect(),
+                      false,
+                      move.getFunctionalOriginSelect()),
                   amount,
                   true,
                   invoiceMoveLine.getTaxLine(),
@@ -1010,7 +1025,8 @@ public class IrrecoverableService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE,
             originStr,
-            moveLine.getDescription());
+            moveLine.getDescription(),
+            moveLine.getMove().getCompanyBankDetails());
     move.setOriginDate(moveLine.getMove().getDate());
 
     int seq = 1;
@@ -1039,7 +1055,7 @@ public class IrrecoverableService {
     BigDecimal taxRate = taxService.getTaxRate(tax, appAccountService.getTodayDate(company));
 
     // Debit MoveLine 654. (irrecoverable account)
-    BigDecimal divid = taxRate.add(BigDecimal.ONE);
+    BigDecimal divid = taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE);
     BigDecimal irrecoverableAmount =
         amount
             .divide(divid, 6, RoundingMode.HALF_UP)
@@ -1057,8 +1073,23 @@ public class IrrecoverableService {
             moveLine.getDescription());
     move.getMoveLineList().add(creditMoveLine1);
 
+    if (moveLine.getAccount().getVatSystemSelect() == null
+        || moveLine.getAccount().getVatSystemSelect() == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+          moveLine.getAccount().getCode());
+    }
+
     // Debit MoveLine 445 (Tax account)
-    Account taxAccount = taxAccountService.getAccount(tax, company, false, false);
+    Account taxAccount =
+        taxAccountService.getAccount(
+            tax,
+            company,
+            move.getJournal(),
+            moveLine.getAccount().getVatSystemSelect(),
+            false,
+            move.getFunctionalOriginSelect());
     BigDecimal taxAmount = amount.subtract(irrecoverableAmount);
     MoveLine creditMoveLine2 =
         moveLineCreateService.createMoveLine(
@@ -1115,12 +1146,14 @@ public class IrrecoverableService {
 
   public String getSequence(Company company) throws AxelorException {
 
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.IRRECOVERABLE, company);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.IRRECOVERABLE, company, Irrecoverable.class, "name");
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.IRRECOVERABLE_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.IRRECOVERABLE_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -1154,8 +1187,8 @@ public class IrrecoverableService {
       if (moveLine == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.IRRECOVERABLE_3),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             invoice.getInvoiceId());
       }
 
@@ -1184,8 +1217,8 @@ public class IrrecoverableService {
     if (moveLine == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.IRRECOVERABLE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.IRRECOVERABLE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           invoice.getInvoiceId());
     }
 

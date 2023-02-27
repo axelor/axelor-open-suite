@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,20 +22,20 @@ import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -69,7 +69,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
       throw new AxelorException(
           depositSlip,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO));
+          I18n.get(
+              AccountExceptionMessage.DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO));
     }
 
     Set<BankDetails> bankDetailsCollection =
@@ -127,7 +128,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     return stringBuilder.toString();
   }
 
-  private String getReportName(DepositSlip depositSlip) throws AxelorException {
+  protected String getReportName(DepositSlip depositSlip) throws AxelorException {
     switch (depositSlip.getPaymentModeTypeSelect()) {
       case PaymentModeRepository.TYPE_CHEQUE:
         return IReport.CHEQUE_DEPOSIT_SLIP;
@@ -137,7 +138,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         throw new AxelorException(
             depositSlip,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            IExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
+            AccountExceptionMessage.DEPOSIT_SLIP_UNSUPPORTED_PAYMENT_MODE_TYPE);
     }
   }
 
@@ -221,7 +222,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
       throw new AxelorException(
           depositSlip,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.DEPOSIT_SLIP_NOT_PUBLISHED));
+          I18n.get(AccountExceptionMessage.DEPOSIT_SLIP_NOT_PUBLISHED));
     }
 
     PaymentVoucherConfirmService paymentVoucherConfirmService =

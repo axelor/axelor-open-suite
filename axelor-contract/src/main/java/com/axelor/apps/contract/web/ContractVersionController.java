@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,18 +20,18 @@ package com.axelor.apps.contract.web;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
-import com.axelor.apps.contract.exception.IExceptionMessage;
+import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -88,7 +88,7 @@ public class ContractVersionController {
       Long id = request.getContext().asType(ContractVersion.class).getId();
       ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
       if (contractVersion.getNextContract() == null) {
-        response.setError(I18n.get(IExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
+        response.setError(I18n.get(ContractExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
         return;
       }
       Beans.get(ContractService.class)
@@ -96,7 +96,7 @@ public class ContractVersionController {
               contractVersion.getNextContract(),
               getTodayDate(contractVersion.getNextContract().getCompany()));
       response.setView(
-          ActionView.define("Contract")
+          ActionView.define(I18n.get("Contract"))
               .model(Contract.class.getName())
               .add("form", "contract-form")
               .add("grid", "contract-grid")
@@ -113,7 +113,7 @@ public class ContractVersionController {
       Long id = request.getContext().asType(ContractVersion.class).getId();
       ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
       if (contractVersion.getNextContract() == null) {
-        response.setError(I18n.get(IExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
+        response.setError(I18n.get(ContractExceptionMessage.CONTRACT_VERSION_EMPTY_NEXT_CONTRACT));
         return;
       }
       Beans.get(ContractService.class)
@@ -145,10 +145,11 @@ public class ContractVersionController {
       response.setValues(contractLine);
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
+      TraceBackService.trace(response, e);
     }
   }
 
-  private LocalDate getTodayDate(Company company) {
+  protected LocalDate getTodayDate(Company company) {
     return Beans.get(AppBaseService.class).getTodayDate(company);
   }
 }

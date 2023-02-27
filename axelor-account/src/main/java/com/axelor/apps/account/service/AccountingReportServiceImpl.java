@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
+import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -32,17 +34,18 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -58,6 +61,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,9 +126,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (accountingReport.getReportType().getTypeSelect()
         == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
       fileLink = accountingReportDas2Service.printPreparatoryProcessDeclaration(accountingReport);
+    } else if (accountingReport.getReportType().getTypeSelect()
+            == AccountingReportRepository.REPORT_CUSTOM_STATE
+        && !accountingReport.getReportType().getUseLegacyCustomReports()) {
+      fileLink = accountingReportPrintService.printCustomReport(accountingReport);
     } else {
       fileLink = accountingReportPrintService.print(accountingReport);
     }
+    accountingReport = accountingReportRepo.find(accountingReport.getId());
     setStatus(accountingReport);
     return fileLink;
   }
@@ -133,6 +142,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public MetaFile export(AccountingReport accountingReport) throws AxelorException, IOException {
 
     int typeSelect = accountingReport.getReportType().getTypeSelect();
+
     if (typeSelect == AccountingReportRepository.EXPORT_N4DS) {
       return accountingReportDas2Service.exportN4DSFile(accountingReport);
     } else {
@@ -140,7 +150,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
   }
 
-  private Boolean compareReportType(AccountingReport accountingReport, int type) {
+  protected Boolean compareReportType(AccountingReport accountingReport, int type) {
     return accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect() == type;
   }
@@ -193,7 +203,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getCurrency() != null) {
-      this.addParams("self.move.companyCurrency = ?%d", accountingReport.getCurrency());
+      this.addParams("self.move.currency = ?%d", accountingReport.getCurrency());
     }
 
     if (accountingReport.getDateFrom() != null) {
@@ -225,12 +235,58 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           accountingReport.getAccountSet());
     }
 
+    List<String> technicalTypeToExclude = new ArrayList<>();
+    if (accountingReport.getExcludeViewAccount()) {
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_VIEW + "'");
+    }
+    if (accountingReport.getExcludeCommitmentSpecialAccount()) {
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_COMMITMENT + "'");
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_SPECIAL + "'");
+    }
+    if (!CollectionUtils.isEmpty(technicalTypeToExclude)) {
+      this.addParams(
+          String.format(
+              "self.account.accountType.technicalTypeSelect not in (%s)",
+              technicalTypeToExclude.stream()
+                  .map(String::valueOf)
+                  .collect(Collectors.joining(","))));
+    }
+
     if (accountingReport.getPartnerSet() != null && !accountingReport.getPartnerSet().isEmpty()) {
       this.addParams("self.partner in (?%d)", accountingReport.getPartnerSet());
     }
 
-    if (accountingReport.getYear() != null) {
+    if (accountingReport.getYear() != null
+        && accountingReport.getReportType() != null
+        && accountingReport.getReportType().getTypeSelect()
+            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
       this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
+
+    } else if (accountingReport.getReportType() != null
+        && accountingReport.getReportType().getTypeSelect()
+            == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+      this.addParams(
+          "(self.account.serviceType is null OR self.move.partner.das2Activity is null)");
+      this.addParams("self.amountRemaining < self.debit + self.credit");
+
+      JournalType journalType =
+          accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
+      if (journalType != null) {
+        this.addParams("self.move.journal.journalType = ?%d", journalType);
+      }
+      String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
+      String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String selfReconciledQuery =
+          String.format(
+              "(self.reconcileGroup is not null AND self.reconcileGroup.dateOfLettering >= %s AND self.reconcileGroup.dateOfLettering <= %s)",
+              dateFromStr, dateToStr);
+      String otherLinedReconciledQuery =
+          String.format(
+              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.dateOfLettering >= %s AND ml.reconcileGroup.dateOfLettering <= %s AND ml.move.id = self.move.id)",
+              dateFromStr, dateToStr);
+      String reconcileQuery =
+          String.format("(%s OR %s)", selfReconciledQuery, otherLinedReconciledQuery);
+      this.addParams(reconcileQuery);
     }
 
     if (accountingReport.getPaymentMode() != null) {
@@ -269,11 +325,18 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES)) {
-      this.addParams(
-          "self.account = ?%d",
+      Account cashPositionVariationAccount =
           Beans.get((AccountConfigService.class))
               .getAccountConfig(accountingReport.getCompany())
-              .getCashPositionVariationAccount());
+              .getCashPositionVariationAccount();
+      if (cashPositionVariationAccount != null) {
+        this.addParams("self.account = ?%d", cashPositionVariationAccount);
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(
+                AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_CASH_POSITION_VARIATION_ACCOUNT));
+      }
     }
 
     if (this.compareReportType(
@@ -286,7 +349,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
     List<Integer> statusSelects = new ArrayList<>();
-    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
+    if (accountingReport.getReportType() != null
+        && accountingReport.getReportType().getTypeSelect()
+            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+      statusSelects.add(MoveRepository.STATUS_DAYBOOK);
+    }
     statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
     if (accountConfigService
             .getAccountConfig(accountingReport.getCompany())
@@ -368,56 +435,54 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       throw new AxelorException(
           accountingReport,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNTING_REPORT_NO_REPORT_TYPE));
+          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_NO_REPORT_TYPE));
     }
 
     int accountingReportTypeSelect = accountingReport.getReportType().getTypeSelect();
 
-    if (accountingReportTypeSelect >= 0 && accountingReportTypeSelect < 1000) {
+    if (accountingReportTypeSelect >= 0 && accountingReportTypeSelect < 1000
+        || accountingReportTypeSelect == 3000) {
       String seq =
           sequenceService.getSequenceNumber(
-              SequenceRepository.ACCOUNTING_REPORT, accountingReport.getCompany());
+              SequenceRepository.ACCOUNTING_REPORT,
+              accountingReport.getCompany(),
+              AccountingReport.class,
+              "ref");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNTING_REPORT_1),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_1),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             accountingReport.getCompany().getName());
       }
       return seq;
     } else if (accountingReportTypeSelect >= 1000 && accountingReportTypeSelect < 2000) {
       String seq =
           sequenceService.getSequenceNumber(
-              SequenceRepository.MOVE_LINE_EXPORT, accountingReport.getCompany());
+              SequenceRepository.MOVE_LINE_EXPORT,
+              accountingReport.getCompany(),
+              AccountingReport.class,
+              "ref");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNTING_REPORT_2),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_2),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             accountingReport.getCompany().getName());
       }
       return seq;
     } else if (accountingReportTypeSelect >= 2000 && accountingReportTypeSelect < 3000) {
       String seq =
           sequenceService.getSequenceNumber(
-              SequenceRepository.ANALYTIC_REPORT, accountingReport.getCompany());
+              SequenceRepository.ANALYTIC_REPORT,
+              accountingReport.getCompany(),
+              AccountingReport.class,
+              "ref");
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNTING_REPORT_ANALYTIC_REPORT),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-            accountingReport.getCompany().getName());
-      }
-      return seq;
-    } else if (accountingReportTypeSelect == 3000) {
-      String seq =
-          sequenceService.getSequenceNumber(
-              SequenceRepository.CUSTOM_ACCOUNTING_REPORT, accountingReport.getCompany());
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNTING_REPORT_7),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_ANALYTIC_REPORT),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             accountingReport.getCompany().getName());
       }
       return seq;
@@ -425,7 +490,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     throw new AxelorException(
         accountingReport,
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE),
+        I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE),
         accountingReport.getReportType().getTypeSelect());
   }
 
@@ -537,7 +602,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (reportedDate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CLOSE_NO_REPORTED_BALANCE_DATE));
+          I18n.get(AccountExceptionMessage.CLOSE_NO_REPORTED_BALANCE_DATE));
     }
   }
 
@@ -732,10 +797,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty()) {
       this.addParams(
-          "(self.account in (?%d) or self.account.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
+          "(self.moveLine.account in (?%d) or self.moveLine.account.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
           accountingReport.getAccountSet());
     }
 
@@ -826,7 +891,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       throw new AxelorException(
           accountingReport,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNTING_REPORT_REPORT_TYPE_NOT_FOUND));
+          I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_REPORT_TYPE_NOT_FOUND));
     }
     accountingExport.setComplementaryExport(isComplementary);
     accountingExport.setReportType(reportType);

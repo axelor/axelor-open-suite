@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,10 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeBonusMgt;
 import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
@@ -27,14 +30,11 @@ import com.axelor.apps.hr.db.repo.EmployeeBonusMgtLineRepository;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.utils.template.TemplateMaker;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -193,7 +193,7 @@ public class EmployeeBonusService {
     if (formula.matches("(\\$\\w+\\$).+")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.HR_CONFIG_FORMULA_VARIABLE_MISSING),
+          I18n.get(HumanResourceExceptionMessage.HR_CONFIG_FORMULA_VARIABLE_MISSING),
           hrConfig.getCompany().getName());
     }
     return formula;

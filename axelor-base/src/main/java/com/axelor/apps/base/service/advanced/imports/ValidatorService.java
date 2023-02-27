@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,26 +17,28 @@
  */
 package com.axelor.apps.base.service.advanced.imports;
 
+import static com.axelor.utils.MetaJsonFieldType.MANY_TO_MANY;
+
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.db.repo.FileTabRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.tool.reader.DataReaderFactory;
-import com.axelor.apps.tool.reader.DataReaderService;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.utils.reader.DataReaderFactory;
+import com.axelor.utils.reader.DataReaderService;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -100,14 +102,14 @@ public class ValidatorService {
     if (advancedImport.getImportFile() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_IMPORT_FILE));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_IMPORT_FILE));
     }
 
     if (advancedImport.getAttachment() != null
         && !Files.getFileExtension(advancedImport.getAttachment().getFileName()).equals("zip")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_ATTACHMENT_FORMAT));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_ATTACHMENT_FORMAT));
     }
 
     String extension = Files.getFileExtension(advancedImport.getImportFile().getFileName());
@@ -116,7 +118,7 @@ public class ValidatorService {
         || (!extension.equals("xlsx") && !extension.equals("xls") && !extension.equals("csv"))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
     }
 
     DataReaderService reader = dataReaderFactory.getDataReader(extension);
@@ -191,7 +193,8 @@ public class ValidatorService {
     return isLog;
   }
 
-  private void validateTab(String[] sheets, AdvancedImport advancedImport) throws AxelorException {
+  protected void validateTab(String[] sheets, AdvancedImport advancedImport)
+      throws AxelorException {
     if (sheets == null) {
       return;
     }
@@ -204,19 +207,20 @@ public class ValidatorService {
     if (!CollectionUtils.containsAny(tabList, sheetList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_TAB_ERR));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_TAB_ERR));
     }
   }
 
-  private void validateModel(FileTab fileTab) throws IOException, AxelorException {
+  protected void validateModel(FileTab fileTab) throws IOException, AxelorException {
     if (fileTab.getMetaModel() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_OBJECT), fileTab.getName()));
+          String.format(
+              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_OBJECT), fileTab.getName()));
     }
   }
 
-  private void validateObject(String[] row, FileTab fileTab, Boolean isTabConfig)
+  protected void validateObject(String[] row, FileTab fileTab, Boolean isTabConfig)
       throws IOException, AxelorException {
 
     int rowIndex = isTabConfig ? 1 : 0;
@@ -227,25 +231,27 @@ public class ValidatorService {
     if (row == null || (StringUtils.isBlank(row[rowIndex]))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
+          I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
     }
 
     String object = row[rowIndex].trim();
     if (StringUtils.containsIgnoreCase(object, "Object")) {
       String model = object.split("\\:")[1].trim();
       if (fileTab.getMetaModel() != null && !fileTab.getMetaModel().getName().equals(model)) {
-        logService.addLog(LogService.COMMON_KEY, IExceptionMessage.ADVANCED_IMPORT_LOG_1, rowIndex);
+        logService.addLog(
+            LogService.COMMON_KEY, BaseExceptionMessage.ADVANCED_IMPORT_LOG_1, rowIndex);
       }
     }
   }
 
-  private void validateObjectRequiredFields(FileTab fileTab)
+  protected void validateObjectRequiredFields(FileTab fileTab)
       throws ClassNotFoundException, IOException, AxelorException {
 
     if (CollectionUtils.isEmpty(fileTab.getFileFieldList())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_FIELDS), fileTab.getName()));
+          String.format(
+              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_FIELDS), fileTab.getName()));
     }
 
     List<String> fieldList = new ArrayList<String>();
@@ -256,7 +262,7 @@ public class ValidatorService {
 
       } else {
         logService.addLog(
-            IExceptionMessage.ADVANCED_IMPORT_LOG_2, fileField.getColumnTitle(), null);
+            BaseExceptionMessage.ADVANCED_IMPORT_LOG_2, fileField.getColumnTitle(), null);
       }
     }
 
@@ -278,13 +284,13 @@ public class ValidatorService {
           if (obj != null && mapper.get(obj, prop.getName()) != null) {
             continue;
           }
-          logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_3, prop.getName(), null);
+          logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_3, prop.getName(), null);
         }
       }
     }
   }
 
-  private void validateFieldAndData(
+  protected void validateFieldAndData(
       DataReaderService reader,
       String sheet,
       FileTab fileTab,
@@ -338,7 +344,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateFields(int line, boolean isConfig, FileTab fileTab)
+  protected void validateFields(int line, boolean isConfig, FileTab fileTab)
       throws IOException, ClassNotFoundException {
 
     List<String> relationalFieldList =
@@ -352,7 +358,8 @@ public class ValidatorService {
 
       if (importField != null && Strings.isNullOrEmpty(fileField.getSubImportField())) {
         if (importField.getRelationship() != null) {
-          logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_4, importField.getName(), line);
+          logService.addLog(
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_4, importField.getName(), line);
         }
 
         this.validateImportRequiredField(
@@ -384,7 +391,7 @@ public class ValidatorService {
     }
   }
 
-  private void validateDateField(int line, FileField fileField) throws IOException {
+  protected void validateDateField(int line, FileField fileField) throws IOException {
 
     String type = fileField.getTargetType();
     Integer rowNum = fileField.getIsMatchWithFile() ? line : null;
@@ -399,12 +406,12 @@ public class ValidatorService {
       if (Strings.isNullOrEmpty(fileField.getDateFormat())
           && Strings.isNullOrEmpty(fileField.getExpression())) {
 
-        logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_6, field, rowNum);
+        logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_6, field, rowNum);
       }
     }
   }
 
-  private void validateImportRequiredField(
+  protected void validateImportRequiredField(
       int line,
       Class<?> model,
       String fieldName,
@@ -423,7 +430,7 @@ public class ValidatorService {
         if (prop.getName().equals(fieldName)
             && importType == FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
 
-          logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_5, field, rowNum);
+          logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_5, field, rowNum);
 
         } else if ((importType == FileFieldRepository.IMPORT_TYPE_FIND_NEW
                 || importType == FileFieldRepository.IMPORT_TYPE_NEW)
@@ -434,14 +441,14 @@ public class ValidatorService {
           newField = newField + "." + prop.getName();
 
           if (!relationalFieldList.contains(newField)) {
-            logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_3, newField, null);
+            logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_3, newField, null);
           }
         }
       }
     }
   }
 
-  private void validateData(String[] dataRow, int line, boolean isConfig, FileTab fileTab)
+  protected void validateData(String[] dataRow, int line, boolean isConfig, FileTab fileTab)
       throws IOException, ClassNotFoundException {
 
     Map<String, Object> map = isConfig ? fieldMap : titleMap;
@@ -526,7 +533,7 @@ public class ValidatorService {
     }
   }
 
-  private boolean validateDataRequiredField(
+  protected boolean validateDataRequiredField(
       String row[], int cell, int line, Class<?> model, String fieldName, FileField fileField)
       throws IOException, ClassNotFoundException {
 
@@ -541,7 +548,7 @@ public class ValidatorService {
           && Strings.isNullOrEmpty(row[cell])
           && importType != FileFieldRepository.IMPORT_TYPE_FIND) {
 
-        logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_8, field, line);
+        logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_8, field, line);
 
       } else if (importType == FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
         flag = true;
@@ -551,7 +558,7 @@ public class ValidatorService {
     return flag;
   }
 
-  private Property getAndValidateSubField(
+  protected Property getAndValidateSubField(
       int line, Property parentProp, FileField fileField, boolean isLog)
       throws IOException, ClassNotFoundException {
 
@@ -578,7 +585,7 @@ public class ValidatorService {
 
       if (childProp == null) {
         if (!isLog) {
-          logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_7, field, rowNum);
+          logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_7, field, rowNum);
         }
       }
 
@@ -589,7 +596,7 @@ public class ValidatorService {
         } else {
           subProperty = childProp;
           if (!isLog) {
-            logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_4, field, rowNum);
+            logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_4, field, rowNum);
           }
         }
       } else {
@@ -599,8 +606,8 @@ public class ValidatorService {
     return subProperty;
   }
 
-  private void validateDataType(String[] row, int cell, int line, String type, FileField fileField)
-      throws IOException {
+  protected void validateDataType(
+      String[] row, int cell, int line, String type, FileField fileField) throws IOException {
 
     if (Strings.isNullOrEmpty(row[cell])) {
       return;
@@ -628,7 +635,7 @@ public class ValidatorService {
 
         if (!value.matches(boolPat)) {
           logService.addLog(
-              IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
         }
         break;
 
@@ -638,14 +645,15 @@ public class ValidatorService {
             new BigInteger(value);
           } catch (Exception e) {
             logService.addLog(
-                IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+                BaseExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
           }
         }
         break;
     }
   }
 
-  private void checkNumeric(String value, int line, String field, String type) throws IOException {
+  protected void checkNumeric(String value, int line, String field, String type)
+      throws IOException {
 
     switch (type) {
       case INTEGER:
@@ -653,7 +661,7 @@ public class ValidatorService {
           Integer.parseInt(value);
         } catch (NumberFormatException e) {
           logService.addLog(
-              IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
         }
         break;
 
@@ -662,7 +670,7 @@ public class ValidatorService {
           Long.parseLong(value);
         } catch (NumberFormatException e) {
           logService.addLog(
-              IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
         }
         break;
 
@@ -671,13 +679,13 @@ public class ValidatorService {
           new BigDecimal(value);
         } catch (NumberFormatException e) {
           logService.addLog(
-              IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+              BaseExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
         }
         break;
     }
   }
 
-  private void checkDateTime(String value, int line, String type, FileField fileField)
+  protected void checkDateTime(String value, int line, String type, FileField fileField)
       throws IOException {
 
     if (!Strings.isNullOrEmpty(fileField.getDateFormat())
@@ -706,12 +714,14 @@ public class ValidatorService {
         }
       } catch (DateTimeParseException e) {
         logService.addLog(
-            IExceptionMessage.ADVANCED_IMPORT_LOG_9, getField(fileField) + "(" + type + ")", line);
+            BaseExceptionMessage.ADVANCED_IMPORT_LOG_9,
+            getField(fileField) + "(" + type + ")",
+            line);
       }
     }
   }
 
-  private void validateActions(FileTab fileTab) {
+  protected void validateActions(FileTab fileTab) {
     String actions = fileTab.getActions();
     if (StringUtils.isBlank(actions)) {
       return;
@@ -719,17 +729,17 @@ public class ValidatorService {
     if (!actionService.validate(actions)) {
       logService.addLog(
           LogService.COMMON_KEY,
-          String.format(IExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getName()),
+          String.format(BaseExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getName()),
           1);
     }
   }
 
-  private void validateSearchCall(FileTab fileTab) {
+  protected void validateSearchCall(FileTab fileTab) {
     String searchCall = fileTab.getSearchCall();
     if (!searchCallService.validate(searchCall)) {
       logService.addLog(
           LogService.COMMON_KEY,
-          String.format(IExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getName()),
+          String.format(BaseExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getName()),
           1);
     }
   }
@@ -767,7 +777,7 @@ public class ValidatorService {
             .all()
             .filter(
                 "self.type = ?1 AND self.model = ?2 AND self.targetModel = ?3",
-                "many-to-many",
+                MANY_TO_MANY,
                 modelName,
                 targetModelName)
             .count()
@@ -777,7 +787,7 @@ public class ValidatorService {
 
     MetaJsonField jsonField = new MetaJsonField();
     jsonField.setName(fieldName);
-    jsonField.setType("many-to-many");
+    jsonField.setType(MANY_TO_MANY);
     jsonField.setTitle(Inflector.getInstance().titleize(simpleModelName));
     jsonField.setSequence(sequence);
     jsonField.setModel(modelName);
@@ -824,13 +834,13 @@ public class ValidatorService {
     metaJsonFieldRepo.save(jsonField);
   }
 
-  private void validateSearch(FileTab fileTab) throws AxelorException {
+  protected void validateSearch(FileTab fileTab) throws AxelorException {
     if (fileTab.getImportType() != FileFieldRepository.IMPORT_TYPE_NEW) {
       if (CollectionUtils.isEmpty(fileTab.getSearchFieldSet())
           && StringUtils.isBlank(fileTab.getSearchCall())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(I18n.get(IExceptionMessage.ADVANCED_IMPORT_6), fileTab.getName()));
+            String.format(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_6), fileTab.getName()));
       }
       this.validateSearchCall(fileTab);
     }

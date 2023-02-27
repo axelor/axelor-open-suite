@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,10 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
@@ -44,18 +48,14 @@ import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.utils.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.Binding;
@@ -102,7 +102,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       TraceBackService.trace(
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)),
+              I18n.get(HumanResourceExceptionMessage.BATCH_MISSING_FIELD)),
           ExceptionOriginRepository.LEAVE_MANAGEMENT,
           batch.getId());
     total = 0;
@@ -195,7 +195,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       throw new AxelorException(
           employee,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT),
           employee.getName(),
           batch.getHrBatch().getLeaveReason().getName());
     }
@@ -203,7 +203,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       throw new AxelorException(
           employee,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT),
           employee.getName(),
           batch.getHrBatch().getLeaveReason().getName());
     }
@@ -213,7 +213,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       if (contract == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT);
+            HumanResourceExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT);
       }
       Integer executiveStatusSelect = contract.getExecutiveStatusSelect();
 
@@ -280,21 +280,25 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
   protected void stop() {
 
     String comment =
-        String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_0) + '\n', total);
+        String.format(
+            I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_0) + '\n', total);
 
     comment +=
         String.format(
-            I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_1) + '\n', batch.getDone());
+            I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_1) + '\n',
+            batch.getDone());
 
     if (confAnomaly > 0) {
       comment +=
           String.format(
-              I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_2) + '\n', confAnomaly);
+              I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_2) + '\n',
+              confAnomaly);
     }
     if (noValueAnomaly > 0) {
       comment +=
           String.format(
-              I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_3) + '\n', noValueAnomaly);
+              I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_3) + '\n',
+              noValueAnomaly);
     }
 
     addComment(comment);

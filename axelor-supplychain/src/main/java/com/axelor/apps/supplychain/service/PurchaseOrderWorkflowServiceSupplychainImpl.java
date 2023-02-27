@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,13 +18,13 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -64,6 +64,8 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       return;
     }
 
+    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+
     if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()
         && !purchaseOrderStockService.existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
       purchaseOrderStockService.createStockMoveFromPurchaseOrder(purchaseOrder);
@@ -80,11 +82,13 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
 
-    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+    if (!appAccountService.getAppBudget().getManageMultiBudget()) {
+      purchaseOrderSupplychainService.updateBudgetDistributionAmountAvailable(purchaseOrder);
+    }
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.cancelPurchaseOrder(purchaseOrder);
 

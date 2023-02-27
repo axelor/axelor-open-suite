@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -26,37 +27,36 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -154,7 +154,7 @@ public class PurchaseOrderController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING));
+            I18n.get(PurchaseExceptionMessage.NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -268,26 +268,28 @@ public class PurchaseOrderController {
 
     StringBuilder fieldErrors = new StringBuilder();
     if (commonCurrency == null) {
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_CURRENCY));
+      fieldErrors.append(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_CURRENCY));
     }
     if (commonSupplierPartner == null) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER));
+      fieldErrors.append(
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER));
     }
     if (commonCompany == null) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
+      fieldErrors.append(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
     }
     if (commonTradingName == null && !allTradingNamesAreNull) {
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
+      fieldErrors.append(
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
     }
 
     if (fieldErrors.length() > 0) {
-      response.setFlash(fieldErrors.toString());
+      response.setInfo(fieldErrors.toString());
       return;
     }
 
@@ -310,7 +312,7 @@ public class PurchaseOrderController {
     if (!fromPopup && (existContactPartnerDiff || existPriceListDiff)) {
       // Need to display intermediate screen to select some values
       ActionViewBuilder confirmView =
-          ActionView.define("Confirm merge purchase order")
+          ActionView.define(I18n.get("Confirm merge purchase order"))
               .model(Wizard.class.getName())
               .add("form", "purchase-order-merge-confirm-form")
               .param("popup", "true")
@@ -348,7 +350,7 @@ public class PurchaseOrderController {
       if (purchaseOrder != null) {
         // Open the generated purchase order in a new tab
         response.setView(
-            ActionView.define("Purchase order")
+            ActionView.define(I18n.get("Purchase order"))
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-grid")
                 .add("form", "purchase-order-form")
@@ -359,7 +361,7 @@ public class PurchaseOrderController {
         response.setCanClose(true);
       }
     } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
+      response.setInfo(e.getLocalizedMessage());
     }
   }
 
@@ -573,13 +575,11 @@ public class PurchaseOrderController {
   public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
       if (purchaseOrder.getPurchaseOrderLineList() != null) {
-        for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-          purchaseOrderLineService.updateLinesAfterFiscalPositionChange(purchaseOrder);
-        }
-        response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+        Beans.get(PurchaseOrderLineService.class)
+            .updateLinesAfterFiscalPositionChange(purchaseOrder);
       }
+      response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

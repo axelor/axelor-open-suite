@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,20 +17,22 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.PaymentSessionCancelService;
-import com.axelor.apps.account.service.PaymentSessionEmailService;
-import com.axelor.apps.account.service.PaymentSessionService;
-import com.axelor.apps.account.service.PaymentSessionValidateService;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionEmailService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -75,55 +77,6 @@ public class PaymentSessionController {
     }
   }
 
-  public void validateInvoiceTerms(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      response.setValue("hasReleasePopup", false);
-
-      int errorCode =
-          Beans.get(PaymentSessionValidateService.class).validateInvoiceTerms(paymentSession);
-      if (errorCode == 1) {
-        response.setAlert(I18n.get(IExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
-      } else if (errorCode == 2) {
-        ActionView.ActionViewBuilder actionViewBuilder =
-            ActionView.define(I18n.get("Invoice terms"))
-                .model(PaymentSession.class.getName())
-                .add("form", "payment-session-validate-confirm-wizard")
-                .param("popup", "true")
-                .param("popup-save", "false")
-                .context("_showRecord", paymentSession.getId());
-
-        response.setValue("hasReleasePopup", true);
-        response.setView(actionViewBuilder.map());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void validatePaymentSession(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      PaymentSessionValidateService paymentSessionValidateService =
-          Beans.get(PaymentSessionValidateService.class);
-
-      int moveCount = paymentSessionValidateService.processPaymentSession(paymentSession);
-
-      response.setReload(true);
-
-      StringBuilder flashMessage =
-          paymentSessionValidateService.generateFlashMessage(paymentSession, moveCount);
-
-      if (flashMessage.length() > 0) {
-        response.setFlash(flashMessage.toString());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void cancelPaymentSession(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
@@ -147,10 +100,11 @@ public class PaymentSessionController {
       response.setReload(true);
 
       if (emailCount == 0) {
-        response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SESSION_NO_EMAIL_SENT));
+        response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NO_EMAIL_SENT));
       } else {
-        response.setFlash(
-            String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_EMAIL_SENT), emailCount));
+        response.setInfo(
+            String.format(
+                I18n.get(AccountExceptionMessage.PAYMENT_SESSION_EMAIL_SENT), emailCount));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -168,12 +122,45 @@ public class PaymentSessionController {
     }
   }
 
-  public void reconciledInvoiceTermMoves(ActionRequest request, ActionResponse response) {
+  public void checkAndProcessInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-      Beans.get(PaymentSessionValidateService.class).reconciledInvoiceTermMoves(paymentSession);
 
+      int errorCode =
+          Beans.get(PaymentSessionValidateService.class).checkValidTerms(paymentSession);
+
+      if (errorCode == 1) {
+        response.setAlert(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
+      } else if (errorCode == 2) {
+        ActionView.ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get("Invoice terms"))
+                .model(PaymentSession.class.getName())
+                .add("form", "payment-session-validate-confirm-wizard")
+                .param("popup", "reload")
+                .param("popup-save", "false")
+                .param("show-toolbar", "false")
+                .context("_showRecord", paymentSession.getId());
+
+        response.setView(actionViewBuilder.map());
+      } else {
+        processInvoiceTerms(request, response);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void processInvoiceTerms(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      StringBuilder flashMessage =
+          Beans.get(PaymentSessionValidateService.class).processInvoiceTerms(paymentSession);
+      if (flashMessage.length() > 0) {
+        response.setInfo(flashMessage.toString());
+      }
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -183,9 +170,11 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      PaymentSessionValidateService paymentSessionValidateService =
+          Beans.get(PaymentSessionValidateService.class);
+
       List<Partner> partnerWithNegativeAmountList =
-          Beans.get(PaymentSessionValidateService.class)
-              .getPartnersWithNegativeAmount(paymentSession);
+          paymentSessionValidateService.getPartnersWithNegativeAmount(paymentSession);
 
       if (!ObjectUtils.isEmpty(partnerWithNegativeAmountList)) {
         StringBuilder partnerFullNames = new StringBuilder("");
@@ -195,18 +184,37 @@ public class PaymentSessionController {
                 .collect(Collectors.joining(",")));
         response.setError(
             String.format(
-                I18n.get(IExceptionMessage.PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE),
+                I18n.get(AccountExceptionMessage.PAYMENT_SESSION_TOTAL_AMOUNT_NEGATIVE),
                 partnerFullNames.toString(),
                 paymentSession.getPaymentMode().getCode()));
       }
 
       boolean isHoldBackWithRefund =
-          Beans.get(PaymentSessionValidateService.class).checkIsHoldBackWithRefund(paymentSession);
+          paymentSessionValidateService.checkIsHoldBackWithRefund(paymentSession);
       if (isHoldBackWithRefund) {
         response.setError(
-            String.format(I18n.get(IExceptionMessage.PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND)));
+            String.format(
+                I18n.get(AccountExceptionMessage.PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND)));
       }
 
+      List<InvoiceTerm> invoiceTermsWithInActiveBankDetails =
+          paymentSessionValidateService.getInvoiceTermsWithInActiveBankDetails(paymentSession);
+
+      if (ObjectUtils.notEmpty(invoiceTermsWithInActiveBankDetails)) {
+        String bankDetailNames =
+            invoiceTermsWithInActiveBankDetails.stream()
+                .map(InvoiceTerm::getBankDetails)
+                .distinct()
+                .map(BankDetails::getFullName)
+                .collect(Collectors.joining("<br>"));
+
+        response.setError(
+            String.format(
+                I18n.get(
+                    AccountExceptionMessage
+                        .PAYMENT_SESSION_INVOICE_TERM_WITH_IN_ACTIVE_BANK_DETAILS),
+                bankDetailNames));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -269,11 +277,77 @@ public class PaymentSessionController {
       int deletedSessions =
           Beans.get(PaymentSessionService.class).removeMultiplePaymentSessions(paymentSessionIds);
       if (paymentSessionIds.size() > deletedSessions) {
-        response.setFlash(I18n.get(IExceptionMessage.PAYMENT_SESSION_MULTIPLE_DELETION));
+        response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_MULTIPLE_DELETION));
       }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
+  }
+
+  public void selectAll(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionService.class).selectAll(paymentSession);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void searchEligibleTerms(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionService.class).retrieveEligibleTerms(paymentSession);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void unSelectAll(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionService.class).unSelectAll(paymentSession);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setButtonAttrs(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+
+      List<InvoiceTerm> invoiceTermList =
+          Beans.get(InvoiceTermRepository.class).findByPaymentSession(paymentSession).fetch();
+
+      if (invoiceTermList.isEmpty()) {
+        return;
+      }
+
+      boolean isSelectedReadonly = true;
+      boolean isUnSelectedReadonly = true;
+
+      if (invoiceTermList.stream().anyMatch(term -> !term.getIsSelectedOnPaymentSession())) {
+        isSelectedReadonly = false;
+      }
+
+      if (invoiceTermList.stream().anyMatch(term -> term.getIsSelectedOnPaymentSession())) {
+        isUnSelectedReadonly = false;
+      }
+
+      response.setAttr("selectAllBtn", "hidden", false);
+      response.setAttr("unselectAllBtn", "hidden", false);
+      response.setAttr("selectAllBtn", "readonly", isSelectedReadonly);
+      response.setAttr("unselectAllBtn", "readonly", isUnSelectedReadonly);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -64,7 +64,7 @@ import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.io.Splitter;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -1,3 +1,0 @@
----
-title: Fixed Asset disposal - don't need to create a moveline for taxlines when amounts are 0'
-type: fix

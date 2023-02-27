@@ -1,3 +1,0 @@
----
-title: "AnalyticJournal: New field code, added a unique constraint on pair code/company and name and code are on readonly if is analytic move line"
-type: feature

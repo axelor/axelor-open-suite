@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,25 +19,26 @@ package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryActionService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
-import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.repo.MessageRepository;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Set;
@@ -234,7 +235,7 @@ public class BatchDebtRecovery extends BatchStrategy {
     JPA.runInTransaction(query::executeUpdate);
   }
 
-  private String getBatchSetTableName(Model model) {
+  protected String getBatchSetTableName(Model model) {
     String modelTableName = EntityHelper.getEntityClass(model).getAnnotation(Table.class).name();
     return modelTableName + "_BATCH_SET";
   }
@@ -246,14 +247,13 @@ public class BatchDebtRecovery extends BatchStrategy {
   @Override
   protected void stop() {
 
-    String comment = I18n.get(IExceptionMessage.BATCH_DEBT_RECOVERY_1);
+    String comment = I18n.get(AccountExceptionMessage.BATCH_DEBT_RECOVERY_1);
     comment +=
         String.format(
-            "\t* %s " + I18n.get(IExceptionMessage.BATCH_DEBT_RECOVERY_2) + "\n", batch.getDone());
+            "\t* %s " + I18n.get(AccountExceptionMessage.BATCH_DEBT_RECOVERY_2) + "\n",
+            batch.getDone());
     comment +=
-        String.format(
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+        String.format(I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

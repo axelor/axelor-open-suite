@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -48,44 +48,26 @@ public class FixedAssetLineEconomicComputationServiceImpl
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
       return fixedAsset.getFailoverDate();
     }
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAssetDateService.computeLastDayOfPeriodicity(
-          fixedAsset, fixedAsset.getFirstServiceDate());
-    }
     return fixedAsset.getFirstDepreciationDate();
   }
 
   @Override
   protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()
-        && fixedAsset
-            .getComputationMethodSelect()
-            .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
-      return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
-    }
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
         && getComputationMethodSelect(fixedAsset)
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       return fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset));
+    }
+    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
+      return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
     }
     return fixedAsset.getGrossValue();
   }
 
   @Override
   protected LocalDate computeProrataTemporisFirstDepreciationDate(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAssetDateService.computeLastDayOfPeriodicity(
-          fixedAsset, fixedAsset.getFirstServiceDate());
-    }
-    return fixedAsset.getFirstDepreciationDate();
-  }
 
-  @Override
-  protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
-    if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAsset.getFirstServiceDate();
-    }
-    return fixedAsset.getAcquisitionDate();
+    return fixedAsset.getFirstDepreciationDate();
   }
 
   @Override
@@ -94,8 +76,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNumberOfDepreciation();
+  protected BigDecimal getNumberOfDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation());
   }
 
   @Override
@@ -121,7 +103,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected Boolean isProrataTemporis(FixedAsset fixedAsset) {
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
+        && fixedAsset.getNbrOfPastDepreciations() > 0) {
       // This case means that prorata temporis was already computed in another software.
       return false;
     }
@@ -131,7 +114,7 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected BigDecimal computeInitialDegressiveDepreciation(
       FixedAsset fixedAsset, BigDecimal baseValue) {
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset) && !isProrataTemporis(fixedAsset)) {
       FixedAssetLine dummyPreviousLine = new FixedAssetLine();
       dummyPreviousLine.setAccountingValue(baseValue);
       return super.computeOnGoingDegressiveDepreciation(fixedAsset, dummyPreviousLine);
@@ -140,8 +123,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
   }
 
   @Override
-  protected Integer getNumberOfPastDepreciation(FixedAsset fixedAsset) {
-    return fixedAsset.getNbrOfPastDepreciations();
+  protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
+    return BigDecimal.valueOf(fixedAsset.getNbrOfPastDepreciations());
   }
 
   @Override
@@ -164,5 +147,10 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected LocalDate getFailOverDepreciationEndDate(FixedAsset fixedAsset) {
     return fixedAsset.getFailOverDepreciationEndDate();
+  }
+
+  @Override
+  protected int getFirstDateDepreciationInitSelect(FixedAsset fixedAsset) {
+    return fixedAsset.getFirstDepreciationDateInitSelect();
   }
 }

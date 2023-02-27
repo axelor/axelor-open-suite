@@ -1,4 +1,0 @@
-title: "TAX PAYMENT MOVE LINE: implementation of vat system to tax payment move line and improved vat payment report with two new tables"
-type: feature
-description: |
-  add vat system to tax payment move line and change request of vat payment report with it. Change the behavior of tax payment move line, now generation can be done without invoice. And add two new two new tables unreconliled advance payment and unreconciled payment. Improved also original queries of vat payment report by adding account report parameters.

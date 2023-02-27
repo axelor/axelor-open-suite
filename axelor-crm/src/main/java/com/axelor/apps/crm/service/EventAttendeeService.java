@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,7 @@ public class EventAttendeeService {
 
     EventAttendee eventAttendee = new EventAttendee();
     eventAttendee.setEvent(event);
-    eventAttendee.setLead(lead);
+    eventAttendee.setEventAttendeeLead(lead);
     eventAttendee.setContactPartner(contactPartner);
 
     eventAttendee.setName(this.getName(eventAttendee));
@@ -41,8 +41,8 @@ public class EventAttendeeService {
     if (eventAttendee.getContactPartner() != null) {
       return eventAttendee.getContactPartner().getFullName();
     }
-    if (eventAttendee.getLead() != null) {
-      return eventAttendee.getLead().getFullName();
+    if (eventAttendee.getEventAttendeeLead() != null) {
+      return eventAttendee.getEventAttendeeLead().getFullName();
     }
 
     return "";

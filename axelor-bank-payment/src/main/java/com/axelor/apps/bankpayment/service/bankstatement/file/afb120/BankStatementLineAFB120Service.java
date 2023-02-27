@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,11 +26,11 @@ import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Rep
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -40,15 +40,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class BankStatementLineAFB120Service extends BankStatementLineService {
-  protected BankPaymentBankStatementLineAFB120Repository
-      bankPaymentBankStatementLineAFB120Repository;
 
   @Inject
   public BankStatementLineAFB120Service(
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository) {
     super(bankPaymentBankStatementLineAFB120Repository);
-    this.bankPaymentBankStatementLineAFB120Repository =
-        bankPaymentBankStatementLineAFB120Repository;
   }
 
   public BankStatementLineAFB120 createBankStatementLine(
@@ -101,12 +97,6 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
     if (!Strings.isNullOrEmpty(commissionExemptionIndexSelect)) {
       bankStatementLineAFB120.setCommissionExemptionIndexSelect(
           Integer.parseInt(commissionExemptionIndexSelect));
-    }
-
-    if (bankDetails != null
-        && lineType == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
-      bankDetails.setBalance((credit.subtract(debit)));
-      bankDetails.setBalanceUpdatedDate(operationDate);
     }
 
     return bankStatementLineAFB120;

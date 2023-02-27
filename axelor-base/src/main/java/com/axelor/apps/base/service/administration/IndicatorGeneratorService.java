@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,17 +17,17 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.file.CsvTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -64,7 +64,7 @@ public class IndicatorGeneratorService {
     if (request == null || request.isEmpty()) {
       log =
           String.format(
-              I18n.get(IExceptionMessage.INDICATOR_GENERATOR_1), indicatorGenerator.getCode());
+              I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_1), indicatorGenerator.getCode());
     }
 
     String result = "";
@@ -80,7 +80,7 @@ public class IndicatorGeneratorService {
 
       log +=
           String.format(
-              I18n.get(IExceptionMessage.INDICATOR_GENERATOR_2), indicatorGenerator.getCode());
+              I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_2), indicatorGenerator.getCode());
     }
 
     indicatorGenerator.setLog(log);
@@ -108,7 +108,7 @@ public class IndicatorGeneratorService {
   }
 
   @SuppressWarnings("deprecation")
-  private void transformQueryResult(Query query) {
+  protected void transformQueryResult(Query query) {
     query.unwrap(org.hibernate.query.Query.class).setResultTransformer(new DataSetTransformer());
   }
 

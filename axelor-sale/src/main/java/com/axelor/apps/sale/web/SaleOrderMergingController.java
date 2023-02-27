@@ -1,16 +1,34 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService.SaleOrderMergingResult;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingViewService;
-import com.axelor.apps.tool.MapTools;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.MapTools;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -40,7 +58,7 @@ public class SaleOrderMergingController {
         if (result.getSaleOrder() != null) {
           // Open the generated sale order in a new tab
           response.setView(
-              ActionView.define("Sale order")
+              ActionView.define(I18n.get("Sale order"))
                   .model(SaleOrder.class.getName())
                   .add("grid", "sale-order-grid")
                   .add("form", "sale-order-form")
@@ -73,7 +91,7 @@ public class SaleOrderMergingController {
         if (result.getSaleOrder() != null) {
           // Open the generated sale order in a new tab
           response.setView(
-              ActionView.define("Sale order")
+              ActionView.define(I18n.get("Sale order"))
                   .model(SaleOrder.class.getName())
                   .add("grid", "sale-order-grid")
                   .add("form", "sale-order-form")

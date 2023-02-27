@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
@@ -24,12 +25,12 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
@@ -37,6 +38,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
@@ -64,10 +66,12 @@ public class InvoiceToolService {
     return invoice.getInvoiceTermList().stream()
         .filter(
             invoiceTerm ->
-                (invoiceTerm.getDueDate().isEqual(LocalDate.now())
+                invoiceTerm.getDueDate() != null
+                    && (invoiceTerm.getDueDate().isEqual(LocalDate.now())
                         || invoiceTerm.getDueDate().isAfter(LocalDate.now()))
                     && !invoiceTerm.getIsPaid())
         .map(invoiceTerm -> invoiceTerm.getDueDate())
+        .filter(Objects::nonNull)
         .min(Comparator.comparing(LocalDate::toEpochDay))
         .orElse(invoice.getNextDueDate());
   }
@@ -155,7 +159,7 @@ public class InvoiceToolService {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MOVE_1),
+            I18n.get(AccountExceptionMessage.MOVE_1),
             invoice.getInvoiceId());
     }
   }
@@ -189,7 +193,7 @@ public class InvoiceToolService {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MOVE_1),
+            I18n.get(AccountExceptionMessage.MOVE_1),
             invoice.getInvoiceId());
     }
 
@@ -264,7 +268,7 @@ public class InvoiceToolService {
    *
    * @param copy a copy of an invoice
    */
-  public static void resetInvoiceStatusOnCopy(Invoice copy) {
+  public static void resetInvoiceStatusOnCopy(Invoice copy) throws AxelorException {
     copy.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
     copy.setInvoiceId(null);
     copy.setInvoiceDate(null);
@@ -299,7 +303,6 @@ public class InvoiceToolService {
     copy.setValidatedDate(null);
     copy.setVentilatedByUser(null);
     copy.setVentilatedDate(null);
-    copy.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
     copy.setDecisionPfpTakenDate(null);
     copy.setInternalReference(null);
     copy.setExternalReference(null);
@@ -315,6 +318,9 @@ public class InvoiceToolService {
     copy.setBillOfExchangeBlockingReason(null);
     copy.setBillOfExchangeBlockingToDate(null);
     copy.setBillOfExchangeBlockingByUser(null);
+    copy.setNextDueDate(getNextDueDate(copy));
+    setPfpStatus(copy);
+    copy.setHasPendingPayments(false);
   }
 
   /**
@@ -332,5 +338,26 @@ public class InvoiceToolService {
       functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
     }
     return functionalOrigin;
+  }
+
+  public static void setPfpStatus(Invoice invoice) throws AxelorException {
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+
+    if (accountConfig.getIsManagePassedForPayment()
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                && accountConfig.getIsManagePFPInRefund()))) {
+      invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
+    } else {
+      invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_NONE);
+    }
+  }
+
+  public static boolean isMultiCurrency(Invoice invoice) {
+    return invoice != null
+        && invoice.getCurrency() != null
+        && invoice.getCompany() != null
+        && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency());
   }
 }

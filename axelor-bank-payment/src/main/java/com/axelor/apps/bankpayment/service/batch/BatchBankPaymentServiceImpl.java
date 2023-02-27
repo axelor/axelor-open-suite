@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,25 +36,25 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -129,7 +129,8 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       throw new AxelorException(
           batch,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_NO_PROCESSED_PAYMENT_SCHEDULE_LINES));
+          I18n.get(
+              BankPaymentExceptionMessage.BATCH_DIRECT_DEBIT_NO_PROCESSED_PAYMENT_SCHEDULE_LINES));
     }
 
     PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
@@ -143,7 +144,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
         throw new AxelorException(
             paymentSchedule,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE));
+            I18n.get(BankPaymentExceptionMessage.BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE));
     }
   }
 
@@ -174,7 +175,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
       throw new AxelorException(
           batch,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS));
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_NO_BANK_ORDERS));
     }
 
     BankOrder bankOrder = bankOrderRepo.find(bankOrderList.iterator().next().getId());

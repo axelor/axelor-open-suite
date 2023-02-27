@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,12 +20,12 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceViewService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -51,7 +51,7 @@ public class PurchaseOrderInvoiceController {
       if (invoice != null) {
         response.setReload(true);
         response.setView(
-            ActionView.define(I18n.get(IExceptionMessage.PO_INVOICE_2))
+            ActionView.define(I18n.get(SupplychainExceptionMessage.PO_INVOICE_2))
                 .model(Invoice.class.getName())
                 .add("form", "invoice-form")
                 .add("grid", InvoiceViewService.computeInvoiceGridName(invoice))
@@ -72,7 +72,7 @@ public class PurchaseOrderInvoiceController {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       response.setView(
-          ActionView.define("Invoicing")
+          ActionView.define(I18n.get("Invoicing"))
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-invoicing-wizard-form")
               .param("popup", "reload")
@@ -125,7 +125,7 @@ public class PurchaseOrderInvoiceController {
 
   public void setWizardDefaultValues(ActionRequest request, ActionResponse response) {
     try {
-      response.setAttr("operationSelect", "value", "1");
+      response.setAttr("$operationSelect", "value", "1");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

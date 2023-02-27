@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,23 +27,22 @@ import com.axelor.apps.account.db.repo.FECImportRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -59,6 +58,7 @@ public class ImportMove {
   @Inject private MoveRepository moveRepository;
   @Inject private MoveLineRepository moveLineRepo;
   @Inject private MoveValidateService moveValidateService;
+  @Inject private MoveLineToolService moveLineToolService;
   @Inject private AppAccountService appAccountService;
   @Inject private PeriodService periodService;
   @Inject private FECImportRepository fecImportRepository;
@@ -136,7 +136,7 @@ public class ImportMove {
           throw new AxelorException(
               fecImport,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.IMPORT_FEC_PERIOD_NOT_FOUND),
+              I18n.get(AccountExceptionMessage.IMPORT_FEC_PERIOD_NOT_FOUND),
               moveLine.getDate(),
               company);
         }
@@ -162,20 +162,12 @@ public class ImportMove {
             throw new AxelorException(
                 fecImport,
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.IMPORT_FEC_JOURNAL_NOT_FOUND),
+                I18n.get(AccountExceptionMessage.IMPORT_FEC_JOURNAL_NOT_FOUND),
                 values.get("JournalCode"));
           }
           move.setJournal(journal);
         }
 
-        if (values.get("CompAuxNum") != null) {
-          Partner partner =
-              Beans.get(PartnerRepository.class)
-                  .all()
-                  .filter("self.partnerSeq = ?", values.get("CompAuxNum").toString())
-                  .fetchOne();
-          move.setPartner(partner);
-        }
         if (values.get("PieceDate") != null) {
           move.setOriginDate(parseDate(values.get("PieceDate").toString()));
         }
@@ -207,12 +199,22 @@ public class ImportMove {
           throw new AxelorException(
               fecImport,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.IMPORT_FEC_ACCOUNT_NOT_FOUND),
+              I18n.get(AccountExceptionMessage.IMPORT_FEC_ACCOUNT_NOT_FOUND),
               values.get("CompteNum"));
         }
         moveLine.setAccount(account);
       }
+
+      if (moveLine.getReconcileGroup() != null) {
+        moveLine.getReconcileGroup().setCompany(company);
+      }
+
       move.addMoveLineListItem(moveLine);
+
+      if (values.get("Montantdevise") == null || "".equals(values.get("Montantdevise"))) {
+        moveLine.setMove(move);
+        moveLineToolService.setCurrencyAmount(moveLine);
+      }
     } catch (AxelorException e) {
       TraceBackService.trace(e);
       throw e;
@@ -224,7 +226,7 @@ public class ImportMove {
     return moveLine;
   }
 
-  private Company getCompany(Map<String, Object> values) {
+  protected Company getCompany(Map<String, Object> values) {
     final Path path = (Path) values.get("__path__");
     String fileName = path.getFileName().toString();
     String registrationCode = fileName.substring(0, fileName.indexOf('F'));

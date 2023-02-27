@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,10 +29,10 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.service.ListToolService;
-import com.axelor.exception.AxelorException;
+import com.axelor.utils.service.ListToolService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -124,23 +124,33 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
           analyticAxis = axis.getAnalyticAxis();
         }
       }
+      analyticAccountListByAxis = getAnalyticAccountsByAxis(line, analyticAxis);
+    }
+    return analyticAccountListByAxis;
+  }
 
-      for (AnalyticAccount analyticAccount :
-          analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
-        analyticAccountListByAxis.add(analyticAccount.getId());
-      }
-      if (line.getAccount() != null) {
-        List<AnalyticAccount> analyticAccountList =
-            accountAnalyticRulesRepository.findAnalyticAccountByAccounts(line.getAccount());
-        if (!analyticAccountList.isEmpty()) {
-          for (AnalyticAccount analyticAccount : analyticAccountList) {
-            analyticAccountListByRules.add(analyticAccount.getId());
-          }
-          if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
-            analyticAccountListByAxis =
-                listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
-          }
+  @Override
+  public List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis) {
+    List<Long> analyticAccountListByAxis = new ArrayList<>();
+    List<Long> analyticAccountListByRules = new ArrayList<>();
+
+    for (AnalyticAccount analyticAccount :
+        analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
+      analyticAccountListByAxis.add(analyticAccount.getId());
+    }
+    if (line.getAccount() != null) {
+      List<AnalyticAccount> analyticAccountList =
+          accountAnalyticRulesRepository.findAnalyticAccountByAccounts(line.getAccount());
+      if (!analyticAccountList.isEmpty()) {
+        for (AnalyticAccount analyticAccount : analyticAccountList) {
+          analyticAccountListByRules.add(analyticAccount.getId());
         }
+        if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
+          analyticAccountListByAxis =
+              listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
+        }
+      } else {
+        analyticAccountListByAxis = new ArrayList<>();
       }
     }
     return analyticAccountListByAxis;
@@ -161,6 +171,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
           && account.getAnalyticDistributionAuthorized()
           && account.getAnalyticDistributionRequiredOnMoveLines()
           && line.getAnalyticDistributionTemplate() == null
+          && CollectionUtils.isEmpty(line.getAnalyticMoveLineList())
           && (position <= nbrAxis);
     }
     return false;

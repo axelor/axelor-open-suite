@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,23 +18,22 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.ReportedBalanceLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.ReportedBalanceLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdjustHistory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -51,7 +50,6 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected ReportedBalanceLineRepository reportedBalanceLineRepo;
   protected AdjustHistoryService adjustHistoryService;
   protected PartnerRepository partnerRepository;
   protected PeriodService periodService;
@@ -59,13 +57,11 @@ public class YearServiceAccountImpl extends YearServiceImpl {
   @Inject
   public YearServiceAccountImpl(
       PartnerRepository partnerRepository,
-      ReportedBalanceLineRepository reportedBalanceLineRepo,
       YearRepository yearRepository,
       AdjustHistoryService adjustHistoryService,
       PeriodService periodService) {
     super(yearRepository);
     this.partnerRepository = partnerRepository;
-    this.reportedBalanceLineRepo = reportedBalanceLineRepo;
     this.adjustHistoryService = adjustHistoryService;
     this.periodService = periodService;
   }
@@ -77,6 +73,24 @@ public class YearServiceAccountImpl extends YearServiceImpl {
    * @throws AxelorException
    */
   public void closeYearProcess(Year year) throws AxelorException {
+    boolean hasPreviousYearOpened =
+        yearRepository
+                .all()
+                .filter(
+                    "self.toDate < :fromDate AND self.statusSelect = :opened AND self.typeSelect = :fiscalYear")
+                .bind("fromDate", year.getFromDate())
+                .bind("opened", YearRepository.STATUS_OPENED)
+                .bind("fiscalYear", YearRepository.TYPE_FISCAL)
+                .count()
+            > 0;
+    if (hasPreviousYearOpened) {
+      throw new AxelorException(
+          year,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.YEAR_2),
+          year.getName());
+    }
+
     year = yearRepository.find(year.getId());
 
     for (Period period : year.getPeriodList()) {
@@ -87,8 +101,8 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       throw new AxelorException(
           year,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.YEAR_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.YEAR_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           year.getName());
     }
 
@@ -140,7 +154,6 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
           BigDecimal reportedBalanceAmount =
               this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, year);
-          this.createReportedBalanceLine(accountingSituation, reportedBalanceAmount, year);
 
           break;
         }
@@ -172,17 +185,6 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
     year.setStatusSelect(YearRepository.STATUS_ADJUSTING);
     yearRepository.save(year);
-  }
-
-  @Transactional
-  public ReportedBalanceLine createReportedBalanceLine(
-      AccountingSituation accountingSituation, BigDecimal amount, Year year) {
-    ReportedBalanceLine reportedBalanceLine = new ReportedBalanceLine();
-    accountingSituation.addReportedBalanceLineListItem(reportedBalanceLine);
-    reportedBalanceLine.setAmount(amount);
-    reportedBalanceLine.setYear(year);
-    reportedBalanceLineRepo.save(reportedBalanceLine);
-    return reportedBalanceLine;
   }
 
   public BigDecimal computeReportedBalance(
