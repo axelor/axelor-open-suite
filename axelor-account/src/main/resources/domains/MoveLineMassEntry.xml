@@ -7,10 +7,12 @@
 
   <entity name="MoveLineMassEntry" lang="java" extends="MoveLine">
 
+    <many-to-one name="moveMassEntry" ref="Move" title="Move mass entry"
+      initParam="true"/>
     <integer name="temporaryMoveNumber" title="Move N°"/>
-    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
+    <many-to-one name="movePaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment Mode"/>
-    <many-to-one name="paymentCondition" title="Payment condition"
+    <many-to-one name="movePaymentCondition" title="Payment condition"
       ref="com.axelor.apps.account.db.PaymentCondition"/>
 
   </entity>
