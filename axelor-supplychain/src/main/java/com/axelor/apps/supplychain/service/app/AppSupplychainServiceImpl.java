@@ -43,8 +43,16 @@ public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements App
 
   @Inject
   public AppSupplychainServiceImpl(
-      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      AppSupplychainRepository appSupplychainRepo,
+      CompanyRepository companyRepo,
+      SupplyChainConfigRepository supplyChainConfigRepo) {
     super(appRepo, metaFiles, appVersionService);
+    this.appSupplychainRepo = appSupplychainRepo;
+    this.companyRepo = companyRepo;
+    this.supplyChainConfigRepo = supplyChainConfigRepo;
   }
 
   @Override

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCompany;
@@ -26,7 +27,6 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;

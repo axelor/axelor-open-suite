@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Opportunity;
@@ -27,8 +29,6 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppCrm;

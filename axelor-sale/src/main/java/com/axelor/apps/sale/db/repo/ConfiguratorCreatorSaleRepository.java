@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.sale.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;

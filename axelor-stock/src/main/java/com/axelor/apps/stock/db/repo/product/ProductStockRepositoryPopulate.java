@@ -19,13 +19,13 @@ package com.axelor.apps.stock.db.repo.product;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;

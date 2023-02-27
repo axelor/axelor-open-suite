@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
 import java.math.BigDecimal;

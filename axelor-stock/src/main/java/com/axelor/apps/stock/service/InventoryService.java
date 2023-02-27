@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
@@ -43,8 +45,6 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -560,7 +560,7 @@ public class InventoryService {
     inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
   }
 
-  private void storeLastInventoryData(Inventory inventory) {
+  protected void storeLastInventoryData(Inventory inventory) {
     Map<Pair<Product, TrackingNumber>, BigDecimal> realQties = new HashMap<>();
     Map<Product, BigDecimal> consolidatedRealQties = new HashMap<>();
     Map<Product, String> realRacks = new HashMap<>();

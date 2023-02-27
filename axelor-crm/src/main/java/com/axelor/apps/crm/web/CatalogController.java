@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Catalog;
 import com.axelor.apps.crm.db.repo.CatalogRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;

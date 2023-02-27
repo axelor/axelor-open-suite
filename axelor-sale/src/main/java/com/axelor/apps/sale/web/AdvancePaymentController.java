@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.service.AdvancePaymentService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

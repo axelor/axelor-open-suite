@@ -18,12 +18,12 @@
 package com.axelor.apps.talent.web;
 
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.axelor.apps.talent.service.JobApplicationService;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;

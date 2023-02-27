@@ -19,9 +19,9 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 

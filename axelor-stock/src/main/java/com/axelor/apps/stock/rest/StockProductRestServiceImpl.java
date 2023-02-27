@@ -17,17 +17,17 @@
  */
 package com.axelor.apps.stock.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantValue;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.dto.StockProductResponse;
 import com.axelor.apps.stock.rest.dto.StockProductVariantAttributeResponse;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.ResponseConstructor;
 import java.util.ArrayList;

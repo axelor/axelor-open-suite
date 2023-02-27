@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
@@ -34,7 +35,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;

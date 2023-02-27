@@ -1,6 +1,0 @@
----
-title: "Partner address: address is now required in the database."
-type: fix
-description: |
-  This change does not mean that an address is required for a partner, but that we cannot add "empty" address lines in the partner anymore.
-  To make this change effective, a migration is required on the database.

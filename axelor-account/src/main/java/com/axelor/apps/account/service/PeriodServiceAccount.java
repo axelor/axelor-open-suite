@@ -18,10 +18,10 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 
 public interface PeriodServiceAccount {

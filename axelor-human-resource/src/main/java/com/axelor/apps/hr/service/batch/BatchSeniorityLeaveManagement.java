@@ -33,6 +33,10 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
@@ -49,10 +53,6 @@ import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.template.TemplateMaker;

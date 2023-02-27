@@ -35,6 +35,8 @@ import com.axelor.apps.base.db.repo.BankBaseRepository;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
+import com.axelor.apps.base.db.repo.DataBackupManagementRepository;
+import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
@@ -45,6 +47,8 @@ import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageRepository;
+import com.axelor.apps.base.db.repo.ObjectDataConfigExportManagementRepository;
+import com.axelor.apps.base.db.repo.ObjectDataConfigExportRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -63,6 +67,8 @@ import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.AnonymizeService;
+import com.axelor.apps.base.service.AnonymizeServiceImpl;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.BankService;
@@ -74,8 +80,14 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DMSImportWizardService;
 import com.axelor.apps.base.service.DMSImportWizardServiceImpl;
+import com.axelor.apps.base.service.DataBackupAnonymizeService;
+import com.axelor.apps.base.service.DataBackupAnonymizeServiceImpl;
+import com.axelor.apps.base.service.DataBackupService;
+import com.axelor.apps.base.service.DataBackupServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
+import com.axelor.apps.base.service.FakerService;
+import com.axelor.apps.base.service.FakerServiceImpl;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.FrequencyServiceImpl;
 import com.axelor.apps.base.service.InternationalService;
@@ -85,6 +97,10 @@ import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
+import com.axelor.apps.base.service.ObjectDataAnonymizeService;
+import com.axelor.apps.base.service.ObjectDataAnonymizeServiceImpl;
+import com.axelor.apps.base.service.ObjectDataExportService;
+import com.axelor.apps.base.service.ObjectDataExportServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -139,6 +155,8 @@ import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.base.service.exception.HandleExceptionResponse;
+import com.axelor.apps.base.service.exception.HandleExceptionResponseImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorServiceImpl;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
@@ -178,11 +196,17 @@ import com.axelor.report.ReportGenerator;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.inject.matcher.Matchers;
 
 public class BaseModule extends AxelorModule {
 
   @Override
   protected void configure() {
+    bindInterceptor(
+        Matchers.any(),
+        Matchers.annotatedWith(HandleExceptionResponse.class),
+        new HandleExceptionResponseImpl());
+
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
     bind(UserService.class).to(UserServiceImpl.class);
@@ -270,5 +294,15 @@ public class BaseModule extends AxelorModule {
     bind(SequenceVersionGeneratorQueryService.class)
         .to(SequenceVersionGeneratorQueryServiceImpl.class);
     bind(TranslationRestService.class).to(TranslationRestServiceImpl.class);
+    bind(ObjectDataExportService.class).to(ObjectDataExportServiceImpl.class);
+    bind(ObjectDataAnonymizeService.class).to(ObjectDataAnonymizeServiceImpl.class);
+    bind(DataBackupService.class).to(DataBackupServiceImpl.class);
+    bind(ObjectDataConfigExportRepository.class)
+        .to(ObjectDataConfigExportManagementRepository.class);
+    bind(AnonymizeService.class).to(AnonymizeServiceImpl.class);
+    bind(FakerService.class).to(FakerServiceImpl.class);
+    bind(DataBackupRepository.class).to(DataBackupManagementRepository.class);
+    bind(DataBackupAnonymizeService.class).to(DataBackupAnonymizeServiceImpl.class);
+    bind(DataBackupService.class).to(DataBackupServiceImpl.class);
   }
 }

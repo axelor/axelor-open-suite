@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import java.util.Map;
 import java.util.Set;

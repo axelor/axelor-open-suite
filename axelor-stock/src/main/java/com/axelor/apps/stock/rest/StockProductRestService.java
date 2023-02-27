@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.stock.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.dto.StockProductVariantAttributeResponse;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 import javax.ws.rs.core.Response;
 

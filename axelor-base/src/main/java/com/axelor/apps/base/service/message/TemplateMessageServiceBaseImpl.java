@@ -18,12 +18,12 @@
 package com.axelor.apps.base.service.message;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
@@ -171,7 +171,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     return birtTemplateFileLink;
   }
 
-  private ReportSettings generateTemplate(
+  protected ReportSettings generateTemplate(
       TemplateMaker maker,
       Templates templates,
       Map<String, Object> templatesContext,
@@ -214,7 +214,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     return reportSettings;
   }
 
-  private Object convertValue(String type, String value) throws BirtException {
+  protected Object convertValue(String type, String value) throws BirtException {
 
     if (DesignChoiceConstants.PARAM_TYPE_BOOLEAN.equals(type)) {
       return DataTypeUtil.toBoolean(value);

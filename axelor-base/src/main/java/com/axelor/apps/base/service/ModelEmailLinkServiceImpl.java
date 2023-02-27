@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ModelEmailLink;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaModel;
 
 public class ModelEmailLinkServiceImpl implements ModelEmailLinkService {

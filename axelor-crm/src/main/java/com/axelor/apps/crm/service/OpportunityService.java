@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.util.List;

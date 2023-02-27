@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
@@ -25,7 +26,6 @@ import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;

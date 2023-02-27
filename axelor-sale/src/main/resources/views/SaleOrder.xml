@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
@@ -1515,6 +1515,9 @@
     <alert
       message="One product is sold at loss, are you sure you want to finalize the quotation ?"
       if="saleOrderLineList?.any{ it.subTotalGrossMargin &lt; 0 }"/>
+    <alert
+      message="The selected price list is no longer valid, do you still want to continue?"
+      if="priceList != null  &amp;&amp; !(priceList?.isActive &amp;&amp; (priceList?.applicationBeginDate == null || priceList?.applicationBeginDate &lt; __config__.date) &amp;&amp; (priceList?.applicationEndDate == null || priceList?.applicationEndDate &gt; __config__.date))"/>
   </action-validate>
 
   <action-attrs name="action-sale-order-attrs-in-ati">

@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.report.engine;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ReportingTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.report.ReportGenerator;
 import java.io.IOException;

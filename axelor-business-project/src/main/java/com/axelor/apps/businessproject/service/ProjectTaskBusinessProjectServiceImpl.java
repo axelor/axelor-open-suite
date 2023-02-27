@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
@@ -49,7 +50,6 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
@@ -170,13 +170,13 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return projectTask;
   }
 
-  private void emptyDiscounts(ProjectTask projectTask) {
+  protected void emptyDiscounts(ProjectTask projectTask) {
     projectTask.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
     projectTask.setDiscountAmount(BigDecimal.ZERO);
     projectTask.setPriceDiscounted(BigDecimal.ZERO);
   }
 
-  private PriceListLine getPriceListLine(
+  protected PriceListLine getPriceListLine(
       ProjectTask projectTask, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
@@ -199,7 +199,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return projectTask;
   }
 
-  private BigDecimal computeDiscount(ProjectTask projectTask) {
+  protected BigDecimal computeDiscount(ProjectTask projectTask) {
 
     return priceListService.computeDiscount(
         projectTask.getUnitPrice(),
@@ -207,7 +207,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         projectTask.getDiscountAmount());
   }
 
-  private BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
+  protected BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
     BigDecimal amount =
         price
@@ -358,7 +358,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return projectTaskRepo.save(projectTask);
   }
 
-  private BigDecimal computeUnitPrice(ProjectTask projectTask) throws AxelorException {
+  protected BigDecimal computeUnitPrice(ProjectTask projectTask) throws AxelorException {
     Product product = projectTask.getProduct();
     Company company =
         projectTask.getProject() != null ? projectTask.getProject().getCompany() : null;

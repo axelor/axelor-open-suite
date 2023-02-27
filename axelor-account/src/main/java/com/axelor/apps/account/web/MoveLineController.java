@@ -46,17 +46,17 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Wizard;
@@ -255,7 +255,9 @@ public class MoveLineController {
     Move move = request.getContext().getParent().asType(Move.class);
     try {
       if (move != null) {
-        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(move.getCompany(), move.getJournal());
         response.setAttr("partner", "domain", domain);
       }
     } catch (Exception e) {
@@ -778,7 +780,7 @@ public class MoveLineController {
     }
   }
 
-  private LocalDate extractDueDate(ActionRequest request) {
+  protected LocalDate extractDueDate(ActionRequest request) {
     Context parentContext = request.getContext().getParent();
 
     if (parentContext == null) {

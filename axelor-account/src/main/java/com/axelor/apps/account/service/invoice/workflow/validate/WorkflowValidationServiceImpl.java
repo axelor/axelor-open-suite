@@ -18,10 +18,10 @@
 package com.axelor.apps.account.service.invoice.workflow.validate;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.AxelorMessageException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.AxelorMessageException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
 

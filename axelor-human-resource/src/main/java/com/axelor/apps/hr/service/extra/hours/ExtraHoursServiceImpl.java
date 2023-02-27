@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service.extra.hours;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.ExtraHoursLine;
@@ -24,7 +25,6 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.message.db.Message;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;

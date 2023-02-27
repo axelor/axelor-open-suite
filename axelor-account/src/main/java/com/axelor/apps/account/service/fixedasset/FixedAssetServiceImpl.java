@@ -29,10 +29,10 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -175,7 +175,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAssetRepo.save(fixedAsset);
   }
 
-  private void setDisposalFields(
+  protected void setDisposalFields(
       FixedAsset fixedAsset,
       LocalDate disposalDate,
       BigDecimal disposalAmount,
@@ -351,7 +351,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return newFixedAsset;
   }
 
-  private void multiplyFieldsToSplit(FixedAsset fixedAsset, BigDecimal prorata) {
+  protected void multiplyFieldsToSplit(FixedAsset fixedAsset, BigDecimal prorata) {
 
     if (fixedAsset.getGrossValue() != null) {
       fixedAsset.setGrossValue(

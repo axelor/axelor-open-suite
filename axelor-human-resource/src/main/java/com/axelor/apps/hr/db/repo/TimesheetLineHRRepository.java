@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.exception.service.TraceBackService;
 import javax.persistence.PersistenceException;
 
 public class TimesheetLineHRRepository extends TimesheetLineRepository {

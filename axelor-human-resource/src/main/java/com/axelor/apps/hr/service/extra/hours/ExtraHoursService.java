@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.hr.service.extra.hours;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.ExtraHours;
-import com.axelor.exception.AxelorException;
 import com.axelor.message.db.Message;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;

@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 

@@ -30,12 +30,14 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -51,8 +53,6 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGenerato
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -273,7 +273,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     return invoicedAmount;
   }
 
-  private BigDecimal getAmountVentilated(
+  protected BigDecimal getAmountVentilated(
       PurchaseOrder purchaseOrder,
       Long currentInvoiceId,
       boolean excludeCurrentInvoice,
@@ -546,7 +546,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateSupplierAdvancePayment(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException {

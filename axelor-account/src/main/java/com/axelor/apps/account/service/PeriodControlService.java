@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
-import com.axelor.exception.AxelorException;
 
 public interface PeriodControlService {
 
