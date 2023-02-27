@@ -20,6 +20,7 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.production.db.MpsWeeklySchedule;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.MpsChargeService;
@@ -125,10 +126,8 @@ public class MpsChargeController {
                     .map(Company::getLogo)
                     .map(MetaFile::getFilePath)
                     .orElse(null))
-            .addParam(
-                "startMonthDate", startMonthDate.format(DateTimeFormatter.ofPattern("dd/MM/YYYY")))
-            .addParam(
-                "endMonthDate", endMonthDate.format(DateTimeFormatter.ofPattern("dd/MM/YYYY")))
+            .addParam("startMonthDate", startMonthDate.format(DateService.getDateFormat()))
+            .addParam("endMonthDate", endMonthDate.format(DateService.getDateFormat()))
             .generate()
             .getFileLink();
 

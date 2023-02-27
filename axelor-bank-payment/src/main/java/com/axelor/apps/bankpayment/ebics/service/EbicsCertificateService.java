@@ -24,6 +24,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -48,7 +49,6 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import javax.net.ssl.SSLSession;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpException;
@@ -263,10 +263,10 @@ public class EbicsCertificateService {
 
     LocalDate date = entity.getValidFrom();
     if (date != null) {
-      fullName.append(":" + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+      fullName.append(":" + date.format(DateService.getDateFormat()));
       date = entity.getValidTo();
       if (date != null) {
-        fullName.append("-" + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        fullName.append("-" + date.format(DateService.getDateFormat()));
       }
     }
 

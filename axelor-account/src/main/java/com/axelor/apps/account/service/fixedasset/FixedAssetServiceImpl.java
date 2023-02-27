@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceF
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -41,7 +42,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -330,7 +330,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           String.format(
               I18n.get(AccountExceptionMessage.SPLIT_MESSAGE_COMMENT),
               amount,
-              splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+              splittingDate.format(DateService.getDateFormat()));
     } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT) {
       newFixedAsset.setGrossValue(amount);
       fixedAsset.setGrossValue(newAmount);
@@ -340,7 +340,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               I18n.get(AccountExceptionMessage.SPLIT_MESSAGE_COMMENT_AMOUNT),
               amount,
               fixedAsset.getCompany().getCurrency().getCode(),
-              splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+              splittingDate.format(DateService.getDateFormat()));
     }
 
     // Comments

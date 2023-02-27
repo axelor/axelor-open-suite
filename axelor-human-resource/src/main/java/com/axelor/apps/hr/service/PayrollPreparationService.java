@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -347,9 +348,8 @@ public class PayrollPreparationService {
         if (payrollLeave.getLeaveReason().getPayrollPreprationExport()) {
           String[] leaveLine = createExportFileLine(payrollPreparation);
           leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
-          leaveLine[4] =
-              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-          leaveLine[5] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+          leaveLine[4] = payrollLeave.getFromDate().format(DateService.getDateFormat());
+          leaveLine[5] = payrollLeave.getToDate().format(DateService.getDateFormat());
           leaveLine[6] = payrollLeave.getDuration().toString();
           list.add(leaveLine);
         }
@@ -488,9 +488,8 @@ public class PayrollPreparationService {
           String[] leaveLine = createSilaeExportFileLine(payrollPrep);
           leaveLine[1] = payrollLeave.getLeaveReason().getExportCode();
           leaveLine[2] = String.valueOf(payrollLeave.getDuration());
-          leaveLine[3] =
-              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-          leaveLine[4] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+          leaveLine[3] = payrollLeave.getFromDate().format(DateService.getDateFormat());
+          leaveLine[4] = payrollLeave.getToDate().format(DateService.getDateFormat());
           exportLineList.add(leaveLine);
         }
       }
@@ -522,8 +521,8 @@ public class PayrollPreparationService {
   public String[] createSilaeExportFileLine(PayrollPreparation payroll) {
     String[] item = new String[5];
     item[0] = payroll.getEmployee().getExportCode();
-    item[3] = payroll.getPeriod().getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-    item[4] = payroll.getPeriod().getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    item[3] = payroll.getPeriod().getFromDate().format(DateService.getDateFormat());
+    item[4] = payroll.getPeriod().getToDate().format(DateService.getDateFormat());
     return item;
   }
 }

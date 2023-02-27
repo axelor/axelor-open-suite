@@ -529,16 +529,14 @@ public class BankReconciliationController {
   public void correctedLabelFill(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      if (bankReconciliation.getHasBeenCorrected()) {
-        response.setAttr(
-            "correctedLabel",
-            "title",
-            Beans.get(BankReconciliationService.class)
-                .getCorrectedLabel(
-                    bankReconciliation.getCorrectedDateTime(),
-                    bankReconciliation.getCorrectedUser()));
-        ;
-      }
+      response.setAttr(
+          "correctedLabel",
+          "title",
+          Beans.get(BankReconciliationService.class)
+              .getCorrectedLabel(
+                  bankReconciliation.getCorrectedDateTime(),
+                  bankReconciliation.getCorrectedUser()));
+      ;
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

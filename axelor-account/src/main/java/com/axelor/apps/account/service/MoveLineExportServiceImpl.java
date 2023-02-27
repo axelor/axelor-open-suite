@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.db.JPA;
@@ -657,15 +658,13 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                     items[9] =
                         String.format(
                             "%s DU %s",
-                            journal.getCode(),
-                            date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                            journal.getCode(), date.format(DateService.getDateFormat()));
                   } else {
                     items[7] = analyticAccounts;
                     items[8] =
                         String.format(
                             "%s DU %s",
-                            journal.getCode(),
-                            date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                            journal.getCode(), date.format(DateService.getDateFormat()));
                   }
 
                   allMoveLineData.add(items);

@@ -36,7 +36,7 @@
 				fullName += "-" + project.getCode();
 			}
 
-			String dateStr = date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			String dateStr = date.format(DateService.getDateFormat());
 			if (!fullName.isEmpty()) {
 				fullName += "-" + dateStr;
 			}
@@ -47,6 +47,10 @@
 	  		return fullName;
 	  	]]>
     </string>
+
+    <extra-imports>
+      import com.axelor.apps.base.service.DateService;
+    </extra-imports>
 
   </entity>
 

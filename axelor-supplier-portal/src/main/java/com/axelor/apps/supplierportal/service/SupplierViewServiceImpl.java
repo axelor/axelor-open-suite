@@ -19,6 +19,7 @@ package com.axelor.apps.supplierportal.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -34,8 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SupplierViewServiceImpl implements SupplierViewService {
-  protected static final DateTimeFormatter DATE_FORMATTER =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  protected static final DateTimeFormatter DATE_FORMATTER = DateService.getDateFormat();
 
   protected static final String SUPPLIER_PORTAL_NO_DATE = /*$$(*/ "None" /*)*/;
 

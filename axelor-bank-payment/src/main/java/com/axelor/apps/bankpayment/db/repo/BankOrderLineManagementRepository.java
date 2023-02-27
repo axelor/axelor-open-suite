@@ -19,9 +19,9 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.utils.StringTool;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class BankOrderLineManagementRepository extends BankOrderLineRepository {
@@ -69,7 +69,7 @@ public class BankOrderLineManagementRepository extends BankOrderLineRepository {
     if (date == null) {
       return "";
     } else {
-      return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+      return date.format(DateService.getDateFormat());
     }
   }
 }

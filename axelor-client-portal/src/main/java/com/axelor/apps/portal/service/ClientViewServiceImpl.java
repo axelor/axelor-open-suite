@@ -19,6 +19,7 @@ package com.axelor.apps.portal.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
@@ -56,8 +57,7 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected JpaSecurity security;
   protected AppService appService;
 
-  protected static final DateTimeFormatter DATE_FORMATTER =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  protected static final DateTimeFormatter DATE_FORMATTER = DateService.getDateFormat();
 
   static final String CLIENT_PORTAL_NO_DATE = /*$$(*/ "None" /*)*/;
 

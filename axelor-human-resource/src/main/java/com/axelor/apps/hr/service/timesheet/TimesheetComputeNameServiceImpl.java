@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import java.time.LocalDate;
@@ -32,7 +33,7 @@ public class TimesheetComputeNameServiceImpl implements TimesheetComputeNameServ
 
   public static String computeTimesheetFullname(
       Employee employee, LocalDate fromDate, LocalDate toDate) {
-    DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    DateTimeFormatter pattern = DateService.getDateFormat();
 
     if (employee != null && employee.getName() != null && fromDate != null && toDate != null) {
       return employee.getName() + " " + fromDate.format(pattern) + "-" + toDate.format(pattern);

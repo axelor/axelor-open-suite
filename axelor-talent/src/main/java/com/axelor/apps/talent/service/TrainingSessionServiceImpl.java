@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.talent.service;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.talent.db.Training;
@@ -58,8 +59,9 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
   @Override
   public String computeFullName(TrainingSession trainingSession) {
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
+    DateTimeFormatter formatter =
+        DateTimeFormatter.ofPattern(
+            String.format("%s HH:mm", AppSettings.get().get("context.date_format")));
     return trainingSession.getFromDate().format(formatter)
         + " - "
         + trainingSession.getToDate().format(formatter);

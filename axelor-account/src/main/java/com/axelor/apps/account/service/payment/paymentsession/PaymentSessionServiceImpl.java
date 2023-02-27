@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.payment.paymentsession;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -93,7 +94,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
               I18n.get(ITranslation.PAYMENT_SESSION_COMPUTE_NAME_ON_THE),
               paymentSession
                   .getCreatedOn()
-                  .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))));
+                  .format(
+                      java.time.format.DateTimeFormatter.ofPattern(
+                          String.format(
+                              "%s HH:mm", AppSettings.get().get("context.date_format"))))));
     }
     if (ObjectUtils.notEmpty(createdBy)) {
       name.append(

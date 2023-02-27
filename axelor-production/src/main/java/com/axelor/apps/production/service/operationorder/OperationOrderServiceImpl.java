@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
@@ -67,9 +69,10 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
   @Inject protected AppProductionService appProductionService;
 
-  private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  private static final DateTimeFormatter DATE_FORMAT = DateService.getDateFormat();
   private static final DateTimeFormatter DATE_TIME_FORMAT =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+      DateTimeFormatter.ofPattern(
+          String.format("%s HH:mm", AppSettings.get().get("context.date_format")));
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Transactional(rollbackOn = {Exception.class})

@@ -336,7 +336,7 @@ public class EbicsUtils {
    */
   public static Date parse(String date) throws AxelorException {
     try {
-      return new SimpleDateFormat(AppSettings.get().get("date.format")).parse(date);
+      return new SimpleDateFormat(AppSettings.get().get("context.date_format")).parse(date);
     } catch (Exception e) {
       throw new AxelorException(
           e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());

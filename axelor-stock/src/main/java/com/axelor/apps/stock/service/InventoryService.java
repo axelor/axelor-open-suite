@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
@@ -950,7 +951,7 @@ public class InventoryService {
         lastInventoryDateTString =
             lastInventoryDateT == null
                 ? ""
-                : lastInventoryDateT.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                : lastInventoryDateT.format(DateService.getDateFormat());
       }
       item[8] = lastInventoryDateTString;
       item[9] =

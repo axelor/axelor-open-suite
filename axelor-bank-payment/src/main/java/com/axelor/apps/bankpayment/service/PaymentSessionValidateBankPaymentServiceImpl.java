@@ -53,6 +53,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
@@ -64,7 +65,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -353,7 +353,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     return String.format(
         "%s (%s)",
         invoiceTerm.getMoveLine().getOrigin(),
-        invoiceTerm.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        invoiceTerm.getDueDate().format(DateService.getDateFormat()));
   }
 
   protected void updateReference(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine) {

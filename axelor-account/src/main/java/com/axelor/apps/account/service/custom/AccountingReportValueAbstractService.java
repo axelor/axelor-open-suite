@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -90,7 +91,7 @@ public abstract class AccountingReportValueAbstractService {
       AnalyticAccount configAnalyticAccount,
       String lineCode,
       int analyticCounter) {
-    DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    DateTimeFormatter format = DateService.getDateFormat();
     String period = String.format("%s - %s", startDate.format(format), endDate.format(format));
     int groupNumber = groupColumn == null ? 0 : groupColumn.getSequence();
     int columnNumber = column.getSequence();

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
@@ -1397,7 +1398,9 @@ public class BankReconciliationService {
     correctedLabel.append(I18n.get("Reconciliation corrected at"));
     correctedLabel.append(space);
     correctedLabel.append(
-        correctedDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        correctedDateTime.format(
+            DateTimeFormatter.ofPattern(
+                String.format("%s HH:mm", AppSettings.get().get("context.date_format")))));
     correctedLabel.append(space);
     correctedLabel.append(I18n.get("by"));
     correctedLabel.append(space);

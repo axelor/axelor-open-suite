@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class DateService {
@@ -30,5 +32,9 @@ public class DateService {
     return Beans.get(AppBaseService.class)
         .getTodayDate(
             Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+  }
+
+  public static DateTimeFormatter getDateFormat() {
+    return DateTimeFormatter.ofPattern(AppSettings.get().get("context.date_format"));
   }
 }

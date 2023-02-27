@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AssistantReportInvoice;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
@@ -38,7 +39,7 @@ public class AssistantReportInvoiceController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static final DateTimeFormatter dtFormater = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  private static final DateTimeFormatter dtFormater = DateService.getDateFormat();
 
   public void printSales(ActionRequest request, ActionResponse response) throws AxelorException {
 

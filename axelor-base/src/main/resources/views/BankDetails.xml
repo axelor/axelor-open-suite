@@ -239,7 +239,7 @@
 
   <action-attrs name="action-bank-details-attrs-set-balance-title">
     <attribute name="title" for="$balanceBtn"
-      expr="eval: balanceUpdatedDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))"/>
+      expr="eval: balanceUpdatedDate.format(com.axelor.apps.base.service.DateService.getDateFormat())"/>
   </action-attrs>
 
   <action-record name="action-bank-details-record-set-balance-value"
