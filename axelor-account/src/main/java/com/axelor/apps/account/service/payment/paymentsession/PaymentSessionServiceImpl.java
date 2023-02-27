@@ -233,7 +233,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     List<InvoiceTerm> eligibleInvoiceTermList =
         invoiceTermRepository
             .all()
-            .filter(retrieveEligibleTermsQuery())
+            .filter(retrieveEligibleTermsQuery(paymentSession.getCompany()))
             .bind("company", paymentSession.getCompany())
             .bind("paymentModeTypeSelect", paymentSession.getPaymentMode().getTypeSelect())
             .bind(
@@ -266,7 +266,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     computeTotalPaymentSession(paymentSession);
   }
 
-  protected String retrieveEligibleTermsQuery() {
+  protected String retrieveEligibleTermsQuery(Company company) {
     String generalCondition =
         "self.moveLine.move.company = :company "
             + " AND self.dueDate <= :paymentDatePlusMargin "
@@ -274,6 +274,9 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.bankDetails IS NOT NULL "
             + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
+    if (company != null && !company.getAccountConfig().getRetrieveDaybookMovesInPaymentSession()) {
+      generalCondition += " AND self.moveLine.move.statusSelect != 2 ";
+    }
     String termsMoveLineCondition =
         " AND ((self.moveLine.partner.isCustomer = TRUE "
             + " AND :partnerTypeSelect = :partnerTypeClient"
