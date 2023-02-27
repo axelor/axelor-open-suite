@@ -169,68 +169,6 @@
     <field name="taxLineBeforeReverse" hidden="true"/>
   </grid>
 
-  <grid name="move-line-mass-entry-move-grid" model="com.axelor.apps.account.db.MoveLine"
-    title="Move lines" canArchive="false" onNew="action-account-move-line-onnew-mass-entry-group">
-    <field name="counter" width="50" readonly="true"/>
-    <field name="inputAction" selection="iaccount.move.input.action.select"
-      onChange="action-move-line-group-input-action-onchange" readonly="true" required="true"
-      width="50"/>
-    <field name="date" onChange="account-move-line-group-date-onchange-mass-entry"/>
-    <field name="originDate" onChange=""/>
-    <field name="origin" onChange=""/>
-    <field name="move.description" onChange="" readonly="false"/>
-    <field name="move.paymentCondition" readonly="false" form-view="payment-condition-form"
-      grid-view="payment-condition-grid" onChange=""/>
-    <field name="move.paymentMode" readonly="false" form-view="payment-mode-form"
-      grid-view="payment-mode-grid" onChange="action-move-line-group-payment-mode-onchange"/>
-    <field name="account" form-view="account-form" grid-view="account-grid"
-      onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
-      readonlyIf="amountPaid &gt; 0"
-      onChange="action-account-move-line-account-group-on-change-mass-entry"/>
-    <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
-      requiredIf="account.isTaxRequiredOnMoveLine"
-      domain="self.endDate > :date OR self.endDate IS NULL"
-      onChange="account-move-line-update-tax-equiv"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-account-move-line-partner-group"
-      onChange="action-move-line-record-reset-partner-details" width="120" canEdit="false"
-      readonly="false"/>
-    <field name="description"
-      requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
-    <field name="debit"
-      onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
-      width="90" readonlyIf="amountPaid &gt; 0"/>
-    <field name="credit"
-      onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
-      width="90" readonlyIf="amountPaid &gt; 0"/>
-    <field name="currencyRate" onChange="action-move-line-group-currency-amount-rate-onchange"
-      readonlyIf="!isOtherCurrency"/>
-    <field name="currencyAmount"
-      onChange="action-move-line-group-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"/>
-    <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
-      validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
-      onChange="action-move-line-record-set-cut-off-generated-false"
-      if="__config__.app.getApp('account').manageCutOffPeriod"/>
-    <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
-      validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
-      onChange="action-move-line-record-set-cut-off-generated-false"
-      if="__config__.app.getApp('account').manageCutOffPeriod"/>
-    <field name="pfpValidatorUser"
-      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
-      readonlyIf="pfpValidateStatusSelect != 1"
-      onSelect="action-move-line-method-domain-pfp-validator-user-on-select" onChange=""
-      canEdit="false"/>
-    <field name="partner.bankDetails"/>
-    <field name="vatSystemSelect"
-      readonlyIf="move.statusSelect != 1 || account.accountType.technicalTypeSelect != 'tax'"/>
-    <field name="move.statusSelect"/>
-    <field name="move.technicalOriginSelect" hidden="true"/>
-    <field name="isOtherCurrency" hidden="true"/>
-    <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
-    <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
-    <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
-  </grid>
-
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false" groupBy="account"
     expandable="true" canArchive="false">
@@ -903,30 +841,6 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
-  <action-group name="action-account-move-line-onnew-mass-entry-group">
-    <action name="action-move-line-record-get-move-informations"/>
-    <action name="action-move-line-method-get-account-informations"/>
-    <action name="action-move-line-record-compute-counter"/>
-    <action name="action-move-line-attrs-set-readonly-first-move-line"
-      if="eval: __parent__?.moveLineList != null &amp;&amp; __parent__?.moveLineList.size() != 0"/>
-    <action name="action-move-line-attrs-set-hidden-cut-off"/>
-    <action name="action-move-line-method-compute-analytic-distribution"/>
-    <action name="action-move-line-method-hide-axis-analytic-account"/>
-    <action name="action-move-line-group-analytic-distribution-template-onchange"/>
-    <action name="action-move-line-record-get-first-move-line-informations"/>
-    <action name="action-move-line-method-get-creditdebit-balance"/>
-    <action name="action-move-line-attrs-hidden-reconcileLists"/>
-    <action name="action-move-line-record-set-partner"/>
-    <action name="action-move-line-method-set-is-other-currency"/>
-    <action name="action-move-line-method-set-currencyRate"/>
-    <action name="action-move-line-record-set-currencyAmount"/>
-    <action name="action-move-line-method-description-required"/>
-    <action name="action-move-line-record-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-move-line-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-  </action-group>
-
   <action-group name="action-group-account-moveline-debitcredit-onchange">
     <action name="action-move-line-debit-credit-validate"/>
     <action name="action-move-line-debit-credit-clean"/>
@@ -971,21 +885,6 @@
   </action-group>
 
   <action-group name="action-account-move-line-account-group-on-change">
-    <action name="action-move-line-record-set-cut-off-dates"
-      if="__config__.app.getApp('account').manageCutOffPeriod"/>
-    <action name="action-move-line-record-set-cut-off-generated-false"/>
-    <action name="action-move-line-method-compute-analytic-distribution"/>
-    <action name="action-account-move-line-method-set-partner-readonly"/>
-    <action name="action-move-line-method-refresh-account-informations"/>
-    <action name="action-move-line-method-hide-axis-analytic-account"/>
-    <action name="action-move-line-method-change-account-set-default-distribution-template"/>
-    <action name="action-move-line-group-analytic-distribution-template-onchange"/>
-    <action name="action-move-line-record-set-partner"/>
-    <action name="action-move-line-method-generate-invoice-terms"/>
-  </action-group>
-
-  <action-group name="action-account-move-line-account-group-on-change-mass-entry">
-    <action name="action-move-line-attrs-set-hidden-cut-off"/>
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-record-set-cut-off-generated-false"/>
@@ -1143,8 +1042,6 @@
     <field name="dueDate" expr="eval: __parent__?.date"/>
     <field name="originDate" expr="eval: __parent__?.originDate"/>
     <field name="origin" expr="eval: __parent__?.origin"/>
-    <field name="$journalTechnicalTypeSelect"
-      expr="eval: journal?.journalType.technicalTypeSelect"/>
   </action-record>
 
   <action-record name="action-move-line-record-financial-discount"
@@ -1245,8 +1142,6 @@
   <action-record name="action-move-line-record-reset-partner-details"
     model="com.axelor.apps.account.db.MoveLine">
     <field name="partnerFullName,partnerSeq,partnerId" expr="eval: null" if="!partner"/>
-    <field name="bankDetails"
-      expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
   </action-record>
 
   <action-record name="action-move-line-record-set-cut-off-generated-false"
@@ -1418,65 +1313,5 @@
     <domain>self.moveLine.id = :_moveLineId</domain>
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
-
-  <action-group name="action-move-line-group-input-action-onchange">
-    <action name="action-move-line-record-increment-counter"/>
-    <action name="action-move-line-method-exception-counterpart" if="inputAction == 2"/>
-    <action name="action-move-line-method-automatic-taxline-generation" if="inputAction == 2"/>
-    <action name="action-move-line-method-generate-counterpart" if="inputAction == 2"/>
-  </action-group>
-
-  <action-record name="action-move-line-record-compute-counter"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="counter" expr="eval: __parent__?.moveLineList?.max { it.counter }?.counter"/>
-    <field name="counter" expr="1" if="eval: __parent__?.moveLineList.size() == 0"/>
-    <field name="inputAction" expr="1"/>
-  </action-record>
-
-  <action-record name="action-move-line-record-increment-counter"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="counter"
-      expr="eval: __parent__?.moveLineList?.max { it.counter }?.counter + 1" if="inputAction == 3"/>
-    <field name="inputAction" expr="1" if="inputAction == 3"/>
-  </action-record>
-
-  <action-method name="action-move-line-method-exception-counterpart">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="exceptionCounterpart"/>
-  </action-method>
-
-  <action-method name="action-move-line-method-automatic-taxline-generation">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="autoTaxLineGenerate"/>
-  </action-method>
-
-  <action-method name="action-move-line-method-generate-counterpart">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="generateCounterpart"/>
-  </action-method>
-
-  <action-attrs name="action-move-line-attrs-set-readonly-first-move-line">
-    <attribute for="inputAction" name="readonly" expr="false"/>
-    <attribute for="inputAction" name="focus" expr="true"/>
-  </action-attrs>
-
-  <action-group name="account-move-line-group-date-onchange-mass-entry">
-    <action name="account-move-line-record-date-onchange"/>
-    <action name="action-move-line-method-compute-analytic-distribution"/>
-    <action name="action-move-line-validate-check-date-in-period"/>
-  </action-group>
-
-  <action-method name="action-move-line-method-domain-pfp-validator-user-on-select">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="setPfpValidatorUserDomain"/>
-  </action-method>
-
-  <action-attrs name="action-move-line-attrs-set-hidden-cut-off">
-    <attribute for="cutOffStartDate" name="readonly"
-      expr="eval: !account?.manageCutOffPeriod"/>
-    <attribute for="cutOffEndDate" name="readonly"
-      expr="eval: !account?.manageCutOffPeriod"/>
-  </action-attrs>
-
-  <action-group name="action-move-line-group-payment-mode-onchange">
-    <action name="action-move-method-fill-company-bank-detail"/>
-  </action-group>
 
 </object-views>
