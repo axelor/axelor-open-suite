@@ -123,7 +123,7 @@ public class ImportAdvancedImport {
   }
 
   @SuppressWarnings("unchecked")
-  private void addJsonObjectRecord(
+  protected void addJsonObjectRecord(
       Object bean, FileTab fileTab, String fieldName, Map<String, Object> values) {
 
     String field = Inflector.getInstance().camelize(fieldName, true) + "Set";

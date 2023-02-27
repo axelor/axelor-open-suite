@@ -79,7 +79,7 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
    * @return
    * @throws AxelorException
    */
-  private Product findAppropriateProductCompany(
+  protected Product findAppropriateProductCompany(
       Product originalProduct, String fieldName, Company company) throws AxelorException {
     checkProductAndFieldName(originalProduct, fieldName);
 

@@ -190,7 +190,7 @@ public class DuplicateObjectsController {
     }
   }
 
-  private String findDuplicated(
+  protected String findDuplicated(
       ActionRequest request, Set<String> fields, Class<? extends Model> modelClass)
       throws AxelorException {
 
@@ -261,7 +261,7 @@ public class DuplicateObjectsController {
             .map());
   }
 
-  private String getCriteria(ActionRequest request, Class<? extends Model> modelClass) {
+  protected String getCriteria(ActionRequest request, Class<? extends Model> modelClass) {
 
     String criteria = (String) (request.getContext().get("_criteria"));
     if (criteria != null) {

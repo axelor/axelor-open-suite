@@ -138,7 +138,7 @@ public class ValidateState extends WorkflowInvoice {
     }
   }
 
-  private void generateBudgetDistribution(Invoice invoice) {
+  protected void generateBudgetDistribution(Invoice invoice) {
     if (invoice.getInvoiceLineList() != null) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
         if (invoiceLine.getBudget() != null

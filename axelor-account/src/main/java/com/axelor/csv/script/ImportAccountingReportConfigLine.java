@@ -105,13 +105,13 @@ public class ImportAccountingReportConfigLine {
     return configLine;
   }
 
-  private boolean compareCodes(String code1, String code2) {
+  protected boolean compareCodes(String code1, String code2) {
     code1 = removeZeros(code1);
     code2 = removeZeros(code2);
     return code1.equals(code2);
   }
 
-  private String removeZeros(String code) {
+  protected String removeZeros(String code) {
     StringBuffer sb = new StringBuffer(code);
     sb.reverse();
     code = sb.toString();
