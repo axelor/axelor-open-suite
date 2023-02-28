@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.MailBatch;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 
 public class MailBatchServiceHR extends MailBatchService {

@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.base.service.advanced.imports;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.Inflector;
@@ -36,8 +38,6 @@ import com.axelor.data.csv.CSVInput;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
@@ -229,7 +229,7 @@ public class DataImportServiceImpl implements DataImportService {
     return inputList;
   }
 
-  private void initializeVariables() {
+  protected void initializeVariables() {
     parentBindMap = new HashMap<>();
     subBindMap = new HashMap<>();
     fullFieldName = null;
@@ -343,7 +343,7 @@ public class DataImportServiceImpl implements DataImportService {
     return dataList.stream().toArray(String[]::new);
   }
 
-  private void checkAndWriteData(
+  protected void checkAndWriteData(
       String dataCell, MetaModel model, FileField fileField, Mapper mapper, List<String> dataList)
       throws ClassNotFoundException {
 
@@ -365,7 +365,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private void checkSubFieldAndWriteData(
+  protected void checkSubFieldAndWriteData(
       String[] subFields,
       int index,
       Property parentProp,
@@ -394,7 +394,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private void writeSelectionData(
+  protected void writeSelectionData(
       String selection, String dataCell, int forSelectUse, List<String> dataList) {
 
     String value = this.getSelectionValue(selection, dataCell, forSelectUse);
@@ -404,7 +404,7 @@ public class DataImportServiceImpl implements DataImportService {
     dataList.add(value);
   }
 
-  private String getSelectionValue(String selection, String value, int forSelectUse) {
+  protected String getSelectionValue(String selection, String value, int forSelectUse) {
 
     if (forSelectUse != FileFieldRepository.SELECT_USE_VALUES) {
       String title = null;
@@ -435,7 +435,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private CSVInput createCSVInput(FileTab fileTab, String fileName) {
+  protected CSVInput createCSVInput(FileTab fileTab, String fileName) {
     boolean update = false;
     String searchCall = fileTab.getSearchCall();
 
@@ -523,7 +523,7 @@ public class DataImportServiceImpl implements DataImportService {
     return allBindings;
   }
 
-  private void createCSVSubBinding(
+  protected void createCSVSubBinding(
       String[] subFields,
       int index,
       String column,
@@ -605,7 +605,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private void createBindForNotMatchWithFile(
+  protected void createBindForNotMatchWithFile(
       String column,
       int importType,
       CSVBind dummyBind,
@@ -625,7 +625,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private void createBindForMatchWithFile(
+  protected void createBindForMatchWithFile(
       String column,
       int importType,
       String expression,
@@ -655,7 +655,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private void setSearch(
+  protected void setSearch(
       String column, String field, FileField fileField, CSVBind bind, boolean isSameParentExist) {
 
     int importType = fileField.getImportType();
@@ -687,7 +687,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private String setExpression(String column, FileField fileField, Property prop) {
+  protected String setExpression(String column, FileField fileField, Property prop) {
 
     String expr = fileField.getExpression();
     String relationship = fileField.getRelationship();
@@ -732,7 +732,7 @@ public class DataImportServiceImpl implements DataImportService {
     return expression;
   }
 
-  private String createExpression(String expr, String type, Property prop, int forSelectUse) {
+  protected String createExpression(String expr, String type, Property prop, int forSelectUse) {
     String expression = null;
 
     switch (type) {
@@ -767,7 +767,7 @@ public class DataImportServiceImpl implements DataImportService {
     return expression;
   }
 
-  private String convertExpression(String expr, String type, String column) {
+  protected String convertExpression(String expr, String type, String column) {
     String expression = null;
     switch (type) {
       case ValidatorService.INTEGER:
@@ -799,7 +799,7 @@ public class DataImportServiceImpl implements DataImportService {
     return expression;
   }
 
-  private String getAdapter(String type, String dateFormat) {
+  protected String getAdapter(String type, String dateFormat) {
     String adapter = null;
 
     switch (type) {
@@ -826,7 +826,7 @@ public class DataImportServiceImpl implements DataImportService {
     return adapter;
   }
 
-  private DataAdapter createAdapter(String typeName, String format) {
+  protected DataAdapter createAdapter(String typeName, String format) {
     DataAdapter adapter = adapterMap.get(format);
     if (adapter == null) {
       adapter =
@@ -838,7 +838,7 @@ public class DataImportServiceImpl implements DataImportService {
     return adapter;
   }
 
-  private CSVBind createCSVBind(
+  protected CSVBind createCSVBind(
       String column,
       String field,
       String search,
@@ -859,7 +859,7 @@ public class DataImportServiceImpl implements DataImportService {
     return bind;
   }
 
-  private String createDataFileName(FileTab fileTab) {
+  protected String createDataFileName(FileTab fileTab) {
     String fileName = null;
     MetaModel model = fileTab.getMetaModel();
     Long fileTabId = fileTab.getId();
@@ -874,7 +874,7 @@ public class DataImportServiceImpl implements DataImportService {
     return fileName;
   }
 
-  private void processAttachments(MetaFile attachments) throws ZipException, IOException {
+  protected void processAttachments(MetaFile attachments) throws ZipException, IOException {
 
     if (dataDir.isDirectory() && dataDir.list().length == 0) {
       return;
@@ -908,7 +908,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
   }
 
-  private MetaFile importData(List<CSVInput> inputs) throws IOException {
+  protected MetaFile importData(List<CSVInput> inputs) throws IOException {
     if (CollectionUtils.isEmpty(inputs)) {
       return null;
     }
@@ -932,13 +932,13 @@ public class DataImportServiceImpl implements DataImportService {
     return null;
   }
 
-  private void setImportIf(Property prop, CSVBind bind, String column) {
+  protected void setImportIf(Property prop, CSVBind bind, String column) {
     if (prop.isRequired()) {
       bind.setCondition(column.toString() + "!= null && !" + column.toString() + ".empty");
     }
   }
 
-  private MetaFile createImportLogFile(ImporterListener listener) throws IOException {
+  protected MetaFile createImportLogFile(ImporterListener listener) throws IOException {
 
     MetaFile logMetaFile =
         metaFiles.upload(

@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.Sop;
 import com.axelor.apps.production.db.repo.SopRepository;
 import com.axelor.apps.production.service.SopService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

@@ -18,7 +18,7 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Duration;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import javax.persistence.PersistenceException;
 

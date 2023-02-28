@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ExpenseLineProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -53,7 +53,7 @@ public class ExpenseLineProjectController {
     }
   }
 
-  private void setProject(ActionRequest request, ActionResponse response, Project project) {
+  protected void setProject(ActionRequest request, ActionResponse response, Project project) {
 
     List<Map<String, Object>> expenseLineSet =
         (List<Map<String, Object>>) request.getContext().get("expenseLineSet");

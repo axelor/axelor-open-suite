@@ -17,6 +17,7 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -24,7 +25,6 @@ import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.apps.stock.service.TrackingNumberService;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;

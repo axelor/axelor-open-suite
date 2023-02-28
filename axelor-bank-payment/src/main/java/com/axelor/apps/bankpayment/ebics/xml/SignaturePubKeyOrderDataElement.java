@@ -43,7 +43,7 @@ import com.axelor.apps.account.ebics.schema.xmldsig.RSAKeyValueType;
 import com.axelor.apps.account.ebics.schema.xmldsig.X509DataType;
 import com.axelor.apps.bankpayment.db.EbicsCertificate;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.math.BigInteger;
 import java.util.Calendar;
 import javax.xml.XMLConstants;

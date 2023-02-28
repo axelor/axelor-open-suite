@@ -44,7 +44,7 @@ import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType.SegmentNumber
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 /**
  * The <code>DTransferRequestElement</code> is the common elements for all ebics downloads.

@@ -18,6 +18,8 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
@@ -25,11 +27,13 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.*;
@@ -42,10 +46,6 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.AxelorMessageException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
@@ -551,7 +551,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param stockMove
    * @throws AxelorException
    */
-  private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
+  protected void checkOngoingInventory(StockMove stockMove) throws AxelorException {
     List<StockLocation> stockLocationList = new ArrayList<>();
 
     if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
@@ -600,7 +600,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
   }
 
-  private void resetMasses(StockMove stockMove) {
+  protected void resetMasses(StockMove stockMove) {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
 
     if (stockMoveLineList == null) {
@@ -1090,7 +1090,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     return stock;
   }
 
-  private Double getStock(Long locationId, Long productId, LocalDate date) {
+  protected Double getStock(Long locationId, Long productId, LocalDate date) {
 
     List<StockMoveLine> inLines =
         stockMoveLineRepo

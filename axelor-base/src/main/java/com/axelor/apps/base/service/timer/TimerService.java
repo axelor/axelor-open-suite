@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.base.service.timer;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.TimerHistory;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 

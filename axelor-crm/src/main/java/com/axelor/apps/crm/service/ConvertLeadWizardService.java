@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
-import com.axelor.exception.AxelorException;
 import java.util.Map;
 
 public interface ConvertLeadWizardService {

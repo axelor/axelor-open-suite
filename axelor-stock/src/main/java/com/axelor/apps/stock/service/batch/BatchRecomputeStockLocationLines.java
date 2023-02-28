@@ -17,8 +17,11 @@
  */
 package com.axelor.apps.stock.service.batch;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -30,9 +33,6 @@ import com.axelor.apps.stock.service.batch.model.StockMoveLineOrigin;
 import com.axelor.apps.stock.service.batch.model.TrackProduct;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.exception.AxelorException;
 
 public interface ContractLineService {
   /**

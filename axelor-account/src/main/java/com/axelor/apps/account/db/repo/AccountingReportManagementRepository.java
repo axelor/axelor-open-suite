@@ -19,7 +19,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.service.AccountingReportService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;

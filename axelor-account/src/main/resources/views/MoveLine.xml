@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
@@ -125,7 +125,7 @@
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"
       onChange="action-move-line-group-analytic-distribution-template-onchange"
-      onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
+      onSelect="action-move-line-group-set-analytic-distribution-template-onselect"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
     <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
@@ -949,6 +949,7 @@
     <action name="action-move-line-method-set-required-analytic-accounts"/>
     <action name="action-move-line-method-clear-analytic-move-line"
       if="analyticDistributionTemplate == null"/>
+    <action name="action-move-line-check-distribution-template-account"/>
   </action-group>
 
   <action-group name="action-move-line-group-currency-amount-rate-onchange">
@@ -985,6 +986,10 @@
 
   <action-method name="action-move-line-account-method-get-validate-period">
     <call class="com.axelor.apps.account.web.MoveLineController" method="getValidatePeriod"/>
+  </action-method>
+
+  <action-method name="action-move-line-check-distribution-template-account">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="checkAnalyticAccount"/>
   </action-method>
 
   <action-attrs name="action-move-line-attrs-readonly">

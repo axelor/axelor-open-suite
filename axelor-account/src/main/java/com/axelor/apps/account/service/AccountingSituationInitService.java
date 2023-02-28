@@ -18,9 +18,9 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface AccountingSituationInitService {

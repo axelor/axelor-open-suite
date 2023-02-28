@@ -18,8 +18,8 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Year;
-import com.axelor.exception.AxelorException;
 
 public interface YearControlService {
 
