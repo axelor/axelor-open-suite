@@ -12,6 +12,10 @@ axelor {
         description "Axelor BPM  Module"
 }
 
+license {
+        exclude "**/src/main/webapp/wkf-editor/token-assets/font-awesome/**"
+}
+
 test {
 	exclude "com/axelor/apps/baml/test/**"
 }
