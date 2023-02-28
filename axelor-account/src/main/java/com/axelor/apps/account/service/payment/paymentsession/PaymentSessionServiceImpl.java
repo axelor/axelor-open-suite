@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -230,6 +231,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   @Override
   @Transactional
   public void retrieveEligibleTerms(PaymentSession paymentSession) {
+
+    List<Long> partnerIdList =
+        paymentSession.getPartnerSet().stream().map(Partner::getId).collect(Collectors.toList());
+    if (CollectionUtils.isEmpty(partnerIdList)) {
+      partnerIdList.add((long) 0);
+    }
     List<InvoiceTerm> eligibleInvoiceTermList =
         invoiceTermRepository
             .all()
@@ -253,6 +260,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind(
                 "pfpValidateStatusPartiallyValidated",
                 InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)
+            .bind("partnerIds", partnerIdList)
             .fetch();
 
     eligibleInvoiceTermList = this.filterNotAwaitingPayment(eligibleInvoiceTermList);
@@ -275,7 +283,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
     String termsMoveLineCondition =
-        " AND ((self.moveLine.partner.isCustomer = TRUE "
+        " AND (0 in (:partnerIds) OR self.moveLine.move.partner.id in (:partnerIds))"
+            + " AND ((self.moveLine.partner.isCustomer = TRUE "
             + " AND :partnerTypeSelect = :partnerTypeClient"
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginClient)"
             + " OR ( self.moveLine.partner.isSupplier = TRUE "
@@ -421,5 +430,37 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       }
     }
     return isSignedNegative;
+  }
+
+  @Override
+  public void removeNegativeLines(PaymentSession paymentSession) throws AxelorException {
+    Query<InvoiceTerm> invoiceTermQuery = this.getNegativeBalanceInvoiceTermQuery(paymentSession);
+    List<InvoiceTerm> invoiceTermList;
+    int offset = 0;
+
+    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+        .isEmpty()) {
+      invoiceTermService.toggle(invoiceTermList, false);
+
+      offset += invoiceTermList.size();
+      JPA.clear();
+    }
+
+    paymentSession = paymentSessionRepository.find(paymentSession.getId());
+    this.computeTotalPaymentSession(paymentSession);
+  }
+
+  protected Query<InvoiceTerm> getNegativeBalanceInvoiceTermQuery(PaymentSession paymentSession) {
+    return invoiceTermRepository
+        .all()
+        .filter(
+            "self.paymentSession = :paymentSession "
+                + "AND self.isSelectedOnPaymentSession IS TRUE "
+                + "AND self.partner IN ("
+                + "SELECT it.partner FROM InvoiceTerm it "
+                + "WHERE it.paymentSession = :paymentSession AND it.isSelectedOnPaymentSession IS TRUE "
+                + "GROUP BY it.partner HAVING SUM(it.paymentAmount) < 0)")
+        .bind("paymentSession", paymentSession)
+        .order("id");
   }
 }

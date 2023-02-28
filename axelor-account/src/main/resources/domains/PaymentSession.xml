@@ -45,6 +45,9 @@
     <datetime name="validatedDate" title="Validated Date"/>
     <many-to-one name="partnerForEmail" ref="com.axelor.apps.base.db.Partner"/>
 
+    <many-to-many ref="com.axelor.apps.base.db.Partner" name="partnerSet"
+      title="Partners"/>
+
     <extra-code><![CDATA[
 
         // STATUS SELECT

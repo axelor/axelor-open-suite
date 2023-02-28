@@ -152,6 +152,7 @@
             showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2 &amp;&amp; !$legacy">
             <field name="computePreviousYear" hideIf="computeOtherPeriod"/>
             <field name="computeOtherPeriod" hideIf="computePreviousYear"/>
+            <field name="balanceBeforePeriod"/>
           </panel>
           <field name="groupsWithoutColumn"
             showIf="reportTypeColumn != null &amp;&amp; typeSelect != 5 &amp;&amp; !$legacy"/>
@@ -159,6 +160,8 @@
         <panel name="groupConfigPanel" showIf="typeSelect == 4" colSpan="12">
           <field name="hidden"/>
           <field name="computeOtherPeriod"
+            showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2"/>
+          <field name="balanceBeforePeriod"
             showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2"/>
         </panel>
       </panel>
