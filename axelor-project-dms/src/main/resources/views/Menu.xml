@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="project-dms-root" title="Project DMS" parent="project-current-project"
-    action="project.dms.view" order="50"/>
+    action="project.dms.view" order="500"/>
 
   <action-view name="project.dms.view" title="Document view">
     <view name="dms/?projectIds={{_projectIds}}" type="html"/>
