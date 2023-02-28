@@ -26,12 +26,14 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -69,6 +71,10 @@ public class MoveExcessPaymentService {
 
     MoveLine moveLine = getOrignalInvoiceMoveLine(invoice);
 
+    if (advancePaymentMoveLines == null) {
+      advancePaymentMoveLines = new ArrayList<>();
+    }
+
     if (moveLine != null) {
       advancePaymentMoveLines.add(moveLine);
     }
@@ -88,8 +94,10 @@ public class MoveExcessPaymentService {
                   invoice.getPartner())
               .fetch();
 
-      log.debug("Number of overpayment to attribute to the invoice : {}", creditMoveLines.size());
-      advancePaymentMoveLines.addAll(creditMoveLines);
+      log.debug(
+          "Number of overpayment to attribute to the invoice : {}",
+          ListUtils.size(creditMoveLines));
+      advancePaymentMoveLines.addAll(ListUtils.emptyIfNull(creditMoveLines));
     }
     // remove duplicates
     advancePaymentMoveLines =
@@ -101,7 +109,9 @@ public class MoveExcessPaymentService {
 
     Invoice originalInvoice = invoice.getOriginalInvoice();
 
-    if (originalInvoice != null && originalInvoice.getMove() != null) {
+    if (originalInvoice != null
+        && originalInvoice.getMove() != null
+        && originalInvoice.getMove().getMoveLineList() != null) {
       for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
         if (moveLine.getAccount().getUseForPartnerBalance()
             && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0

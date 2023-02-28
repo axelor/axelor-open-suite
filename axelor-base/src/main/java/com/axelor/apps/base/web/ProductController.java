@@ -186,10 +186,12 @@ public class ProductController {
             .createQuery(Product.class, security.getFilter(JpaSecurity.CAN_READ, Product.class))
             .select("id")
             .fetch(-1, -1);
-    for (Object product : products) {
-      if (product instanceof Map) {
-        Long id = (Long) ((Map<String, Object>) product).get("id");
-        displayedProductIdList.add(id);
+    if (ObjectUtils.notEmpty(products)) {
+      for (Object product : products) {
+        if (product instanceof Map) {
+          Long id = (Long) ((Map<String, Object>) product).get("id");
+          displayedProductIdList.add(id);
+        }
       }
     }
     return displayedProductIdList;

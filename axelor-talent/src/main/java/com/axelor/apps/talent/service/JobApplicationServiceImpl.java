@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.Skill;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -84,7 +85,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     employee.setHireDate(appBaseService.getTodayDate(jobApplication.getJobPosition().getCompany()));
     employee.setContactPartner(createContact(jobApplication));
     Set<Skill> tagSkillSet = new HashSet<Skill>();
-    tagSkillSet.addAll(jobApplication.getSkillSet());
+    tagSkillSet.addAll(SetUtils.emptyIfNull(jobApplication.getSkillSet()));
     employee.setSkillSet(tagSkillSet);
     if (employee.getMainEmploymentContract() != null)
       employee

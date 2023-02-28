@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
@@ -53,26 +54,28 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
     Map<String, PurchaseOrder> purchaseOrderMap = new HashMap<>();
 
-    for (PurchaseRequest purchaseRequest : purchaseRequests) {
-      PurchaseOrder purchaseOrder;
+    if (CollectionUtils.isNotEmpty(purchaseRequests)) {
+      for (PurchaseRequest purchaseRequest : purchaseRequests) {
+        PurchaseOrder purchaseOrder;
 
-      String key = groupBySupplier ? getPurchaseOrderGroupBySupplierKey(purchaseRequest) : null;
-      if (key != null && purchaseOrderMap.containsKey(key)) {
-        purchaseOrder = purchaseOrderMap.get(key);
-      } else {
-        purchaseOrder = createPurchaseOrder(purchaseRequest);
-        key = key == null ? purchaseRequest.getId().toString() : key;
-        purchaseOrderMap.put(key, purchaseOrder);
+        String key = groupBySupplier ? getPurchaseOrderGroupBySupplierKey(purchaseRequest) : null;
+        if (key != null && purchaseOrderMap.containsKey(key)) {
+          purchaseOrder = purchaseOrderMap.get(key);
+        } else {
+          purchaseOrder = createPurchaseOrder(purchaseRequest);
+          key = key == null ? purchaseRequest.getId().toString() : key;
+          purchaseOrderMap.put(key, purchaseOrder);
+        }
+
+        if (purchaseOrder == null) {
+          purchaseOrder = createPurchaseOrder(purchaseRequest);
+        }
+
+        this.generatePoLineListFromPurchaseRequest(purchaseRequest, purchaseOrder, groupByProduct);
+
+        purchaseOrderService.computePurchaseOrder(purchaseOrder);
+        purchaseOrderRepo.save(purchaseOrder);
       }
-
-      if (purchaseOrder == null) {
-        purchaseOrder = createPurchaseOrder(purchaseRequest);
-      }
-
-      this.generatePoLineListFromPurchaseRequest(purchaseRequest, purchaseOrder, groupByProduct);
-
-      purchaseOrderService.computePurchaseOrder(purchaseOrder);
-      purchaseOrderRepo.save(purchaseOrder);
     }
     List<PurchaseOrder> purchaseOrders =
         purchaseOrderMap.values().stream().collect(Collectors.toList());
@@ -103,22 +106,23 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   protected void generatePoLineListFromPurchaseRequest(
       PurchaseRequest purchaseRequest, PurchaseOrder purchaseOrder, Boolean groupByProduct)
       throws AxelorException {
+    if (CollectionUtils.isNotEmpty(purchaseRequest.getPurchaseRequestLineList())) {
+      for (PurchaseRequestLine purchaseRequestLine : purchaseRequest.getPurchaseRequestLineList()) {
 
-    for (PurchaseRequestLine purchaseRequestLine : purchaseRequest.getPurchaseRequestLineList()) {
+        Product product = purchaseRequestLine.getProduct();
 
-      Product product = purchaseRequestLine.getProduct();
+        PurchaseOrderLine purchaseOrderLine =
+            purchaseOrderLineService.createPurchaseOrderLine(
+                purchaseOrder,
+                product,
+                purchaseRequestLine.getNewProduct() ? purchaseRequestLine.getProductTitle() : null,
+                null,
+                purchaseRequestLine.getQuantity(),
+                purchaseRequestLine.getUnit());
 
-      PurchaseOrderLine purchaseOrderLine =
-          purchaseOrderLineService.createPurchaseOrderLine(
-              purchaseOrder,
-              product,
-              purchaseRequestLine.getNewProduct() ? purchaseRequestLine.getProductTitle() : null,
-              null,
-              purchaseRequestLine.getQuantity(),
-              purchaseRequestLine.getUnit());
-
-      purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
-      purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+        purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
+        purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+      }
     }
   }
 }

@@ -24,6 +24,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.service.LogisticalFormService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -132,7 +133,9 @@ public class LogisticalFormController {
       LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
       LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
       logisticalFormService.updateProductNetMass(logisticalForm);
-      response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
+      response.setValue(
+          "logisticalFormLineList",
+          ListUtils.emptyIfNull(logisticalForm.getLogisticalFormLineList()));
       response.setValue("totalNetMass", logisticalForm.getTotalNetMass());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

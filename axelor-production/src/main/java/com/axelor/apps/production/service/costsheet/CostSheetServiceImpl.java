@@ -44,6 +44,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -62,6 +63,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,15 +155,18 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     List<CostSheet> costSheetList = manufOrder.getCostSheetList();
     LocalDate previousCostSheetDate = null;
-    for (CostSheet costSheet : costSheetList) {
-      if ((costSheet.getCalculationTypeSelect() == CostSheetRepository.CALCULATION_END_OF_PRODUCTION
-              || costSheet.getCalculationTypeSelect()
-                  == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION)
-          && costSheet.getCalculationDate() != null) {
-        if (previousCostSheetDate == null) {
-          previousCostSheetDate = costSheet.getCalculationDate();
-        } else if (costSheet.getCalculationDate().isAfter(previousCostSheetDate)) {
-          previousCostSheetDate = costSheet.getCalculationDate();
+    if (CollectionUtils.isNotEmpty(costSheetList)) {
+      for (CostSheet costSheet : costSheetList) {
+        if ((costSheet.getCalculationTypeSelect()
+                    == CostSheetRepository.CALCULATION_END_OF_PRODUCTION
+                || costSheet.getCalculationTypeSelect()
+                    == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION)
+            && costSheet.getCalculationDate() != null) {
+          if (previousCostSheetDate == null) {
+            previousCostSheetDate = costSheet.getCalculationDate();
+          } else if (costSheet.getCalculationDate().isAfter(previousCostSheetDate)) {
+            previousCostSheetDate = costSheet.getCalculationDate();
+          }
         }
       }
     }
@@ -509,7 +514,8 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   protected void computeRealResidualProduct(ManufOrder manufOrder) throws AxelorException {
-    for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
+    for (StockMoveLine stockMoveLine :
+        ListUtils.emptyIfNull(manufOrder.getProducedStockMoveLineList())) {
       if (stockMoveLine.getProduct() != null
           && manufOrder.getProduct() != null
           && (!stockMoveLine.getProduct().equals(manufOrder.getProduct()))) {
@@ -554,7 +560,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     BigDecimal ratio = costSheet.getManufOrderProducedRatio();
 
     if (manufOrder.getIsConsProOnOperation()) {
-      for (OperationOrder operation : manufOrder.getOperationOrderList()) {
+      for (OperationOrder operation : ListUtils.emptyIfNull(manufOrder.getOperationOrderList())) {
 
         this.computeConsumedProduct(
             bomLevel,
@@ -595,6 +601,10 @@ public class CostSheetServiceImpl implements CostSheetService {
             calculationDate,
             previousCostSheetDate,
             calculationTypeSelect);
+
+    if (consumedStockMoveLinePerProductAndUnit == null) {
+      return;
+    }
 
     for (List<Object> keys : consumedStockMoveLinePerProductAndUnit.keySet()) {
 
@@ -653,6 +663,10 @@ public class CostSheetServiceImpl implements CostSheetService {
             previousCostSheetDate,
             calculationTypeSelect);
 
+    if (producedStockMoveLinePerProductAndUnit == null) {
+      return totalQty;
+    }
+
     for (List<Object> keys : producedStockMoveLinePerProductAndUnit.keySet()) {
 
       Iterator<Object> iterator = keys.iterator();
@@ -678,7 +692,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     BigDecimal totalQty = BigDecimal.ZERO;
 
-    for (ProdProduct prodProduct : prodProductList) {
+    for (ProdProduct prodProduct : ListUtils.emptyIfNull(prodProductList)) {
       if (product.equals(prodProduct.getProduct()) && unit.equals(prodProduct.getUnit())) {
         totalQty = totalQty.add(prodProduct.getQty());
       }
@@ -747,7 +761,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine,
       LocalDate previousCostSheetDate)
       throws AxelorException {
-    for (OperationOrder operationOrder : operationOrders) {
+    for (OperationOrder operationOrder : ListUtils.emptyIfNull(operationOrders)) {
 
       WorkCenter workCenter = operationOrder.getWorkCenter();
       if (workCenter == null) {
@@ -817,13 +831,14 @@ public class CostSheetServiceImpl implements CostSheetService {
 
         Long totalPlannedDuration = 0L;
         for (OperationOrder manufOperationOrder :
-            operationOrder.getManufOrder().getOperationOrderList()) {
+            ListUtils.emptyIfNull(operationOrder.getManufOrder().getOperationOrderList())) {
           if (manufOperationOrder.equals(operationOrder)) {
             totalPlannedDuration += manufOperationOrder.getPlannedDuration();
           }
         }
         duration = (new BigDecimal(totalPlannedDuration).subtract(plannedDuration)).abs();
       }
+
       for (ProdHumanResource prodHumanResource : operationOrder.getProdHumanResourceList()) {
         this.computeRealHumanResourceCost(
             prodHumanResource,
@@ -951,7 +966,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     BigDecimal totalProducedQty = BigDecimal.ZERO;
 
-    for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
+    for (StockMoveLine stockMoveLine :
+        ListUtils.emptyIfNull(manufOrder.getProducedStockMoveLineList())) {
 
       if (stockMoveLine.getUnit().equals(manufOrder.getUnit())
           && (stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED

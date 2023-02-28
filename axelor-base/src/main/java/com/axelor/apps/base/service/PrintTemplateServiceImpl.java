@@ -30,6 +30,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.apps.message.service.TemplateContextService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -199,7 +200,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
         && ObjectUtils.notEmpty(templateLineList.get(0).getSequence())) {
       seq = templateLineList.get(0).getSequence().intValue();
     }
-    for (PrintTemplateLine printTemplateLine : templateLineList) {
+    for (PrintTemplateLine printTemplateLine : ListUtils.emptyIfNull(templateLineList)) {
       if (printTemplateLine.getIgnoreTheLine()) {
         continue;
       }

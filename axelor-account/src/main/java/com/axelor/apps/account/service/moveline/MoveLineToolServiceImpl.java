@@ -103,11 +103,13 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   public List<MoveLine> getCreditCustomerMoveLines(Move move) {
 
     List<MoveLine> moveLines = Lists.newArrayList();
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine.getAccount().getUseForPartnerBalance()
-          && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-        moveLines.add(moveLine);
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          moveLines.add(moveLine);
+        }
       }
     }
     return moveLines;
@@ -122,11 +124,13 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
    */
   @Override
   public MoveLine getCreditCustomerMoveLine(Move move) {
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine.getAccount().getUseForPartnerBalance()
-          && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-        return moveLine;
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          return moveLine;
+        }
       }
     }
     return null;
@@ -171,11 +175,13 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
    */
   @Override
   public MoveLine getDebitCustomerMoveLine(Move move) {
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine.getAccount().getUseForPartnerBalance()
-          && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-        return moveLine;
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          return moveLine;
+        }
       }
     }
     return null;
@@ -191,11 +197,13 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   public List<MoveLine> getDebitCustomerMoveLines(Move move) {
 
     List<MoveLine> moveLines = Lists.newArrayList();
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine.getAccount().getUseForPartnerBalance()
-          && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-        moveLines.add(moveLine);
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          moveLines.add(moveLine);
+        }
       }
     }
     return moveLines;
@@ -245,15 +253,15 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   public List<MoveLine> getReconciliableCreditMoveLines(List<MoveLine> moveLineList) {
 
     List<MoveLine> reconciliableCreditMoveLineList = new ArrayList<>();
-
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getAccount().getReconcileOk()
-          && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-          && moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0) {
-        reconciliableCreditMoveLineList.add(moveLine);
+    if (moveLineList != null) {
+      for (MoveLine moveLine : moveLineList) {
+        if (moveLine.getAccount().getReconcileOk()
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0) {
+          reconciliableCreditMoveLineList.add(moveLine);
+        }
       }
     }
-
     return reconciliableCreditMoveLineList;
   }
 
@@ -267,15 +275,15 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   public List<MoveLine> getReconciliableDebitMoveLines(List<MoveLine> moveLineList) {
 
     List<MoveLine> reconciliableDebitMoveLineList = new ArrayList<>();
-
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getAccount().getReconcileOk()
-          && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0
-          && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-        reconciliableDebitMoveLineList.add(moveLine);
+    if (moveLineList != null) {
+      for (MoveLine moveLine : moveLineList) {
+        if (moveLine.getAccount().getReconcileOk()
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0
+            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+          reconciliableDebitMoveLineList.add(moveLine);
+        }
       }
     }
-
     return reconciliableDebitMoveLineList;
   }
 
@@ -298,7 +306,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   @Override
   public MoveLine setCurrencyAmount(MoveLine moveLine) {
     Move move = moveLine.getMove();
-    if (move.getMoveLineList().size() == 0 || moveLine.getCurrencyRate().signum() == 0) {
+    if (move.getMoveLineList().isEmpty() || moveLine.getCurrencyRate().signum() == 0) {
       try {
         moveLine.setCurrencyRate(
             currencyService

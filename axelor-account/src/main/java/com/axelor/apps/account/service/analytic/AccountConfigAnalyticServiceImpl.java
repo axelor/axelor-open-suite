@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -55,7 +56,7 @@ public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticSe
       throws AxelorException {
     if (!CollectionUtils.isEmpty(initialList)) {
       List<AnalyticAxis> analyticAxisUsedList = getUsedAnalyticAxis(initialList);
-      if (initialList.size() != modifiedList.size()
+      if (initialList.size() != ListUtils.size(modifiedList)
           && !CollectionUtils.isEmpty(analyticAxisUsedList)) {
         return true;
       } else if (axisChangedInConfig(initialList, modifiedList) != null
@@ -71,7 +72,7 @@ public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticSe
 
   public List<AnalyticAxis> getUsedAnalyticAxis(List<AnalyticAxisByCompany> initialList) {
     List<AnalyticAxis> analyticAxisList = new ArrayList<>();
-    for (AnalyticAxisByCompany analyticAxisByCompany : initialList) {
+    for (AnalyticAxisByCompany analyticAxisByCompany : ListUtils.emptyIfNull(initialList)) {
       if (analyticAxisByCompany.getAnalyticAxis() != null
           && analyticMoveLineRepository
                   .findByAnalyticAxis(analyticAxisByCompany.getAnalyticAxis())
@@ -86,17 +87,21 @@ public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticSe
   public AnalyticAxis axisChangedInConfig(
       List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList) {
     List<AnalyticAxis> analyticAxisList =
-        initialList.stream().map(aa -> aa.getAnalyticAxis()).collect(Collectors.toList());
+        ListUtils.emptyIfNull(initialList).stream()
+            .map(aa -> aa.getAnalyticAxis())
+            .collect(Collectors.toList());
     boolean isIn = false;
-    for (AnalyticAxis analyticAxis : analyticAxisList) {
-      isIn = false;
-      for (AnalyticAxisByCompany analyticAxisByCompany : modifiedList) {
-        if (analyticAxisByCompany.getAnalyticAxis().equals(analyticAxis)) {
-          isIn = true;
+    if (CollectionUtils.isNotEmpty(analyticAxisList)) {
+      for (AnalyticAxis analyticAxis : analyticAxisList) {
+        isIn = false;
+        for (AnalyticAxisByCompany analyticAxisByCompany : ListUtils.emptyIfNull(modifiedList)) {
+          if (analyticAxisByCompany.getAnalyticAxis().equals(analyticAxis)) {
+            isIn = true;
+          }
         }
-      }
-      if (!isIn) {
-        return analyticAxis;
+        if (!isIn) {
+          return analyticAxis;
+        }
       }
     }
     return null;
@@ -104,8 +109,8 @@ public class AccountConfigAnalyticServiceImpl implements AccountConfigAnalyticSe
 
   public boolean orderChangedInConfig(
       List<AnalyticAxisByCompany> initialList, List<AnalyticAxisByCompany> modifiedList) {
-    for (AnalyticAxisByCompany analyticAxisByCompanyInit : initialList) {
-      for (AnalyticAxisByCompany analyticAxisByCompany : modifiedList) {
+    for (AnalyticAxisByCompany analyticAxisByCompanyInit : ListUtils.emptyIfNull(initialList)) {
+      for (AnalyticAxisByCompany analyticAxisByCompany : ListUtils.emptyIfNull(modifiedList)) {
         if (analyticAxisByCompanyInit.getSequence() == analyticAxisByCompany.getSequence()
             && !analyticAxisByCompanyInit
                 .getAnalyticAxis()

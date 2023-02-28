@@ -88,7 +88,7 @@ public class PaymentVoucherControlService {
     // Si on a des lignes à payer (dans le deuxième tableau)
     if (!paymentVoucher.getHasAutoInput()
         && (paymentVoucher.getPayVoucherElementToPayList() == null
-            || paymentVoucher.getPayVoucherElementToPayList().size() == 0)) {
+            || paymentVoucher.getPayVoucherElementToPayList().isEmpty())) {
       throw new AxelorException(
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -121,9 +121,11 @@ public class PaymentVoucherControlService {
       List<PayVoucherElementToPay> payVoucherElementToPayList, MoveLine moveLine) {
     if (moveLine != null) {
       Account account = moveLine.getAccount();
-      for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList) {
-        if (!payVoucherElementToPay.getMoveLine().getAccount().equals(account)) {
-          return false;
+      if (payVoucherElementToPayList != null) {
+        for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList) {
+          if (!payVoucherElementToPay.getMoveLine().getAccount().equals(account)) {
+            return false;
+          }
         }
       }
       return true;

@@ -27,6 +27,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -54,6 +55,9 @@ public class TimesheetHRRepository extends TimesheetRepository {
       Timesheet timesheet = create(json);
       if (timesheet.getTimesheetLineList() == null || timesheet.getTimesheetLineList().isEmpty()) {
         timesheet.setTimesheetLineList(new ArrayList<TimesheetLine>());
+        if (obj == null) {
+          obj = new HashMap<>();
+        }
         obj.put("timesheetLineList", timesheetService.createDefaultLines(timesheet));
       }
     }
@@ -71,6 +75,11 @@ public class TimesheetHRRepository extends TimesheetRepository {
 
       Map<Project, BigDecimal> projectTimeSpentMap =
           timesheetLineService.getProjectTimeSpentMap(entity.getTimesheetLineList());
+
+      if (projectTimeSpentMap == null) {
+        return;
+      }
+
       Iterator<Project> projectIterator = projectTimeSpentMap.keySet().iterator();
 
       while (projectIterator.hasNext()) {

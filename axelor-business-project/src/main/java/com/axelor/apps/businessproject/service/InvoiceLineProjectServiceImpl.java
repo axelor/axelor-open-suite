@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -78,7 +79,7 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       List<InvoiceLine> invoiceLineList =
           invoiceLineRepo.all().filter("self.id in ?1", invoiceLineIds).fetch();
 
-      for (InvoiceLine line : invoiceLineList) {
+      for (InvoiceLine line : ListUtils.emptyIfNull(invoiceLineList)) {
         line.setProject(project);
         invoiceLineRepo.save(line);
       }
@@ -100,7 +101,7 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
   @Override
   public List<AnalyticMoveLine> setProjectToAnalyticDistribution(
       InvoiceLine invoiceLine, List<AnalyticMoveLine> analyticMoveLines) {
-    for (AnalyticMoveLine analyticMoveLine : analyticMoveLines) {
+    for (AnalyticMoveLine analyticMoveLine : ListUtils.emptyIfNull(analyticMoveLines)) {
       analyticMoveLine.setProject(invoiceLine.getProject());
     }
     return analyticMoveLines;

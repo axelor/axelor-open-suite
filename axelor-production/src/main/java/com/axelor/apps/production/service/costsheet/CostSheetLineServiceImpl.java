@@ -45,6 +45,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -55,6 +56,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -366,34 +368,36 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         List<SupplierCatalog> supplierCatalogList =
             (List<SupplierCatalog>)
                 productCompanyService.get(product, "supplierCatalogList", company);
-        for (SupplierCatalog supplierCatalog : supplierCatalogList) {
-          BigDecimal purchasePrice =
-              supplierCatalogService.getPurchasePrice(supplierCatalog, company);
-          if (BigDecimal.ZERO.compareTo(purchasePrice) < 0) {
-            price =
-                unitConversionService.convert(
-                    product.getUnit(),
-                    product.getPurchasesUnit() != null
-                        ? product.getPurchasesUnit()
-                        : product.getUnit(),
-                    purchasePrice,
-                    appProductionService.getNbDecimalDigitForUnitPrice(),
-                    product);
-            Partner supplierPartner = supplierCatalog.getSupplierPartner();
-            if (supplierPartner != null) {
-              shippingCoef =
-                  shippingCoefService.getShippingCoef(
-                      product, supplierPartner, company, new BigDecimal(9999999));
-              price = price.multiply(shippingCoef);
-
+        if (CollectionUtils.isNotEmpty(supplierCatalogList)) {
+          for (SupplierCatalog supplierCatalog : supplierCatalogList) {
+            BigDecimal purchasePrice =
+                supplierCatalogService.getPurchasePrice(supplierCatalog, company);
+            if (BigDecimal.ZERO.compareTo(purchasePrice) < 0) {
               price =
-                  currencyService.getAmountCurrencyConvertedAtDate(
-                      supplierPartner.getCurrency(),
-                      companyCurrency,
-                      price,
-                      appProductionService.getTodayDate(company));
+                  unitConversionService.convert(
+                      product.getUnit(),
+                      product.getPurchasesUnit() != null
+                          ? product.getPurchasesUnit()
+                          : product.getUnit(),
+                      purchasePrice,
+                      appProductionService.getNbDecimalDigitForUnitPrice(),
+                      product);
+              Partner supplierPartner = supplierCatalog.getSupplierPartner();
+              if (supplierPartner != null) {
+                shippingCoef =
+                    shippingCoefService.getShippingCoef(
+                        product, supplierPartner, company, new BigDecimal(9999999));
+                price = price.multiply(shippingCoef);
+
+                price =
+                    currencyService.getAmountCurrencyConvertedAtDate(
+                        supplierPartner.getCurrency(),
+                        companyCurrency,
+                        price,
+                        appProductionService.getTodayDate(company));
+              }
+              break;
             }
-            break;
           }
         }
       }
@@ -570,7 +574,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       return;
     }
 
-    for (CostSheetGroup indirectCostSheetGroup : this.getIndirectCostSheetGroups(costSheetGroup)) {
+    for (CostSheetGroup indirectCostSheetGroup :
+        ListUtils.emptyIfNull(this.getIndirectCostSheetGroups(costSheetGroup))) {
 
       this.createIndirectCostSheetLine(parentCostSheetLine, indirectCostSheetGroup, costPrice);
     }
@@ -626,14 +631,16 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   protected CostSheetLine getCostSheetLine(
       CostSheetGroup indirectCostSheetGroup, CostSheetLine parentCostSheetLine) {
 
-    for (CostSheetLine costSheetLine : parentCostSheetLine.getCostSheetLineList()) {
+    if (parentCostSheetLine != null && parentCostSheetLine.getCostSheetLineList() != null) {
+      for (CostSheetLine costSheetLine : parentCostSheetLine.getCostSheetLineList()) {
 
-      CostSheetGroup costSheetGroup = costSheetLine.getCostSheetGroup();
+        CostSheetGroup costSheetGroup = costSheetLine.getCostSheetGroup();
 
-      if (costSheetGroup != null
-          && costSheetGroup.getCostTypeSelect() == CostSheetGroupRepository.COST_TYPE_INDIRECT
-          && costSheetGroup.equals(indirectCostSheetGroup)) {
-        return costSheetLine;
+        if (costSheetGroup != null
+            && costSheetGroup.getCostTypeSelect() == CostSheetGroupRepository.COST_TYPE_INDIRECT
+            && costSheetGroup.equals(indirectCostSheetGroup)) {
+          return costSheetLine;
+        }
       }
     }
 

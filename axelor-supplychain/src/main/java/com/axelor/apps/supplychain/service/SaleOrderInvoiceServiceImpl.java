@@ -71,6 +71,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -215,8 +216,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder, BigDecimal percentage) {
     Map<Long, BigDecimal> map = new HashMap<>();
 
-    for (SaleOrderLine soLine : saleOrder.getSaleOrderLineList()) {
-      map.put(soLine.getId(), percentage);
+    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+      for (SaleOrderLine soLine : saleOrder.getSaleOrderLineList()) {
+        map.put(soLine.getId(), percentage);
+      }
     }
     return map;
   }
@@ -242,10 +245,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       amountToInvoice = BigDecimal.ZERO;
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         Long saleOrderLineId = saleOrderLine.getId();
-        if (qtyToInvoiceMap.containsKey(saleOrderLineId) && priceMap.containsKey(saleOrderLineId)) {
+        if (qtyToInvoiceMap != null
+            && qtyToInvoiceMap.containsKey(saleOrderLineId)
+            && priceMap != null
+            && priceMap.containsKey(saleOrderLineId)) {
           BigDecimal qtyToInvoice = qtyToInvoiceMap.get(saleOrderLineId);
 
-          if (isPercent) {
+          if (isPercent && qtyMap != null) {
             qtyToInvoice =
                 (qtyToInvoice.multiply(qtyMap.get(saleOrderLineId)))
                     .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
@@ -361,12 +367,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
         List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
         // link to the created invoice line the first line of the sale order.
-        for (InvoiceLine invoiceLine : invoiceOneLineList) {
-          SaleOrderLine saleOrderLine =
-              saleOrderLineTax.getSaleOrder().getSaleOrderLineList().get(0);
-          invoiceLine.setSaleOrderLine(saleOrderLine);
+        if (invoiceOneLineList != null) {
+          for (InvoiceLine invoiceLine : invoiceOneLineList) {
+            SaleOrderLine saleOrderLine =
+                saleOrderLineTax.getSaleOrder().getSaleOrderLineList().get(0);
+            invoiceLine.setSaleOrderLine(saleOrderLine);
+          }
+          createdInvoiceLineList.addAll(invoiceOneLineList);
         }
-        createdInvoiceLineList.addAll(invoiceOneLineList);
       }
     }
     return createdInvoiceLineList;
@@ -384,26 +392,28 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           I18n.get(SupplychainExceptionMessage.SO_INVOICE_NO_LINES_SELECTED));
     }
 
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      Long SOrderId = saleOrderLine.getId();
-      if (qtyToInvoiceMap.containsKey(SOrderId)) {
-        if (isPercent) {
-          BigDecimal percent = qtyToInvoiceMap.get(SOrderId);
-          BigDecimal realQty =
-              saleOrderLine
-                  .getQty()
-                  .multiply(percent)
-                  .divide(
-                      new BigDecimal("100"),
-                      appBaseService.getNbDecimalDigitForQty(),
-                      RoundingMode.HALF_UP);
-          qtyToInvoiceMap.put(SOrderId, realQty);
-        }
-        if (qtyToInvoiceMap.get(SOrderId).compareTo(saleOrderLine.getQty()) > 0) {
-          throw new AxelorException(
-              saleOrder,
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(SupplychainExceptionMessage.SO_INVOICE_QTY_MAX));
+    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        Long SOrderId = saleOrderLine.getId();
+        if (qtyToInvoiceMap.containsKey(SOrderId)) {
+          if (isPercent) {
+            BigDecimal percent = qtyToInvoiceMap.get(SOrderId);
+            BigDecimal realQty =
+                saleOrderLine
+                    .getQty()
+                    .multiply(percent)
+                    .divide(
+                        new BigDecimal("100"),
+                        appBaseService.getNbDecimalDigitForQty(),
+                        RoundingMode.HALF_UP);
+            qtyToInvoiceMap.put(SOrderId, realQty);
+          }
+          if (qtyToInvoiceMap.get(SOrderId).compareTo(saleOrderLine.getQty()) > 0) {
+            throw new AxelorException(
+                saleOrder,
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(SupplychainExceptionMessage.SO_INVOICE_QTY_MAX));
+          }
         }
       }
     }
@@ -501,8 +511,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public Invoice createInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList)
       throws AxelorException {
     Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      qtyToInvoiceMap.put(saleOrderLine.getId(), saleOrderLine.getQty());
+    if (CollectionUtils.isNotEmpty(saleOrderLineList)) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        qtyToInvoiceMap.put(saleOrderLine.getId(), saleOrderLine.getQty());
+      }
     }
     return createInvoice(saleOrder, saleOrderLineList, qtyToInvoiceMap);
   }
@@ -563,13 +575,15 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
-      if (qtyToInvoiceMap.containsKey(saleOrderLine.getId())) {
-        List<InvoiceLine> invoiceLines =
-            createInvoiceLine(invoice, saleOrderLine, qtyToInvoiceMap.get(saleOrderLine.getId()));
-        invoiceLineList.addAll(invoiceLines);
-        saleOrderLine.setInvoiced(true);
+        if (qtyToInvoiceMap != null && qtyToInvoiceMap.containsKey(saleOrderLine.getId())) {
+          List<InvoiceLine> invoiceLines =
+              createInvoiceLine(invoice, saleOrderLine, qtyToInvoiceMap.get(saleOrderLine.getId()));
+          invoiceLineList.addAll(invoiceLines);
+          saleOrderLine.setInvoiced(true);
+        }
       }
     }
     return invoiceLineList;
@@ -701,6 +715,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   @Override
   public List<Invoice> getInvoices(SaleOrder saleOrder) {
+    if (saleOrder.getSaleOrderLineList() == null) {
+      return new ArrayList<>();
+    }
     return invoiceRepo
         .all()
         .filter(
@@ -776,19 +793,21 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       StringBuilder numSeq = new StringBuilder();
       StringBuilder externalRef = new StringBuilder();
 
-      for (Invoice invoiceLocal : invoiceList) {
-        if (numSeq.length() > 0) {
-          numSeq.append("-");
-        }
-        if (invoiceLocal.getInternalReference() != null) {
-          numSeq.append(invoiceLocal.getInternalReference());
-        }
+      if (CollectionUtils.isNotEmpty(invoiceList)) {
+        for (Invoice invoiceLocal : invoiceList) {
+          if (numSeq.length() > 0) {
+            numSeq.append("-");
+          }
+          if (invoiceLocal.getInternalReference() != null) {
+            numSeq.append(invoiceLocal.getInternalReference());
+          }
 
-        if (externalRef.length() > 0) {
-          externalRef.append("|");
-        }
-        if (invoiceLocal.getExternalReference() != null) {
-          externalRef.append(invoiceLocal.getExternalReference());
+          if (externalRef.length() > 0) {
+            externalRef.append("|");
+          }
+          if (invoiceLocal.getExternalReference() != null) {
+            externalRef.append(invoiceLocal.getExternalReference());
+          }
         }
       }
       InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(saleOrder);
@@ -939,12 +958,15 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   public BigDecimal computeSumInvoices(List<Invoice> invoices) {
     BigDecimal sumInvoices = BigDecimal.ZERO;
-    for (Invoice invoice : invoices) {
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
-          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
-        sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
-      } else {
-        sumInvoices = sumInvoices.add(invoice.getExTaxTotal());
+    if (CollectionUtils.isNotEmpty(invoices)) {
+      for (Invoice invoice : invoices) {
+        if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+            || invoice.getOperationTypeSelect()
+                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+          sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
+        } else {
+          sumInvoices = sumInvoices.add(invoice.getExTaxTotal());
+        }
       }
     }
     return sumInvoices;

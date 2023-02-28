@@ -35,7 +35,9 @@ public class ChartBuilderController {
       Map<String, Object> context = request.getContext();
       Map<String, Object> actionView =
           Beans.get(ChartRecordViewService.class).getActionView(chartName, context);
-      response.setView(actionView);
+      if (actionView != null) {
+        response.setView(actionView);
+      }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }

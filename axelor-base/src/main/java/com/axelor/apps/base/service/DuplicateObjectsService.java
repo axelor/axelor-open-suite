@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -38,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,55 +61,63 @@ public class DuplicateObjectsService {
                 "(relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))",
                 modelName)
             .fetch();
-    for (MetaField metaField : allField) {
-      if ("ManyToOne".equals(metaField.getRelationship())) {
-        Query update =
-            JPA.em()
-                .createQuery(
-                    "UPDATE "
-                        + metaField.getMetaModel().getFullName()
-                        + " self SET self."
-                        + metaField.getName()
-                        + " = :value WHERE self."
-                        + metaField.getName()
-                        + " in (:duplicates)");
-        update.setParameter("value", originalObjct);
-        update.setParameter("duplicates", duplicateObjects);
-        update.executeUpdate();
-      } else if ("ManyToMany".equals(metaField.getRelationship())) {
-
-        if (metaField.getTypeName().equals(modelName)) {
-          Query select =
+    if (CollectionUtils.isNotEmpty(allField)) {
+      for (MetaField metaField : allField) {
+        if ("ManyToOne".equals(metaField.getRelationship())) {
+          Query update =
               JPA.em()
                   .createQuery(
-                      "select self from "
+                      "UPDATE "
                           + metaField.getMetaModel().getFullName()
-                          + " self LEFT JOIN self."
+                          + " self SET self."
                           + metaField.getName()
-                          + " as x WHERE x IN (:ids)");
-          select.setParameter("ids", duplicateObjects);
-          List<?> list = select.getResultList();
-          for (Object obj : list) {
-            Set<Object> items =
-                (Set<Object>) Mapper.of(obj.getClass()).get(obj, metaField.getName());
-            for (Object dupObj : duplicateObjects) {
-              if (items.contains(dupObj)) {
-                items.remove(dupObj);
+                          + " = :value WHERE self."
+                          + metaField.getName()
+                          + " in (:duplicates)");
+          update.setParameter("value", originalObjct);
+          update.setParameter("duplicates", ListUtils.emptyIfNull(duplicateObjects));
+          update.executeUpdate();
+        } else if ("ManyToMany".equals(metaField.getRelationship())) {
+
+          if (metaField.getTypeName().equals(modelName)) {
+            Query select =
+                JPA.em()
+                    .createQuery(
+                        "select self from "
+                            + metaField.getMetaModel().getFullName()
+                            + " self LEFT JOIN self."
+                            + metaField.getName()
+                            + " as x WHERE x IN (:ids)");
+            select.setParameter("ids", ListUtils.emptyIfNull(duplicateObjects));
+            List<?> list = select.getResultList();
+            if (list != null) {
+              for (Object obj : list) {
+                Set<Object> items =
+                    (Set<Object>) Mapper.of(obj.getClass()).get(obj, metaField.getName());
+                if (duplicateObjects != null) {
+                  for (Object dupObj : duplicateObjects) {
+                    if (items != null && items.contains(dupObj)) {
+                      items.remove(dupObj);
+                    }
+                  }
+                }
+                items.add(originalObjct);
               }
             }
-            items.add(originalObjct);
           }
-        }
-        Mapper mapper = Mapper.of(originalObjct.getClass());
-        Set<Object> existRelationalObjects =
-            (Set<Object>) mapper.get(originalObjct, metaField.getName());
+          Mapper mapper = Mapper.of(originalObjct.getClass());
+          Set<Object> existRelationalObjects =
+              (Set<Object>) mapper.get(originalObjct, metaField.getName());
 
-        for (int i = 0; i < duplicateObjects.size(); i++) {
-          Set<Object> newRelationalObjects =
-              (Set<Object>) mapper.get(duplicateObjects.get(i), metaField.getName());
-          if (newRelationalObjects != null) {
-            existRelationalObjects.addAll(newRelationalObjects);
-            mapper.set(duplicateObjects.get(i), metaField.getName(), new HashSet<>());
+          if (duplicateObjects != null) {
+            for (int i = 0; i < duplicateObjects.size(); i++) {
+              Set<Object> newRelationalObjects =
+                  (Set<Object>) mapper.get(duplicateObjects.get(i), metaField.getName());
+              if (newRelationalObjects != null) {
+                existRelationalObjects.addAll(newRelationalObjects);
+                mapper.set(duplicateObjects.get(i), metaField.getName(), new HashSet<>());
+              }
+            }
           }
         }
       }
@@ -123,7 +133,7 @@ public class DuplicateObjectsService {
   public Object getOriginalObject(List<Long> selectedIds, String modelName) {
     Query originalObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id = :ids");
-    originalObj.setParameter("ids", selectedIds.get(0));
+    originalObj.setParameter("ids", ListUtils.emptyIfNull(selectedIds).get(0));
     return originalObj.getSingleResult();
   }
 
@@ -131,7 +141,9 @@ public class DuplicateObjectsService {
   public List<Object> getDuplicateObject(List<Long> selectedIds, String modelName) {
     Query duplicateObj =
         JPA.em().createQuery("SELECT self FROM " + modelName + " self WHERE self.id IN (:ids)");
-    duplicateObj.setParameter("ids", selectedIds.subList(1, selectedIds.size()));
+    if (selectedIds != null) {
+      duplicateObj.setParameter("ids", selectedIds.subList(1, selectedIds.size()));
+    }
     return duplicateObj.getResultList();
   }
 
@@ -197,32 +209,33 @@ public class DuplicateObjectsService {
     Mapper mapper = Mapper.of(modelClass);
 
     int count = 0;
+    if (CollectionUtils.isNotEmpty(fieldSet)) {
+      for (String field : fieldSet) {
+        Property property = mapper.getProperty(field);
+        if (property == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BaseExceptionMessage.GENERAL_8),
+              field,
+              modelClass.getSimpleName());
+        }
+        if (property.isCollection()) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BaseExceptionMessage.GENERAL_9),
+              field);
+        }
+        if (count != 0) {
+          fields.append(",");
+        }
+        count++;
+        fields.append("cast(self" + "." + field);
 
-    for (String field : fieldSet) {
-      Property property = mapper.getProperty(field);
-      if (property == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.GENERAL_8),
-            field,
-            modelClass.getSimpleName());
+        if (property.getTarget() != null) {
+          fields.append(".id");
+        }
+        fields.append(" as string)");
       }
-      if (property.isCollection()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.GENERAL_9),
-            field);
-      }
-      if (count != 0) {
-        fields.append(",");
-      }
-      count++;
-      fields.append("cast(self" + "." + field);
-
-      if (property.getTarget() != null) {
-        fields.append(".id");
-      }
-      fields.append(" as string)");
     }
     fields.append("))");
 

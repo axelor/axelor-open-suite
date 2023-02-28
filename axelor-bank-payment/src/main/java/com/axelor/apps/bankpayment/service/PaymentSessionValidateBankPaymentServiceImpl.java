@@ -53,6 +53,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -272,7 +273,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
     if (paymentSession.getPaymentMode().getConsoBankOrderLinePerPartner()) {
       bankOrderLine =
-          bankOrder.getBankOrderLineList().stream()
+          ListUtils.emptyIfNull(bankOrder.getBankOrderLineList()).stream()
               .filter(
                   it ->
                       (it.getBankOrderDate() == null

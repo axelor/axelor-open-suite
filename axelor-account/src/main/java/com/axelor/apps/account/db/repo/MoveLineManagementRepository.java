@@ -28,6 +28,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.PersistenceException;
@@ -80,11 +81,16 @@ public class MoveLineManagementRepository extends MoveLineRepository {
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     try {
-      if (context.containsKey("_cutOffPreview") && (boolean) context.get("_cutOffPreview")) {
-        long id = (long) json.get("id");
+      if (context != null
+          && context.containsKey("_cutOffPreview")
+          && (boolean) context.get("_cutOffPreview")) {
+        long id = json != null ? (long) json.get("id") : 0L;
         MoveLine moveLine = this.find(id);
         LocalDate moveDate = LocalDate.parse((String) context.get("_moveDate"));
 
+        if (json == null) {
+          json = new HashMap<>();
+        }
         json.put(
             "$cutOffProrataAmount",
             Beans.get(MoveLineService.class).getCutOffProrataAmount(moveLine, moveDate));

@@ -38,6 +38,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import javax.persistence.TypedQuery;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,23 +73,25 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
     partnerQuery.setParameter("company", accountingBatch.getCompany());
     List<Partner> partnerList = partnerQuery.getResultList();
 
-    for (Partner partner : partnerList) {
-      try {
-        partner = partnerRepo.find(partner.getId());
-        Reimbursement reimbursement = createReimbursement(partner, accountingBatch.getCompany());
-        if (reimbursement != null) {
-          incrementDone();
+    if (CollectionUtils.isNotEmpty(partnerList)) {
+      for (Partner partner : partnerList) {
+        try {
+          partner = partnerRepo.find(partner.getId());
+          Reimbursement reimbursement = createReimbursement(partner, accountingBatch.getCompany());
+          if (reimbursement != null) {
+            incrementDone();
+          }
+        } catch (Exception ex) {
+          incrementAnomaly();
+          TraceBackService.trace(ex, ExceptionOriginRepository.CREDIT_TRANSFER, batch.getId());
+          ex.printStackTrace();
+          log.error(
+              String.format(
+                  "Credit transfer batch for partner credit balance reimbursement: anomaly for partner %s",
+                  partner.getName()));
         }
-      } catch (Exception ex) {
-        incrementAnomaly();
-        TraceBackService.trace(ex, ExceptionOriginRepository.CREDIT_TRANSFER, batch.getId());
-        ex.printStackTrace();
-        log.error(
-            String.format(
-                "Credit transfer batch for partner credit balance reimbursement: anomaly for partner %s",
-                partner.getName()));
+        JPA.clear();
       }
-      JPA.clear();
     }
   }
 

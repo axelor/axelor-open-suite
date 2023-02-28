@@ -27,6 +27,7 @@ import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -209,7 +210,7 @@ public class ProjectedStockController {
         (Collection<Map<String, Object>>) context.get("_mrpLineListToProject");
 
     List<MrpLine> mrpLineList =
-        contextMrpLineList.stream()
+        CollectionUtils.emptyIfNull(contextMrpLineList).stream()
             .map(map -> Mapper.toBean(MrpLine.class, map))
             .collect(Collectors.toList());
 
@@ -241,6 +242,11 @@ public class ProjectedStockController {
 
   protected LocalDate addInterElementForProjectedStockChart(
       List<Map<String, Object>> dataList, MrpLine lastMrpLine, LocalDate mrpDate, MrpLine mrpLine) {
+
+    if (dataList == null) {
+      dataList = new ArrayList<>();
+    }
+
     while (mrpDate.isBefore(mrpLine.getMaturityDate())) {
       mrpDate = mrpDate.plusDays(1);
       Map<String, Object> dataMapDate = new HashMap<>();

@@ -32,6 +32,7 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class CampaignController {
@@ -43,7 +44,8 @@ public class CampaignController {
     try {
       campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
 
-      if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
+      if (CollectionUtils.isEmpty(campaign.getLeadSet())
+          && CollectionUtils.isEmpty(campaign.getPartnerSet())) {
         response.setFlash(I18n.get(MarketingExceptionMessage.EMPTY_TARGET));
         return;
       }
@@ -68,7 +70,8 @@ public class CampaignController {
     try {
       campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
 
-      if (campaign.getInvitedPartnerSet().isEmpty() && campaign.getInvitedPartnerSet().isEmpty()) {
+      if (CollectionUtils.isEmpty(campaign.getInvitedLeadSet())
+          && CollectionUtils.isEmpty(campaign.getInvitedPartnerSet())) {
         response.setFlash(I18n.get(MarketingExceptionMessage.REMINDER_EMAIL1));
         return;
       }

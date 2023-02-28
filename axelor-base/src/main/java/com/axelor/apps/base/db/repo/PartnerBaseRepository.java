@@ -43,13 +43,15 @@ public class PartnerBaseRepository extends PartnerRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    if (!context.containsKey("json-enhance")) {
+    if (context != null && !context.containsKey("json-enhance")) {
       return json;
     }
     try {
-      Long id = (Long) json.get("id");
-      Partner partner = find(id);
-      json.put("address", Beans.get(PartnerService.class).getDefaultAddress(partner));
+      if (json != null) {
+        Long id = (Long) json.get("id");
+        Partner partner = find(id);
+        json.put("address", Beans.get(PartnerService.class).getDefaultAddress(partner));
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }

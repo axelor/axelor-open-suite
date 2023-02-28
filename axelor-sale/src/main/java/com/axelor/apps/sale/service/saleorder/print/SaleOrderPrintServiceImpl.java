@@ -74,7 +74,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
             printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF));
           }
         });
-    Integer status = Beans.get(SaleOrderRepository.class).find(ids.get(0)).getStatusSelect();
+    Integer status =
+        ids != null ? Beans.get(SaleOrderRepository.class).find(ids.get(0)).getStatusSelect() : 0;
     String fileName = getSaleOrderFilesName(status);
     return PdfTool.mergePdfToFileLink(printedSaleOrders, fileName);
   }

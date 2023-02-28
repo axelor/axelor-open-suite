@@ -50,6 +50,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -246,7 +248,8 @@ public class SaleOrderController {
   public void generateViewSaleOrder(ActionRequest request, ActionResponse response) {
     LinkedHashMap<String, Object> saleOrderTemplateContext =
         (LinkedHashMap<String, Object>) request.getContext().get("_saleOrderTemplate");
-    Integer saleOrderId = (Integer) saleOrderTemplateContext.get("id");
+    Integer saleOrderId =
+        saleOrderTemplateContext != null ? (Integer) saleOrderTemplateContext.get("id") : 0;
     SaleOrder context = Beans.get(SaleOrderRepository.class).find(Long.valueOf(saleOrderId));
 
     response.setView(
@@ -299,7 +302,8 @@ public class SaleOrderController {
     if (origin != null) {
       LinkedHashMap<String, Object> wizardCurrencyContext =
           (LinkedHashMap<String, Object>) request.getContext().get("_wizardCurrency");
-      Integer wizardCurrencyId = (Integer) wizardCurrencyContext.get("id");
+      Integer wizardCurrencyId =
+          wizardCurrencyContext != null ? (Integer) wizardCurrencyContext.get("id") : 0;
       Currency wizardCurrency =
           Beans.get(CurrencyRepository.class).find(Long.valueOf(wizardCurrencyId));
 
@@ -513,7 +517,8 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
-      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+      response.setValue(
+          "saleOrderLineList", ListUtils.emptyIfNull(saleOrder.getSaleOrderLineList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -530,7 +535,8 @@ public class SaleOrderController {
       @SuppressWarnings("unchecked")
       LinkedHashMap<String, Object> packMap =
           (LinkedHashMap<String, Object>) request.getContext().get("pack");
-      String packId = packMap.get("id").toString();
+
+      String packId = packMap != null ? packMap.get("id").toString() : "";
       Pack pack = Beans.get(PackRepository.class).find(Long.parseLong(packId));
 
       String qty = context.get("qty").toString();
@@ -596,7 +602,7 @@ public class SaleOrderController {
 
     Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
     Optional<Entry<String, Object>> saleOrderLineEntries =
-        contextEntry.stream()
+        SetUtils.emptyIfNull(contextEntry).stream()
             .filter(entry -> entry.getKey().equals("saleOrderLineList"))
             .findFirst();
     if (!saleOrderLineEntries.isPresent()) {
@@ -641,7 +647,8 @@ public class SaleOrderController {
           return;
         }
       } else {
-        for (FiscalPosition fiscalPosition : saleOrder.getTaxNumber().getFiscalPositionSet()) {
+        for (FiscalPosition fiscalPosition :
+            SetUtils.emptyIfNull(saleOrder.getTaxNumber().getFiscalPositionSet())) {
           if (fiscalPosition.getId().equals(soFiscalPosition.getId())) {
             return;
           }

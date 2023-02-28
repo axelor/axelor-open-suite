@@ -30,6 +30,7 @@ import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.db.repo.QualityCorrectiveActionRepository;
 import com.axelor.apps.quality.db.repo.QualityMeasuringPointRepository;
 import com.axelor.apps.quality.service.app.AppQualityService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -61,7 +62,7 @@ public class QualityControlServiceImpl implements QualityControlService {
         process.getQualityCorrectiveActionList();
 
     if (controlPointModelList != null) {
-      qualityControl.getControlPointList().clear();
+      ListUtils.emptyIfNull(qualityControl.getControlPointList()).clear();
 
       for (ControlPointModel model : controlPointModelList) {
         ControlPoint point = new ControlPoint();
@@ -71,7 +72,7 @@ public class QualityControlServiceImpl implements QualityControlService {
     }
 
     if (optionalControlPointModelList != null) {
-      qualityControl.getOptionalControlPointList().clear();
+      ListUtils.emptyIfNull(qualityControl.getOptionalControlPointList()).clear();
 
       for (ControlPointModel model : optionalControlPointModelList) {
         ControlPoint point = new ControlPoint();
@@ -81,7 +82,7 @@ public class QualityControlServiceImpl implements QualityControlService {
     }
 
     if (qualityCorrectiveActionList != null) {
-      qualityControl.getQualityCorrectiveActionList().clear();
+      ListUtils.emptyIfNull(qualityControl.getQualityCorrectiveActionList()).clear();
 
       for (QualityCorrectiveAction qualityCorrectiveAction : qualityCorrectiveActionList) {
         qualityCorrectiveAction =
@@ -102,7 +103,8 @@ public class QualityControlServiceImpl implements QualityControlService {
     point.setControlFrequency(model.getControlFrequency());
     point.setControlPointType(model.getControlPointType());
 
-    for (QualityMeasuringPoint measuringPoint : model.getMeasuringPointList()) {
+    for (QualityMeasuringPoint measuringPoint :
+        ListUtils.emptyIfNull(model.getMeasuringPointList())) {
       measuringPoint = Beans.get(QualityMeasuringPointRepository.class).copy(measuringPoint, true);
       point.addMeasuringPointListItem(measuringPoint);
     }
@@ -117,10 +119,12 @@ public class QualityControlServiceImpl implements QualityControlService {
   public void preFillOperationsFromOptionals(
       QualityControl qualityControl, List<ControlPoint> optionalControlPointList) {
 
-    for (ControlPoint optionalControlPoint : optionalControlPointList) {
-      optionalControlPoint = controlPointRepo.copy(optionalControlPoint, true);
-      optionalControlPoint.setOptionalQualityControl(null);
-      qualityControl.addControlPointListItem(optionalControlPoint);
+    if (optionalControlPointList != null) {
+      for (ControlPoint optionalControlPoint : optionalControlPointList) {
+        optionalControlPoint = controlPointRepo.copy(optionalControlPoint, true);
+        optionalControlPoint.setOptionalQualityControl(null);
+        qualityControl.addControlPointListItem(optionalControlPoint);
+      }
     }
 
     Beans.get(QualityControlRepository.class).save(qualityControl);

@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -477,7 +478,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   protected long countNotCorrectedPlannedLines(List<FixedAssetLine> fixedAssetLineList) {
-    return fixedAssetLineList.stream()
+    return ListUtils.emptyIfNull(fixedAssetLineList).stream()
         .filter(
             line ->
                 line.getCorrectedAccountingValue().signum() == 0

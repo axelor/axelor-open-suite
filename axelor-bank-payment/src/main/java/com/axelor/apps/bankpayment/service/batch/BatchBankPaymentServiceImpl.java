@@ -50,6 +50,9 @@ import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.apps.tool.collection.CollectionUtils;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -188,11 +191,12 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected void createBankOrders(Batch batch, Collection<PaymentScheduleLine> paymentScheduleLines)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-    for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLines) {
+    for (PaymentScheduleLine paymentScheduleLine :
+        CollectionUtils.emptyIfNull(paymentScheduleLines)) {
       PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
       MoveLine creditMoveLine = paymentScheduleLine.getAdvanceMoveLine();
 
-      for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
+      for (Invoice invoice : SetUtils.emptyIfNull(paymentSchedule.getInvoiceSet())) {
         MoveLine debitMoveLine = moveLineToolService.getDebitCustomerMoveLine(invoice);
         Reconcile reconcile = reconcileRepo.findByMoveLines(debitMoveLine, creditMoveLine);
 
@@ -209,8 +213,11 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected void createBankOrders(Batch batch, Reconcile reconcile)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-    for (InvoicePayment invoicePayment :
-        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch()) {
+    List<InvoicePayment> invoicePaymentList =
+        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch();
+
+    for (InvoicePayment invoicePayment : ListUtils.emptyIfNull(invoicePaymentList)) {
+
       if (invoicePayment.getBankOrder() != null) {
         continue;
       }

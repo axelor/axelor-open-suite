@@ -22,6 +22,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -30,6 +31,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,8 +105,9 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
       saleOrder
           .getSaleOrderLineTaxList()
           .addAll(
-              saleOrderLineTaxService.createsSaleOrderLineTax(
-                  saleOrder, saleOrder.getSaleOrderLineList()));
+              ListUtils.emptyIfNull(
+                  saleOrderLineTaxService.createsSaleOrderLineTax(
+                      saleOrder, saleOrder.getSaleOrderLineList())));
     }
   }
 
@@ -122,23 +125,27 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     saleOrder.setTaxTotal(BigDecimal.ZERO);
     saleOrder.setInTaxTotal(BigDecimal.ZERO);
 
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
-      // skip title lines in computing total amounts
-      if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
-        continue;
+        // skip title lines in computing total amounts
+        if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
+          continue;
+        }
+        saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add(saleOrderLine.getExTaxTotal()));
+
+        // In the company accounting currency
+        saleOrder.setCompanyExTaxTotal(
+            saleOrder.getCompanyExTaxTotal().add(saleOrderLine.getCompanyExTaxTotal()));
       }
-      saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add(saleOrderLine.getExTaxTotal()));
-
-      // In the company accounting currency
-      saleOrder.setCompanyExTaxTotal(
-          saleOrder.getCompanyExTaxTotal().add(saleOrderLine.getCompanyExTaxTotal()));
     }
 
-    for (SaleOrderLineTax saleOrderLineVat : saleOrder.getSaleOrderLineTaxList()) {
+    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineTaxList())) {
+      for (SaleOrderLineTax saleOrderLineVat : saleOrder.getSaleOrderLineTaxList()) {
 
-      // In the sale order currency
-      saleOrder.setTaxTotal(saleOrder.getTaxTotal().add(saleOrderLineVat.getTaxTotal()));
+        // In the sale order currency
+        saleOrder.setTaxTotal(saleOrder.getTaxTotal().add(saleOrderLineVat.getTaxTotal()));
+      }
     }
 
     saleOrder.setInTaxTotal(saleOrder.getExTaxTotal().add(saleOrder.getTaxTotal()));
@@ -180,7 +187,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
   @Override
   public BigDecimal getTotalSaleOrderPrice(SaleOrder saleOrder) {
     BigDecimal price = BigDecimal.ZERO;
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    for (SaleOrderLine saleOrderLine : ListUtils.emptyIfNull(saleOrder.getSaleOrderLineList())) {
       price = price.add(saleOrderLine.getQty().multiply(saleOrderLine.getPriceDiscounted()));
     }
     return price;

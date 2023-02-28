@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -215,15 +216,19 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   public List<MoveLine> getMoveLinesFromPayments(
       List<InvoicePayment> payments, boolean getCreditLines) {
     List<MoveLine> moveLines = new ArrayList<>();
-    for (InvoicePayment payment : payments) {
-      Move move = payment.getMove();
-      if (move == null || move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
-        continue;
-      }
-      if (getCreditLines) {
-        moveLines.addAll(moveToolService.getToReconcileCreditMoveLines(move));
-      } else {
-        moveLines.addAll(moveToolService.getToReconcileDebitMoveLines(move));
+    if (payments != null) {
+      for (InvoicePayment payment : payments) {
+        Move move = payment.getMove();
+        if (move == null || move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
+          continue;
+        }
+        if (getCreditLines) {
+          moveLines.addAll(
+              ListUtils.emptyIfNull(moveToolService.getToReconcileCreditMoveLines(move)));
+        } else {
+          moveLines.addAll(
+              ListUtils.emptyIfNull(moveToolService.getToReconcileDebitMoveLines(move)));
+        }
       }
     }
     return moveLines;
@@ -249,7 +254,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   @Override
   public BigDecimal getPayableAmount(
       List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange) {
-    return invoiceTermList.stream()
+    return ListUtils.emptyIfNull(invoiceTermList).stream()
         .map(
             it ->
                 manualChange
@@ -301,7 +306,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
   protected BigDecimal getFinancialDiscountTotalAmount(
       List<InvoiceTermPayment> invoiceTermPaymentList) {
-    return invoiceTermPaymentList.stream()
+    return ListUtils.emptyIfNull(invoiceTermPaymentList).stream()
         .map(InvoiceTermPayment::getFinancialDiscountAmount)
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
@@ -310,7 +315,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
   protected BigDecimal getFinancialDiscountTaxAmount(
       List<InvoiceTermPayment> invoiceTermPaymentList) {
-    return invoiceTermPaymentList.stream()
+    return ListUtils.emptyIfNull(invoiceTermPaymentList).stream()
         .filter(it -> it.getInvoiceTerm().getAmountRemainingAfterFinDiscount().signum() > 0)
         .map(
             it -> {
@@ -333,7 +338,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
   protected LocalDate getFinancialDiscountDeadlineDate(
       List<InvoiceTermPayment> invoiceTermPaymentList) {
-    return invoiceTermPaymentList.stream()
+    return ListUtils.emptyIfNull(invoiceTermPaymentList).stream()
         .map(InvoiceTermPayment::getInvoiceTerm)
         .map(InvoiceTerm::getFinancialDiscountDeadlineDate)
         .min(LocalDate::compareTo)
@@ -359,7 +364,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         invoiceRepo
             .all()
             .filter("self.id IN :invoiceIdList")
-            .bind("invoiceIdList", invoiceIdList)
+            .bind("invoiceIdList", ListUtils.emptyIfNull(invoiceIdList))
             .fetch();
 
     if (CollectionUtils.isNotEmpty(invoiceList) && date != null) {
@@ -397,7 +402,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoicePayment.setFinancialDiscountTaxAmount(BigDecimal.ZERO);
     invoicePayment.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
 
-    for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
+    for (InvoiceTermPayment invoiceTermPayment :
+        ListUtils.emptyIfNull(invoicePayment.getInvoiceTermPaymentList())) {
       invoicePayment.setAmount(invoicePayment.getAmount().add(invoiceTermPayment.getPaidAmount()));
       invoicePayment.setFinancialDiscountTotalAmount(
           invoicePayment

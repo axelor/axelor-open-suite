@@ -27,9 +27,11 @@ import com.axelor.mail.db.MailMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.map.HashedMap;
 
 public class ProjectActivityDashboardServiceBusinessSupportImpl
     extends ProjectActivityDashboardServiceHRImpl
@@ -48,6 +50,9 @@ public class ProjectActivityDashboardServiceBusinessSupportImpl
   @Override
   protected List<String> getRelatedModels() {
     List<String> relatedModelsList = super.getRelatedModels();
+    if (relatedModelsList == null) {
+      relatedModelsList = new ArrayList<>();
+    }
     relatedModelsList.add(ProjectAnnouncement.class.getName());
     return relatedModelsList;
   }
@@ -60,7 +65,8 @@ public class ProjectActivityDashboardServiceBusinessSupportImpl
       if (announcement != null) {
         Project announcementproject = announcement.getProject();
         if (project == null
-            || (announcementproject != null
+            || (projectIdSet != null
+                && announcementproject != null
                 && projectIdSet.contains(announcementproject.getId()))) {
           return announcementproject;
         }
@@ -73,6 +79,9 @@ public class ProjectActivityDashboardServiceBusinessSupportImpl
   protected Map<String, Object> getModelWithUtilityClass(String model) {
     Map<String, Object> dataMap = super.getModelWithUtilityClass(model);
     if (ProjectAnnouncement.class.getName().equals(model)) {
+      if (dataMap == null) {
+        dataMap = new HashedMap();
+      }
       dataMap.put("modelName", "Project announcement");
       dataMap.put("utilityClass", "label-info");
     }

@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.itextpdf.text.DocumentException;
 import java.io.File;
@@ -114,7 +115,7 @@ public abstract class AdvancedExportGenerator {
       }
       query.setFirstResult(startPosition);
       dataList = query.getResultList();
-      if (dataList.isEmpty()) break;
+      if (ObjectUtils.isEmpty(dataList)) break;
 
       generateBody(dataList);
 

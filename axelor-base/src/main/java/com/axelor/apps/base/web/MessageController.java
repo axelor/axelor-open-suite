@@ -79,13 +79,13 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
       for (Integer it : lstSelectedMessages) {
         messageIds += it.toString() + ",";
       }
-    }
 
-    if (!messageIds.equals("")) {
-      messageIds = messageIds.substring(0, messageIds.length() - 1);
-      message = Beans.get(MessageRepository.class).find(new Long(lstSelectedMessages.get(0)));
-    } else if (message.getId() != null) {
-      messageIds = message.getId().toString();
+      if (!messageIds.equals("")) {
+        messageIds = messageIds.substring(0, messageIds.length() - 1);
+        message = Beans.get(MessageRepository.class).find(new Long(lstSelectedMessages.get(0)));
+      } else if (message.getId() != null) {
+        messageIds = message.getId().toString();
+      }
     }
 
     if (!messageIds.equals("")) {

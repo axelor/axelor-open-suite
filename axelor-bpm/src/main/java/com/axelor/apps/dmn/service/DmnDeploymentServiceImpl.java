@@ -79,20 +79,22 @@ public class DmnDeploymentServiceImpl implements DmnDeploymentService {
 
     Collection<DecisionTable> tables = dmnModelInstance.getModelElementsByType(DecisionTable.class);
 
-    for (DecisionTable table : tables) {
+    if (tables != null) {
+      for (DecisionTable table : tables) {
 
-      String decisionId = table.getParentElement().getAttributeValue("id");
-      String decisionName = table.getParentElement().getAttributeValue("name");
-      DmnTable dmnTable = dmnTableMap.get(decisionId);
-      log.debug("Find decision table for id: {}, found: {}", decisionId, dmnTable);
-      if (dmnTable == null) {
-        dmnTable = new DmnTable();
-        dmnTable.setWkfDmnModel(wkfDmnModel);
+        String decisionId = table.getParentElement().getAttributeValue("id");
+        String decisionName = table.getParentElement().getAttributeValue("name");
+        DmnTable dmnTable = dmnTableMap.get(decisionId);
+        log.debug("Find decision table for id: {}, found: {}", decisionId, dmnTable);
+        if (dmnTable == null) {
+          dmnTable = new DmnTable();
+          dmnTable.setWkfDmnModel(wkfDmnModel);
+        }
+        dmnTable.setName(decisionName);
+        dmnTable.setDecisionId(decisionId);
+        setDmnField(table, dmnTable);
+        wkfDmnModel.addDmnTableListItem(dmnTable);
       }
-      dmnTable.setName(decisionName);
-      dmnTable.setDecisionId(decisionId);
-      setDmnField(table, dmnTable);
-      wkfDmnModel.addDmnTableListItem(dmnTable);
     }
   }
 
@@ -106,17 +108,19 @@ public class DmnDeploymentServiceImpl implements DmnDeploymentService {
     }
     dmnTable.clearOutputDmnFieldList();
 
-    for (Output output : decisionTable.getOutputs()) {
-      DmnField field = outputFieldMap.get(output.getName());
-      log.debug("Find output for name: {}, found: {}", output.getName(), field);
-      if (field == null) {
-        field = new DmnField(output.getName());
-        field.setOutputDmnTable(dmnTable);
-      } else {
-        field.setName(output.getName());
+    if (decisionTable.getOutputs() != null) {
+      for (Output output : decisionTable.getOutputs()) {
+        DmnField field = outputFieldMap.get(output.getName());
+        log.debug("Find output for name: {}, found: {}", output.getName(), field);
+        if (field == null) {
+          field = new DmnField(output.getName());
+          field.setOutputDmnTable(dmnTable);
+        } else {
+          field.setName(output.getName());
+        }
+        field.setFieldType(output.getTypeRef());
+        dmnTable.addOutputDmnFieldListItem(field);
       }
-      field.setFieldType(output.getTypeRef());
-      dmnTable.addOutputDmnFieldListItem(field);
     }
   }
 }

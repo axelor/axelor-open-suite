@@ -36,6 +36,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -48,6 +49,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -263,7 +265,8 @@ public class BankOrderLineService {
 
     // the case where the bank order is for a company
     if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
-      if (bankOrderLine.getReceiverCompany() != null) {
+      if (bankOrderLine.getReceiverCompany() != null
+          && bankOrderLine.getReceiverCompany().getBankDetailsList() != null) {
 
         bankDetailsIds =
             StringTool.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsList());
@@ -277,7 +280,8 @@ public class BankOrderLineService {
     }
 
     // case where the bank order is for a partner
-    else if (bankOrderLine.getPartner() != null) {
+    else if (bankOrderLine.getPartner() != null
+        && bankOrderLine.getPartner().getBankDetailsList() != null) {
       bankDetailsIds = StringTool.getIdListString(bankOrderLine.getPartner().getBankDetailsList());
     }
 
@@ -339,12 +343,15 @@ public class BankOrderLineService {
         && bankOrderLine.getReceiverCompany() != null) {
       candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
       if (candidateBankDetails == null) {
-        for (BankDetails bankDetails : bankOrderLine.getReceiverCompany().getBankDetailsList()) {
-          if (candidateBankDetails != null && bankDetails.getActive()) {
-            candidateBankDetails = null;
-            break;
-          } else if (bankDetails.getActive()) {
-            candidateBankDetails = bankDetails;
+        List<BankDetails> bankDetailsList = bankOrderLine.getReceiverCompany().getBankDetailsList();
+        if (CollectionUtils.isNotEmpty(bankDetailsList)) {
+          for (BankDetails bankDetails : bankDetailsList) {
+            if (candidateBankDetails != null && bankDetails.getActive()) {
+              candidateBankDetails = null;
+              break;
+            } else if (bankDetails.getActive()) {
+              candidateBankDetails = bankDetails;
+            }
           }
         }
       }
@@ -354,7 +361,7 @@ public class BankOrderLineService {
       if (candidateBankDetails == null) {
         List<BankDetails> bankDetailsList =
             bankDetailsRepo.findActivesByPartner(bankOrderLine.getPartner(), true).fetch();
-        if (bankDetailsList.size() == 1) {
+        if (ListUtils.size(bankDetailsList) == 1) {
           candidateBankDetails = bankDetailsList.get(0);
         }
       }
@@ -395,7 +402,8 @@ public class BankOrderLineService {
 
     if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
 
-      if (!ebicsPartner.getReceiverBankDetailsSet().contains(bankDetails)) {
+      if (ebicsPartner.getReceiverBankDetailsSet() == null
+          || !ebicsPartner.getReceiverBankDetailsSet().contains(bankDetails)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN));

@@ -61,6 +61,7 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -86,6 +87,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +103,8 @@ public class ExpenseController {
 
     expenseLine =
         Beans.get(ExpenseService.class).createAnalyticDistributionWithTemplate(expenseLine);
-    response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
+    response.setValue(
+        "analyticMoveLineList", ListUtils.emptyIfNull(expenseLine.getAnalyticMoveLineList()));
   }
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
@@ -113,7 +116,8 @@ public class ExpenseController {
     }
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       expenseLine = Beans.get(ExpenseService.class).computeAnalyticDistribution(expenseLine);
-      response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
+      response.setValue(
+          "analyticMoveLineList", ListUtils.emptyIfNull(expenseLine.getAnalyticMoveLineList()));
     }
   }
 
@@ -130,7 +134,7 @@ public class ExpenseController {
                 user.getId(),
                 activeCompany)
             .fetch();
-    if (expenseList.isEmpty()) {
+    if (CollectionUtils.isEmpty(expenseList)) {
       response.setView(
           ActionView.define(I18n.get("Expense"))
               .model(Expense.class.getName())
@@ -497,7 +501,8 @@ public class ExpenseController {
     List<Integer> expenseLineListId = new ArrayList<>();
     int compt = 0;
     LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(expense.getCompany());
-    for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
+    for (ExpenseLine expenseLine :
+        ListUtils.emptyIfNull(expenseService.getExpenseLineList(expense))) {
       compt++;
       if (expenseLine.getExpenseDate() != null && expenseLine.getExpenseDate().isAfter(todayDate)) {
         expenseLineListId.add(compt);
@@ -586,7 +591,7 @@ public class ExpenseController {
       KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
       boolean vehicleOk = false;
 
-      if (kilometricAllowParamList != null && kilometricAllowParamList.size() == 1) {
+      if (kilometricAllowParamList != null && ListUtils.size(kilometricAllowParamList) == 1) {
         response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
       } else if (kilometricAllowParamList != null) {
         for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {

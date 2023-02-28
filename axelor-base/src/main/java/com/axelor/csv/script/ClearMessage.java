@@ -17,6 +17,7 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailMessageRepository;
 import com.google.inject.Inject;
@@ -37,7 +38,7 @@ public class ClearMessage {
   @Transactional
   public Object clearAllMailMessages(Object bean, Map<String, Object> values) {
 
-    for (MailMessage mailMessage : mailRepo.all().fetch()) {
+    for (MailMessage mailMessage : ListUtils.emptyIfNull(mailRepo.all().fetch())) {
       try {
         mailRepo.remove(mailMessage);
       } catch (Exception e) {

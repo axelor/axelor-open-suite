@@ -33,6 +33,8 @@ import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.tool.collection.CollectionUtils;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -141,7 +143,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     List<AnonymizerLine> anonymizerLines = getMetaModelAnonymizerLines(metaModel);
 
     List<MetaField> metaFields =
-        metaModel.getMetaFields().stream()
+        ListUtils.emptyIfNull(metaModel.getMetaFields()).stream()
             .filter(
                 metaField ->
                     !GdprAnonymizeService.excludeFields.contains(metaField.getName())
@@ -149,8 +151,10 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
                             metaField.getPackageName() + "." + metaField.getTypeName()))
             .collect(Collectors.toList());
 
-    for (MetaField metaField : metaFields) {
-      anonymizeMetaField(gdprResponse, reference, mapper, metaField, anonymizerLines);
+    if (metaFields != null) {
+      for (MetaField metaField : metaFields) {
+        anonymizeMetaField(gdprResponse, reference, mapper, metaField, anonymizerLines);
+      }
     }
 
     reference.setArchived(true);
@@ -203,7 +207,9 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
 
       Object newValue;
       Optional<AnonymizerLine> anonymizerLine =
-          anonymizerLines.stream().filter(al -> al.getMetaField().equals(metaField)).findFirst();
+          ListUtils.emptyIfNull(anonymizerLines).stream()
+              .filter(al -> al.getMetaField().equals(metaField))
+              .findFirst();
 
       // if no anonymizer defined,pass
       if (!anonymizerLine.isPresent()) return;
@@ -230,8 +236,10 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     } else if (metaField.getRelationship().equals("OneToMany")) {
       List<Object> relatedObjects = (List<Object>) currentValue;
 
-      for (Object relatedObject : relatedObjects) {
-        anonymizeRelatedObject(gdprResponse, metaField, relatedObject);
+      if (CollectionUtils.isNotEmpty(relatedObjects)) {
+        for (Object relatedObject : relatedObjects) {
+          anonymizeRelatedObject(gdprResponse, metaField, relatedObject);
+        }
       }
     }
   }

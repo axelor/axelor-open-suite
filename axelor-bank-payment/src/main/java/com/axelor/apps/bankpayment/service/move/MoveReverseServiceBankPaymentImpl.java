@@ -33,6 +33,7 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -120,10 +121,12 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   public List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
       throws AxelorException {
     boolean isHiddenMoveLinesInBankReconciliation =
-        (boolean) assistantMap.get("isHiddenMoveLinesInBankReconciliation");
+        assistantMap != null
+            ? (boolean) assistantMap.get("isHiddenMoveLinesInBankReconciliation")
+            : false;
     List<Move> movesReconciled = new ArrayList<>();
     if (isHiddenMoveLinesInBankReconciliation) {
-      for (Move move : moveList) {
+      for (Move move : ListUtils.emptyIfNull(moveList)) {
         List<BankReconciliationLine> bankReconciliationValidatedLineList =
             bankReconciliationLineRepository
                 .all()
@@ -136,11 +139,11 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
           movesReconciled.add(move);
         }
       }
-      moveList.removeAll(movesReconciled);
+      ListUtils.emptyIfNull(moveList).removeAll(movesReconciled);
     }
     List<Move> newMoveList = super.massReverse(moveList, assistantMap);
     if (isHiddenMoveLinesInBankReconciliation) {
-      for (Move move : moveList) {
+      for (Move move : ListUtils.emptyIfNull(moveList)) {
         List<BankReconciliationLine> bankReconciliationUnderCorrectionLineList =
             bankReconciliationLineRepository
                 .all()
@@ -173,7 +176,9 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
     StringBuilder moveReferencesReconciled = new StringBuilder();
     String separator = ", ";
     for (String moveReferenceReconciled :
-        movesReconciled.stream().map(move -> move.getReference()).collect(Collectors.toList())) {
+        ListUtils.emptyIfNull(movesReconciled).stream()
+            .map(move -> move.getReference())
+            .collect(Collectors.toList())) {
       moveReferencesReconciled.append(moveReferenceReconciled);
       moveReferencesReconciled.append(separator);
     }
@@ -198,8 +203,10 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   }
 
   protected Move updateBankAmountReconcile(Move move) {
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      moveLine.setBankReconciledAmount(moveLine.getDebit().add(moveLine.getCredit()));
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        moveLine.setBankReconciledAmount(moveLine.getDebit().add(moveLine.getCredit()));
+      }
     }
     return move;
   }

@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -51,6 +52,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,24 +112,27 @@ public class AddressServiceImpl implements AddressService {
     header.add("CodeINSEE");
 
     csv.writeNext(header.toArray(new String[header.size()]));
+
     List<String> items = new ArrayList<>();
-    for (Address a : addresses) {
+    if (CollectionUtils.isNotEmpty(addresses)) {
+      for (Address a : addresses) {
 
-      items.add(a.getId() != null ? a.getId().toString() : "");
-      items.add(a.getAddressL2() != null ? a.getAddressL2() : "");
-      items.add(a.getAddressL3() != null ? a.getAddressL3() : "");
-      items.add(a.getAddressL4() != null ? a.getAddressL4() : "");
-      items.add(a.getAddressL5() != null ? a.getAddressL5() : "");
-      items.add(a.getAddressL6() != null ? a.getAddressL6() : "");
-      items.add(a.getInseeCode() != null ? a.getInseeCode() : "");
+        items.add(a.getId() != null ? a.getId().toString() : "");
+        items.add(a.getAddressL2() != null ? a.getAddressL2() : "");
+        items.add(a.getAddressL3() != null ? a.getAddressL3() : "");
+        items.add(a.getAddressL4() != null ? a.getAddressL4() : "");
+        items.add(a.getAddressL5() != null ? a.getAddressL5() : "");
+        items.add(a.getAddressL6() != null ? a.getAddressL6() : "");
+        items.add(a.getInseeCode() != null ? a.getInseeCode() : "");
 
-      csv.writeNext(items.toArray(new String[items.size()]));
-      items.clear();
+        csv.writeNext(items.toArray(new String[items.size()]));
+        items.clear();
+      }
     }
     csv.close();
     LOG.info("{} exported", path);
 
-    return addresses.size();
+    return ListUtils.size(addresses);
   }
 
   @Override
@@ -302,7 +307,7 @@ public class AddressServiceImpl implements AddressService {
     City city = address.getCity();
     if (city == null) {
       List<City> cities = cityRepository.findByZipAndCountry(zip, country).fetch();
-      city = cities.size() == 1 ? cities.get(0) : null;
+      city = ListUtils.size(cities) == 1 ? cities.get(0) : null;
       address.setCity(city);
     }
     address.setAddressL6(city != null ? zip + " " + city.getName() : null);
@@ -310,7 +315,7 @@ public class AddressServiceImpl implements AddressService {
     if (appBaseService.getAppBase().getStoreStreets()) {
       List<Street> streets =
           streetRepository.all().filter("self.city = :city").bind("city", city).fetch();
-      if (streets.size() == 1) {
+      if (ListUtils.size(streets) == 1) {
         Street street = streets.get(0);
         address.setStreet(street);
         String name = street.getName();

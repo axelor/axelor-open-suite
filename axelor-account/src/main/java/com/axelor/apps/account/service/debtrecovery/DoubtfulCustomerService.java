@@ -49,6 +49,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,21 +126,25 @@ public class DoubtfulCustomerService {
       List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason)
       throws AxelorException {
 
-    for (Move move : moveList) {
+    if (moveList != null) {
+      for (Move move : moveList) {
 
-      this.createDoubtFulCustomerMove(move, doubtfulCustomerAccount, debtPassReason);
+        this.createDoubtFulCustomerMove(move, doubtfulCustomerAccount, debtPassReason);
+      }
     }
   }
 
   public List<MoveLine> getInvoicePartnerMoveLines(Move move, Account doubtfulCustomerAccount) {
     List<MoveLine> moveLineList = new ArrayList<MoveLine>();
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine.getAccount() != null
-          && moveLine.getAccount().getUseForPartnerBalance()
-          && moveLine.getAmountRemaining().signum() > 0
-          && !moveLine.getAccount().equals(doubtfulCustomerAccount)
-          && moveLine.getDebit().signum() > 0) {
-        moveLineList.add(moveLine);
+    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getAccount() != null
+            && moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getAmountRemaining().signum() > 0
+            && !moveLine.getAccount().equals(doubtfulCustomerAccount)
+            && moveLine.getDebit().signum() > 0) {
+          moveLineList.add(moveLine);
+        }
       }
     }
 
@@ -220,6 +225,7 @@ public class DoubtfulCustomerService {
             2,
             origin,
             debtPassReason);
+
     debitMoveLine.setPassageReason(debtPassReason);
 
     doubtfulCustomerInvoiceTermService.createOrUpdateInvoiceTerms(
@@ -237,10 +243,11 @@ public class DoubtfulCustomerService {
   public void createDoubtFulCustomerRejectMove(
       List<MoveLine> moveLineList, Account doubtfulCustomerAccount, String debtPassReason)
       throws AxelorException {
+    if (moveLineList != null) {
+      for (MoveLine moveLine : moveLineList) {
 
-    for (MoveLine moveLine : moveLineList) {
-
-      this.createDoubtFulCustomerRejectMove(moveLine, doubtfulCustomerAccount, debtPassReason);
+        this.createDoubtFulCustomerRejectMove(moveLine, doubtfulCustomerAccount, debtPassReason);
+      }
     }
   }
 
@@ -311,7 +318,7 @@ public class DoubtfulCustomerService {
             2,
             moveLine.getName(),
             debtPassReason);
-    newMove.getMoveLineList().add(debitMoveLine);
+    newMove.addMoveLineListItem(debitMoveLine);
 
     debitMoveLine.setInvoiceReject(moveLine.getInvoiceReject());
     debitMoveLine.setPassageReason(debtPassReason);
@@ -332,18 +339,21 @@ public class DoubtfulCustomerService {
    */
   public void updateDoubtfulCustomerMove(
       List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason) {
+    if (CollectionUtils.isNotEmpty(moveList)) {
+      for (Move move : moveList) {
 
-    for (Move move : moveList) {
+        if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+          for (MoveLine moveLine : move.getMoveLineList()) {
 
-      for (MoveLine moveLine : move.getMoveLineList()) {
+            if (moveLine.getAccount().equals(doubtfulCustomerAccount)
+                && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
 
-        if (moveLine.getAccount().equals(doubtfulCustomerAccount)
-            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+              moveLine.setPassageReason(debtPassReason);
+              moveLineRepo.save(moveLine);
 
-          moveLine.setPassageReason(debtPassReason);
-          moveLineRepo.save(moveLine);
-
-          break;
+              break;
+            }
+          }
         }
       }
     }
@@ -468,7 +478,7 @@ public class DoubtfulCustomerService {
     @SuppressWarnings("unchecked")
     List<Move> moveList = query.getResultList();
 
-    return moveList;
+    return moveList != null ? moveList : new ArrayList<>();
   }
 
   /**
@@ -541,6 +551,6 @@ public class DoubtfulCustomerService {
 
     log.debug("Debt date taken into account : {} ", date);
 
-    return moveLineList;
+    return moveLineList != null ? moveLineList : new ArrayList<>();
   }
 }

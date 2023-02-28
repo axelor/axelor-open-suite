@@ -26,6 +26,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -121,14 +122,14 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
       List<Invoice> invoicesToMerge, InvoiceMergingResult result) {
     super.extractFirstNonNullCommonFields(invoicesToMerge, result);
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
-      invoicesToMerge.stream()
+      ListUtils.emptyIfNull(invoicesToMerge).stream()
           .map(Invoice::getSaleOrder)
           .filter(Objects::nonNull)
           .findFirst()
           .ifPresent(it -> getCommonFields(result).setCommonSaleOrder(it));
     }
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
-      invoicesToMerge.stream()
+      ListUtils.emptyIfNull(invoicesToMerge).stream()
           .map(Invoice::getPurchaseOrder)
           .filter(Objects::nonNull)
           .findFirst()

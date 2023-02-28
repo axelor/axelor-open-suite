@@ -118,6 +118,9 @@ public class PricingServiceImpl implements PricingService {
     StringBuilder productFilter = new StringBuilder();
     productFilter.append("(");
     if (product != null) {
+      if (bindings == null) {
+        bindings = new HashMap<>();
+      }
       productFilter.append("self.product = :product ");
       bindings.put("product", product);
 
@@ -132,6 +135,9 @@ public class PricingServiceImpl implements PricingService {
     } else {
       if (productCategory != null) {
         productFilter.append("self.productCategory = :productCategory ");
+        if (bindings == null) {
+          bindings = new HashMap<>();
+        }
         bindings.put("productCategory", productCategory);
       }
     }
@@ -226,9 +232,11 @@ public class PricingServiceImpl implements PricingService {
     }
 
     List<PricingLine> pricingLineList = pricing.getPricingLineList();
-    for (PricingLine pricingLine : pricingLineList) {
-      PricingLine newPricingLine = pricingLineRepository.copy(pricingLine, false);
-      historizedPricing.addPricingLineListItem(newPricingLine);
+    if (pricingLineList != null) {
+      for (PricingLine pricingLine : pricingLineList) {
+        PricingLine newPricingLine = pricingLineRepository.copy(pricingLine, false);
+        historizedPricing.addPricingLineListItem(newPricingLine);
+      }
     }
 
     historizedPricing.setArchived(true);

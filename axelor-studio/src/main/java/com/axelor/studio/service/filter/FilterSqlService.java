@@ -35,6 +35,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.slf4j.Logger;
@@ -243,12 +244,14 @@ public class FilterSqlService {
       e.printStackTrace();
     }
 
-    for (MetaField field : targetModel.getMetaFields()) {
-      if (field.getName().equals("name")) {
-        return new String[] {fieldName + ".name", field.getTypeName()};
-      }
-      if (field.getName().equals("code")) {
-        return new String[] {fieldName + ".code", field.getTypeName()};
+    if (CollectionUtils.isNotEmpty(targetModel.getMetaFields())) {
+      for (MetaField field : targetModel.getMetaFields()) {
+        if (field.getName().equals("name")) {
+          return new String[] {fieldName + ".name", field.getTypeName()};
+        }
+        if (field.getName().equals("code")) {
+          return new String[] {fieldName + ".code", field.getTypeName()};
+        }
       }
     }
 
@@ -435,21 +438,23 @@ public class FilterSqlService {
 
     MetaModel metaModel = metaModelRepo.findByName(field.getTypeName());
     String parentField = getColumn(field);
-    joins.add(
-        "left join "
-            + metaModel.getTableName()
-            + " "
-            + "obj"
-            + joins.size()
-            + " on ("
-            + "obj"
-            + joins.size()
-            + ".id = "
-            + parent.toString()
-            + "."
-            + parentField
-            + ")");
-    parent.replace(0, parent.length(), "obj" + (joins.size() - 1));
+    if (joins != null) {
+      joins.add(
+          "left join "
+              + metaModel.getTableName()
+              + " "
+              + "obj"
+              + joins.size()
+              + " on ("
+              + "obj"
+              + joins.size()
+              + ".id = "
+              + parent.toString()
+              + "."
+              + parentField
+              + ")");
+      parent.replace(0, parent.length(), "obj" + (joins.size() - 1));
+    }
   }
 
   protected void addJoin(MetaJsonField field, List<String> joins, StringBuilder parent) {
@@ -463,23 +468,25 @@ public class FilterSqlService {
 
     MetaModel metaModel = metaModelRepo.all().filter("self.fullName = ?1", targetModel).fetchOne();
 
-    joins.add(
-        "left join "
-            + metaModel.getTableName()
-            + " "
-            + "obj"
-            + joins.size()
-            + " on (obj"
-            + joins.size()
-            + ".id = "
-            + "cast("
-            + parent
-            + "."
-            + getColumn(field.getModel(), field.getModelField())
-            + "->'"
-            + field.getName()
-            + "'->>'id' as integer))");
+    if (joins != null) {
+      joins.add(
+          "left join "
+              + metaModel.getTableName()
+              + " "
+              + "obj"
+              + joins.size()
+              + " on (obj"
+              + joins.size()
+              + ".id = "
+              + "cast("
+              + parent
+              + "."
+              + getColumn(field.getModel(), field.getModelField())
+              + "->'"
+              + field.getName()
+              + "'->>'id' as integer))");
 
-    parent.replace(0, parent.length(), "obj" + (joins.size() - 1));
+      parent.replace(0, parent.length(), "obj" + (joins.size() - 1));
+    }
   }
 }

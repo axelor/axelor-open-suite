@@ -100,52 +100,56 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
 
     projectRepository.save(project);
 
-    for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
-      Product product = orderLine.getProduct();
-      if (product != null
-          && !((ProductRepository.PROCUREMENT_METHOD_PRODUCE.equals(
-                      (String)
-                          productCompanyService.get(
-                              product, "procurementMethodSelect", saleOrder.getCompany()))
-                  || orderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
-              && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()))) {
-        continue;
-      }
-      boolean isTaskGenerated =
-          projectTaskRepo
-                  .all()
-                  .filter("self.saleOrderLine = ? AND self.project = ?", orderLine, project)
-                  .fetch()
-                  .size()
-              > 0;
-      if (root == null) {
-        root =
-            projectTaskBusinessProjectService.create(
-                saleOrder.getFullName(), project, project.getAssignedTo());
-        root.setTaskDate(startDate.toLocalDate());
-        tasks.add(projectTaskRepo.save(root));
-      }
-      if (product != null && !isTaskGenerated) {
-        if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {
-          List<ProjectTask> convertedTasks =
-              productTaskTemplateService.convert(
-                  product.getTaskTemplateSet().stream()
-                      .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
-                      .collect(Collectors.toList()),
-                  project,
-                  root,
-                  startDate,
-                  orderLine.getQty(),
-                  orderLine);
-          convertedTasks.stream().forEach(task -> task.setSaleOrderLine(orderLine));
-          tasks.addAll(convertedTasks);
-        } else {
-          ProjectTask childTask =
+    if (saleOrder != null && CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+      for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
+        Product product = orderLine.getProduct();
+        if (product != null
+            && !((ProductRepository.PROCUREMENT_METHOD_PRODUCE.equals(
+                        (String)
+                            productCompanyService.get(
+                                product, "procurementMethodSelect", saleOrder.getCompany()))
+                    || orderLine.getSaleSupplySelect()
+                        == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
+                && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()))) {
+          continue;
+        }
+        boolean isTaskGenerated =
+            CollectionUtils.isNotEmpty(
+                projectTaskRepo
+                    .all()
+                    .filter("self.saleOrderLine = ? AND self.project = ?", orderLine, project)
+                    .fetch());
+        if (root == null) {
+          root =
               projectTaskBusinessProjectService.create(
-                  orderLine.getFullName(), project, project.getAssignedTo());
-          this.updateTask(root, childTask, orderLine);
+                  saleOrder.getFullName(), project, project.getAssignedTo());
+          root.setTaskDate(startDate.toLocalDate());
+          tasks.add(projectTaskRepo.save(root));
+        }
+        if (product != null && !isTaskGenerated) {
+          if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {
+            List<ProjectTask> convertedTasks =
+                productTaskTemplateService.convert(
+                    product.getTaskTemplateSet().stream()
+                        .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
+                        .collect(Collectors.toList()),
+                    project,
+                    root,
+                    startDate,
+                    orderLine.getQty(),
+                    orderLine);
+            if (convertedTasks != null) {
+              convertedTasks.stream().forEach(task -> task.setSaleOrderLine(orderLine));
+              tasks.addAll(convertedTasks);
+            }
+          } else {
+            ProjectTask childTask =
+                projectTaskBusinessProjectService.create(
+                    orderLine.getFullName(), project, project.getAssignedTo());
+            this.updateTask(root, childTask, orderLine);
 
-          tasks.add(projectTaskRepo.save(childTask));
+            tasks.add(projectTaskRepo.save(childTask));
+          }
         }
       }
     }

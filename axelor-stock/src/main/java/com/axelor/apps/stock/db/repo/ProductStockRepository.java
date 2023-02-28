@@ -39,15 +39,17 @@ public class ProductStockRepository extends ProductBaseRepository {
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
 
-    if (Boolean.TRUE.equals(context.get("_xFillProductAvailableQty"))
-        || (context.get("_parent") != null
-            && Boolean.TRUE.equals(
-                ((Map) context.get("_parent")).get("_xFillProductAvailableQty")))) {
-      productStockRepositoryPopulate.setAvailableQty(json, context);
-    }
+    if (context != null) {
+      if (Boolean.TRUE.equals(context.get("_xFillProductAvailableQty"))
+          || (context.get("_parent") != null
+              && Boolean.TRUE.equals(
+                  ((Map) context.get("_parent")).get("_xFillProductAvailableQty")))) {
+        productStockRepositoryPopulate.setAvailableQty(json, context);
+      }
 
-    if (context.containsKey("fromStockWizard")) {
-      productStockRepositoryPopulate.fillFromStockWizard(json, context);
+      if (context.containsKey("fromStockWizard")) {
+        productStockRepositoryPopulate.fillFromStockWizard(json, context);
+      }
     }
 
     return json;

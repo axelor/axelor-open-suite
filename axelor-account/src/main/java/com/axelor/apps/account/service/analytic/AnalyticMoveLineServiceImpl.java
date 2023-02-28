@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -104,7 +105,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       LocalDate date) {
 
     List<AnalyticMoveLine> analyticMoveLineList = new ArrayList<AnalyticMoveLine>();
-    if (analyticDistributionTemplate != null) {
+    if (analyticDistributionTemplate != null
+        && analyticDistributionTemplate.getAnalyticDistributionLineList() != null) {
       for (AnalyticDistributionLine analyticDistributionLine :
           analyticDistributionTemplate.getAnalyticDistributionLineList()) {
         analyticMoveLineList.add(
@@ -330,7 +332,9 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     StringBuilder domain = new StringBuilder();
     domain.append("(self.company is null OR self.company.id = " + company.getId() + ")");
     List<AnalyticAxis> analyticAxisList =
-        accountConfigRepository.findByCompany(company).getAnalyticAxisByCompanyList().stream()
+        ListUtils.emptyIfNull(
+                accountConfigRepository.findByCompany(company).getAnalyticAxisByCompanyList())
+            .stream()
             .map(AnalyticAxisByCompany::getAnalyticAxis)
             .collect(Collectors.toList());
     String idList = StringTool.getIdListString(analyticAxisList);

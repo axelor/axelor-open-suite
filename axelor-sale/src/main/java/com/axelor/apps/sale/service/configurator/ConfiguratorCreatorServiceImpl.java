@@ -49,6 +49,8 @@ import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.tool.MetaTool;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
@@ -115,7 +117,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   @Transactional
   public void updateAttributes(ConfiguratorCreator creator) {
 
-    if (creator == null) {
+    if (creator == null || creator.getAttributes() == null) {
       return;
     }
 
@@ -143,7 +145,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     } else {
       formulas = creator.getConfiguratorSOLineFormulaList();
     }
-    for (ConfiguratorFormula formula : formulas) {
+    for (ConfiguratorFormula formula : ListUtils.emptyIfNull(formulas)) {
       addIfMissing(formula, creator);
     }
 
@@ -452,9 +454,13 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   protected void updateIndicatorsAttrs(
       ConfiguratorCreator creator, List<? extends ConfiguratorFormula> formulas) {
     List<MetaJsonField> indicators = creator.getIndicators();
-    for (MetaJsonField indicator : indicators) {
-      for (ConfiguratorFormula formula : formulas) {
-        updateIndicatorAttrs(creator, indicator, formula);
+    if (indicators != null) {
+      for (MetaJsonField indicator : indicators) {
+        if (formulas != null) {
+          for (ConfiguratorFormula formula : formulas) {
+            updateIndicatorAttrs(creator, indicator, formula);
+          }
+        }
       }
     }
   }
@@ -519,8 +525,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
     configuratorCreatorList.removeIf(
         creator ->
-            !creator.getAuthorizedUserSet().contains(user)
-                && !creator.getAuthorizedGroupSet().contains(group));
+            !SetUtils.emptyIfNull(creator.getAuthorizedUserSet()).contains(user)
+                && !SetUtils.emptyIfNull(creator.getAuthorizedGroupSet()).contains(group));
 
     return "self.id in (" + StringTool.getIdListString(configuratorCreatorList) + ")";
   }

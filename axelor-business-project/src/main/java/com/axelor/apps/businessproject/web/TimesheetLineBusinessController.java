@@ -21,6 +21,7 @@ import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -55,7 +56,7 @@ public class TimesheetLineBusinessController {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
       List<Timesheet> timesheetList =
           Beans.get(TimesheetLineBusinessService.class).getTimesheetQuery(timesheetLine).fetch();
-      String idList = StringTool.getIdListString(timesheetList);
+      String idList = StringTool.getIdListString(ListUtils.emptyIfNull(timesheetList));
       response.setAttr("timesheet", "domain", "self.id IN (" + idList + ")");
     } catch (Exception e) {
       TraceBackService.trace(response, e);

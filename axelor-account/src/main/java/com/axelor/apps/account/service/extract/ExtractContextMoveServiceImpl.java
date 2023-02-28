@@ -85,6 +85,11 @@ public class ExtractContextMoveServiceImpl implements ExtractContextMoveService 
   }
 
   protected void getBooleans(Context context, Map<String, Object> assistantMap) {
+
+    if (assistantMap == null) {
+      assistantMap = new HashMap<>();
+    }
+
     assistantMap.put("isAutomaticReconcile", context.get("isAutomaticReconcile"));
     assistantMap.put("isAutomaticAccounting", context.get("isAutomaticAccounting"));
     assistantMap.put("isUnreconcileOriginalMove", context.get("isUnreconcileOriginalMove"));

@@ -73,16 +73,21 @@ public class MoveTemplateController {
       HashMap<String, Object> moveTemplateTypeMap =
           (HashMap<String, Object>) context.get("moveTemplateType");
       MoveTemplateType moveTemplateType =
-          Beans.get(MoveTemplateTypeRepository.class)
-              .find(Long.parseLong(moveTemplateTypeMap.get("id").toString()));
+          moveTemplateTypeMap != null
+              ? Beans.get(MoveTemplateTypeRepository.class)
+                  .find(Long.parseLong(moveTemplateTypeMap.get("id").toString()))
+              : null;
 
       HashMap<String, Object> moveTemplateMap =
           (HashMap<String, Object>) context.get("moveTemplate");
       MoveTemplate moveTemplate = null;
-      if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
+      if (moveTemplateType != null
+          && (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE)) {
         moveTemplate =
-            Beans.get(MoveTemplateRepository.class)
-                .find(Long.parseLong(moveTemplateMap.get("id").toString()));
+            moveTemplateMap != null
+                ? Beans.get(MoveTemplateRepository.class)
+                    .find(Long.parseLong(moveTemplateMap.get("id").toString()))
+                : null;
       }
 
       List<HashMap<String, Object>> dataList =
@@ -92,7 +97,8 @@ public class MoveTemplateController {
           (List<HashMap<String, Object>>) context.get("moveTemplateSet");
 
       LocalDate moveDate = null;
-      if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT) {
+      if (moveTemplateType != null
+          && (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT)) {
         moveDate =
             LocalDate.parse(
                 (String) context.get("moveDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -132,11 +138,13 @@ public class MoveTemplateController {
 
   public void setIsValid(ActionRequest request, ActionResponse response) {
     MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
-    if (moveTemplate.getIsValid()) {
+    if (moveTemplate != null && moveTemplate.getIsValid()) {
       boolean isValid = true;
-      for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-        if (!line.getIsValid()) {
-          isValid = false;
+      if (moveTemplate.getMoveTemplateLineList() != null) {
+        for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
+          if (!line.getIsValid()) {
+            isValid = false;
+          }
         }
       }
       if (!isValid) {
@@ -149,7 +157,9 @@ public class MoveTemplateController {
     try {
       MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
       Map<String, Object> values = Beans.get(MoveTemplateService.class).computeTotals(moveTemplate);
-      response.setValues(values);
+      if (values != null) {
+        response.setValues(values);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

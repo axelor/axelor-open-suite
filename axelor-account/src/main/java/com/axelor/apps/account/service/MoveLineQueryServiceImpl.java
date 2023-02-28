@@ -88,10 +88,12 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
 
   public void ureconcileMoveLinesWithCacheManagement(List<Reconcile> reconcileList)
       throws AxelorException {
-    for (Reconcile reconcile : reconcileList) {
-      reconcile = reconcileRepository.find(reconcile.getId());
-      reconcileService.unreconcile(reconcile);
-      JPA.clear();
+    if (reconcileList != null) {
+      for (Reconcile reconcile : reconcileList) {
+        reconcile = reconcileRepository.find(reconcile.getId());
+        reconcileService.unreconcile(reconcile);
+        JPA.clear();
+      }
     }
   }
 }

@@ -27,6 +27,7 @@ import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,9 @@ public class MrpFilterSaleOrderLineServiceImpl implements MrpFilterSaleOrderLine
         && mrp.getStockLocation() != null) {
 
       List<StockLocation> stockLocationList =
-          stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false).stream()
+          ListUtils.emptyIfNull(
+                  stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false))
+              .stream()
               .filter(x -> !x.getIsNotInMrp())
               .collect(Collectors.toList());
 
@@ -114,13 +117,13 @@ public class MrpFilterSaleOrderLineServiceImpl implements MrpFilterSaleOrderLine
             .bind(
                 "companyId",
                 mrp.getStockLocation() != null ? mrp.getStockLocation().getCompany().getId() : -1)
-            .bind("stockLocations", stockLocationList)
+            .bind("stockLocations", ListUtils.emptyIfNull(stockLocationList))
             .bind("mrpTypeSelect", mrp.getMrpTypeSelect())
             .bind("mrpTypeMrp", MrpRepository.MRP_TYPE_MRP)
             .bind("productSubTypeFinished", ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT)
-            .bind("saleOrderStatusList", statusList)
+            .bind("saleOrderStatusList", ListUtils.emptyIfNull(statusList))
             .fetch();
-    return saleOrderLineList.stream()
+    return ListUtils.emptyIfNull(saleOrderLineList).stream()
         .filter(
             saleOrderLine ->
                 mrpSaleOrderCheckLateSaleService.checkLateSalesParameter(

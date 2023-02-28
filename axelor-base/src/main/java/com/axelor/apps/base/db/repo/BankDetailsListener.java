@@ -24,6 +24,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import javax.persistence.PostUpdate;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankDetailsListener {
   @PostUpdate
@@ -31,7 +32,7 @@ public class BankDetailsListener {
     if (bankDetails.getActive()) {
       Company company = bankDetails.getCompany();
 
-      if (company != null) {
+      if (company != null && CollectionUtils.isNotEmpty(company.getBankDetailsList())) {
         for (BankDetails details : company.getBankDetailsList()) {
           if (!details.getId().equals(bankDetails.getId())
               && details.getIban().equals(bankDetails.getIban())

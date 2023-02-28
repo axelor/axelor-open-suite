@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,21 +125,23 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     int i = 0;
 
-    int moveListSize = moveList.size();
+    if (CollectionUtils.isNotEmpty(moveList)) {
+      int moveListSize = moveList.size();
 
-    for (Move move : moveList) {
+      for (Move move : moveList) {
 
-      this.updateMove(
-          moveRepo.find(move.getId()),
-          accountingReportRepo.find(accountingReport.getId()),
-          localDate,
-          exportNumber);
+        this.updateMove(
+            moveRepo.find(move.getId()),
+            accountingReportRepo.find(accountingReport.getId()),
+            localDate,
+            exportNumber);
 
-      if (i % 10 == 0) {
-        JPA.clear();
-      }
-      if (i++ % 100 == 0) {
-        log.debug("Process : {} / {}", i, moveListSize);
+        if (i % 10 == 0) {
+          JPA.clear();
+        }
+        if (i++ % 100 == 0) {
+          log.debug("Process : {} / {}", i, moveListSize);
+        }
       }
     }
   }
@@ -157,6 +160,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   public BigDecimal getSumDebit(String queryFilter, List<? extends Move> moveList) {
+
+    if (moveList == null) {
+      return BigDecimal.ZERO;
+    }
 
     Query q =
         JPA.em()
@@ -177,6 +184,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   public BigDecimal getSumCredit(String queryFilter, List<Move> moveList) {
 
+    if (moveList == null) {
+      return BigDecimal.ZERO;
+    }
+
     Query q =
         JPA.em()
             .createQuery(
@@ -196,6 +207,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   public BigDecimal getSumCredit(List<MoveLine> moveLineList) {
 
+    if (moveLineList == null) {
+      return BigDecimal.ZERO;
+    }
+
     BigDecimal sumCredit = BigDecimal.ZERO;
     for (MoveLine moveLine : moveLineList) {
       sumCredit = sumCredit.add(moveLine.getCredit());
@@ -205,6 +220,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   public BigDecimal getTotalAmount(List<MoveLine> moveLinelst) {
+
+    if (moveLinelst == null) {
+      return BigDecimal.ZERO;
+    }
 
     BigDecimal totDebit = BigDecimal.ZERO;
     BigDecimal totCredit = BigDecimal.ZERO;
@@ -301,15 +320,15 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     @SuppressWarnings("unchecked")
     List<Object[]> resultList = query.getResultList();
-
-    for (Object[] result : resultList) {
-      String[] items = new String[result.length];
-      for (int i = 0; i < result.length; ++i) {
-        items[i] = String.valueOf(result[i]);
+    if (CollectionUtils.isNotEmpty(resultList)) {
+      for (Object[] result : resultList) {
+        String[] items = new String[result.length];
+        for (int i = 0; i < result.length; ++i) {
+          items[i] = String.valueOf(result[i]);
+        }
+        allMoveLineData.add(items);
       }
-      allMoveLineData.add(items);
     }
-
     LocalDate date;
 
     if (accountingReport.getDateTo() != null) {
@@ -568,119 +587,129 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     List<String[]> allMoveLineData = new ArrayList<>();
 
-    for (LocalDate localDate : dates) {
+    if (CollectionUtils.isNotEmpty(dates)) {
+      for (LocalDate localDate : dates) {
 
-      Query queryExportRef =
-          JPA.em()
-              .createQuery(
-                  "SELECT DISTINCT self.move.exportNumber from MoveLine self where self.account != null "
-                      + "AND (self.debit > 0 OR self.credit > 0) AND self.date = '"
-                      + localDate.toString()
-                      + "'"
-                      + moveLineQueryStr);
-      List<String> exportRefs = queryExportRef.getResultList();
-      for (String exportRef : exportRefs) {
+        Query queryExportRef =
+            JPA.em()
+                .createQuery(
+                    "SELECT DISTINCT self.move.exportNumber from MoveLine self where self.account != null "
+                        + "AND (self.debit > 0 OR self.credit > 0) AND self.date = '"
+                        + localDate.toString()
+                        + "'"
+                        + moveLineQueryStr);
+        List<String> exportRefs = queryExportRef.getResultList();
 
-        if (exportRef != null && !exportRef.isEmpty()) {
+        if (exportRefs != null && !exportRefs.isEmpty()) {
+          for (String exportRef : exportRefs) {
 
-          int sequence = 1;
+            int sequence = 1;
 
-          Query query =
-              JPA.em()
-                  .createQuery(
-                      "SELECT self.account.id from MoveLine self where self.account != null AND (self.debit > 0 OR self.credit > 0) "
-                          + "AND self.date = '"
-                          + localDate.toString()
-                          + "' AND self.move.exportNumber = '"
-                          + exportRef
-                          + "'"
-                          + moveLineQueryStr
-                          + " group by self.account.id");
+            Query query =
+                JPA.em()
+                    .createQuery(
+                        "SELECT self.account.id from MoveLine self where self.account != null AND (self.debit > 0 OR self.credit > 0) "
+                            + "AND self.date = '"
+                            + localDate.toString()
+                            + "' AND self.move.exportNumber = '"
+                            + exportRef
+                            + "'"
+                            + moveLineQueryStr
+                            + " group by self.account.id");
 
-          List<Long> accountIds = query.getResultList();
+            List<Long> accountIds = query.getResultList();
 
-          log.debug("accountIds : {}", accountIds);
+            log.debug("accountIds : {}", accountIds);
 
-          for (Long accountId : accountIds) {
-            if (accountId != null) {
-              String accountCode = accountRepo.find(accountId).getCode();
-              List<MoveLine> moveLines =
-                  moveLineRepo
-                      .all()
-                      .filter(
-                          "self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"
-                              + localDate.toString()
-                              + "' AND self.move.exportNumber = '"
-                              + exportRef
-                              + "'"
-                              + moveLineQueryStr,
-                          accountId)
-                      .fetch();
+            if (CollectionUtils.isNotEmpty(accountIds)) {
+              for (Long accountId : accountIds) {
+                if (accountId != null) {
+                  String accountCode = accountRepo.find(accountId).getCode();
+                  List<MoveLine> moveLines =
+                      moveLineRepo
+                          .all()
+                          .filter(
+                              "self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"
+                                  + localDate.toString()
+                                  + "' AND self.move.exportNumber = '"
+                                  + exportRef
+                                  + "'"
+                                  + moveLineQueryStr,
+                              accountId)
+                          .fetch();
 
-              log.debug("movelines  : {} ", moveLines);
+                  log.debug("movelines  : {} ", moveLines);
 
-              if (!moveLines.isEmpty()) {
+                  if (!moveLines.isEmpty()) {
 
-                List<MoveLine> moveLineList =
-                    moveLineConsolidateService.consolidateMoveLines(moveLines);
+                    List<MoveLine> moveLineList =
+                        moveLineConsolidateService.consolidateMoveLines(moveLines);
+                    if (moveLineList != null) {
+                      List<MoveLine> sortMoveLineList =
+                          this.sortMoveLineByDebitCredit(moveLineList);
 
-                List<MoveLine> sortMoveLineList = this.sortMoveLineByDebitCredit(moveLineList);
+                      if (CollectionUtils.isNotEmpty(sortMoveLineList)) {
+                        for (MoveLine moveLine3 : sortMoveLineList) {
 
-                for (MoveLine moveLine3 : sortMoveLineList) {
+                          Journal journal = moveLine3.getMove().getJournal();
+                          LocalDate date = moveLine3.getDate();
+                          String items[] = null;
 
-                  Journal journal = moveLine3.getMove().getJournal();
-                  LocalDate date = moveLine3.getDate();
-                  String items[] = null;
+                          if (typeSelect == 9) {
+                            items = new String[13];
+                          } else {
+                            items = new String[12];
+                          }
 
-                  if (typeSelect == 9) {
-                    items = new String[13];
-                  } else {
-                    items = new String[12];
+                          items[0] = companyCode;
+                          items[1] = journal.getExportCode();
+                          items[2] = moveLine3.getMove().getExportNumber();
+                          items[3] = String.format("%s", sequence);
+                          sequence++;
+                          items[4] = accountCode;
+
+                          BigDecimal totAmt = moveLine3.getCredit().subtract(moveLine3.getDebit());
+                          String moveLineSign = "C";
+                          if (totAmt.compareTo(BigDecimal.ZERO) < 0) {
+                            moveLineSign = "D";
+                            totAmt = totAmt.negate();
+                          }
+                          items[5] = moveLineSign;
+                          items[6] = totAmt.toString();
+
+                          String analyticAccounts = "";
+                          if (moveLine3.getAnalyticMoveLineList() != null) {
+                            for (AnalyticMoveLine analyticDistributionLine :
+                                moveLine3.getAnalyticMoveLineList()) {
+                              analyticAccounts =
+                                  analyticAccounts
+                                      + analyticDistributionLine.getAnalyticAccount().getCode()
+                                      + "/";
+                            }
+                          }
+
+                          if (typeSelect == 9) {
+                            items[7] = "";
+                            items[8] = analyticAccounts;
+                            items[9] =
+                                String.format(
+                                    "%s DU %s",
+                                    journal.getCode(),
+                                    date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                          } else {
+                            items[7] = analyticAccounts;
+                            items[8] =
+                                String.format(
+                                    "%s DU %s",
+                                    journal.getCode(),
+                                    date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                          }
+
+                          allMoveLineData.add(items);
+                        }
+                      }
+                    }
                   }
-
-                  items[0] = companyCode;
-                  items[1] = journal.getExportCode();
-                  items[2] = moveLine3.getMove().getExportNumber();
-                  items[3] = String.format("%s", sequence);
-                  sequence++;
-                  items[4] = accountCode;
-
-                  BigDecimal totAmt = moveLine3.getCredit().subtract(moveLine3.getDebit());
-                  String moveLineSign = "C";
-                  if (totAmt.compareTo(BigDecimal.ZERO) < 0) {
-                    moveLineSign = "D";
-                    totAmt = totAmt.negate();
-                  }
-                  items[5] = moveLineSign;
-                  items[6] = totAmt.toString();
-
-                  String analyticAccounts = "";
-                  for (AnalyticMoveLine analyticDistributionLine :
-                      moveLine3.getAnalyticMoveLineList()) {
-                    analyticAccounts =
-                        analyticAccounts
-                            + analyticDistributionLine.getAnalyticAccount().getCode()
-                            + "/";
-                  }
-
-                  if (typeSelect == 9) {
-                    items[7] = "";
-                    items[8] = analyticAccounts;
-                    items[9] =
-                        String.format(
-                            "%s DU %s",
-                            journal.getCode(),
-                            date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                  } else {
-                    items[7] = analyticAccounts;
-                    items[8] =
-                        String.format(
-                            "%s DU %s",
-                            journal.getCode(),
-                            date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-                  }
-
-                  allMoveLineData.add(items);
                 }
               }
             }
@@ -688,7 +717,6 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         }
       }
     }
-
     writeMoveLineToCsvFile(
         company, fileName, this.createHeaderForDetailFile(), allMoveLineData, accountingReport);
   }
@@ -704,10 +732,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     String filePath = accountConfigService.getAccountConfig(company).getExportPath();
     String dataExportDir = appAccountService.getDataExportDir();
 
-    for (String[] items : allMoveData) {
-      for (int i = 0; i < items.length; i++) {
-        if (items[i] != null) {
-          items[i] = items[i].replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+    if (CollectionUtils.isNotEmpty(allMoveData)) {
+      for (String[] items : allMoveData) {
+        for (int i = 0; i < items.length; i++) {
+          if (items[i] != null) {
+            items[i] = items[i].replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+          }
         }
       }
     }
@@ -734,11 +764,13 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     List<MoveLine> sortMoveLineList = new ArrayList<>();
     List<MoveLine> debitMoveLineList = new ArrayList<>();
     List<MoveLine> creditMoveLineList = new ArrayList<>();
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getDebit().compareTo(moveLine.getCredit()) > 0) {
-        debitMoveLineList.add(moveLine);
-      } else {
-        creditMoveLineList.add(moveLine);
+    if (CollectionUtils.isNotEmpty(moveLineList)) {
+      for (MoveLine moveLine : moveLineList) {
+        if (moveLine.getDebit().compareTo(moveLine.getCredit()) > 0) {
+          debitMoveLineList.add(moveLine);
+        } else {
+          creditMoveLineList.add(moveLine);
+        }
       }
     }
     sortMoveLineList.addAll(debitMoveLineList);

@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.translation.ITranslation;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -74,7 +75,8 @@ public class ImportCityController {
         }
       }
 
-      if (importCityMap.containsKey("importHistoryList")
+      if (importCityMap != null
+          && importCityMap.containsKey("importHistoryList")
           && importCityMap.containsKey("errorFile")) {
         importHistoryList = (List<ImportHistory>) importCityMap.get("importHistoryList");
         errorFile = (MetaFile) importCityMap.get("errorFile");
@@ -85,7 +87,7 @@ public class ImportCityController {
         } else {
           response.setAttr("$importHistoryList", "hidden", false);
           response.setAttr("errorFile", "hidden", true);
-          response.setAttr("$importHistoryList", "value", importHistoryList);
+          response.setAttr("$importHistoryList", "value", ListUtils.emptyIfNull(importHistoryList));
           response.setFlash(I18n.get(ITranslation.BASE_GEONAMES_CITY_IMPORT_COMPLETED));
         }
       }

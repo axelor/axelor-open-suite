@@ -153,8 +153,10 @@ public class DebtRecoveryActionService {
 
     DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
-    for (Template template : templateSet) {
-      messages.add(templateMessageAccountService.generateMessage(debtRecoveryHistory, template));
+    if (templateSet != null) {
+      for (Template template : templateSet) {
+        messages.add(templateMessageAccountService.generateMessage(debtRecoveryHistory, template));
+      }
     }
 
     return messages;
@@ -252,25 +254,27 @@ public class DebtRecoveryActionService {
           IllegalAccessException, JSONException {
     Set<Message> messageSet = this.runStandardMessage(debtRecovery);
 
-    for (Message message : messageSet) {
-      message = Beans.get(MessageRepository.class).save(message);
+    if (CollectionUtils.isNotEmpty(messageSet)) {
+      for (Message message : messageSet) {
+        message = Beans.get(MessageRepository.class).save(message);
 
-      if (!debtRecovery.getDebtRecoveryMethodLine().getManualValidationOk()
-          && message.getMailAccount() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_4));
+        if (!debtRecovery.getDebtRecoveryMethodLine().getManualValidationOk()
+            && message.getMailAccount() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_4));
+        }
+
+        if (message.getMediaTypeSelect() != MessageRepository.MEDIA_TYPE_MAIL
+            && CollectionUtils.isEmpty(message.getToEmailAddressSet())) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_5),
+              debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevelLabel());
+        }
+
+        Beans.get(MessageService.class).sendMessage(message);
       }
-
-      if (message.getMediaTypeSelect() != MessageRepository.MEDIA_TYPE_MAIL
-          && CollectionUtils.isEmpty(message.getToEmailAddressSet())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_5),
-            debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevelLabel());
-      }
-
-      Beans.get(MessageService.class).sendMessage(message);
     }
   }
 

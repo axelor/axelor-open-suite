@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
 
@@ -37,6 +38,10 @@ public class AppLoaderImportBpmServiceImpl extends AppLoaderImportServiceImpl {
       throws FileNotFoundException, IOException {
 
     List<File> configFiles = super.getAppImportConfigFiles(dataDir);
+
+    if (configFiles == null) {
+      configFiles = new ArrayList<>();
+    }
 
     for (String fileName : IMPORT_FILES) {
       String dataFileName = fileName.replace("-call.xml", ".xml");

@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -396,7 +397,7 @@ public class SequenceService {
     lastSequenceVersion = sequenceVersionRepository.findByDate(sequence, todayDate);
 
     SequenceVersion finalLastSequenceVersion = lastSequenceVersion;
-    sequenceVersionList.stream()
+    ListUtils.emptyIfNull(sequenceVersionList).stream()
         .filter(sequenceVersion -> sequenceVersion.equals(finalLastSequenceVersion))
         .forEach(sequenceVersion -> sequenceVersion.setEndDate(endOfDate));
 

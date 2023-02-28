@@ -27,6 +27,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 public class BankOrderLineOriginController {
@@ -45,8 +46,12 @@ public class BankOrderLineOriginController {
             .add("form", "dms-file-form")
             .domain(
                 "self.relatedModel = :relatedModel AND self.relatedId = :relatedId AND self.isDirectory = false")
-            .context("relatedModel", relatedDataMap.get("relatedModel"))
-            .context("relatedId", relatedDataMap.get("relatedId"))
+            .context(
+                "relatedModel",
+                relatedDataMap != null ? relatedDataMap.get("relatedModel") : new HashMap<>())
+            .context(
+                "relatedId",
+                relatedDataMap != null ? relatedDataMap.get("relatedId") : new HashMap<>())
             .context("_showSingle", true)
             .map());
 

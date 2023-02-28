@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSch;
@@ -102,9 +103,10 @@ public class SFTPUtils {
   public static List<LsEntry> getFiles(ChannelSftp channel, String dir) throws SftpException {
     List<LsEntry> files = new ArrayList<>((Vector<LsEntry>) channel.ls(dir));
 
-    files.sort(
-        Comparator.comparing((LsEntry file) -> file.getAttrs().getMTime())
-            .thenComparing(LsEntry::getFilename));
+    ListUtils.emptyIfNull(files)
+        .sort(
+            Comparator.comparing((LsEntry file) -> file.getAttrs().getMTime())
+                .thenComparing(LsEntry::getFilename));
 
     return files;
   }

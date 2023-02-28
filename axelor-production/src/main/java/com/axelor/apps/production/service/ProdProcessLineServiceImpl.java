@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -70,7 +71,8 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
     workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
     workCenterGroupCopy.setTemplate(false);
-    workCenterGroup.getWorkCenterSet().forEach((workCenterGroupCopy::addWorkCenterSetItem));
+    SetUtils.emptyIfNull(workCenterGroup.getWorkCenterSet())
+        .forEach((workCenterGroupCopy::addWorkCenterSetItem));
 
     prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
     return prodProcessLineRepo.save(prodProcessLine);

@@ -346,14 +346,22 @@ public class FrequencyServiceImpl implements FrequencyService {
     if (frequency.getTypeSelect().equals(FrequencyRepository.TYPE_MONTH_DAYS)) {
       List<Integer> occurences = getOccurences(frequency);
 
-      for (Integer year : years) {
-        for (Integer month : months) {
-          for (Integer day : days) {
-            for (Integer occurence : occurences) {
-              LocalDate date = getDay(day, occurence, year, month);
+      if (years != null) {
+        for (Integer year : years) {
+          if (months != null) {
+            for (Integer month : months) {
+              if (days != null) {
+                for (Integer day : days) {
+                  if (occurences != null) {
+                    for (Integer occurence : occurences) {
+                      LocalDate date = getDay(day, occurence, year, month);
 
-              if (DateTool.isBetween(startDate, endDate, date)) {
-                dates.add(date);
+                      if (DateTool.isBetween(startDate, endDate, date)) {
+                        dates.add(date);
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -361,31 +369,35 @@ public class FrequencyServiceImpl implements FrequencyService {
       }
     } else {
       Integer leap = frequency.getEveryNWeeks();
+      if (years != null) {
+        for (Integer year : years) {
+          if (days != null) {
+            for (Integer day : days) {
+              Calendar cal = Calendar.getInstance();
+              cal.set(Calendar.YEAR, year);
+              cal.set(Calendar.MONTH, Calendar.JANUARY);
+              cal.set(Calendar.DAY_OF_WEEK, day);
+              cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
+              do {
+                if (months.contains(cal.get(Calendar.MONTH) + 1)) {
+                  LocalDate date =
+                      LocalDate.of(year, cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE));
 
-      for (Integer year : years) {
-        for (Integer day : days) {
-          Calendar cal = Calendar.getInstance();
-          cal.set(Calendar.YEAR, year);
-          cal.set(Calendar.MONTH, Calendar.JANUARY);
-          cal.set(Calendar.DAY_OF_WEEK, day);
-          cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, 1);
-          do {
-            if (months.contains(cal.get(Calendar.MONTH) + 1)) {
-              LocalDate date =
-                  LocalDate.of(year, cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE));
-
-              if (DateTool.isBetween(startDate, endDate, date)) {
-                dates.add(date);
-              }
+                  if (DateTool.isBetween(startDate, endDate, date)) {
+                    dates.add(date);
+                  }
+                }
+                cal.add(Calendar.DATE, leap * 7);
+              } while (cal.get(Calendar.YEAR) == year);
             }
-            cal.add(Calendar.DATE, leap * 7);
-          } while (cal.get(Calendar.YEAR) == year);
+          }
         }
       }
     }
 
     ArrayList<LocalDate> sortedDates = new ArrayList<>(dates);
     sortedDates.sort(LocalDate::compareTo);
+
     return sortedDates;
   }
 

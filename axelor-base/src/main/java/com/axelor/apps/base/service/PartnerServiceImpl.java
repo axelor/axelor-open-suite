@@ -36,6 +36,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.tool.ComputeNameTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -330,7 +331,7 @@ public class PartnerServiceImpl implements PartnerService {
   public List<Long> findPartnerMails(Partner partner, int emailType) {
     List<Long> idList = new ArrayList<Long>();
 
-    idList.addAll(this.findMailsFromPartner(partner, emailType));
+    idList.addAll(ListUtils.emptyIfNull(this.findMailsFromPartner(partner, emailType)));
 
     if (partner.getIsContact()) {
       return idList;
@@ -459,10 +460,10 @@ public class PartnerServiceImpl implements PartnerService {
         }
       }
 
-      if (partnerAddressList.size() == 1) {
+      if (ListUtils.size(partnerAddressList) == 1) {
         return partnerAddressList.get(0).getAddress();
       }
-      for (PartnerAddress partnerAddress : partnerAddressList) {
+      for (PartnerAddress partnerAddress : ListUtils.emptyIfNull(partnerAddressList)) {
         if (partnerAddress.getIsDefaultAddr()) {
           return partnerAddress.getAddress();
         }
@@ -507,7 +508,7 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public BankDetails getDefaultBankDetails(Partner partner) {
-    return partner.getBankDetailsList().stream()
+    return ListUtils.emptyIfNull(partner.getBankDetailsList()).stream()
         .filter(BankDetails::getIsDefault)
         .findFirst()
         .orElse(null);
@@ -588,7 +589,7 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     // if we found multiple price list, then the user will have to select one
-    if (candidatePriceListList.size() == 1) {
+    if (ListUtils.size(candidatePriceListList) == 1) {
       return candidatePriceListList.get(0);
     } else {
       return null;
@@ -660,7 +661,7 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String computeCompanyStr(Partner partner) {
     String companyStr = "";
-    if (partner.getCompanySet() != null && partner.getCompanySet().size() > 0) {
+    if (partner.getCompanySet() != null && !partner.getCompanySet().isEmpty()) {
       for (Company company : partner.getCompanySet()) {
         companyStr += company.getCode() + ",";
       }

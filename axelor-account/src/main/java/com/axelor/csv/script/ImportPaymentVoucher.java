@@ -81,7 +81,9 @@ public class ImportPaymentVoucher {
    * @return moveLine a moveLine
    */
   public MoveLine getInvoiceDebitMoveline(Invoice invoice) {
-    if (invoice.getMove() != null && invoice.getMove().getMoveLineList() != null) {
+    if (invoice != null
+        && invoice.getMove() != null
+        && invoice.getMove().getMoveLineList() != null) {
       for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
         if ((moveLine.getAccount().equals(invoice.getPartnerAccount()))
             && moveLine.getAccount().getUseForPartnerBalance()
@@ -100,7 +102,9 @@ public class ImportPaymentVoucher {
    * @return moveLine a moveLine
    */
   public MoveLine getInvoiceCreditMoveline(Invoice invoice) {
-    if (invoice.getMove() != null && invoice.getMove().getMoveLineList() != null) {
+    if (invoice != null
+        && invoice.getMove() != null
+        && invoice.getMove().getMoveLineList() != null) {
       for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
         if ((moveLine.getAccount().equals(invoice.getPartnerAccount()))
             && moveLine.getAccount().getUseForPartnerBalance()

@@ -27,6 +27,7 @@ import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -87,7 +88,8 @@ public class StockMoveController {
     if (stockMove.getId() != null
         && Beans.get(StockMoveServiceSupplychain.class)
             .isAllocatedStockMoveLineRemoved(stockMove)) {
-      response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+      response.setValue(
+          "stockMoveLineList", ListUtils.emptyIfNull(stockMove.getStockMoveLineList()));
       response.setFlash(
           I18n.get(SupplychainExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
     }

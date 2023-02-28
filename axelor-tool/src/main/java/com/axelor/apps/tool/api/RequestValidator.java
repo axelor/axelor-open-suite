@@ -23,6 +23,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.ws.rs.BadRequestException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class RequestValidator {
 
@@ -32,7 +33,7 @@ public class RequestValidator {
 
     Set<ConstraintViolation<RequestStructure>> constraintViolations = validator.validate(body);
 
-    if (constraintViolations.size() > 0) {
+    if (CollectionUtils.isNotEmpty(constraintViolations)) {
       StringBuilder errorMsg = new StringBuilder("Some constraints are invalid : ");
       for (ConstraintViolation<RequestStructure> constraint : constraintViolations) {
         errorMsg
@@ -51,7 +52,7 @@ public class RequestValidator {
 
     Set<ConstraintViolation<RequestPostStructure>> constraintViolations = validator.validate(body);
 
-    if (constraintViolations.size() > 0) {
+    if (CollectionUtils.isNotEmpty(constraintViolations)) {
       StringBuilder errorMsg = new StringBuilder("Some constraints are invalid : ");
       for (ConstraintViolation<RequestPostStructure> constraint : constraintViolations) {
         errorMsg

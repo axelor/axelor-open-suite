@@ -142,7 +142,9 @@ public class EmploymentContractService {
             ? ""
             : employmentContract.getContractType().getId().toString();
     item[20] = employee.getMaidenName();
-
+    if (list == null) {
+      list = new ArrayList<>();
+    }
     list.add(item);
   }
 

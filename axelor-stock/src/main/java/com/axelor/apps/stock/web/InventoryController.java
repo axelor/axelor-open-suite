@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -247,7 +248,7 @@ public class InventoryController {
               .add("grid", "stock-move-grid")
               .add("form", "stock-move-form")
               .param("search-filters", "internal-stock-move-filters");
-      if (stockMoveList.isEmpty()) {
+      if (CollectionUtils.isEmpty(stockMoveList)) {
         response.setFlash(I18n.get("No stock moves found for this inventory."));
       } else {
         builder

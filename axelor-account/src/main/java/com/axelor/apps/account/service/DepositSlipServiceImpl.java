@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
@@ -57,15 +58,16 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
     List<PaymentVoucher> paymentVouchers = depositSlip.getPaymentVoucherList();
 
-    if (paymentVouchers.stream()
-        .filter(
-            paymentVoucher ->
-                Strings.isNullOrEmpty(paymentVoucher.getChequeBank())
-                    || Strings.isNullOrEmpty(paymentVoucher.getChequeOwner())
-                    || Strings.isNullOrEmpty(paymentVoucher.getChequeNumber())
-                    || Objects.isNull(paymentVoucher.getChequeDate()))
-        .findAny()
-        .isPresent()) {
+    if (paymentVouchers != null
+        && paymentVouchers.stream()
+            .filter(
+                paymentVoucher ->
+                    Strings.isNullOrEmpty(paymentVoucher.getChequeBank())
+                        || Strings.isNullOrEmpty(paymentVoucher.getChequeOwner())
+                        || Strings.isNullOrEmpty(paymentVoucher.getChequeNumber())
+                        || Objects.isNull(paymentVoucher.getChequeDate()))
+            .findAny()
+            .isPresent()) {
       throw new AxelorException(
           depositSlip,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -74,12 +76,14 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     }
 
     Set<BankDetails> bankDetailsCollection =
-        paymentVouchers.stream()
+        ListUtils.emptyIfNull(paymentVouchers).stream()
             .map(PaymentVoucher::getCompanyBankDetails)
             .collect(Collectors.toSet());
 
-    for (BankDetails bankDetails : bankDetailsCollection) {
-      publish(depositSlip, bankDetails);
+    if (bankDetailsCollection != null) {
+      for (BankDetails bankDetails : bankDetailsCollection) {
+        publish(depositSlip, bankDetails);
+      }
     }
 
     LocalDate date = Beans.get(AppBaseService.class).getTodayDate(depositSlip.getCompany());

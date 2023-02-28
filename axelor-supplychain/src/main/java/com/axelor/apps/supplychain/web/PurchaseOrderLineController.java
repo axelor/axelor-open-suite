@@ -22,6 +22,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -37,7 +38,9 @@ public class PurchaseOrderLineController {
       purchaseOrderLine =
           Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
               .computeAnalyticDistribution(purchaseOrderLine);
-      response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+      response.setValue(
+          "analyticMoveLineList",
+          ListUtils.emptyIfNull(purchaseOrderLine.getAnalyticMoveLineList()));
     }
   }
 
@@ -48,7 +51,8 @@ public class PurchaseOrderLineController {
     purchaseOrderLine =
         Beans.get(PurchaseOrderLineServiceSupplyChain.class)
             .createAnalyticDistributionWithTemplate(purchaseOrderLine);
-    response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+    response.setValue(
+        "analyticMoveLineList", ListUtils.emptyIfNull(purchaseOrderLine.getAnalyticMoveLineList()));
   }
 
   public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
@@ -60,6 +64,8 @@ public class PurchaseOrderLineController {
 
     response.setValue(
         "budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
-    response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
+    response.setValue(
+        "budgetDistributionList",
+        ListUtils.emptyIfNull(purchaseOrderLine.getBudgetDistributionList()));
   }
 }

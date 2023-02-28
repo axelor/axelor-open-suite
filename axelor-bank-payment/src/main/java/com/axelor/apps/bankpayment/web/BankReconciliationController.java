@@ -37,6 +37,7 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
@@ -70,7 +71,7 @@ public class BankReconciliationController {
           Beans.get(BankReconciliationRepository.class)
               .find(context.asType(BankReconciliation.class).getId());
       List<BankReconciliationLine> bankReconciliationLines =
-          br.getBankReconciliationLineList().stream()
+          ListUtils.emptyIfNull(br.getBankReconciliationLineList()).stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
               .collect(Collectors.toList());
       if (bankReconciliationLines.isEmpty()) {
@@ -227,8 +228,10 @@ public class BankReconciliationController {
           (Map<String, Object>) context.get("_bankReconciliation");
 
       BankReconciliation bankReconciliation =
-          Beans.get(BankReconciliationRepository.class)
-              .find(((Integer) bankReconciliationContext.get("id")).longValue());
+          bankReconciliationContext != null
+              ? Beans.get(BankReconciliationRepository.class)
+                  .find(((Integer) bankReconciliationContext.get("id")).longValue())
+              : null;
 
       List<HashMap<String, Object>> moveLinesToReconcileContext =
           (List<HashMap<String, Object>>) context.get("toReconcileMoveLineSet");
@@ -236,8 +239,11 @@ public class BankReconciliationController {
       Map<String, Object> selectedBankReconciliationLineContext =
           (Map<String, Object>) context.get("_selectedBankReconciliationLine");
       BankReconciliationLine bankReconciliationLine =
-          Beans.get(BankReconciliationLineRepository.class)
-              .find(((Integer) selectedBankReconciliationLineContext.get("id")).longValue());
+          selectedBankReconciliationLineContext != null
+              ? Beans.get(BankReconciliationLineRepository.class)
+                  .find(((Integer) selectedBankReconciliationLineContext.get("id")).longValue())
+              : null;
+
       Beans.get(BankReconciliationValidateService.class)
           .validateMultipleBankReconciles(
               bankReconciliation, bankReconciliationLine, moveLinesToReconcileContext);
@@ -409,7 +415,8 @@ public class BankReconciliationController {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       List<BankReconciliationLine> bankReconciliationLines =
           bankReconciliation.getBankReconciliationLineList();
-      for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
+      for (BankReconciliationLine bankReconciliationLine :
+          ListUtils.emptyIfNull(bankReconciliationLines)) {
         Beans.get(BankReconciliationLineService.class).checkIncompleteLine(bankReconciliationLine);
       }
     } catch (AxelorException e) {
@@ -462,9 +469,13 @@ public class BankReconciliationController {
       }
       Map<String, Object> params =
           bankReconciliationService.getBindRequestMoveLine(bankReconciliation);
-      Set<String> keys = params.keySet();
-      for (String key : keys) {
-        actionViewBuilder.context(key, params.get(key));
+      if (params != null) {
+        Set<String> keys = params.keySet();
+        if (keys != null) {
+          for (String key : keys) {
+            actionViewBuilder.context(key, params.get(key));
+          }
+        }
       }
       response.setView(actionViewBuilder.map());
     } catch (Exception e) {

@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchInvoicingProjectService extends AbstractBatch {
 
@@ -69,34 +70,36 @@ public class BatchInvoicingProjectService extends AbstractBatch {
                     + "self.projectStatus.isCompleted = false")
             .fetch();
 
-    for (Project project : projectList) {
-      try {
-        InvoicingProject invoicingProject =
-            invoicingProjectService.generateInvoicingProject(
-                project, batch.getProjectInvoicingAssistantBatch().getConsolidatePhaseSelect());
+    if (CollectionUtils.isNotEmpty(projectList)) {
+      for (Project project : projectList) {
+        try {
+          InvoicingProject invoicingProject =
+              invoicingProjectService.generateInvoicingProject(
+                  project, batch.getProjectInvoicingAssistantBatch().getConsolidatePhaseSelect());
 
-        if (invoicingProject != null && invoicingProject.getId() != null) {
-          incrementDone();
-          if (batch.getProjectInvoicingAssistantBatch().getActionSelect()
-              == ProjectInvoicingAssistantBatchRepository.ACTION_GENERATE_INVOICING_PROJECT) {
-            invoicingProject.setDeadlineDate(
-                batch.getProjectInvoicingAssistantBatch().getDeadlineDate());
+          if (invoicingProject != null && invoicingProject.getId() != null) {
+            incrementDone();
+            if (batch.getProjectInvoicingAssistantBatch().getActionSelect()
+                == ProjectInvoicingAssistantBatchRepository.ACTION_GENERATE_INVOICING_PROJECT) {
+              invoicingProject.setDeadlineDate(
+                  batch.getProjectInvoicingAssistantBatch().getDeadlineDate());
+            }
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", invoicingProject.getId());
+            generatedInvoicingProjectList.add(map);
           }
-
-          Map<String, Object> map = new HashMap<String, Object>();
-          map.put("id", invoicingProject.getId());
-          generatedInvoicingProjectList.add(map);
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(
+                  String.format(
+                      I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
+                      project.getId()),
+                  e),
+              ExceptionOriginRepository.INVOICE_ORIGIN,
+              batch.getId());
         }
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(
-            new Exception(
-                String.format(
-                    I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
-                    project.getId()),
-                e),
-            ExceptionOriginRepository.INVOICE_ORIGIN,
-            batch.getId());
       }
     }
     ProjectInvoicingAssistantBatchService.updateJsonObject(

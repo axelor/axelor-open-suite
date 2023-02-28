@@ -30,6 +30,7 @@ import com.axelor.apps.bpm.db.DmnTable;
 import com.axelor.apps.bpm.db.repo.DmnTableRepository;
 import com.axelor.apps.bpm.service.WkfCommonService;
 import com.axelor.apps.bpm.service.init.ProcessEngineService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.apps.tool.context.FullContextHelper;
 import com.axelor.db.EntityHelper;
@@ -89,8 +90,8 @@ public class DmnServiceImpl implements DmnService {
             .fetchOne();
 
     if (dmnTable != null) {
-      Map<String, Object> res = result.get(0);
-      for (DmnField dmnField : dmnTable.getOutputDmnFieldList()) {
+      Map<String, Object> res = result != null ? result.get(0) : new HashMap<>();
+      for (DmnField dmnField : ListUtils.emptyIfNull(dmnTable.getOutputDmnFieldList())) {
         if (dmnField.getField() != null) {
           addValue(context, dmnField.getField(), res.get(dmnField.getName()), model);
         }
@@ -335,8 +336,10 @@ public class DmnServiceImpl implements DmnService {
     for (DecisionTable decisionTable : decisionTables) {
       Collection<Output> outputs = decisionTable.getOutputs();
 
-      for (Output output : outputs) {
-        fields.add(output.getName());
+      if (outputs != null) {
+        for (Output output : outputs) {
+          fields.add(output.getName());
+        }
       }
     }
 
@@ -357,37 +360,38 @@ public class DmnServiceImpl implements DmnService {
     Mapper mapper = Mapper.of(EntityHelper.getEntityClass(Class.forName(modelName)));
     String varName = Beans.get(WkfCommonService.class).getVarName(modelName);
     scriptBuilder.append("def _query = null\n");
-    for (String field : fields) {
-      String resultField = resultVar + "?." + field;
-      String targetField = varName + "." + field;
-      Property property = mapper.getProperty(field);
-      if (property == null) {
-        MetaJsonField jsonField =
-            Beans.get(MetaJsonFieldRepository.class)
-                .all()
-                .filter("self.model = ?1 and self.name = ?2", modelName, field)
-                .fetchOne();
-        if (jsonField != null) {
-          addJsonField(searchOperator, multiple, resultVar, scriptBuilder, varName, jsonField);
+    if (fields != null) {
+      for (String field : fields) {
+        String resultField = resultVar + "?." + field;
+        String targetField = varName + "." + field;
+        Property property = mapper.getProperty(field);
+        if (property == null) {
+          MetaJsonField jsonField =
+              Beans.get(MetaJsonFieldRepository.class)
+                  .all()
+                  .filter("self.model = ?1 and self.name = ?2", modelName, field)
+                  .fetchOne();
+          if (jsonField != null) {
+            addJsonField(searchOperator, multiple, resultVar, scriptBuilder, varName, jsonField);
+          }
+          continue;
         }
-        continue;
-      }
 
-      if (property.getTarget() != null) {
-        addRelationalField(
-            searchOperator,
-            multiple,
-            scriptBuilder,
-            targetField,
-            resultField,
-            property.getTarget().getSimpleName(),
-            property.getTargetName());
-      } else {
-        scriptBuilder.append(targetField + " = " + resultField);
+        if (property.getTarget() != null) {
+          addRelationalField(
+              searchOperator,
+              multiple,
+              scriptBuilder,
+              targetField,
+              resultField,
+              property.getTarget().getSimpleName(),
+              property.getTargetName());
+        } else {
+          scriptBuilder.append(targetField + " = " + resultField);
+        }
+        scriptBuilder.append("\n");
       }
-      scriptBuilder.append("\n");
     }
-
     return scriptBuilder.toString();
   }
 
@@ -435,7 +439,7 @@ public class DmnServiceImpl implements DmnService {
 
     log.debug("Json fields founds: {}", metaJsonFields);
 
-    for (MetaJsonField field : metaJsonFields) {
+    for (MetaJsonField field : ListUtils.emptyIfNull(metaJsonFields)) {
       addJsonField(searchOperator, multiple, resultVar, scriptBuilder, varName, field);
       scriptBuilder.append("\n");
     }

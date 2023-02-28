@@ -44,6 +44,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -254,17 +255,19 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     StringBuilder numSeq = new StringBuilder();
     StringBuilder externalRef = new StringBuilder();
-    for (SaleOrder saleOrderLocal : saleOrderList) {
-      if (numSeq.length() > 0) {
-        numSeq.append("-");
-      }
-      numSeq.append(saleOrderLocal.getSaleOrderSeq());
+    if (CollectionUtils.isNotEmpty(saleOrderList)) {
+      for (SaleOrder saleOrderLocal : saleOrderList) {
+        if (numSeq.length() > 0) {
+          numSeq.append("-");
+        }
+        numSeq.append(saleOrderLocal.getSaleOrderSeq());
 
-      if (externalRef.length() > 0) {
-        externalRef.append("|");
-      }
-      if (saleOrderLocal.getExternalReference() != null) {
-        externalRef.append(saleOrderLocal.getExternalReference());
+        if (externalRef.length() > 0) {
+          externalRef.append("|");
+        }
+        if (saleOrderLocal.getExternalReference() != null) {
+          externalRef.append(saleOrderLocal.getExternalReference());
+        }
       }
     }
 

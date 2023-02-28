@@ -38,6 +38,7 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +101,7 @@ public class BillOfMaterialController {
             .fetch();
     String message;
 
-    if (!BillOfMaterialSet.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(BillOfMaterialSet)) {
 
       String existingVersions = "";
       for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {

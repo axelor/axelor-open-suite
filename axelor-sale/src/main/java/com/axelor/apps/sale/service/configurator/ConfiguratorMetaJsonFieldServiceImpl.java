@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.tool.MetaTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -74,16 +75,17 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
       String attrName = nameFieldInfo[0];
       String fieldName = nameFieldInfo[1];
 
-      formulas.forEach(
-          formula -> {
-            MetaJsonField metaJsonField = formula.getMetaJsonField();
-            if (metaJsonField != null
-                && attrName.equals(formula.getMetaField().getName())
-                && fieldName.equals(metaJsonField.getName())) {
-              putFieldValueInMap(fieldName, value, attrName, metaJsonField, attrValueMap);
-              keysToRemove.add(fullName);
-            }
-          });
+      ListUtils.emptyIfNull(formulas)
+          .forEach(
+              formula -> {
+                MetaJsonField metaJsonField = formula.getMetaJsonField();
+                if (metaJsonField != null
+                    && attrName.equals(formula.getMetaField().getName())
+                    && fieldName.equals(metaJsonField.getName())) {
+                  putFieldValueInMap(fieldName, value, attrName, metaJsonField, attrValueMap);
+                  keysToRemove.add(fullName);
+                }
+              });
     }
 
     jsonIndicators.entrySet().removeIf(entry -> keysToRemove.contains(entry.getKey()));
@@ -113,7 +115,9 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
   protected Map<String, Object> objectMapToJson(Map<String, Object> map) {
 
     final Map<String, Object> manyToOneObject = new HashMap<>();
-    manyToOneObject.put("id", map.getOrDefault("id", null));
+    if (map != null) {
+      manyToOneObject.put("id", map.getOrDefault("id", null));
+    }
 
     return manyToOneObject;
   }
@@ -124,6 +128,10 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
       String attrName,
       MetaJsonField metaJsonField,
       Map<String, Map<String, Object>> attrValueMap) {
+
+    if (attrValueMap == null) {
+      return;
+    }
 
     attrValueMap.computeIfAbsent(attrName, i -> new HashMap<>());
 
@@ -193,17 +201,20 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
 
     ObjectMapper mapper = new ObjectMapper();
     mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-    attrValueMap.entrySet().stream()
-        .forEach(
-            attr -> {
-              try {
-                Map<String, Object> fieldValue = attr.getValue();
-                Mapper classMapper = Mapper.of(type);
-                classMapper.set(targetObject, attr.getKey(), mapper.writeValueAsString(fieldValue));
-              } catch (JsonProcessingException e) {
-                TraceBackService.trace(e);
-              }
-            });
+    if (attrValueMap != null) {
+      attrValueMap.entrySet().stream()
+          .forEach(
+              attr -> {
+                try {
+                  Map<String, Object> fieldValue = attr.getValue();
+                  Mapper classMapper = Mapper.of(type);
+                  classMapper.set(
+                      targetObject, attr.getKey(), mapper.writeValueAsString(fieldValue));
+                } catch (JsonProcessingException e) {
+                  TraceBackService.trace(e);
+                }
+              });
+    }
   }
 
   @Override

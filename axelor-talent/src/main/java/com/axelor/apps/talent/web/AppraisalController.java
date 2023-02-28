@@ -22,6 +22,7 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
 import com.axelor.apps.talent.service.AppraisalService;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -132,7 +133,7 @@ public class AppraisalController {
               .add("form", "appraisal-form")
               .param("search-filters", "appraisal-fitlers")
               .domain("self.id in :createdIds")
-              .context("createdIds", createdIds)
+              .context("createdIds", SetUtils.emptyIfNull(createdIds))
               .map());
 
       response.setCanClose(true);

@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -47,6 +48,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
@@ -201,14 +203,16 @@ public class ProductServiceImpl implements ProductService {
             .filter("self.parentProduct = ?1 AND self.dtype = 'Product'", product)
             .fetch();
 
-    for (Product productVariant : productVariantList) {
+    if (CollectionUtils.isNotEmpty(productVariantList)) {
+      for (Product productVariant : productVariantList) {
 
-      productVariant.setCostPrice(product.getCostPrice());
-      productVariant.setPurchasePrice(product.getPurchasePrice());
-      productVariant.setSalePrice(product.getSalePrice());
-      productVariant.setManagPriceCoef(product.getManagPriceCoef());
+        productVariant.setCostPrice(product.getCostPrice());
+        productVariant.setPurchasePrice(product.getPurchasePrice());
+        productVariant.setSalePrice(product.getSalePrice());
+        productVariant.setManagPriceCoef(product.getManagPriceCoef());
 
-      this.updateSalePrice(productVariant, null);
+        this.updateSalePrice(productVariant, null);
+      }
     }
   }
 
@@ -244,11 +248,13 @@ public class ProductServiceImpl implements ProductService {
       seq = lastSeq + 1;
     }
 
-    for (ProductVariant productVariant : productVariantList) {
+    if (productVariantList != null) {
+      for (ProductVariant productVariant : productVariantList) {
 
-      productVariantRepo.save(productVariant);
+        productVariantRepo.save(productVariant);
 
-      productRepo.save(this.createProduct(productModel, productVariant, seq++));
+        productRepo.save(this.createProduct(productModel, productVariant, seq++));
+      }
     }
   }
 
@@ -383,8 +389,9 @@ public class ProductServiceImpl implements ProductService {
           productVariantConfig.getProductVariantValue2Set()) {
 
         productVariantList.addAll(
-            this.getProductVariantList(
-                productVariantConfig, productVariantValue1, productVariantValue2));
+            ListUtils.emptyIfNull(
+                this.getProductVariantList(
+                    productVariantConfig, productVariantValue1, productVariantValue2)));
       }
     } else {
 
@@ -410,11 +417,12 @@ public class ProductServiceImpl implements ProductService {
           productVariantConfig.getProductVariantValue3Set()) {
 
         productVariantList.addAll(
-            this.getProductVariantList(
-                productVariantConfig,
-                productVariantValue1,
-                productVariantValue2,
-                productVariantValue3));
+            ListUtils.emptyIfNull(
+                this.getProductVariantList(
+                    productVariantConfig,
+                    productVariantValue1,
+                    productVariantValue2,
+                    productVariantValue3)));
       }
     } else {
 
@@ -441,12 +449,13 @@ public class ProductServiceImpl implements ProductService {
           productVariantConfig.getProductVariantValue4Set()) {
 
         productVariantList.addAll(
-            this.getProductVariantList(
-                productVariantConfig,
-                productVariantValue1,
-                productVariantValue2,
-                productVariantValue3,
-                productVariantValue4));
+            ListUtils.emptyIfNull(
+                this.getProductVariantList(
+                    productVariantConfig,
+                    productVariantValue1,
+                    productVariantValue2,
+                    productVariantValue3,
+                    productVariantValue4)));
       }
     } else {
 

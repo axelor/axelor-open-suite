@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -35,6 +36,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProductCategoryServiceSaleImpl extends ProductCategoryServiceImpl
     implements ProductCategorySaleService {
@@ -54,6 +56,9 @@ public class ProductCategoryServiceSaleImpl extends ProductCategoryServiceImpl
   public void updateSaleOrderLines(ProductCategory productCategory) throws AxelorException {
     List<ProductCategory> impactedProductCategories =
         fetchImpactedChildrenProductCategories(productCategory);
+    if (impactedProductCategories == null) {
+      impactedProductCategories = new ArrayList<>();
+    }
     impactedProductCategories.add(productCategory);
     saleOrderLineRepository
         .all()
@@ -64,7 +69,7 @@ public class ProductCategoryServiceSaleImpl extends ProductCategoryServiceImpl
                 + "AND self.saleOrder.statusSelect != :statusCanceled")
         .bind(
             "productCategoryIds",
-            impactedProductCategories.stream()
+            ListUtils.emptyIfNull(impactedProductCategories).stream()
                 .map(ProductCategory::getId)
                 .collect(Collectors.toList()))
         .bind("statusCompleted", SaleOrderRepository.STATUS_ORDER_COMPLETED)
@@ -95,7 +100,7 @@ public class ProductCategoryServiceSaleImpl extends ProductCategoryServiceImpl
     // product categories with max discounts are not be impacted
     List<ProductCategory> childrenProductCategoryList =
         fetchChildrenWitNoMaxDiscount(productCategory);
-    while (!childrenProductCategoryList.isEmpty() && i < MAX_ITERATION) {
+    while (CollectionUtils.isNotEmpty(childrenProductCategoryList) && i < MAX_ITERATION) {
       List<ProductCategory> nextChildrenProductCategoryList = new ArrayList<>();
       for (ProductCategory childProductCategory : childrenProductCategoryList) {
         if (descendantsProductCategoryList.contains(childProductCategory)
@@ -106,7 +111,8 @@ public class ProductCategoryServiceSaleImpl extends ProductCategoryServiceImpl
               childProductCategory.getCode());
         }
         descendantsProductCategoryList.add(childProductCategory);
-        nextChildrenProductCategoryList.addAll(fetchChildrenWitNoMaxDiscount(childProductCategory));
+        nextChildrenProductCategoryList.addAll(
+            ListUtils.emptyIfNull(fetchChildrenWitNoMaxDiscount(childProductCategory)));
       }
       childrenProductCategoryList.clear();
       childrenProductCategoryList.addAll(nextChildrenProductCategoryList);

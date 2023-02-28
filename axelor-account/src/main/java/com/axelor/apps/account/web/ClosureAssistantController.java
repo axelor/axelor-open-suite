@@ -46,7 +46,9 @@ public class ClosureAssistantController {
 
       response.setValue("company", closureAssistant.getCompany());
       response.setValue("fiscalYear", closureAssistant.getFiscalYear());
-      response.setValue("closureAssistantLineList", closureAssistantLineList);
+      if (closureAssistantLineList != null) {
+        response.setValue("closureAssistantLineList", closureAssistantLineList);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

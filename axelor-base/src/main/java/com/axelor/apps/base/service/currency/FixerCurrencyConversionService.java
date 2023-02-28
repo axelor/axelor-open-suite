@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -86,48 +87,52 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
       List<CurrencyConversionLine> currencyConversionLines =
           appBase.getCurrencyConversionLineList();
       currencyConversionLines =
-          currencyConversionLines.stream()
+          ListUtils.emptyIfNull(currencyConversionLines).stream()
               .filter(it -> !it.getFromDate().isAfter(today) && it.getToDate() == null)
               .collect(Collectors.toList());
+      if (currencyConversionLines != null) {
+        for (CurrencyConversionLine ccline : currencyConversionLines) {
+          BigDecimal currentRate = BigDecimal.ZERO;
+          Float rate = 0.0f;
 
-      for (CurrencyConversionLine ccline : currencyConversionLines) {
-        BigDecimal currentRate = BigDecimal.ZERO;
-        Float rate = 0.0f;
+          if (!ccline.getStartCurrency().getCodeISO().equals(EURO_CURRENCY_CODE)
+              && !ccline.getEndCurrency().getCodeISO().equals(EURO_CURRENCY_CODE)) {
 
-        if (!ccline.getStartCurrency().getCodeISO().equals(EURO_CURRENCY_CODE)
-            && !ccline.getEndCurrency().getCodeISO().equals(EURO_CURRENCY_CODE)) {
+            isRelatedConversion = true;
+            rate =
+                this.getRateFromJson(ccline.getStartCurrency(), ccline.getEndCurrency(), response);
+          } else if (ccline.getStartCurrency().getCodeISO().equals(EURO_CURRENCY_CODE)) {
+            rate =
+                this.getRateFromJson(ccline.getStartCurrency(), ccline.getEndCurrency(), response);
+          } else {
+            rate =
+                this.getRateFromJson(ccline.getEndCurrency(), ccline.getStartCurrency(), response);
+            rate = 1.0f / rate;
+          }
 
-          isRelatedConversion = true;
-          rate = this.getRateFromJson(ccline.getStartCurrency(), ccline.getEndCurrency(), response);
-        } else if (ccline.getStartCurrency().getCodeISO().equals(EURO_CURRENCY_CODE)) {
-          rate = this.getRateFromJson(ccline.getStartCurrency(), ccline.getEndCurrency(), response);
-        } else {
-          rate = this.getRateFromJson(ccline.getEndCurrency(), ccline.getStartCurrency(), response);
-          rate = 1.0f / rate;
-        }
+          currentRate = BigDecimal.valueOf(rate).setScale(8, RoundingMode.HALF_UP);
 
-        currentRate = BigDecimal.valueOf(rate).setScale(8, RoundingMode.HALF_UP);
+          if (currentRate.compareTo(new BigDecimal(-1)) == 0) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(BaseExceptionMessage.CURRENCY_6));
+          }
 
-        if (currentRate.compareTo(new BigDecimal(-1)) == 0) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.CURRENCY_6));
-        }
-
-        ccline = cclRepo.find(ccline.getId());
-        BigDecimal previousRate = ccline.getExchangeRate();
-        if (currentRate.compareTo(previousRate) != 0 && today.isAfter(ccline.getFromDate())) {
-          ccline.setToDate(
-              !today.minusDays(1).isBefore(ccline.getFromDate()) ? today.minusDays(1) : today);
-          this.saveCurrencyConversionLine(ccline);
-          String variations = this.getVariations(currentRate, previousRate);
-          this.createCurrencyConversionLine(
-              ccline.getStartCurrency(),
-              ccline.getEndCurrency(),
-              today,
-              currentRate,
-              appBase,
-              variations);
+          ccline = cclRepo.find(ccline.getId());
+          BigDecimal previousRate = ccline.getExchangeRate();
+          if (currentRate.compareTo(previousRate) != 0 && today.isAfter(ccline.getFromDate())) {
+            ccline.setToDate(
+                !today.minusDays(1).isBefore(ccline.getFromDate()) ? today.minusDays(1) : today);
+            this.saveCurrencyConversionLine(ccline);
+            String variations = this.getVariations(currentRate, previousRate);
+            this.createCurrencyConversionLine(
+                ccline.getStartCurrency(),
+                ccline.getEndCurrency(),
+                today,
+                currentRate,
+                appBase,
+                variations);
+          }
         }
       }
 

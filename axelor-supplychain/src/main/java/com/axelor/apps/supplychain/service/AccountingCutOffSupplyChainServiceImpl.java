@@ -64,6 +64,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -207,7 +208,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     List<Move> moveList = new ArrayList<>();
 
     List<StockMoveLine> stockMoveLineSortedList = stockMove.getStockMoveLineList();
-    stockMoveLineSortedList.sort(Comparator.comparing(StockMoveLine::getSequence));
+    ListUtils.emptyIfNull(stockMoveLineSortedList)
+        .sort(Comparator.comparing(StockMoveLine::getSequence));
     Move move =
         generateCutOffMoveFromStockMove(
             stockMove,
@@ -542,7 +544,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     Query<StockMove> stockMoveQuery =
         stockMoverepository.all().filter(":batch MEMBER OF self.batchSet").bind("batch", batch);
     List<Long> stockMoveIdList =
-        stockMoveQuery.select("id").fetch(0, 0).stream()
+        ListUtils.emptyIfNull(stockMoveQuery.select("id").fetch(0, 0)).stream()
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
 

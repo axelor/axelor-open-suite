@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -131,8 +132,8 @@ public class BatchBillOfExchange extends AbstractBatch {
           createMoveAndUpdateInvoice(accountingBatch, invoice);
           incrementDone();
         } catch (Exception e) {
-          anomalyList.add(invoice.getId());
-          query.bind("anomalyList", anomalyList);
+          ListUtils.emptyIfNull(anomalyList).add(invoice.getId());
+          query.bind("anomalyList", ListUtils.emptyIfNull(anomalyList));
           incrementAnomaly();
           TraceBackService.trace(
               e, "billOfExchangeBatch: create lcr accounting move", batch.getId());
@@ -168,32 +169,35 @@ public class BatchBillOfExchange extends AbstractBatch {
     Objects.requireNonNull(invoiceMove);
     log.debug("Reconcile move {} with {}", move, invoiceMove);
     Account partnerAccount = invoice.getPartnerAccount();
+    if (move.getMoveLineList() != null) {
+      MoveLine creditMoveLine =
+          move.getMoveLineList().stream()
+              .filter(ml -> ml.getAccount().equals(partnerAccount))
+              .findFirst()
+              .orElseThrow(
+                  () ->
+                      new AxelorException(
+                          TraceBackRepository.CATEGORY_INCONSISTENCY,
+                          "Missing move line with account %s",
+                          partnerAccount.getName()));
+      if (invoiceMove.getMoveLineList() != null) {
+        MoveLine debitMoveLine =
+            invoiceMove.getMoveLineList().stream()
+                .filter(ml -> ml.getAccount().equals(partnerAccount))
+                .findFirst()
+                .orElseThrow(
+                    () ->
+                        new AxelorException(
+                            TraceBackRepository.CATEGORY_INCONSISTENCY,
+                            "Missing move line with account %s",
+                            partnerAccount.getName()));
 
-    MoveLine creditMoveLine =
-        move.getMoveLineList().stream()
-            .filter(ml -> ml.getAccount().equals(partnerAccount))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new AxelorException(
-                        TraceBackRepository.CATEGORY_INCONSISTENCY,
-                        "Missing move line with account %s",
-                        partnerAccount.getName()));
-    MoveLine debitMoveLine =
-        invoiceMove.getMoveLineList().stream()
-            .filter(ml -> ml.getAccount().equals(partnerAccount))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new AxelorException(
-                        TraceBackRepository.CATEGORY_INCONSISTENCY,
-                        "Missing move line with account %s",
-                        partnerAccount.getName()));
-
-    Reconcile reconcile =
-        reconcileService.createReconcile(
-            debitMoveLine, creditMoveLine, creditMoveLine.getCredit(), false);
-    reconcileService.confirmReconcile(reconcile, false, false);
+        Reconcile reconcile =
+            reconcileService.createReconcile(
+                debitMoveLine, creditMoveLine, creditMoveLine.getCredit(), false);
+        reconcileService.confirmReconcile(reconcile, false, false);
+      }
+    }
   }
 
   /**
@@ -298,7 +302,7 @@ public class BatchBillOfExchange extends AbstractBatch {
     bindings.put("statusSelect", InvoiceRepository.STATUS_VENTILATED);
     bindings.put("company", accountingBatch.getCompany());
     bindings.put("paymentMode", accountingBatch.getPaymentMode());
-    bindings.put("anomalyList", anomalyList);
+    bindings.put("anomalyList", ListUtils.emptyIfNull(anomalyList));
     bindings.put("dueDate", accountingBatch.getDueDate());
 
     if (accountingBatch.getDueDate() != null) {

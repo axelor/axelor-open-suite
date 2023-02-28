@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
@@ -47,10 +48,11 @@ public class OpportunityController {
       opportunityService.saveOpportunity(opportunity);
     } else if (ObjectUtils.notEmpty(request.getContext().get("_ids"))) {
       for (Opportunity opportunity :
-          opportunityRepository
-              .all()
-              .filter("id in ?1", request.getContext().get("_ids"))
-              .fetch()) {
+          ListUtils.emptyIfNull(
+              opportunityRepository
+                  .all()
+                  .filter("id in ?1", request.getContext().get("_ids"))
+                  .fetch())) {
         opportunity.setUser(AuthUtils.getUser());
         opportunityService.saveOpportunity(opportunity);
       }

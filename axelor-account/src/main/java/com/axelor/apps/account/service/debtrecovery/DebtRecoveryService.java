@@ -136,6 +136,9 @@ public class DebtRecoveryService {
   public BigDecimal getBalanceDueDebtRecovery(List<MoveLine> moveLineList, Partner partner) {
     BigDecimal balanceSubstract = this.getSubstractBalanceDue(partner);
     BigDecimal balanceDueDebtRecovery = BigDecimal.ZERO;
+    if (moveLineList == null) {
+      return balanceDueDebtRecovery;
+    }
     for (MoveLine moveLine : moveLineList) {
       balanceDueDebtRecovery = balanceDueDebtRecovery.add(moveLine.getAmountRemaining());
     }
@@ -147,10 +150,12 @@ public class DebtRecoveryService {
     List<? extends MoveLine> moveLineQuery =
         moveLineRepo.all().filter("self.partner = ?1", partner).fetch();
     BigDecimal balance = BigDecimal.ZERO;
-    for (MoveLine moveLine : moveLineQuery) {
-      if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-        if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-          balance = balance.subtract(moveLine.getAmountRemaining());
+    if (moveLineQuery != null) {
+      for (MoveLine moveLine : moveLineQuery) {
+        if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+          if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
+            balance = balance.subtract(moveLine.getAmountRemaining());
+          }
         }
       }
     }
@@ -266,43 +271,47 @@ public class DebtRecoveryService {
 
     int mailTransitTime = company.getAccountConfig().getMailTransitTime();
 
-    for (MoveLine moveLine : moveLineQuery) {
-      if (moveLine.getMove() != null && !moveLine.getMove().getIgnoreInDebtRecoveryOk()) {
-        Move move = moveLine.getMove();
-        // facture exigibles non bloquée en relance et dont la date de facture + délai
-        // d'acheminement < date du jour
-        if (move.getStatusSelect() != MoveRepository.STATUS_CANCELED
-            && move.getInvoice() != null
-            && !move.getInvoice().getDebtRecoveryBlockingOk()
-            && !move.getInvoice().getSchedulePaymentOk()
-            && ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime))
-                .isBefore(appAccountService.getTodayDate(company))) {
-          if ((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
-              && moveLine.getDueDate() != null
-              && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
-                  || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
-            if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-              if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-                moveLineList.add(moveLine);
+    if (moveLineQuery != null) {
+      for (MoveLine moveLine : moveLineQuery) {
+        if (moveLine.getMove() != null && !moveLine.getMove().getIgnoreInDebtRecoveryOk()) {
+          Move move = moveLine.getMove();
+          // facture exigibles non bloquée en relance et dont la date de facture + délai
+          // d'acheminement < date du jour
+          if (move.getStatusSelect() != MoveRepository.STATUS_CANCELED
+              && move.getInvoice() != null
+              && !move.getInvoice().getDebtRecoveryBlockingOk()
+              && !move.getInvoice().getSchedulePaymentOk()
+              && ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime))
+                  .isBefore(appAccountService.getTodayDate(company))) {
+            if ((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
+                && moveLine.getDueDate() != null
+                && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
+                    || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
+              if (moveLine.getAccount() != null
+                  && moveLine.getAccount().getUseForPartnerBalance()) {
+                if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+                  moveLineList.add(moveLine);
+                }
               }
             }
           }
-        }
-        InvoiceTerm invoiceTerm =
-            invoiceTermRepo
-                .all()
-                .filter("self.moveLine.id = :moveLineId")
-                .bind("moveLineId", moveLine.getId())
-                .fetchOne();
-        if (move.getInvoice() == null || invoiceTerm != null) {
-          if ((moveLine.getPaymentScheduleLine() != null || invoiceTerm != null)
-              && (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
-              && moveLine.getDueDate() != null
-              && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
-                  || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
-            if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-              if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-                moveLineList.add(moveLine);
+          InvoiceTerm invoiceTerm =
+              invoiceTermRepo
+                  .all()
+                  .filter("self.moveLine.id = :moveLineId")
+                  .bind("moveLineId", moveLine.getId())
+                  .fetchOne();
+          if (move.getInvoice() == null || invoiceTerm != null) {
+            if ((moveLine.getPaymentScheduleLine() != null || invoiceTerm != null)
+                && (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
+                && moveLine.getDueDate() != null
+                && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
+                    || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
+              if (moveLine.getAccount() != null
+                  && moveLine.getAccount().getUseForPartnerBalance()) {
+                if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+                  moveLineList.add(moveLine);
+                }
               }
             }
           }
@@ -314,10 +323,12 @@ public class DebtRecoveryService {
 
   public List<Invoice> getInvoiceList(List<MoveLine> moveLineList) {
     List<Invoice> invoiceList = new ArrayList<Invoice>();
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getMove().getInvoice() != null
-          && !moveLine.getMove().getInvoice().getDebtRecoveryBlockingOk()) {
-        invoiceList.add(moveLine.getMove().getInvoice());
+    if (CollectionUtils.isNotEmpty(moveLineList)) {
+      for (MoveLine moveLine : moveLineList) {
+        if (moveLine.getMove().getInvoice() != null
+            && !moveLine.getMove().getInvoice().getDebtRecoveryBlockingOk()) {
+          invoiceList.add(moveLine.getMove().getInvoice());
+        }
       }
     }
     return invoiceList;
@@ -325,10 +336,12 @@ public class DebtRecoveryService {
 
   public List<Invoice> getInvoiceListFromInvoiceTerm(List<InvoiceTerm> invoiceTermList) {
     List<Invoice> invoiceList = new ArrayList<Invoice>();
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      if (invoiceTerm.getInvoice() != null
-          && !invoiceTerm.getInvoice().getDebtRecoveryBlockingOk()) {
-        invoiceList.add(invoiceTerm.getInvoice());
+    if (CollectionUtils.isNotEmpty(invoiceTermList)) {
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        if (invoiceTerm.getInvoice() != null
+            && !invoiceTerm.getInvoice().getDebtRecoveryBlockingOk()) {
+          invoiceList.add(invoiceTerm.getInvoice());
+        }
       }
     }
     return invoiceList;
@@ -337,14 +350,17 @@ public class DebtRecoveryService {
   public List<PaymentScheduleLine> getPaymentScheduleList(
       List<MoveLine> moveLineList, Partner partner) {
     List<PaymentScheduleLine> paymentScheduleLineList = new ArrayList<PaymentScheduleLine>();
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getMove().getInvoice() == null) {
-        // Ajout à la liste des échéances exigibles relançables
-        PaymentScheduleLine paymentScheduleLine = getPaymentScheduleFromMoveLine(partner, moveLine);
-        if (paymentScheduleLine != null) {
-          // Si un montant reste à payer, c'est à dire une échéance rejeté
-          if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-            paymentScheduleLineList.add(paymentScheduleLine);
+    if (CollectionUtils.isNotEmpty(moveLineList)) {
+      for (MoveLine moveLine : moveLineList) {
+        if (moveLine.getMove().getInvoice() == null) {
+          // Ajout à la liste des échéances exigibles relançables
+          PaymentScheduleLine paymentScheduleLine =
+              getPaymentScheduleFromMoveLine(partner, moveLine);
+          if (paymentScheduleLine != null) {
+            // Si un montant reste à payer, c'est à dire une échéance rejeté
+            if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+              paymentScheduleLineList.add(paymentScheduleLine);
+            }
           }
         }
       }
@@ -422,20 +438,22 @@ public class DebtRecoveryService {
 
     List<InvoiceTerm> invoiceTermList = query.fetch();
     List<InvoiceTerm> invoiceTermWithDateCheck = Lists.newArrayList();
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      if (invoiceTerm.getDueDate() != null
-          && invoiceTerm.getMoveLine() != null
-          && invoiceTerm.getMoveLine().getMove() != null
-          && invoiceTerm.getMoveLine().getMove().getDate() != null
-          && invoiceTerm
-              .getMoveLine()
-              .getMove()
-              .getDate()
-              .plusDays(mailTransitTime)
-              .isBefore(appAccountService.getTodayDate(company))
-          && (appAccountService.getTodayDate(company).isAfter(invoiceTerm.getDueDate())
-              || appAccountService.getTodayDate(company).isEqual(invoiceTerm.getDueDate()))) {
-        invoiceTermWithDateCheck.add(invoiceTerm);
+    if (CollectionUtils.isNotEmpty(invoiceTermList)) {
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        if (invoiceTerm.getDueDate() != null
+            && invoiceTerm.getMoveLine() != null
+            && invoiceTerm.getMoveLine().getMove() != null
+            && invoiceTerm.getMoveLine().getMove().getDate() != null
+            && invoiceTerm
+                .getMoveLine()
+                .getMove()
+                .getDate()
+                .plusDays(mailTransitTime)
+                .isBefore(appAccountService.getTodayDate(company))
+            && (appAccountService.getTodayDate(company).isAfter(invoiceTerm.getDueDate())
+                || appAccountService.getTodayDate(company).isEqual(invoiceTerm.getDueDate()))) {
+          invoiceTermWithDateCheck.add(invoiceTerm);
+        }
       }
     }
 
@@ -749,19 +767,26 @@ public class DebtRecoveryService {
 
   public void updateInvoiceDebtRecovery(DebtRecovery debtRecovery, List<Invoice> invoiceList) {
     debtRecovery.setInvoiceDebtRecoverySet(new HashSet<Invoice>());
-    debtRecovery.getInvoiceDebtRecoverySet().addAll(invoiceList);
+    if (invoiceList != null && debtRecovery.getInvoiceDebtRecoverySet() != null) {
+      debtRecovery.getInvoiceDebtRecoverySet().addAll(invoiceList);
+    }
   }
 
   public void updateInvoiceTermDebtRecovery(
       DebtRecovery debtRecovery, List<InvoiceTerm> invoiceTermList) {
     debtRecovery.setInvoiceTermDebtRecoverySet(Sets.newHashSet());
-    debtRecovery.getInvoiceTermDebtRecoverySet().addAll(invoiceTermList);
+    if (invoiceTermList != null && debtRecovery.getInvoiceTermDebtRecoverySet() != null) {
+      debtRecovery.getInvoiceTermDebtRecoverySet().addAll(invoiceTermList);
+    }
   }
 
   public void updatePaymentScheduleLineDebtRecovery(
       DebtRecovery debtRecovery, List<PaymentScheduleLine> paymentSchedueLineList) {
     debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<PaymentScheduleLine>());
-    debtRecovery.getPaymentScheduleLineDebtRecoverySet().addAll(paymentSchedueLineList);
+    if (paymentSchedueLineList != null
+        && debtRecovery.getPaymentScheduleLineDebtRecoverySet() != null) {
+      debtRecovery.getPaymentScheduleLineDebtRecoverySet().addAll(paymentSchedueLineList);
+    }
   }
 
   public AccountingSituation getAccountingSituation(DebtRecovery debtRecovery) {

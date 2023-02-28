@@ -20,6 +20,7 @@ package com.axelor.apps.bpm.service;
 import com.axelor.common.ResourceUtils;
 import com.axelor.studio.service.loader.AppLoaderExportServiceImpl;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 public class AppLoaderExportBpmServiceImpl extends AppLoaderExportServiceImpl {
@@ -32,6 +33,9 @@ public class AppLoaderExportBpmServiceImpl extends AppLoaderExportServiceImpl {
 
     Map<String, InputStream> templateMap = super.getExportTemplateResources();
 
+    if (templateMap == null) {
+      templateMap = new HashMap<>();
+    }
     for (String filePrefix : EXPORT_TEMPLATES) {
       templateMap.put(
           filePrefix + ".xml",

@@ -51,6 +51,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.translation.ITranslation;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
@@ -559,8 +560,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       if (saleOrder.getTemplate()) {
         Integer manualDiscountAmountType = saleOrderLine.getDiscountTypeSelect();
         BigDecimal manualDiscountAmount = saleOrderLine.getDiscountAmount();
-        Integer priceListDiscountAmountType = (Integer) discounts.get("discountTypeSelect");
-        BigDecimal priceListDiscountAmount = (BigDecimal) discounts.get("discountAmount");
+        Integer priceListDiscountAmountType =
+            discounts != null ? (Integer) discounts.get("discountTypeSelect") : 0;
+        BigDecimal priceListDiscountAmount =
+            discounts != null ? (BigDecimal) discounts.get("discountAmount") : BigDecimal.ZERO;
 
         if (!manualDiscountAmountType.equals(priceListDiscountAmountType)
             && manualDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_PERCENT)
@@ -579,6 +582,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         }
 
         if (manualDiscountAmount.compareTo(priceListDiscountAmount) > 0) {
+          if (discounts == null) {
+            discounts = new HashMap<>();
+          }
           discounts.put("discountAmount", manualDiscountAmount);
           discounts.put("discountTypeSelect", manualDiscountAmountType);
         }
@@ -752,6 +758,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     SaleOrderLine saleOrderLine;
     Set<Integer> packLineTypeSet = getPackLineTypes(pack.getComponents());
     int typeSelect = SaleOrderLineRepository.TYPE_START_OF_PACK;
+    if (saleOrderLineList == null) {
+      saleOrderLineList = new ArrayList<>();
+    }
     for (int i = 0; i < 2; i++) {
       if (packLineTypeSet == null || !packLineTypeSet.contains(typeSelect)) {
         saleOrderLine =
@@ -760,7 +769,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         saleOrderLineList.add(saleOrderLine);
       }
       if (typeSelect == SaleOrderLineRepository.TYPE_START_OF_PACK) {
-        sequence += pack.getComponents().size() + 1;
+        sequence += ListUtils.size(pack.getComponents()) + 1;
         typeSelect = SaleOrderLineRepository.TYPE_END_OF_PACK;
       }
     }
@@ -934,7 +943,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Override
   public Set<Integer> getPackLineTypes(List<PackLine> packLineList) {
     Set<Integer> packLineTypeSet = new HashSet<>();
-    packLineList.stream()
+    ListUtils.emptyIfNull(packLineList).stream()
         .forEach(
             packLine -> {
               if (packLine.getTypeSelect() == PackLineRepository.TYPE_START_OF_PACK) {
@@ -1021,7 +1030,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       Product product, SaleOrderLine saleOrderLine, List<SaleOrderLine> newComplementarySOLines) {
     SaleOrderLine complementarySOLine;
     Optional<SaleOrderLine> complementarySOLineOpt =
-        saleOrderLine.getComplementarySaleOrderLineList().stream()
+        ListUtils.emptyIfNull(saleOrderLine.getComplementarySaleOrderLineList()).stream()
             .filter(
                 line -> line.getMainSaleOrderLine() != null && line.getProduct().equals(product))
             .findFirst();
@@ -1032,6 +1041,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       complementarySOLine.setSequence(saleOrderLine.getSequence());
       complementarySOLine.setProduct(product);
       complementarySOLine.setMainSaleOrderLine(saleOrderLine);
+      if (newComplementarySOLines == null) {
+        newComplementarySOLines = new ArrayList<>();
+      }
       newComplementarySOLines.add(complementarySOLine);
     }
     return complementarySOLine;
@@ -1042,7 +1054,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
 
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
-      return null;
+      return new ArrayList<>();
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {

@@ -45,6 +45,9 @@ import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.CollectionUtils;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -198,8 +201,10 @@ public class PurchaseOrderController {
       if (request.getContext().get("purchaseOrderToMerge") instanceof List) {
         // No confirmation popup, purchase orders are content in a parameter list
         List<Map> purchaseOrderMap = (List<Map>) request.getContext().get("purchaseOrderToMerge");
-        for (Map map : purchaseOrderMap) {
-          purchaseOrderIdList.add(new Long((Integer) map.get("id")));
+        if (purchaseOrderMap != null) {
+          for (Map map : purchaseOrderMap) {
+            purchaseOrderIdList.add(new Long((Integer) map.get("id")));
+          }
         }
       } else {
         // After confirmation popup, purchase order's id are in a string separated by ","
@@ -226,44 +231,47 @@ public class PurchaseOrderController {
     PurchaseOrder purchaseOrderTemp;
     boolean allTradingNamesAreNull = true;
     int count = 1;
-    for (Long purchaseOrderId : purchaseOrderIdList) {
-      purchaseOrderTemp = JPA.em().find(PurchaseOrder.class, purchaseOrderId);
-      purchaseOrderList.add(purchaseOrderTemp);
-      if (count == 1) {
-        commonCurrency = purchaseOrderTemp.getCurrency();
-        commonSupplierPartner = purchaseOrderTemp.getSupplierPartner();
-        commonCompany = purchaseOrderTemp.getCompany();
-        commonContactPartner = purchaseOrderTemp.getContactPartner();
-        commonPriceList = purchaseOrderTemp.getPriceList();
-        commonTradingName = purchaseOrderTemp.getTradingName();
-        allTradingNamesAreNull = commonTradingName == null;
+    if (CollectionUtils.isNotEmpty(purchaseOrderIdList)) {
+      for (Long purchaseOrderId : purchaseOrderIdList) {
+        purchaseOrderTemp = JPA.em().find(PurchaseOrder.class, purchaseOrderId);
+        purchaseOrderList.add(purchaseOrderTemp);
+        if (count == 1) {
+          commonCurrency = purchaseOrderTemp.getCurrency();
+          commonSupplierPartner = purchaseOrderTemp.getSupplierPartner();
+          commonCompany = purchaseOrderTemp.getCompany();
+          commonContactPartner = purchaseOrderTemp.getContactPartner();
+          commonPriceList = purchaseOrderTemp.getPriceList();
+          commonTradingName = purchaseOrderTemp.getTradingName();
+          allTradingNamesAreNull = commonTradingName == null;
 
-      } else {
-        if (commonCurrency != null && !commonCurrency.equals(purchaseOrderTemp.getCurrency())) {
-          commonCurrency = null;
+        } else {
+          if (commonCurrency != null && !commonCurrency.equals(purchaseOrderTemp.getCurrency())) {
+            commonCurrency = null;
+          }
+          if (commonSupplierPartner != null
+              && !commonSupplierPartner.equals(purchaseOrderTemp.getSupplierPartner())) {
+            commonSupplierPartner = null;
+          }
+          if (commonCompany != null && !commonCompany.equals(purchaseOrderTemp.getCompany())) {
+            commonCompany = null;
+          }
+          if (commonContactPartner != null
+              && !commonContactPartner.equals(purchaseOrderTemp.getContactPartner())) {
+            commonContactPartner = null;
+            existContactPartnerDiff = true;
+          }
+          if (commonPriceList != null
+              && !commonPriceList.equals(purchaseOrderTemp.getPriceList())) {
+            commonPriceList = null;
+            existPriceListDiff = true;
+          }
+          if (!Objects.equals(commonTradingName, purchaseOrderTemp.getTradingName())) {
+            commonTradingName = null;
+            allTradingNamesAreNull = false;
+          }
         }
-        if (commonSupplierPartner != null
-            && !commonSupplierPartner.equals(purchaseOrderTemp.getSupplierPartner())) {
-          commonSupplierPartner = null;
-        }
-        if (commonCompany != null && !commonCompany.equals(purchaseOrderTemp.getCompany())) {
-          commonCompany = null;
-        }
-        if (commonContactPartner != null
-            && !commonContactPartner.equals(purchaseOrderTemp.getContactPartner())) {
-          commonContactPartner = null;
-          existContactPartnerDiff = true;
-        }
-        if (commonPriceList != null && !commonPriceList.equals(purchaseOrderTemp.getPriceList())) {
-          commonPriceList = null;
-          existPriceListDiff = true;
-        }
-        if (!Objects.equals(commonTradingName, purchaseOrderTemp.getTradingName())) {
-          commonTradingName = null;
-          allTradingNamesAreNull = false;
-        }
+        count++;
       }
-      count++;
     }
 
     StringBuilder fieldErrors = new StringBuilder();
@@ -329,7 +337,8 @@ public class PurchaseOrderController {
         confirmView.context("contextPartnerId", commonSupplierPartner.getId().toString());
       }
 
-      confirmView.context("purchaseOrderToMerge", Joiner.on(",").join(purchaseOrderIdList));
+      confirmView.context(
+          "purchaseOrderToMerge", Joiner.on(",").join(ListUtils.emptyIfNull(purchaseOrderIdList)));
 
       response.setView(confirmView.map());
 
@@ -551,7 +560,8 @@ public class PurchaseOrderController {
           return;
         }
       } else {
-        for (FiscalPosition fiscalPosition : purchaseOrder.getTaxNumber().getFiscalPositionSet()) {
+        for (FiscalPosition fiscalPosition :
+            SetUtils.emptyIfNull(purchaseOrder.getTaxNumber().getFiscalPositionSet())) {
           if (fiscalPosition.getId().equals(poFiscalPosition.getId())) {
             return;
           }
@@ -579,7 +589,8 @@ public class PurchaseOrderController {
         Beans.get(PurchaseOrderLineService.class)
             .updateLinesAfterFiscalPositionChange(purchaseOrder);
       }
-      response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+      response.setValue(
+          "purchaseOrderLineList", ListUtils.emptyIfNull(purchaseOrder.getPurchaseOrderLineList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

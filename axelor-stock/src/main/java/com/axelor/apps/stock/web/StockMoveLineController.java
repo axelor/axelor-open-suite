@@ -128,7 +128,7 @@ public class StockMoveLineController {
       @SuppressWarnings("unchecked")
       LinkedHashMap<String, Object> stockMoveLineMap =
           (LinkedHashMap<String, Object>) context.get("_stockMoveLine");
-      Integer stockMoveLineId = (Integer) stockMoveLineMap.get("id");
+      Integer stockMoveLineId = stockMoveLineMap != null ? (Integer) stockMoveLineMap.get("id") : 0;
       StockMoveLine stockMoveLine =
           Beans.get(StockMoveLineRepository.class).find(new Long(stockMoveLineId));
 
@@ -251,6 +251,9 @@ public class StockMoveLineController {
     @SuppressWarnings("unchecked")
     LinkedHashMap<String, Object> stockMoveMap =
         (LinkedHashMap<String, Object>) context.get("_stockMove");
+    if (stockMoveLineMap == null || stockMoveMap == null) {
+      return;
+    }
     Integer stockMoveLineId = (Integer) stockMoveLineMap.get("id");
     Integer stockMoveId = (Integer) stockMoveMap.get("id");
     StockMoveLine stockMoveLine =
@@ -314,16 +317,17 @@ public class StockMoveLineController {
           Map<String, String> translation =
               internationalService.getProductDescriptionAndNameTranslation(
                   product, partner, userLanguage);
+          if (translation != null) {
+            String description = translation.get("description");
+            String productName = translation.get("productName");
 
-          String description = translation.get("description");
-          String productName = translation.get("productName");
-
-          if (description != null
-              && !description.isEmpty()
-              && productName != null
-              && !productName.isEmpty()) {
-            response.setValue("description", description);
-            response.setValue("productName", productName);
+            if (description != null
+                && !description.isEmpty()
+                && productName != null
+                && !productName.isEmpty()) {
+              response.setValue("description", description);
+              response.setValue("productName", productName);
+            }
           }
         }
       }

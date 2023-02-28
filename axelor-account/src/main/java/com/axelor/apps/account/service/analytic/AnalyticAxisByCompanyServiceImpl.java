@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -40,15 +41,18 @@ public class AnalyticAxisByCompanyServiceImpl implements AnalyticAxisByCompanySe
   public String getAxisDomain(AccountConfig accountConfig) {
     if (accountConfig != null) {
       List<Long> idList = new ArrayList<Long>();
-      for (AnalyticAxisByCompany axisByCompany : accountConfig.getAnalyticAxisByCompanyList()) {
-        idList.add(axisByCompany.getAnalyticAxis().getId());
+      if (accountConfig.getAnalyticAxisByCompanyList() != null) {
+        for (AnalyticAxisByCompany axisByCompany : accountConfig.getAnalyticAxisByCompanyList()) {
+          idList.add(axisByCompany.getAnalyticAxis().getId());
+        }
       }
       for (AnalyticAxis analyticAxis :
-          analyticAxisRepository
-              .all()
-              .filter("self.company != :company AND self.company IS NOT NULL")
-              .bind("company", accountConfig.getCompany())
-              .fetch()) {
+          ListUtils.emptyIfNull(
+              analyticAxisRepository
+                  .all()
+                  .filter("self.company != :company AND self.company IS NOT NULL")
+                  .bind("company", accountConfig.getCompany())
+                  .fetch())) {
         idList.add(analyticAxis.getId());
       }
       if (!ObjectUtils.isEmpty(idList)) {

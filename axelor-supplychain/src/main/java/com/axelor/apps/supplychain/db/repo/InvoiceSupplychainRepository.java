@@ -25,6 +25,7 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
 
@@ -36,7 +37,7 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
     copy.setPurchaseOrder(null);
     copy.setStockMoveSet(null);
 
-    if (copy.getInvoiceLineList() != null && !copy.getInvoiceLineList().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(copy.getInvoiceLineList())) {
       for (InvoiceLine line : copy.getInvoiceLineList()) {
         line.setSaleOrderLine(null);
         line.setPurchaseOrderLine(null);

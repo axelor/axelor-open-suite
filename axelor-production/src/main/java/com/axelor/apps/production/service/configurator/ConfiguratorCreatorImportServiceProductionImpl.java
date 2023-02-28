@@ -154,22 +154,24 @@ public class ConfiguratorCreatorImportServiceProductionImpl
         Arrays.stream(obj.getClass().getDeclaredFields())
             .filter(field -> field.getType().equals(String.class))
             .collect(Collectors.toList());
-    for (Field field : formulaFields) {
-      try {
-        // call getter of the string field
-        Object strFormula =
-            new PropertyDescriptor(field.getName(), obj.getClass()).getReadMethod().invoke(obj);
-        if (strFormula != null) {
-          new PropertyDescriptor(field.getName(), obj.getClass())
-              .getWriteMethod()
-              .invoke(obj, ((String) strFormula).replace(oldName, newName));
+    if (formulaFields != null) {
+      for (Field field : formulaFields) {
+        try {
+          // call getter of the string field
+          Object strFormula =
+              new PropertyDescriptor(field.getName(), obj.getClass()).getReadMethod().invoke(obj);
+          if (strFormula != null) {
+            new PropertyDescriptor(field.getName(), obj.getClass())
+                .getWriteMethod()
+                .invoke(obj, ((String) strFormula).replace(oldName, newName));
+          }
+        } catch (IntrospectionException
+            | IllegalAccessException
+            | IllegalArgumentException
+            | InvocationTargetException e) {
+          // should not happen since we fetched fields from the class
+          throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
         }
-      } catch (IntrospectionException
-          | IllegalAccessException
-          | IllegalArgumentException
-          | InvocationTargetException e) {
-        // should not happen since we fetched fields from the class
-        throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
       }
     }
   }

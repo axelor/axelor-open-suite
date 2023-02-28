@@ -26,6 +26,7 @@ import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestScoped
@@ -65,7 +66,9 @@ public class FixedAssetLineFiscalComputationServiceImpl
 
   @Override
   protected List<FixedAssetLine> getFixedAssetLineList(FixedAsset fixedAsset) {
-    return fixedAsset.getFiscalFixedAssetLineList();
+    return fixedAsset.getFiscalFixedAssetLineList() != null
+        ? fixedAsset.getFiscalFixedAssetLineList()
+        : new ArrayList<>();
   }
 
   @Override

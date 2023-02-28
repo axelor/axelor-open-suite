@@ -18,6 +18,8 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.JPA;
 import com.axelor.team.db.Team;
 import com.axelor.team.db.repo.TeamRepository;
@@ -31,9 +33,9 @@ public class TeamProjectRepository extends TeamRepository {
             .filter("self.team = :team AND self.synchronize = true")
             .bind("team", team)
             .fetch();
-    projects.stream()
+    ListUtils.emptyIfNull(projects).stream()
         .peek(Project::clearMembersUserSet)
-        .peek(p -> team.getMembers().forEach(p::addMembersUserSetItem))
+        .peek(p -> SetUtils.emptyIfNull(team.getMembers()).forEach(p::addMembersUserSetItem))
         .forEach(ProjectManagementRepository::setAllProjectMembersUserSet);
     return super.save(team);
   }

@@ -47,6 +47,7 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PurchaseOrderLineController {
@@ -59,16 +60,18 @@ public class PurchaseOrderLineController {
 
       Map<String, BigDecimal> map =
           Beans.get(PurchaseOrderLineService.class).compute(purchaseOrderLine, purchaseOrder);
-      response.setValues(map);
-      response.setAttr(
-          "priceDiscounted",
-          "hidden",
-          map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
-                  .compareTo(
-                      purchaseOrder.getInAti()
-                          ? purchaseOrderLine.getInTaxPrice()
-                          : purchaseOrderLine.getPrice())
-              == 0);
+      if (map != null) {
+        response.setValues(map);
+        response.setAttr(
+            "priceDiscounted",
+            "hidden",
+            map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
+                    .compareTo(
+                        purchaseOrder.getInAti()
+                            ? purchaseOrderLine.getInTaxPrice()
+                            : purchaseOrderLine.getPrice())
+                == 0);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -367,7 +370,7 @@ public class PurchaseOrderLineController {
     String domain = "";
     if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()
         && purchaseOrderLine.getProduct() != null
-        && !purchaseOrderLine.getProduct().getSupplierCatalogList().isEmpty()) {
+        && CollectionUtils.isNotEmpty(purchaseOrderLine.getProduct().getSupplierCatalogList())) {
       if (company.getPartner() != null) {
         domain += "self.id != " + company.getPartner().getId() + " AND ";
       }
@@ -427,6 +430,10 @@ public class PurchaseOrderLineController {
         Map<String, String> translation =
             internationalService.getProductDescriptionAndNameTranslation(
                 product, partner, userLanguage);
+
+        if (translation == null) {
+          return;
+        }
 
         String description = translation.get("description");
         String productName = translation.get("productName");

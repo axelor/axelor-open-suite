@@ -408,20 +408,22 @@ public class UserServiceImpl implements UserService {
     LocalDateTime todayDateTime =
         Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
 
-    for (Long userId : userIds) {
-      User user = userRepo.find(userId);
-      String password = this.generateRandomPassword().toString();
-      user.setTransientPassword(password);
-      password = authService.encrypt(password);
-      user.setPassword(password);
-      user.setPasswordUpdatedOn(todayDateTime);
-      userRepo.save(user);
-    }
+    if (userIds != null) {
+      for (Long userId : userIds) {
+        User user = userRepo.find(userId);
+        String password = this.generateRandomPassword().toString();
+        user.setTransientPassword(password);
+        password = authService.encrypt(password);
+        user.setPassword(password);
+        user.setPasswordUpdatedOn(todayDateTime);
+        userRepo.save(user);
+      }
 
-    // Update login date in session so that user changing own password doesn't get logged out.
-    if (userIds.contains(getUserId())) {
-      Session session = AuthUtils.getSubject().getSession();
-      session.setAttribute("loginDate", todayDateTime);
+      // Update login date in session so that user changing own password doesn't get logged out.
+      if (userIds.contains(getUserId())) {
+        Session session = AuthUtils.getSubject().getSession();
+        session.setAttribute("loginDate", todayDateTime);
+      }
     }
   }
 

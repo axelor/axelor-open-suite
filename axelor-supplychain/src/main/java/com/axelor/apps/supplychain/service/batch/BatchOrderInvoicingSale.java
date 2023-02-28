@@ -25,6 +25,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -68,14 +69,14 @@ public class BatchOrderInvoicingSale extends BatchOrderInvoicing {
       List<Integer> delivereyStateList =
           StringTool.getIntegerList(supplychainBatch.getDeliveryOrReceiptState());
       filterList.add("self.deliveryState IN (:delivereyStateList)");
-      query.bind("delivereyStateList", delivereyStateList);
+      query.bind("delivereyStateList", ListUtils.emptyIfNull(delivereyStateList));
     }
 
     if (!Strings.isNullOrEmpty(supplychainBatch.getStatusSelect())) {
       List<Integer> statusSelectList =
           StringTool.getIntegerList(supplychainBatch.getStatusSelect());
       filterList.add("self.statusSelect IN (:statusSelectList)");
-      query.bind("statusSelectList", statusSelectList);
+      query.bind("statusSelectList", ListUtils.emptyIfNull(statusSelectList));
     }
 
     if (supplychainBatch.getOrderUpToDate() != null) {
@@ -105,7 +106,7 @@ public class BatchOrderInvoicingSale extends BatchOrderInvoicing {
     query.bind("anomalyList", anomalyList);
 
     String filter =
-        filterList.stream()
+        ListUtils.emptyIfNull(filterList).stream()
             .map(item -> String.format("(%s)", item))
             .collect(Collectors.joining(" AND "));
     query.filter(filter);

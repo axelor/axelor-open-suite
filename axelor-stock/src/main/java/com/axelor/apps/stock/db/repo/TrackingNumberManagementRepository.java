@@ -28,6 +28,7 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 public class TrackingNumberManagementRepository extends TrackingNumberRepository {
@@ -44,13 +45,13 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     try {
-      Long trackingNumberId = (Long) json.get("id");
+      Long trackingNumberId = json != null ? (Long) json.get("id") : 0L;
       TrackingNumber trackingNumber = find(trackingNumberId);
 
       if (trackingNumber.getProduct() != null && context.get("_parent") != null) {
         Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
 
-        if (_parent.get("fromStockLocation") != null) {
+        if (_parent != null && _parent.get("fromStockLocation") != null) {
           StockLocation stockLocation =
               stockLocationRepo.find(
                   Long.parseLong(((Map) _parent.get("fromStockLocation")).get("id").toString()));
@@ -59,7 +60,9 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
             BigDecimal availableQty =
                 stockLocationLineService.getTrackingNumberAvailableQty(
                     stockLocation, trackingNumber);
-
+            if (json == null) {
+              json = new HashMap<>();
+            }
             json.put("$availableQty", availableQty);
           }
         }

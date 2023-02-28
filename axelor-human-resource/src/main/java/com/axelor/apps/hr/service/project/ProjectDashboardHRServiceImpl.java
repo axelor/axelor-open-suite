@@ -28,6 +28,8 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.map.HashedMap;
 
 public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
 
@@ -38,6 +40,9 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
   @Override
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = super.getData(project);
+    if (dataMap == null) {
+      dataMap = new HashedMap<>();
+    }
     dataMap.put("$spentTime", getSpentTime(project));
     dataMap.put("$isShowTimeSpent", project.getIsShowTimeSpent());
     return dataMap;
@@ -50,13 +55,15 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
             .filter("self.project.id IN ?1", projectService.getContextProjectIds())
             .fetch();
     BigDecimal totalDuration = BigDecimal.ZERO;
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      try {
-        totalDuration =
-            totalDuration.add(
-                timesheetLineService.computeHoursDuration(
-                    timesheetLine.getTimesheet(), timesheetLine.getDuration(), true));
-      } catch (AxelorException e) {
+    if (CollectionUtils.isNotEmpty(timesheetLineList)) {
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        try {
+          totalDuration =
+              totalDuration.add(
+                  timesheetLineService.computeHoursDuration(
+                      timesheetLine.getTimesheet(), timesheetLine.getDuration(), true));
+        } catch (AxelorException e) {
+        }
       }
     }
     return totalDuration;

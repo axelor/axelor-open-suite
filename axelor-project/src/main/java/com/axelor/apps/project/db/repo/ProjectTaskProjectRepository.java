@@ -108,56 +108,57 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
 
     logger.debug("Validate project task:{}", json);
 
-    logger.debug(
-        "Planned progress:{}, ProgressSelect: {}, DurationHours: {}, TaskDuration: {}",
-        json.get("plannedProgress"),
-        json.get("progressSelect"),
-        json.get("durationHours"),
-        json.get("taskDuration"));
+    if (json != null) {
+      logger.debug(
+          "Planned progress:{}, ProgressSelect: {}, DurationHours: {}, TaskDuration: {}",
+          json.get("plannedProgress"),
+          json.get("progressSelect"),
+          json.get("durationHours"),
+          json.get("taskDuration"));
 
-    if (json.get("id") != null) {
+      if (json.get("id") != null) {
 
-      ProjectTask savedTask = find(Long.parseLong(json.get("id").toString()));
-      if (json.get("plannedProgress") != null) {
-        BigDecimal plannedProgress = new BigDecimal(json.get("plannedProgress").toString());
-        if (plannedProgress != null
-            && savedTask.getPlannedProgress().intValue() != plannedProgress.intValue()) {
-          logger.debug(
-              "Updating progressSelect: {}", ((int) (plannedProgress.intValue() * 0.10)) * 10);
-          json.put("progressSelect", ((int) (plannedProgress.intValue() * 0.10)) * 10);
+        ProjectTask savedTask = find(Long.parseLong(json.get("id").toString()));
+        if (json.get("plannedProgress") != null) {
+          BigDecimal plannedProgress = new BigDecimal(json.get("plannedProgress").toString());
+          if (plannedProgress != null
+              && savedTask.getPlannedProgress().intValue() != plannedProgress.intValue()) {
+            logger.debug(
+                "Updating progressSelect: {}", ((int) (plannedProgress.intValue() * 0.10)) * 10);
+            json.put("progressSelect", ((int) (plannedProgress.intValue() * 0.10)) * 10);
+          }
+        } else if (json.get("progressSelect") != null) {
+          Integer progressSelect = new Integer(json.get("progressSelect").toString());
+          logger.debug("Updating plannedProgress: {}", progressSelect);
+          json.put("plannedProgress", new BigDecimal(progressSelect));
         }
-      } else if (json.get("progressSelect") != null) {
-        Integer progressSelect = new Integer(json.get("progressSelect").toString());
-        logger.debug("Updating plannedProgress: {}", progressSelect);
-        json.put("plannedProgress", new BigDecimal(progressSelect));
-      }
-      if (json.get("durationHours") != null) {
-        BigDecimal durationHours = new BigDecimal(json.get("durationHours").toString());
-        if (durationHours != null
-            && savedTask.getDurationHours().intValue() != durationHours.intValue()) {
-          logger.debug(
-              "Updating taskDuration: {}",
-              durationHours.divide(new BigDecimal(24), RoundingMode.HALF_UP).intValue());
-          json.put("taskDuration", durationHours.multiply(new BigDecimal(3600)).intValue());
+        if (json.get("durationHours") != null) {
+          BigDecimal durationHours = new BigDecimal(json.get("durationHours").toString());
+          if (durationHours != null
+              && savedTask.getDurationHours().intValue() != durationHours.intValue()) {
+            logger.debug(
+                "Updating taskDuration: {}",
+                durationHours.divide(new BigDecimal(24), RoundingMode.HALF_UP).intValue());
+            json.put("taskDuration", durationHours.multiply(new BigDecimal(3600)).intValue());
+          }
+        } else if (json.get("taskDuration") != null) {
+          Integer taskDuration = new Integer(json.get("taskDuration").toString());
+          logger.debug("Updating durationHours: {}", taskDuration / 3600);
+          json.put("durationHours", new BigDecimal(taskDuration / 3600));
         }
-      } else if (json.get("taskDuration") != null) {
-        Integer taskDuration = new Integer(json.get("taskDuration").toString());
-        logger.debug("Updating durationHours: {}", taskDuration / 3600);
-        json.put("durationHours", new BigDecimal(taskDuration / 3600));
-      }
 
-    } else {
+      } else {
 
-      if (json.get("progressSelect") != null) {
-        Integer progressSelect = new Integer(json.get("progressSelect").toString());
-        json.put("plannedProgress", new BigDecimal(progressSelect));
-      }
-      if (json.get("taskDuration") != null) {
-        Integer taskDuration = new Integer(json.get("taskDuration").toString());
-        json.put("durationHours", new BigDecimal(taskDuration / 3600));
+        if (json.get("progressSelect") != null) {
+          Integer progressSelect = new Integer(json.get("progressSelect").toString());
+          json.put("plannedProgress", new BigDecimal(progressSelect));
+        }
+        if (json.get("taskDuration") != null) {
+          Integer taskDuration = new Integer(json.get("taskDuration").toString());
+          json.put("durationHours", new BigDecimal(taskDuration / 3600));
+        }
       }
     }
-
     return super.validate(json, context);
   }
 

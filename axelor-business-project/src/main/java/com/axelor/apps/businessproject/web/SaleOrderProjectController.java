@@ -118,7 +118,9 @@ public class SaleOrderProjectController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       saleOrder = Beans.get(ProjectAnalyticMoveLineService.class).updateLines(saleOrder);
-      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+      if (saleOrder.getSaleOrderLineList() != null) {
+        response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

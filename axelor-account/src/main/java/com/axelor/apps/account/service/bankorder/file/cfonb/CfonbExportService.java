@@ -50,6 +50,7 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class CfonbExportService {
 
@@ -115,6 +116,9 @@ public class CfonbExportService {
 
     String senderCFONB = this.createSenderReimbursementCFONB(datetime, bankDetails);
     List<String> multiRecipientCFONB = new ArrayList<String>();
+    if (reimbursementList == null || reimbursementList.isEmpty()) {
+      return;
+    }
     for (Reimbursement reimbursement : reimbursementList) {
       reimbursement = reimbursementRepo.find(reimbursement.getId());
 
@@ -679,6 +683,9 @@ public class CfonbExportService {
     String dateFileName = yyyyMMddHHmmssFormat.format(zonedDateTime);
     String fileName = String.format("%s%s.dat", prefix, dateFileName);
 
+    if (cFONB == null || cFONB.isEmpty()) {
+      return;
+    }
     try {
       FileTool.writer(destinationFolder, fileName, cFONB);
     } catch (IOException e) {
@@ -714,9 +721,11 @@ public class CfonbExportService {
    */
   protected BigDecimal getTotalAmountReimbursementExport(List<Reimbursement> reimbursementList) {
     BigDecimal totalAmount = BigDecimal.ZERO;
-    for (Reimbursement reimbursement : reimbursementList) {
-      reimbursement = reimbursementRepo.find(reimbursement.getId());
-      totalAmount = totalAmount.add(reimbursement.getAmountReimbursed());
+    if (CollectionUtils.isNotEmpty(reimbursementList)) {
+      for (Reimbursement reimbursement : reimbursementList) {
+        reimbursement = reimbursementRepo.find(reimbursement.getId());
+        totalAmount = totalAmount.add(reimbursement.getAmountReimbursed());
+      }
     }
     return totalAmount;
   }
@@ -731,11 +740,13 @@ public class CfonbExportService {
       List<PaymentScheduleLine> paymentScheduleLineList) {
     BigDecimal totalAmount = BigDecimal.ZERO;
 
-    for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
+    if (CollectionUtils.isNotEmpty(paymentScheduleLineList)) {
+      for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
 
-      totalAmount =
-          totalAmount.add(
-              paymentScheduleLineRepo.find(paymentScheduleLine.getId()).getDirectDebitAmount());
+        totalAmount =
+            totalAmount.add(
+                paymentScheduleLineRepo.find(paymentScheduleLine.getId()).getDirectDebitAmount());
+      }
     }
     return totalAmount;
   }
@@ -749,11 +760,12 @@ public class CfonbExportService {
   protected BigDecimal getTotalAmountInvoice(List<Invoice> invoiceList) {
     BigDecimal totalAmount = BigDecimal.ZERO;
 
-    for (Invoice invoice : invoiceList) {
+    if (CollectionUtils.isNotEmpty(invoiceList)) {
+      for (Invoice invoice : invoiceList) {
 
-      totalAmount = totalAmount.add(invoiceRepo.find(invoice.getId()).getDirectDebitAmount());
+        totalAmount = totalAmount.add(invoiceRepo.find(invoice.getId()).getDirectDebitAmount());
+      }
     }
-
     return totalAmount;
   }
 

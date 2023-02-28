@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -72,30 +73,33 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
       throws AxelorException {
     List<Project> projects = new ArrayList<>();
     projectRepository.save(project);
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      Product product = saleOrderLine.getProduct();
-      if (product != null
-          && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
-          && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
-        Project phase = projectBusinessService.generatePhaseProject(saleOrderLine, project);
-        phase.setFromDate(startDate);
-        saleOrderLineRepository.save(saleOrderLine);
-        projects.add(phase);
+    if (saleOrder != null && CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        Product product = saleOrderLine.getProduct();
+        if (product != null
+            && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
+            && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
+          Project phase = projectBusinessService.generatePhaseProject(saleOrderLine, project);
+          phase.setFromDate(startDate);
+          saleOrderLineRepository.save(saleOrderLine);
+          projects.add(phase);
 
-        if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {
-          productTaskTemplateService.convert(
-              product.getTaskTemplateSet().stream()
-                  .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
-                  .collect(Collectors.toList()),
-              phase,
-              null,
-              startDate,
-              saleOrderLine.getQty(),
-              saleOrderLine);
+          if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {
+            productTaskTemplateService.convert(
+                product.getTaskTemplateSet().stream()
+                    .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
+                    .collect(Collectors.toList()),
+                phase,
+                null,
+                startDate,
+                saleOrderLine.getQty(),
+                saleOrderLine);
+          }
         }
       }
     }
-    return ActionView.define(String.format("Project%s generated", (projects.size() > 1 ? "s" : "")))
+    return ActionView.define(
+            String.format("Project%s generated", (ListUtils.size(projects) > 1 ? "s" : "")))
         .model(Project.class.getName())
         .add("grid", "project-grid")
         .add("form", "project-form")

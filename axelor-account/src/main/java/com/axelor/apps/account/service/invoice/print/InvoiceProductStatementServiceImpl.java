@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceProductStatement;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceProductStatementServiceImpl implements InvoiceProductStatementService {
   protected AccountConfigService accountConfigService;
@@ -87,7 +89,9 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
   protected String getMinSizeCorrespondingInvoiceProductStatement(
       Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
 
-    return getCorrectInvoiceProductStatements(productTypes, invoiceProductStatementList).stream()
+    return ListUtils.emptyIfNull(
+            getCorrectInvoiceProductStatements(productTypes, invoiceProductStatementList))
+        .stream()
         .findFirst()
         .map(InvoiceProductStatement::getStatement)
         .orElse("");
@@ -101,18 +105,24 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
     List<InvoiceProductStatement> correspondingInvoiceProductStatementsWithMinSize =
         getCorrespondingInvoiceProductStatementsWithMinSize(
             correspondingInvoiceProductStatements, min);
-    correspondingInvoiceProductStatementsWithMinSize.sort(
-        Comparator.comparing(InvoiceProductStatement::getId));
-    return correspondingInvoiceProductStatementsWithMinSize;
+    if (correspondingInvoiceProductStatementsWithMinSize != null) {
+      correspondingInvoiceProductStatementsWithMinSize.sort(
+          Comparator.comparing(InvoiceProductStatement::getId));
+      return correspondingInvoiceProductStatementsWithMinSize;
+    }
+    return new ArrayList<>();
   }
 
   protected List<InvoiceProductStatement> getCorrespondingInvoiceProductStatementsWithMinSize(
       List<InvoiceProductStatement> correspondingInvoiceProductStatements, int min) {
     List<InvoiceProductStatement> minSizeCorrespondingInvoiceProductStatements = new ArrayList<>();
-    for (InvoiceProductStatement invoiceProductStatement : correspondingInvoiceProductStatements) {
-      int typesListSize = getTypesList(invoiceProductStatement).size();
-      if (typesListSize == min) {
-        minSizeCorrespondingInvoiceProductStatements.add(invoiceProductStatement);
+    if (CollectionUtils.isNotEmpty(correspondingInvoiceProductStatements)) {
+      for (InvoiceProductStatement invoiceProductStatement :
+          correspondingInvoiceProductStatements) {
+        int typesListSize = getTypesList(invoiceProductStatement).size();
+        if (typesListSize == min) {
+          minSizeCorrespondingInvoiceProductStatements.add(invoiceProductStatement);
+        }
       }
     }
     return minSizeCorrespondingInvoiceProductStatements;
@@ -120,10 +130,13 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
 
   protected int getMinSize(List<InvoiceProductStatement> correspondingInvoiceProductStatements) {
     int min = 1000;
-    for (InvoiceProductStatement invoiceProductStatement : correspondingInvoiceProductStatements) {
-      int typesListSize = getTypesList(invoiceProductStatement).size();
-      if (typesListSize < min) {
-        min = typesListSize;
+    if (CollectionUtils.isNotEmpty(correspondingInvoiceProductStatements)) {
+      for (InvoiceProductStatement invoiceProductStatement :
+          correspondingInvoiceProductStatements) {
+        int typesListSize = getTypesList(invoiceProductStatement).size();
+        if (typesListSize < min) {
+          min = typesListSize;
+        }
       }
     }
     return min;
@@ -132,10 +145,12 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
   protected List<InvoiceProductStatement> getCorrespondingInvoiceProductStatements(
       Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
     List<InvoiceProductStatement> correspondingStatements = new ArrayList<>();
-    for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
-      Set<String> result = getTypesList(invoiceProductStatement);
-      if (result.stream().anyMatch(productTypes::contains)) {
-        correspondingStatements.add(invoiceProductStatement);
+    if (CollectionUtils.isNotEmpty(invoiceProductStatementList)) {
+      for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
+        Set<String> result = getTypesList(invoiceProductStatement);
+        if (result != null && result.stream().anyMatch(productTypes::contains)) {
+          correspondingStatements.add(invoiceProductStatement);
+        }
       }
     }
     return correspondingStatements;
@@ -144,10 +159,12 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
   protected Optional<String> getCorrespondingStatement(
       Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
     String statement = null;
-    for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
-      Set<String> result = getTypesList(invoiceProductStatement);
-      if (result.equals(productTypes)) {
-        statement = invoiceProductStatement.getStatement();
+    if (CollectionUtils.isNotEmpty(invoiceProductStatementList)) {
+      for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
+        Set<String> result = getTypesList(invoiceProductStatement);
+        if (result.equals(productTypes)) {
+          statement = invoiceProductStatement.getStatement();
+        }
       }
     }
     return Optional.ofNullable(statement);
@@ -160,10 +177,12 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
 
   protected Set<String> getProductTypes(List<InvoiceLine> invoiceLineList) {
     Set<String> productTypes = new HashSet<>();
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      Product product = invoiceLine.getProduct();
-      if (product != null) {
-        productTypes.add(product.getProductTypeSelect());
+    if (CollectionUtils.isNotEmpty(invoiceLineList)) {
+      for (InvoiceLine invoiceLine : invoiceLineList) {
+        Product product = invoiceLine.getProduct();
+        if (product != null) {
+          productTypes.add(product.getProductTypeSelect());
+        }
       }
     }
     return productTypes;

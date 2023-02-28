@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class CalendarService extends ICalendarService {
 
@@ -42,18 +43,26 @@ public class CalendarService extends ICalendarService {
     Set<User> followedUsers = user.getFollowersCalUserSet();
     List<Long> calendarIdlist = new ArrayList<Long>();
 
-    for (User userIt : followedUsers) {
-      for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
-        if ((user.equals(calendarManagement.getUser()))
-            || (team != null && team.equals(calendarManagement.getTeam()))) {
-          List<ICalendar> icalList =
-              icalRepo.all().filter("self.user.id = ?1", userIt.getId()).fetch();
-          calendarIdlist.addAll(Lists.transform(icalList, it -> it.getId()));
+    if (CollectionUtils.isNotEmpty(followedUsers)) {
+      for (User userIt : followedUsers) {
+        if (CollectionUtils.isNotEmpty(userIt.getCalendarManagementList())) {
+          for (CalendarManagement calendarManagement : userIt.getCalendarManagementList()) {
+            if ((user.equals(calendarManagement.getUser()))
+                || (team != null && team.equals(calendarManagement.getTeam()))) {
+              List<ICalendar> icalList =
+                  icalRepo.all().filter("self.user.id = ?1", userIt.getId()).fetch();
+              if (icalList != null) {
+                calendarIdlist.addAll(Lists.transform(icalList, it -> it.getId()));
+              }
+            }
+          }
         }
       }
     }
     List<ICalendar> icalList = icalRepo.all().filter("self.user.id = ?1", user.getId()).fetch();
-    calendarIdlist.addAll(Lists.transform(icalList, it -> it.getId()));
+    if (icalList != null) {
+      calendarIdlist.addAll(Lists.transform(icalList, it -> it.getId()));
+    }
     return calendarIdlist;
   }
 

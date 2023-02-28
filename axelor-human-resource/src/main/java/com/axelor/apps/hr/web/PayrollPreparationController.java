@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -53,20 +54,25 @@ public class PayrollPreparationController {
     List<PayrollLeave> payrollLeaveList =
         Beans.get(PayrollPreparationService.class).fillInPayrollPreparation(payrollPreparation);
 
-    response.setValue("extraHoursLineList", payrollPreparation.getExtraHoursLineList());
-    response.setValue("$payrollLeavesList", payrollLeaveList);
+    response.setValue(
+        "extraHoursLineList", ListUtils.emptyIfNull(payrollPreparation.getExtraHoursLineList()));
+    response.setValue("$payrollLeavesList", ListUtils.emptyIfNull(payrollLeaveList));
     response.setValue("duration", payrollPreparation.getDuration());
     response.setValue("leaveDuration", payrollPreparation.getLeaveDuration());
     response.setValue("expenseAmount", payrollPreparation.getExpenseAmount());
-    response.setValue("expenseList", payrollPreparation.getExpenseList());
+    response.setValue("expenseList", ListUtils.emptyIfNull(payrollPreparation.getExpenseList()));
     response.setValue(
         "otherCostsEmployeeSet",
         payrollPreparation.getEmploymentContract().getOtherCostsEmployeeSet());
     response.setValue(
         "annualGrossSalary", payrollPreparation.getEmploymentContract().getAnnualGrossSalary());
-    response.setValue("employeeBonusMgtLineList", payrollPreparation.getEmployeeBonusMgtLineList());
+    response.setValue(
+        "employeeBonusMgtLineList",
+        ListUtils.emptyIfNull(payrollPreparation.getEmployeeBonusMgtLineList()));
     response.setValue("lunchVoucherNumber", payrollPreparation.getLunchVoucherNumber());
-    response.setValue("lunchVoucherMgtLineList", payrollPreparation.getLunchVoucherMgtLineList());
+    response.setValue(
+        "lunchVoucherMgtLineList",
+        ListUtils.emptyIfNull(payrollPreparation.getLunchVoucherMgtLineList()));
     response.setValue("employeeBonusAmount", payrollPreparation.getEmployeeBonusAmount());
     response.setValue("extraHoursNumber", payrollPreparation.getExtraHoursNumber());
   }
@@ -78,7 +84,7 @@ public class PayrollPreparationController {
     List<PayrollLeave> payrollLeaveList =
         Beans.get(PayrollPreparationService.class).fillInLeaves(payrollPreparation);
 
-    response.setValue("$payrollLeavesList", payrollLeaveList);
+    response.setValue("$payrollLeavesList", ListUtils.emptyIfNull(payrollLeaveList));
   }
 
   public void exportPayrollPreparation(ActionRequest request, ActionResponse response)

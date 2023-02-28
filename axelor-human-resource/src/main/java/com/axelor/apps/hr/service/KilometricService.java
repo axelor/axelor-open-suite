@@ -81,6 +81,9 @@ public class KilometricService {
   }
 
   public KilometricLog getKilometricLog(Employee employee, LocalDate refDate) {
+    if (employee.getKilometricLogList() == null) {
+      return null;
+    }
     return employee.getKilometricLogList().stream()
         .filter(
             log ->
@@ -374,9 +377,12 @@ public class KilometricService {
     Map<String, Object> originMap = this.getLocationMap(origins);
     Map<String, Object> destinationMap = this.getLocationMap(destinations);
 
-    String originCoordinates = originMap.get("longitude") + "," + originMap.get("latitude");
+    String originCoordinates =
+        originMap != null ? originMap.get("longitude") + "," + originMap.get("latitude") : "";
     String destinationCoordinates =
-        destinationMap.get("longitude") + "," + destinationMap.get("latitude");
+        destinationMap != null
+            ? destinationMap.get("longitude") + "," + destinationMap.get("latitude")
+            : "";
     String uri =
         String.format(
             "https://router.project-osrm.org/route/v1/driving/%s;%s",
@@ -402,10 +408,10 @@ public class KilometricService {
     Map<String, Object> originMap = this.getLocationMap(origins);
     Map<String, Object> destinationMap = this.getLocationMap(destinations);
 
-    String flat = originMap.get("latitude").toString();
-    String flon = originMap.get("longitude").toString();
-    String tlat = destinationMap.get("latitude").toString();
-    String tlon = destinationMap.get("longitude").toString();
+    String flat = originMap != null ? originMap.get("latitude").toString() : "";
+    String flon = originMap != null ? originMap.get("longitude").toString() : "";
+    String tlat = destinationMap != null ? destinationMap.get("latitude").toString() : "";
+    String tlon = destinationMap != null ? destinationMap.get("longitude").toString() : "";
 
     URIBuilder ub = new URIBuilder("http://www.yournavigation.org/api/1.0/gosmore.php");
     ub.addParameter("format", "geojson");

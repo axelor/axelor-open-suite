@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
+import java.util.HashSet;
 
 public class UserServiceAccountImpl extends UserServiceImpl {
 
@@ -33,8 +34,12 @@ public class UserServiceAccountImpl extends UserServiceImpl {
         .filter(
             "self.pfpValidatorUser = ? and self.company in ? and self.company in ?",
             pfpValidatorUser,
-            pfpValidatorUser.getCompanySet(),
-            newPfpValidatorUser.getCompanySet())
+            pfpValidatorUser.getCompanySet() == null
+                ? new HashSet<>()
+                : pfpValidatorUser.getCompanySet(),
+            newPfpValidatorUser.getCompanySet() == null
+                ? new HashSet<>()
+                : newPfpValidatorUser.getCompanySet())
         .update("pfpValidatorUser", newPfpValidatorUser);
   }
 }

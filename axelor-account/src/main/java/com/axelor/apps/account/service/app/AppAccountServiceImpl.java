@@ -67,10 +67,12 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
 
     List<Company> companies = companyRepo.all().filter("self.accountConfig is null").fetch();
 
-    for (Company company : companies) {
-      AccountConfig config = new AccountConfig();
-      config.setCompany(company);
-      accountConfigRepo.save(config);
+    if (companies != null) {
+      for (Company company : companies) {
+        AccountConfig config = new AccountConfig();
+        config.setCompany(company);
+        accountConfigRepo.save(config);
+      }
     }
   }
 }

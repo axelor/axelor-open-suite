@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.DataBackup;
 import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.apps.base.db.repo.AnonymizerLineRepository;
 import com.axelor.apps.tool.ComputeNameTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
@@ -30,6 +31,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
+import org.apache.commons.collections.CollectionUtils;
 
 public class DataBackupAnonymizeServiceImpl implements DataBackupAnonymizeService {
 
@@ -47,10 +49,15 @@ public class DataBackupAnonymizeServiceImpl implements DataBackupAnonymizeServic
   public List<AnonymizerLine> searchAnonymizerLines(
       DataBackup dataBackup, Property property, String metaModelName) {
     List<AnonymizerLine> anonymizerLines = new ArrayList<>();
-    for (AnonymizerLine anonymizerLine : dataBackup.getAnonymizer().getAnonymizerLineList()) {
-      anonymizerLines =
-          getAnonymizerLines(dataBackup, property, metaModelName, anonymizerLines, anonymizerLine);
-      filterAnonymizerLines(property, metaModelName, anonymizerLines, anonymizerLine);
+    if (dataBackup != null
+        && dataBackup.getAnonymizer() != null
+        && CollectionUtils.isNotEmpty(dataBackup.getAnonymizer().getAnonymizerLineList())) {
+      for (AnonymizerLine anonymizerLine : dataBackup.getAnonymizer().getAnonymizerLineList()) {
+        anonymizerLines =
+            getAnonymizerLines(
+                dataBackup, property, metaModelName, anonymizerLines, anonymizerLine);
+        filterAnonymizerLines(property, metaModelName, anonymizerLines, anonymizerLine);
+      }
     }
     return anonymizerLines;
   }
@@ -118,7 +125,7 @@ public class DataBackupAnonymizeServiceImpl implements DataBackupAnonymizeServic
   protected HashMap<MetaJsonField, FakerApiField> computeFakerMap(
       List<AnonymizerLine> anonymizerLines) {
     HashMap<MetaJsonField, FakerApiField> fakerMap = new HashMap<>();
-    anonymizerLines.stream()
+    ListUtils.emptyIfNull(anonymizerLines).stream()
         .filter(anonymizerLine -> anonymizerLine.getMetaJsonField() != null)
         .forEach(
             anonymizerLine ->
@@ -130,17 +137,19 @@ public class DataBackupAnonymizeServiceImpl implements DataBackupAnonymizeServic
       List<AnonymizerLine> anonymizerLines, Object value, Property property, String metaModelName)
       throws AxelorException {
     String result = "";
-    for (AnonymizerLine anonymizerLine : anonymizerLines) {
-      if (metaModelName.equals(anonymizerLine.getMetaModel().getName())
-          && anonymizerLine.getMetaField() != null
-          && property.getName().equals(anonymizerLine.getMetaField().getName())) {
-        if (anonymizerLine.getFakerApiField() != null) {
-          result =
-              anonymizeService
-                  .anonymizeValue(value, property, anonymizerLine.getFakerApiField())
-                  .toString();
-        } else {
-          result = anonymizeService.anonymizeValue(value, property).toString();
+    if (CollectionUtils.isNotEmpty(anonymizerLines)) {
+      for (AnonymizerLine anonymizerLine : anonymizerLines) {
+        if (metaModelName.equals(anonymizerLine.getMetaModel().getName())
+            && anonymizerLine.getMetaField() != null
+            && property.getName().equals(anonymizerLine.getMetaField().getName())) {
+          if (anonymizerLine.getFakerApiField() != null) {
+            result =
+                anonymizeService
+                    .anonymizeValue(value, property, anonymizerLine.getFakerApiField())
+                    .toString();
+          } else {
+            result = anonymizeService.anonymizeValue(value, property).toString();
+          }
         }
       }
     }
@@ -149,6 +158,10 @@ public class DataBackupAnonymizeServiceImpl implements DataBackupAnonymizeServic
 
   @Override
   public List<String> csvComputeAnonymizedFullname(List<String> dataArr, List<String> headerArr) {
+
+    if (headerArr == null || dataArr == null) {
+      return new ArrayList<>();
+    }
 
     if (headerArr.indexOf("simpleFullName") < 0
         || headerArr.indexOf("fullName") < 0
@@ -194,6 +207,10 @@ public class DataBackupAnonymizeServiceImpl implements DataBackupAnonymizeServic
   public List<String> csvAnonymizeImportId(
       List<String> dataArr, List<String> headerArr, byte[] salt) {
 
+    if (headerArr == null || dataArr == null) {
+      return new ArrayList<>();
+    }
+
     headerArr.stream()
         .filter(
             header ->
@@ -211,13 +228,16 @@ public class DataBackupAnonymizeServiceImpl implements DataBackupAnonymizeServic
   protected String anonymizeImportId(
       List<String> dataArr, List<String> headerArr, String header, byte[] salt) {
     StringBuilder anoImportId = new StringBuilder();
-    if (dataArr.get(headerArr.indexOf(header)).contains("|")) {
-      String[] importIds = dataArr.get(headerArr.indexOf(header)).split("\\|");
-      for (String importId : importIds) {
-        anoImportId.append(anonymizeService.hashValue(importId, salt)).append("|");
+    if (dataArr != null && headerArr != null) {
+      if (dataArr.get(headerArr.indexOf(header)).contains("|")) {
+        String[] importIds = dataArr.get(headerArr.indexOf(header)).split("\\|");
+        for (String importId : importIds) {
+          anoImportId.append(anonymizeService.hashValue(importId, salt)).append("|");
+        }
+      } else {
+        anoImportId.append(
+            anonymizeService.hashValue(dataArr.get(headerArr.indexOf(header)), salt));
       }
-    } else {
-      anoImportId.append(anonymizeService.hashValue(dataArr.get(headerArr.indexOf(header)), salt));
     }
     return anoImportId.toString();
   }

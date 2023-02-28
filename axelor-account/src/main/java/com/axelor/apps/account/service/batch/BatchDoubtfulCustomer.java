@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -35,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,11 +102,13 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 
       // FACTURES
       List<Move> moveList = doubtfulCustomerService.getMove(0, doubtfulCustomerAccount, company);
-      log.debug("Number of move lines (Debt more than 6 months) in 411 : {}", moveList.size());
+      log.debug(
+          "Number of move lines (Debt more than 6 months) in 411 : {}", ListUtils.size(moveList));
       this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, sixMonthDebtPassReason);
 
       moveList = doubtfulCustomerService.getMove(1, doubtfulCustomerAccount, company);
-      log.debug("Number of move lines (Debt more than 3 months) in 411 : {}", moveList.size());
+      log.debug(
+          "Number of move lines (Debt more than 3 months) in 411 : {}", ListUtils.size(moveList));
       this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, threeMonthDebtPassReason);
 
       // FACTURES REJETES
@@ -113,7 +117,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
               doubtfulCustomerService.getRejectMoveLine(0, doubtfulCustomerAccount, company);
       log.debug(
           "Number of rejected move lines (Debt more than 6 months) in 411 : {}",
-          moveLineList.size());
+          ListUtils.size(moveLineList));
       this.createDoubtFulCustomerRejectMove(
           moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
 
@@ -122,7 +126,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
               doubtfulCustomerService.getRejectMoveLine(1, doubtfulCustomerAccount, company);
       log.debug(
           "Number of rejected move lines (Debt more than 3 months) in 411 : {}",
-          moveLineList.size());
+          ListUtils.size(moveLineList));
       this.createDoubtFulCustomerRejectMove(
           moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
 
@@ -142,44 +146,49 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
    */
   public void createDoubtFulCustomerMove(
       List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason) {
-    for (int i = 0; i < moveList.size(); i++) {
-      Move move = moveList.get(i);
+    if (CollectionUtils.isNotEmpty(moveList)) {
+      for (int i = 0; i < moveList.size(); i++) {
+        Move move = moveList.get(i);
 
-      try {
-        doubtfulCustomerService.createDoubtFulCustomerMove(
-            moveRepo.find(move.getId()),
-            accountRepo.find(doubtfulCustomerAccount.getId()),
-            debtPassReason);
+        try {
+          doubtfulCustomerService.createDoubtFulCustomerMove(
+              moveRepo.find(move.getId()),
+              accountRepo.find(doubtfulCustomerAccount.getId()),
+              debtPassReason);
 
-        Move myMove = moveRepo.find(move.getId());
+          Move myMove = moveRepo.find(move.getId());
 
-        if (myMove.getInvoice() != null) {
-          updateInvoice(myMove.getInvoice());
-        } else {
-          updateAccountMove(myMove, true);
-        }
+          if (myMove.getInvoice() != null) {
+            updateInvoice(myMove.getInvoice());
+          } else {
+            updateAccountMove(myMove, true);
+          }
 
-      } catch (AxelorException e) {
-        TraceBackService.trace(
-            new AxelorException(e, e.getCategory(), I18n.get("Invoice") + " %s", move.getOrigin()),
-            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
-            batch.getId());
+        } catch (AxelorException e) {
+          TraceBackService.trace(
+              new AxelorException(
+                  e, e.getCategory(), I18n.get("Invoice") + " %s", move.getOrigin()),
+              ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
+              batch.getId());
 
-        incrementAnomaly();
-      } catch (Exception e) {
-        TraceBackService.trace(
-            new Exception(String.format(I18n.get("Invoice") + " %s", move.getOrigin()), e),
-            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
-            batch.getId());
+          incrementAnomaly();
+        } catch (Exception e) {
+          TraceBackService.trace(
+              new Exception(String.format(I18n.get("Invoice") + " %s", move.getOrigin()), e),
+              ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
+              batch.getId());
 
-        incrementAnomaly();
+          incrementAnomaly();
 
-        log.error(
-            "Anomaly generated for the invoice {}",
-            moveRepo.find(move.getId()).getInvoice().getInvoiceId());
-      } finally {
-        if (i % 10 == 0) {
-          JPA.clear();
+          log.error(
+              "Anomaly generated for the invoice {}",
+              moveRepo.find(move.getId()).getInvoice().getInvoiceId());
+
+        } finally {
+
+          if (i % 10 == 0) {
+            JPA.clear();
+          }
         }
       }
     }
@@ -198,50 +207,51 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
       List<MoveLine> moveLineList, Account doubtfulCustomerAccount, String debtPassReason) {
 
     int i = 0;
+    if (CollectionUtils.isNotEmpty(moveLineList)) {
+      for (MoveLine moveLine : moveLineList) {
 
-    for (MoveLine moveLine : moveLineList) {
+        try {
 
-      try {
+          doubtfulCustomerService.createDoubtFulCustomerRejectMove(
+              moveLineRepo.find(moveLine.getId()),
+              accountRepo.find(doubtfulCustomerAccount.getId()),
+              debtPassReason);
+          updateInvoice(moveLineRepo.find(moveLine.getId()).getInvoiceReject());
+          i++;
 
-        doubtfulCustomerService.createDoubtFulCustomerRejectMove(
-            moveLineRepo.find(moveLine.getId()),
-            accountRepo.find(doubtfulCustomerAccount.getId()),
-            debtPassReason);
-        updateInvoice(moveLineRepo.find(moveLine.getId()).getInvoiceReject());
-        i++;
+        } catch (AxelorException e) {
 
-      } catch (AxelorException e) {
+          TraceBackService.trace(
+              new AxelorException(
+                  e,
+                  e.getCategory(),
+                  I18n.get("Invoice") + " %s",
+                  moveLine.getInvoiceReject().getInvoiceId()),
+              ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
+              batch.getId());
+          incrementAnomaly();
 
-        TraceBackService.trace(
-            new AxelorException(
-                e,
-                e.getCategory(),
-                I18n.get("Invoice") + " %s",
-                moveLine.getInvoiceReject().getInvoiceId()),
-            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
-            batch.getId());
-        incrementAnomaly();
+        } catch (Exception e) {
 
-      } catch (Exception e) {
+          TraceBackService.trace(
+              new Exception(
+                  String.format(
+                      I18n.get("Invoice") + " %s", moveLine.getInvoiceReject().getInvoiceId()),
+                  e),
+              ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
+              batch.getId());
 
-        TraceBackService.trace(
-            new Exception(
-                String.format(
-                    I18n.get("Invoice") + " %s", moveLine.getInvoiceReject().getInvoiceId()),
-                e),
-            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
-            batch.getId());
+          incrementAnomaly();
 
-        incrementAnomaly();
+          log.error(
+              "Anomaly generated for the invoice {}",
+              moveLineRepo.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
 
-        log.error(
-            "Anomaly generated for the invoice {}",
-            moveLineRepo.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
+        } finally {
 
-      } finally {
-
-        if (i % 10 == 0) {
-          JPA.clear();
+          if (i % 10 == 0) {
+            JPA.clear();
+          }
         }
       }
     }

@@ -27,6 +27,7 @@ import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -70,7 +71,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
                 .all()
                 .filter(
                     "self.productCategory in (?1) AND self.productTypeSelect = ?2",
-                    productCategoryList,
+                    ListUtils.emptyIfNull(productCategoryList),
                     ProductRepository.PRODUCT_TYPE_STORABLE);
       } else {
         productQuery =
@@ -145,7 +146,8 @@ public class BatchUpdateStockHistory extends BatchStrategy {
       ProductCategoryService productCategoryService = Beans.get(ProductCategoryService.class);
       for (ProductCategory productCategory : productCategoryList) {
         childProductCategoryList.addAll(
-            productCategoryService.fetchChildrenCategoryList(productCategory));
+            ListUtils.emptyIfNull(
+                productCategoryService.fetchChildrenCategoryList(productCategory)));
       }
       productCategoryList.addAll(childProductCategoryList);
     }

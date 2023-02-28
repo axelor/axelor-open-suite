@@ -178,7 +178,9 @@ public class ContractLineServiceImpl implements ContractLineService {
                 AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT,
                 appAccountService.getTodayDate(contract.getCompany()));
 
-    contractLine.setAnalyticMoveLineList(analyticMoveLineList);
+    if (analyticMoveLineList != null) {
+      contractLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
     return contractLine;
   }
 }

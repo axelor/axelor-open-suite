@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -169,7 +170,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
                         .orElse(null)));
 
     purchaseOrderLine.clearAnalyticMoveLineList();
-    analyticMoveLineList.forEach(purchaseOrderLine::addAnalyticMoveLineListItem);
+    ListUtils.emptyIfNull(analyticMoveLineList)
+        .forEach(purchaseOrderLine::addAnalyticMoveLineListItem);
     return purchaseOrderLine;
   }
 

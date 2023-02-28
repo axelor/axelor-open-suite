@@ -37,6 +37,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,8 +91,10 @@ public class TimesheetReportController {
     List<Message> messages = Beans.get(TimesheetReportService.class).sendReminders(timesheetReport);
     List<Long> messageIds = new ArrayList<Long>();
     messageIds.add(0L);
-    for (Message message : messages) {
-      messageIds.add(message.getId());
+    if (CollectionUtils.isNotEmpty(messages)) {
+      for (Message message : messages) {
+        messageIds.add(message.getId());
+      }
     }
 
     response.setView(

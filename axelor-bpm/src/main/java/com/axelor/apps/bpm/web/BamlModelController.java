@@ -60,44 +60,46 @@ public class BamlModelController {
     }
 
     Map<String, Object> bamlModelMap = (Map<String, Object>) context.get("bamlModel");
-    BamlModel bamlModel =
-        Beans.get(BamlModelRepository.class)
-            .find(Long.parseLong(bamlModelMap.get("id").toString()));
+    if (bamlModelMap != null) {
+      BamlModel bamlModel =
+          Beans.get(BamlModelRepository.class)
+              .find(Long.parseLong(bamlModelMap.get("id").toString()));
 
-    Model object = Beans.get(BamlService.class).execute(bamlModel, entity);
+      Model object = Beans.get(BamlService.class).execute(bamlModel, entity);
 
-    String modelName = object.getClass().getSimpleName();
-    String dasherizeModel = Inflector.getInstance().dasherize(modelName);
+      String modelName = object.getClass().getSimpleName();
+      String dasherizeModel = Inflector.getInstance().dasherize(modelName);
 
-    String title = object.getClass().getSimpleName();
-    String formView = dasherizeModel + "-form";
-    String gridView = dasherizeModel + "-grid";
+      String title = object.getClass().getSimpleName();
+      String formView = dasherizeModel + "-form";
+      String gridView = dasherizeModel + "-grid";
 
-    String jsonModel = null;
-    if (object instanceof MetaJsonRecord) {
-      jsonModel = ((MetaJsonRecord) object).getJsonModel();
-      title = Beans.get(MetaJsonModelRepository.class).findByName(jsonModel).getTitle();
-      if (Strings.isNullOrEmpty(title)) {
-        title = jsonModel;
+      String jsonModel = null;
+      if (object instanceof MetaJsonRecord) {
+        jsonModel = ((MetaJsonRecord) object).getJsonModel();
+        title = Beans.get(MetaJsonModelRepository.class).findByName(jsonModel).getTitle();
+        if (Strings.isNullOrEmpty(title)) {
+          title = jsonModel;
+        }
+        formView = "custom-model-" + jsonModel + "-form";
+        gridView = "custom-model-" + jsonModel + "-grid";
       }
-      formView = "custom-model-" + jsonModel + "-form";
-      gridView = "custom-model-" + jsonModel + "-grid";
+
+      response.setCanClose(true);
+
+      ActionViewBuilder builder =
+          ActionView.define(I18n.get(title))
+              .model(object.getClass().getName())
+              .add("form", formView)
+              .add("grid", gridView)
+              .context("_showRecord", object.getId());
+
+      if (jsonModel != null) {
+        builder.context("jsonModel", jsonModel);
+        builder.domain("self.jsonModel = :jsonModel");
+      }
+
+      response.setView(builder.map());
     }
-
-    response.setCanClose(true);
-
-    ActionViewBuilder builder =
-        ActionView.define(I18n.get(title))
-            .model(object.getClass().getName())
-            .add("form", formView)
-            .add("grid", gridView)
-            .context("_showRecord", object.getId());
-
-    if (jsonModel != null) {
-      builder.context("jsonModel", jsonModel);
-      builder.domain("self.jsonModel = :jsonModel");
-    }
-
-    response.setView(builder.map());
   }
 }

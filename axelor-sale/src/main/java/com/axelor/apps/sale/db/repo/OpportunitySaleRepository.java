@@ -22,6 +22,7 @@ import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 
 public class OpportunitySaleRepository extends OpportunityManagementRepository {
 
+  @Override
   public Opportunity copy(Opportunity entity, boolean deep) {
     Opportunity copy = super.copy(entity, deep);
     copy.clearSaleOrderList();

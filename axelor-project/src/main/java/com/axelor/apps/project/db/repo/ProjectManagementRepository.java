@@ -19,6 +19,7 @@ package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -43,12 +44,16 @@ public class ProjectManagementRepository extends ProjectRepository {
     if (project.getParentProject() == null && project.getChildProjectList() != null) {
       project.getChildProjectList().stream()
           .filter(Project::getExtendsMembersFromParent)
-          .peek(p -> project.getMembersUserSet().forEach(p::addMembersUserSetItem))
+          .peek(
+              p ->
+                  SetUtils.emptyIfNull(project.getMembersUserSet())
+                      .forEach(p::addMembersUserSetItem))
           .forEach(p -> p.setTeam(project.getTeam()));
     } else if (project.getParentProject() != null
         && project.getExtendsMembersFromParent()
         && !project.getSynchronize()) {
-      project.getParentProject().getMembersUserSet().forEach(project.getMembersUserSet()::add);
+      SetUtils.emptyIfNull(project.getParentProject().getMembersUserSet())
+          .forEach(project.getMembersUserSet()::add);
     }
   }
 
@@ -61,7 +66,7 @@ public class ProjectManagementRepository extends ProjectRepository {
       Team team = project.getTeam();
       if (team != null) {
         team.clearMembers();
-        project.getMembersUserSet().forEach(team::addMember);
+        SetUtils.emptyIfNull(project.getMembersUserSet()).forEach(team::addMember);
       }
     }
     setAllProjectFullName(project);

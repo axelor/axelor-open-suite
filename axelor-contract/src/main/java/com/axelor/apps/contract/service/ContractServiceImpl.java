@@ -49,6 +49,8 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
+import com.axelor.apps.tool.collection.CollectionUtils;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -70,7 +72,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,10 +226,10 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected void checkInvoicedConsumptionLines(Contract contract) throws AxelorException {
     Contract origin = find(contract.getId());
     List<ConsumptionLine> lineInvoiced =
-        origin.getConsumptionLineList().stream()
+        ListUtils.emptyIfNull(origin.getConsumptionLineList()).stream()
             .filter(ConsumptionLine::getIsInvoiced)
             .collect(Collectors.toList());
-    for (ConsumptionLine line : contract.getConsumptionLineList()) {
+    for (ConsumptionLine line : ListUtils.emptyIfNull(contract.getConsumptionLineList())) {
       if (lineInvoiced.contains(line)) {
         lineInvoiced.remove(line);
       }
@@ -243,10 +244,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected void checkInvoicedAdditionalContractLine(Contract contract) throws AxelorException {
     Contract origin = find(contract.getId());
     List<ContractLine> lineInvoiced =
-        origin.getAdditionalBenefitContractLineList().stream()
+        ListUtils.emptyIfNull(origin.getAdditionalBenefitContractLineList()).stream()
             .filter(ContractLine::getIsInvoiced)
             .collect(Collectors.toList());
-    for (ContractLine line : contract.getAdditionalBenefitContractLineList()) {
+    for (ContractLine line :
+        ListUtils.emptyIfNull(contract.getAdditionalBenefitContractLineList())) {
       if (lineInvoiced.contains(line)) {
         lineInvoiced.remove(line);
       }
@@ -400,7 +402,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     // Compute all additional lines
     List<ContractLine> additionalLines =
-        contract.getAdditionalBenefitContractLineList().stream()
+        ListUtils.emptyIfNull(contract.getAdditionalBenefitContractLineList()).stream()
             .filter(contractLine -> !contractLine.getIsInvoiced())
             .peek(contractLine -> contractLine.setIsInvoiced(true))
             .collect(Collectors.toList());
@@ -414,9 +416,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       }
       contractLineRepo.save(line);
     }
-
     // Compute all classic contract lines
-    for (ContractVersion version : getVersions(contract)) {
+    for (ContractVersion version : ListUtils.emptyIfNull(getVersions(contract))) {
       BigDecimal ratio = BigDecimal.ONE;
       if (contract.getCurrentContractVersion().getIsTimeProratedInvoice()) {
         if (isFullProrated(contract)
@@ -442,13 +443,13 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                 start, end, contract.getCurrentContractVersion().getInvoicingDuration());
       }
       List<ContractLine> lines =
-          version.getContractLineList().stream()
+          ListUtils.emptyIfNull(version.getContractLineList()).stream()
               .filter(contractLine -> !contractLine.getIsConsumptionLine())
               .collect(Collectors.toList());
 
       for (ContractLine line : lines) {
         ContractLine tmp = contractLineRepo.copy(line, false);
-        tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
+        tmp.setAnalyticMoveLineList(ListUtils.emptyIfNull(line.getAnalyticMoveLineList()));
         tmp.setQty(
             tmp.getQty()
                 .multiply(ratio)
@@ -466,15 +467,18 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     // Compute all consumption lines
     Multimap<ContractLine, ConsumptionLine> consLines = mergeConsumptionLines(contract);
-    for (Entry<ContractLine, Collection<ConsumptionLine>> entries : consLines.asMap().entrySet()) {
-      ContractLine line = entries.getKey();
-      InvoiceLine invoiceLine = generate(invoice, line);
-      invoiceLine.setContractLine(line);
-      entries.getValue().stream()
-          .peek(cons -> cons.setInvoiceLine(invoiceLine))
-          .forEach(cons -> cons.setIsInvoiced(true));
-      line.setQty(BigDecimal.ZERO);
-      contractLineService.computeTotal(line);
+    if (consLines != null) {
+      for (Entry<ContractLine, Collection<ConsumptionLine>> entries :
+          consLines.asMap().entrySet()) {
+        ContractLine line = entries.getKey();
+        InvoiceLine invoiceLine = generate(invoice, line);
+        invoiceLine.setContractLine(line);
+        CollectionUtils.emptyIfNull(entries.getValue()).stream()
+            .peek(cons -> cons.setInvoiceLine(invoiceLine))
+            .forEach(cons -> cons.setIsInvoiced(true));
+        line.setQty(BigDecimal.ZERO);
+        contractLineService.computeTotal(line);
+      }
     }
 
     // Compute invoice
@@ -500,7 +504,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     Multimap<ContractLine, ConsumptionLine> mergedLines = HashMultimap.create();
 
     Stream<ConsumptionLine> lineStream =
-        contract.getConsumptionLineList().stream().filter(c -> !c.getIsInvoiced());
+        ListUtils.emptyIfNull(contract.getConsumptionLineList()).stream()
+            .filter(c -> !c.getIsInvoiced());
 
     if (contract.getCurrentContractVersion().getIsConsumptionBeforeEndDate()) {
       lineStream =
@@ -684,65 +689,67 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   public Contract copyFromTemplate(Contract contract, ContractTemplate template)
       throws AxelorException {
 
-    if (template.getAdditionalBenefitContractLineList() != null
-        && !template.getAdditionalBenefitContractLineList().isEmpty()) {
+    if (template != null) {
+      if (template.getAdditionalBenefitContractLineList() != null
+          && !template.getAdditionalBenefitContractLineList().isEmpty()) {
 
-      for (ContractLine line : template.getAdditionalBenefitContractLineList()) {
+        for (ContractLine line : template.getAdditionalBenefitContractLineList()) {
 
-        ContractLine newLine = contractLineRepo.copy(line, false);
-        contractLineService.compute(newLine, contract, newLine.getProduct());
-        contractLineService.computeTotal(newLine);
-        contractLineRepo.save(newLine);
-        contract.addAdditionalBenefitContractLineListItem(newLine);
+          ContractLine newLine = contractLineRepo.copy(line, false);
+          contractLineService.compute(newLine, contract, newLine.getProduct());
+          contractLineService.computeTotal(newLine);
+          contractLineRepo.save(newLine);
+          contract.addAdditionalBenefitContractLineListItem(newLine);
+        }
       }
-    }
 
-    contract.setCompany(template.getCompany());
-    contract.setCurrency(template.getCurrency());
-    contract.setIsAdditionaBenefitManagement(template.getIsAdditionaBenefitManagement());
-    contract.setIsConsumptionManagement(template.getIsConsumptionManagement());
-    contract.setIsInvoicingManagement(template.getIsInvoicingManagement());
-    contract.setName(template.getName());
-    contract.setNote(template.getNote());
+      contract.setCompany(template.getCompany());
+      contract.setCurrency(template.getCurrency());
+      contract.setIsAdditionaBenefitManagement(template.getIsAdditionaBenefitManagement());
+      contract.setIsConsumptionManagement(template.getIsConsumptionManagement());
+      contract.setIsInvoicingManagement(template.getIsInvoicingManagement());
+      contract.setName(template.getName());
+      contract.setNote(template.getNote());
 
-    ContractVersion version = new ContractVersion();
+      ContractVersion version = new ContractVersion();
 
-    if (template.getContractLineList() != null && !template.getContractLineList().isEmpty()) {
+      if (CollectionUtils.isNotEmpty(template.getContractLineList())) {
 
-      for (ContractLine line : template.getContractLineList()) {
+        for (ContractLine line : template.getContractLineList()) {
 
-        ContractLine newLine = contractLineRepo.copy(line, false);
-        contractLineService.compute(newLine, contract, newLine.getProduct());
-        contractLineService.computeTotal(newLine);
-        contractLineRepo.save(newLine);
-        version.addContractLineListItem(newLine);
+          ContractLine newLine = contractLineRepo.copy(line, false);
+          contractLineService.compute(newLine, contract, newLine.getProduct());
+          contractLineService.computeTotal(newLine);
+          contractLineRepo.save(newLine);
+          version.addContractLineListItem(newLine);
+        }
       }
+
+      version.setIsConsumptionBeforeEndDate(template.getIsConsumptionBeforeEndDate());
+      version.setIsPeriodicInvoicing(template.getIsPeriodicInvoicing());
+      version.setIsProratedFirstInvoice(template.getIsProratedFirstInvoice());
+      version.setIsProratedInvoice(template.getIsProratedInvoice());
+      version.setIsProratedLastInvoice(template.getIsProratedLastInvoice());
+      version.setIsTacitRenewal(template.getIsTacitRenewal());
+      version.setIsTimeProratedInvoice(template.getIsTimeProratedInvoice());
+      version.setIsVersionProratedInvoice(template.getIsVersionProratedInvoice());
+      version.setIsWithEngagement(template.getIsWithEngagement());
+      version.setIsWithPriorNotice(template.getIsWithPriorNotice());
+      version.setIsAutoEnableVersionOnRenew(template.getIsAutoEnableVersionOnRenew());
+
+      version.setAutomaticInvoicing(template.getAutomaticInvoicing());
+      version.setEngagementDuration(template.getEngagementDuration());
+      version.setEngagementStartFromVersion(template.getEngagementStartFromVersion());
+      version.setInvoicingDuration(template.getInvoicingDuration());
+      version.setInvoicingMomentSelect(template.getInvoicingMomentSelect());
+      version.setPaymentCondition(template.getPaymentCondition());
+      version.setPaymentMode(template.getPaymentMode());
+      version.setPriorNoticeDuration(template.getPriorNoticeDuration());
+      version.setRenewalDuration(template.getRenewalDuration());
+      version.setDescription(template.getDescription());
+
+      contract.setCurrentContractVersion(version);
     }
-
-    version.setIsConsumptionBeforeEndDate(template.getIsConsumptionBeforeEndDate());
-    version.setIsPeriodicInvoicing(template.getIsPeriodicInvoicing());
-    version.setIsProratedFirstInvoice(template.getIsProratedFirstInvoice());
-    version.setIsProratedInvoice(template.getIsProratedInvoice());
-    version.setIsProratedLastInvoice(template.getIsProratedLastInvoice());
-    version.setIsTacitRenewal(template.getIsTacitRenewal());
-    version.setIsTimeProratedInvoice(template.getIsTimeProratedInvoice());
-    version.setIsVersionProratedInvoice(template.getIsVersionProratedInvoice());
-    version.setIsWithEngagement(template.getIsWithEngagement());
-    version.setIsWithPriorNotice(template.getIsWithPriorNotice());
-    version.setIsAutoEnableVersionOnRenew(template.getIsAutoEnableVersionOnRenew());
-
-    version.setAutomaticInvoicing(template.getAutomaticInvoicing());
-    version.setEngagementDuration(template.getEngagementDuration());
-    version.setEngagementStartFromVersion(template.getEngagementStartFromVersion());
-    version.setInvoicingDuration(template.getInvoicingDuration());
-    version.setInvoicingMomentSelect(template.getInvoicingMomentSelect());
-    version.setPaymentCondition(template.getPaymentCondition());
-    version.setPaymentMode(template.getPaymentMode());
-    version.setPriorNoticeDuration(template.getPriorNoticeDuration());
-    version.setRenewalDuration(template.getRenewalDuration());
-    version.setDescription(template.getDescription());
-
-    contract.setCurrentContractVersion(version);
 
     return contract;
   }

@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.EbicsRequestLog;
 import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import java.util.List;
 
@@ -30,8 +31,10 @@ public class EbicsUserManagementRepository extends EbicsUserRepository {
         Beans.get(EbicsRequestLogRepository.class);
     List<EbicsRequestLog> ebicsRequestLogList =
         ebicsRequestLogRepository.all().filter("self.ebicsUser = ?1", entity).fetch();
-    for (EbicsRequestLog ebicsRequestLog : ebicsRequestLogList) {
-      ebicsRequestLogRepository.remove(ebicsRequestLog);
+    if (ObjectUtils.notEmpty(ebicsRequestLogList)) {
+      for (EbicsRequestLog ebicsRequestLog : ebicsRequestLogList) {
+        ebicsRequestLogRepository.remove(ebicsRequestLog);
+      }
     }
     super.remove(entity);
   }

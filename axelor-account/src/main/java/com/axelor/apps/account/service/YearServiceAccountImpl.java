@@ -31,6 +31,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearServiceImpl;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -43,6 +44,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,8 +95,10 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
     year = yearRepository.find(year.getId());
 
-    for (Period period : year.getPeriodList()) {
-      periodService.close(period);
+    if (year.getPeriodList() != null) {
+      for (Period period : year.getPeriodList()) {
+        periodService.close(period);
+      }
     }
     Company company = year.getCompany();
     if (company == null) {
@@ -140,25 +144,29 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
     List<? extends Partner> partnerListAll = partnerRepository.all().fetch();
 
-    log.debug("Total number of partner : {}", partnerListAll.size());
-    log.debug("Total number of partner recovered : {}", partnerList.size());
+    log.debug("Total number of partner : {}", ListUtils.size(partnerListAll));
+    log.debug("Total number of partner recovered : {}", ListUtils.size(partnerList));
 
-    for (Partner partner : partnerList) {
-      partner = partnerRepository.find(partner.getId());
-      year = yearRepository.find(year.getId());
-      log.debug("Partner currently being processed: {}", partner.getName());
+    if (CollectionUtils.isNotEmpty(partnerList)) {
+      for (Partner partner : partnerList) {
+        partner = partnerRepository.find(partner.getId());
+        year = yearRepository.find(year.getId());
+        log.debug("Partner currently being processed: {}", partner.getName());
 
-      for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
-        if (accountingSituation.getCompany().equals(year.getCompany())) {
-          log.debug("Adding a line to the found accounting situation");
+        if (partner.getAccountingSituationList() != null) {
+          for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
+            if (accountingSituation.getCompany().equals(year.getCompany())) {
+              log.debug("Adding a line to the found accounting situation");
 
-          BigDecimal reportedBalanceAmount =
-              this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, year);
+              BigDecimal reportedBalanceAmount =
+                  this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, year);
 
-          break;
+              break;
+            }
+          }
         }
+        JPA.clear();
       }
-      JPA.clear();
     }
     year = yearRepository.find(year.getId());
     closeYear(year);

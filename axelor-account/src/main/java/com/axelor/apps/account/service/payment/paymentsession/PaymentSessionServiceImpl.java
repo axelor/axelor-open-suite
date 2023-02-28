@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -193,13 +194,15 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         paymentSessionRepository
             .all()
             .filter("self.id IN :paymentSessionIds AND self.statusSelect = :cancelledStatus")
-            .bind("paymentSessionIds", paymentSessionIds)
+            .bind("paymentSessionIds", ListUtils.emptyIfNull(paymentSessionIds))
             .bind("cancelledStatus", PaymentSessionRepository.STATUS_CANCELLED)
             .fetch();
-    for (PaymentSession paymentSession : paymentSessionList) {
-      paymentSessionRepository.remove(paymentSession);
+    if (paymentSessionList != null) {
+      for (PaymentSession paymentSession : paymentSessionList) {
+        paymentSessionRepository.remove(paymentSession);
+      }
     }
-    return paymentSessionList.size();
+    return ListUtils.size(paymentSessionList);
   }
 
   @Override
@@ -266,11 +269,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
     eligibleInvoiceTermList = this.filterNotAwaitingPayment(eligibleInvoiceTermList);
     eligibleInvoiceTermList = this.filterBlocking(eligibleInvoiceTermList, paymentSession);
-    eligibleInvoiceTermList.forEach(
-        invoiceTerm -> {
-          fillEligibleTerm(paymentSession, invoiceTerm);
-          invoiceTermRepository.save(invoiceTerm);
-        });
+    ListUtils.emptyIfNull(eligibleInvoiceTermList)
+        .forEach(
+            invoiceTerm -> {
+              fillEligibleTerm(paymentSession, invoiceTerm);
+              invoiceTermRepository.save(invoiceTerm);
+            });
 
     computeTotalPaymentSession(paymentSession);
   }
@@ -308,14 +312,14 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   public List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream()
+    return ListUtils.emptyIfNull(invoiceTermList).stream()
         .filter(invoiceTerm -> invoiceTermService.isNotAwaitingPayment(invoiceTerm))
         .collect(Collectors.toList());
   }
 
   protected List<InvoiceTerm> filterBlocking(
       List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession) {
-    return invoiceTermList.stream()
+    return ListUtils.emptyIfNull(invoiceTermList).stream()
         .filter(it -> !this.isBlocking(it, paymentSession))
         .collect(Collectors.toList());
   }
@@ -353,10 +357,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   protected boolean isBlocking(Partner partner, PaymentSession paymentSession) {
-    for (Blocking blocking : partner.getBlockingList()) {
-      if (blocking.getBlockingSelect().equals(BlockingRepository.DEBIT_BLOCKING)
-          && !paymentSession.getPaymentDate().isAfter(blocking.getBlockingToDate())) {
-        return true;
+    if (partner.getBlockingList() != null) {
+      for (Blocking blocking : partner.getBlockingList()) {
+        if (blocking.getBlockingSelect().equals(BlockingRepository.DEBIT_BLOCKING)
+            && !paymentSession.getPaymentDate().isAfter(blocking.getBlockingToDate())) {
+          return true;
+        }
       }
     }
 

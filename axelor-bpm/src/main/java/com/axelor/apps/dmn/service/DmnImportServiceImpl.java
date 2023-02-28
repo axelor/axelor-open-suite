@@ -20,6 +20,7 @@ package com.axelor.apps.dmn.service;
 import com.axelor.apps.bpm.db.WkfDmnModel;
 import com.axelor.apps.bpm.db.repo.WkfDmnModelRepository;
 import com.axelor.apps.bpm.exception.BpmExceptionMessage;
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.exception.AxelorException;
@@ -154,7 +155,7 @@ public class DmnImportServiceImpl implements DmnImportService {
             : null;
 
     Input input =
-        table.getInputs().stream()
+        CollectionUtils.emptyIfNull(table.getInputs()).stream()
             .filter(ip -> ip.getLabel().equals(label) && ip.getId().equals(id))
             .findAny()
             .orElse(null);
@@ -163,7 +164,7 @@ public class DmnImportServiceImpl implements DmnImportService {
     }
 
     Output output =
-        table.getOutputs().stream()
+        CollectionUtils.emptyIfNull(table.getOutputs()).stream()
             .filter(op -> op.getLabel().equals(label) && op.getId().equals(id))
             .findAny()
             .orElse(null);

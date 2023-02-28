@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -113,7 +114,8 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
             AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
             moveLine.getDate());
 
-    analyticMoveLineList.stream().forEach(moveLine::addAnalyticMoveLineListItem);
+    ListUtils.emptyIfNull(analyticMoveLineList).stream()
+        .forEach(moveLine::addAnalyticMoveLineListItem);
   }
 
   @Override
@@ -131,8 +133,10 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     } else {
       moveLine.getAnalyticMoveLineList().clear();
     }
-    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-      moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+    if (analyticMoveLineList != null) {
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
     }
     return moveLine;
   }
@@ -153,14 +157,14 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       } else {
         moveLine.setAnalyticDistributionTemplate(null);
       }
+      List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
+      if (analyticMoveLineList != null) {
+        analyticMoveLineList.clear();
+      } else {
+        moveLine.setAnalyticMoveLineList(new ArrayList<AnalyticMoveLine>());
+      }
+      moveLine = computeAnalyticDistribution(moveLine);
     }
-    List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
-    if (analyticMoveLineList != null) {
-      analyticMoveLineList.clear();
-    } else {
-      moveLine.setAnalyticMoveLineList(new ArrayList<AnalyticMoveLine>());
-    }
-    moveLine = computeAnalyticDistribution(moveLine);
     return moveLine;
   }
 

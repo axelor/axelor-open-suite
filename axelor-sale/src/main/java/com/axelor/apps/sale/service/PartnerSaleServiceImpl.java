@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -179,10 +180,10 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     List<String> customerList =
         JPA.em().createQuery(customerSelection + endQuery, String.class).getResultList();
 
-    for (int i = 0; i < averageList.size(); i++) {
+    for (int i = 0; i < ListUtils.size(averageList); i++) {
       Map<String, Object> dataMap = new HashMap<String, Object>();
-      dataMap.put("_average", (Object) averageList.get(i));
-      dataMap.put("_customer", (Object) customerList.get(i));
+      dataMap.put("_average", (Object) ListUtils.emptyIfNull(averageList).get(i));
+      dataMap.put("_customer", (Object) ListUtils.emptyIfNull(customerList).get(i));
       dataList.add(dataMap);
     }
 

@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -38,6 +39,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerInvoiceTermService {
   protected InvoiceTermService invoiceTermService;
@@ -76,59 +78,64 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
     List<InvoiceTerm> invoiceTermToRemove = new ArrayList<>();
     List<InvoiceTerm> invoiceTermToAddToDebitMoveLine = new ArrayList<>();
 
-    for (MoveLine invoicePartnerMoveLine : invoicePartnerMoveLines) {
+    if (CollectionUtils.isNotEmpty(invoicePartnerMoveLines)) {
+      for (MoveLine invoicePartnerMoveLine : invoicePartnerMoveLines) {
 
-      List<InvoiceTerm> invoiceTermToAddToInvoicePartnerMoveLine = new ArrayList<>();
-      for (InvoiceTerm invoiceTerm : invoicePartnerMoveLine.getInvoiceTermList()) {
-        paymentMode = invoiceTerm.getPaymentMode();
-        bankDetails = invoiceTerm.getBankDetails();
-        pfpUser = invoiceTerm.getPfpValidatorUser();
+        List<InvoiceTerm> invoiceTermToAddToInvoicePartnerMoveLine = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(invoicePartnerMoveLine.getInvoiceTermList())) {
+          for (InvoiceTerm invoiceTerm : invoicePartnerMoveLine.getInvoiceTermList()) {
+            paymentMode = invoiceTerm.getPaymentMode();
+            bankDetails = invoiceTerm.getBankDetails();
+            pfpUser = invoiceTerm.getPfpValidatorUser();
 
-        if (invoiceTerm.getAmountRemaining().signum() > 0
-            && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
+            if (invoiceTerm.getAmountRemaining().signum() > 0
+                && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
 
-          // Copy invoice term on put it on new move line
-          InvoiceTerm copy = invoiceTermRepo.copy(invoiceTerm, false);
-          invoiceTermToAddToDebitMoveLine.add(copy);
-          invoiceTermToAdd.add(copy);
+              // Copy invoice term on put it on new move line
+              InvoiceTerm copy = invoiceTermRepo.copy(invoiceTerm, false);
+              invoiceTermToAddToDebitMoveLine.add(copy);
+              invoiceTermToAdd.add(copy);
 
-          // Remove invoice from old invoice term
-          invoiceTermToRemove.add(invoiceTerm);
+              // Remove invoice from old invoice term
+              invoiceTermToRemove.add(invoiceTerm);
+            }
+
+            if (invoiceTerm.getAmountRemaining().signum() > 0
+                && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0) {
+              BigDecimal amount = invoiceTerm.getAmount();
+              BigDecimal remainingAmount = invoiceTerm.getAmountRemaining();
+              BigDecimal percentage = invoiceTerm.getPercentage();
+              // Create new invoice term on new move line with amount remaining
+              InvoiceTerm copyOnNewMoveLine = invoiceTermRepo.copy(invoiceTerm, false);
+              copyOnNewMoveLine.setAmount(remainingAmount);
+              BigDecimal newPercentage =
+                  remainingAmount
+                      .multiply(percentage)
+                      .divide(
+                          amount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+              copyOnNewMoveLine.setPercentage(newPercentage);
+              invoiceTermToAddToDebitMoveLine.add(copyOnNewMoveLine);
+              invoiceTermToAdd.add(copyOnNewMoveLine);
+
+              InvoiceTerm copyOnOldMoveLine = invoiceTermRepo.copy(invoiceTerm, false);
+              copyOnOldMoveLine.setAmount(remainingAmount);
+              copyOnOldMoveLine.setAmountRemaining(remainingAmount);
+              copyOnOldMoveLine.setPercentage(newPercentage);
+              invoiceTermToAddToInvoicePartnerMoveLine.add(copyOnOldMoveLine);
+              invoice.addInvoiceTermListItem(copyOnOldMoveLine);
+              invoiceTermToRemove.add(copyOnOldMoveLine);
+              // Update current invoice term
+              invoiceTerm.setAmount(amount.subtract(remainingAmount));
+              invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+              invoiceTerm.setIsPaid(true);
+              invoiceTerm.setPercentage(percentage.subtract(newPercentage));
+            }
+          }
         }
 
-        if (invoiceTerm.getAmountRemaining().signum() > 0
-            && invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) != 0) {
-          BigDecimal amount = invoiceTerm.getAmount();
-          BigDecimal remainingAmount = invoiceTerm.getAmountRemaining();
-          BigDecimal percentage = invoiceTerm.getPercentage();
-          // Create new invoice term on new move line with amount remaining
-          InvoiceTerm copyOnNewMoveLine = invoiceTermRepo.copy(invoiceTerm, false);
-          copyOnNewMoveLine.setAmount(remainingAmount);
-          BigDecimal newPercentage =
-              remainingAmount
-                  .multiply(percentage)
-                  .divide(amount, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-          copyOnNewMoveLine.setPercentage(newPercentage);
-          invoiceTermToAddToDebitMoveLine.add(copyOnNewMoveLine);
-          invoiceTermToAdd.add(copyOnNewMoveLine);
-
-          InvoiceTerm copyOnOldMoveLine = invoiceTermRepo.copy(invoiceTerm, false);
-          copyOnOldMoveLine.setAmount(remainingAmount);
-          copyOnOldMoveLine.setAmountRemaining(remainingAmount);
-          copyOnOldMoveLine.setPercentage(newPercentage);
-          invoiceTermToAddToInvoicePartnerMoveLine.add(copyOnOldMoveLine);
-          invoiceTermToAdd.add(copyOnOldMoveLine);
-          invoiceTermToRemove.add(copyOnOldMoveLine);
-          // Update current invoice term
-          invoiceTerm.setAmount(amount.subtract(remainingAmount));
-          invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
-          invoiceTerm.setIsPaid(true);
-          invoiceTerm.setPercentage(percentage.subtract(newPercentage));
+        for (InvoiceTerm it : invoiceTermToAddToInvoicePartnerMoveLine) {
+          invoicePartnerMoveLine.addInvoiceTermListItem(it);
         }
-      }
-
-      for (InvoiceTerm it : invoiceTermToAddToInvoicePartnerMoveLine) {
-        invoicePartnerMoveLine.addInvoiceTermListItem(it);
       }
     }
 
@@ -145,15 +152,15 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
             creditMoveLine.getAmountRemaining(),
             counter++);
 
-        newMove.getMoveLineList().add(creditMoveLine);
+        newMove.addMoveLineListItem(creditMoveLine);
       }
 
-      newMove.getMoveLineList().add(debitMoveLine);
+      newMove.addMoveLineListItem(debitMoveLine);
 
       moveValidateService.accounting(newMove);
       moveRepo.save(newMove);
 
-      for (MoveLine invoicePartnerMoveLine : invoicePartnerMoveLines) {
+      for (MoveLine invoicePartnerMoveLine : ListUtils.emptyIfNull(invoicePartnerMoveLines)) {
         MoveLine creditMoveLine =
             creditMoveLines.stream()
                 .filter(
@@ -186,7 +193,7 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
       debitMoveLine.addInvoiceTermListItem(it);
     }
     // Recalculate percentage on debit moveline
-    for (InvoiceTerm it : debitMoveLine.getInvoiceTermList()) {
+    for (InvoiceTerm it : ListUtils.emptyIfNull(debitMoveLine.getInvoiceTermList())) {
       it.setPercentage(
           it.getAmount()
               .multiply(BigDecimal.valueOf(100))

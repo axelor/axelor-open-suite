@@ -26,6 +26,7 @@ import com.axelor.apps.bpm.db.repo.WkfProcessRepository;
 import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
 import com.axelor.apps.bpm.service.WkfCommonService;
 import com.axelor.apps.bpm.translation.ITranslation;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -95,11 +96,14 @@ public class WkfTaskServiceImpl implements WkfTaskService {
 
     Map<String, Object> expressionVariables = null;
     Map<String, Object> ctxVariables = wkfService.createVariables(context);
+    if (ctxVariables == null) {
+      ctxVariables = new HashMap<>();
+    }
     if (signal != null) {
       ctxVariables.put(signal, Variables.objectValue(true, true));
     }
 
-    for (Task task : tasks) {
+    for (Task task : ListUtils.emptyIfNull(tasks)) {
 
       WkfTaskConfig config =
           wkfTaskConfigRepository
@@ -134,6 +138,9 @@ public class WkfTaskServiceImpl implements WkfTaskService {
         }
 
         Map<String, Object> variables = wkfService.createVariables(btnVariables);
+        if (variables == null) {
+          variables = new HashMap<>();
+        }
         variables.putAll(ctxVariables);
 
         if (config.getExpression() != null) {
@@ -197,7 +204,7 @@ public class WkfTaskServiceImpl implements WkfTaskService {
 
     if (button != null) {
       List<String> buttons = Arrays.asList(button.split(","));
-      if (buttons.contains(signal)) {
+      if (buttons != null && buttons.contains(signal)) {
         return buttons;
       }
       return null;
@@ -225,7 +232,8 @@ public class WkfTaskServiceImpl implements WkfTaskService {
 
     Map<String, Object> modelMap = new HashMap<>();
 
-    for (WkfProcessConfig processConfig : wkfProcess.getWkfProcessConfigList()) {
+    for (WkfProcessConfig processConfig :
+        ListUtils.emptyIfNull(wkfProcess.getWkfProcessConfigList())) {
 
       Model model = null;
       String klassName;

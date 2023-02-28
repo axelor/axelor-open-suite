@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.CfonbConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,7 +145,7 @@ public class CfonbImportService {
     // Pour chaque sequence, on récupère les enregistrements, et on les vérifie.
     // Ensuite on supprime les lignes traitées du fichier chargé en mémoire
     // Et on recommence l'opération jusqu'à ne plus avoir de ligne à traiter
-    while (this.importFile != null && this.importFile.size() != 0) {
+    while (this.importFile != null && !this.importFile.isEmpty()) {
       headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
       if (headerCFONB == null) {
         throw new AxelorException(
@@ -179,8 +181,9 @@ public class CfonbImportService {
       this.testLength(headerCFONB, multiDetailsCFONB, endingCFONB, company);
 
       importDataList.addAll(
-          this.getDetailDataAndCheckAmount(
-              operation, headerCFONB, multiDetailsCFONB, endingCFONB, fileName));
+          ListUtils.emptyIfNull(
+              this.getDetailDataAndCheckAmount(
+                  operation, headerCFONB, multiDetailsCFONB, endingCFONB, fileName)));
     }
     return importDataList;
   }
@@ -227,7 +230,7 @@ public class CfonbImportService {
     // Pour chaque sequence, on récupère les enregistrements, et on les vérifie.
     // Ensuite on supprime les lignes traitées du fichier chargé en mémoire
     // Et on recommence l'opération jusqu'à ne plus avoir de ligne à traiter
-    while (this.importFile != null && this.importFile.size() != 0) {
+    while (this.importFile != null && !this.importFile.isEmpty()) {
       headerCFONB = this.getHeaderCFONB(this.importFile, operation, optionalOperation);
       if (headerCFONB == null) {
         throw new AxelorException(
@@ -280,16 +283,20 @@ public class CfonbImportService {
     List<String[]> importDataList = new ArrayList<String[]>();
     switch (operation) {
       case 0:
-        for (String detailCFONB : multiDetailsCFONB) {
-          importDataList.add(this.getDetailData(detailCFONB));
+        if (multiDetailsCFONB != null) {
+          for (String detailCFONB : multiDetailsCFONB) {
+            importDataList.add(this.getDetailData(detailCFONB));
+          }
+          this.checkTotalAmount(multiDetailsCFONB, endingCFONB, fileName, 228, 240);
         }
-        this.checkTotalAmount(multiDetailsCFONB, endingCFONB, fileName, 228, 240);
         break;
       case 1:
-        for (String detailCFONB : multiDetailsCFONB) {
-          importDataList.add(this.getDetailData(detailCFONB));
+        if (multiDetailsCFONB != null) {
+          for (String detailCFONB : multiDetailsCFONB) {
+            importDataList.add(this.getDetailData(detailCFONB));
+          }
+          this.checkTotalAmount(multiDetailsCFONB, endingCFONB, fileName, 228, 240);
         }
-        this.checkTotalAmount(multiDetailsCFONB, endingCFONB, fileName, 228, 240);
         break;
       default:
         break;
@@ -305,10 +312,11 @@ public class CfonbImportService {
       int amountPosEnd)
       throws AxelorException {
     int totalAmount = 0;
-    for (String detailCFONB : multiDetailsCFONB) {
-      totalAmount += Integer.parseInt(detailCFONB.substring(amountPosStart, amountPosEnd));
+    if (multiDetailsCFONB != null) {
+      for (String detailCFONB : multiDetailsCFONB) {
+        totalAmount += Integer.parseInt(detailCFONB.substring(amountPosStart, amountPosEnd));
+      }
     }
-
     int totalRecord = Integer.parseInt(endingCFONB.substring(amountPosStart, amountPosEnd));
 
     log.debug(
@@ -410,20 +418,21 @@ public class CfonbImportService {
     log.debug(
         "CFONB record header: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
         new Object[] {recordCode, operationCode, optionalRecordCode, optionalOperationCode});
-
-    for (String s : file) {
-      log.debug("file line : {}", s);
-      log.debug("s.substring(0, 2) : {}", s.substring(0, 2));
-      if (s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode)) {
-        log.debug("s.substring(8, 10) : {}", s.substring(8, 10));
-        log.debug("s.substring(2, 4) : {}", s.substring(2, 4));
-        if ((s.substring(8, 10).equals(operationCode) && optionalOperation == 999)
-            || s.substring(2, 4).equals(operationCode)
-            || s.substring(2, 4).equals(optionalOperationCode)) {
-          return s;
+    if (CollectionUtils.isNotEmpty(file)) {
+      for (String s : file) {
+        log.debug("file line : {}", s);
+        log.debug("s.substring(0, 2) : {}", s.substring(0, 2));
+        if (s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode)) {
+          log.debug("s.substring(8, 10) : {}", s.substring(8, 10));
+          log.debug("s.substring(2, 4) : {}", s.substring(2, 4));
+          if ((s.substring(8, 10).equals(operationCode) && optionalOperation == 999)
+              || s.substring(2, 4).equals(operationCode)
+              || s.substring(2, 4).equals(optionalOperationCode)) {
+            return s;
+          }
+        } else {
+          break;
         }
-      } else {
-        break;
       }
     }
     return null;
@@ -472,19 +481,19 @@ public class CfonbImportService {
     log.debug(
         "CFONB record details: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
         new Object[] {recordCode, operationCode, optionalRecordCode, optionalOperationCode});
-
-    for (String s : file) {
-      if (s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode)) {
-        if ((s.substring(8, 10).equals(operationCode) && optionalOperation == 999)
-            || s.substring(2, 4).equals(operationCode)
-            || s.substring(2, 4).equals(optionalOperationCode)) {
-          stringList.add(s);
+    if (CollectionUtils.isNotEmpty(file)) {
+      for (String s : file) {
+        if (s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode)) {
+          if ((s.substring(8, 10).equals(operationCode) && optionalOperation == 999)
+              || s.substring(2, 4).equals(operationCode)
+              || s.substring(2, 4).equals(optionalOperationCode)) {
+            stringList.add(s);
+          }
+        } else {
+          break;
         }
-      } else {
-        break;
       }
     }
-
     return stringList;
   }
 
@@ -529,15 +538,17 @@ public class CfonbImportService {
     log.debug(
         "CFONB record end: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
         new Object[] {recordCode, operationCode, optionalRecordCode, optionalOperationCode});
-    for (String s : file) {
-      if (s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode)) {
-        if ((s.substring(8, 10).equals(operationCode) && optionalOperation == 999)
-            || s.substring(2, 4).equals(operationCode)
-            || s.substring(2, 4).equals(optionalOperationCode)) {
-          return s;
+    if (CollectionUtils.isNotEmpty(file)) {
+      for (String s : file) {
+        if (s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode)) {
+          if ((s.substring(8, 10).equals(operationCode) && optionalOperation == 999)
+              || s.substring(2, 4).equals(operationCode)
+              || s.substring(2, 4).equals(optionalOperationCode)) {
+            return s;
+          }
+        } else {
+          break;
         }
-      } else {
-        break;
       }
     }
     return null;

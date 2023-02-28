@@ -34,6 +34,7 @@ import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStateme
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -208,8 +209,10 @@ public class BankStatementService {
             .filter("self.bankStatement = :bankStatement")
             .bind("bankStatement", bankStatement)
             .fetch();
-    for (BankStatementLineAFB120 bsl : bankStatementLines) {
-      bankPaymentBankStatementLineAFB120Repository.remove(bsl);
+    if (CollectionUtils.isNotEmpty(bankStatementLines)) {
+      for (BankStatementLineAFB120 bsl : bankStatementLines) {
+        bankPaymentBankStatementLineAFB120Repository.remove(bsl);
+      }
     }
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_RECEIVED);
   }
@@ -219,8 +222,10 @@ public class BankStatementService {
     List<BankStatementLine> bankStatementLines =
         bankStatementLineRepository.findByBankStatement(bankStatement).fetch();
     BigDecimal amountToReconcile = BigDecimal.ZERO;
-    for (BankStatementLine bankStatementLine : bankStatementLines) {
-      amountToReconcile = amountToReconcile.add(bankStatementLine.getAmountRemainToReconcile());
+    if (CollectionUtils.isNotEmpty(bankStatementLines)) {
+      for (BankStatementLine bankStatementLine : bankStatementLines) {
+        amountToReconcile = amountToReconcile.add(bankStatementLine.getAmountRemainToReconcile());
+      }
     }
     if (amountToReconcile.compareTo(BigDecimal.ZERO) == 0) {
       bankStatement.setIsFullyReconciled(true);
@@ -232,23 +237,25 @@ public class BankStatementService {
   public boolean bankStatementLineAlreadyExists(List<BankStatementLineAFB120> initialLines) {
     boolean alreadyImported = false;
     BankStatementLineAFB120 tempBankStatementLineAFB120;
-    for (BankStatementLineAFB120 bslAFB120 : initialLines) {
-      tempBankStatementLineAFB120 =
-          bankPaymentBankStatementLineAFB120Repository
-              .all()
-              .filter(
-                  "self.operationDate = :operationDate"
-                      + " AND self.lineTypeSelect = :lineTypeSelect"
-                      + " AND self.bankStatement != :bankStatement"
-                      + " AND self.bankDetails = :bankDetails")
-              .bind("operationDate", bslAFB120.getOperationDate())
-              .bind("lineTypeSelect", bslAFB120.getLineTypeSelect())
-              .bind("bankStatement", bslAFB120.getBankStatement())
-              .bind("bankDetails", bslAFB120.getBankDetails())
-              .fetchOne();
-      if (ObjectUtils.notEmpty(tempBankStatementLineAFB120)) {
-        alreadyImported = true;
-        break;
+    if (CollectionUtils.isNotEmpty(initialLines)) {
+      for (BankStatementLineAFB120 bslAFB120 : initialLines) {
+        tempBankStatementLineAFB120 =
+            bankPaymentBankStatementLineAFB120Repository
+                .all()
+                .filter(
+                    "self.operationDate = :operationDate"
+                        + " AND self.lineTypeSelect = :lineTypeSelect"
+                        + " AND self.bankStatement != :bankStatement"
+                        + " AND self.bankDetails = :bankDetails")
+                .bind("operationDate", bslAFB120.getOperationDate())
+                .bind("lineTypeSelect", bslAFB120.getLineTypeSelect())
+                .bind("bankStatement", bslAFB120.getBankStatement())
+                .bind("bankDetails", bslAFB120.getBankDetails())
+                .fetchOne();
+        if (ObjectUtils.notEmpty(tempBankStatementLineAFB120)) {
+          alreadyImported = true;
+          break;
+        }
       }
     }
     return alreadyImported;
@@ -269,31 +276,33 @@ public class BankStatementService {
   public void checkAmountWithPreviousBankStatement(
       BankStatement bankStatement, List<BankDetails> bankDetails) throws AxelorException {
     boolean deleteLines = false;
-    for (BankDetails bd : bankDetails) {
-      BankStatementLineAFB120 initialBankStatementLineAFB120 =
-          bankPaymentBankStatementLineAFB120Repository
-              .findByBankStatementBankDetailsAndLineType(
-                  bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
-              .order("operationDate")
-              .order("sequence")
-              .fetchOne();
-      BankStatementLineAFB120 finalBankStatementLineAFB120 =
-          bankPaymentBankStatementLineAFB120Repository
-              .findByBankDetailsLineTypeExcludeBankStatement(
-                  bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
-              .order("-operationDate")
-              .order("-sequence")
-              .fetchOne();
-      if (ObjectUtils.notEmpty(finalBankStatementLineAFB120)
-          && (initialBankStatementLineAFB120
-                      .getDebit()
-                      .compareTo(finalBankStatementLineAFB120.getDebit())
-                  != 0
-              || initialBankStatementLineAFB120
-                      .getCredit()
-                      .compareTo(finalBankStatementLineAFB120.getCredit())
-                  != 0)) {
-        deleteLines = true;
+    if (CollectionUtils.isNotEmpty(bankDetails)) {
+      for (BankDetails bd : bankDetails) {
+        BankStatementLineAFB120 initialBankStatementLineAFB120 =
+            bankPaymentBankStatementLineAFB120Repository
+                .findByBankStatementBankDetailsAndLineType(
+                    bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+                .order("operationDate")
+                .order("sequence")
+                .fetchOne();
+        BankStatementLineAFB120 finalBankStatementLineAFB120 =
+            bankPaymentBankStatementLineAFB120Repository
+                .findByBankDetailsLineTypeExcludeBankStatement(
+                    bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+                .order("-operationDate")
+                .order("-sequence")
+                .fetchOne();
+        if (ObjectUtils.notEmpty(finalBankStatementLineAFB120)
+            && (initialBankStatementLineAFB120
+                        .getDebit()
+                        .compareTo(finalBankStatementLineAFB120.getDebit())
+                    != 0
+                || initialBankStatementLineAFB120
+                        .getCredit()
+                        .compareTo(finalBankStatementLineAFB120.getCredit())
+                    != 0)) {
+          deleteLines = true;
+        }
       }
     }
     // delete imported
@@ -308,46 +317,56 @@ public class BankStatementService {
   public void checkAmountWithinBankStatement(
       BankStatement bankStatement, List<BankDetails> bankDetails) throws AxelorException {
     boolean deleteLines = false;
-    for (BankDetails bd : bankDetails) {
-      List<BankStatementLineAFB120> initialBankStatementLineAFB120 =
-          bankPaymentBankStatementLineAFB120Repository
-              .findByBankStatementBankDetailsAndLineType(
-                  bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
-              .order("sequence")
-              .fetch();
-      List<BankStatementLineAFB120> finalBankStatementLineAFB120 =
-          bankPaymentBankStatementLineAFB120Repository
-              .findByBankStatementBankDetailsAndLineType(
-                  bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
-              .order("sequence")
-              .fetch();
-      initialBankStatementLineAFB120.remove(0);
-      finalBankStatementLineAFB120.remove(finalBankStatementLineAFB120.size() - 1);
-      if (initialBankStatementLineAFB120.size() != finalBankStatementLineAFB120.size()) {
-        deleteLines = true;
-        break;
-      }
-      if (!deleteLines) {
-        for (int i = 0; i < initialBankStatementLineAFB120.size(); i++) {
-          deleteLines =
-              deleteLines
-                  || (initialBankStatementLineAFB120
-                              .get(i)
-                              .getDebit()
-                              .compareTo(finalBankStatementLineAFB120.get(i).getDebit())
-                          != 0
-                      || initialBankStatementLineAFB120
-                              .get(i)
-                              .getCredit()
-                              .compareTo(finalBankStatementLineAFB120.get(i).getCredit())
-                          != 0);
+    if (CollectionUtils.isNotEmpty(bankDetails)) {
+      for (BankDetails bd : bankDetails) {
+        List<BankStatementLineAFB120> initialBankStatementLineAFB120 =
+            bankPaymentBankStatementLineAFB120Repository
+                .findByBankStatementBankDetailsAndLineType(
+                    bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+                .order("sequence")
+                .fetch();
+        List<BankStatementLineAFB120> finalBankStatementLineAFB120 =
+            bankPaymentBankStatementLineAFB120Repository
+                .findByBankStatementBankDetailsAndLineType(
+                    bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+                .order("sequence")
+                .fetch();
+        ListUtils.emptyIfNull(initialBankStatementLineAFB120).remove(0);
+        ListUtils.emptyIfNull(finalBankStatementLineAFB120)
+            .remove(ListUtils.size(finalBankStatementLineAFB120) - 1);
+        if (ListUtils.size(initialBankStatementLineAFB120)
+            != ListUtils.size(finalBankStatementLineAFB120)) {
+          deleteLines = true;
+          break;
+        }
+        if (!deleteLines) {
+          for (int i = 0; i < ListUtils.size(initialBankStatementLineAFB120); i++) {
+            deleteLines =
+                deleteLines
+                    || (initialBankStatementLineAFB120
+                                .get(i)
+                                .getDebit()
+                                .compareTo(
+                                    ListUtils.emptyIfNull(finalBankStatementLineAFB120)
+                                        .get(i)
+                                        .getDebit())
+                            != 0
+                        || initialBankStatementLineAFB120
+                                .get(i)
+                                .getCredit()
+                                .compareTo(
+                                    ListUtils.emptyIfNull(finalBankStatementLineAFB120)
+                                        .get(i)
+                                        .getCredit())
+                            != 0);
+            if (deleteLines) {
+              break;
+            }
+          }
           if (deleteLines) {
             break;
           }
         }
-      }
-      if (deleteLines) {
-        break;
       }
     }
     // delete imported
@@ -367,23 +386,27 @@ public class BankStatementService {
       List<BankStatementLineAFB120> finalLines;
       List<BankDetails> bankDetails = fetchBankDetailsList(bankStatement);
       // Load lines
-      for (BankDetails bd : bankDetails) {
-        initialLines =
-            bankPaymentBankStatementLineAFB120Repository
-                .findByBankStatementBankDetailsAndLineType(
-                    bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
-                .fetch();
+      if (CollectionUtils.isNotEmpty(bankDetails)) {
+        for (BankDetails bd : bankDetails) {
+          initialLines =
+              bankPaymentBankStatementLineAFB120Repository
+                  .findByBankStatementBankDetailsAndLineType(
+                      bankStatement,
+                      bd,
+                      BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
+                  .fetch();
 
-        finalLines =
-            bankPaymentBankStatementLineAFB120Repository
-                .findByBankStatementBankDetailsAndLineType(
-                    bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
-                .fetch();
+          finalLines =
+              bankPaymentBankStatementLineAFB120Repository
+                  .findByBankStatementBankDetailsAndLineType(
+                      bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
+                  .fetch();
 
-        alreadyImported =
-            bankStatementLineAlreadyExists(initialLines)
-                || bankStatementLineAlreadyExists(finalLines)
-                || alreadyImported;
+          alreadyImported =
+              bankStatementLineAlreadyExists(initialLines)
+                  || bankStatementLineAlreadyExists(finalLines)
+                  || alreadyImported;
+        }
       }
       if (!alreadyImported) {
         checkAmountWithPreviousBankStatement(bankStatement, bankDetails);

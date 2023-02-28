@@ -29,6 +29,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.PersistenceException;
 
@@ -37,9 +38,13 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     try {
-      Long stockMoveLineId = (Long) json.get("id");
+      Long stockMoveLineId = json != null ? (Long) json.get("id") : 0L;
       StockMoveLine stockMoveLine = find(stockMoveLineId);
       StockMove stockMove = stockMoveLine.getStockMove();
+
+      if (json == null) {
+        json = new HashMap<>();
+      }
 
       if (context.containsKey("_cutOffPreview") && (boolean) context.get("_cutOffPreview")) {
         boolean isPurchase =

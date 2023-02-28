@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -68,19 +69,25 @@ public class BankOrderMergeHRServiceImpl extends BankOrderMergeServiceImpl {
             .all()
             .filter(
                 "self.bankOrder.id IN (?)",
-                bankOrders.stream().map(BankOrder::getId).collect(Collectors.toList()))
+                CollectionUtils.emptyIfNull(bankOrders).stream()
+                    .map(BankOrder::getId)
+                    .collect(Collectors.toList()))
             .fetch();
 
-    for (Expense expense : expenseList) {
-      expense.setBankOrder(null);
-      expenseHRRepository.save(expense);
+    if (expenseList != null) {
+      for (Expense expense : expenseList) {
+        expense.setBankOrder(null);
+        expenseHRRepository.save(expense);
+      }
     }
 
     BankOrder bankOrder = super.mergeBankOrders(bankOrders);
 
-    for (Expense expense : expenseList) {
-      expense.setBankOrder(bankOrder);
-      expenseHRRepository.save(expense);
+    if (expenseList != null) {
+      for (Expense expense : expenseList) {
+        expense.setBankOrder(bankOrder);
+        expenseHRRepository.save(expense);
+      }
     }
 
     return bankOrder;

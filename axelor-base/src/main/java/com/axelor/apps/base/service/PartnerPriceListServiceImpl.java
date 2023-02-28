@@ -26,6 +26,8 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -34,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -68,25 +71,27 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
     LocalDate beginDate;
     LocalDate previousEndDate = LocalDate.MIN;
     String previousTitle = "";
-    for (PriceList priceList : sortedPriceListSet) {
-      beginDate =
-          priceList.getApplicationBeginDate() != null
-              ? priceList.getApplicationBeginDate()
-              : LocalDate.MIN;
-      if (beginDate.compareTo(previousEndDate) < 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            String.format(
-                I18n.get(BaseExceptionMessage.PARTNER_PRICE_LIST_DATE_INCONSISTENT),
-                previousTitle.replace("%", "%%"),
-                priceList.getTitle().replace("%", "%%")),
-            partnerPriceList);
+    if (sortedPriceListSet != null) {
+      for (PriceList priceList : sortedPriceListSet) {
+        beginDate =
+            priceList.getApplicationBeginDate() != null
+                ? priceList.getApplicationBeginDate()
+                : LocalDate.MIN;
+        if (beginDate.compareTo(previousEndDate) < 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              String.format(
+                  I18n.get(BaseExceptionMessage.PARTNER_PRICE_LIST_DATE_INCONSISTENT),
+                  previousTitle.replace("%", "%%"),
+                  priceList.getTitle().replace("%", "%%")),
+              partnerPriceList);
+        }
+        previousEndDate =
+            priceList.getApplicationEndDate() != null
+                ? priceList.getApplicationEndDate()
+                : LocalDate.MAX;
+        previousTitle = priceList.getTitle();
       }
-      previousEndDate =
-          priceList.getApplicationEndDate() != null
-              ? priceList.getApplicationEndDate()
-              : LocalDate.MAX;
-      previousTitle = priceList.getTitle();
     }
   }
 
@@ -128,7 +133,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
                                                 .orElse(null)))
                                 >= 0))
             .collect(Collectors.toList());
-    if (priceLists.size() == 1) {
+    if (ListUtils.size(priceLists) == 1) {
       return priceLists.get(0);
     } else {
       return null;
@@ -146,6 +151,9 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
             .filter("self.typeSelect = :_priceListTypeSelect " + "AND self.isExclusive = false")
             .bind("_priceListTypeSelect", priceListTypeSelect)
             .fetch();
+    if (partnerPriceLists == null) {
+      partnerPriceLists = new ArrayList<>();
+    }
     // get (maybe exclusive) list for the partner
     PartnerPriceList partnerPriceList = getPartnerPriceList(partner, priceListTypeSelect);
     if (partnerPriceList != null && partnerPriceList.getIsExclusive()) {
@@ -156,7 +164,9 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
     }
     List<PriceList> priceLists =
         partnerPriceLists.stream()
-            .flatMap(partnerPriceList1 -> partnerPriceList1.getPriceListSet().stream())
+            .flatMap(
+                partnerPriceList1 ->
+                    SetUtils.emptyIfNull(partnerPriceList1.getPriceListSet()).stream())
             .filter(
                 priceList ->
                     priceList.getIsActive()

@@ -40,6 +40,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,16 +72,19 @@ public class BatchBankStatement extends AbstractBatch {
                 ebicsPartnerRepository.find(ebicsPartner.getId()),
                 bankPaymentBatch.getBankStatementFileFormatSet());
 
-        bankStatementCount += bankStatementList.size();
+        if (CollectionUtils.isNotEmpty(bankStatementList)) {
 
-        for (BankStatement bankStatement : bankStatementList) {
+          bankStatementCount += bankStatementList.size();
 
-          try {
-            bankStatementService.runImport(bankStatement, false);
-          } catch (AxelorException e) {
-            processError(e, e.getCategory(), ebicsPartner);
-          } finally {
-            JPA.clear();
+          for (BankStatement bankStatement : bankStatementList) {
+
+            try {
+              bankStatementService.runImport(bankStatement, false);
+            } catch (AxelorException e) {
+              processError(e, e.getCategory(), ebicsPartner);
+            } finally {
+              JPA.clear();
+            }
           }
         }
 

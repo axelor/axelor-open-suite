@@ -89,8 +89,10 @@ public class CurrencyConversionLineController {
       Map<String, Object> startCurrency = (Map<String, Object>) context.get("startCurrency");
       Map<String, Object> endCurrency = (Map<String, Object>) context.get("endCurrency");
 
-      fromCurrency = currencyRepository.find(Long.parseLong(startCurrency.get("id").toString()));
-      toCurrency = currencyRepository.find(Long.parseLong(endCurrency.get("id").toString()));
+      if (startCurrency != null && endCurrency != null) {
+        fromCurrency = currencyRepository.find(Long.parseLong(startCurrency.get("id").toString()));
+        toCurrency = currencyRepository.find(Long.parseLong(endCurrency.get("id").toString()));
+      }
     }
 
     CurrencyConversionLine prevLine = null;

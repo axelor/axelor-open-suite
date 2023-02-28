@@ -33,6 +33,7 @@ import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.translation.ITranslation;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -52,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class StockMoveInvoiceController {
@@ -117,9 +119,12 @@ public class StockMoveInvoiceController {
 
       // No confirmation popup, stock Moves are content in a parameter list
       List<Map> stockMoveMap = (List<Map>) request.getContext().get("customerStockMoveToInvoice");
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
+      if (CollectionUtils.isNotEmpty(stockMoveMap)) {
+        for (Map map : stockMoveMap) {
+          stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
+        }
       }
+
       for (Long stockMoveId : stockMoveIdList) {
         stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
       }
@@ -127,69 +132,72 @@ public class StockMoveInvoiceController {
       Map<String, Object> mapResult =
           Beans.get(StockMoveMultiInvoiceService.class)
               .areFieldsConflictedToGenerateCustInvoice(stockMoveList);
-      boolean paymentConditionToCheck =
-          (Boolean) mapResult.getOrDefault("paymentConditionToCheck", false);
-      boolean paymentModeToCheck = (Boolean) mapResult.getOrDefault("paymentModeToCheck", false);
-      boolean contactPartnerToCheck =
-          (Boolean) mapResult.getOrDefault("contactPartnerToCheck", false);
 
-      StockMove stockMove = stockMoveList.get(0);
-      Partner partner = stockMove.getPartner();
-      if (paymentConditionToCheck || paymentModeToCheck || contactPartnerToCheck) {
-        ActionViewBuilder confirmView =
-            ActionView.define(I18n.get("StockMove"))
-                .model(StockMove.class.getName())
-                .add("form", "stock-move-supplychain-concat-cust-invoice-confirm-form")
-                .param("popup", "true")
-                .param("show-toolbar", "false")
-                .param("show-confirm", "false")
-                .param("popup-save", "false")
-                .param("forceEdit", "true");
+      if (mapResult != null) {
+        boolean paymentConditionToCheck =
+            (Boolean) mapResult.getOrDefault("paymentConditionToCheck", false);
+        boolean paymentModeToCheck = (Boolean) mapResult.getOrDefault("paymentModeToCheck", false);
+        boolean contactPartnerToCheck =
+            (Boolean) mapResult.getOrDefault("contactPartnerToCheck", false);
 
-        if (paymentConditionToCheck) {
-          confirmView.context("contextPaymentConditionToCheck", "true");
-        } else {
-          confirmView.context("paymentCondition", mapResult.get("paymentCondition"));
-        }
+        StockMove stockMove = stockMoveList.get(0);
+        Partner partner = stockMove.getPartner();
+        if (paymentConditionToCheck || paymentModeToCheck || contactPartnerToCheck) {
+          ActionViewBuilder confirmView =
+              ActionView.define("StockMove")
+                  .model(StockMove.class.getName())
+                  .add("form", "stock-move-supplychain-concat-cust-invoice-confirm-form")
+                  .param("popup", "true")
+                  .param("show-toolbar", "false")
+                  .param("show-confirm", "false")
+                  .param("popup-save", "false")
+                  .param("forceEdit", "true");
 
-        if (paymentModeToCheck) {
-          confirmView.context("contextPaymentModeToCheck", "true");
+          if (paymentConditionToCheck) {
+            confirmView.context("contextPaymentConditionToCheck", "true");
+          } else {
+            confirmView.context("paymentCondition", mapResult.get("paymentCondition"));
+          }
+
+          if (paymentModeToCheck) {
+            confirmView.context("contextPaymentModeToCheck", "true");
+          } else {
+            confirmView.context("paymentMode", mapResult.get("paymentMode"));
+          }
+          if (contactPartnerToCheck) {
+            confirmView.context("contextContactPartnerToCheck", "true");
+            confirmView.context("contextPartnerId", partner.getId().toString());
+          } else {
+            confirmView.context("contactPartner", mapResult.get("contactPartner"));
+          }
+          confirmView.context("customerStockMoveToInvoice", Joiner.on(",").join(stockMoveIdList));
+          response.setView(confirmView.map());
         } else {
-          confirmView.context("paymentMode", mapResult.get("paymentMode"));
+          Optional<Invoice> invoice =
+              Beans.get(StockMoveMultiInvoiceService.class)
+                  .createInvoiceFromMultiOutgoingStockMove(stockMoveList);
+          invoice.ifPresent(
+              inv -> {
+                try {
+                  response.setView(
+                      ActionView.define("Invoice")
+                          .model(Invoice.class.getName())
+                          .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
+                          .add("form", "invoice-form")
+                          .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
+                          .param("forceEdit", "true")
+                          .context("_operationTypeSelect", inv.getOperationTypeSelect())
+                          .context(
+                              "todayDate",
+                              Beans.get(AppSupplychainService.class)
+                                  .getTodayDate(stockMove.getCompany()))
+                          .context("_showRecord", String.valueOf(inv.getId()))
+                          .map());
+                } catch (Exception e) {
+                  TraceBackService.trace(response, e);
+                }
+              });
         }
-        if (contactPartnerToCheck) {
-          confirmView.context("contextContactPartnerToCheck", "true");
-          confirmView.context("contextPartnerId", partner.getId().toString());
-        } else {
-          confirmView.context("contactPartner", mapResult.get("contactPartner"));
-        }
-        confirmView.context("customerStockMoveToInvoice", Joiner.on(",").join(stockMoveIdList));
-        response.setView(confirmView.map());
-      } else {
-        Optional<Invoice> invoice =
-            Beans.get(StockMoveMultiInvoiceService.class)
-                .createInvoiceFromMultiOutgoingStockMove(stockMoveList);
-        invoice.ifPresent(
-            inv -> {
-              try {
-                response.setView(
-                    ActionView.define(I18n.get("Invoice"))
-                        .model(Invoice.class.getName())
-                        .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
-                        .add("form", "invoice-form")
-                        .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
-                        .param("forceEdit", "true")
-                        .context("_operationTypeSelect", inv.getOperationTypeSelect())
-                        .context(
-                            "todayDate",
-                            Beans.get(AppSupplychainService.class)
-                                .getTodayDate(stockMove.getCompany()))
-                        .context("_showRecord", String.valueOf(inv.getId()))
-                        .map());
-              } catch (Exception e) {
-                TraceBackService.trace(response, e);
-              }
-            });
       }
 
     } catch (Exception e) {
@@ -291,77 +299,83 @@ public class StockMoveInvoiceController {
       List<Long> stockMoveIdList = new ArrayList<>();
 
       List<Map> stockMoveMap = (List<Map>) request.getContext().get("supplierStockMoveToInvoice");
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
+      if (CollectionUtils.isNotEmpty(stockMoveMap)) {
+        for (Map map : stockMoveMap) {
+          stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
+        }
       }
+
       for (Long stockMoveId : stockMoveIdList) {
         stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
       }
       Map<String, Object> mapResult =
           Beans.get(StockMoveMultiInvoiceService.class)
               .areFieldsConflictedToGenerateSupplierInvoice(stockMoveList);
-      boolean paymentConditionToCheck =
-          (Boolean) mapResult.getOrDefault("paymentConditionToCheck", false);
-      boolean paymentModeToCheck = (Boolean) mapResult.getOrDefault("paymentModeToCheck", false);
-      boolean contactPartnerToCheck =
-          (Boolean) mapResult.getOrDefault("contactPartnerToCheck", false);
 
-      Partner partner = stockMoveList.get(0).getPartner();
-      if (paymentConditionToCheck || paymentModeToCheck || contactPartnerToCheck) {
-        ActionViewBuilder confirmView =
-            ActionView.define(I18n.get("StockMove"))
-                .model(StockMove.class.getName())
-                .add("form", "stock-move-supplychain-concat-suppl-invoice-confirm-form")
-                .param("popup", "true")
-                .param("show-toolbar", "false")
-                .param("show-confirm", "false")
-                .param("popup-save", "false")
-                .param("forceEdit", "true");
+      if (mapResult != null) {
+        boolean paymentConditionToCheck =
+            (Boolean) mapResult.getOrDefault("paymentConditionToCheck", false);
+        boolean paymentModeToCheck = (Boolean) mapResult.getOrDefault("paymentModeToCheck", false);
+        boolean contactPartnerToCheck =
+            (Boolean) mapResult.getOrDefault("contactPartnerToCheck", false);
 
-        if (paymentConditionToCheck) {
-          confirmView.context("contextPaymentConditionToCheck", "true");
+        Partner partner = stockMoveList.get(0).getPartner();
+        if (paymentConditionToCheck || paymentModeToCheck || contactPartnerToCheck) {
+          ActionViewBuilder confirmView =
+              ActionView.define("StockMove")
+                  .model(StockMove.class.getName())
+                  .add("form", "stock-move-supplychain-concat-suppl-invoice-confirm-form")
+                  .param("popup", "true")
+                  .param("show-toolbar", "false")
+                  .param("show-confirm", "false")
+                  .param("popup-save", "false")
+                  .param("forceEdit", "true");
+
+          if (paymentConditionToCheck) {
+            confirmView.context("contextPaymentConditionToCheck", "true");
+          } else {
+            confirmView.context("paymentCondition", mapResult.get("paymentCondition"));
+          }
+
+          if (paymentModeToCheck) {
+            confirmView.context("contextPaymentModeToCheck", "true");
+          } else {
+            confirmView.context("paymentMode", mapResult.get("paymentMode"));
+          }
+          if (contactPartnerToCheck) {
+            confirmView.context("contextContactPartnerToCheck", "true");
+            confirmView.context("contextPartnerId", partner.getId().toString());
+          } else {
+            confirmView.context("contactPartner", mapResult.get("contactPartner"));
+          }
+
+          confirmView.context("supplierStockMoveToInvoice", Joiner.on(",").join(stockMoveIdList));
+          response.setView(confirmView.map());
         } else {
-          confirmView.context("paymentCondition", mapResult.get("paymentCondition"));
+          Optional<Invoice> invoice =
+              Beans.get(StockMoveMultiInvoiceService.class)
+                  .createInvoiceFromMultiIncomingStockMove(stockMoveList);
+          invoice.ifPresent(
+              inv -> {
+                try {
+                  response.setView(
+                      ActionView.define("Invoice")
+                          .model(Invoice.class.getName())
+                          .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
+                          .add("form", "invoice-form")
+                          .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
+                          .param("forceEdit", "true")
+                          .context("_showRecord", String.valueOf(inv.getId()))
+                          .context("_operationTypeSelect", inv.getOperationTypeSelect())
+                          .context(
+                              "todayDate",
+                              Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
+                          .map());
+                } catch (Exception e) {
+                  TraceBackService.trace(response, e);
+                }
+              });
         }
-
-        if (paymentModeToCheck) {
-          confirmView.context("contextPaymentModeToCheck", "true");
-        } else {
-          confirmView.context("paymentMode", mapResult.get("paymentMode"));
-        }
-        if (contactPartnerToCheck) {
-          confirmView.context("contextContactPartnerToCheck", "true");
-          confirmView.context("contextPartnerId", partner.getId().toString());
-        } else {
-          confirmView.context("contactPartner", mapResult.get("contactPartner"));
-        }
-
-        confirmView.context("supplierStockMoveToInvoice", Joiner.on(",").join(stockMoveIdList));
-        response.setView(confirmView.map());
-      } else {
-        Optional<Invoice> invoice =
-            Beans.get(StockMoveMultiInvoiceService.class)
-                .createInvoiceFromMultiIncomingStockMove(stockMoveList);
-        invoice.ifPresent(
-            inv -> {
-              try {
-                response.setView(
-                    ActionView.define(I18n.get("Invoice"))
-                        .model(Invoice.class.getName())
-                        .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
-                        .add("form", "invoice-form")
-                        .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
-                        .param("forceEdit", "true")
-                        .context("_showRecord", String.valueOf(inv.getId()))
-                        .context("_operationTypeSelect", inv.getOperationTypeSelect())
-                        .context(
-                            "todayDate",
-                            Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
-                        .map());
-              } catch (Exception e) {
-                TraceBackService.trace(response, e);
-              }
-            });
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -451,9 +465,12 @@ public class StockMoveInvoiceController {
       List<Long> stockMoveIdList = new ArrayList<>();
       List<StockMove> stockMoveList = new ArrayList<>();
 
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(((Number) map.get("id")).longValue());
+      if (CollectionUtils.isNotEmpty(stockMoveMap)) {
+        for (Map map : stockMoveMap) {
+          stockMoveIdList.add(((Number) map.get("id")).longValue());
+        }
       }
+
       for (Long stockMoveId : stockMoveIdList) {
         stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
       }
@@ -461,8 +478,8 @@ public class StockMoveInvoiceController {
 
       Entry<List<Long>, String> result =
           Beans.get(StockMoveMultiInvoiceService.class).generateMultipleInvoices(stockMoveIdList);
-      List<Long> invoiceIdList = result.getKey();
-      String warningMessage = result.getValue();
+      List<Long> invoiceIdList = result != null ? result.getKey() : new ArrayList<>();
+      String warningMessage = result != null ? result.getValue() : "";
       if (!invoiceIdList.isEmpty()) {
         ActionViewBuilder viewBuilder;
 
@@ -501,9 +518,12 @@ public class StockMoveInvoiceController {
       List<Long> stockMoveIdList = new ArrayList<>();
       List<StockMove> stockMoveList = new ArrayList<>();
 
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(((Number) map.get("id")).longValue());
+      if (CollectionUtils.isNotEmpty(stockMoveMap)) {
+        for (Map map : stockMoveMap) {
+          stockMoveIdList.add(((Number) map.get("id")).longValue());
+        }
       }
+
       for (Long stockMoveId : stockMoveIdList) {
         stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
       }
@@ -511,8 +531,8 @@ public class StockMoveInvoiceController {
 
       Entry<List<Long>, String> result =
           Beans.get(StockMoveMultiInvoiceService.class).generateMultipleInvoices(stockMoveIdList);
-      List<Long> invoiceIdList = result.getKey();
-      String warningMessage = result.getValue();
+      List<Long> invoiceIdList = result != null ? result.getKey() : new ArrayList<>();
+      String warningMessage = result != null ? result.getValue() : "";
       if (!invoiceIdList.isEmpty()) {
         ActionViewBuilder viewBuilder;
 
@@ -558,7 +578,7 @@ public class StockMoveInvoiceController {
       }
       List<Map<String, Object>> stockMoveLines =
           Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoice(stockMove);
-      response.setValue("$stockMoveLines", stockMoveLines);
+      response.setValue("$stockMoveLines", ListUtils.emptyIfNull(stockMoveLines));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

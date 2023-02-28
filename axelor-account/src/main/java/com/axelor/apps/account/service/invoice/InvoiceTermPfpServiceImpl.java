@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -36,6 +37,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermService invoiceTermService;
@@ -79,13 +81,14 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     User currentUser = AuthUtils.getUser();
     int updatedRecords = 0;
 
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      if (canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
-        validatePfp(invoiceTerm, currentUser);
-        updatedRecords++;
+    if (CollectionUtils.isNotEmpty(invoiceTermList)) {
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        if (canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
+          validatePfp(invoiceTerm, currentUser);
+          updatedRecords++;
+        }
       }
     }
-
     return updatedRecords;
   }
 
@@ -93,7 +96,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     return invoiceTermRepo
         .all()
         .filter("self.id IN :invoiceTermIds AND self.pfpValidateStatusSelect = :pfpStatusAwaiting")
-        .bind("invoiceTermIds", invoiceTermIds)
+        .bind("invoiceTermIds", ListUtils.emptyIfNull(invoiceTermIds))
         .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
         .fetch();
   }
@@ -123,20 +126,22 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       LocalDate todayDate =
           Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getInvoice().getCompany());
 
-      for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
-        if (substitutePfpValidator.getSubstitutePfpValidatorUser().equals(currentUser)) {
-          LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
-          LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
-          if (substituteStartDate == null) {
-            if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
-              return true;
-            }
-          } else {
-            if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
-              return true;
-            } else if (substituteStartDate.isBefore(todayDate)
-                && substituteEndDate.isAfter(todayDate)) {
-              return true;
+      if (CollectionUtils.isNotEmpty(substitutePfpValidatorList)) {
+        for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
+          if (substitutePfpValidator.getSubstitutePfpValidatorUser().equals(currentUser)) {
+            LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
+            LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
+            if (substituteStartDate == null) {
+              if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
+                return true;
+              }
+            } else {
+              if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
+                return true;
+              } else if (substituteStartDate.isBefore(todayDate)
+                  && substituteEndDate.isAfter(todayDate)) {
+                return true;
+              }
             }
           }
         }
@@ -154,14 +159,16 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     User currentUser = AuthUtils.getUser();
     int updatedRecords = 0;
 
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      boolean invoiceTermCheck =
-          ObjectUtils.notEmpty(invoiceTerm.getCompany())
-              && ObjectUtils.notEmpty(reasonOfRefusalToPay);
+    if (CollectionUtils.isNotEmpty(invoiceTermList)) {
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        boolean invoiceTermCheck =
+            ObjectUtils.notEmpty(invoiceTerm.getCompany())
+                && ObjectUtils.notEmpty(reasonOfRefusalToPay);
 
-      if (invoiceTermCheck && canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
-        refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
-        updatedRecords++;
+        if (invoiceTermCheck && canUpdateInvoiceTerm(invoiceTerm, currentUser)) {
+          refusalToPay(invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
+          updatedRecords++;
+        }
       }
     }
 
@@ -213,14 +220,14 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
     if (invoice != null) {
       total = invoice.getInTaxTotal();
-      sequence = invoice.getInvoiceTermList().size() + 1;
+      sequence = ListUtils.size(invoice.getInvoiceTermList()) + 1;
     } else {
       total =
           originalInvoiceTerm
               .getMoveLine()
               .getCredit()
               .max(originalInvoiceTerm.getMoveLine().getDebit());
-      sequence = originalInvoiceTerm.getMoveLine().getInvoiceTermList().size() + 1;
+      sequence = ListUtils.size(originalInvoiceTerm.getMoveLine().getInvoiceTermList()) + 1;
     }
 
     BigDecimal percentage = invoiceTermService.computeCustomizedPercentage(amount, total);
@@ -288,13 +295,15 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     }
     int pfpStatus = this.getPfpValidateStatusSelect(invoiceTerm);
     int otherPfpStatus;
-    for (InvoiceTerm otherInvoiceTerm : invoice.getInvoiceTermList()) {
-      if (!otherInvoiceTerm.getId().equals(invoiceTerm.getId())) {
-        otherPfpStatus = this.getPfpValidateStatusSelect(otherInvoiceTerm);
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      for (InvoiceTerm otherInvoiceTerm : invoice.getInvoiceTermList()) {
+        if (!otherInvoiceTerm.getId().equals(invoiceTerm.getId())) {
+          otherPfpStatus = this.getPfpValidateStatusSelect(otherInvoiceTerm);
 
-        if (otherPfpStatus != pfpStatus) {
-          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
-          break;
+          if (otherPfpStatus != pfpStatus) {
+            pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
+            break;
+          }
         }
       }
     }

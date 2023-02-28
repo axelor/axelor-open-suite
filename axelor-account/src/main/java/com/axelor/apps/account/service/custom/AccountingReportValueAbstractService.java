@@ -69,9 +69,12 @@ public abstract class AccountingReportValueAbstractService {
       String lineCode) {
     String columnCode =
         this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
-
-    valuesMapByColumn.get(columnCode).put(lineCode, null);
-    valuesMapByLine.get(lineCode).put(columnCode, null);
+    if (valuesMapByColumn != null && valuesMapByColumn.containsKey(columnCode)) {
+      valuesMapByColumn.get(columnCode).put(lineCode, null);
+    }
+    if (valuesMapByLine != null && valuesMapByLine.containsKey(lineCode)) {
+      valuesMapByLine.get(lineCode).put(columnCode, null);
+    }
   }
 
   @Transactional
@@ -122,11 +125,11 @@ public abstract class AccountingReportValueAbstractService {
     String columnCode =
         this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
 
-    if (valuesMapByColumn.containsKey(columnCode)) {
+    if (valuesMapByColumn != null && valuesMapByColumn.containsKey(columnCode)) {
       valuesMapByColumn.get(columnCode).put(lineCode, accountingReportValue);
     }
 
-    if (valuesMapByLine.containsKey(lineCode)) {
+    if (valuesMapByLine != null && valuesMapByLine.containsKey(lineCode)) {
       valuesMapByLine.get(lineCode).put(columnCode, accountingReportValue);
     }
   }

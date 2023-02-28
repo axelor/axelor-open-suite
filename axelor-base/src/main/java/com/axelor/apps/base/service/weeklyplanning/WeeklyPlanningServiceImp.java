@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.DayPlanningRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -36,6 +37,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
@@ -104,7 +106,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   public WeeklyPlanning checkPlanning(WeeklyPlanning planning) throws AxelorException {
 
     List<DayPlanning> listDay = planning.getWeekDays();
-    for (DayPlanning dayPlanning : listDay) {
+    for (DayPlanning dayPlanning : ListUtils.emptyIfNull(listDay)) {
 
       if (dayPlanning.getMorningFrom() != null
           && dayPlanning.getMorningTo() != null
@@ -252,9 +254,11 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
   public DayPlanning findDayWithName(WeeklyPlanning planning, String name) {
     List<DayPlanning> dayPlanningList = planning.getWeekDays();
-    for (DayPlanning dayPlanning : dayPlanningList) {
-      if (dayPlanning.getNameSelect().equals(name)) {
-        return dayPlanning;
+    if (CollectionUtils.isNotEmpty(dayPlanningList)) {
+      for (DayPlanning dayPlanning : dayPlanningList) {
+        if (dayPlanning.getNameSelect().equals(name)) {
+          return dayPlanning;
+        }
       }
     }
     return null;

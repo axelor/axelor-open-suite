@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
@@ -58,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,28 +90,34 @@ public class AddressController {
     Map<String, Object> retDict =
         Beans.get(AddressService.class)
             .validate(Beans.get(AppBaseService.class).getAppBase().getQasWsdlUrl(), search);
-    LOG.debug("validate retDict = {}", retDict);
+    if (retDict != null) {
+      LOG.debug("validate retDict = {}", retDict);
+    }
 
-    VerifyLevelType verifyLevel = (VerifyLevelType) retDict.get("verifyLevel");
+    VerifyLevelType verifyLevel =
+        retDict != null ? (VerifyLevelType) retDict.get("verifyLevel") : null;
 
     if (verifyLevel != null && verifyLevel.value().equals("Verified")) {
 
       QAAddressType address = (QAAddressType) retDict.get("qaAddress");
       String addL1;
       List<AddressLineType> addressLineType = address.getAddressLine();
-      addL1 = addressLineType.get(0).getLine();
-      response.setValue("addressL2", addressLineType.get(1).getLine());
-      response.setValue("addressL3", addressLineType.get(2).getLine());
-      response.setValue("addressL4", addressLineType.get(3).getLine());
-      response.setValue("addressL5", addressLineType.get(4).getLine());
-      response.setValue("addressL6", addressLineType.get(5).getLine());
-      response.setValue("inseeCode", addressLineType.get(6).getLine());
-      response.setValue("certifiedOk", true);
-      response.setValue("pickList", new ArrayList<QAPicklistType>());
-      if (addL1 != null) {
-        response.setFlash("Ligne 1: " + addL1);
+      if (addressLineType != null) {
+        addL1 = addressLineType.get(0).getLine();
+        response.setValue("addressL2", addressLineType.get(1).getLine());
+        response.setValue("addressL3", addressLineType.get(2).getLine());
+        response.setValue("addressL4", addressLineType.get(3).getLine());
+        response.setValue("addressL5", addressLineType.get(4).getLine());
+        response.setValue("addressL6", addressLineType.get(5).getLine());
+        response.setValue("inseeCode", addressLineType.get(6).getLine());
+        response.setValue("certifiedOk", true);
+        response.setValue("pickList", new ArrayList<QAPicklistType>());
+        if (addL1 != null) {
+          response.setFlash("Ligne 1: " + addL1);
+        }
       }
-    } else if (verifyLevel != null
+    } else if (retDict != null
+        && verifyLevel != null
         && (verifyLevel.value().equals("Multiple")
             || verifyLevel.value().equals("StreetPartial")
             || verifyLevel.value().equals("InteractionRequired")
@@ -118,7 +126,7 @@ public class AddressController {
       QAPicklistType qaPicklist = (QAPicklistType) retDict.get("qaPicklist");
       List<PickListEntry> pickList = new ArrayList<>();
       if (qaPicklist != null) {
-        for (PicklistEntryType p : qaPicklist.getPicklistEntry()) {
+        for (PicklistEntryType p : ListUtils.emptyIfNull(qaPicklist.getPicklistEntry())) {
           PickListEntry e = new PickListEntry();
           e.setAddress(a);
           e.setMoniker(p.getMoniker());
@@ -133,15 +141,17 @@ public class AddressController {
         QAAddressType address = (QAAddressType) retDict.get("qaAddress");
         PickListEntry e = new PickListEntry();
         List<AddressLineType> addressLineType = address.getAddressLine();
-        e.setAddress(a);
-        e.setL2(addressLineType.get(1).getLine());
-        e.setL3(addressLineType.get(2).getLine());
-        e.setPartialAddress(addressLineType.get(3).getLine());
-        e.setL5(addressLineType.get(4).getLine());
-        e.setPostcode(addressLineType.get(5).getLine());
-        e.setInseeCode(addressLineType.get(6).getLine());
+        if (addressLineType != null) {
+          e.setAddress(a);
+          e.setL2(addressLineType.get(1).getLine());
+          e.setL3(addressLineType.get(2).getLine());
+          e.setPartialAddress(addressLineType.get(3).getLine());
+          e.setL5(addressLineType.get(4).getLine());
+          e.setPostcode(addressLineType.get(5).getLine());
+          e.setInseeCode(addressLineType.get(6).getLine());
 
-        pickList.add(e);
+          pickList.add(e);
+        }
       }
       response.setValue("certifiedOk", false);
       response.setValue("pickList", pickList);
@@ -157,7 +167,7 @@ public class AddressController {
     Address a = request.getContext().asType(Address.class);
     PickListEntry pickedEntry = null;
 
-    if (!a.getPickList().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(a.getPickList())) {
 
       // if (a.pickList*.selected.count { it == true} > 0)
       //	pickedEntry = a.pickList.find {it.selected == true}

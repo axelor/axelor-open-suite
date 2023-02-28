@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.PricingRuleRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.metajsonattrs.MetaJsonAttrsBuilder;
 import com.axelor.apps.tool.MetaTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -219,8 +220,8 @@ public class PricingComputer extends AbstractObservablePricing {
     resultPricingRuleList.add(pricing.getResult3PricingRule());
     resultPricingRuleList.add(pricing.getResult4PricingRule());
 
-    for (PricingRule resultPricingRule : resultPricingRuleList) {
-      if (resultPricingRule != null) {
+    if (resultPricingRuleList != null) {
+      for (PricingRule resultPricingRule : resultPricingRuleList) {
         MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
         Object result = scriptHelper.eval(resultPricingRule.getFormula());
         notifyResultPricingRule(resultPricingRule, result);
@@ -377,7 +378,7 @@ public class PricingComputer extends AbstractObservablePricing {
     List<Integer[]> fieldTypeAndOpList = getFieldTypeAndOperator(pricing);
 
     List<PricingLine> pricingLines = pricing.getPricingLineList();
-    if (CollectionUtils.isEmpty(pricingLines)) {
+    if (CollectionUtils.isEmpty(pricingLines) || CollectionUtils.isEmpty(fieldTypeAndOpList)) {
       return Collections.emptyList();
     }
 
@@ -436,7 +437,7 @@ public class PricingComputer extends AbstractObservablePricing {
             Comparator.comparing(PricingLine::getClassificationIntParam1),
             Comparator.comparing(PricingLine::getClassificationDecParam1));
 
-    return pricingLines.stream()
+    return ListUtils.emptyIfNull(pricingLines).stream()
         .filter(
             pricingLine ->
                 checkClassificationParam(
@@ -460,7 +461,7 @@ public class PricingComputer extends AbstractObservablePricing {
             Comparator.comparing(PricingLine::getClassificationIntParam2),
             Comparator.comparing(PricingLine::getClassificationDecParam2));
 
-    return pricingLines.stream()
+    return ListUtils.emptyIfNull(pricingLines).stream()
         .filter(
             pricingLine ->
                 checkClassificationParam(
@@ -484,7 +485,7 @@ public class PricingComputer extends AbstractObservablePricing {
             Comparator.comparing(PricingLine::getClassificationIntParam3),
             Comparator.comparing(PricingLine::getClassificationDecParam3));
 
-    return pricingLines.stream()
+    return ListUtils.emptyIfNull(pricingLines).stream()
         .filter(
             pricingLine ->
                 checkClassificationParam(
@@ -508,7 +509,7 @@ public class PricingComputer extends AbstractObservablePricing {
             Comparator.comparing(PricingLine::getClassificationIntParam4),
             Comparator.comparing(PricingLine::getClassificationDecParam4));
 
-    return pricingLines.stream()
+    return ListUtils.emptyIfNull(pricingLines).stream()
         .filter(
             pricingLine ->
                 checkClassificationParam(
@@ -547,10 +548,14 @@ public class PricingComputer extends AbstractObservablePricing {
       Comparator<? super PricingLine> decComp) {
 
     if (fieldTypeSelect == PricingRuleRepository.FIELD_TYPE_INTEGER) {
-      return pricingLines.stream().sorted(intComp).collect(Collectors.toList());
+      return ListUtils.emptyIfNull(pricingLines).stream()
+          .sorted(intComp)
+          .collect(Collectors.toList());
 
     } else if (fieldTypeSelect == PricingRuleRepository.FIELD_TYPE_DECIMAL) {
-      return pricingLines.stream().sorted(decComp).collect(Collectors.toList());
+      return ListUtils.emptyIfNull(pricingLines).stream()
+          .sorted(decComp)
+          .collect(Collectors.toList());
     }
     return pricingLines;
   }

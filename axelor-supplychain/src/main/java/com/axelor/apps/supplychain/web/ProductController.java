@@ -63,7 +63,9 @@ public class ProductController {
       Map<String, Object> map =
           Beans.get(ProductStockLocationService.class)
               .computeIndicators(productId, companyId, stockLocationId);
-      response.setValues(map);
+      if (map != null) {
+        response.setValues(map);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -92,7 +94,9 @@ public class ProductController {
         List<Long> stockLocationIdList =
             Beans.get(StockLocationService.class)
                 .getAllLocationAndSubLocationId(stockLocation, false);
-        response.setValue("$stockLocationIdList", stockLocationIdList);
+        if (stockLocationIdList != null) {
+          response.setValue("$stockLocationIdList", stockLocationIdList);
+        }
         return;
       }
     }

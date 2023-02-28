@@ -174,11 +174,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         paramStr = ((Model) param).getId().toString();
       } else if (param instanceof Set) {
         Set<Object> paramSet = (Set<Object>) param;
-        for (Object object : paramSet) {
-          if (!paramStr.isEmpty()) {
-            paramStr += ",";
+        if (paramSet != null) {
+          for (Object object : paramSet) {
+            if (!paramStr.isEmpty()) {
+              paramStr += ",";
+            }
+            paramStr += ((Model) object).getId().toString();
           }
-          paramStr += ((Model) object).getId().toString();
         }
       } else if (param instanceof LocalDate) {
         paramStr = "'" + param.toString() + "'";
@@ -904,9 +906,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     accountingExport.setDateTo(accountingReport.getDateTo());
     accountingExport.setMinAmountExcl(accountingReport.getMinAmountExcl());
 
-    for (AccountingReportMoveLine reportMoveLine :
-        accountingReport.getAccountingReportMoveLineList()) {
-      accountingReportMoveLineService.processExportMoveLine(reportMoveLine, accountingExport);
+    if (accountingReport.getAccountingReportMoveLineList() != null) {
+      for (AccountingReportMoveLine reportMoveLine :
+          accountingReport.getAccountingReportMoveLineList()) {
+        accountingReportMoveLineService.processExportMoveLine(reportMoveLine, accountingExport);
+      }
     }
 
     setStatus(accountingExport);

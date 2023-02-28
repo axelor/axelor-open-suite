@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.Inflector;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -66,6 +67,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
 import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ChartRecordViewServiceImpl implements ChartRecordViewService {
 
@@ -161,7 +163,9 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
     Map<String, Object> params = getQueryParams(context, chart);
     String queryString = prepareQuery(chartBuilder, params);
     Query query = JPA.em().createNativeQuery(queryString);
-    params.forEach(query::setParameter);
+    if (params != null) {
+      params.forEach(query::setParameter);
+    }
 
     QueryBinder queryBinder = QueryBinder.of(query);
     ScriptBindings binding = new ScriptBindings(null); // handle special variables
@@ -169,6 +173,9 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
 
     List<BigInteger> resultList = queryBinder.getQuery().getResultList();
 
+    if (resultList == null) {
+      resultList = new ArrayList<>();
+    }
     resultList.add(BigInteger.ZERO);
     return resultList
         .parallelStream()
@@ -180,25 +187,28 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
     Map<String, Object> params = new HashMap<>();
 
     String groupByKey = chart.getCategory().getKey();
-    Object groupByValue = context.get(groupByKey);
+
+    Object groupByValue = context != null ? context.get(groupByKey) : null;
     if (groupByValue != null && !"null".equals(groupByValue)) {
       params.put(PARAM_GROUP, groupByValue);
     }
 
     String aggByKey =
-        chart.getSeries().stream()
+        ListUtils.emptyIfNull(chart.getSeries()).stream()
             .map(ChartSeries::getGroupBy)
             .filter(Objects::nonNull)
             .findFirst()
             .orElse(null);
-    if (StringUtils.notBlank(aggByKey)) {
+    if (StringUtils.notBlank(aggByKey) && context != null) {
       params.put(PARAM_AGG, context.get(aggByKey));
     }
 
     if (ObjectUtils.notEmpty(chart.getSearchFields())) {
       for (SearchField searchFields : chart.getSearchFields()) {
         String name = searchFields.getName();
-        params.put(name, context.get(name));
+        if (context != null) {
+          params.put(name, context.get(name));
+        }
       }
     }
     return params;
@@ -209,11 +219,14 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
     ArrayList<String> joins = new ArrayList<>();
     List<Filter> filterList = chartBuilder.getFilterList();
 
+    if (filterList == null) {
+      filterList = new ArrayList<>();
+    }
     List<Filter> filterForGroups = getFilters(chartBuilder, params, true);
-    filterList.addAll(filterForGroups);
+    filterList.addAll(ListUtils.emptyIfNull(filterForGroups));
 
     List<Filter> filterForAggregations = getFilters(chartBuilder, params, false);
-    filterList.addAll(filterForAggregations);
+    filterList.addAll(ListUtils.emptyIfNull(filterForAggregations));
 
     final String tableName = getTableName(chartBuilder);
     String sqlFilters = filterSqlService.getSqlFilters(filterList, joins, true);
@@ -232,22 +245,27 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
     String paramKey = isForGroup ? PARAM_GROUP : PARAM_AGG;
 
     if (!isForGroup && isAggregationAllowed(chartBuilder)) {
-      params.remove(paramKey);
+      if (params != null) {
+        params.remove(paramKey);
+      }
       return new ArrayList<>();
     }
 
     String targetType =
         isForGroup ? chartBuilder.getGroupOnTargetType() : chartBuilder.getAggregateOnTargetType();
-    Object paramObj = params.get(paramKey);
+    Object paramObj = params != null ? params.get(paramKey) : null;
     boolean isNull = ObjectUtils.isEmpty(paramObj);
     Filter filter = createFilter(chartBuilder, isNull, isForGroup);
 
     if (!TARGET_DATE_TYPES.contains(targetType.toUpperCase()) || isNull) {
-      if (isNull) {
+      if (isNull && params != null) {
         params.remove(paramKey);
       } else {
         Object value = getSelectionFieldValue(chartBuilder, paramObj, isForGroup);
         if (value != null) {
+          if (params == null) {
+            params = new HashMap<>();
+          }
           params.put(paramKey, value);
         }
       }
@@ -275,8 +293,10 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
       dateType = chartBuilder.getAggregateDateType();
     }
 
-    String paramValue = (String) params.get(paramKey);
-
+    String paramValue = params != null ? (String) params.get(paramKey) : "";
+    if (params == null) {
+      params = new HashMap<>();
+    }
     if ("day".equals(dateType)) {
 
       if (LocalDateTime.class.getSimpleName().equalsIgnoreCase(targetType)) {
@@ -419,11 +439,15 @@ public class ChartRecordViewServiceImpl implements ChartRecordViewService {
       return value;
     }
     List<Option> selectionList = MetaStore.getSelectionList(selection);
-    for (Option option : selectionList) {
-      if (option.getLocalizedTitle().equals(titleParam)) {
-        return ConvertUtils.convert(option.getValue(), targetType);
+
+    if (CollectionUtils.isNotEmpty(selectionList)) {
+      for (Option option : selectionList) {
+        if (option.getLocalizedTitle().equals(titleParam)) {
+          return ConvertUtils.convert(option.getValue(), targetType);
+        }
       }
     }
+
     return value;
   }
 

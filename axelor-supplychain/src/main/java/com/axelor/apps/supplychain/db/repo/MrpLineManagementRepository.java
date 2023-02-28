@@ -22,6 +22,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.inject.Beans;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MrpLineManagementRepository extends MrpLineRepository {
@@ -29,10 +30,13 @@ public class MrpLineManagementRepository extends MrpLineRepository {
   /** set alert if purchase delivery date is to far from proposal */
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long mrpLineId = (Long) json.get("id");
+    Long mrpLineId = json != null ? (Long) json.get("id") : 0L;
     MrpLine mrpLine = find(mrpLineId);
 
     Map<String, Object> mrpLineMap = super.populate(json, context);
+    if (json == null) {
+      json = new HashMap<>();
+    }
     if (mrpLine.getEstimatedDeliveryMrpLine() != null
         && mrpLine.getMaturityDate() != null
         && !mrpLine.getMaturityDate().isEqual(mrpLine.getDeliveryDelayDate())) {

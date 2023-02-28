@@ -59,6 +59,7 @@ import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -329,7 +330,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       statusList = StringTool.getIntegerList(status);
     }
     String statusListQuery =
-        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+        ListUtils.emptyIfNull(statusList).stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(","));
     String query =
         "self.product.id = "
             + productId

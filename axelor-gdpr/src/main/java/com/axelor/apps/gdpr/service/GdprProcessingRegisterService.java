@@ -27,6 +27,7 @@ import com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterLogRepository;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRepository;
 import com.axelor.apps.message.service.MailMessageService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.User;
@@ -47,6 +48,7 @@ import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -55,6 +57,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class GdprProcessingRegisterService implements Callable<List<GDPRProcessingRegister>> {
@@ -89,23 +92,26 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     final RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
     try (RequestScoper.CloseableScope ignored = scope.open()) {
       gdprProcessingRegisters =
-          gdprProcessingRegisters.stream()
+          ListUtils.emptyIfNull(gdprProcessingRegisters).stream()
               .filter(
                   gdprProcessingRegister ->
                       gdprProcessingRegister.getStatus()
                           == GDPRProcessingRegisterRepository.PROCESSING_REGISTER_STATUS_ACTIVE)
               .collect(Collectors.toList());
 
-      for (GDPRProcessingRegister gdprProcessingRegister : gdprProcessingRegisters) {
-        gdprProcessingRegister = processingRegisterRepository.find(gdprProcessingRegister.getId());
-        launchProcessingRegister(gdprProcessingRegister);
-        Beans.get(MailMessageService.class)
-            .sendNotification(
-                AuthUtils.getUser(),
-                I18n.get("Processing register - Archiving"),
-                I18n.get("Processed finished"),
-                gdprProcessingRegister.getId(),
-                gdprProcessingRegister.getClass());
+      if (CollectionUtils.isNotEmpty(gdprProcessingRegisters)) {
+        for (GDPRProcessingRegister gdprProcessingRegister : gdprProcessingRegisters) {
+          gdprProcessingRegister =
+              processingRegisterRepository.find(gdprProcessingRegister.getId());
+          launchProcessingRegister(gdprProcessingRegister);
+          Beans.get(MailMessageService.class)
+              .sendNotification(
+                  AuthUtils.getUser(),
+                  I18n.get("Processing register - Archiving"),
+                  I18n.get("Processed finished"),
+                  gdprProcessingRegister.getId(),
+                  gdprProcessingRegister.getClass());
+        }
       }
 
       return gdprProcessingRegisters;
@@ -128,41 +134,45 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
 
     int count = 0;
 
-    for (GDPRProcessingRegisterRule gdprProcessingRegisterRule : gdprProcessingRegisterRuleList) {
-      MetaModel metaModel = gdprProcessingRegisterRule.getMetaModel();
+    if (CollectionUtils.isNotEmpty(gdprProcessingRegisterRuleList)) {
+      for (GDPRProcessingRegisterRule gdprProcessingRegisterRule : gdprProcessingRegisterRuleList) {
+        MetaModel metaModel = gdprProcessingRegisterRule.getMetaModel();
 
-      Class<? extends AuditableModel> entityKlass =
-          (Class<? extends AuditableModel>) Class.forName(metaModel.getFullName());
-      String filter = computeFilter(gdprProcessingRegisterRule.getRule(), metaModel);
+        Class<? extends AuditableModel> entityKlass =
+            (Class<? extends AuditableModel>) Class.forName(metaModel.getFullName());
+        String filter = computeFilter(gdprProcessingRegisterRule.getRule(), metaModel);
 
-      AuditableModel model;
+        AuditableModel model;
 
-      List<Map> idsMap =
-          Query.of(entityKlass)
-              .order("id")
-              .filter(filter)
-              .bind("minDate", calculatedDate)
-              .select("id")
-              .fetch(0, 0);
+        List<Map> idsMap =
+            Query.of(entityKlass)
+                .order("id")
+                .filter(filter)
+                .bind("minDate", calculatedDate)
+                .select("id")
+                .fetch(0, 0);
 
-      List<Long> ids =
-          idsMap.stream().map(map -> (Long) map.get("id")).collect(Collectors.toList());
+        List<Long> ids =
+            idsMap != null
+                ? idsMap.stream().map(map -> (Long) map.get("id")).collect(Collectors.toList())
+                : new ArrayList<>();
 
-      for (Long id : ids) {
-        model = Query.of(entityKlass).filter("id = :id").bind("id", id).fetchOne();
-        model.setArchived(true);
-        anonymize(metaModel, model, anonymizer);
-        count++;
+        for (Long id : ids) {
+          model = Query.of(entityKlass).filter("id = :id").bind("id", id).fetchOne();
+          model.setArchived(true);
+          anonymize(metaModel, model, anonymizer);
+          count++;
 
-        if (anonymizer != null) {
-          gdprAnonymizeService.anonymizeTrackingDatas(model);
+          if (anonymizer != null) {
+            gdprAnonymizeService.anonymizeTrackingDatas(model);
+          }
+
+          if (count % 10 == 0) {
+            JPA.clear();
+          }
         }
-
-        if (count % 10 == 0) {
-          JPA.clear();
-        }
+        JPA.clear();
       }
-      JPA.clear();
     }
     if (count > 0) {
       addProcessingLog(gdprProcessingRegister, count);
@@ -173,7 +183,8 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     StringBuilder stringBuilder = new StringBuilder();
     String fields = rule.replaceAll("\\s", "");
     List<String> fieldList = Arrays.asList(fields.split(","));
-    Iterator<String> iterator = fieldList.iterator();
+    Iterator<String> iterator =
+        fieldList != null ? fieldList.iterator() : Collections.emptyIterator();
     stringBuilder.append("(self.archived is null or self.archived is false) AND ");
     while (iterator.hasNext()) {
       stringBuilder.append("self.");
@@ -202,27 +213,29 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
 
     // get list of anonymizer lines for metaModel
     List<AnonymizerLine> anonymizerLines =
-        anonymizer.getAnonymizerLineList().stream()
+        ListUtils.emptyIfNull(anonymizer.getAnonymizerLineList()).stream()
             .filter(anonymizerline -> metaModel.equals(anonymizerline.getMetaModel()))
             .collect(Collectors.toList());
 
     Mapper mapper = Mapper.of(model.getClass());
     Object newValue = null;
 
-    for (AnonymizerLine anonymizerLine : anonymizerLines) {
-      Object currentValue = mapper.get(model, anonymizerLine.getMetaField().getName());
-      Property property = mapper.getProperty(anonymizerLine.getMetaField().getName());
-      if (Objects.isNull(currentValue)) continue;
+    if (CollectionUtils.isNotEmpty(anonymizerLines)) {
+      for (AnonymizerLine anonymizerLine : anonymizerLines) {
+        Object currentValue = mapper.get(model, anonymizerLine.getMetaField().getName());
+        Property property = mapper.getProperty(anonymizerLine.getMetaField().getName());
+        if (Objects.isNull(currentValue)) continue;
 
-      if (StringUtils.isEmpty(property.getSelection())) {
-        newValue =
-            anonymizeService.anonymizeValue(
-                currentValue, property, anonymizerLine.getFakerApiField());
-      } else {
-        Selection.Option option = MetaStore.getSelectionList(property.getSelection()).get(0);
-        newValue = option.getValue();
+        if (StringUtils.isEmpty(property.getSelection())) {
+          newValue =
+              anonymizeService.anonymizeValue(
+                  currentValue, property, anonymizerLine.getFakerApiField());
+        } else {
+          Selection.Option option = MetaStore.getSelectionList(property.getSelection()).get(0);
+          newValue = option.getValue();
+        }
+        mapper.set(model, anonymizerLine.getMetaField().getName(), newValue);
       }
-      mapper.set(model, anonymizerLine.getMetaField().getName(), newValue);
     }
     JPA.merge(model);
   }

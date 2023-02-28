@@ -36,6 +36,8 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -69,6 +71,7 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
@@ -190,23 +193,28 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     Locale locale = AppFilter.getLocale();
     NumberFormat nf = NumberFormat.getInstance(locale);
 
-    for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {
-      StockMoveLine stockMoveLine = entry.getKey();
-      BigDecimal spreadableQty = entry.getValue();
+    if (spreadableQtyMap != null) {
+      for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {
+        StockMoveLine stockMoveLine = entry.getKey();
+        BigDecimal spreadableQty = entry.getValue();
 
-      if (spreadableQty.signum() != 0) {
-        BigDecimal spreadQty = spreadQtyMap.getOrDefault(stockMoveLine, BigDecimal.ZERO);
-        BigDecimal expectedQty = spreadQty.add(spreadableQty);
-        String errorMessage =
-            String.format(
-                locale,
-                I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY),
+        if (spreadableQty.signum() != 0) {
+          if (spreadQtyMap != null) {
+            BigDecimal spreadQty = spreadQtyMap.getOrDefault(stockMoveLine, BigDecimal.ZERO);
+            BigDecimal expectedQty = spreadQty.add(spreadableQty);
+            String errorMessage =
                 String.format(
-                    "%s (%s)",
-                    stockMoveLine.getProductName(), stockMoveLine.getStockMove().getStockMoveSeq()),
-                nf.format(spreadQty),
-                nf.format(expectedQty));
-        errorMessageList.add(errorMessage);
+                    locale,
+                    I18n.get(StockExceptionMessage.LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY),
+                    String.format(
+                        "%s (%s)",
+                        stockMoveLine.getProductName(),
+                        stockMoveLine.getStockMove().getStockMoveSeq()),
+                    nf.format(spreadQty),
+                    nf.format(expectedQty));
+            errorMessageList.add(errorMessage);
+          }
+        }
       }
     }
   }
@@ -248,6 +256,9 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         }
 
         String errorMessage = String.format(msg, logisticalFormLine.getParcelPalletNumber());
+        if (errorMessageList == null) {
+          errorMessageList = new ArrayList<>();
+        }
         errorMessageList.add(errorMessage);
       }
     }
@@ -269,7 +280,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     List<StockMoveLine> stockMoveLineList = new ArrayList<>();
     Map<StockMoveLine, BigDecimal> spreadableQtyMap = new HashMap<>();
 
-    for (LogisticalForm item : findPendingLogisticalForms(logisticalForm)) {
+    for (LogisticalForm item : ListUtils.emptyIfNull(findPendingLogisticalForms(logisticalForm))) {
       spreadableQtyMap.putAll(getSpreadableQtyMap(item));
     }
 
@@ -301,6 +312,9 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     }
 
     List<LogisticalForm> logisticalFormList = queryBuilder.build().fetch();
+    if (logisticalFormList == null) {
+      logisticalFormList = new ArrayList<>();
+    }
     logisticalFormList.add(logisticalForm);
 
     return logisticalFormList;
@@ -313,12 +327,15 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     Set<StockMove> stockMoveSet = new HashSet<>();
 
-    for (StockMoveLine stockMoveLine : fullySpreadStockMoveLineList) {
-      stockMoveSet.add(stockMoveLine.getStockMove());
+    if (CollectionUtils.isNotEmpty(fullySpreadStockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : fullySpreadStockMoveLineList) {
+        stockMoveSet.add(stockMoveLine.getStockMove());
+      }
     }
 
     for (StockMove stockMove : stockMoveSet) {
-      if (fullySpreadStockMoveLineList.containsAll(stockMove.getStockMoveLineList())) {
+      if (fullySpreadStockMoveLineList != null
+          && fullySpreadStockMoveLineList.containsAll(stockMove.getStockMoveLineList())) {
         fullySpreadStockMoveList.add(stockMove);
       }
     }
@@ -528,7 +545,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       domainList.add(String.format("self.id NOT IN (%s)", idListString));
     }
 
-    return domainList.stream()
+    return ListUtils.emptyIfNull(domainList).stream()
         .map(domain -> String.format("(%s)", domain))
         .collect(Collectors.joining(" AND "));
   }
@@ -594,13 +611,14 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     StockMoveService stockMoveService = Beans.get(StockMoveService.class);
 
-    stockMoveSet.forEach(stockMoveService::updateFullySpreadOverLogisticalFormsFlag);
+    SetUtils.emptyIfNull(stockMoveSet)
+        .forEach(stockMoveService::updateFullySpreadOverLogisticalFormsFlag);
 
     StockConfigService stockConfigService = Beans.get(StockConfigService.class);
     StockConfig stockConfig = stockConfigService.getStockConfig(logisticalForm.getCompany());
 
     if (stockConfig.getRealizeStockMovesUponParcelPalletCollection()) {
-      for (StockMove stockMove : stockMoveSet) {
+      for (StockMove stockMove : SetUtils.emptyIfNull(stockMoveSet)) {
         if (stockMove.getFullySpreadOverLogisticalFormsFlag()) {
           stockMoveService.realize(stockMove);
         }

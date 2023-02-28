@@ -23,6 +23,7 @@ import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +41,13 @@ public class TranslationRestServiceImpl implements TranslationRestService {
   @Transactional(rollbackOn = {Exception.class})
   public Integer createNewTranslation(Map<String, String> translationMap, String language)
       throws AxelorException {
-    Iterator<String> keys = translationMap.keySet().iterator();
+    Iterator<String> keys =
+        translationMap != null ? translationMap.keySet().iterator() : Collections.emptyIterator();
     int addedTranslation = 0;
+
+    if (!keys.hasNext()) {
+      return addedTranslation;
+    }
 
     while (keys.hasNext()) {
       String currentKey = keys.next();
@@ -52,10 +58,12 @@ public class TranslationRestServiceImpl implements TranslationRestService {
       query.bind("key", "mobile_app_" + currentKey);
 
       List<MetaTranslation> translationList = query.fetch();
-      if (translationList.size() == 0) {
+      if (translationList.isEmpty()) {
         MetaTranslation newTranslation = new MetaTranslation();
         newTranslation.setKey("mobile_app_" + currentKey);
-        newTranslation.setMessage(translationMap.get(currentKey));
+        if (translationMap != null) {
+          newTranslation.setMessage(translationMap.get(currentKey));
+        }
         newTranslation.setLanguage(language);
         translationRepo.save(newTranslation);
         addedTranslation++;

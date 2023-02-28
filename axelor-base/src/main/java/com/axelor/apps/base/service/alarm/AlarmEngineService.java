@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.AlarmMessage;
 import com.axelor.apps.base.db.repo.AlarmEngineRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -34,6 +35,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +91,8 @@ public class AlarmEngineService<T extends Model> {
                 MetaModelService.getMetaModel(klass))
             .fetch();
 
-    LOG.debug("Engines launching of type {} : {} engines to launch", klass, alarmEngines.size());
+    LOG.debug(
+        "Engines launching of type {} : {} engines to launch", klass, ListUtils.size(alarmEngines));
 
     return get(alarmEngines, klass, params);
   }
@@ -112,6 +115,10 @@ public class AlarmEngineService<T extends Model> {
 
     Map<T, List<Alarm>> map = new HashMap<T, List<Alarm>>();
     Map<T, Alarm> alarmMap = new HashMap<T, Alarm>();
+
+    if (CollectionUtils.isEmpty(alarmEngines)) {
+      return map;
+    }
 
     for (AlarmEngine alarmEngine : alarmEngines) {
 
@@ -149,7 +156,7 @@ public class AlarmEngineService<T extends Model> {
 
     Map<T, Alarm> map = new HashMap<T, Alarm>();
 
-    for (T t : this.results(alarmEngine.getQuery(), klass, params)) {
+    for (T t : ListUtils.emptyIfNull(this.results(alarmEngine.getQuery(), klass, params))) {
 
       if (!map.containsKey(t)) {
         map.put(t, createAlarm(alarmEngine, t));

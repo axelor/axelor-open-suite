@@ -64,15 +64,19 @@ public class GdprProcessingRegisterController {
       if (map.get("metaModel") != null) {
         Map metaModelMap = (Map) map.get("metaModel");
         metaModel =
-            Beans.get(MetaModelRepository.class)
-                .find(Long.decode(metaModelMap.get("id").toString()));
+            metaModelMap != null
+                ? Beans.get(MetaModelRepository.class)
+                    .find(Long.decode(metaModelMap.get("id").toString()))
+                : null;
       }
 
       List<MetaField> metaFields =
-          metaModel.getMetaFields().stream()
-              .filter(mf -> Objects.isNull(mf.getRelationship()))
-              .filter(mf -> !GdprAnonymizeService.excludeFields.contains(mf.getName()))
-              .collect(Collectors.toList());
+          metaModel != null && metaModel.getMetaFields() != null
+              ? metaModel.getMetaFields().stream()
+                  .filter(mf -> Objects.isNull(mf.getRelationship()))
+                  .filter(mf -> !GdprAnonymizeService.excludeFields.contains(mf.getName()))
+                  .collect(Collectors.toList())
+              : new ArrayList<>();
 
       for (MetaField metaField : metaFields) {
         AnonymizerLine anonymizerLine = new AnonymizerLine();

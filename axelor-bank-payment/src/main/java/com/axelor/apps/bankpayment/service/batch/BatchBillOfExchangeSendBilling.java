@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -196,22 +197,24 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
 
   protected void incrementAnomaliesForInvoices(
       Exception e, List<Invoice> invoicesList, Batch batch) {
-    invoicesList.stream()
-        .forEach(
-            invoice -> {
-              incrementAnomaly();
-              TraceBackService.trace(e, "Generation and send of message failed", batch.getId());
-            });
-    ;
+    if (invoicesList != null) {
+      invoicesList.stream()
+          .forEach(
+              invoice -> {
+                incrementAnomaly();
+                TraceBackService.trace(e, "Generation and send of message failed", batch.getId());
+              });
+    }
   }
 
   protected void incrementDoneForInvoices(List<Invoice> invoicesList, Batch batch) {
-    invoicesList.stream()
-        .forEach(
-            invoice -> {
-              incrementDone();
-            });
-    ;
+    if (invoicesList != null) {
+      invoicesList.stream()
+          .forEach(
+              invoice -> {
+                incrementDone();
+              });
+    }
   }
 
   @Transactional
@@ -234,24 +237,27 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     Objects.requireNonNull(invoicesList);
     Objects.requireNonNull(mapPartnerInvoices);
 
-    invoicesList.forEach(
-        invoice -> {
-          if (!mapPartnerInvoices.containsKey(invoice.getPartner())) {
-            mapPartnerInvoices.put(
-                invoice.getPartner(), new ArrayList<Invoice>(Arrays.asList(invoice)));
-          } else {
-            mapPartnerInvoices.get(invoice.getPartner()).add(invoice);
-          }
-        });
+    ListUtils.emptyIfNull(invoicesList)
+        .forEach(
+            invoice -> {
+              if (mapPartnerInvoices != null
+                  && !mapPartnerInvoices.containsKey(invoice.getPartner())) {
+                mapPartnerInvoices.put(
+                    invoice.getPartner(), new ArrayList<Invoice>(Arrays.asList(invoice)));
+              } else {
+                mapPartnerInvoices.get(invoice.getPartner()).add(invoice);
+              }
+            });
   }
 
   protected void traceAnomalyForEachInvoices(List<Long> invoiceIdList, Exception exception) {
 
-    invoiceIdList.forEach(
-        invoiceId -> {
-          incrementAnomaly();
-          TraceBackService.trace(exception, "batchBillOfExchange: send billing", batch.getId());
-        });
+    ListUtils.emptyIfNull(invoiceIdList)
+        .forEach(
+            invoiceId -> {
+              incrementAnomaly();
+              TraceBackService.trace(exception, "batchBillOfExchange: send billing", batch.getId());
+            });
   }
 
   protected Query<Invoice> buildOrderedQueryFetchLcrAccountedInvoices(
@@ -274,7 +280,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     bindings.put("statusSelect", InvoiceRepository.STATUS_VENTILATED);
     bindings.put("company", accountingBatch.getCompany());
     bindings.put("paymentMode", accountingBatch.getPaymentMode());
-    bindings.put("anomalyList", anomalyList);
+    bindings.put("anomalyList", ListUtils.emptyIfNull(anomalyList));
     bindings.put("dueDate", accountingBatch.getDueDate());
 
     if (accountingBatch.getDueDate() != null) {
@@ -289,7 +295,9 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
       filter.append(" AND self.companyBankDetails IN (:bankDetailsSet) ");
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
       if (manageMultiBanks && accountingBatch.getIncludeOtherBankAccounts()) {
-        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
+        if (accountingBatch.getCompany().getBankDetailsList() != null) {
+          bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
+        }
       }
       bindings.put("bankDetailsSet", bankDetailsSet);
     }

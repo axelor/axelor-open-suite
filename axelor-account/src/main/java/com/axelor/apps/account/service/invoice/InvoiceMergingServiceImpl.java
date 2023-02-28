@@ -35,6 +35,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceMergingServiceImpl implements InvoiceMergingService {
 
@@ -323,12 +324,12 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
   @Override
   public InvoiceMergingResult mergeInvoices(List<Invoice> invoicesToMerge) throws AxelorException {
     InvoiceMergingResult result = create();
-
-    extractFirstNonNullCommonFields(invoicesToMerge, result);
-    for (Invoice invoice : invoicesToMerge) {
-      fillCommonFields(invoice, result);
+    if (CollectionUtils.isNotEmpty(invoicesToMerge)) {
+      extractFirstNonNullCommonFields(invoicesToMerge, result);
+      for (Invoice invoice : invoicesToMerge) {
+        fillCommonFields(invoice, result);
+      }
     }
-
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
     checkErrors(fieldErrors, result);
     if (fieldErrors.length() > 0) {
@@ -356,12 +357,13 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
       FiscalPosition fiscalPosition)
       throws AxelorException {
     InvoiceMergingResult result = create();
-
     extractFirstNonNullCommonFields(invoicesToMerge, result);
-    for (Invoice invoice : invoicesToMerge) {
-      fillCommonFields(invoice, result);
-    }
 
+    if (CollectionUtils.isNotEmpty(invoicesToMerge)) {
+      for (Invoice invoice : invoicesToMerge) {
+        fillCommonFields(invoice, result);
+      }
+    }
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
     checkErrors(fieldErrors, result);
     if (fieldErrors.length() > 0) {
@@ -405,12 +407,13 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
       LocalDate originDate)
       throws AxelorException {
     InvoiceMergingResult result = create();
-
     extractFirstNonNullCommonFields(invoicesToMerge, result);
-    for (Invoice invoice : invoicesToMerge) {
-      fillCommonFields(invoice, result);
-    }
 
+    if (CollectionUtils.isNotEmpty(invoicesToMerge)) {
+      for (Invoice invoice : invoicesToMerge) {
+        fillCommonFields(invoice, result);
+      }
+    }
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
     checkErrors(fieldErrors, result);
     if (fieldErrors.length() > 0) {

@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PartnerSaleController {
@@ -54,7 +55,7 @@ public class PartnerSaleController {
       PartnerSaleService partnerSaleService = Beans.get(PartnerSaleService.class);
       List<Product> productList = partnerSaleService.getProductBoughtByCustomer(customer);
 
-      if (productList.isEmpty()) {
+      if (CollectionUtils.isEmpty(productList)) {
         response.setAttr("$saleDetailsByProduct", "hidden", true);
         return;
       }
@@ -99,7 +100,9 @@ public class PartnerSaleController {
 
       List<Map<String, Object>> dataList =
           Beans.get(PartnerSaleService.class).averageByCustomer(averageElement, fromDate, toDate);
-      response.setData(dataList);
+      if (dataList != null) {
+        response.setData(dataList);
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

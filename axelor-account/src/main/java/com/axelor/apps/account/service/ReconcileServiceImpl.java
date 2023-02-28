@@ -52,6 +52,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -71,6 +72,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -294,10 +296,9 @@ public class ReconcileServiceImpl implements ReconcileService {
           debitMoveLine.getAccount());
 
       // Check if move lines accounts are compatible
-      if (!debitMoveLine
-          .getAccount()
-          .getCompatibleAccountSet()
-          .contains(creditMoveLine.getAccount())) {
+      Set<Account> compatibleAccountSet = debitMoveLine.getAccount().getCompatibleAccountSet();
+      if (compatibleAccountSet == null
+          || !compatibleAccountSet.contains(creditMoveLine.getAccount())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(AccountExceptionMessage.RECONCILE_2),
@@ -500,7 +501,7 @@ public class ReconcileServiceImpl implements ReconcileService {
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
               invoicePayment, invoiceTermList, amount);
 
-      for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
+      for (InvoiceTermPayment invoiceTermPayment : ListUtils.emptyIfNull(invoiceTermPaymentList)) {
         invoiceTermService.updateInvoiceTermsPaidAmount(
             invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
 
@@ -567,7 +568,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected List<InvoiceTerm> getInvoiceTermsFromMoveLine(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream()
+    return ListUtils.emptyIfNull(invoiceTermList).stream()
         .filter(it -> !it.getIsPaid())
         .sorted(this::compareInvoiceTerm)
         .collect(Collectors.toList());
@@ -589,7 +590,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected InvoicePayment getExistingInvoicePayment(Invoice invoice, Move move) {
-    return invoice.getInvoicePaymentList().stream()
+    return ListUtils.emptyIfNull(invoice.getInvoicePaymentList()).stream()
         .filter(
             it ->
                 (it.getMove() != null
@@ -763,7 +764,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     log.debug("updateInvoicePaymentsCanceled : reconcile : {}", reconcile);
     for (InvoicePayment invoicePayment :
-        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch()) {
+        ListUtils.emptyIfNull(invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch())) {
       invoicePaymentCancelService.updateCancelStatus(invoicePayment);
     }
   }
@@ -888,14 +889,14 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   @Override
   public String getStringAllowedCreditMoveLines(Reconcile reconcile) {
-    return getAllowedCreditMoveLines(reconcile).stream()
+    return ListUtils.emptyIfNull(getAllowedCreditMoveLines(reconcile)).stream()
         .map(Objects::toString)
         .collect(Collectors.joining(","));
   }
 
   @Override
   public String getStringAllowedDebitMoveLines(Reconcile reconcile) {
-    return getAllowedDebitMoveLines(reconcile).stream()
+    return ListUtils.emptyIfNull(getAllowedDebitMoveLines(reconcile)).stream()
         .map(Objects::toString)
         .collect(Collectors.joining(","));
   }
@@ -921,7 +922,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     moveLineQuery = setQueryBindings(moveLineQuery, otherMoveLine);
 
-    return moveLineQuery.fetch().stream()
+    return ListUtils.emptyIfNull(moveLineQuery.fetch()).stream()
         .filter(moveLineControlService::canReconcile)
         .map(MoveLine::getId)
         .collect(Collectors.toList());

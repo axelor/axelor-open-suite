@@ -17,9 +17,11 @@
  */
 package com.axelor.studio.service.loader;
 
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.apps.tool.context.FullContextHelper;
 import com.axelor.common.Inflector;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.ResourceUtils;
 import com.axelor.data.XStreamUtils;
 import com.axelor.data.xml.XMLBind;
@@ -150,13 +152,14 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
   public Map<String, Object> getExportContext(AppLoader appLoader) {
 
     List<Long> ids =
-        appLoader.getExportedAppBuilderSet().stream()
+        SetUtils.emptyIfNull(appLoader.getExportedAppBuilderSet()).stream()
             .map(it -> it.getId())
             .collect(Collectors.toList());
 
     Map<String, Object> ctx = new HashMap<>();
-    ctx.put("__ids__", ids);
-
+    if (ids != null) {
+      ctx.put("__ids__", ids);
+    }
     return ctx;
   }
 
@@ -180,9 +183,11 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
     XMLConfig xmlConfig = new XMLConfig();
 
-    for (AppDataLoader dataLoader : appLoader.getAppDataLoaderList()) {
-      xmlConfig.getInputs().add(createInput(dataLoader, false));
-      xmlConfig.getInputs().add(createInput(dataLoader, true));
+    if (CollectionUtils.isNotEmpty(appLoader.getAppDataLoaderList())) {
+      for (AppDataLoader dataLoader : appLoader.getAppDataLoaderList()) {
+        xmlConfig.getInputs().add(createInput(dataLoader, false));
+        xmlConfig.getInputs().add(createInput(dataLoader, true));
+      }
     }
 
     writeXmlConfig(configFile, xmlConfig);
@@ -311,26 +316,31 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
       fixTargetName(jsonFieldMap);
 
-      for (FullContext record : records) {
-        if (!allowRead(MetaJsonRecord.class, (Long) record.get("id"))) {
-          continue;
-        }
-        fileWriter.write("<" + dasherizeModel + ">\n");
+      if (CollectionUtils.isNotEmpty(records)) {
+        for (FullContext record : records) {
+          if (!allowRead(MetaJsonRecord.class, (Long) record.get("id"))) {
+            continue;
+          }
+          fileWriter.write("<" + dasherizeModel + ">\n");
 
-        for (MetaJsonField jsonField : dataLoader.getJsonFieldSet()) {
-          String field = jsonField.getName();
-          Map<String, Object> fieldAttrs = (Map<String, Object>) jsonFieldMap.get(field);
-          fileWriter.write(
-              "\t<"
-                  + field
-                  + ">"
-                  + extractJsonFieldValue(record, fieldAttrs)
-                  + "</"
-                  + field
-                  + ">\n");
-        }
+          for (MetaJsonField jsonField : SetUtils.emptyIfNull(dataLoader.getJsonFieldSet())) {
+            String field = jsonField.getName();
+            Map<String, Object> fieldAttrs =
+                jsonFieldMap != null
+                    ? (Map<String, Object>) jsonFieldMap.get(field)
+                    : new HashMap<>();
+            fileWriter.write(
+                "\t<"
+                    + field
+                    + ">"
+                    + extractJsonFieldValue(record, fieldAttrs)
+                    + "</"
+                    + field
+                    + ">\n");
+          }
 
-        fileWriter.write("</" + dasherizeModel + ">\n\n");
+          fileWriter.write("</" + dasherizeModel + ">\n\n");
+        }
       }
 
       fileWriter.write("</" + dasherizeModel + "s>\n");
@@ -345,18 +355,21 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
   protected void fixTargetName(Map<String, Object> jsonFieldMap) {
 
     // NOTE: Issue in AOP, it always return name as targetname for custom model.
-    for (String field : jsonFieldMap.keySet()) {
-      Map<String, Object> fieldAttrs = (Map<String, Object>) jsonFieldMap.get(field);
-      String targetModel = (String) fieldAttrs.get("jsonTarget");
+    if (jsonFieldMap != null) {
+      for (String field : jsonFieldMap.keySet()) {
+        Map<String, Object> fieldAttrs = (Map<String, Object>) jsonFieldMap.get(field);
+        String targetModel = fieldAttrs != null ? (String) fieldAttrs.get("jsonTarget") : null;
 
-      if (targetModel != null) {
-        MetaJsonField nameField =
-            metaJsonModelRepository.findNameField(metaJsonModelRepository.findByName(targetModel));
-        String targetName = "id";
-        if (nameField != null) {
-          targetName = nameField.getName();
+        if (targetModel != null) {
+          MetaJsonField nameField =
+              metaJsonModelRepository.findNameField(
+                  metaJsonModelRepository.findByName(targetModel));
+          String targetName = "id";
+          if (nameField != null) {
+            targetName = nameField.getName();
+          }
+          ((Map<String, Object>) jsonFieldMap.get(field)).put("targetName", targetName);
         }
-        ((Map<String, Object>) jsonFieldMap.get(field)).put("targetName", targetName);
       }
     }
   }
@@ -394,27 +407,29 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
       List<FullContext> records = FullContextHelper.filter(modelName, dataLoader.getFilterQuery());
 
-      for (FullContext record : records) {
+      if (CollectionUtils.isNotEmpty(records)) {
+        for (FullContext record : records) {
 
-        if (!allowRead(klass, (Long) record.get("id"))) {
-          continue;
+          if (!allowRead(klass, (Long) record.get("id"))) {
+            continue;
+          }
+
+          fileWriter.write("<" + dasherizeModel + ">\n");
+
+          for (MetaField metaField : SetUtils.emptyIfNull(dataLoader.getMetaFieldSet())) {
+            String field = metaField.getName();
+            fileWriter.write(
+                "\t<"
+                    + field
+                    + ">"
+                    + extractMetaFieldValue(record, modelMapper.getProperty(field))
+                    + "</"
+                    + field
+                    + ">\n");
+          }
+
+          fileWriter.write("</" + dasherizeModel + ">\n\n");
         }
-
-        fileWriter.write("<" + dasherizeModel + ">\n");
-
-        for (MetaField metaField : dataLoader.getMetaFieldSet()) {
-          String field = metaField.getName();
-          fileWriter.write(
-              "\t<"
-                  + field
-                  + ">"
-                  + extractMetaFieldValue(record, modelMapper.getProperty(field))
-                  + "</"
-                  + field
-                  + ">\n");
-        }
-
-        fileWriter.write("</" + dasherizeModel + ">\n\n");
       }
 
       fileWriter.write("</" + dasherizeModel + "s>\n");
@@ -428,7 +443,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
   protected Object extractJsonFieldValue(FullContext record, Map<String, Object> fieldAttrs) {
 
-    Object value = record.get(fieldAttrs.get("jsonPath"));
+    Object value = fieldAttrs != null ? record.get(fieldAttrs.get("jsonPath")) : null;
 
     if (value != null) {
       if (value instanceof FullContext) {
@@ -436,14 +451,16 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
       } else if (value instanceof Collection) {
         Collection<Object> records = (Collection<Object>) value;
         StringBuilder stringBuilder = new StringBuilder();
-        for (Object rec : records) {
-          if (stringBuilder.length() > 0) {
-            stringBuilder.append(";");
-          }
-          Object target = ((FullContext) rec).get(getTargetName(fieldAttrs));
-          if (target != null) {
-            target = target.toString().replace(";", ",");
-            stringBuilder.append(target);
+        if (ObjectUtils.notEmpty(records)) {
+          for (Object rec : records) {
+            if (stringBuilder.length() > 0) {
+              stringBuilder.append(";");
+            }
+            Object target = ((FullContext) rec).get(getTargetName(fieldAttrs));
+            if (target != null) {
+              target = target.toString().replace(";", ",");
+              stringBuilder.append(target);
+            }
           }
         }
         value = stringBuilder.toString();
@@ -463,7 +480,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
   protected String getTargetName(Map<String, Object> fieldAttrs) {
 
-    String targetName = (String) fieldAttrs.get("targetName");
+    String targetName = fieldAttrs != null ? (String) fieldAttrs.get("targetName") : null;
     if (Strings.isNullOrEmpty(targetName)) {
       targetName = "id";
     }
@@ -531,20 +548,25 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     Map<String, InputStream> inputStreams = getExportTemplateResources();
     GroovyTemplates templates = new GroovyTemplates();
 
-    for (String xmlFileName : inputStreams.keySet()) {
-      log.debug("Exporting file: {}", xmlFileName);
-      File file = new File(exportDir, xmlFileName);
-      FileWriter writer = new FileWriter(file);
-      Map<String, Object> ctx = getExportContext(appLoader);
-      templates.from(new InputStreamReader(inputStreams.get(xmlFileName))).make(ctx).render(writer);
-      writer.close();
-      if (file.length() == 0) {
-        file.delete();
-      } else {
-        try (Stream<String> fileStream = java.nio.file.Files.lines(file.toPath())) {
-          long lines = fileStream.count();
-          if (lines == 1) {
-            file.delete();
+    if (inputStreams != null) {
+      for (String xmlFileName : inputStreams.keySet()) {
+        log.debug("Exporting file: {}", xmlFileName);
+        File file = new File(exportDir, xmlFileName);
+        FileWriter writer = new FileWriter(file);
+        Map<String, Object> ctx = getExportContext(appLoader);
+        templates
+            .from(new InputStreamReader(inputStreams.get(xmlFileName)))
+            .make(ctx)
+            .render(writer);
+        writer.close();
+        if (file.length() == 0) {
+          file.delete();
+        } else {
+          try (Stream<String> fileStream = java.nio.file.Files.lines(file.toPath())) {
+            long lines = fileStream.count();
+            if (lines == 1) {
+              file.delete();
+            }
           }
         }
       }
@@ -561,23 +583,26 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
     StringBuilder fields = new StringBuilder();
 
-    for (MetaField field : appDataLoader.getSearchMetaFieldSet()) {
+    if (appDataLoader != null
+        && CollectionUtils.isNotEmpty(appDataLoader.getSearchMetaFieldSet())) {
+      for (MetaField field : appDataLoader.getSearchMetaFieldSet()) {
 
-      if (fields.length() != 0) {
-        fields.append(" AND ");
-      }
+        if (fields.length() != 0) {
+          fields.append(" AND ");
+        }
 
-      if (field.getRelationship() != null) {
-        Property property = modelMapper.getProperty(field.getName());
-        fields.append(
-            "self."
-                + field.getName()
-                + "."
-                + property.getTargetName()
-                + " =  :_"
-                + field.getName());
-      } else {
-        fields.append("self." + field.getName() + " =  :_" + field.getName());
+        if (field.getRelationship() != null) {
+          Property property = modelMapper.getProperty(field.getName());
+          fields.append(
+              "self."
+                  + field.getName()
+                  + "."
+                  + property.getTargetName()
+                  + " =  :_"
+                  + field.getName());
+        } else {
+          fields.append("self." + field.getName() + " =  :_" + field.getName());
+        }
       }
     }
 
@@ -589,25 +614,27 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
     List<XMLBind> fieldBindings = new ArrayList<XMLBind>();
 
-    for (MetaField field : dataLoader.getMetaFieldSet()) {
+    if (dataLoader != null && CollectionUtils.isNotEmpty(dataLoader.getMetaFieldSet())) {
+      for (MetaField field : dataLoader.getMetaFieldSet()) {
 
-      fieldBindings.add(createDummyFieldBinding(field.getName()));
+        fieldBindings.add(createDummyFieldBinding(field.getName()));
 
-      if (relationalInput && field.getRelationship() == null) {
-        continue;
+        if (relationalInput && field.getRelationship() == null) {
+          continue;
+        }
+
+        XMLBind fieldBind = new XMLBind();
+        fieldBind.setField(field.getName());
+        fieldBind.setNode(field.getName());
+
+        if (field.getRelationship() != null) {
+          addRelationalMetaFieldBind(modelMapper, field, fieldBind);
+        } else if (field.getTypeName().equals("Boolean")) {
+          fieldBind.setAdapter("Boolean");
+        }
+
+        fieldBindings.add(fieldBind);
       }
-
-      XMLBind fieldBind = new XMLBind();
-      fieldBind.setField(field.getName());
-      fieldBind.setNode(field.getName());
-
-      if (field.getRelationship() != null) {
-        addRelationalMetaFieldBind(modelMapper, field, fieldBind);
-      } else if (field.getTypeName().equals("Boolean")) {
-        fieldBind.setAdapter("Boolean");
-      }
-
-      fieldBindings.add(fieldBind);
     }
 
     return fieldBindings;
@@ -641,28 +668,34 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
     StringBuilder fields = new StringBuilder();
 
-    for (MetaJsonField field : appDataLoader.getSearchJsonFieldSet()) {
+    if (appDataLoader != null
+        && CollectionUtils.isNotEmpty(appDataLoader.getSearchJsonFieldSet())) {
+      for (MetaJsonField field : appDataLoader.getSearchJsonFieldSet()) {
 
-      if (fields.length() != 0) {
-        fields.append(" AND ");
-      }
-      Map<String, Object> fieldAttrs = (Map<String, Object>) jsonFieldMap.get(field.getName());
-      log.debug("Json search Field name: {}, Field attrs: {}", field, fieldAttrs);
-      String jsonFunction = "json_extract_text";
+        if (fields.length() != 0) {
+          fields.append(" AND ");
+        }
+        Map<String, Object> fieldAttrs =
+            jsonFieldMap != null
+                ? (Map<String, Object>) jsonFieldMap.get(field.getName())
+                : new HashMap<>();
+        log.debug("Json search Field name: {}, Field attrs: {}", field, fieldAttrs);
+        String jsonFunction = "json_extract_text";
 
-      if (field.getTargetJsonModel() != null || field.getTargetModel() != null) {
-        String targetName = getTargetName(fieldAttrs);
-        if (targetName.equals("id")) {
-          jsonFunction = "json_extract_integer";
+        if (field.getTargetJsonModel() != null || field.getTargetModel() != null) {
+          String targetName = getTargetName(fieldAttrs);
+          if (targetName.equals("id")) {
+            jsonFunction = "json_extract_integer";
+          }
+          fields.append(
+              jsonFunction + "(self.attrs," + "'" + targetName + "') = :_" + field.getName());
+        } else {
+          if (JSON_EXTRACT_TYPES.contains(field.getType())) {
+            jsonFunction = "json_extract_" + field.getType();
+          }
+          fields.append(
+              jsonFunction + "(self.attrs,'" + field.getName() + "') = :_" + field.getName());
         }
-        fields.append(
-            jsonFunction + "(self.attrs," + "'" + targetName + "') = :_" + field.getName());
-      } else {
-        if (JSON_EXTRACT_TYPES.contains(field.getType())) {
-          jsonFunction = "json_extract_" + field.getType();
-        }
-        fields.append(
-            jsonFunction + "(self.attrs,'" + field.getName() + "') = :_" + field.getName());
       }
     }
 
@@ -674,8 +707,11 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
     List<XMLBind> fieldBindings = new ArrayList<>();
 
-    for (MetaJsonField jsonField : dataLoader.getJsonFieldSet()) {
-      Map<String, Object> fieldAttrs = (Map<String, Object>) jsonFieldMap.get(jsonField.getName());
+    for (MetaJsonField jsonField : SetUtils.emptyIfNull(dataLoader.getJsonFieldSet())) {
+      Map<String, Object> fieldAttrs =
+          jsonFieldMap != null
+              ? (Map<String, Object>) jsonFieldMap.get(jsonField.getName())
+              : new HashMap<>();
       log.debug("Json Field name: {}, Field attrs: {}", jsonField, fieldAttrs);
       String fieldType = jsonField.getType();
 

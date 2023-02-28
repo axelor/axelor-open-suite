@@ -48,7 +48,9 @@ public class StockCorrectionController {
       if (stockLocationLine != null) {
         stockCorrectionDetails =
             Beans.get(StockCorrectionService.class).fillDefaultValues(stockLocationLine);
-        response.setValues(stockCorrectionDetails);
+        if (stockCorrectionDetails != null) {
+          response.setValues(stockCorrectionDetails);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -61,8 +63,9 @@ public class StockCorrectionController {
 
       Map<String, Object> stockCorrectionQtys =
           Beans.get(StockCorrectionService.class).fillDeafultQtys(stockCorrection);
-      response.setValues(stockCorrectionQtys);
-
+      if (stockCorrectionQtys != null) {
+        response.setValues(stockCorrectionQtys);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

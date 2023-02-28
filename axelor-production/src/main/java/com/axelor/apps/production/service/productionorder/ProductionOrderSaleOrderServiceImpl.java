@@ -29,6 +29,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -191,7 +192,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
                 saleOrderLine,
                 ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER);
         tempChildBomList.addAll(
-            childBom.getBillOfMaterialSet().stream()
+            SetUtils.emptyIfNull(childBom.getBillOfMaterialSet()).stream()
                 .filter(BillOfMaterial::getDefineSubBillOfMaterial)
                 .collect(Collectors.toList()));
       }

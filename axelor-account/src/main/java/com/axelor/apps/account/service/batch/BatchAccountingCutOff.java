@@ -27,6 +27,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -110,14 +111,14 @@ public class BatchAccountingCutOff extends BatchStrategy {
 
   protected void _processMovesByIds(AccountingBatch accountingBatch) {
     List<Move> moveList =
-        recordIdList.stream()
+        ListUtils.emptyIfNull(recordIdList).stream()
             .map(it -> moveLineRepository.find(it))
             .filter(Objects::nonNull)
             .map(MoveLine::getMove)
             .distinct()
             .collect(Collectors.toList());
 
-    for (Move move : moveList) {
+    for (Move move : ListUtils.emptyIfNull(moveList)) {
       this._processMove(
           moveRepo.find(move.getId()), accountingBatchRepository.find(accountingBatch.getId()));
     }

@@ -58,7 +58,9 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
       invoice = Beans.get(InvoiceServiceProject.class).updateLines(invoice);
-      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+      if (invoice.getInvoiceLineList() != null) {
+        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

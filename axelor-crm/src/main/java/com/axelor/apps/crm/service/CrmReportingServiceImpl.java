@@ -34,6 +34,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class CrmReportingServiceImpl implements CrmReportingService {
 
@@ -196,11 +197,13 @@ public class CrmReportingServiceImpl implements CrmReportingService {
   protected String companyQuery(String queryStr, Set<Company> companies) {
     int count = 0;
     StringBuilder comQuery = new StringBuilder();
-    for (Company company : companies) {
-      comQuery.append("(" + company.getId() + ") " + queryStr);
-      count++;
-      if (count < companies.size()) {
-        comQuery.append(" OR ");
+    if (CollectionUtils.isNotEmpty(companies)) {
+      for (Company company : companies) {
+        comQuery.append("(" + company.getId() + ") " + queryStr);
+        count++;
+        if (count < companies.size()) {
+          comQuery.append(" OR ");
+        }
       }
     }
     return comQuery.toString();

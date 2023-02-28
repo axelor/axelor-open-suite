@@ -30,6 +30,8 @@ import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -51,6 +53,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.math3.exception.TooManyIterationsException;
 
 public class EventServiceImpl implements EventService {
@@ -168,7 +171,10 @@ public class EventServiceImpl implements EventService {
       Map<Integer, Boolean> daysCheckedMap) {
 
     List<DayOfWeek> dayOfWeekList =
-        daysCheckedMap.keySet().stream().sorted().map(DayOfWeek::of).collect(Collectors.toList());
+        SetUtils.emptyIfNull(daysCheckedMap.keySet()).stream()
+            .sorted()
+            .map(DayOfWeek::of)
+            .collect(Collectors.toList());
     Duration duration = Duration.between(event.getStartDateTime(), event.getEndDateTime());
     Event lastEvent = event;
     BiFunction<Integer, LocalDateTime, Boolean> breakCondition;
@@ -188,19 +194,21 @@ public class EventServiceImpl implements EventService {
 
       LocalDateTime nextStartDateTime = lastEvent.getStartDateTime().plusWeeks(periodicity - 1L);
 
-      for (DayOfWeek dayOfWeek : dayOfWeekList) {
-        nextStartDateTime = nextStartDateTime.with(TemporalAdjusters.next(dayOfWeek));
+      if (CollectionUtils.isNotEmpty(dayOfWeekList)) {
+        for (DayOfWeek dayOfWeek : dayOfWeekList) {
+          nextStartDateTime = nextStartDateTime.with(TemporalAdjusters.next(dayOfWeek));
 
-        if (breakCondition.apply(iteration, nextStartDateTime)) {
-          loop = false;
-          break;
+          if (breakCondition.apply(iteration, nextStartDateTime)) {
+            loop = false;
+            break;
+          }
+
+          Event copy = eventRepo.copy(lastEvent, false);
+          copy.setParentEvent(event);
+          copy.setStartDateTime(nextStartDateTime);
+          copy.setEndDateTime(nextStartDateTime.plus(duration));
+          lastEvent = eventRepo.save(copy);
         }
-
-        Event copy = eventRepo.copy(lastEvent, false);
-        copy.setParentEvent(event);
-        copy.setStartDateTime(nextStartDateTime);
-        copy.setEndDateTime(nextStartDateTime.plus(duration));
-        lastEvent = eventRepo.save(copy);
       }
     }
   }
@@ -789,7 +797,7 @@ public class EventServiceImpl implements EventService {
   }
 
   protected Optional<LocalDateTime> fetchNextEventStartDateT(Event event, List<Event> eventList) {
-    return eventList.stream()
+    return ListUtils.emptyIfNull(eventList).stream()
         .filter(
             e ->
                 e != event
@@ -802,7 +810,7 @@ public class EventServiceImpl implements EventService {
 
   protected Optional<LocalDateTime> fetchLatestEventEndDateT(Event event, List<Event> eventList) {
     Optional<Event> optEvent =
-        eventList.stream()
+        ListUtils.emptyIfNull(eventList).stream()
             .filter(
                 e ->
                     e != event

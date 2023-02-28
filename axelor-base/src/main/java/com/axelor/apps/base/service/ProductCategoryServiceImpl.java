@@ -20,6 +20,8 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.tool.collection.CollectionUtils;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -134,7 +136,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
       return descendantsProductCategoryList;
     }
     List<ProductCategory> childrenProductCategoryList = fetchChildren(productCategory);
-    while (!childrenProductCategoryList.isEmpty() && i < MAX_ITERATION) {
+    while (CollectionUtils.isNotEmpty(childrenProductCategoryList) && i < MAX_ITERATION) {
       List<ProductCategory> nextChildrenProductCategoryList = new ArrayList<>();
       for (ProductCategory childProductCategory : childrenProductCategoryList) {
         if (descendantsProductCategoryList.contains(childProductCategory)
@@ -164,7 +166,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
    */
   protected List<ProductCategory> fetchParentCategoryListWithMaxDiscount(
       ProductCategory productCategory) throws AxelorException {
-    return fetchParentCategoryList(productCategory).stream()
+    return ListUtils.emptyIfNull(fetchParentCategoryList(productCategory)).stream()
         .filter(pc -> pc.getMaxDiscount().signum() > 0)
         .collect(Collectors.toList());
   }
@@ -178,7 +180,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
    */
   protected List<ProductCategory> fetchChildrenCategoryListWithMaxDiscount(
       ProductCategory productCategory) throws AxelorException {
-    return fetchChildrenCategoryList(productCategory).stream()
+    return ListUtils.emptyIfNull(fetchChildrenCategoryList(productCategory)).stream()
         .filter(pc -> pc.getMaxDiscount().signum() > 0)
         .collect(Collectors.toList());
   }

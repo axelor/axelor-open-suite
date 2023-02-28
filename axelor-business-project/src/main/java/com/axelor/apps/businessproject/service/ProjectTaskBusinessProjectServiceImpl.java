@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
@@ -223,9 +224,12 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     int count = 0;
-    for (ProjectTask projectTask : projectTaskList) {
-      invoiceLineList.addAll(this.createInvoiceLine(invoice, projectTask, priority * 100 + count));
-      count++;
+    if (projectTaskList != null) {
+      for (ProjectTask projectTask : projectTaskList) {
+        invoiceLineList.addAll(
+            this.createInvoiceLine(invoice, projectTask, priority * 100 + count));
+        count++;
+      }
     }
     return invoiceLineList;
   }
@@ -432,7 +436,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     int offset = 0;
     List<ProjectTask> projectTaskList;
 
-    while (!(projectTaskList = taskQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+    while (CollectionUtils.isNotEmpty(
+        projectTaskList = taskQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))) {
       offset += projectTaskList.size();
       for (ProjectTask projectTask : projectTaskList) {
         updateTaskToInvoice(projectTask, appBusinessProject);

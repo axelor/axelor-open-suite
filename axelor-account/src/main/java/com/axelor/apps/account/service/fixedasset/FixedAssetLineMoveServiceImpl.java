@@ -45,6 +45,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -169,7 +170,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
 
     FixedAssetLine plannedFixedAssetLine =
-        fixedAsset.getFixedAssetLineList().stream()
+        ListUtils.emptyIfNull(fixedAsset.getFixedAssetLineList()).stream()
             .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
             .findAny()
             .orElse(null);
@@ -189,20 +190,22 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected boolean isPreviousLineRealized(FixedAssetLine fixedAssetLine, FixedAsset fixedAsset) {
     List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
-    fixedAssetLineList.sort(
-        (line1, line2) -> line1.getDepreciationDate().compareTo(line2.getDepreciationDate()));
-    for (int i = 0; i < fixedAssetLineList.size(); i++) {
-      if (fixedAssetLine
-          .getDepreciationDate()
-          .equals(fixedAssetLineList.get(i).getDepreciationDate())) {
-        if (i > 0) {
-          if (fixedAssetLineList.get(i - 1).getStatusSelect()
-              != FixedAssetLineRepository.STATUS_REALIZED) {
-            return false;
+    if (CollectionUtils.isNotEmpty(fixedAssetLineList)) {
+      fixedAssetLineList.sort(
+          (line1, line2) -> line1.getDepreciationDate().compareTo(line2.getDepreciationDate()));
+      for (int i = 0; i < fixedAssetLineList.size(); i++) {
+        if (fixedAssetLine
+            .getDepreciationDate()
+            .equals(fixedAssetLineList.get(i).getDepreciationDate())) {
+          if (i > 0) {
+            if (fixedAssetLineList.get(i - 1).getStatusSelect()
+                != FixedAssetLineRepository.STATUS_REALIZED) {
+              return false;
+            }
+            return true;
           }
           return true;
         }
-        return true;
       }
     }
     return true;
@@ -224,17 +227,22 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
     if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)
         && depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
-
+      if (fixedAsset.getFixedAssetLineList() == null
+          || fixedAsset.getFiscalFixedAssetLineList() == null) {
+        return;
+      }
       FixedAssetLine economicFixedAssetLine =
           fixedAsset.getFixedAssetLineList().stream()
               .filter(line -> line.getDepreciationDate().equals(depreciationDate))
               .findAny()
               .orElse(null);
+
       FixedAssetLine fiscalFixedAssetLine =
           fixedAsset.getFiscalFixedAssetLineList().stream()
               .filter(line -> line.getDepreciationDate().equals(depreciationDate))
               .findAny()
               .orElse(null);
+
       if (economicFixedAssetLine != null) {
         realize(economicFixedAssetLine, isBatch, generateMove, false);
       }
@@ -243,17 +251,19 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       }
 
       if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-        FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
-            fixedAsset.getFixedAssetDerogatoryLineList().stream()
-                .filter(line -> line.getDepreciationDate().equals(depreciationDate))
-                .findAny()
-                .orElse(null);
-        if (fixedAssetDerogatoryLine != null) {
-          if (batch != null) {
-            fixedAssetDerogatoryLineMoveService.setBatch(batch);
+        if (fixedAsset.getFixedAssetDerogatoryLineList() != null) {
+          FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
+              fixedAsset.getFixedAssetDerogatoryLineList().stream()
+                  .filter(line -> line.getDepreciationDate().equals(depreciationDate))
+                  .findAny()
+                  .orElse(null);
+          if (fixedAssetDerogatoryLine != null) {
+            if (batch != null) {
+              fixedAssetDerogatoryLineMoveService.setBatch(batch);
+            }
+            fixedAssetDerogatoryLineMoveService.realize(
+                fixedAssetDerogatoryLine, isBatch, generateMove);
           }
-          fixedAssetDerogatoryLineMoveService.realize(
-              fixedAssetDerogatoryLine, isBatch, generateMove);
         }
       }
     }
@@ -414,7 +424,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
           creditMoveLine.setAnalyticMoveLineList(analyticCreditMoveLineList);
         }
 
+        if (move.getMoveLineList() == null) {
+          move.setMoveLineList(new ArrayList<>());
+        }
         move.getMoveLineList().addAll(moveLines);
+
         if (batch != null) {
           move.addBatchSetItem(batchRepository.find(batch.getId()));
         }
@@ -550,7 +564,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       if (CollectionUtils.isEmpty(creditMoveLine.getAnalyticMoveLineList())) {
         creditMoveLine.setAnalyticMoveLineList(analyticCreditMoveLineList);
       }
+      if (move.getMoveLineList() == null) {
+        move.setMoveLineList(new ArrayList<>());
+      }
       move.getMoveLineList().addAll(moveLines);
+
       if (batch != null) {
         move.addBatchSetItem(batchRepository.find(batch.getId()));
       }
@@ -695,7 +713,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
 
-      move.getMoveLineList().addAll(moveLines);
+      ListUtils.emptyIfNull(move.getMoveLineList()).addAll(moveLines);
     }
     moveRepo.save(move);
     fixedAsset.setDisposalMove(move);
@@ -754,7 +772,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       Account creditAccountOne =
           fixedAsset.getFixedAssetCategory().getRealisedAssetsIncomeAccount();
       List<AccountManagement> creditAccountTwoList =
-          taxLine.getTax().getAccountManagementList().stream()
+          ListUtils.emptyIfNull(taxLine.getTax().getAccountManagementList()).stream()
               .filter(
                   accountManagement ->
                       accountManagement
@@ -866,7 +884,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         debitMoveLine.setAnalyticMoveLineList(analyticDebitMoveLineList);
       }
 
-      move.getMoveLineList().addAll(moveLines);
+      ListUtils.emptyIfNull(move.getMoveLineList()).addAll(moveLines);
     }
     moveRepo.save(move);
     fixedAsset.setSaleAccountMove(move);
@@ -903,6 +921,11 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Objects.requireNonNull(depreciationDate);
     String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
 
+    if (fixedAsset.getFixedAssetLineList() == null
+        || fixedAsset.getFiscalFixedAssetLineList() == null) {
+      return;
+    }
+
     if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)
         && depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
       FixedAssetLine economicFixedAssetLine =
@@ -923,13 +946,15 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       }
 
       if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-        FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
-            fixedAsset.getFixedAssetDerogatoryLineList().stream()
-                .filter(line -> line.getDepreciationDate().equals(depreciationDate))
-                .findAny()
-                .orElse(null);
-        if (fixedAssetDerogatoryLine != null) {
-          fixedAssetDerogatoryLineMoveService.simulate(fixedAssetDerogatoryLine);
+        if (fixedAsset.getFixedAssetDerogatoryLineList() != null) {
+          FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
+              fixedAsset.getFixedAssetDerogatoryLineList().stream()
+                  .filter(line -> line.getDepreciationDate().equals(depreciationDate))
+                  .findAny()
+                  .orElse(null);
+          if (fixedAssetDerogatoryLine != null) {
+            fixedAssetDerogatoryLineMoveService.simulate(fixedAssetDerogatoryLine);
+          }
         }
       }
     }

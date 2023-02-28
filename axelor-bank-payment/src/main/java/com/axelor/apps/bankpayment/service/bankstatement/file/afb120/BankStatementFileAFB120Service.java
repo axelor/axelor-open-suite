@@ -45,8 +45,10 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,19 +92,20 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
 
     int sequence = 0;
     findBankStatement();
-
-    for (Map<String, Object> structuredContentLine : structuredContentFile) {
-      try {
-        createBankStatementLine(structuredContentLine, sequence++);
-      } catch (Exception e) {
-        TraceBackService.trace(
-            new Exception(String.format("Line %s : %s", sequence, e), e),
-            ExceptionOriginRepository.IMPORT);
-        findBankStatement();
-      } finally {
-        if (sequence % 10 == 0) {
-          JPA.clear();
+    if (structuredContentFile != null) {
+      for (Map<String, Object> structuredContentLine : structuredContentFile) {
+        try {
+          createBankStatementLine(structuredContentLine, sequence++);
+        } catch (Exception e) {
+          TraceBackService.trace(
+              new Exception(String.format("Line %s : %s", sequence, e), e),
+              ExceptionOriginRepository.IMPORT);
           findBankStatement();
+        } finally {
+          if (sequence % 10 == 0) {
+            JPA.clear();
+            findBankStatement();
+          }
         }
       }
     }
@@ -114,6 +117,9 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   public BankStatementLineAFB120 createBankStatementLine(
       Map<String, Object> structuredContentLine, int sequence) {
 
+    if (structuredContentLine == null) {
+      return null;
+    }
     String description = (String) structuredContentLine.get("description");
     LocalDate operationDate = (LocalDate) structuredContentLine.get("operationDate");
     LocalDate valueDate = (LocalDate) structuredContentLine.get("valueDate");
@@ -204,56 +210,59 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     List<Map<String, Object>> structuredContent = Lists.newArrayList();
 
     List<String> fileContent = FileTool.reader(file.getPath());
+    if (CollectionUtils.isNotEmpty(fileContent)) {
+      for (String lineContent : fileContent) {
+        log.info("Read line : {}", lineContent);
+        String lineData = null;
+        int i = 0;
 
-    for (String lineContent : fileContent) {
-      log.info("Read line : {}", lineContent);
-      String lineData = null;
-      int i = 0;
+        while (i < lineContent.length()) {
 
-      while (i < lineContent.length()) {
+          lineData = lineContent.substring(i, i + 120);
 
-        lineData = lineContent.substring(i, i + 120);
+          // Code enregistrement
+          String operationCode =
+              cfonbToolService.readZone(
+                  "Record code",
+                  lineData,
+                  cfonbToolService.STATUS_MANDATORY,
+                  cfonbToolService.FORMAT_NUMERIC,
+                  1,
+                  2);
 
-        // Code enregistrement
-        String operationCode =
-            cfonbToolService.readZone(
-                "Record code",
-                lineData,
-                cfonbToolService.STATUS_MANDATORY,
-                cfonbToolService.FORMAT_NUMERIC,
-                1,
-                2);
+          switch (operationCode) {
+            case PREVIOUS_BALANCE_OPERATION_CODE:
+              structuredContent.add(readPreviousBalanceRecord(lineData));
+              break;
+            case MOVEMENT_OPERATION_CODE:
+              structuredContent.add(readMovementRecord(lineData));
+              break;
+            case COMPLEMENT_MOVEMENT_OPERATION_CODE:
+              Map<String, Object> movementLine =
+                  structuredContent.get(structuredContent.size() - 1);
+              String additionalInformation = "";
+              if (movementLine != null && movementLine.containsKey("additionalInformation")) {
+                additionalInformation = (String) movementLine.get("additionalInformation") + "\n";
+              }
+              additionalInformation +=
+                  (String) readAdditionalMovementRecord(lineData).get("additionalInformation");
+              if (movementLine == null) {
+                movementLine = new HashMap<>();
+              }
+              movementLine.put("additionalInformation", additionalInformation);
 
-        switch (operationCode) {
-          case PREVIOUS_BALANCE_OPERATION_CODE:
-            structuredContent.add(readPreviousBalanceRecord(lineData));
-            break;
-          case MOVEMENT_OPERATION_CODE:
-            structuredContent.add(readMovementRecord(lineData));
-            break;
-          case COMPLEMENT_MOVEMENT_OPERATION_CODE:
-            Map<String, Object> movementLine = structuredContent.get(structuredContent.size() - 1);
-            String additionalInformation = "";
-            if (movementLine.containsKey("additionalInformation")) {
-              additionalInformation = (String) movementLine.get("additionalInformation") + "\n";
-            }
-            additionalInformation +=
-                (String) readAdditionalMovementRecord(lineData).get("additionalInformation");
+              break;
+            case NEW_BALANCE_OPERATION_CODE:
+              structuredContent.add(readNewBalanceRecord(lineData));
+              break;
+            default:
+              break;
+          }
 
-            movementLine.put("additionalInformation", additionalInformation);
-
-            break;
-          case NEW_BALANCE_OPERATION_CODE:
-            structuredContent.add(readNewBalanceRecord(lineData));
-            break;
-          default:
-            break;
+          i = i + 120;
         }
-
-        i = i + 120;
       }
     }
-
     return structuredContent;
   }
 

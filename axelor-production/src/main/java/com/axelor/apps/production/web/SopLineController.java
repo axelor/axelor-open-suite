@@ -58,10 +58,16 @@ public class SopLineController {
         (LinkedHashMap<String, Object>) context.get("_sopLine");
     @SuppressWarnings("unchecked")
     LinkedHashMap<String, Object> currencyMap =
-        (LinkedHashMap<String, Object>) sopLineMap.get("currency");
+        sopLineMap != null
+            ? (LinkedHashMap<String, Object>) sopLineMap.get("currency")
+            : new LinkedHashMap<>();
 
-    BigDecimal sopSalesForecast = new BigDecimal(sopLineMap.get("sopSalesForecast").toString());
-    Long productCategoryId = Long.parseLong(productCategoryMap.get("id").toString());
+    BigDecimal sopSalesForecast =
+        sopLineMap != null
+            ? new BigDecimal(sopLineMap.get("sopSalesForecast").toString())
+            : BigDecimal.ZERO;
+    Long productCategoryId =
+        productCategoryMap != null ? Long.parseLong(productCategoryMap.get("id").toString()) : 0L;
     Currency currency = currencyRepo.find(Long.parseLong(currencyMap.get("id").toString()));
     BigDecimal totalForecast = BigDecimal.ZERO;
     SortedSet<Map<String, Object>> mrpForecastSet =

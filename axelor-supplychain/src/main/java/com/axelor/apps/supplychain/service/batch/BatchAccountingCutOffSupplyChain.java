@@ -34,6 +34,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -129,17 +130,19 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
   protected void _processStockMovesByIds(AccountingBatch accountingBatch) {
     List<StockMove> stockMoveList =
-        recordIdList.stream()
+        ListUtils.emptyIfNull(recordIdList).stream()
             .map(it -> stockMoveLineRepository.find(it))
             .filter(Objects::nonNull)
             .map(StockMoveLine::getStockMove)
             .distinct()
             .collect(Collectors.toList());
 
-    for (StockMove stockMove : stockMoveList) {
-      this._processStockMove(
-          stockMoveRepository.find(stockMove.getId()),
-          accountingBatchRepository.find(accountingBatch.getId()));
+    if (stockMoveList != null) {
+      for (StockMove stockMove : stockMoveList) {
+        this._processStockMove(
+            stockMoveRepository.find(stockMove.getId()),
+            accountingBatchRepository.find(accountingBatch.getId()));
+      }
     }
   }
 

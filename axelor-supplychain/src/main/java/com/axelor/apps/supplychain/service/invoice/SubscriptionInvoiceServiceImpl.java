@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -49,7 +50,7 @@ public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceServic
 
     List<Invoice> invoices = new ArrayList<>();
 
-    for (SaleOrder saleOrder : getSubscriptionOrders(null)) {
+    for (SaleOrder saleOrder : ListUtils.emptyIfNull(getSubscriptionOrders(null))) {
       Invoice invoice = generateSubscriptionInvoice(saleOrder);
       invoices.add(invoice);
     }

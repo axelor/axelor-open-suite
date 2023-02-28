@@ -42,6 +42,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
 
@@ -94,11 +95,14 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
     int count = 0;
-    for (ExpenseLine expenseLine : expenseLineList) {
+    if (CollectionUtils.isNotEmpty(expenseLineList)) {
+      for (ExpenseLine expenseLine : expenseLineList) {
 
-      invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine, priority * 100 + count));
-      count++;
-      invoiceLineList.get(invoiceLineList.size() - 1).setProject(expenseLine.getProject());
+        invoiceLineList.addAll(
+            this.createInvoiceLine(invoice, expenseLine, priority * 100 + count));
+        count++;
+        invoiceLineList.get(invoiceLineList.size() - 1).setProject(expenseLine.getProject());
+      }
     }
 
     return invoiceLineList;

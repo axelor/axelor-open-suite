@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -51,7 +52,9 @@ public class MoveDueService {
 
     Invoice originalInvoice = invoice.getOriginalInvoice();
 
-    if (originalInvoice != null && originalInvoice.getMove() != null) {
+    if (originalInvoice != null
+        && originalInvoice.getMove() != null
+        && originalInvoice.getMove().getMoveLineList() != null) {
       for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
         if (moveLine.getAccount().getUseForPartnerBalance()
             && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
@@ -71,7 +74,8 @@ public class MoveDueService {
 
     List<MoveLine> debitMoveLines = Lists.newArrayList();
 
-    debitMoveLines.addAll(invoiceService.getMoveLinesFromAdvancePayments(invoice));
+    debitMoveLines.addAll(
+        ListUtils.emptyIfNull(invoiceService.getMoveLinesFromAdvancePayments(invoice)));
 
     // Ajout de la facture d'origine
     MoveLine originalInvoice = this.getOrignalInvoiceFromRefund(invoice);
@@ -83,7 +87,7 @@ public class MoveDueService {
     // Récupérer les dûs du tiers pour le même compte que celui de l'avoir
     List<? extends MoveLine> othersDebitMoveLines = null;
     if (useOthersInvoiceDue) {
-      if (debitMoveLines != null && debitMoveLines.size() != 0) {
+      if (debitMoveLines != null && !debitMoveLines.isEmpty()) {
         othersDebitMoveLines =
             moveLineRepository
                 .all()
@@ -113,10 +117,10 @@ public class MoveDueService {
                     partner)
                 .fetch();
       }
-      debitMoveLines.addAll(othersDebitMoveLines);
+      debitMoveLines.addAll(ListUtils.emptyIfNull(othersDebitMoveLines));
     }
 
-    log.debug("Number of lines to pay with the credit note : {}", debitMoveLines.size());
+    log.debug("Number of lines to pay with the credit note : {}", ListUtils.size(debitMoveLines));
 
     return debitMoveLines;
   }

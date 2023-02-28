@@ -34,6 +34,8 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.tool.collection.CollectionUtils;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.Inflector;
 import com.axelor.db.Query;
@@ -201,26 +203,28 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
             .collect(Collectors.toList());
 
     // check for pictures
-    for (Property property : binaryProperties) {
-      String fileName =
-          modelSelectKlass.getSimpleName()
-              + "_"
-              + property.getName()
-              + "_"
-              + gdprRequest.getModelId()
-              + ".png";
-      Object value = mapper.get(selectedModel, property.getName());
-      if (Objects.nonNull(value)) {
-        String base64Img = new String((byte[]) value);
-        String base64ImgData = base64Img.split(",")[1];
-        byte[] img = Base64.getDecoder().decode(base64ImgData);
-        ByteArrayInputStream inImg = new ByteArrayInputStream(img);
+    if (CollectionUtils.isNotEmpty(binaryProperties)) {
+      for (Property property : binaryProperties) {
+        String fileName =
+            modelSelectKlass.getSimpleName()
+                + "_"
+                + property.getName()
+                + "_"
+                + gdprRequest.getModelId()
+                + ".png";
+        Object value = mapper.get(selectedModel, property.getName());
+        if (Objects.nonNull(value)) {
+          String base64Img = new String((byte[]) value);
+          String base64ImgData = base64Img.split(",")[1];
+          byte[] img = Base64.getDecoder().decode(base64ImgData);
+          ByteArrayInputStream inImg = new ByteArrayInputStream(img);
 
-        MetaFile picture = Beans.get(MetaFiles.class).upload(inImg, fileName);
+          MetaFile picture = Beans.get(MetaFiles.class).upload(inImg, fileName);
 
-        File file = MetaFiles.getPath(picture).toFile();
+          File file = MetaFiles.getPath(picture).toFile();
 
-        generatedFiles.add(file);
+          generatedFiles.add(file);
+        }
       }
     }
 
@@ -243,27 +247,31 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
 
     List<MetaField> metaFields = gdprResponseService.selectMetaFields(gdprRequest);
 
-    for (MetaField metaField : metaFields) {
-      Class<? extends AuditableModel> klass =
-          (Class<? extends AuditableModel>) Class.forName(metaField.getMetaModel().getFullName());
-      List<? extends AuditableModel> records;
+    if (CollectionUtils.isNotEmpty(metaFields)) {
+      for (MetaField metaField : metaFields) {
+        Class<? extends AuditableModel> klass =
+            (Class<? extends AuditableModel>) Class.forName(metaField.getMetaModel().getFullName());
+        List<? extends AuditableModel> records;
 
-      if (!"OneToMany".equals(metaField.getRelationship())) {
-        records =
-            Query.of(klass).filter(metaField.getName() + " = " + gdprRequest.getModelId()).fetch();
+        if (!"OneToMany".equals(metaField.getRelationship())) {
+          records =
+              Query.of(klass)
+                  .filter(metaField.getName() + " = " + gdprRequest.getModelId())
+                  .fetch();
 
-      } else {
-        records =
-            Query.of(klass)
-                .filter(gdprRequest.getModelId() + " MEMBER OF " + metaField.getName())
-                .fetch();
-      }
-      if (records.size() > 1) {
-        LOG.debug("records : {}", records);
-      }
-      if (!records.isEmpty()) {
-        File csvFile = createCSV(records, metaField.getMetaModel());
-        generatedFiles.add(csvFile);
+        } else {
+          records =
+              Query.of(klass)
+                  .filter(gdprRequest.getModelId() + " MEMBER OF " + metaField.getName())
+                  .fetch();
+        }
+        if (records.size() > 1) {
+          LOG.debug("records : {}", records);
+        }
+        if (!records.isEmpty()) {
+          File csvFile = createCSV(records, metaField.getMetaModel());
+          generatedFiles.add(csvFile);
+        }
       }
     }
 
@@ -281,8 +289,10 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
     File file = null;
     List<Long> recordsIds = new ArrayList<>();
 
-    for (Object reference : references) {
-      recordsIds.add((Long) Mapper.of(reference.getClass()).get(reference, "id"));
+    if (references != null) {
+      for (Object reference : references) {
+        recordsIds.add((Long) Mapper.of(reference.getClass()).get(reference, "id"));
+      }
     }
 
     file = advancedExportService.export(advancedExport, recordsIds, AdvancedExportService.CSV);
@@ -305,45 +315,47 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
     MetaModelRepository metaModelRepository = Beans.get(MetaModelRepository.class);
     MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
 
-    for (MetaField field : advancedExport.getMetaModel().getMetaFields()) {
-      AdvancedExportLine advancedExportLine = new AdvancedExportLine();
-      advancedExportLine.setCurrentDomain(advancedExport.getMetaModel().getName());
+    if (CollectionUtils.isNotEmpty(advancedExport.getMetaModel().getMetaFields())) {
+      for (MetaField field : advancedExport.getMetaModel().getMetaFields()) {
+        AdvancedExportLine advancedExportLine = new AdvancedExportLine();
+        advancedExportLine.setCurrentDomain(advancedExport.getMetaModel().getName());
 
-      Class<?> modelClass = Class.forName(advancedExport.getMetaModel().getFullName());
-      Mapper modelMapper = Mapper.of(modelClass);
+        Class<?> modelClass = Class.forName(advancedExport.getMetaModel().getFullName());
+        Mapper modelMapper = Mapper.of(modelClass);
 
-      if (modelMapper.getProperty(field.getName()) == null
-          || modelMapper.getProperty(field.getName()).isTransient()) {
-        continue;
+        if (modelMapper.getProperty(field.getName()) == null
+            || modelMapper.getProperty(field.getName()).isTransient()) {
+          continue;
+        }
+
+        if (!Strings.isNullOrEmpty(field.getRelationship())) {
+          MetaModel metaModel =
+              metaModelRepository.all().filter("self.name = ?", field.getTypeName()).fetchOne();
+
+          Class<?> klass = Class.forName(metaModel.getFullName());
+          Mapper mapper = Mapper.of(klass);
+          String fieldName = mapper.getNameField() == null ? "id" : mapper.getNameField().getName();
+          MetaField metaField =
+              metaFieldRepository
+                  .all()
+                  .filter("self.name = ?1 AND self.metaModel = ?2", fieldName, metaModel)
+                  .fetchOne();
+          advancedExportLine.setMetaField(metaField);
+          advancedExportLine.setTargetField(field.getName() + "." + metaField.getName());
+        } else {
+          advancedExportLine.setMetaField(field);
+          advancedExportLine.setTargetField(field.getName());
+        }
+
+        if (Strings.isNullOrEmpty(field.getLabel())) {
+          advancedExportLine.setTitle(inflector.humanize(field.getName()));
+        } else {
+          advancedExportLine.setTitle(field.getLabel());
+        }
+        advancedExportLine.setAdvancedExport(advancedExport);
+        advancedExportLineRepository.save(advancedExportLine);
+        advancedExportLineList.add(advancedExportLine);
       }
-
-      if (!Strings.isNullOrEmpty(field.getRelationship())) {
-        MetaModel metaModel =
-            metaModelRepository.all().filter("self.name = ?", field.getTypeName()).fetchOne();
-
-        Class<?> klass = Class.forName(metaModel.getFullName());
-        Mapper mapper = Mapper.of(klass);
-        String fieldName = mapper.getNameField() == null ? "id" : mapper.getNameField().getName();
-        MetaField metaField =
-            metaFieldRepository
-                .all()
-                .filter("self.name = ?1 AND self.metaModel = ?2", fieldName, metaModel)
-                .fetchOne();
-        advancedExportLine.setMetaField(metaField);
-        advancedExportLine.setTargetField(field.getName() + "." + metaField.getName());
-      } else {
-        advancedExportLine.setMetaField(field);
-        advancedExportLine.setTargetField(field.getName());
-      }
-
-      if (Strings.isNullOrEmpty(field.getLabel())) {
-        advancedExportLine.setTitle(inflector.humanize(field.getName()));
-      } else {
-        advancedExportLine.setTitle(field.getLabel());
-      }
-      advancedExportLine.setAdvancedExport(advancedExport);
-      advancedExportLineRepository.save(advancedExportLine);
-      advancedExportLineList.add(advancedExportLine);
     }
     return advancedExportLineList;
   }
@@ -364,13 +376,15 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
 
     try (ZipInputStream zin = new ZipInputStream(Files.newInputStream(tmpZip.toPath()))) {
       try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(source.toPath()))) {
-        for (File f : files) {
-          try (InputStream in = Files.newInputStream(f.toPath())) {
-            out.putNextEntry(new ZipEntry(f.getName()));
-            for (int read = in.read(buffer); read > -1; read = in.read(buffer)) {
-              out.write(buffer, 0, read);
+        if (CollectionUtils.isNotEmpty(files)) {
+          for (File f : files) {
+            try (InputStream in = Files.newInputStream(f.toPath())) {
+              out.putNextEntry(new ZipEntry(f.getName()));
+              for (int read = in.read(buffer); read > -1; read = in.read(buffer)) {
+                out.write(buffer, 0, read);
+              }
+              out.closeEntry();
             }
-            out.closeEntry();
           }
         }
 
@@ -399,7 +413,7 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
         Beans.get(GdprDmsFileRepository.class)
             .findByModel(gdprRequest.getModelId(), gdprRequest.getModelSelect());
 
-    return dmsFiles.stream()
+    return ListUtils.emptyIfNull(dmsFiles).stream()
         .map(dmsFile -> MetaFiles.getPath(dmsFile.getMetaFile()).toFile())
         .filter(File::exists)
         .collect(Collectors.toList());

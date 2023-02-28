@@ -63,6 +63,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
@@ -148,6 +149,10 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   public void generateLeaveManagementLines(List<Employee> employeeList) {
 
+    if (CollectionUtils.isEmpty(employeeList)) {
+      return;
+    }
+
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
       employee = employeeRepository.find(employee.getId());
@@ -183,7 +188,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
     LeaveLine leaveLine = null;
     BigDecimal quantity = BigDecimal.ZERO;
 
-    if (!employee.getLeaveLineList().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(employee.getLeaveLineList())) {
       for (LeaveLine line : employee.getLeaveLineList()) {
 
         if (line.getLeaveReason().equals(batch.getHrBatch().getLeaveReason())) {
@@ -219,38 +224,43 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       }
       Integer executiveStatusSelect = contract.getExecutiveStatusSelect();
 
-      for (LeaveManagementBatchRule rule :
+      List<LeaveManagementBatchRule> leaveManagementBatchRuleList =
           Beans.get(HRConfigRepository.class)
               .all()
               .filter("self.company.id = ?1", batch.getHrBatch().getCompany().getId())
               .fetchOne()
-              .getLeaveManagementBatchRuleList()) {
+              .getLeaveManagementBatchRuleList();
 
-        if (rule.getExecutiveStatusSelect().equals(executiveStatusSelect)) {
-          maker.setContext(employee, "Employee");
-          String formula = rule.getFormula();
-          formula =
-              formula.replace(
-                  hrConfig.getSeniorityVariableName(),
-                  String.valueOf(
-                      employeeService.getLengthOfService(
-                          employee, batch.getHrBatch().getReferentialDate())));
-          formula =
-              formula.replace(
-                  hrConfig.getAgeVariableName(),
-                  String.valueOf(
-                      employeeService.getAge(employee, batch.getHrBatch().getReferentialDate())));
-          maker.setTemplate(formula);
-          eval = maker.make();
-          CompilerConfiguration conf = new CompilerConfiguration();
-          ImportCustomizer customizer = new ImportCustomizer();
-          customizer.addStaticStars("java.lang.Math");
-          conf.addCompilationCustomizers(customizer);
-          Binding binding = new Binding();
-          GroovyShell shell = new GroovyShell(binding, conf);
-          if (shell.evaluate(eval).toString().equals("true")) {
-            quantity = rule.getLeaveDayNumber();
-            break;
+      if (CollectionUtils.isNotEmpty(leaveManagementBatchRuleList)) {
+        for (LeaveManagementBatchRule rule : leaveManagementBatchRuleList) {
+          if (rule.getExecutiveStatusSelect().equals(executiveStatusSelect)) {
+            maker.setContext(employee, "Employee");
+            String formula = rule.getFormula();
+            formula =
+                formula.replace(
+                    hrConfig.getSeniorityVariableName(),
+                    String.valueOf(
+                        Beans.get(EmployeeService.class)
+                            .getLengthOfService(
+                                employee, batch.getHrBatch().getReferentialDate())));
+            formula =
+                formula.replace(
+                    hrConfig.getAgeVariableName(),
+                    String.valueOf(
+                        Beans.get(EmployeeService.class)
+                            .getAge(employee, batch.getHrBatch().getReferentialDate())));
+            maker.setTemplate(formula);
+            eval = maker.make();
+            CompilerConfiguration conf = new CompilerConfiguration();
+            ImportCustomizer customizer = new ImportCustomizer();
+            customizer.addStaticStars("java.lang.Math");
+            conf.addCompilationCustomizers(customizer);
+            Binding binding = new Binding();
+            GroovyShell shell = new GroovyShell(binding, conf);
+            if (shell.evaluate(eval).toString().equals("true")) {
+              quantity = rule.getLeaveDayNumber();
+              break;
+            }
           }
         }
       }

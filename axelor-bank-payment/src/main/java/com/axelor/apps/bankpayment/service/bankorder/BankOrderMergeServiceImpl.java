@@ -34,6 +34,8 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.CollectionUtils;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -103,7 +105,8 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
 
     PaymentMode paymentMode = bankOrder.getPaymentMode();
 
-    for (BankOrderLine bankOrderLine : this.getAllBankOrderLineList(bankOrders)) {
+    for (BankOrderLine bankOrderLine :
+        ListUtils.emptyIfNull(this.getAllBankOrderLineList(bankOrders))) {
 
       bankOrder.addBankOrderLineListItem(bankOrderLine);
     }
@@ -117,9 +120,11 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       List<InvoicePayment> invoicePaymentList =
           invoicePaymentRepo.findByBankOrder(bankOrderToRemove).fetch();
 
-      for (InvoicePayment invoicePayment : invoicePaymentList) {
+      if (CollectionUtils.isNotEmpty(invoicePaymentList)) {
+        for (InvoicePayment invoicePayment : invoicePaymentList) {
 
-        invoicePayment.setBankOrder(bankOrder);
+          invoicePayment.setBankOrder(bankOrder);
+        }
       }
 
       bankOrderRepo.remove(bankOrderToRemove);
@@ -136,80 +141,81 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
   }
 
   protected void checkSameElements(Collection<BankOrder> bankOrders) throws AxelorException {
+    if (bankOrders != null) {
+      BankOrder refBankOrder = bankOrders.iterator().next();
 
-    BankOrder refBankOrder = bankOrders.iterator().next();
+      int refStatusSelect = refBankOrder.getStatusSelect();
+      int orderTypeSelect = refBankOrder.getOrderTypeSelect();
+      PaymentMode refPaymentMode = refBankOrder.getPaymentMode();
+      int refPartnerTypeSelect = refBankOrder.getPartnerTypeSelect();
+      Company refSenderCompany = refBankOrder.getSenderCompany();
+      BankDetails refSenderBankDetails = refBankOrder.getSenderBankDetails();
+      Currency refCurrency = refBankOrder.getBankOrderCurrency();
+      boolean isMultiCurrency = refBankOrder.getIsMultiCurrency();
 
-    int refStatusSelect = refBankOrder.getStatusSelect();
-    int orderTypeSelect = refBankOrder.getOrderTypeSelect();
-    PaymentMode refPaymentMode = refBankOrder.getPaymentMode();
-    int refPartnerTypeSelect = refBankOrder.getPartnerTypeSelect();
-    Company refSenderCompany = refBankOrder.getSenderCompany();
-    BankDetails refSenderBankDetails = refBankOrder.getSenderBankDetails();
-    Currency refCurrency = refBankOrder.getBankOrderCurrency();
-    boolean isMultiCurrency = refBankOrder.getIsMultiCurrency();
+      for (BankOrder bankOrder : bankOrders) {
 
-    for (BankOrder bankOrder : bankOrders) {
+        int statusSelect = bankOrder.getStatusSelect();
+        if (statusSelect != BankOrderRepository.STATUS_DRAFT
+            && statusSelect != BankOrderRepository.STATUS_AWAITING_SIGNATURE) {
+          throw new AxelorException(
+              bankOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_STATUS));
+        }
 
-      int statusSelect = bankOrder.getStatusSelect();
-      if (statusSelect != BankOrderRepository.STATUS_DRAFT
-          && statusSelect != BankOrderRepository.STATUS_AWAITING_SIGNATURE) {
-        throw new AxelorException(
-            bankOrder,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_STATUS));
-      }
+        if (statusSelect != refStatusSelect) {
+          throw new AxelorException(
+              bankOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_STATUS));
+        }
 
-      if (statusSelect != refStatusSelect) {
-        throw new AxelorException(
-            bankOrder,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_STATUS));
-      }
+        if (!bankOrder.getOrderTypeSelect().equals(orderTypeSelect)) {
+          throw new AxelorException(
+              bankOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_ORDER_TYPE_SELECT));
+        }
 
-      if (!bankOrder.getOrderTypeSelect().equals(orderTypeSelect)) {
-        throw new AxelorException(
-            bankOrder,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_ORDER_TYPE_SELECT));
-      }
+        if (!bankOrder.getPaymentMode().equals(refPaymentMode)) {
+          throw new AxelorException(
+              bankOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_PAYMENT_MODE));
+        }
 
-      if (!bankOrder.getPaymentMode().equals(refPaymentMode)) {
-        throw new AxelorException(
-            bankOrder,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_PAYMENT_MODE));
-      }
+        if (!bankOrder.getPartnerTypeSelect().equals(refPartnerTypeSelect)) {
+          throw new AxelorException(
+              bankOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_PARTNER_TYPE_SELECT));
+        }
 
-      if (!bankOrder.getPartnerTypeSelect().equals(refPartnerTypeSelect)) {
-        throw new AxelorException(
-            bankOrder,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_PARTNER_TYPE_SELECT));
-      }
+        if (!bankOrder.getSenderCompany().equals(refSenderCompany)) {
+          throw new AxelorException(
+              bankOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_SENDER_COMPANY));
+        }
 
-      if (!bankOrder.getSenderCompany().equals(refSenderCompany)) {
-        throw new AxelorException(
-            bankOrder,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_SENDER_COMPANY));
-      }
+        if (bankOrder.getSenderBankDetails() == null && refSenderBankDetails != null
+            || (bankOrder.getSenderBankDetails() != null
+                && !bankOrder.getSenderBankDetails().equals(refSenderBankDetails))) {
+          throw new AxelorException(
+              bankOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_SENDER_BANK_DETAILS));
+        }
 
-      if (bankOrder.getSenderBankDetails() == null && refSenderBankDetails != null
-          || (bankOrder.getSenderBankDetails() != null
-              && !bankOrder.getSenderBankDetails().equals(refSenderBankDetails))) {
-        throw new AxelorException(
-            bankOrder,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_SENDER_BANK_DETAILS));
-      }
-
-      if (bankOrder.getIsMultiCurrency() != isMultiCurrency
-          || !bankOrder.getIsMultiCurrency()
-              && !bankOrder.getBankOrderCurrency().equals(refCurrency)) {
-        throw new AxelorException(
-            bankOrder,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_CURRENCY));
+        if (bankOrder.getIsMultiCurrency() != isMultiCurrency
+            || !bankOrder.getIsMultiCurrency()
+                && !bankOrder.getBankOrderCurrency().equals(refCurrency)) {
+          throw new AxelorException(
+              bankOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MERGE_SAME_CURRENCY));
+        }
       }
     }
   }
@@ -217,12 +223,13 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
   protected List<BankOrderLine> getAllBankOrderLineList(Collection<BankOrder> bankOrders) {
 
     List<BankOrderLine> bankOrderLineList = Lists.newArrayList();
-
-    for (BankOrder bankOrder : bankOrders) {
-
-      bankOrderLineList.addAll(bankOrder.getBankOrderLineList());
+    if (bankOrders != null) {
+      for (BankOrder bankOrder : bankOrders) {
+        if (bankOrder.getBankOrderLineList() != null) {
+          bankOrderLineList.addAll(bankOrder.getBankOrderLineList());
+        }
+      }
     }
-
     return bankOrderLineList;
   }
 
@@ -232,7 +239,11 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
 
     int counter = 1;
 
-    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+    List<BankOrderLine> bankOrderLineList = bankOrder.getBankOrderLineList();
+    if (bankOrderLineList == null) {
+      bankOrderLineList = new ArrayList<>();
+    }
+    for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
       List<Object> keys = new ArrayList<Object>();
       keys.add(bankOrderLine.getPartner());
@@ -265,15 +276,17 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       }
     }
 
-    bankOrder.getBankOrderLineList().clear();
+    bankOrderLineList.clear();
 
-    for (BankOrderLine bankOrderLine : bankOrderLineMap.values()) {
+    if (bankOrderLineMap != null) {
+      for (BankOrderLine bankOrderLine : bankOrderLineMap.values()) {
 
-      Pair<String, LocalDate> lastReferences = getLastReferences(bankOrderLine);
+        Pair<String, LocalDate> lastReferences = getLastReferences(bankOrderLine);
 
-      bankOrderLine.setReceiverReference(lastReferences.getLeft());
-      bankOrderLine.setBankOrderDate(lastReferences.getRight());
-      bankOrder.addBankOrderLineListItem(bankOrderLine);
+        bankOrderLine.setReceiverReference(lastReferences.getLeft());
+        bankOrderLine.setBankOrderDate(lastReferences.getRight());
+        bankOrder.addBankOrderLineListItem(bankOrderLine);
+      }
     }
   }
 
@@ -282,40 +295,43 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     String lastReferenceId = "";
     LocalDate lastReferenceDate = null;
 
-    for (BankOrderLineOrigin bankOrderLineOrigin : bankOrderLine.getBankOrderLineOriginList()) {
-      LocalDate originDate = null;
-      String originReferenceId = null;
+    List<BankOrderLineOrigin> bankOrderLineOriginList = bankOrderLine.getBankOrderLineOriginList();
+    if (CollectionUtils.isNotEmpty(bankOrderLineOriginList)) {
+      for (BankOrderLineOrigin bankOrderLineOrigin : bankOrderLineOriginList) {
+        LocalDate originDate = null;
+        String originReferenceId = null;
 
-      switch (bankOrderLineOrigin.getRelatedToSelect()) {
-        case BankOrderLineOriginRepository.RELATED_TO_INVOICE:
-          Invoice invoice = invoiceRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
-          if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
-            originReferenceId = invoice.getSupplierInvoiceNb();
-          } else {
-            originReferenceId = invoice.getInvoiceId();
-          }
-          if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
-            originDate = invoice.getOriginDate();
-          } else {
-            originDate = invoice.getInvoiceDate();
-          }
-          break;
+        switch (bankOrderLineOrigin.getRelatedToSelect()) {
+          case BankOrderLineOriginRepository.RELATED_TO_INVOICE:
+            Invoice invoice = invoiceRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
+            if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
+              originReferenceId = invoice.getSupplierInvoiceNb();
+            } else {
+              originReferenceId = invoice.getInvoiceId();
+            }
+            if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
+              originDate = invoice.getOriginDate();
+            } else {
+              originDate = invoice.getInvoiceDate();
+            }
+            break;
 
-        case BankOrderLineOriginRepository.RELATED_TO_PAYMENT_SCHEDULE_LINE:
-          PaymentScheduleLine paymentScheduleLine =
-              paymentScheduleLineRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
-          originReferenceId = paymentScheduleLine.getName();
-          originDate = paymentScheduleLine.getScheduleDate();
-          break;
+          case BankOrderLineOriginRepository.RELATED_TO_PAYMENT_SCHEDULE_LINE:
+            PaymentScheduleLine paymentScheduleLine =
+                paymentScheduleLineRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
+            originReferenceId = paymentScheduleLine.getName();
+            originDate = paymentScheduleLine.getScheduleDate();
+            break;
 
-        default:
-          break;
-      }
+          default:
+            break;
+        }
 
-      if (originDate != null
-          && (lastReferenceDate == null || lastReferenceDate.isBefore(originDate))) {
-        lastReferenceDate = originDate;
-        lastReferenceId = originReferenceId;
+        if (originDate != null
+            && (lastReferenceDate == null || lastReferenceDate.isBefore(originDate))) {
+          lastReferenceDate = originDate;
+          lastReferenceId = originReferenceId;
+        }
       }
     }
 
@@ -351,17 +367,17 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       }
     }
 
-    if (bankOrders.size() > 1) {
+    if (CollectionUtils.size(bankOrders) > 1) {
       if (bankOrderDate == null) {
         bankOrderDate = bankOrders.iterator().next().getBankOrderDate();
       }
       BankOrder mergedBankOrder = mergeBankOrders(bankOrders);
       mergedBankOrder.setBankOrderDate(bankOrderDate);
-
-      for (InvoicePayment invoicePayment : invoicePaymentsWithBankOrders) {
-        invoicePayment.setBankOrder(mergedBankOrder);
+      if (CollectionUtils.isNotEmpty(invoicePaymentsWithBankOrders)) {
+        for (InvoicePayment invoicePayment : invoicePaymentsWithBankOrders) {
+          invoicePayment.setBankOrder(mergedBankOrder);
+        }
       }
-
       return mergedBankOrder;
     }
 

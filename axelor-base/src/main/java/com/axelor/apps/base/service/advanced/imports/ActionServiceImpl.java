@@ -82,8 +82,10 @@ public class ActionServiceImpl implements ActionService {
     Object value = handler.execute();
     ActionResponse response = (ActionResponse) value;
     List<Map<String, Object>> dataList = (List<Map<String, Object>>) response.getData();
-    for (Map<String, Object> map : dataList) {
-      updateContext(map);
+    if (dataList != null) {
+      for (Map<String, Object> map : dataList) {
+        updateContext(map);
+      }
     }
   }
 
@@ -125,10 +127,10 @@ public class ActionServiceImpl implements ActionService {
       for (Object key : ((Map<String, Object>) values).keySet()) {
         String name = key.toString();
         Map<String, Object> attrs = (Map<String, Object>) ((Map<String, Object>) values).get(key);
-        if (attrs.containsKey("value")) {
+        if (attrs != null && attrs.containsKey("value")) {
           map.put(name, attrs.get("value"));
         }
-        if (attrs.containsKey("value:set")) {
+        if (attrs != null && attrs.containsKey("value:set")) {
           map.put(name, attrs.get("value:set"));
         }
       }

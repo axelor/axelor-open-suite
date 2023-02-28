@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Notification;
+import com.axelor.apps.account.db.NotificationItem;
 import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.service.NotificationService;
 import com.axelor.exception.ResponseMessageType;
@@ -30,6 +31,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -39,7 +41,9 @@ public class NotificationController {
     try {
       Notification notification = request.getContext().asType(Notification.class);
       Beans.get(NotificationService.class).populateNotificationItemList(notification);
-      response.setValue("notificationItemList", notification.getNotificationItemList());
+      if (notification.getNotificationItemList() != null) {
+        response.setValue("notificationItemList", notification.getNotificationItemList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -59,7 +63,17 @@ public class NotificationController {
   public void displayMoveLines(ActionRequest request, ActionResponse response) {
     try {
       Notification notification = request.getContext().asType(Notification.class);
-      List<Long> moveLineIdList = Beans.get(NotificationService.class).getMoveLines(notification);
+      List<Long> moveLineIdList = new ArrayList<Long>();
+      if (notification != null && notification.getNotificationItemList() != null) {
+        for (NotificationItem notificationItem : notification.getNotificationItemList()) {
+          if (notificationItem.getMove() != null
+              && notificationItem.getMove().getMoveLineList() != null) {
+            for (MoveLine moveLine : notificationItem.getMove().getMoveLineList()) {
+              moveLineIdList.add(moveLine.getId());
+            }
+          }
+        }
+      }
       response.setView(
           ActionView.define(I18n.get("MoveLines"))
               .model(MoveLine.class.getName())

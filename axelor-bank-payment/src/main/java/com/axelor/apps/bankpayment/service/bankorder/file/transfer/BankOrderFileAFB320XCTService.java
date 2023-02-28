@@ -106,16 +106,18 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
 
     records.add(this.createSenderRecord());
 
-    for (BankOrderLine bankOrderLine : bankOrderLineList) {
+    if (bankOrderLineList != null) {
+      for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
-      records.add(this.createDetailRecord(bankOrderLine));
+        records.add(this.createDetailRecord(bankOrderLine));
 
-      if (bankOrderLine.getPaymentModeSelect()
-          == BankOrderLineRepository.PAYMENT_MODE_TRANSFER_OR_OTHER) {
-        records.add(this.createDependentReceiverBankRecord(bankOrderLine));
-      }
-      if (this.useOptionnalFurtherInformationRecord(bankOrderLine)) {
-        records.add(this.createOptionnalFurtherInformationRecord(bankOrderLine));
+        if (bankOrderLine.getPaymentModeSelect()
+            == BankOrderLineRepository.PAYMENT_MODE_TRANSFER_OR_OTHER) {
+          records.add(this.createDependentReceiverBankRecord(bankOrderLine));
+        }
+        if (this.useOptionnalFurtherInformationRecord(bankOrderLine)) {
+          records.add(this.createOptionnalFurtherInformationRecord(bankOrderLine));
+        }
       }
     }
 

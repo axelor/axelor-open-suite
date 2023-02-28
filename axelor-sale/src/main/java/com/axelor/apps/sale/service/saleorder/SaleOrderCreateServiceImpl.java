@@ -32,6 +32,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -175,7 +176,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
     String numSeq = "";
     String externalRef = "";
-    for (SaleOrder saleOrderLocal : saleOrderList) {
+    for (SaleOrder saleOrderLocal : ListUtils.emptyIfNull(saleOrderList)) {
       if (!numSeq.isEmpty()) {
         numSeq += "-";
       }
@@ -217,20 +218,25 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
   // Attachment of all sale order lines to new sale order
   protected void attachToNewSaleOrder(List<SaleOrder> saleOrderList, SaleOrder saleOrderMerged) {
-    for (SaleOrder saleOrder : saleOrderList) {
-      int countLine = 1;
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        saleOrderLine.setSequence(countLine * 10);
-        saleOrderMerged.addSaleOrderLineListItem(saleOrderLine);
-        countLine++;
+    if (saleOrderList != null) {
+      for (SaleOrder saleOrder : saleOrderList) {
+        int countLine = 1;
+        for (SaleOrderLine saleOrderLine :
+            ListUtils.emptyIfNull(saleOrder.getSaleOrderLineList())) {
+          saleOrderLine.setSequence(countLine * 10);
+          saleOrderMerged.addSaleOrderLineListItem(saleOrderLine);
+          countLine++;
+        }
       }
     }
   }
 
   // Remove old sale orders after merge
   protected void removeOldSaleOrders(List<SaleOrder> saleOrderList) {
-    for (SaleOrder saleOrder : saleOrderList) {
-      saleOrderRepo.remove(saleOrder);
+    if (saleOrderList != null) {
+      for (SaleOrder saleOrder : saleOrderList) {
+        saleOrderRepo.remove(saleOrder);
+      }
     }
   }
 

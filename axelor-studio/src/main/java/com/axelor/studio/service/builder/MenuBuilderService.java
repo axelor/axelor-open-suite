@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.Inflector;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
@@ -94,7 +95,7 @@ public class MenuBuilderService {
         actionBuilder.setTypeSelect(ActionBuilderRepository.TYPE_SELECT_VIEW);
         String domain = action.getDomain();
         actionBuilder.setDomainCondition(domain);
-        for (ActionView.View view : action.getViews()) {
+        for (ActionView.View view : ListUtils.emptyIfNull(action.getViews())) {
           ActionBuilderView builderView = new ActionBuilderView();
           builderView.setViewType(view.getType());
           builderView.setViewName(view.getName());
@@ -175,7 +176,7 @@ public class MenuBuilderService {
       actionBuilder.setDomainCondition(domain);
     }
     List<ActionBuilderView> views = getActionViews(actionBuilder, isJson, objectName, objectClass);
-    if (views != null && views.size() > 0) {
+    if (views != null && !views.isEmpty()) {
       actionBuilder.setActionBuilderViews(views);
     }
 
@@ -211,6 +212,9 @@ public class MenuBuilderService {
     ActionBuilderView actionBuilderView = new ActionBuilderView();
     actionBuilderView.setViewType(viewType);
     actionBuilderView.setViewName(viewName);
+    if (actionBuilderViews == null) {
+      actionBuilderViews = new ArrayList<>();
+    }
     actionBuilderViews.add(actionBuilderView);
   }
 

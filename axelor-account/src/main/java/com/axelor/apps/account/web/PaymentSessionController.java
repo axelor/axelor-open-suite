@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionServ
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -248,7 +249,9 @@ public class PaymentSessionController {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
 
       String bankDetailsIds =
-          Beans.get(PaymentSessionService.class).getBankDetails(paymentSession).stream()
+          ListUtils.emptyIfNull(
+                  Beans.get(PaymentSessionService.class).getBankDetails(paymentSession))
+              .stream()
               .map(BankDetails::getId)
               .map(Objects::toString)
               .collect(Collectors.joining(","));
@@ -267,7 +270,8 @@ public class PaymentSessionController {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
 
       String journalIds =
-          Beans.get(PaymentSessionService.class).getJournals(paymentSession).stream()
+          ListUtils.emptyIfNull(Beans.get(PaymentSessionService.class).getJournals(paymentSession))
+              .stream()
               .map(Journal::getId)
               .map(Objects::toString)
               .collect(Collectors.joining(","));
@@ -287,7 +291,7 @@ public class PaymentSessionController {
     try {
       int deletedSessions =
           Beans.get(PaymentSessionService.class).removeMultiplePaymentSessions(paymentSessionIds);
-      if (paymentSessionIds.size() > deletedSessions) {
+      if (ListUtils.size(paymentSessionIds) > deletedSessions) {
         response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_MULTIPLE_DELETION));
       }
     } catch (AxelorException e) {

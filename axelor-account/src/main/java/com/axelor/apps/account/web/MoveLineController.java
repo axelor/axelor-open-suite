@@ -55,6 +55,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.tool.ContextTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -88,7 +89,9 @@ public class MoveLineController {
               .checkManageAnalytic(move.getCompany())) {
         moveLine =
             Beans.get(MoveLineComputeAnalyticService.class).computeAnalyticDistribution(moveLine);
-        response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+        if (moveLine.getAnalyticMoveLineList() != null) {
+          response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -126,7 +129,9 @@ public class MoveLineController {
               .checkManageAnalytic(move.getCompany())) {
         Beans.get(MoveLineComputeAnalyticService.class)
             .createAnalyticDistributionWithTemplate(moveLine);
-        response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+        if (moveLine.getAnalyticMoveLineList() != null) {
+          response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -275,7 +280,7 @@ public class MoveLineController {
         Currency currency = move.getCurrency();
         Currency companyCurrency = move.getCompanyCurrency();
         if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-          if (move.getMoveLineList().size() == 0) {
+          if (move.getMoveLineList().isEmpty()) {
             currencyRate =
                 Beans.get(CurrencyService.class)
                     .getCurrencyConversionRate(currency, companyCurrency, move.getDate());
@@ -429,7 +434,8 @@ public class MoveLineController {
         moveLine =
             Beans.get(MoveLineComputeAnalyticService.class)
                 .analyzeMoveLine(moveLine, move.getCompany());
-        response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+        response.setValue(
+            "analyticMoveLineList", ListUtils.emptyIfNull(moveLine.getAnalyticMoveLineList()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -514,7 +520,9 @@ public class MoveLineController {
                 .selectDefaultDistributionTemplate(moveLine);
         response.setValue(
             "analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
-        response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+        if (moveLine.getAnalyticMoveLineList() != null) {
+          response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -545,10 +553,12 @@ public class MoveLineController {
                 "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
                 "hidden",
                 !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
-            for (AnalyticAxisByCompany analyticAxisByCompany :
-                accountConfig.getAnalyticAxisByCompanyList()) {
-              if (analyticAxisByCompany.getSequence() + 1 == i) {
-                analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+            if (accountConfig.getAnalyticAxisByCompanyList() != null) {
+              for (AnalyticAxisByCompany analyticAxisByCompany :
+                  accountConfig.getAnalyticAxisByCompanyList()) {
+                if (analyticAxisByCompany.getSequence() + 1 == i) {
+                  analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+                }
               }
             }
             if (analyticAxis != null) {
@@ -689,7 +699,7 @@ public class MoveLineController {
       response.setValue("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
       response.setValue(
           "remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
-      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
+      response.setValue("invoiceTermList", ListUtils.emptyIfNull(moveLine.getInvoiceTermList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -765,7 +775,7 @@ public class MoveLineController {
             .generateDefaultInvoiceTerm(moveLine, dueDate, false);
       }
       response.setValues(moveLine);
-      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
+      response.setValue("invoiceTermList", ListUtils.emptyIfNull(moveLine.getInvoiceTermList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

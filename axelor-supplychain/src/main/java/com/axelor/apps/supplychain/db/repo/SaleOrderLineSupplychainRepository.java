@@ -27,13 +27,14 @@ import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long saleOrderLineId = (Long) json.get("id");
+    Long saleOrderLineId = json != null ? (Long) json.get("id") : 0L;
     SaleOrderLine saleOrderLine = find(saleOrderLineId);
 
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
@@ -60,6 +61,10 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
           I18n.get("Missing") + " (" + availableQty.subtract(realQty) + ")");
       saleOrderLine.setAvailableStatusSelect(SaleOrderLineRepository.STATUS_MISSING);
     }
+    if (json == null) {
+      json = new HashMap<>();
+    }
+
     json.put("availableStatus", saleOrderLine.getAvailableStatus());
     json.put("availableStatusSelect", saleOrderLine.getAvailableStatusSelect());
 

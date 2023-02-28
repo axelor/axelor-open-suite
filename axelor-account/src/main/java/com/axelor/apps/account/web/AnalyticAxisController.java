@@ -89,8 +89,10 @@ public class AnalyticAxisController {
       List<Integer> analyticGroupingToRemoveList =
           Beans.get(AnalyticAxisService.class)
               .getSameAnalyticGroupingValues(analyticAxis, analyticGroupingChanged);
-      for (Integer value : analyticGroupingToRemoveList) {
-        response.setValue("analyticGrouping" + value, null);
+      if (analyticGroupingToRemoveList != null) {
+        for (Integer value : analyticGroupingToRemoveList) {
+          response.setValue("analyticGrouping" + value, null);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

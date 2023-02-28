@@ -154,64 +154,66 @@ public class BatchReimbursementImport extends BatchStrategy {
 
       int i = 0;
 
-      for (Entry<List<String[]>, String> entry : data.entrySet()) {
+      if (data != null) {
+        for (Entry<List<String[]>, String> entry : data.entrySet()) {
 
-        LocalDate rejectDate = rejectImportService.createRejectDate(entry.getValue());
+          LocalDate rejectDate = rejectImportService.createRejectDate(entry.getValue());
 
-        Move move = this.createMove(company, rejectDate);
+          Move move = this.createMove(company, rejectDate);
 
-        for (String[] reject : entry.getKey()) {
+          for (String[] reject : entry.getKey()) {
 
-          try {
+            try {
 
-            Reimbursement reimbursement =
-                reimbursementImportService.createReimbursementRejectMoveLine(
-                    reject,
-                    companyRepo.find(company.getId()),
-                    seq,
-                    moveRepo.find(move.getId()),
-                    rejectDate);
-            if (reimbursement != null) {
-              log.debug("Reimbursement n° {} processed", reimbursement.getRef());
-              seq++;
-              i++;
-              updateReimbursement(reimbursement);
-            }
-          } catch (AxelorException e) {
+              Reimbursement reimbursement =
+                  reimbursementImportService.createReimbursementRejectMoveLine(
+                      reject,
+                      companyRepo.find(company.getId()),
+                      seq,
+                      moveRepo.find(move.getId()),
+                      rejectDate);
+              if (reimbursement != null) {
+                log.debug("Reimbursement n° {} processed", reimbursement.getRef());
+                seq++;
+                i++;
+                updateReimbursement(reimbursement);
+              }
+            } catch (AxelorException e) {
 
-            TraceBackService.trace(
-                new AxelorException(
-                    e,
-                    e.getCategory(),
-                    I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_7),
-                    reject[1]),
-                ExceptionOriginRepository.REIMBURSEMENT,
-                batch.getId());
-            incrementAnomaly();
+              TraceBackService.trace(
+                  new AxelorException(
+                      e,
+                      e.getCategory(),
+                      I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_7),
+                      reject[1]),
+                  ExceptionOriginRepository.REIMBURSEMENT,
+                  batch.getId());
+              incrementAnomaly();
 
-          } catch (Exception e) {
+            } catch (Exception e) {
 
-            TraceBackService.trace(
-                new Exception(
-                    String.format(
-                        I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_7), reject[1]),
-                    e),
-                ExceptionOriginRepository.REIMBURSEMENT,
-                batch.getId());
+              TraceBackService.trace(
+                  new Exception(
+                      String.format(
+                          I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_7), reject[1]),
+                      e),
+                  ExceptionOriginRepository.REIMBURSEMENT,
+                  batch.getId());
 
-            incrementAnomaly();
+              incrementAnomaly();
 
-            log.error("Bug(Anomalie) généré(e) pour le rejet de remboursement {}", reject[1]);
+              log.error("Bug(Anomalie) généré(e) pour le rejet de remboursement {}", reject[1]);
 
-          } finally {
+            } finally {
 
-            if (i % 10 == 0) {
-              JPA.clear();
+              if (i % 10 == 0) {
+                JPA.clear();
+              }
             }
           }
-        }
 
-        this.validateMove(move, rejectDate, seq);
+          this.validateMove(move, rejectDate, seq);
+        }
       }
 
       updateCustomerAccountLog += batchAccountCustomer.updateAccountingSituationMarked(company);

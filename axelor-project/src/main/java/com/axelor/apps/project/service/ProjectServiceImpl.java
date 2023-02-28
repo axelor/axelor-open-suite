@@ -33,6 +33,8 @@ import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.translation.ITranslation;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -102,9 +104,11 @@ public class ProjectServiceImpl implements ProjectService {
     project.setAssignedTo(assignedTo);
     project.setProjectStatus(getDefaultProjectStatus());
     project.setProjectTaskStatusSet(
-        new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
+        new HashSet<>(
+            SetUtils.emptyIfNull(appProjectService.getAppProject().getDefaultTaskStatusSet())));
     project.setProjectTaskPrioritySet(
-        new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
+        new HashSet<>(
+            SetUtils.emptyIfNull(appProjectService.getAppProject().getDefaultPrioritySet())));
     return project;
   }
 
@@ -232,16 +236,20 @@ public class ProjectServiceImpl implements ProjectService {
     project.setDescription(projectTemplate.getDescription());
     project.setTeam(projectTemplate.getTeam());
     project.setAssignedTo(projectTemplate.getAssignedTo());
-    project.setProjectTaskCategorySet(new HashSet<>(projectTemplate.getProjectTaskCategorySet()));
+    project.setProjectTaskCategorySet(
+        new HashSet<>(SetUtils.emptyIfNull(projectTemplate.getProjectTaskCategorySet())));
     project.setSynchronize(projectTemplate.getSynchronize());
-    project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
+    project.setMembersUserSet(
+        new HashSet<>(SetUtils.emptyIfNull(projectTemplate.getMembersUserSet())));
     project.setImputable(projectTemplate.getImputable());
-    project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
+    project.setProductSet(new HashSet<>(SetUtils.emptyIfNull(projectTemplate.getProductSet())));
     project.setProjectStatus(getDefaultProjectStatus());
     project.setProjectTaskStatusSet(
-        new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
+        new HashSet<>(
+            SetUtils.emptyIfNull(appProjectService.getAppProject().getDefaultTaskStatusSet())));
     project.setProjectTaskPrioritySet(
-        new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
+        new HashSet<>(
+            SetUtils.emptyIfNull(appProjectService.getAppProject().getDefaultPrioritySet())));
     if (clientPartner != null && ObjectUtils.notEmpty(clientPartner.getContactPartnerSet())) {
       project.setContactPartner(clientPartner.getContactPartnerSet().iterator().next());
     }
@@ -286,7 +294,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     TaskTemplate parentTaskTemplate = taskTemplate.getParentTaskTemplate();
 
-    if (parentTaskTemplate != null && taskTemplateSet.contains(parentTaskTemplate)) {
+    if (taskTemplateSet != null
+        && parentTaskTemplate != null
+        && taskTemplateSet.contains(parentTaskTemplate)) {
       task.setParentTask(this.createTask(parentTaskTemplate, project, taskTemplateSet));
       return task;
     }
@@ -337,7 +347,7 @@ public class ProjectServiceImpl implements ProjectService {
   public boolean checkIfResourceBookedInList(
       List<ResourceBooking> resourceBookingList, ResourceBooking resourceBooking) {
 
-    return resourceBookingList.stream()
+    return ListUtils.emptyIfNull(resourceBookingList).stream()
         .anyMatch(
             x ->
                 !x.equals(resourceBooking)
@@ -352,13 +362,16 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   public void getChildProjectIds(Set<Long> projectIdsSet, Project project) {
-    if (projectIdsSet.contains(project.getId())) {
+    if (projectIdsSet != null && projectIdsSet.contains(project.getId())) {
       return;
     }
 
+    if (projectIdsSet == null) {
+      projectIdsSet = new HashSet<>();
+    }
     projectIdsSet.add(project.getId());
 
-    for (Project childProject : project.getChildProjectList()) {
+    for (Project childProject : ListUtils.emptyIfNull(project.getChildProjectList())) {
       getChildProjectIds(projectIdsSet, childProject);
     }
   }

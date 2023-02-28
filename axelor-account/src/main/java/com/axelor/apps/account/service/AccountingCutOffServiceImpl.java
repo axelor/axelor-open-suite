@@ -47,6 +47,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
@@ -450,7 +451,6 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         if (cutOffMoveLine.getAnalyticMoveLineList() == null) {
           cutOffMoveLine.setAnalyticMoveLineList(new ArrayList<>());
         }
-
         for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
           this.copyAnalyticMoveLine(cutOffMoveLine, analyticMoveLine, newAmount);
         }
@@ -465,7 +465,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected AnalyticMoveLine getExistingAnalyticMoveLine(
       MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
-    return moveLine.getAnalyticMoveLineList().stream()
+    return ListUtils.emptyIfNull(moveLine.getAnalyticMoveLineList()).stream()
         .filter(
             it ->
                 it.getAnalyticAxis().equals(analyticMoveLine.getAnalyticAxis())
@@ -615,15 +615,17 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         moveLineComputeAnalyticService
             .createAnalyticDistributionWithTemplate(moveLine)
             .getAnalyticMoveLineList();
-    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-      analyticMoveLine.setMoveLine(moveLine);
+    if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        analyticMoveLine.setMoveLine(moveLine);
+      }
+      analyticMoveLineList.stream().forEach(analyticMoveLineRepository::save);
     }
-    analyticMoveLineList.stream().forEach(analyticMoveLineRepository::save);
   }
 
   protected void reconcile(Move move, Move reverseMove) throws AxelorException {
     List<MoveLine> moveLineList = Lists.newArrayList(move.getMoveLineList());
-    moveLineList.addAll(reverseMove.getMoveLineList());
+    moveLineList.addAll(ListUtils.emptyIfNull(reverseMove.getMoveLineList()));
     moveLineService.reconcileMoveLines(moveLineList);
   }
 

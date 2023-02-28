@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -103,7 +104,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
             move.getDate(),
             move.getDate(),
             move.getOriginDate(),
-            move.getMoveLineList().size() + 1,
+            ListUtils.size(move.getMoveLineList()) + 1,
             move.getOrigin(),
             move.getDescription());
 
@@ -115,9 +116,11 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
 
   protected BigDecimal getCounterpartAmount(Move move) {
     BigDecimal amount = BigDecimal.ZERO;
-    for (MoveLine line : move.getMoveLineList()) {
-      amount = amount.add(line.getCredit());
-      amount = amount.subtract(line.getDebit());
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine line : move.getMoveLineList()) {
+        amount = amount.add(line.getCredit());
+        amount = amount.subtract(line.getDebit());
+      }
     }
     return amount;
   }

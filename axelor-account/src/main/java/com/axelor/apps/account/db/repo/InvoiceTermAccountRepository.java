@@ -27,6 +27,7 @@ import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,12 @@ public class InvoiceTermAccountRepository extends InvoiceTermRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    if (context.containsKey("_model")
+
+    if (json == null) {
+      json = new HashMap<>();
+    }
+    if (context != null
+        && context.containsKey("_model")
         && context.get("_model").equals(InvoicePayment.class.getName())) {
       long id = (long) json.get("id");
       InvoiceTerm invoiceTerm = this.find(id);
@@ -75,8 +81,9 @@ public class InvoiceTermAccountRepository extends InvoiceTermRepository {
         json.put("$originBasedPaymentDelay", invoiceTerm.getPaymentDelay());
       }
     }
-
-    json.put("$statusSelectPaymentSession", context.get("statusSelect"));
+    if (context != null) {
+      json.put("$statusSelectPaymentSession", context.get("statusSelect"));
+    }
     return super.populate(json, context);
   }
 

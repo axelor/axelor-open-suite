@@ -25,6 +25,7 @@ import com.axelor.apps.bpm.db.repo.WkfProcessRepository;
 import com.axelor.apps.bpm.service.WkfCommonService;
 import com.axelor.apps.bpm.service.init.ProcessEngineService;
 import com.axelor.apps.bpm.service.init.WkfProcessApplication;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttrs;
@@ -134,14 +135,14 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
       migrateRunningInstances(wkfModel.getDeploymentId(), engine, definitions);
     }
 
-    if (definitions.size() == 1) {
+    if (ListUtils.size(definitions) == 1) {
       wkfModel.setVersionTag(definitions.get(0).getVersionTag());
     }
 
     wkfModel.setDeploymentId(deployment.getId());
 
-    log.debug("Definitions deployed: {}", definitions.size());
-    for (ProcessDefinition definition : definitions) {
+    log.debug("Definitions deployed: {}", ListUtils.size(definitions));
+    for (ProcessDefinition definition : ListUtils.emptyIfNull(definitions)) {
 
       WkfProcess process =
           wkfProcessRepository
@@ -183,9 +184,9 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
             .deploymentId(oldDeploymentId)
             .list();
 
-    log.debug("Old definition size " + oldDefinitions.size());
-    for (ProcessDefinition oldDefinition : oldDefinitions) {
-      for (ProcessDefinition newDefinition : definitions) {
+    log.debug("Old definition size " + ListUtils.size(oldDefinitions));
+    for (ProcessDefinition oldDefinition : ListUtils.emptyIfNull(oldDefinitions)) {
+      for (ProcessDefinition newDefinition : ListUtils.emptyIfNull(definitions)) {
         if (oldDefinition.getKey().equals(newDefinition.getKey())) {
           log.debug(
               "Migrating from old defintion: {}, to new definition: {}",
@@ -276,10 +277,12 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
   protected void addDmn(DeploymentBuilder deploymentBuilder, Set<MetaFile> dmnFiles) {
 
     MetaFileRepository metaFileRepo = Beans.get(MetaFileRepository.class);
-    for (MetaFile dmnFile : dmnFiles) {
-      dmnFile = metaFileRepo.find(dmnFile.getId());
-      deploymentBuilder.addModelInstance(
-          dmnFile.getId() + ".dmn", Dmn.readModelFromFile(MetaFiles.getPath(dmnFile).toFile()));
+    if (dmnFiles != null) {
+      for (MetaFile dmnFile : dmnFiles) {
+        dmnFile = metaFileRepo.find(dmnFile.getId());
+        deploymentBuilder.addModelInstance(
+            dmnFile.getId() + ".dmn", Dmn.readModelFromFile(MetaFiles.getPath(dmnFile).toFile()));
+      }
     }
   }
 
@@ -307,7 +310,7 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
             "processConfiguration", BpmnParser.CAMUNDA_BPMN_EXTENSIONS_NS);
     List<ModelElementInstance> processConfigElements =
         extensionElements.getElementsQuery().filterByType(processConfigType).list();
-    if (processConfigElements == null || processConfigElements.size() == 0) {
+    if (processConfigElements == null || processConfigElements.isEmpty()) {
       return;
     }
 
@@ -321,13 +324,15 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
     Collection<ModelElementInstance> configParams =
         processConfigElement.getChildElementsByType(processConfigParamType);
 
-    for (ModelElementInstance configParam : configParams) {
-      WkfProcessConfig config = getProcessCofig(configMap, configParam);
-      config =
-          (WkfProcessConfig)
-              wkfService.addProperties(
-                  WkfPropertyMapper.PROCESS_CONFIG_PROPERTIES, config, configParam);
-      process.addWkfProcessConfigListItem(config);
+    if (configParams != null) {
+      for (ModelElementInstance configParam : configParams) {
+        WkfProcessConfig config = getProcessCofig(configMap, configParam);
+        config =
+            (WkfProcessConfig)
+                wkfService.addProperties(
+                    WkfPropertyMapper.PROCESS_CONFIG_PROPERTIES, config, configParam);
+        process.addWkfProcessConfigListItem(config);
+      }
     }
   }
 
@@ -354,13 +359,13 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
 
     String metaModel =
         configParam.getAttributeValueNs(BpmnParser.CAMUNDA_BPMN_EXTENSIONS_NS, "metaModel");
-    if (configMap.containsKey(metaModel)) {
+    if (configMap != null && configMap.containsKey(metaModel)) {
       return configMap.get(metaModel);
     }
 
     String jsonModel =
         configParam.getAttributeValueNs(BpmnParser.CAMUNDA_BPMN_EXTENSIONS_NS, "metaJsonModel");
-    if (configMap.containsKey(jsonModel)) {
+    if (configMap != null && configMap.containsKey(jsonModel)) {
       return configMap.get(jsonModel);
     }
 

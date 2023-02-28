@@ -52,6 +52,7 @@ import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections4.CollectionUtils;
 
 @Singleton
 public class LeaveController {
@@ -69,7 +70,7 @@ public class LeaveController {
                   user.getId(),
                   user.getActiveCompany())
               .fetch();
-      if (leaveList.isEmpty()) {
+      if (CollectionUtils.isEmpty(leaveList)) {
         response.setView(
             ActionView.define(I18n.get("LeaveRequest"))
                 .model(LeaveRequest.class.getName())

@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.inject.Beans;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentModeServiceImpl implements PaymentModeService {
 
@@ -31,11 +32,13 @@ public class PaymentModeServiceImpl implements PaymentModeService {
   public List<AccountManagement> getAccountManagementDefaults() {
     List<AccountManagement> accountManagementList = new ArrayList<>();
     List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
-    for (Company company : companyList) {
-      AccountManagement accountManagement = new AccountManagement();
-      accountManagement.setCompany(company);
-      accountManagement.setTypeSelect(AccountManagementRepository.TYPE_PAYMENT);
-      accountManagementList.add(accountManagement);
+    if (CollectionUtils.isNotEmpty(companyList)) {
+      for (Company company : companyList) {
+        AccountManagement accountManagement = new AccountManagement();
+        accountManagement.setCompany(company);
+        accountManagement.setTypeSelect(AccountManagementRepository.TYPE_PAYMENT);
+        accountManagementList.add(accountManagement);
+      }
     }
     return accountManagementList;
   }

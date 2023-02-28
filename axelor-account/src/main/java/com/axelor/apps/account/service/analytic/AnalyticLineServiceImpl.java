@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.service.ListToolService;
 import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
@@ -119,7 +120,8 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     if (analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)) {
 
       for (AnalyticAxisByCompany axis :
-          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
+          ListUtils.emptyIfNull(
+              accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList())) {
         if (axis.getSequence() + 1 == position) {
           analyticAxis = axis.getAnalyticAxis();
         }
@@ -135,7 +137,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     List<Long> analyticAccountListByRules = new ArrayList<>();
 
     for (AnalyticAccount analyticAccount :
-        analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
+        ListUtils.emptyIfNull(analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch())) {
       analyticAccountListByAxis.add(analyticAccount.getId());
     }
     if (line.getAccount() != null) {
@@ -209,7 +211,8 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
         && company != null) {
       List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
       for (AnalyticAxisByCompany analyticAxisByCompany :
-          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
+          ListUtils.emptyIfNull(
+              accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList())) {
         for (AnalyticMoveLine analyticMoveLine : line.getAnalyticMoveLineList()) {
           if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
             analyticMoveLineList.add(analyticMoveLine);

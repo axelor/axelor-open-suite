@@ -73,7 +73,6 @@ public class IndicatorGeneratorService {
       if (request != null && !request.isEmpty()) {
         List<Map<String, Object>> requestResultList =
             this.getRequestResultList(request, requestType);
-
         result = this.generateQueryResultTable(requestResultList);
       }
     } catch (Exception e) {
@@ -207,7 +206,9 @@ public class IndicatorGeneratorService {
             row.values().stream()
                 .map(x -> x != null ? x.toString().replaceAll("(\\t|\\r?\\n)+", " ") : "null")
                 .collect(Collectors.toList());
-        queryResultData.add(tempList.toArray(new String[0]));
+        if (tempList != null) {
+          queryResultData.add(tempList.toArray(new String[0]));
+        }
       }
     }
 

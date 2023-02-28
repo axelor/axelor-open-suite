@@ -38,6 +38,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
 
 public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
 
@@ -85,12 +86,14 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
 
     records.add(this.createSenderRecord());
 
-    for (BankOrderLine bankOrderLine : bankOrderLineList) {
+    if (CollectionUtils.isNotEmpty(bankOrderLineList)) {
+      for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
-      records.add(this.createDetailRecord(bankOrderLine));
+        records.add(this.createDetailRecord(bankOrderLine));
 
-      if (this.useOptionalFurtherInformationRecord(bankOrderLine)) {
-        records.add(this.createOptionalFurtherInformationRecord(bankOrderLine));
+        if (this.useOptionalFurtherInformationRecord(bankOrderLine)) {
+          records.add(this.createOptionalFurtherInformationRecord(bankOrderLine));
+        }
       }
     }
 

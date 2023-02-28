@@ -22,6 +22,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -72,7 +73,8 @@ public class ProdProcessController {
     if (prodProcess.getProdProcessLineList() != null) {
       Beans.get(ProdProcessService.class).changeProdProcessListOutsourcing(prodProcess);
     }
-    response.setValue("prodProcessLineList", prodProcess.getProdProcessLineList());
+    response.setValue(
+        "prodProcessLineList", ListUtils.emptyIfNull(prodProcess.getProdProcessLineList()));
     response.setHidden("prodProcessLineList.outsourcing", !prodProcess.getOutsourcing());
 
     if (!prodProcess.getOutsourcing()) {

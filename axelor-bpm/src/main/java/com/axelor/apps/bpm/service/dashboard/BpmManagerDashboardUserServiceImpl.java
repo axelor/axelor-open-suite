@@ -24,6 +24,7 @@ import com.axelor.apps.bpm.db.repo.WkfModelRepository;
 import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
 import com.axelor.apps.bpm.service.execution.WkfUserActionService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -63,23 +64,24 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
   public List<WkfModel> getWkfModelsByUser(User user) {
     List<WkfModel> wkfModelList = wkfModelRepo.all().order("code").fetch();
     List<WkfModel> filterWkfModels = new ArrayList<>();
+    if (CollectionUtils.isNotEmpty(wkfModelList)) {
+      for (WkfModel wkfModel : wkfModelList) {
+        List<WkfProcess> processes = wkfDashboardCommonService.findProcesses(wkfModel, null);
+        if (CollectionUtils.isEmpty(processes)) {
+          continue;
+        }
 
-    for (WkfModel wkfModel : wkfModelList) {
-      List<WkfProcess> processes = wkfDashboardCommonService.findProcesses(wkfModel, null);
-      if (CollectionUtils.isEmpty(processes)) {
-        continue;
+        boolean isSuperAdmin = user.getCode().equals("admin");
+        boolean isAdmin = wkfDashboardCommonService.isAdmin(wkfModel, user);
+        boolean isManager = wkfDashboardCommonService.isManager(wkfModel, user);
+        boolean isUser = wkfDashboardCommonService.isUser(wkfModel, user);
+
+        if (!isSuperAdmin && !isAdmin && !isManager && !isUser) {
+          continue;
+        }
+
+        filterWkfModels.add(wkfModel);
       }
-
-      boolean isSuperAdmin = user.getCode().equals("admin");
-      boolean isAdmin = wkfDashboardCommonService.isAdmin(wkfModel, user);
-      boolean isManager = wkfDashboardCommonService.isManager(wkfModel, user);
-      boolean isUser = wkfDashboardCommonService.isUser(wkfModel, user);
-
-      if (!isSuperAdmin && !isAdmin && !isManager && !isUser) {
-        continue;
-      }
-
-      filterWkfModels.add(wkfModel);
     }
     return filterWkfModels;
   }
@@ -99,15 +101,17 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
 
     List<Map<String, Object>> statusList = (List<Map<String, Object>>) obj[1];
 
-    for (Map<String, Object> statusMap : statusList) {
-      Map<String, Object> dataMap = new HashMap<>();
-      String processName =
-          (!StringUtils.isBlank(process.getDescription())
-              ? process.getDescription()
-              : process.getName());
-      dataMap.put("status", statusMap.get("title").toString() + " (" + processName + ")");
-      dataMap.put("total", statusMap.get("statusCount"));
-      dataMapList.add(dataMap);
+    if (statusList != null) {
+      for (Map<String, Object> statusMap : statusList) {
+        Map<String, Object> dataMap = new HashMap<>();
+        String processName =
+            (!StringUtils.isBlank(process.getDescription())
+                ? process.getDescription()
+                : process.getName());
+        dataMap.put("status", statusMap.get("title").toString() + " (" + processName + ")");
+        dataMap.put("total", statusMap.get("statusCount"));
+        ListUtils.emptyIfNull(dataMapList).add(dataMap);
+      }
     }
   }
 
@@ -125,16 +129,17 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
             process, modelName, isMetaModel, user, false, WkfDashboardCommonService.ASSIGNED_OTHER);
 
     List<Map<String, Object>> statusList = (List<Map<String, Object>>) obj[1];
-
-    for (Map<String, Object> statusMap : statusList) {
-      Map<String, Object> dataMap = new HashMap<>();
-      String processName =
-          (!StringUtils.isBlank(process.getDescription())
-              ? process.getDescription()
-              : process.getName());
-      dataMap.put("status", statusMap.get("title").toString() + " (" + processName + ")");
-      dataMap.put("total", statusMap.get("statusCount"));
-      dataMapList.add(dataMap);
+    if (statusList != null) {
+      for (Map<String, Object> statusMap : statusList) {
+        Map<String, Object> dataMap = new HashMap<>();
+        String processName =
+            (!StringUtils.isBlank(process.getDescription())
+                ? process.getDescription()
+                : process.getName());
+        dataMap.put("status", statusMap.get("title").toString() + " (" + processName + ")");
+        dataMap.put("total", statusMap.get("statusCount"));
+        ListUtils.emptyIfNull(dataMapList).add(dataMap);
+      }
     }
   }
 
@@ -163,33 +168,35 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
     Map<String, Object> dataMap = new HashMap<>();
     List<WkfProcess> processList = wkfDashboardCommonService.findProcesses(wkfModel, null);
 
-    for (WkfProcess process : processList) {
+    if (CollectionUtils.isNotEmpty(processList)) {
+      for (WkfProcess process : processList) {
 
-      WkfTaskConfig config =
-          wkfTaskConfigRepo
-              .all()
-              .filter(
-                  "self.description = ?1 AND self.processId = ?2 AND self.wkfModel = ?3",
-                  status,
-                  process.getProcessId(),
-                  wkfModel)
-              .fetchOne();
+        WkfTaskConfig config =
+            wkfTaskConfigRepo
+                .all()
+                .filter(
+                    "self.description = ?1 AND self.processId = ?2 AND self.wkfModel = ?3",
+                    status,
+                    process.getProcessId(),
+                    wkfModel)
+                .fetchOne();
 
-      if (config == null) {
-        continue;
-      }
+        if (config == null) {
+          continue;
+        }
 
-      boolean isMetaModel = !StringUtils.isBlank(config.getModelName());
-      String modelName = isMetaModel ? config.getModelName() : config.getJsonModelName();
+        boolean isMetaModel = !StringUtils.isBlank(config.getModelName());
+        String modelName = isMetaModel ? config.getModelName() : config.getJsonModelName();
 
-      List<Long> recordIds =
-          this.computeTaskConfig(status, config, isMetaModel, modelName, wkfModel, type);
+        List<Long> recordIds =
+            this.computeTaskConfig(status, config, isMetaModel, modelName, wkfModel, type);
 
-      if (!CollectionUtils.isEmpty(recordIds)) {
-        dataMap.put("modelName", modelName);
-        dataMap.put("isMetaModel", isMetaModel);
-        dataMap.put("recordIds", recordIds);
-        return dataMap;
+        if (CollectionUtils.isNotEmpty(recordIds)) {
+          dataMap.put("modelName", modelName);
+          dataMap.put("isMetaModel", isMetaModel);
+          dataMap.put("recordIds", recordIds);
+          return dataMap;
+        }
       }
     }
     return new HashMap<>();
@@ -219,7 +226,7 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
           config, processInstanceIds, modelName, isMetaModel, null, taskMap, null, type);
 
       List<Long> lateTaskIds = (List<Long>) taskMap.get("lateTaskIds");
-      return lateTaskIds;
+      return ListUtils.emptyIfNull(lateTaskIds);
     }
     return new ArrayList<>();
   }
@@ -230,68 +237,77 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
 
     List<WkfProcess> processes = wkfDashboardCommonService.findProcesses(wkfModel, null);
 
-    for (WkfProcess process : processes) {
+    if (CollectionUtils.isNotEmpty(processes)) {
+      for (WkfProcess process : processes) {
 
-      List<WkfTaskConfig> taskConfigs = getUserTaskConfigs(process);
+        List<WkfTaskConfig> taskConfigs = getUserTaskConfigs(process);
 
-      for (WkfTaskConfig config : taskConfigs) {
-        List<String> processInstanceIds =
-            wkfInstanceService.findProcessInstanceByNode(
-                config.getName(), config.getProcessId(), config.getType(), true);
+        if (CollectionUtils.isNotEmpty(taskConfigs)) {
+          for (WkfTaskConfig config : taskConfigs) {
+            List<String> processInstanceIds =
+                wkfInstanceService.findProcessInstanceByNode(
+                    config.getName(), config.getProcessId(), config.getType(), true);
 
-        boolean isMetaModel = StringUtils.isNotEmpty(config.getModelName());
-        String modelName = isMetaModel ? config.getModelName() : config.getJsonModelName();
-        String userPath = config.getUserPath();
-        Map<Long, List<BigDecimal>> userTimeMap = new HashMap<>();
+            boolean isMetaModel = StringUtils.isNotEmpty(config.getModelName());
+            String modelName = isMetaModel ? config.getModelName() : config.getJsonModelName();
+            String userPath = config.getUserPath();
+            Map<Long, List<BigDecimal>> userTimeMap = new HashMap<>();
 
-        String unit = this.getUnit(unitType);
+            String unit = this.getUnit(unitType);
 
-        String qry =
-            "SELECT CASE WHEN task.end_time_ IS NULL THEN "
-                + "EXTRACT(EPOCH FROM NOW() - task.start_time_) / "
-                + unit
-                + " ELSE "
-                + "EXTRACT(EPOCH FROM task.end_time_ - task.start_time_) / "
-                + unit
-                + " END AS time "
-                + "FROM bpm_wkf_task_config config "
-                + "LEFT JOIN act_hi_taskinst task ON task.proc_def_id_ = config.process_id "
-                + "WHERE "
-                + "task.proc_def_id_ = :processInstanceId AND config.description = :desc "
-                + "AND task.proc_inst_id_ = :instanceId";
+            String qry =
+                "SELECT CASE WHEN task.end_time_ IS NULL THEN "
+                    + "EXTRACT(EPOCH FROM NOW() - task.start_time_) / "
+                    + unit
+                    + " ELSE "
+                    + "EXTRACT(EPOCH FROM task.end_time_ - task.start_time_) / "
+                    + unit
+                    + " END AS time "
+                    + "FROM bpm_wkf_task_config config "
+                    + "LEFT JOIN act_hi_taskinst task ON task.proc_def_id_ = config.process_id "
+                    + "WHERE "
+                    + "task.proc_def_id_ = :processInstanceId AND config.description = :desc "
+                    + "AND task.proc_inst_id_ = :instanceId";
 
-        Query query = JPA.em().createNativeQuery(qry);
-        query.setParameter("processInstanceId", config.getProcessId());
-        query.setParameter("desc", config.getDescription());
+            Query query = JPA.em().createNativeQuery(qry);
+            query.setParameter("processInstanceId", config.getProcessId());
+            query.setParameter("desc", config.getDescription());
 
-        if (!isMetaModel) {
-          List<MetaJsonRecord> jsonModelRecords =
-              wkfDashboardCommonService.getMetaJsonRecords(
-                  config, processInstanceIds, modelName, null, null, null, null);
+            if (!isMetaModel) {
+              List<MetaJsonRecord> jsonModelRecords =
+                  wkfDashboardCommonService.getMetaJsonRecords(
+                      config, processInstanceIds, modelName, null, null, null, null);
+              if (CollectionUtils.isNotEmpty(jsonModelRecords)) {
+                for (MetaJsonRecord record : jsonModelRecords) {
+                  this.computeAvgTimePerUser(query, record, userPath, userTimeMap);
+                }
+              }
+            } else {
+              List<Model> modelRecords =
+                  wkfDashboardCommonService.getMetaModelRecords(
+                      config, processInstanceIds, modelName, null, null, null, null);
 
-          for (MetaJsonRecord record : jsonModelRecords) {
-            this.computeAvgTimePerUser(query, record, userPath, userTimeMap);
+              if (CollectionUtils.isNotEmpty(modelRecords)) {
+                for (Model record : modelRecords) {
+                  this.computeAvgTimePerUser(query, record, userPath, userTimeMap);
+                }
+              }
+            }
+
+            if (userTimeMap != null) {
+              for (Entry<Long, List<BigDecimal>> entry : userTimeMap.entrySet()) {
+                Map<String, Object> dataMap = new HashMap<>();
+                dataMap.put("status", config.getDescription());
+                dataMap.put(
+                    "time",
+                    entry.getValue().stream()
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)
+                        .divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP));
+                dataMap.put("user", userRepo.find(entry.getKey()).getName());
+                dataMapList.add(dataMap);
+              }
+            }
           }
-        } else {
-          List<Model> modelRecords =
-              wkfDashboardCommonService.getMetaModelRecords(
-                  config, processInstanceIds, modelName, null, null, null, null);
-
-          for (Model record : modelRecords) {
-            this.computeAvgTimePerUser(query, record, userPath, userTimeMap);
-          }
-        }
-
-        for (Entry<Long, List<BigDecimal>> entry : userTimeMap.entrySet()) {
-          Map<String, Object> dataMap = new HashMap<>();
-          dataMap.put("status", config.getDescription());
-          dataMap.put(
-              "time",
-              entry.getValue().stream()
-                  .reduce(BigDecimal.ZERO, BigDecimal::add)
-                  .divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP));
-          dataMap.put("user", userRepo.find(entry.getKey()).getName());
-          dataMapList.add(dataMap);
         }
       }
     }
@@ -332,12 +348,15 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
     }
 
     List<BigDecimal> timeList = null;
-    if (userTimeMap.containsKey(user.getId())) {
+    if (userTimeMap != null && userTimeMap.containsKey(user.getId())) {
       timeList = userTimeMap.get(user.getId());
     } else {
       timeList = new ArrayList<>();
     }
     timeList.add(time);
+    if (userTimeMap == null) {
+      userTimeMap = new HashMap<>();
+    }
     userTimeMap.put(user.getId(), timeList);
   }
 
@@ -349,59 +368,68 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
 
     Map<Long, BigInteger> userMap = new HashMap<>();
 
-    for (WkfProcess process : processes) {
-      List<WkfTaskConfig> taskConfigs = getUserTaskConfigs(process);
+    if (CollectionUtils.isNotEmpty(processes)) {
+      for (WkfProcess process : processes) {
+        List<WkfTaskConfig> taskConfigs = getUserTaskConfigs(process);
 
-      for (WkfTaskConfig config : taskConfigs) {
-        List<String> processInstanceIds =
-            wkfInstanceService.findProcessInstanceByNode(
-                config.getName(), config.getProcessId(), config.getType(), false);
+        if (CollectionUtils.isNotEmpty(taskConfigs)) {
+          for (WkfTaskConfig config : taskConfigs) {
+            List<String> processInstanceIds =
+                wkfInstanceService.findProcessInstanceByNode(
+                    config.getName(), config.getProcessId(), config.getType(), false);
 
-        boolean isMetaModel = StringUtils.isNotEmpty(config.getModelName());
-        String modelName = isMetaModel ? config.getModelName() : config.getJsonModelName();
-        String userPath = config.getUserPath();
+            boolean isMetaModel = StringUtils.isNotEmpty(config.getModelName());
+            String modelName = isMetaModel ? config.getModelName() : config.getJsonModelName();
+            String userPath = config.getUserPath();
 
-        String qry =
-            "SELECT COUNT(task.id_) AS total "
-                + "FROM bpm_wkf_task_config config "
-                + "LEFT JOIN act_hi_taskinst task ON task.proc_def_id_ = config.process_id "
-                + "WHERE "
-                + "task.proc_def_id_ = :processInstanceId AND config.description = :desc "
-                + "AND task.proc_inst_id_ = :instanceId "
-                + "AND DATE(task.end_time_) = CURRENT_DATE";
+            String qry =
+                "SELECT COUNT(task.id_) AS total "
+                    + "FROM bpm_wkf_task_config config "
+                    + "LEFT JOIN act_hi_taskinst task ON task.proc_def_id_ = config.process_id "
+                    + "WHERE "
+                    + "task.proc_def_id_ = :processInstanceId AND config.description = :desc "
+                    + "AND task.proc_inst_id_ = :instanceId "
+                    + "AND DATE(task.end_time_) = CURRENT_DATE";
 
-        Query query = JPA.em().createNativeQuery(qry);
-        query.setParameter("processInstanceId", config.getProcessId());
-        query.setParameter("desc", config.getDescription());
+            Query query = JPA.em().createNativeQuery(qry);
+            query.setParameter("processInstanceId", config.getProcessId());
+            query.setParameter("desc", config.getDescription());
 
-        if (!isMetaModel) {
-          List<MetaJsonRecord> jsonModelRecords =
-              wkfDashboardCommonService.getMetaJsonRecords(
-                  config, processInstanceIds, modelName, null, null, null, null);
+            if (!isMetaModel) {
+              List<MetaJsonRecord> jsonModelRecords =
+                  wkfDashboardCommonService.getMetaJsonRecords(
+                      config, processInstanceIds, modelName, null, null, null, null);
 
-          for (MetaJsonRecord record : jsonModelRecords) {
-            this.computeTaskDonePerUser(query, record, userPath, userMap);
-          }
-        } else {
-          List<Model> modelRecords =
-              wkfDashboardCommonService.getMetaModelRecords(
-                  config, processInstanceIds, modelName, null, null, null, null);
-
-          for (Model record : modelRecords) {
-            this.computeTaskDonePerUser(query, record, userPath, userMap);
+              if (CollectionUtils.isNotEmpty(jsonModelRecords)) {
+                for (MetaJsonRecord record : jsonModelRecords) {
+                  this.computeTaskDonePerUser(query, record, userPath, userMap);
+                }
+              }
+            } else {
+              List<Model> modelRecords =
+                  wkfDashboardCommonService.getMetaModelRecords(
+                      config, processInstanceIds, modelName, null, null, null, null);
+              if (CollectionUtils.isNotEmpty(modelRecords)) {
+                for (Model record : modelRecords) {
+                  this.computeTaskDonePerUser(query, record, userPath, userMap);
+                }
+              }
+            }
           }
         }
       }
     }
 
-    for (Entry<Long, BigInteger> entry : userMap.entrySet()) {
-      if (entry.getValue().compareTo(BigInteger.ZERO) == 0) {
-        continue;
+    if (userMap != null) {
+      for (Entry<Long, BigInteger> entry : userMap.entrySet()) {
+        if (entry.getValue().compareTo(BigInteger.ZERO) == 0) {
+          continue;
+        }
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("user", userRepo.find(entry.getKey()).getName());
+        dataMap.put("total", entry.getValue());
+        dataMapList.add(dataMap);
       }
-      Map<String, Object> dataMap = new HashMap<>();
-      dataMap.put("user", userRepo.find(entry.getKey()).getName());
-      dataMap.put("total", entry.getValue());
-      dataMapList.add(dataMap);
     }
     return dataMapList;
   }
@@ -414,8 +442,11 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
     User user = wkfUserActionService.getUser(userPath, wkfContext);
     BigInteger recCnt = (BigInteger) query.getSingleResult();
 
-    if (userMap.containsKey(user.getId())) {
+    if (userMap != null && userMap.containsKey(user.getId())) {
       recCnt = recCnt.add(userMap.get(user.getId()));
+    }
+    if (userMap == null) {
+      userMap = new HashMap<>();
     }
     userMap.put(user.getId(), recCnt);
   }
@@ -428,70 +459,80 @@ public class BpmManagerDashboardUserServiceImpl implements BpmManagerDashboardUs
 
     int userCnt = 1;
     Map<Long, Integer> userMap = new HashMap<>();
-    for (WkfProcess process : processes) {
-      List<WkfTaskConfig> taskConfigs = getUserTaskConfigs(process);
 
-      for (WkfTaskConfig config : taskConfigs) {
-        List<String> processInstanceIds =
-            wkfInstanceService.findProcessInstanceByNode(
-                config.getName(), config.getProcessId(), config.getType(), false);
+    if (CollectionUtils.isNotEmpty(processes)) {
+      for (WkfProcess process : processes) {
+        List<WkfTaskConfig> taskConfigs = getUserTaskConfigs(process);
 
-        boolean isMetaModel = StringUtils.isNotEmpty(config.getModelName());
-        String modelName = isMetaModel ? config.getModelName() : config.getJsonModelName();
-        String userPath = config.getUserPath();
+        if (CollectionUtils.isNotEmpty(taskConfigs)) {
+          for (WkfTaskConfig config : taskConfigs) {
+            List<String> processInstanceIds =
+                wkfInstanceService.findProcessInstanceByNode(
+                    config.getName(), config.getProcessId(), config.getType(), false);
 
-        if (!isMetaModel) {
-          List<MetaJsonRecord> jsonModelRecords =
-              wkfDashboardCommonService.getMetaJsonRecords(
-                  config,
-                  processInstanceIds,
-                  modelName,
-                  null,
-                  WkfDashboardCommonService.TASK_TODAY,
-                  null,
-                  LocalDate.now());
+            boolean isMetaModel = StringUtils.isNotEmpty(config.getModelName());
+            String modelName = isMetaModel ? config.getModelName() : config.getJsonModelName();
+            String userPath = config.getUserPath();
 
-          for (MetaJsonRecord record : jsonModelRecords) {
-            FullContext wkfContext = new FullContext(record);
-            User user = wkfUserActionService.getUser(userPath, wkfContext);
+            if (!isMetaModel) {
+              List<MetaJsonRecord> jsonModelRecords =
+                  wkfDashboardCommonService.getMetaJsonRecords(
+                      config,
+                      processInstanceIds,
+                      modelName,
+                      null,
+                      WkfDashboardCommonService.TASK_TODAY,
+                      null,
+                      LocalDate.now());
 
-            if (userMap.containsKey(user.getId())) {
-              userCnt = userMap.get(user.getId()) + 1;
+              if (CollectionUtils.isNotEmpty(jsonModelRecords)) {
+                for (MetaJsonRecord record : jsonModelRecords) {
+                  FullContext wkfContext = new FullContext(record);
+                  User user = wkfUserActionService.getUser(userPath, wkfContext);
+
+                  if (userMap.containsKey(user.getId())) {
+                    userCnt = userMap.get(user.getId()) + 1;
+                  }
+                  userMap.put(user.getId(), userCnt);
+                }
+              }
+            } else {
+              List<Model> modelRecords =
+                  wkfDashboardCommonService.getMetaModelRecords(
+                      config,
+                      processInstanceIds,
+                      modelName,
+                      null,
+                      WkfDashboardCommonService.TASK_TODAY,
+                      null,
+                      LocalDate.now());
+
+              if (CollectionUtils.isNotEmpty(modelRecords)) {
+                for (Model record : modelRecords) {
+                  FullContext wkfContext = new FullContext(record);
+                  User user = wkfUserActionService.getUser(userPath, wkfContext);
+
+                  if (userMap.containsKey(user.getId())) {
+                    userCnt = userMap.get(user.getId()) + 1;
+                  }
+                  userMap.put(user.getId(), userCnt);
+                }
+              }
             }
-            userMap.put(user.getId(), userCnt);
-          }
-        } else {
-          List<Model> modelRecords =
-              wkfDashboardCommonService.getMetaModelRecords(
-                  config,
-                  processInstanceIds,
-                  modelName,
-                  null,
-                  WkfDashboardCommonService.TASK_TODAY,
-                  null,
-                  LocalDate.now());
-
-          for (Model record : modelRecords) {
-            FullContext wkfContext = new FullContext(record);
-            User user = wkfUserActionService.getUser(userPath, wkfContext);
-
-            if (userMap.containsKey(user.getId())) {
-              userCnt = userMap.get(user.getId()) + 1;
-            }
-            userMap.put(user.getId(), userCnt);
           }
         }
       }
     }
-
-    for (Entry<Long, Integer> entry : userMap.entrySet()) {
-      if (entry.getValue() == 0) {
-        continue;
+    if (userMap != null) {
+      for (Entry<Long, Integer> entry : userMap.entrySet()) {
+        if (entry.getValue() == 0) {
+          continue;
+        }
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("user", userRepo.find(entry.getKey()).getName());
+        dataMap.put("total", entry.getValue());
+        dataMapList.add(dataMap);
       }
-      Map<String, Object> dataMap = new HashMap<>();
-      dataMap.put("user", userRepo.find(entry.getKey()).getName());
-      dataMap.put("total", entry.getValue());
-      dataMapList.add(dataMap);
     }
     return dataMapList;
   }

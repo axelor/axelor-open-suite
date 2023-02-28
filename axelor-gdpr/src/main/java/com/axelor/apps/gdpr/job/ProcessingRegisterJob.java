@@ -25,6 +25,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -46,12 +47,14 @@ public class ProcessingRegisterJob implements Job {
             .findByStatus(GDPRProcessingRegisterRepository.PROCESSING_REGISTER_STATUS_ACTIVE)
             .fetch();
 
-    for (GDPRProcessingRegister processingRegister : activeProcessingRegister) {
-      processingRegister = processingRegisterRepository.find(processingRegister.getId());
-      try {
-        processingRegisterService.launchProcessingRegister(processingRegister);
-      } catch (ClassNotFoundException | AxelorException | IOException e) {
-        TraceBackService.trace(e);
+    if (CollectionUtils.isNotEmpty(activeProcessingRegister)) {
+      for (GDPRProcessingRegister processingRegister : activeProcessingRegister) {
+        processingRegister = processingRegisterRepository.find(processingRegister.getId());
+        try {
+          processingRegisterService.launchProcessingRegister(processingRegister);
+        } catch (ClassNotFoundException | AxelorException | IOException e) {
+          TraceBackService.trace(e);
+        }
       }
     }
   }

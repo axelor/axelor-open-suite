@@ -55,6 +55,7 @@ import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ImportSupplyChain {
 
@@ -90,8 +91,10 @@ public class ImportSupplyChain {
   public Object importSupplyChain(Object bean, Map values) {
 
     List<SaleConfig> configs = saleConfigRepo.all().fetch();
-    for (SaleConfig config : configs) {
-      configService.updateCustomerCredit(config);
+    if (CollectionUtils.isNotEmpty(configs)) {
+      for (SaleConfig config : configs) {
+        configService.updateCustomerCredit(config);
+      }
     }
 
     return bean;
@@ -106,11 +109,13 @@ public class ImportSupplyChain {
       PurchaseOrder purchaseOrder = (PurchaseOrder) bean;
       int status = purchaseOrder.getStatusSelect();
       purchaseOrder = (PurchaseOrder) importPurchaseOrder.importPurchaseOrder(bean, values);
-      for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLineList()) {
-        Product product = line.getProduct();
-        if (product.getMassUnit() == null) {
-          product.setMassUnit(
-              stockConfigService.getStockConfig(purchaseOrder.getCompany()).getCustomsMassUnit());
+      if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+        for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLineList()) {
+          Product product = line.getProduct();
+          if (product.getMassUnit() == null) {
+            product.setMassUnit(
+                stockConfigService.getStockConfig(purchaseOrder.getCompany()).getCustomsMassUnit());
+          }
         }
       }
 
@@ -122,11 +127,13 @@ public class ImportSupplyChain {
       if (status == PurchaseOrderRepository.STATUS_FINISHED) {
         List<Long> idList =
             purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
-        for (Long id : idList) {
-          StockMove stockMove = stockMoveRepo.find(id);
-          stockMoveService.copyQtyToRealQty(stockMove);
-          stockMoveService.realize(stockMove);
-          stockMove.setRealDate(purchaseOrder.getEstimatedReceiptDate());
+        if (CollectionUtils.isNotEmpty(idList)) {
+          for (Long id : idList) {
+            StockMove stockMove = stockMoveRepo.find(id);
+            stockMoveService.copyQtyToRealQty(stockMove);
+            stockMoveService.realize(stockMove);
+            stockMove.setRealDate(purchaseOrder.getEstimatedReceiptDate());
+          }
         }
         purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
@@ -170,11 +177,13 @@ public class ImportSupplyChain {
 
       SaleOrder saleOrder = (SaleOrder) importSaleOrder.importSaleOrder(bean, values);
 
-      for (SaleOrderLine line : saleOrder.getSaleOrderLineList()) {
-        Product product = line.getProduct();
-        if (product.getMassUnit() == null) {
-          product.setMassUnit(
-              stockConfigService.getStockConfig(saleOrder.getCompany()).getCustomsMassUnit());
+      if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+        for (SaleOrderLine line : saleOrder.getSaleOrderLineList()) {
+          Product product = line.getProduct();
+          if (product.getMassUnit() == null) {
+            product.setMassUnit(
+                stockConfigService.getStockConfig(saleOrder.getCompany()).getCustomsMassUnit());
+          }
         }
       }
       if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
@@ -197,14 +206,17 @@ public class ImportSupplyChain {
         invoiceService.validateAndVentilate(invoice);
 
         List<Long> idList = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
-        for (Long id : idList) {
-          StockMove stockMove = stockMoveRepo.find(id);
-          if (stockMove.getStockMoveLineList() != null
-              && !stockMove.getStockMoveLineList().isEmpty()) {
-            stockMoveService.copyQtyToRealQty(stockMove);
-            stockMoveService.realize(stockMove);
-            if (saleOrder.getConfirmationDateTime() != null) {
-              stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
+
+        if (CollectionUtils.isNotEmpty(idList)) {
+          for (Long id : idList) {
+            StockMove stockMove = stockMoveRepo.find(id);
+            if (stockMove.getStockMoveLineList() != null
+                && !stockMove.getStockMoveLineList().isEmpty()) {
+              stockMoveService.copyQtyToRealQty(stockMove);
+              stockMoveService.validate(stockMove);
+              if (saleOrder.getConfirmationDateTime() != null) {
+                stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
+              }
             }
           }
         }
@@ -222,8 +234,10 @@ public class ImportSupplyChain {
 
     Inventory inventory = (Inventory) bean;
 
-    for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
-      inventoryLineService.compute(inventoryLine, inventoryLine.getInventory());
+    if (CollectionUtils.isNotEmpty(inventory.getInventoryLineList())) {
+      for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
+        inventoryLineService.compute(inventoryLine, inventoryLine.getInventory());
+      }
     }
 
     return inventory;

@@ -19,6 +19,7 @@ package com.axelor.apps.hr.web.leave.management;
 
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -32,6 +33,7 @@ public class LeaveManagementController {
     leaveLine = Beans.get(LeaveManagementService.class).computeQuantityAvailable(leaveLine);
     response.setValue("quantity", leaveLine.getQuantity());
     response.setValue("totalQuantity", leaveLine.getTotalQuantity());
-    response.setValue("leaveManagementList", leaveLine.getLeaveManagementList());
+    response.setValue(
+        "leaveManagementList", ListUtils.emptyIfNull(leaveLine.getLeaveManagementList()));
   }
 }

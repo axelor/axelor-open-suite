@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ImportPartnerAccount {
 
@@ -34,31 +35,32 @@ public class ImportPartnerAccount {
     assert bean instanceof Partner;
     try {
       Partner partner = (Partner) bean;
-      for (Company company : partner.getCompanySet()) {
-        AccountingSituation accountingSituation = new AccountingSituation();
-        accountingSituation.setPartner(partner);
-        accountingSituation.setCompany(company);
-        accountingSituation.setVatSystemSelect(AccountingSituationRepository.VAT_COMMON_SYSTEM);
-        accountingSituation.setCustomerAccount(
-            accountRepo
-                .all()
-                .filter(
-                    "self.code = ?1 AND self.company = ?2",
-                    values.get("customerAccount_code").toString(),
-                    company)
-                .fetchOne());
-        accountingSituation.setSupplierAccount(
-            accountRepo
-                .all()
-                .filter(
-                    "self.code = ?1 AND self.company = ?2",
-                    values.get("supplierAccount_code").toString(),
-                    company)
-                .fetchOne());
-        if (partner.getAccountingSituationList() == null) {
-          partner.setAccountingSituationList(new ArrayList<AccountingSituation>());
+      if (CollectionUtils.isNotEmpty(partner.getCompanySet())) {
+        for (Company company : partner.getCompanySet()) {
+          AccountingSituation accountingSituation = new AccountingSituation();
+          accountingSituation.setPartner(partner);
+          accountingSituation.setCompany(company);
+          accountingSituation.setVatSystemSelect(AccountingSituationRepository.VAT_COMMON_SYSTEM);
+          accountingSituation.setCustomerAccount(
+              accountRepo
+                  .all()
+                  .filter(
+                      "self.code = ?1 AND self.company = ?2",
+                      values != null ? values.get("customerAccount_code").toString() : "",
+                      company)
+                  .fetchOne());
+          accountingSituation.setSupplierAccount(
+              accountRepo
+                  .all()
+                  .filter(
+                      "self.code = ?1 AND self.company = ?2",
+                      values != null ? values.get("supplierAccount_code").toString() : "",
+                      company)
+                  .fetchOne());
+          if (partner.getAccountingSituationList() == null) {
+            partner.setAccountingSituationList(new ArrayList<AccountingSituation>());
+          }
         }
-        partner.getAccountingSituationList().add(accountingSituation);
       }
       return partner;
     } catch (Exception e) {

@@ -27,6 +27,7 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import java.util.HashMap;
 import java.util.Map;
 
 public class StockLocationStockRepository extends StockLocationRepository {
@@ -78,13 +79,16 @@ public class StockLocationStockRepository extends StockLocationRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long stocklocationId = (Long) json.get("id");
+    Long stocklocationId = json != null ? (Long) json.get("id") : 0L;
     StockLocation stockLocation = find(stocklocationId);
 
     if (!stockLocation.getIsValued()) {
       return super.populate(json, context);
     }
 
+    if (json == null) {
+      json = new HashMap<>();
+    }
     json.put(
         "stockLocationValue",
         Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));

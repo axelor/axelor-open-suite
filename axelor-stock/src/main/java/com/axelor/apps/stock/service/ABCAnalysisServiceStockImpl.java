@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -39,6 +40,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
 
@@ -84,10 +86,11 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
             .all()
             .filter(
                 "self.stockLocation IN :stockLocationList AND self.product.id = :productId AND self.currentQty != 0 ")
-            .bind("stockLocationList", stockLocationList)
+            .bind("stockLocationList", ListUtils.emptyIfNull(stockLocationList))
             .bind("productId", product.getId());
 
-    while (!(stockLocationLineList = stockLocationLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (CollectionUtils.isNotEmpty(
+        (stockLocationLineList = stockLocationLineQuery.fetch(FETCH_LIMIT, offset)))) {
       offset += stockLocationLineList.size();
       abcAnalysis = abcAnalysisRepository.find(abcAnalysis.getId());
 

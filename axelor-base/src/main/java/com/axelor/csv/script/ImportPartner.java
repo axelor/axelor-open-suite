@@ -20,6 +20,7 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -74,7 +75,7 @@ public class ImportPartner {
 
     List<? extends Partner> partnerList =
         partnerRepo.all().filter("self.mainPartner.id = ?1", partner.getId()).fetch();
-    for (Partner pt : partnerList) partner.getContactPartnerSet().add(pt);
+    for (Partner pt : ListUtils.emptyIfNull(partnerList)) partner.getContactPartnerSet().add(pt);
 
     return partner;
   }

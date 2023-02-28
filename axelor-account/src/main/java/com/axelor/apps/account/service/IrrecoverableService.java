@@ -57,6 +57,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -78,6 +79,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.persistence.EntityTransaction;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,11 +168,13 @@ public class IrrecoverableService {
     }
 
     irrecoverable.setInvoiceSet(new HashSet<Invoice>());
-    irrecoverable.getInvoiceSet().addAll(this.getInvoiceList(company));
-    irrecoverable.getInvoiceSet().addAll(this.getRejectInvoiceList(company));
+    irrecoverable.getInvoiceSet().addAll(ListUtils.emptyIfNull(this.getInvoiceList(company)));
+    irrecoverable.getInvoiceSet().addAll(ListUtils.emptyIfNull(this.getRejectInvoiceList(company)));
 
     irrecoverable.setPaymentScheduleLineSet(new HashSet<PaymentScheduleLine>());
-    irrecoverable.getPaymentScheduleLineSet().addAll(this.getPaymentScheduleLineList(company));
+    irrecoverable
+        .getPaymentScheduleLineSet()
+        .addAll(ListUtils.emptyIfNull(this.getPaymentScheduleLineList(company)));
 
     irrecoverableRepo.save(irrecoverable);
   }
@@ -183,10 +187,11 @@ public class IrrecoverableService {
    */
   public List<Partner> getPayerPartnerList(Set<Invoice> invoiceList) {
     List<Partner> partnerList = new ArrayList<Partner>();
-
-    for (Invoice invoice : invoiceList) {
-      if (!partnerList.contains(invoice.getPartner())) {
-        partnerList.add(invoice.getPartner());
+    if (CollectionUtils.isNotEmpty(invoiceList)) {
+      for (Invoice invoice : invoiceList) {
+        if (!partnerList.contains(invoice.getPartner())) {
+          partnerList.add(invoice.getPartner());
+        }
       }
     }
     return partnerList;
@@ -259,13 +264,16 @@ public class IrrecoverableService {
   public List<Invoice> getInvoiceList(Partner partner, Set<Invoice> allInvoiceList) {
     List<Invoice> invoiceList = new ArrayList<Invoice>();
 
-    for (Invoice invoice : allInvoiceList) {
-      if (invoice.getPartner().equals(partner)) {
-        invoiceList.add(invoice);
+    if (CollectionUtils.isNotEmpty(allInvoiceList)) {
+      for (Invoice invoice : allInvoiceList) {
+        if (invoice.getPartner().equals(partner)) {
+          invoiceList.add(invoice);
+        }
       }
     }
 
-    log.debug("Number of invoices to be irrecoverable for the partner : {}", invoiceList.size());
+    log.debug(
+        "Number of invoices to be irrecoverable for the partner : {}", ListUtils.size(invoiceList));
 
     return invoiceList;
   }
@@ -280,17 +288,19 @@ public class IrrecoverableService {
    */
   public List<PaymentScheduleLine> getPaymentScheduleLineList(
       Partner payerPartner, Set<PaymentScheduleLine> allPaymentScheduleLineList) {
-    List<PaymentScheduleLine> paymentScheduleLineList = new ArrayList<PaymentScheduleLine>();
+    List<PaymentScheduleLine> paymentScheduleLineList = new ArrayList<>();
 
-    for (PaymentScheduleLine paymentScheduleLine : allPaymentScheduleLineList) {
-      if (paymentScheduleLine.getPaymentSchedule().getPartner().equals(payerPartner)) {
-        paymentScheduleLineList.add(paymentScheduleLine);
+    if (CollectionUtils.isNotEmpty(allPaymentScheduleLineList)) {
+      for (PaymentScheduleLine paymentScheduleLine : allPaymentScheduleLineList) {
+        if (paymentScheduleLine.getPaymentSchedule().getPartner().equals(payerPartner)) {
+          paymentScheduleLineList.add(paymentScheduleLine);
+        }
       }
     }
 
     log.debug(
         "Number of payment schedules to be changed to irrecoverable for the partner: {}",
-        paymentScheduleLineList.size());
+        ListUtils.size(paymentScheduleLineList));
 
     return paymentScheduleLineList;
   }
@@ -309,12 +319,16 @@ public class IrrecoverableService {
 
     irrecoverable.setMoveSet(new HashSet<Move>());
 
+    if (invoiceSet == null) {
+      return;
+    }
+
     List<Partner> payerPartnerList = this.getPayerPartnerList(invoiceSet);
 
     EntityTransaction transaction = JPA.em().getTransaction();
 
     int i = 0;
-    if (payerPartnerList != null && payerPartnerList.size() != 0) {
+    if (CollectionUtils.isNotEmpty(payerPartnerList)) {
       for (Partner payerPartner : payerPartnerList) {
 
         if (!transaction.isActive()) {
@@ -370,11 +384,13 @@ public class IrrecoverableService {
     IrrecoverableCustomerLine icl = new IrrecoverableCustomerLine();
     icl.setIrrecoverable(irrecoverable);
     irrecoverableCustomerLineRepo.save(icl);
-    irrecoverable.getIrrecoverableCustomerLineList().add(icl);
+    irrecoverable.addIrrecoverableCustomerLineListItem(icl);
     icl.setPartner(payerPartner);
     icl.setIrrecoverablePaymentScheduleLineLineList(
-        this.createIrrecoverablePaymentScheduleLineLineList(icl, paymentScheduleLineList));
-    icl.setIrrecoverableInvoiceLineList(this.createIrrecoverableInvoiceLineList(icl, invoiceList));
+        ListUtils.emptyIfNull(
+            this.createIrrecoverablePaymentScheduleLineLineList(icl, paymentScheduleLineList)));
+    icl.setIrrecoverableInvoiceLineList(
+        ListUtils.emptyIfNull(this.createIrrecoverableInvoiceLineList(icl, invoiceList)));
 
     log.debug("Customer line : {}", icl);
 
@@ -450,7 +466,7 @@ public class IrrecoverableService {
     }
     irrecoverable = this.retrieveAndInit(irrecoverable);
     if (irrecoverable.getPaymentScheduleLineSet() != null
-        && irrecoverable.getPaymentScheduleLineSet().size() != 0) {
+        && !irrecoverable.getPaymentScheduleLineSet().isEmpty()) {
       for (PaymentScheduleLine paymentScheduleLine : irrecoverable.getPaymentScheduleLineSet()) {
 
         try {
@@ -514,7 +530,7 @@ public class IrrecoverableService {
           I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     moveValidateService.accounting(move);
-    irrecoverable.getMoveSet().add(move);
+    irrecoverable.addMoveSetItem(move);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -550,7 +566,7 @@ public class IrrecoverableService {
       }
     }
 
-    irrecoverable.getMoveSet().add(move);
+    irrecoverable.addMoveSetItem(move);
 
     customerMoveLine.setIrrecoverableStatusSelect(
         MoveLineRepository.IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE);
@@ -579,9 +595,11 @@ public class IrrecoverableService {
       IrrecoverableCustomerLine icl, List<Invoice> invoiceList) throws AxelorException {
     int seq = 1;
     List<IrrecoverableInvoiceLine> iilList = new ArrayList<IrrecoverableInvoiceLine>();
-    for (Invoice invoice : invoiceList) {
-      iilList.add(this.createIrrecoverableInvoiceLine(icl, invoice, seq));
-      seq++;
+    if (CollectionUtils.isNotEmpty(invoiceList)) {
+      for (Invoice invoice : invoiceList) {
+        iilList.add(this.createIrrecoverableInvoiceLine(icl, invoice, seq));
+        seq++;
+      }
     }
     return iilList;
   }
@@ -600,9 +618,12 @@ public class IrrecoverableService {
     int seq = 1;
     List<IrrecoverablePaymentScheduleLineLine> ipsllList =
         new ArrayList<IrrecoverablePaymentScheduleLineLine>();
-    for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
-      ipsllList.add(this.createIrrecoverablePaymentScheduleLineLine(icl, paymentScheduleLine, seq));
-      seq++;
+    if (CollectionUtils.isNotEmpty(paymentScheduleLineList)) {
+      for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
+        ipsllList.add(
+            this.createIrrecoverablePaymentScheduleLineLine(icl, paymentScheduleLine, seq));
+        seq++;
+      }
     }
     return ipsllList;
   }
@@ -626,7 +647,7 @@ public class IrrecoverableService {
     BigDecimal prorataRate = this.getProrataRate(invoice, invoice.getRejectMoveLine() != null);
 
     iil.setIrrecoverableReportLineList(
-        this.createIrrecoverableReportLineList(iil, invoice, prorataRate));
+        ListUtils.emptyIfNull(this.createIrrecoverableReportLineList(iil, invoice, prorataRate)));
 
     log.debug("Invoice line : {}", iil);
 
@@ -656,7 +677,8 @@ public class IrrecoverableService {
             accountConfigService.getAccountConfig(company));
 
     ipsll.setIrrecoverableReportLineList(
-        this.createIrrecoverableReportLineList(ipsll, paymentScheduleLine, tax));
+        ListUtils.emptyIfNull(
+            this.createIrrecoverableReportLineList(ipsll, paymentScheduleLine, tax)));
 
     log.debug("Irrecoverable payment schedule line : {}", ipsll);
 
@@ -671,11 +693,13 @@ public class IrrecoverableService {
    * @return is is all invoice passed in irrecoverable
    */
   public boolean isAllInvoicePassedInIrrecoverable(PaymentSchedule paymentSchedule) {
-    for (Invoice invoiceScheduled : paymentSchedule.getInvoiceSet()) {
-      if (invoiceScheduled
-          .getIrrecoverableStatusSelect()
-          .equals(InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE)) {
-        return false;
+    if (paymentSchedule != null && CollectionUtils.isNotEmpty(paymentSchedule.getInvoiceSet())) {
+      for (Invoice invoiceScheduled : paymentSchedule.getInvoiceSet()) {
+        if (invoiceScheduled
+            .getIrrecoverableStatusSelect()
+            .equals(InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE)) {
+          return false;
+        }
       }
     }
     return true;
@@ -692,32 +716,35 @@ public class IrrecoverableService {
   public List<IrrecoverableReportLine> createIrrecoverableReportLineList(
       IrrecoverableInvoiceLine iil, Invoice invoice, BigDecimal prorataRate) {
     int seq = 1;
-    List<IrrecoverableReportLine> irlList = new ArrayList<IrrecoverableReportLine>();
+    List<IrrecoverableReportLine> irlList = new ArrayList<>();
 
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-
-      irlList.add(
-          this.createIrrecoverableReportLine(
-              iil,
-              invoiceLine.getName(),
-              invoiceLine
-                  .getExTaxTotal()
-                  .multiply(prorataRate)
-                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
-              seq));
-      seq++;
+    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        irlList.add(
+            this.createIrrecoverableReportLine(
+                iil,
+                invoiceLine.getName(),
+                invoiceLine
+                    .getExTaxTotal()
+                    .multiply(prorataRate)
+                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                seq));
+        seq++;
+      }
     }
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
-      irlList.add(
-          this.createIrrecoverableReportLine(
-              iil,
-              invoiceLineTax.getTaxLine().getTax().getName(),
-              invoiceLineTax
-                  .getTaxTotal()
-                  .multiply(prorataRate)
-                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
-              seq));
-      seq++;
+    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceLineTaxList())) {
+      for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+        irlList.add(
+            this.createIrrecoverableReportLine(
+                iil,
+                invoiceLineTax.getTaxLine().getTax().getName(),
+                invoiceLineTax
+                    .getTaxTotal()
+                    .multiply(prorataRate)
+                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+                seq));
+        seq++;
+      }
     }
     // Afin de ne pas modifier les valeurs des lignes de factures, on les recharges depuis la base
     invoiceRepo.refresh(invoice);
@@ -898,83 +925,88 @@ public class IrrecoverableService {
     }
 
     // Debits MoveLines Tva
-    for (MoveLine invoiceMoveLine : invoiceMove.getMoveLineList()) {
+    if (invoiceMove != null && CollectionUtils.isNotEmpty(invoiceMove.getMoveLineList())) {
+      for (MoveLine invoiceMoveLine : invoiceMove.getMoveLineList()) {
 
-      if (invoiceMoveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-        amount = invoiceMoveLine.getAmountRemaining();
+        if (invoiceMoveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+          amount = invoiceMoveLine.getAmountRemaining();
 
-        // Credit MoveLine Customer account (411, 416, ...)
-        MoveLine creditMoveLine =
-            moveLineCreateService.createMoveLine(
-                move,
-                payerPartner,
-                invoiceMoveLine.getAccount(),
-                amount,
-                false,
-                appAccountService.getTodayDate(company),
-                seq,
-                originStr,
-                invoice.getInvoiceId());
-        move.getMoveLineList().add(creditMoveLine);
+          // Credit MoveLine Customer account (411, 416, ...)
+          MoveLine creditMoveLine =
+              moveLineCreateService.createMoveLine(
+                  move,
+                  payerPartner,
+                  invoiceMoveLine.getAccount(),
+                  amount,
+                  false,
+                  appAccountService.getTodayDate(company),
+                  seq,
+                  originStr,
+                  invoice.getInvoiceId());
+          move.addMoveLineListItem(creditMoveLine);
 
-        Reconcile reconcile =
-            reconcileService.createReconcile(invoiceMoveLine, creditMoveLine, amount, false);
-        if (reconcile != null) {
-          reconcileList.add(reconcile);
-        }
-      } else {
-        amount =
-            invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
-        if (AccountTypeRepository.TYPE_TAX.equals(
-            invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-          if (invoiceMoveLine.getAccount().getVatSystemSelect() == null
-              || invoiceMoveLine.getAccount().getVatSystemSelect() == 0) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
-                invoiceMoveLine.getAccount().getCode());
+          Reconcile reconcile =
+              reconcileService.createReconcile(invoiceMoveLine, creditMoveLine, amount, false);
+          if (reconcile != null) {
+            if (reconcileList == null) {
+              reconcileList = new ArrayList<>();
+            }
+            reconcileList.add(reconcile);
           }
-          debitMoveLine =
-              moveLineCreateService.createMoveLine(
-                  move,
-                  payerPartner,
-                  taxAccountService.getAccount(
-                      invoiceMoveLine.getTaxLine().getTax(),
-                      company,
-                      move.getJournal(),
-                      invoiceMoveLine.getAccount().getVatSystemSelect(),
-                      false,
-                      move.getFunctionalOriginSelect()),
-                  amount,
-                  true,
-                  invoiceMoveLine.getTaxLine(),
-                  appAccountService.getTodayDate(company),
-                  seq,
-                  originStr,
-                  invoice.getInvoiceId());
-
-          debitMoveLine.setVatSystemSelect(invoiceMoveLine.getVatSystemSelect());
-
         } else {
-          // Debit MoveLine 654 (irrecoverable account)
-          debitMoveLine =
-              moveLineCreateService.createMoveLine(
-                  move,
-                  payerPartner,
-                  accountConfig.getIrrecoverableAccount(),
-                  amount,
-                  true,
-                  invoiceMoveLine.getTaxLine(),
-                  appAccountService.getTodayDate(company),
-                  seq,
-                  originStr,
-                  invoice.getInvoiceId());
-        }
-        move.getMoveLineList().add(debitMoveLine);
-        seq++;
+          amount =
+              invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
+          if (AccountTypeRepository.TYPE_TAX.equals(
+              invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+            if (invoiceMoveLine.getAccount().getVatSystemSelect() == null
+                || invoiceMoveLine.getAccount().getVatSystemSelect() == 0) {
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                  I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+                  invoiceMoveLine.getAccount().getCode());
+            }
+            debitMoveLine =
+                moveLineCreateService.createMoveLine(
+                    move,
+                    payerPartner,
+                    taxAccountService.getAccount(
+                        invoiceMoveLine.getTaxLine().getTax(),
+                        company,
+                        move.getJournal(),
+                        invoiceMoveLine.getAccount().getVatSystemSelect(),
+                        false,
+                        move.getFunctionalOriginSelect()),
+                    amount,
+                    true,
+                    invoiceMoveLine.getTaxLine(),
+                    appAccountService.getTodayDate(company),
+                    seq,
+                    originStr,
+                    invoice.getInvoiceId());
 
-        debitAmount = debitAmount.add(amount);
-        lastDebitMoveLine = debitMoveLine;
+            debitMoveLine.setVatSystemSelect(invoiceMoveLine.getVatSystemSelect());
+
+          } else {
+            // Debit MoveLine 654 (irrecoverable account)
+            debitMoveLine =
+                moveLineCreateService.createMoveLine(
+                    move,
+                    payerPartner,
+                    accountConfig.getIrrecoverableAccount(),
+                    amount,
+                    true,
+                    invoiceMoveLine.getTaxLine(),
+                    appAccountService.getTodayDate(company),
+                    seq,
+                    originStr,
+                    invoice.getInvoiceId());
+          }
+          move.addMoveLineListItem(debitMoveLine);
+          seq++;
+
+          debitAmount = debitAmount.add(amount);
+          lastDebitMoveLine = debitMoveLine;
+        }
       }
     }
 
@@ -1043,7 +1075,7 @@ public class IrrecoverableService {
             seq,
             originStr,
             moveLine.getDescription());
-    move.getMoveLineList().add(creditMoveLine);
+    move.addMoveLineListItem(creditMoveLine);
 
     Reconcile reconcile = reconcileService.createReconcile(moveLine, creditMoveLine, amount, false);
     if (reconcile != null) {
@@ -1071,7 +1103,7 @@ public class IrrecoverableService {
             2,
             originStr,
             moveLine.getDescription());
-    move.getMoveLineList().add(creditMoveLine1);
+    move.addMoveLineListItem(creditMoveLine1);
 
     if (moveLine.getAccount().getVatSystemSelect() == null
         || moveLine.getAccount().getVatSystemSelect() == 0) {
@@ -1102,7 +1134,7 @@ public class IrrecoverableService {
             3,
             moveLine.getMove().getOrigin() + ":" + irrecoverableName,
             moveLine.getDescription());
-    move.getMoveLineList().add(creditMoveLine2);
+    move.addMoveLineListItem(creditMoveLine2);
 
     return move;
   }
@@ -1341,11 +1373,16 @@ public class IrrecoverableService {
 
     List<MoveLine> paymentScheduleLineRejectMoveLineList = new ArrayList<MoveLine>();
 
-    for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
-      if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO)
-              > 0) {
-        paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
+    if (CollectionUtils.isNotEmpty(paymentSchedule.getPaymentScheduleLineList())) {
+      for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
+        if (paymentScheduleLine.getRejectMoveLine() != null
+            && paymentScheduleLine
+                    .getRejectMoveLine()
+                    .getAmountRemaining()
+                    .compareTo(BigDecimal.ZERO)
+                > 0) {
+          paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
+        }
       }
     }
 
@@ -1353,9 +1390,11 @@ public class IrrecoverableService {
       this.passInIrrecoverable(moveLine, managementObject, true);
     }
 
-    for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
-      if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0) {
-        this.passInIrrecoverable(invoice, managementObject);
+    if (CollectionUtils.isNotEmpty(paymentSchedule.getInvoiceSet())) {
+      for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
+        if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          this.passInIrrecoverable(invoice, managementObject);
+        }
       }
     }
 
@@ -1380,20 +1419,29 @@ public class IrrecoverableService {
 
     List<MoveLine> paymentScheduleLineRejectMoveLineList = new ArrayList<MoveLine>();
 
-    for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
-      if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO)
-              > 0) {
-        paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
+    if (CollectionUtils.isNotEmpty(paymentSchedule.getPaymentScheduleLineList())) {
+      for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
+        if (paymentScheduleLine.getRejectMoveLine() != null
+            && paymentScheduleLine
+                    .getRejectMoveLine()
+                    .getAmountRemaining()
+                    .compareTo(BigDecimal.ZERO)
+                > 0) {
+          paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
+        }
       }
     }
 
-    for (MoveLine moveLine : paymentScheduleLineRejectMoveLineList) {
-      this.notPassInIrrecoverable(moveLine, false);
+    if (CollectionUtils.isNotEmpty(paymentScheduleLineRejectMoveLineList)) {
+      for (MoveLine moveLine : paymentScheduleLineRejectMoveLineList) {
+        this.notPassInIrrecoverable(moveLine, false);
+      }
     }
 
-    for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
-      this.notPassInIrrecoverable(invoice);
+    if (CollectionUtils.isNotEmpty(paymentSchedule.getInvoiceSet())) {
+      for (Invoice invoice : paymentSchedule.getInvoiceSet()) {
+        this.notPassInIrrecoverable(invoice);
+      }
     }
     paymentScheduleRepo.save(paymentSchedule);
   }

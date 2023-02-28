@@ -22,6 +22,7 @@ import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -46,12 +47,18 @@ public class ProjectDashboardBusinessSupportServiceImpl extends ProjectDashboard
     List<Map<String, Object>> newsList = new ArrayList<>();
     List<ProjectAnnouncement> announcementList = new ArrayList<>();
 
-    projectRepo.all().filter("self.id IN ?1", projectService.getContextProjectIds()).fetch()
+    ListUtils.emptyIfNull(
+            projectRepo
+                .all()
+                .filter("self.id IN ?1", projectService.getContextProjectIds())
+                .fetch())
         .stream()
-        .forEach(subProject -> announcementList.addAll(subProject.getAnnouncementList()));
+        .forEach(
+            subProject ->
+                announcementList.addAll(ListUtils.emptyIfNull(subProject.getAnnouncementList())));
 
     for (ProjectAnnouncement announcement :
-        announcementList.stream()
+        ListUtils.emptyIfNull(announcementList).stream()
             .sorted(Comparator.comparing(ProjectAnnouncement::getDate).reversed())
             .limit(6)
             .collect(Collectors.toList())) {

@@ -47,6 +47,7 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -83,8 +84,9 @@ public class InvoiceLineController {
 
     response.setValue(
         "analyticMoveLineList",
-        Beans.get(InvoiceLineAnalyticService.class)
-            .getAndComputeAnalyticDistribution(invoiceLine, invoice));
+        ListUtils.emptyIfNull(
+            Beans.get(InvoiceLineAnalyticService.class)
+                .getAndComputeAnalyticDistribution(invoiceLine, invoice)));
     response.setValue(
         "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
   }
@@ -94,8 +96,9 @@ public class InvoiceLineController {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
     response.setValue(
         "analyticMoveLineList",
-        Beans.get(InvoiceLineAnalyticService.class)
-            .createAnalyticDistributionWithTemplate(invoiceLine));
+        ListUtils.emptyIfNull(
+            Beans.get(InvoiceLineAnalyticService.class)
+                .createAnalyticDistributionWithTemplate(invoiceLine)));
   }
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
@@ -106,7 +109,9 @@ public class InvoiceLineController {
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       response.setValue(
           "analyticMoveLineList",
-          Beans.get(InvoiceLineAnalyticService.class).computeAnalyticDistribution(invoiceLine));
+          ListUtils.emptyIfNull(
+              Beans.get(InvoiceLineAnalyticService.class)
+                  .computeAnalyticDistribution(invoiceLine)));
     }
   }
 
@@ -154,7 +159,8 @@ public class InvoiceLineController {
         productInformation =
             Beans.get(InvoiceLineService.class).fillProductInformation(invoice, invoiceLine);
 
-        String errorMsg = (String) productInformation.get("error");
+        String errorMsg =
+            productInformation != null ? (String) productInformation.get("error") : "";
 
         if (!Strings.isNullOrEmpty(errorMsg)) {
           response.setFlash(errorMsg);
@@ -200,11 +206,12 @@ public class InvoiceLineController {
                               invoiceLine,
                               invoiceLine.getTaxLine(),
                               InvoiceToolService.isPurchase(invoice)));
-      discounts.remove("price");
-      for (Entry<String, Object> entry : discounts.entrySet()) {
-        response.setValue(entry.getKey(), entry.getValue());
+      if (discounts != null) {
+        discounts.remove("price");
+        for (Entry<String, Object> entry : discounts.entrySet()) {
+          response.setValue(entry.getKey(), entry.getValue());
+        }
       }
-
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -425,7 +432,8 @@ public class InvoiceLineController {
           "analyticDistributionTemplate", invoiceLine.getAnalyticDistributionTemplate());
       response.setValue(
           "analyticMoveLineList",
-          invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine));
+          ListUtils.emptyIfNull(
+              invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine)));
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -439,7 +447,8 @@ public class InvoiceLineController {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         invoiceLine =
             Beans.get(InvoiceLineAnalyticService.class).analyzeInvoiceLine(invoiceLine, invoice);
-        response.setValue("analyticMoveLineList", invoiceLine.getAnalyticMoveLineList());
+        response.setValue(
+            "analyticMoveLineList", ListUtils.emptyIfNull(invoiceLine.getAnalyticMoveLineList()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -560,17 +569,18 @@ public class InvoiceLineController {
           invoiceLineService.getProductDescriptionAndNameTranslation(
               parent, invoiceLine, userLanguage);
 
-      String description = translation.get("description");
-      String productName = translation.get("productName");
+      if (translation != null) {
+        String description = translation.get("description");
+        String productName = translation.get("productName");
 
-      if (description != null
-          && !description.isEmpty()
-          && productName != null
-          && !productName.isEmpty()) {
-        response.setValue("description", description);
-        response.setValue("productName", productName);
+        if (description != null
+            && !description.isEmpty()
+            && productName != null
+            && !productName.isEmpty()) {
+          response.setValue("description", description);
+          response.setValue("productName", productName);
+        }
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -604,7 +614,7 @@ public class InvoiceLineController {
                   "hidden",
                   !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
               for (AnalyticAxisByCompany analyticAxisByCompany :
-                  accountConfig.getAnalyticAxisByCompanyList()) {
+                  ListUtils.emptyIfNull(accountConfig.getAnalyticAxisByCompanyList())) {
                 if (analyticAxisByCompany.getSequence() + 1 == i) {
                   analyticAxis = analyticAxisByCompany.getAnalyticAxis();
                 }

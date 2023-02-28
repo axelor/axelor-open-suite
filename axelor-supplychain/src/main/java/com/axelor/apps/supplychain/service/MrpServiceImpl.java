@@ -63,6 +63,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -96,6 +97,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -246,7 +248,9 @@ public class MrpServiceImpl implements MrpService {
     // Initialize
     this.mrp = mrp;
     List<StockLocation> slList =
-        stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false).stream()
+        ListUtils.emptyIfNull(
+                stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false))
+            .stream()
             .filter(x -> !x.getIsNotInMrp())
             .collect(Collectors.toList());
     this.stockLocationList = slList;
@@ -296,7 +300,7 @@ public class MrpServiceImpl implements MrpService {
 
     for (int level = 0; level <= this.getMaxLevel(); level++) {
 
-      for (Product product : this.getProductList(level)) {
+      for (Product product : ListUtils.emptyIfNull(this.getProductList(level))) {
 
         this.checkInsufficientCumulativeQty(product);
       }
@@ -313,10 +317,12 @@ public class MrpServiceImpl implements MrpService {
 
     List<Product> productList = Lists.newArrayList();
 
-    for (Long productId : this.productMap.keySet()) {
+    if (productMap != null) {
+      for (Long productId : this.productMap.keySet()) {
 
-      if (this.productMap.get(productId) == level) {
-        productList.add(productRepository.find(productId));
+        if (this.productMap.get(productId) == level) {
+          productList.add(productRepository.find(productId));
+        }
       }
     }
 
@@ -327,10 +333,12 @@ public class MrpServiceImpl implements MrpService {
 
     int maxLevel = 0;
 
-    for (int level : this.productMap.values()) {
+    if (productMap != null) {
+      for (int level : this.productMap.values()) {
 
-      if (level > maxLevel) {
-        maxLevel = level;
+        if (level > maxLevel) {
+          maxLevel = level;
+        }
       }
     }
 
@@ -367,16 +375,18 @@ public class MrpServiceImpl implements MrpService {
             .order("mrpLineType.sequence")
             .order("id")
             .fetch();
-    for (MrpLine mrpLine : mrpLineList) {
+    if (CollectionUtils.isNotEmpty(mrpLineList)) {
+      for (MrpLine mrpLine : mrpLineList) {
 
-      doASecondPass =
-          this.checkInsufficientCumulativeQty(
-              mrpLineRepository.find(mrpLine.getId()),
-              productRepository.find(product.getId()),
-              counter == 0);
-      JPA.clear();
-      if (doASecondPass) {
-        break;
+        doASecondPass =
+            this.checkInsufficientCumulativeQty(
+                mrpLineRepository.find(mrpLine.getId()),
+                productRepository.find(product.getId()),
+                counter == 0);
+        JPA.clear();
+        if (doASecondPass) {
+          break;
+        }
       }
     }
 
@@ -621,7 +631,8 @@ public class MrpServiceImpl implements MrpService {
 
     if (supplierPartner != null && appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
 
-      for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
+      for (SupplierCatalog supplierCatalog :
+          ListUtils.emptyIfNull(product.getSupplierCatalogList())) {
 
         if (supplierCatalog.getSupplierPartner().equals(supplierPartner)) {
           return supplierCatalog.getMinQty();
@@ -672,6 +683,10 @@ public class MrpServiceImpl implements MrpService {
             .order("id")
             .fetch();
 
+    if (CollectionUtils.isEmpty(mrpLineList)) {
+      return;
+    }
+
     Map<List<Object>, MrpLine> map = Maps.newHashMap();
     MrpLine consolidateMrpLine = null;
     List<Object> keys = new ArrayList<>();
@@ -706,9 +721,11 @@ public class MrpServiceImpl implements MrpService {
 
   protected void computeCumulativeQty() {
 
-    for (Long productId : this.productMap.keySet()) {
+    if (productMap != null) {
+      for (Long productId : this.productMap.keySet()) {
 
-      this.computeCumulativeQty(productRepository.find(productId));
+        this.computeCumulativeQty(productRepository.find(productId));
+      }
     }
   }
 
@@ -726,24 +743,26 @@ public class MrpServiceImpl implements MrpService {
             .fetch();
 
     BigDecimal previousCumulativeQty = BigDecimal.ZERO;
-    for (MrpLine mrpLine : mrpLineList) {
+    if (CollectionUtils.isNotEmpty(mrpLineList)) {
+      for (MrpLine mrpLine : mrpLineList) {
 
-      if (mrpLine.getMrpLineType() != null
-          && mrpLine.getMrpLineType().getElementSelect()
-              == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
-          && mrpLine.getEstimatedDeliveryMrpLine() != null) {
-        mrpLine.setCumulativeQty(previousCumulativeQty);
-      } else {
-        mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
+        if (mrpLine.getMrpLineType() != null
+            && mrpLine.getMrpLineType().getElementSelect()
+                == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+            && mrpLine.getEstimatedDeliveryMrpLine() != null) {
+          mrpLine.setCumulativeQty(previousCumulativeQty);
+        } else {
+          mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
+        }
+        previousCumulativeQty = mrpLine.getCumulativeQty();
+
+        log.debug(
+            "Cumulative qty is ({}) for product ({}) and move ({}) at the maturity date ({})",
+            previousCumulativeQty,
+            mrpLine.getProduct().getFullName(),
+            mrpLine.getMrpLineType().getName(),
+            mrpLine.getMaturityDate());
       }
-      previousCumulativeQty = mrpLine.getCumulativeQty();
-
-      log.debug(
-          "Cumulative qty is ({}) for product ({}) and move ({}) at the maturity date ({})",
-          previousCumulativeQty,
-          mrpLine.getProduct().getFullName(),
-          mrpLine.getMrpLineType().getName(),
-          mrpLine.getMaturityDate());
     }
   }
 
@@ -764,6 +783,9 @@ public class MrpServiceImpl implements MrpService {
     }
 
     // TODO : Manage the case where order is partially delivered
+    if (productMap == null || stockLocationList == null) {
+      return;
+    }
     List<PurchaseOrderLine> purchaseOrderLineList =
         purchaseOrderLineRepository
             .all()
@@ -776,13 +798,15 @@ public class MrpServiceImpl implements MrpService {
                 statusList)
             .fetch();
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+    if (CollectionUtils.isNotEmpty(purchaseOrderLineList)) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-      this.createPurchaseMrpLines(
-          mrpRepository.find(mrp.getId()),
-          purchaseOrderLineRepository.find(purchaseOrderLine.getId()),
-          mrpLineTypeRepository.find(purchaseOrderMrpLineType.getId()));
-      JPA.clear();
+        this.createPurchaseMrpLines(
+            mrpRepository.find(mrp.getId()),
+            purchaseOrderLineRepository.find(purchaseOrderLine.getId()),
+            mrpLineTypeRepository.find(purchaseOrderMrpLineType.getId()));
+        JPA.clear();
+      }
     }
   }
 
@@ -868,16 +892,18 @@ public class MrpServiceImpl implements MrpService {
           filter += "AND self.saleOrder.oneoffSale IS TRUE";
         }
 
-        saleOrderLineList.addAll(
-            saleOrderLineRepository
-                .all()
-                .filter(
-                    filter,
-                    this.productMap.keySet(),
-                    this.stockLocationList,
-                    SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
-                    statusList)
-                .fetch());
+        if (productMap != null && stockLocationList != null && statusList != null) {
+          saleOrderLineList.addAll(
+              saleOrderLineRepository
+                  .all()
+                  .filter(
+                      filter,
+                      this.productMap.keySet(),
+                      this.stockLocationList,
+                      SaleOrderLineRepository.DELIVERY_STATE_DELIVERED,
+                      statusList)
+                  .fetch());
+        }
 
         for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
@@ -896,7 +922,6 @@ public class MrpServiceImpl implements MrpService {
       // If the MRP's list of saleOrderLines is not empty, treat all the selected lines instead
     } else {
       saleOrderLineList.addAll(mrp.getSaleOrderLineSet());
-
       for (MrpLineType saleOrderMrpLineType : saleOrderMrpLineTypeList) {
         List<Integer> statusList =
             StringTool.getIntegerList(saleOrderMrpLineType.getStatusSelect());
@@ -904,10 +929,13 @@ public class MrpServiceImpl implements MrpService {
         for (SaleOrderLine saleOrderLine : saleOrderLineList) {
           if (saleOrderLine.getSaleOrder() != null) {
             saleOrderLine = saleOrderLineRepository.find(saleOrderLine.getId());
-            if (this.productMap.keySet().contains(saleOrderLine.getProduct().getId())
+            if (productMap != null
+                && this.productMap.keySet().contains(saleOrderLine.getProduct().getId())
+                && stockLocationList != null
                 && this.stockLocationList.contains(saleOrderLine.getSaleOrder().getStockLocation())
                 && saleOrderLine.getDeliveryState()
                     != SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
+                && statusList != null
                 && statusList.contains(saleOrderLine.getSaleOrder().getStatusSelect())) {
 
               // Checking the one off sales parameter
@@ -950,7 +978,7 @@ public class MrpServiceImpl implements MrpService {
     if (!this.stockLocationList.contains(saleOrder.getStockLocation())) {
       return;
     }
-    if (!statusList.contains(saleOrder.getStatusSelect())) {
+    if (statusList != null && !statusList.contains(saleOrder.getStatusSelect())) {
       return;
     }
     if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
@@ -1010,8 +1038,7 @@ public class MrpServiceImpl implements MrpService {
 
     mrp = mrpRepository.find(mrp.getId());
 
-    if (mrp.getMrpForecastSet().isEmpty()) {
-
+    if (mrp.getMrpForecastSet().isEmpty() && productMap != null && stockLocationList != null) {
       mrpForecastList.addAll(
           mrpForecastRepository
               .all()
@@ -1022,7 +1049,6 @@ public class MrpServiceImpl implements MrpService {
                   today,
                   MrpForecastRepository.STATUS_CONFIRMED)
               .fetch());
-
     } else {
       mrpForecastList.addAll(mrp.getMrpForecastSet());
     }
@@ -1047,6 +1073,10 @@ public class MrpServiceImpl implements MrpService {
     }
 
     this.mrp = mrpRepository.find(mrp.getId());
+
+    if (productMap == null) {
+      return;
+    }
 
     for (Long productId : this.productMap.keySet()) {
       Product product = productRepository.find(productId);
@@ -1109,14 +1139,16 @@ public class MrpServiceImpl implements MrpService {
         }
       }
     } else {
-      for (StockHistoryLine stockHistoryLine : stockHistoryLineList) {
-        LocalDate date =
-            LocalDate.parse(stockHistoryLine.getLabel())
-                .plusMonths(mrpLineType.getOffsetInMonths());
-        MrpLine mrpLine =
-            createMrpLine(
-                product, mrp, mrpLineType, stockLocation, stockHistoryLine, date, growthCoef);
-        mrpLineRepository.save(mrpLine);
+      if (CollectionUtils.isNotEmpty(stockHistoryLineList)) {
+        for (StockHistoryLine stockHistoryLine : ListUtils.emptyIfNull(stockHistoryLineList)) {
+          LocalDate date =
+              LocalDate.parse(stockHistoryLine.getLabel())
+                  .plusMonths(mrpLineType.getOffsetInMonths());
+          MrpLine mrpLine =
+              createMrpLine(
+                  product, mrp, mrpLineType, stockLocation, stockHistoryLine, date, growthCoef);
+          mrpLineRepository.save(mrpLine);
+        }
       }
     }
   }
@@ -1279,28 +1311,30 @@ public class MrpServiceImpl implements MrpService {
       return;
     }
 
-    for (Long productId : this.productMap.keySet()) {
-      Mrp mrp = mrpRepository.find(this.mrp.getId());
-      if (mrp.getComputeWithSubStockLocation()) {
-        for (StockLocation stockLocation : this.stockLocationList) {
+    if (productMap != null) {
+      for (Long productId : this.productMap.keySet()) {
+        Mrp mrp = mrpRepository.find(this.mrp.getId());
+        if (mrp.getComputeWithSubStockLocation() && stockLocationList != null) {
+          for (StockLocation stockLocation : this.stockLocationList) {
+            this.createAvailableStockMrpLine(
+                mrp,
+                productRepository.find(productId),
+                stockLocationRepository.find(stockLocation.getId()),
+                mrpLineTypeRepository.find(availableStockMrpLineType.getId()));
+          }
+        } else {
+          Product product = productRepository.find(productId);
+          StockLocation stockLocation = mrp.getStockLocation();
+          BigDecimal qty = computeTotalQuantityFromSubStockLocations(product);
           this.createAvailableStockMrpLine(
               mrp,
-              productRepository.find(productId),
+              product,
+              qty,
               stockLocationRepository.find(stockLocation.getId()),
               mrpLineTypeRepository.find(availableStockMrpLineType.getId()));
         }
-      } else {
-        Product product = productRepository.find(productId);
-        StockLocation stockLocation = mrp.getStockLocation();
-        BigDecimal qty = computeTotalQuantityFromSubStockLocations(product);
-        this.createAvailableStockMrpLine(
-            mrp,
-            product,
-            qty,
-            stockLocationRepository.find(stockLocation.getId()),
-            mrpLineTypeRepository.find(availableStockMrpLineType.getId()));
+        JPA.clear();
       }
-      JPA.clear();
     }
   }
 
@@ -1312,7 +1346,8 @@ public class MrpServiceImpl implements MrpService {
                         + "FROM StockLocationLine self "
                         + "WHERE self.stockLocation in (:stockLocationLineList) AND self.product = :product",
                     BigDecimal.class)
-                .setParameter("stockLocationLineList", this.stockLocationList)
+                .setParameter(
+                    "stockLocationLineList", ListUtils.emptyIfNull(this.stockLocationList))
                 .setParameter("product", product)
                 .getSingleResult())
         .orElse(BigDecimal.ZERO);
@@ -1376,7 +1411,8 @@ public class MrpServiceImpl implements MrpService {
       if (mrp.getTakeInAccountSubCategories()) {
         for (ProductCategory productCategory : productCategorySet) {
           productCategorySet.addAll(
-              productCategoryService.fetchChildrenCategoryList(productCategory));
+              ListUtils.emptyIfNull(
+                  productCategoryService.fetchChildrenCategoryList(productCategory)));
         }
       }
 
@@ -1447,9 +1483,11 @@ public class MrpServiceImpl implements MrpService {
 
     productMap = Maps.newHashMap();
 
-    for (Product product : productList) {
+    if (productList != null) {
+      for (Product product : productList) {
 
-      this.assignProductAndLevel(product);
+        this.assignProductAndLevel(product);
+      }
     }
   }
 
@@ -1578,9 +1616,12 @@ public class MrpServiceImpl implements MrpService {
       Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
       List<MrpLine> mrpLineList)
       throws AxelorException {
-    for (MrpLine mrpLine : mrpLineList) {
-      if (!mrpLine.getProposalGenerated()) {
-        generateProposal(isProposalPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLine);
+    if (CollectionUtils.isNotEmpty(mrpLineList)) {
+      for (MrpLine mrpLine : mrpLineList) {
+        if (!mrpLine.getProposalGenerated()) {
+          generateProposal(
+              isProposalPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLine);
+        }
       }
     }
   }

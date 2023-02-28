@@ -187,17 +187,16 @@ public class OperationOrderController {
         for (Integer it : lstSelectedOperationOrder) {
           operationOrderIds += it.toString() + ",";
         }
-      }
 
-      if (!operationOrderIds.equals("")) {
-        operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length() - 1);
-        operationOrder =
-            Beans.get(OperationOrderRepository.class)
-                .find(new Long(lstSelectedOperationOrder.get(0)));
-      } else if (operationOrder.getId() != null) {
-        operationOrderIds = operationOrder.getId().toString();
+        if (!operationOrderIds.equals("")) {
+          operationOrderIds = operationOrderIds.substring(0, operationOrderIds.length() - 1);
+          operationOrder =
+              Beans.get(OperationOrderRepository.class)
+                  .find(new Long(lstSelectedOperationOrder.get(0)));
+        } else if (operationOrder.getId() != null) {
+          operationOrderIds = operationOrder.getId().toString();
+        }
       }
-
       if (!operationOrderIds.equals("")) {
 
         String name = " ";
@@ -243,8 +242,9 @@ public class OperationOrderController {
 
       List<Map<String, Object>> dataList =
           Beans.get(OperationOrderService.class).chargeByMachineHours(fromDateTime, toDateTime);
-
-      response.setData(dataList);
+      if (dataList != null) {
+        response.setData(dataList);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -262,7 +262,9 @@ public class OperationOrderController {
 
       List<Map<String, Object>> dataList =
           Beans.get(OperationOrderService.class).chargeByMachineDays(fromDateTime, toDateTime);
-      response.setData(dataList);
+      if (dataList != null) {
+        response.setData(dataList);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

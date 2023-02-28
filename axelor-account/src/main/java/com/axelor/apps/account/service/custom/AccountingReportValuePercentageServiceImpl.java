@@ -61,9 +61,14 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       String parentTitle,
       int analyticCounter) {
     Map<String, AccountingReportValue> valuesMap =
-        valuesMapByColumn.get(
-            this.getColumnCode(
-                column.getPercentageBaseColumn(), parentTitle, groupColumn, configAnalyticAccount));
+        valuesMapByColumn != null
+            ? valuesMapByColumn.get(
+                this.getColumnCode(
+                    column.getPercentageBaseColumn(),
+                    parentTitle,
+                    groupColumn,
+                    configAnalyticAccount))
+            : Collections.emptyMap();
 
     if (valuesMap == null) {
       this.addNullValue(
@@ -108,7 +113,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
     List<String> linesCodeList = Collections.singletonList(line.getCode());
     BigDecimal result = BigDecimal.valueOf(100);
 
-    if (StringUtils.notEmpty(line.getPercentageTotalLine())) {
+    if (StringUtils.notEmpty(line.getPercentageTotalLine()) && valuesMap != null) {
       totalValue = valuesMap.get(line.getPercentageTotalLine());
 
       if (valuesMap.get(line.getCode()) == null) {

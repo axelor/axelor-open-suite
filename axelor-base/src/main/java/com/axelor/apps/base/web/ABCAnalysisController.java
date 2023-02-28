@@ -53,7 +53,9 @@ public class ABCAnalysisController {
   public void initABCClasses(ActionRequest request, ActionResponse response) {
     List<ABCAnalysisClass> abcAnalysisClassList =
         Beans.get(ABCAnalysisService.class).initABCClasses();
-    response.setValue("abcAnalysisClassList", abcAnalysisClassList);
+    if (abcAnalysisClassList != null) {
+      response.setValue("abcAnalysisClassList", abcAnalysisClassList);
+    }
   }
 
   public void setSequence(ActionRequest request, ActionResponse response) {

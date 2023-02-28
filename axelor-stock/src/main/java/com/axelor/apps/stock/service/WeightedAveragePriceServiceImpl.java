@@ -35,6 +35,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
 public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceService {
@@ -60,10 +61,12 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
     Boolean avgPriceHandledByCompany = false;
     Set<MetaField> companySpecificFields =
         appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
-    for (MetaField field : companySpecificFields) {
-      if (field.getName().equals("avgPrice")) {
-        avgPriceHandledByCompany = true;
-        break;
+    if (CollectionUtils.isNotEmpty(companySpecificFields)) {
+      for (MetaField field : companySpecificFields) {
+        if (field.getName().equals("avgPrice")) {
+          avgPriceHandledByCompany = true;
+          break;
+        }
       }
     }
     if (avgPriceHandledByCompany
@@ -121,7 +124,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
     BigDecimal productAvgPrice = BigDecimal.ZERO;
     BigDecimal qtyTot = BigDecimal.ZERO;
     List<List<Object>> results = JPA.em().createQuery(query).getResultList();
-    if (results.isEmpty()) {
+    if (CollectionUtils.isEmpty(results)) {
       return BigDecimal.ZERO;
     }
     for (List<Object> result : results) {

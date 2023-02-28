@@ -87,10 +87,12 @@ public class EmployeeController {
               .getSocialNetworkUrl(
                   employee.getContactPartner().getName(),
                   employee.getContactPartner().getFirstName());
-      response.setAttr("contactPartner.facebookLabel", "title", urlMap.get("facebook"));
-      response.setAttr("contactPartner.twitterLabel", "title", urlMap.get("twitter"));
-      response.setAttr("contactPartner.linkedinLabel", "title", urlMap.get("linkedin"));
-      response.setAttr("contactPartner.youtubeLabel", "title", urlMap.get("youtube"));
+      if (urlMap != null) {
+        response.setAttr("contactPartner.facebookLabel", "title", urlMap.get("facebook"));
+        response.setAttr("contactPartner.twitterLabel", "title", urlMap.get("twitter"));
+        response.setAttr("contactPartner.linkedinLabel", "title", urlMap.get("linkedin"));
+        response.setAttr("contactPartner.youtubeLabel", "title", urlMap.get("youtube"));
+      }
     }
   }
 
@@ -100,10 +102,12 @@ public class EmployeeController {
     Map<String, String> urlMap =
         Beans.get(EmployeeService.class)
             .getSocialNetworkUrl(partnerContact.getName(), partnerContact.getFirstName());
-    response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
-    response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
+    if (urlMap != null) {
+      response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
+      response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
+      response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
+      response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
+    }
   }
 
   public void printEmployeePhonebook(ActionRequest request, ActionResponse response)

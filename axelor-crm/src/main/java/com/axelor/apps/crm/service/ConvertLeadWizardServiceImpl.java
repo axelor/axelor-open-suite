@@ -49,6 +49,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
@@ -221,22 +222,26 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
                   lead.getId())
               .fetch();
 
-      for (MultiRelated multiRelated : multiRelateds) {
-        multiRelated.setRelatedToSelect(Partner.class.getName());
-        multiRelated.setRelatedToSelectId(partner.getId());
-        if (contactPartner != null) {
-          MultiRelated contactMultiRelated = new MultiRelated();
-          contactMultiRelated.setRelatedToSelect(Partner.class.getName());
-          contactMultiRelated.setRelatedToSelectId(contactPartner.getId());
-          contactMultiRelated.setMessage(multiRelated.getMessage());
-          multiRelatedRepository.save(contactMultiRelated);
+      if (CollectionUtils.isNotEmpty(multiRelateds)) {
+        for (MultiRelated multiRelated : multiRelateds) {
+          multiRelated.setRelatedToSelect(Partner.class.getName());
+          multiRelated.setRelatedToSelectId(partner.getId());
+          if (contactPartner != null) {
+            MultiRelated contactMultiRelated = new MultiRelated();
+            contactMultiRelated.setRelatedToSelect(Partner.class.getName());
+            contactMultiRelated.setRelatedToSelectId(contactPartner.getId());
+            contactMultiRelated.setMessage(multiRelated.getMessage());
+            multiRelatedRepository.save(contactMultiRelated);
+          }
         }
       }
     }
 
-    for (Event event : lead.getEventList()) {
-      event.setPartner(partner);
-      event.setContactPartner(contactPartner);
+    if (CollectionUtils.isNotEmpty(lead.getEventList())) {
+      for (Event event : lead.getEventList()) {
+        event.setPartner(partner);
+        event.setContactPartner(contactPartner);
+      }
     }
     lead.setIsConverted(true);
     lead.setLeadStatus(convertedLeadStatus);

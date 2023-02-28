@@ -108,17 +108,20 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList = new ArrayList<>();
     FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine = null;
 
-    for (Entry<LocalDate, List<FixedAssetLine>> entry : dateFixedAssetLineGrouped.entrySet()) {
+    if (dateFixedAssetLineGrouped != null) {
+      for (Entry<LocalDate, List<FixedAssetLine>> entry : dateFixedAssetLineGrouped.entrySet()) {
 
-      FixedAssetDerogatoryLine derogatoryLine =
-          computePlannedDerogatoryLine(
-              extractLineWithType(entry.getValue(), FixedAssetLineRepository.TYPE_SELECT_ECONOMIC),
-              extractLineWithType(entry.getValue(), FixedAssetLineRepository.TYPE_SELECT_FISCAL),
-              previousFixedAssetDerogatoryLine,
-              entry.getKey());
-      derogatoryLine.setFixedAsset(fixedAsset);
-      fixedAssetDerogatoryLineList.add(derogatoryLine);
-      previousFixedAssetDerogatoryLine = derogatoryLine;
+        FixedAssetDerogatoryLine derogatoryLine =
+            computePlannedDerogatoryLine(
+                extractLineWithType(
+                    entry.getValue(), FixedAssetLineRepository.TYPE_SELECT_ECONOMIC),
+                extractLineWithType(entry.getValue(), FixedAssetLineRepository.TYPE_SELECT_FISCAL),
+                previousFixedAssetDerogatoryLine,
+                entry.getKey());
+        derogatoryLine.setFixedAsset(fixedAsset);
+        fixedAssetDerogatoryLineList.add(derogatoryLine);
+        previousFixedAssetDerogatoryLine = derogatoryLine;
+      }
     }
     return fixedAssetDerogatoryLineList;
   }

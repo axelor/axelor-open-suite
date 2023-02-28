@@ -87,35 +87,37 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     BigDecimal paymentAmount = reconcile.getAmount();
     BigDecimal invoiceTotalAmount =
         invoiceCustomerMoveLine.getCredit().add(invoiceCustomerMoveLine.getDebit());
-    for (MoveLine invoiceMoveLine : invoiceMove.getMoveLineList()) {
-      if (AccountTypeRepository.TYPE_TAX.equals(
-          invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-        customerPaymentMoveLine.addTaxPaymentMoveLineListItem(
-            this.generateTaxPaymentMoveLine(
-                customerPaymentMoveLine,
-                invoiceMove,
-                invoiceMoveLine,
-                invoiceCustomerMoveLine,
-                reconcile,
-                paymentAmount,
-                invoiceTotalAmount,
-                invoiceMoveLine.getVatSystemSelect()));
+    if (invoiceMove != null && CollectionUtils.isNotEmpty(invoiceMove.getMoveLineList())) {
+      for (MoveLine invoiceMoveLine : invoiceMove.getMoveLineList()) {
+        if (AccountTypeRepository.TYPE_TAX.equals(
+            invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+          customerPaymentMoveLine.addTaxPaymentMoveLineListItem(
+              this.generateTaxPaymentMoveLine(
+                  customerPaymentMoveLine,
+                  invoiceMove,
+                  invoiceMoveLine,
+                  invoiceCustomerMoveLine,
+                  reconcile,
+                  paymentAmount,
+                  invoiceTotalAmount,
+                  invoiceMoveLine.getVatSystemSelect()));
 
-      } else if (!AccountTypeRepository.TYPE_TAX.equals(
-              invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())
-          && invoiceMoveLine.getTaxLine() != null
-          && invoiceMoveLine.getTaxLine().getValue().compareTo(BigDecimal.ZERO) == 0) {
+        } else if (!AccountTypeRepository.TYPE_TAX.equals(
+                invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())
+            && invoiceMoveLine.getTaxLine() != null
+            && invoiceMoveLine.getTaxLine().getValue().compareTo(BigDecimal.ZERO) == 0) {
 
-        customerPaymentMoveLine.addTaxPaymentMoveLineListItem(
-            this.generateTaxPaymentMoveLine(
-                customerPaymentMoveLine,
-                invoiceMove,
-                invoiceMoveLine,
-                invoiceCustomerMoveLine,
-                reconcile,
-                paymentAmount,
-                invoiceTotalAmount,
-                invoiceMoveLine.getAccount().getVatSystemSelect()));
+          customerPaymentMoveLine.addTaxPaymentMoveLineListItem(
+              this.generateTaxPaymentMoveLine(
+                  customerPaymentMoveLine,
+                  invoiceMove,
+                  invoiceMoveLine,
+                  invoiceCustomerMoveLine,
+                  reconcile,
+                  paymentAmount,
+                  invoiceTotalAmount,
+                  invoiceMoveLine.getAccount().getVatSystemSelect()));
+        }
       }
     }
     this.computeTaxAmount(customerPaymentMoveLine);
@@ -177,18 +179,23 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   public MoveLine reverseTaxPaymentMoveLines(MoveLine customerMoveLine, Reconcile reconcile)
       throws AxelorException {
     List<TaxPaymentMoveLine> reverseTaxPaymentMoveLines = new ArrayList<TaxPaymentMoveLine>();
-    for (TaxPaymentMoveLine taxPaymentMoveLine : customerMoveLine.getTaxPaymentMoveLineList()) {
-      if (!taxPaymentMoveLine.getIsAlreadyReverse()
-          && taxPaymentMoveLine.getReconcile().equals(reconcile)) {
-        TaxPaymentMoveLine reverseTaxPaymentMoveLine =
-            taxPaymentMoveLineService.getReverseTaxPaymentMoveLine(taxPaymentMoveLine);
+    if (customerMoveLine != null
+        && CollectionUtils.isNotEmpty(customerMoveLine.getTaxPaymentMoveLineList())) {
+      for (TaxPaymentMoveLine taxPaymentMoveLine : customerMoveLine.getTaxPaymentMoveLineList()) {
+        if (!taxPaymentMoveLine.getIsAlreadyReverse()
+            && taxPaymentMoveLine.getReconcile().equals(reconcile)) {
+          TaxPaymentMoveLine reverseTaxPaymentMoveLine =
+              taxPaymentMoveLineService.getReverseTaxPaymentMoveLine(taxPaymentMoveLine);
 
-        reverseTaxPaymentMoveLines.add(reverseTaxPaymentMoveLine);
+          reverseTaxPaymentMoveLines.add(reverseTaxPaymentMoveLine);
+        }
       }
     }
+
     for (TaxPaymentMoveLine reverseTaxPaymentMoveLine : reverseTaxPaymentMoveLines) {
       customerMoveLine.addTaxPaymentMoveLineListItem(reverseTaxPaymentMoveLine);
     }
+
     this.computeTaxAmount(customerMoveLine);
     return moveLineRepository.save(customerMoveLine);
   }
@@ -210,52 +217,53 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   public void autoTaxLineGenerate(Move move, Account account) throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
-
-    moveLineList.sort(
-        new Comparator<MoveLine>() {
-          @Override
-          public int compare(MoveLine o1, MoveLine o2) {
-            if (o2.getSourceTaxLine() != null) {
-              return 0;
+    if (moveLineList != null) {
+      moveLineList.sort(
+          new Comparator<MoveLine>() {
+            @Override
+            public int compare(MoveLine o1, MoveLine o2) {
+              if (o2.getSourceTaxLine() != null) {
+                return 0;
+              }
+              return -1;
             }
-            return -1;
+          });
+
+      Iterator<MoveLine> moveLineItr = moveLineList.iterator();
+
+      Map<String, MoveLine> map = new HashMap<>();
+      Map<String, MoveLine> newMap = new HashMap<>();
+      while (moveLineItr.hasNext()) {
+
+        MoveLine moveLine = moveLineItr.next();
+
+        TaxLine taxLine = moveLine.getTaxLine();
+        TaxLine sourceTaxLine = moveLine.getSourceTaxLine();
+        if (sourceTaxLine != null) {
+
+          String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
+
+          moveLine.setCredit(BigDecimal.ZERO);
+          moveLine.setDebit(BigDecimal.ZERO);
+          map.put(sourceTaxLineKey, moveLine);
+          moveLineItr.remove();
+          continue;
+        }
+        if (taxLine != null && taxLine.getValue().signum() != 0) {
+
+          String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
+
+          if (this.isGenerateMoveLineForAutoTax(accountType)) {
+
+            moveLineCreateService.createMoveLineForAutoTax(
+                move, map, newMap, moveLine, taxLine, accountType, account);
           }
-        });
-
-    Iterator<MoveLine> moveLineItr = moveLineList.iterator();
-
-    Map<String, MoveLine> map = new HashMap<>();
-    Map<String, MoveLine> newMap = new HashMap<>();
-    while (moveLineItr.hasNext()) {
-
-      MoveLine moveLine = moveLineItr.next();
-
-      TaxLine taxLine = moveLine.getTaxLine();
-      TaxLine sourceTaxLine = moveLine.getSourceTaxLine();
-      if (sourceTaxLine != null) {
-
-        String sourceTaxLineKey = moveLine.getAccount().getCode() + sourceTaxLine.getId();
-
-        moveLine.setCredit(BigDecimal.ZERO);
-        moveLine.setDebit(BigDecimal.ZERO);
-        map.put(sourceTaxLineKey, moveLine);
-        moveLineItr.remove();
-        continue;
-      }
-      if (taxLine != null && taxLine.getValue().signum() != 0) {
-
-        String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
-
-        if (this.isGenerateMoveLineForAutoTax(accountType)) {
-
-          moveLineCreateService.createMoveLineForAutoTax(
-              move, map, newMap, moveLine, taxLine, accountType, account);
         }
       }
-    }
 
-    moveLineList.addAll(newMap.values());
-    moveRepository.save(move);
+      moveLineList.addAll(newMap.values());
+      moveRepository.save(move);
+    }
   }
 
   protected boolean isGenerateMoveLineForAutoTax(String accountType) {

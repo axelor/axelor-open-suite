@@ -61,6 +61,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -496,8 +497,8 @@ public class IntercoServiceImpl implements IntercoService {
                 invoiceLine.getProduct(), intercoInvoice.getCompany(), isPurchase));
         List<AnalyticMoveLine> analyticMoveLineList =
             invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
-        analyticMoveLineList.forEach(
-            analyticMoveLine -> analyticMoveLine.setInvoiceLine(invoiceLine));
+        ListUtils.emptyIfNull(analyticMoveLineList)
+            .forEach(analyticMoveLine -> analyticMoveLine.setInvoiceLine(invoiceLine));
         invoiceLine.setAnalyticMoveLineList(analyticMoveLineList);
       }
     }

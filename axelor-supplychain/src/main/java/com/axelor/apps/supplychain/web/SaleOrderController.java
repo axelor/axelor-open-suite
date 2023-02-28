@@ -43,6 +43,7 @@ import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -67,6 +68,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class SaleOrderController {
@@ -87,7 +89,7 @@ public class SaleOrderController {
             saleOrderStockService.createStocksMovesFromSaleOrder(
                 Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
 
-        if (stockMoveList != null && stockMoveList.size() == 1) {
+        if (ListUtils.size(stockMoveList) == 1) {
           response.setView(
               ActionView.define(I18n.get("Stock move"))
                   .model(StockMove.class.getName())
@@ -109,7 +111,7 @@ public class SaleOrderController {
                           String.format(
                               I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
-        } else if (stockMoveList != null && stockMoveList.size() > 1) {
+        } else if (ListUtils.size(stockMoveList) > 1) {
           response.setView(
               ActionView.define(I18n.get("Stock move"))
                   .model(StockMove.class.getName())
@@ -173,13 +175,17 @@ public class SaleOrderController {
         Boolean isDirectOrderLocation = false;
         Boolean noProduct = true;
         Map<String, Object> values = getSelectedId(request, response, saleOrder);
+        if (values == null) {
+          return;
+        }
         supplierPartner = (Partner) values.get("supplierPartner");
         saleOrderLineIdSelected = (List<Long>) values.get("saleOrderLineIdSelected");
         isDirectOrderLocation = (Boolean) values.get("isDirectOrderLocation");
 
         if (supplierPartner == null) {
           saleOrderLineIdSelected = new ArrayList<>();
-          for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          for (SaleOrderLine saleOrderLine :
+              ListUtils.emptyIfNull(saleOrder.getSaleOrderLineList())) {
             if (saleOrderLine.isSelected()) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
@@ -215,7 +221,7 @@ public class SaleOrderController {
           List<SaleOrderLine> saleOrderLinesSelected =
               JPA.all(SaleOrderLine.class)
                   .filter("self.id IN (:saleOderLineIdList)")
-                  .bind("saleOderLineIdList", saleOrderLineIdSelected)
+                  .bind("saleOderLineIdList", ListUtils.emptyIfNull(saleOrderLineIdSelected))
                   .fetch();
           PurchaseOrder purchaseOrder =
               Beans.get(SaleOrderPurchaseService.class)
@@ -256,12 +262,14 @@ public class SaleOrderController {
         && saleOrder.getStockLocation().getPartner().getIsSupplier()) {
       values.put("supplierPartner", saleOrder.getStockLocation().getPartner());
 
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (saleOrderLine.isSelected()) {
-          if (saleOrderLine.getProduct() != null) {
-            noProduct = false;
+      if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          if (saleOrderLine.isSelected()) {
+            if (saleOrderLine.getProduct() != null) {
+              noProduct = false;
+            }
+            saleOrderLineIdSelected.add(saleOrderLine.getId());
           }
-          saleOrderLineIdSelected.add(saleOrderLine.getId());
         }
       }
       values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
@@ -321,17 +329,20 @@ public class SaleOrderController {
       List<Map<String, Object>> saleOrderLineListContext;
       saleOrderLineListContext =
           (List<Map<String, Object>>) request.getRawContext().get("saleOrderLineList");
-      for (Map<String, Object> map : saleOrderLineListContext) {
-        if (map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
-          BigDecimal qtyToInvoiceItem =
-              new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
-          if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
-            Long soLineId = Long.valueOf((Integer) map.get("id"));
-            qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
-            BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
-            priceMap.put(soLineId, priceItem);
-            BigDecimal qtyItem = new BigDecimal(map.get(SO_LINES_WIZARD_QTY_FIELD).toString());
-            qtyMap.put(soLineId, qtyItem);
+      if (saleOrderLineListContext != null) {
+        for (Map<String, Object> map : saleOrderLineListContext) {
+          if (map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
+            BigDecimal qtyToInvoiceItem =
+                new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
+            if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
+              Long soLineId = Long.valueOf((Integer) map.get("id"));
+              qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
+              BigDecimal priceItem =
+                  new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
+              priceMap.put(soLineId, priceItem);
+              BigDecimal qtyItem = new BigDecimal(map.get(SO_LINES_WIZARD_QTY_FIELD).toString());
+              qtyMap.put(soLineId, qtyItem);
+            }
           }
         }
       }
@@ -439,9 +450,10 @@ public class SaleOrderController {
     response.setAttr(
         "$operationSelect",
         "value",
-        operationSelectValues.stream().min(Integer::compareTo).orElse(null));
+        ListUtils.emptyIfNull(operationSelectValues).stream().min(Integer::compareTo).orElse(null));
 
-    response.setAttr("$operationSelect", "selection-in", operationSelectValues);
+    response.setAttr(
+        "$operationSelect", "selection-in", ListUtils.emptyIfNull(operationSelectValues));
   }
 
   /**
@@ -498,10 +510,12 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
-        saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
-        saleOrderLineList.add(saleOrderLineMap);
+      if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+          Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
+          saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
+          saleOrderLineList.add(saleOrderLineMap);
+        }
       }
       response.setValue("$amountToInvoice", BigDecimal.ZERO);
       response.setValue("saleOrderLineList", saleOrderLineList);
@@ -522,9 +536,9 @@ public class SaleOrderController {
           saleOrderLine.setEstimatedShippingDate(saleOrder.getEstimatedShippingDate());
         }
       }
-    }
 
-    response.setValue("saleOrderLineList", saleOrderLineList);
+      response.setValue("saleOrderLineList", saleOrderLineList);
+    }
   }
 
   public void fillSaleOrderLinesDeliveryDate(ActionRequest request, ActionResponse response) {
@@ -535,9 +549,9 @@ public class SaleOrderController {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         saleOrderLine.setEstimatedDeliveryDate(saleOrder.getEstimatedDeliveryDate());
       }
-    }
 
-    response.setValue("saleOrderLineList", saleOrderLineList);
+      response.setValue("saleOrderLineList", saleOrderLineList);
+    }
   }
 
   public void notifyStockMoveCreated(ActionRequest request, ActionResponse response) {
@@ -771,7 +785,7 @@ public class SaleOrderController {
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain =
           Beans.get(SaleOrderLineServiceSupplyChain.class);
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      for (SaleOrderLine saleOrderLine : ListUtils.emptyIfNull(saleOrder.getSaleOrderLineList())) {
         saleOrderLineServiceSupplyChain.updateStockMoveReservationDateTime(saleOrderLine);
       }
     } catch (Exception e) {

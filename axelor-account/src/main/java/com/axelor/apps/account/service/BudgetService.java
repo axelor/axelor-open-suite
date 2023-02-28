@@ -38,6 +38,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetService {
 
@@ -94,23 +95,25 @@ public class BudgetService {
                   InvoiceRepository.STATUS_VALIDATED,
                   InvoiceRepository.STATUS_VENTILATED)
               .fetch();
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        Optional<LocalDate> optionaldate = getDate(budgetDistribution);
-        optionaldate.ifPresent(
-            date -> {
-              for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-                LocalDate fromDate = budgetLine.getFromDate();
-                LocalDate toDate = budgetLine.getToDate();
-                if (fromDate != null
-                    && toDate != null
-                    && (fromDate.isBefore(date) || fromDate.isEqual(date))
-                    && (toDate.isAfter(date) || toDate.isEqual(date))) {
-                  budgetLine.setAmountRealized(
-                      budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
-                  break;
+      if (CollectionUtils.isNotEmpty(budgetDistributionList)) {
+        for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+          Optional<LocalDate> optionaldate = getDate(budgetDistribution);
+          optionaldate.ifPresent(
+              date -> {
+                for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+                  LocalDate fromDate = budgetLine.getFromDate();
+                  LocalDate toDate = budgetLine.getToDate();
+                  if (fromDate != null
+                      && toDate != null
+                      && (fromDate.isBefore(date) || fromDate.isEqual(date))
+                      && (toDate.isAfter(date) || toDate.isEqual(date))) {
+                    budgetLine.setAmountRealized(
+                        budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
+                    break;
+                  }
                 }
-              }
-            });
+              });
+        }
       }
     }
     return budget.getBudgetLineList();

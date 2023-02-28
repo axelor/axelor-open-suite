@@ -101,8 +101,10 @@ public class TimerProjectTaskServiceImpl extends AbstractTimerService
   @Override
   public Duration compute(ProjectTask task) {
     Duration total = Duration.ZERO;
-    for (Timer timer : task.getTimerList()) {
-      total = total.plus(compute(timer));
+    if (task.getTimerList() != null) {
+      for (Timer timer : task.getTimerList()) {
+        total = total.plus(compute(timer));
+      }
     }
     return total;
   }

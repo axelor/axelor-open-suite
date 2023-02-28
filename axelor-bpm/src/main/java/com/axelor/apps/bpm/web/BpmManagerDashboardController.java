@@ -83,8 +83,9 @@ public class BpmManagerDashboardController {
 
     List<Map<String, Object>> dataMapList =
         Beans.get(BpmManagerDashboardService.class).getChartData(wkfModel, type, taskByProcessType);
-
-    response.setData(dataMapList);
+    if (dataMapList != null) {
+      response.setData(dataMapList);
+    }
   }
 
   @SuppressWarnings("rawtypes")
@@ -102,7 +103,9 @@ public class BpmManagerDashboardController {
     List<Map<String, Object>> dataMapList =
         Beans.get(BpmManagerDashboardUserService.class).getAvgTimePerUserData(wkfModel, unit);
 
-    response.setData(dataMapList);
+    if (dataMapList != null) {
+      response.setData(dataMapList);
+    }
   }
 
   public void getTaskDoneTodayPerUser(ActionRequest request, ActionResponse response) {
@@ -112,7 +115,9 @@ public class BpmManagerDashboardController {
     List<Map<String, Object>> dataMapList =
         Beans.get(BpmManagerDashboardUserService.class).getTaskDoneTodayPerUser(wkfModel);
 
-    response.setData(dataMapList);
+    if (dataMapList != null) {
+      response.setData(dataMapList);
+    }
   }
 
   public void getTaskToDoPerUser(ActionRequest request, ActionResponse response) {
@@ -122,7 +127,9 @@ public class BpmManagerDashboardController {
     List<Map<String, Object>> dataMapList =
         Beans.get(BpmManagerDashboardUserService.class).getTaskToDoPerUser(wkfModel);
 
-    response.setData(dataMapList);
+    if (dataMapList != null) {
+      response.setData(dataMapList);
+    }
   }
 
   public void getTaskCompletionByDays(ActionRequest request, ActionResponse response) {
@@ -132,7 +139,9 @@ public class BpmManagerDashboardController {
     List<Map<String, Object>> dataMapList =
         Beans.get(BpmManagerDashboardTaskService.class).getTaskCompletionByDays(fromDate, toDate);
 
-    response.setData(dataMapList);
+    if (dataMapList != null) {
+      response.setData(dataMapList);
+    }
   }
 
   public void showAssignedToMeTask(ActionRequest request, ActionResponse response) {

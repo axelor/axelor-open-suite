@@ -69,15 +69,13 @@ public class LeadController {
       for (Integer it : lstSelectedleads) {
         leadIds += it.toString() + ",";
       }
+      if (!leadIds.equals("")) {
+        leadIds = leadIds.substring(0, leadIds.length() - 1);
+        lead = Beans.get(LeadRepository.class).find(new Long(lstSelectedleads.get(0)));
+      } else if (lead.getId() != null) {
+        leadIds = lead.getId().toString();
+      }
     }
-
-    if (!leadIds.equals("")) {
-      leadIds = leadIds.substring(0, leadIds.length() - 1);
-      lead = Beans.get(LeadRepository.class).find(new Long(lstSelectedleads.get(0)));
-    } else if (lead.getId() != null) {
-      leadIds = lead.getId().toString();
-    }
-
     if (!leadIds.equals("")) {
       String title = " ";
       if (lead.getFirstName() != null) {
@@ -134,8 +132,10 @@ public class LeadController {
     Map<String, String> urlMap =
         Beans.get(LeadService.class)
             .getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
-    response.setAttr("googleLabel", "title", urlMap.get("google"));
-    response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
+    if (urlMap != null) {
+      response.setAttr("googleLabel", "title", urlMap.get("google"));
+      response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
+    }
   }
 
   public void getLeadImportConfig(ActionRequest request, ActionResponse response) {

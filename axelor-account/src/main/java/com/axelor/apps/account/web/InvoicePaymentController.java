@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -51,6 +52,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +84,9 @@ public class InvoicePaymentController {
   @SuppressWarnings("unchecked")
   public void filterPaymentMode(ActionRequest request, ActionResponse response) {
     Map<String, Object> partialInvoice = (Map<String, Object>) request.getContext().get("_invoice");
+    if (partialInvoice == null) {
+      return;
+    }
     Invoice invoice =
         Beans.get(InvoiceRepository.class).find(Long.valueOf(partialInvoice.get("id").toString()));
     PaymentMode paymentMode = invoice.getPaymentMode();
@@ -104,6 +109,9 @@ public class InvoicePaymentController {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
     Map<String, Object> partialInvoice = (Map<String, Object>) request.getContext().get("_invoice");
 
+    if (partialInvoice == null) {
+      return;
+    }
     Invoice invoice =
         Beans.get(InvoiceRepository.class).find(((Integer) partialInvoice.get("id")).longValue());
     Company company = invoice.getCompany();
@@ -132,6 +140,10 @@ public class InvoicePaymentController {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
     Map<String, Object> partialInvoice = (Map<String, Object>) request.getContext().get("_invoice");
 
+    if (partialInvoice == null) {
+      return;
+    }
+
     Invoice invoice =
         Beans.get(InvoiceRepository.class).find(((Integer) partialInvoice.get("id")).longValue());
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
@@ -139,7 +151,7 @@ public class InvoicePaymentController {
     List<BankDetails> bankDetailsList =
         Beans.get(InvoicePaymentToolService.class)
             .findCompatibleBankDetails(company, invoicePayment);
-    if (bankDetailsList.size() == 1) {
+    if (ListUtils.size(bankDetailsList) == 1) {
       response.setValue("companyBankDetails", bankDetailsList.get(0));
     } else {
       response.setValue("companyBankDetails", null);
@@ -243,7 +255,9 @@ public class InvoicePaymentController {
         }
 
         List<Long> invoiceTermIdList =
-            invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
+            invoiceTerms != null
+                ? invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList())
+                : new ArrayList<>();
         if (!CollectionUtils.isEmpty(invoiceTerms)) {
           response.setValue("$invoiceTerms", invoiceTermIdList);
 
@@ -307,9 +321,11 @@ public class InvoicePaymentController {
         List<Long> invoiceTermIdList =
             invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
 
-        response.setValue("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
+        response.setValue(
+            "invoiceTermPaymentList",
+            ListUtils.emptyIfNull(invoicePayment.getInvoiceTermPaymentList()));
         response.setValue("amount", invoicePayment.getAmount());
-        response.setValue("$invoiceTerms", invoiceTermIdList);
+        response.setValue("$invoiceTerms", ListUtils.emptyIfNull(invoiceTermIdList));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

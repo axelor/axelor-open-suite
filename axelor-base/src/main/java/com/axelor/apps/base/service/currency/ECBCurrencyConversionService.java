@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -77,7 +78,8 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
 
     Map<Long, Set<Long>> currencyMap = new HashMap<Long, Set<Long>>();
 
-    for (CurrencyConversionLine ccl : appBase.getCurrencyConversionLineList()) {
+    for (CurrencyConversionLine ccl :
+        ListUtils.emptyIfNull(appBase.getCurrencyConversionLineList())) {
       if (currencyMap.containsKey(ccl.getEndCurrency().getId())) {
         currencyMap.get(ccl.getEndCurrency().getId()).add(ccl.getStartCurrency().getId());
 
@@ -98,46 +100,47 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
                   key,
                   today)
               .fetch();
+      if (cclList != null) {
+        for (CurrencyConversionLine ccl : cclList) {
+          LOG.trace("Currency Conversion Line without toDate : {}", ccl);
+          BigDecimal currentRate = BigDecimal.ZERO;
+          LocalDate rateRetrieveDate = null;
+          try {
+            Pair<LocalDate, BigDecimal> pair =
+                this.getRateWithDate(ccl.getStartCurrency(), ccl.getEndCurrency());
+            currentRate = pair.getRight();
+            rateRetrieveDate = pair.getLeft();
+          } catch (Exception e) {
+            throw new AxelorException(
+                e.getCause(),
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                e.getLocalizedMessage());
+          }
+          if (currentRate.compareTo(new BigDecimal(-1)) == 0) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(BaseExceptionMessage.CURRENCY_6));
+          }
 
-      for (CurrencyConversionLine ccl : cclList) {
-        LOG.trace("Currency Conversion Line without toDate : {}", ccl);
-        BigDecimal currentRate = BigDecimal.ZERO;
-        LocalDate rateRetrieveDate = null;
-        try {
-          Pair<LocalDate, BigDecimal> pair =
-              this.getRateWithDate(ccl.getStartCurrency(), ccl.getEndCurrency());
-          currentRate = pair.getRight();
-          rateRetrieveDate = pair.getLeft();
-        } catch (Exception e) {
-          throw new AxelorException(
-              e.getCause(),
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              e.getLocalizedMessage());
-        }
-        if (currentRate.compareTo(new BigDecimal(-1)) == 0) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.CURRENCY_6));
-        }
+          ccl = cclRepo.find(ccl.getId());
+          BigDecimal previousRate = ccl.getExchangeRate();
+          if (currentRate.compareTo(previousRate) != 0
+              && rateRetrieveDate.isAfter(ccl.getFromDate())) {
+            ccl.setToDate(
+                !rateRetrieveDate.minusDays(1).isBefore(ccl.getFromDate())
+                    ? rateRetrieveDate.minusDays(1)
+                    : rateRetrieveDate);
 
-        ccl = cclRepo.find(ccl.getId());
-        BigDecimal previousRate = ccl.getExchangeRate();
-        if (currentRate.compareTo(previousRate) != 0
-            && rateRetrieveDate.isAfter(ccl.getFromDate())) {
-          ccl.setToDate(
-              !rateRetrieveDate.minusDays(1).isBefore(ccl.getFromDate())
-                  ? rateRetrieveDate.minusDays(1)
-                  : rateRetrieveDate);
-
-          this.saveCurrencyConversionLine(ccl);
-          String variations = this.getVariations(currentRate, previousRate);
-          this.createCurrencyConversionLine(
-              ccl.getStartCurrency(),
-              ccl.getEndCurrency(),
-              rateRetrieveDate,
-              currentRate,
-              appBase,
-              variations);
+            this.saveCurrencyConversionLine(ccl);
+            String variations = this.getVariations(currentRate, previousRate);
+            this.createCurrencyConversionLine(
+                ccl.getStartCurrency(),
+                ccl.getEndCurrency(),
+                rateRetrieveDate,
+                currentRate,
+                appBase,
+                variations);
+          }
         }
       }
     }

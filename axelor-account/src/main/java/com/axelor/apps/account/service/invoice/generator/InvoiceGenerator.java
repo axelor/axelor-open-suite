@@ -47,6 +47,7 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -58,6 +59,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -304,7 +306,7 @@ public abstract class InvoiceGenerator {
     if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
       List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
       companyBankDetails =
-          bankDetailsList.stream()
+          ListUtils.emptyIfNull(bankDetailsList).stream()
               .filter(bankDetails -> bankDetails.getIsDefault())
               .findFirst()
               .orElse(null);
@@ -322,7 +324,7 @@ public abstract class InvoiceGenerator {
       companyBankDetails = company.getDefaultBankDetails();
       List<BankDetails> allowedBDs =
           Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
-      if (!allowedBDs.contains(companyBankDetails)) {
+      if (allowedBDs != null && !allowedBDs.contains(companyBankDetails)) {
         companyBankDetails = null;
       }
     }
@@ -349,23 +351,33 @@ public abstract class InvoiceGenerator {
    */
   public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
 
-    logger.debug("Populate an invoice => invoice lines : {} ", invoiceLines.size());
+    logger.debug("Populate an invoice => invoice lines : {} ", ListUtils.size(invoiceLines));
 
     initCollections(invoice);
 
-    if (invoice instanceof ContextEntity) {
-      invoice.getInvoiceLineList().addAll(invoiceLines);
-    } else {
-      invoiceLines.forEach(invoice::addInvoiceLineListItem);
-    }
-    // Create tax lines.
-    List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
+    if (CollectionUtils.isNotEmpty(invoiceLines)) {
+      if (invoice instanceof ContextEntity) {
+        if (invoice.getInvoiceLineList() == null) {
+          invoice.setInvoiceLineList(new ArrayList<>());
+        }
+        invoice.getInvoiceLineList().addAll(invoiceLines);
+      } else {
+        invoiceLines.forEach(invoice::addInvoiceLineListItem);
+      }
+      // Create tax lines.
+      List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
 
-    // Workaround for #9759
-    if (invoice instanceof ContextEntity) {
-      invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
-    } else {
-      invoiceTaxLines.forEach(invoice::addInvoiceLineTaxListItem);
+      // Workaround for #9759
+      if (CollectionUtils.isNotEmpty(invoiceTaxLines)) {
+        if (invoice instanceof ContextEntity) {
+          if (invoice.getInvoiceLineTaxList() == null) {
+            invoice.setInvoiceLineTaxList(new ArrayList<>());
+          }
+          invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
+        } else {
+          invoiceTaxLines.forEach(invoice::addInvoiceLineTaxListItem);
+        }
+      }
     }
 
     computeInvoice(invoice);
@@ -428,28 +440,32 @@ public abstract class InvoiceGenerator {
     invoice.setCompanyTaxTotal(BigDecimal.ZERO);
     invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 
-      if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
-        continue;
+        if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
+          continue;
+        }
+
+        // In the invoice currency
+        invoice.setExTaxTotal(invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
+
+        // In the company accounting currency
+        invoice.setCompanyExTaxTotal(
+            invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()));
       }
-
-      // In the invoice currency
-      invoice.setExTaxTotal(invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
-
-      // In the company accounting currency
-      invoice.setCompanyExTaxTotal(
-          invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()));
     }
 
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineTaxList())) {
+      for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
-      // In the invoice currency
-      invoice.setTaxTotal(invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()));
+        // In the invoice currency
+        invoice.setTaxTotal(invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()));
 
-      // In the company accounting currency
-      invoice.setCompanyTaxTotal(
-          invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()));
+        // In the company accounting currency
+        invoice.setCompanyTaxTotal(
+            invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()));
+      }
     }
 
     // In the invoice currency

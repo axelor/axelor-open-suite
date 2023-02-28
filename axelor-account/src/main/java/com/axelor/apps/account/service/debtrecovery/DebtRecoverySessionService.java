@@ -38,6 +38,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import org.slf4j.Logger;
@@ -77,14 +78,15 @@ public class DebtRecoverySessionService {
     List<DebtRecoveryConfigLine> debtRecoveryConfigLines =
         company.getAccountConfig().getDebtRecoveryConfigLineList();
 
-    for (DebtRecoveryConfigLine debtRecoveryConfigLine : debtRecoveryConfigLines) {
-      if (debtRecoveryConfigLine.getPartnerCategory().equals(partner.getPartnerCategory())) {
+    if (debtRecoveryConfigLines != null) {
+      for (DebtRecoveryConfigLine debtRecoveryConfigLine : debtRecoveryConfigLines) {
+        if (debtRecoveryConfigLine.getPartnerCategory().equals(partner.getPartnerCategory())) {
 
-        log.debug("reminder method decided ");
-        return debtRecoveryConfigLine.getDebtRecoveryMethod();
+          log.debug("reminder method decided ");
+          return debtRecoveryConfigLine.getDebtRecoveryMethod();
+        }
       }
     }
-
     log.debug("reminder method not decided ");
 
     return null;
@@ -229,7 +231,12 @@ public class DebtRecoverySessionService {
    * @return Une liste de ligne de matrice de relance
    */
   public List<DebtRecoveryMethodLine> getDebtRecoveryMethodLineList(DebtRecovery debtRecovery) {
-    return debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList();
+    if (debtRecovery != null
+        && debtRecovery.getDebtRecoveryMethod() != null
+        && debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList() != null) {
+      return debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList();
+    }
+    return new ArrayList<>();
   }
 
   /**

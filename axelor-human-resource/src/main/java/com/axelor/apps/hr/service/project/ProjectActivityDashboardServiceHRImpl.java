@@ -23,6 +23,8 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
 import com.axelor.mail.db.MailMessage;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +44,9 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
   @Override
   protected List<String> getRelatedModels() {
     List<String> relatedModelsList = super.getRelatedModels();
+    if (relatedModelsList == null) {
+      relatedModelsList = new ArrayList<>();
+    }
     relatedModelsList.add(TimesheetLine.class.getName());
     return relatedModelsList;
   }
@@ -54,7 +59,9 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
       if (timesheetLine != null) {
         Project tsLineProject = timesheetLine.getProject();
         if (project == null
-            || (tsLineProject != null && projectIdSet.contains(tsLineProject.getId()))) {
+            || (projectIdSet != null
+                && tsLineProject != null
+                && projectIdSet.contains(tsLineProject.getId()))) {
           return tsLineProject;
         }
       }
@@ -65,6 +72,9 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
   @Override
   protected Map<String, Object> getModelWithUtilityClass(String model) {
     Map<String, Object> dataMap = super.getModelWithUtilityClass(model);
+    if (dataMap == null) {
+      dataMap = new HashMap<>();
+    }
     if (TimesheetLine.class.getName().equals(model)) {
       dataMap.put("modelName", "Timesheet line");
       dataMap.put("utilityClass", "label-important");

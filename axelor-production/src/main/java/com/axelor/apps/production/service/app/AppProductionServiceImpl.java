@@ -28,6 +28,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppProductionService {
@@ -46,10 +47,12 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
     List<Company> companies =
         Query.of(Company.class).filter("self.productionConfig is null").fetch();
 
-    for (Company company : companies) {
-      ProductionConfig productionConfig = new ProductionConfig();
-      productionConfig.setCompany(company);
-      Beans.get(ProductionConfigRepository.class).save(productionConfig);
+    if (CollectionUtils.isNotEmpty(companies)) {
+      for (Company company : companies) {
+        ProductionConfig productionConfig = new ProductionConfig();
+        productionConfig.setCompany(company);
+        Beans.get(ProductionConfigRepository.class).save(productionConfig);
+      }
     }
   }
 

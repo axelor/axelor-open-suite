@@ -59,6 +59,9 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.CollectionUtils;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -91,7 +94,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.ValidationException;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -361,10 +363,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   @Transactional
   public void updateOperationsName(ManufOrder manufOrder) {
-    for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-      operationOrder.setName(
-          operationOrderService.computeName(
-              manufOrder, operationOrder.getPriority(), operationOrder.getOperationName()));
+    if (manufOrder != null && manufOrder.getOperationOrderList() != null) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        operationOrder.setName(
+            operationOrderService.computeName(
+                manufOrder, operationOrder.getPriority(), operationOrder.getOperationName()));
+      }
     }
   }
 
@@ -376,15 +380,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   public List<ProdProcessLine> _sortProdProcessLineByPriority(
       List<ProdProcessLine> prodProcessLineList) {
 
-    Collections.sort(
-        prodProcessLineList,
-        new Comparator<ProdProcessLine>() {
+    if (prodProcessLineList != null) {
+      Collections.sort(
+          prodProcessLineList,
+          new Comparator<ProdProcessLine>() {
 
-          @Override
-          public int compare(ProdProcessLine ppl1, ProdProcessLine ppl2) {
-            return ppl1.getPriority().compareTo(ppl2.getPriority());
-          }
-        });
+            @Override
+            public int compare(ProdProcessLine ppl1, ProdProcessLine ppl2) {
+              return ppl1.getPriority().compareTo(ppl2.getPriority());
+            }
+          });
+    }
 
     return prodProcessLineList;
   }
@@ -531,10 +537,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       manufOrderStockMoveService.createNewConsumedStockMoveLineList(manufOrder, qtyToUpdate);
       updateDiffProdProductList(manufOrder);
     } else {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        Beans.get(OperationOrderStockMoveService.class)
-            .createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
-        operationOrderService.updateDiffProdProductList(operationOrder);
+      if (manufOrder.getOperationOrderList() != null) {
+        for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+          Beans.get(OperationOrderStockMoveService.class)
+              .createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
+          operationOrderService.updateDiffProdProductList(operationOrder);
+        }
       }
     }
 
@@ -552,7 +560,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         createDiffProdProductList(manufOrder, toConsumeList, consumedList);
 
     manufOrder.clearDiffConsumeProdProductList();
-    diffConsumeList.forEach(manufOrder::addDiffConsumeProdProductListItem);
+    ListUtils.emptyIfNull(diffConsumeList).forEach(manufOrder::addDiffConsumeProdProductListItem);
     return manufOrder;
   }
 
@@ -564,7 +572,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       throws AxelorException {
     List<ProdProduct> diffConsumeList =
         createDiffProdProductList(prodProductList, stockMoveLineList);
-    diffConsumeList.forEach(prodProduct -> prodProduct.setDiffConsumeManufOrder(manufOrder));
+    ListUtils.emptyIfNull(diffConsumeList)
+        .forEach(prodProduct -> prodProduct.setDiffConsumeManufOrder(manufOrder));
     return diffConsumeList;
   }
 
@@ -573,52 +582,58 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       List<ProdProduct> prodProductList, List<StockMoveLine> stockMoveLineList)
       throws AxelorException {
     List<ProdProduct> diffConsumeList = new ArrayList<>();
-    for (ProdProduct prodProduct : prodProductList) {
-      Product product = prodProduct.getProduct();
-      Unit newUnit = prodProduct.getUnit();
-      List<StockMoveLine> stockMoveLineProductList =
-          stockMoveLineList.stream()
-              .filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
-              .filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
-              .collect(Collectors.toList());
-      if (stockMoveLineProductList.isEmpty()) {
-        StockMoveLine stockMoveLine = new StockMoveLine();
-        stockMoveLineProductList.add(stockMoveLine);
-      }
-      BigDecimal diffQty = computeDiffQty(prodProduct, stockMoveLineProductList, product);
-      BigDecimal plannedQty = prodProduct.getQty();
-      BigDecimal realQty = diffQty.add(plannedQty);
-      if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
-        ProdProduct diffProdProduct = new ProdProduct();
-        diffProdProduct.setQty(diffQty);
-        diffProdProduct.setPlannedQty(plannedQty);
-        diffProdProduct.setRealQty(realQty);
-        diffProdProduct.setProduct(product);
-        diffProdProduct.setUnit(newUnit);
-        diffConsumeList.add(diffProdProduct);
-      }
-    }
-    // There are stock move lines with products that are not available in
-    // prod product list. It needs to appear in the prod product list
-    List<StockMoveLine> stockMoveLineMissingProductList =
-        stockMoveLineList.stream()
-            .filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
-            .filter(
-                stockMoveLine1 ->
-                    !prodProductList.stream()
-                        .map(ProdProduct::getProduct)
-                        .collect(Collectors.toList())
-                        .contains(stockMoveLine1.getProduct()))
-            .collect(Collectors.toList());
-    for (StockMoveLine stockMoveLine : stockMoveLineMissingProductList) {
-      if (stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
-        ProdProduct diffProdProduct = new ProdProduct();
-        diffProdProduct.setQty(stockMoveLine.getQty());
-        diffProdProduct.setPlannedQty(BigDecimal.ZERO);
-        diffProdProduct.setRealQty(stockMoveLine.getQty());
-        diffProdProduct.setProduct(stockMoveLine.getProduct());
-        diffProdProduct.setUnit(stockMoveLine.getUnit());
-        diffConsumeList.add(diffProdProduct);
+    if (CollectionUtils.isNotEmpty(prodProductList)) {
+      for (ProdProduct prodProduct : prodProductList) {
+        Product product = prodProduct.getProduct();
+        Unit newUnit = prodProduct.getUnit();
+        if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+          List<StockMoveLine> stockMoveLineProductList =
+              stockMoveLineList.stream()
+                  .filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
+                  .filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
+                  .collect(Collectors.toList());
+          if (stockMoveLineProductList.isEmpty()) {
+            StockMoveLine stockMoveLine = new StockMoveLine();
+            stockMoveLineProductList.add(stockMoveLine);
+          }
+          BigDecimal diffQty = computeDiffQty(prodProduct, stockMoveLineProductList, product);
+          BigDecimal plannedQty = prodProduct.getQty();
+          BigDecimal realQty = diffQty.add(plannedQty);
+          if (diffQty.compareTo(BigDecimal.ZERO) != 0) {
+            ProdProduct diffProdProduct = new ProdProduct();
+            diffProdProduct.setQty(diffQty);
+            diffProdProduct.setPlannedQty(plannedQty);
+            diffProdProduct.setRealQty(realQty);
+            diffProdProduct.setProduct(product);
+            diffProdProduct.setUnit(newUnit);
+            diffConsumeList.add(diffProdProduct);
+          }
+          // There are stock move lines with products that are not available in
+          // prod product list. It needs to appear in the prod product list
+          List<StockMoveLine> stockMoveLineMissingProductList =
+              stockMoveLineList.stream()
+                  .filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
+                  .filter(
+                      stockMoveLine1 ->
+                          !prodProductList.stream()
+                              .map(ProdProduct::getProduct)
+                              .collect(Collectors.toList())
+                              .contains(stockMoveLine1.getProduct()))
+                  .collect(Collectors.toList());
+          if (CollectionUtils.isNotEmpty(stockMoveLineMissingProductList)) {
+            for (StockMoveLine stockMoveLine : stockMoveLineMissingProductList) {
+              if (stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+                ProdProduct diffProdProduct = new ProdProduct();
+                diffProdProduct.setQty(stockMoveLine.getQty());
+                diffProdProduct.setPlannedQty(BigDecimal.ZERO);
+                diffProdProduct.setRealQty(stockMoveLine.getQty());
+                diffProdProduct.setProduct(stockMoveLine.getProduct());
+                diffProdProduct.setUnit(stockMoveLine.getUnit());
+                diffConsumeList.add(diffProdProduct);
+              }
+            }
+          }
+        }
       }
     }
     return diffConsumeList;
@@ -661,6 +676,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (producedStockMoveLineList == null) {
       return;
     }
+
     updateStockMoveFromManufOrder(
         producedStockMoveLineList, getProducedStockMoveFromManufOrder(manufOrder));
   }
@@ -703,7 +719,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       throws AxelorException {
 
     List<StockMoveLine> realizedProducedStockMoveLineList =
-        stockMoveLineList.stream()
+        ListUtils.emptyIfNull(stockMoveLineList).stream()
             .filter(
                 stockMoveLine ->
                     stockMoveLine.getStockMove() != null
@@ -712,7 +728,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             .sorted(Comparator.comparingLong(StockMoveLine::getId))
             .collect(Collectors.toList());
     List<StockMoveLine> oldRealizedProducedStockMoveLineList =
-        oldStockMoveLineList.stream()
+        ListUtils.emptyIfNull(oldStockMoveLineList).stream()
             .filter(
                 stockMoveLine ->
                     stockMoveLine.getStockMove() != null
@@ -767,19 +783,21 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ProdProduct prodProduct, List<StockMoveLine> stockMoveLineList, Product product)
       throws AxelorException {
     BigDecimal consumedQty = BigDecimal.ZERO;
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
-        consumedQty =
-            consumedQty.add(
-                Beans.get(UnitConversionService.class)
-                    .convert(
-                        stockMoveLine.getUnit(),
-                        prodProduct.getUnit(),
-                        stockMoveLine.getQty(),
-                        stockMoveLine.getQty().scale(),
-                        product));
-      } else {
-        consumedQty = consumedQty.add(stockMoveLine.getQty());
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
+          consumedQty =
+              consumedQty.add(
+                  Beans.get(UnitConversionService.class)
+                      .convert(
+                          stockMoveLine.getUnit(),
+                          prodProduct.getUnit(),
+                          stockMoveLine.getQty(),
+                          stockMoveLine.getQty().scale(),
+                          product));
+        } else {
+          consumedQty = consumedQty.add(stockMoveLine.getQty());
+        }
       }
     }
     return consumedQty.subtract(prodProduct.getQty());
@@ -790,7 +808,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       Long productId, Long companyId, Long stockLocationId) {
     List<Integer> statusList = getMOFiltersOnProductionConfig();
     String statusListQuery =
-        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+        ListUtils.emptyIfNull(statusList).stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(","));
     String query =
         "self.product.id = "
             + productId
@@ -807,19 +827,16 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (companyId != 0L) {
       query += " AND self.stockMove.company.id = " + companyId;
       if (stockLocationId != 0L) {
-        if (stockLocationId != 0L) {
-          StockLocation stockLocation =
-              Beans.get(StockLocationRepository.class).find(stockLocationId);
-          List<StockLocation> stockLocationList =
-              Beans.get(StockLocationService.class)
-                  .getAllLocationAndSubLocation(stockLocation, false);
-          if (!stockLocationList.isEmpty()
-              && stockLocation.getCompany().getId().equals(companyId)) {
-            query +=
-                " AND self.stockMove.fromStockLocation.id IN ("
-                    + StringTool.getIdListString(stockLocationList)
-                    + ") ";
-          }
+        StockLocation stockLocation =
+            Beans.get(StockLocationRepository.class).find(stockLocationId);
+        List<StockLocation> stockLocationList =
+            Beans.get(StockLocationService.class)
+                .getAllLocationAndSubLocation(stockLocation, false);
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
+          query +=
+              " AND self.stockMove.fromStockLocation.id IN ("
+                  + StringTool.getIdListString(stockLocationList)
+                  + ") ";
         }
       }
     }
@@ -831,7 +848,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId) {
     List<Integer> statusList = getMOFiltersOnProductionConfig();
     String statusListQuery =
-        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+        ListUtils.emptyIfNull(statusList).stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(","));
     String query =
         "self.product.id = "
             + productId
@@ -889,7 +908,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     List<ManufOrder> moList = new ArrayList<>();
     List<Pair<BillOfMaterial, BigDecimal>> childBomList =
         getToConsumeSubBomList(manufOrder.getBillOfMaterial(), manufOrder, productList);
-    moList.addAll(this.generateChildMOs(manufOrder, childBomList, depth));
+    moList.addAll(ListUtils.emptyIfNull(this.generateChildMOs(manufOrder, childBomList, depth)));
     return moList;
   }
 
@@ -898,7 +917,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       throws AxelorException {
     List<Pair<BillOfMaterial, BigDecimal>> bomList = new ArrayList<>();
 
-    for (BillOfMaterial bom : billOfMaterial.getBillOfMaterialSet()) {
+    for (BillOfMaterial bom : SetUtils.emptyIfNull(billOfMaterial.getBillOfMaterialSet())) {
       Product product = bom.getProduct();
       if (productList != null && !productList.contains(product)) {
         continue;
@@ -963,187 +982,197 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           I18n.get(ProductionExceptionMessage.MANUF_ORDER_NO_GENERATION));
     }
     List<ManufOrder> manufOrderList =
-        manufOrderRepo.all().filter("self.id in (" + Joiner.on(",").join(ids) + ")").fetch();
+        ids != null
+            ? manufOrderRepo.all().filter("self.id in (" + Joiner.on(",").join(ids) + ")").fetch()
+            : new ArrayList<>();
 
     /* Init all the necessary values to create the new Manuf Order */
-    Product product = manufOrderList.get(0).getProduct();
-    StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
-    Company company = manufOrderList.get(0).getCompany();
-    BillOfMaterial billOfMaterial =
-        manufOrderList.stream()
-            .filter(x -> x.getBillOfMaterial().getVersionNumber() == 1)
-            .findFirst()
-            .get()
-            .getBillOfMaterial();
-    int priority = manufOrderList.stream().mapToInt(ManufOrder::getPrioritySelect).max().orElse(2);
-    Unit unit = billOfMaterial.getUnit();
-    BigDecimal qty = BigDecimal.ZERO;
-    String note = "";
+    if (manufOrderList != null) {
+      Product product = manufOrderList.get(0).getProduct();
+      StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
+      Company company = manufOrderList.get(0).getCompany();
+      BillOfMaterial billOfMaterial =
+          manufOrderList.stream()
+              .filter(x -> x.getBillOfMaterial().getVersionNumber() == 1)
+              .findFirst()
+              .get()
+              .getBillOfMaterial();
+      int priority =
+          manufOrderList.stream().mapToInt(ManufOrder::getPrioritySelect).max().orElse(2);
+      Unit unit = billOfMaterial.getUnit();
+      BigDecimal qty = BigDecimal.ZERO;
+      String note = "";
 
-    ManufOrder mergedManufOrder = new ManufOrder();
+      ManufOrder mergedManufOrder = new ManufOrder();
 
-    mergedManufOrder.setMoCommentFromSaleOrder("");
-    mergedManufOrder.setMoCommentFromSaleOrderLine("");
+      mergedManufOrder.setMoCommentFromSaleOrder("");
+      mergedManufOrder.setMoCommentFromSaleOrderLine("");
 
-    for (ManufOrder manufOrder : manufOrderList) {
-      manufOrder.setStatusSelect(ManufOrderRepository.STATUS_MERGED);
+      for (ManufOrder manufOrder : manufOrderList) {
+        manufOrder.setStatusSelect(ManufOrderRepository.STATUS_MERGED);
 
-      manufOrder.setManufOrderMergeResult(mergedManufOrder);
-      for (ProductionOrder productionOrder : manufOrder.getProductionOrderSet()) {
-        mergedManufOrder.addProductionOrderSetItem(productionOrder);
+        manufOrder.setManufOrderMergeResult(mergedManufOrder);
+        for (ProductionOrder productionOrder :
+            SetUtils.emptyIfNull(manufOrder.getProductionOrderSet())) {
+          mergedManufOrder.addProductionOrderSetItem(productionOrder);
+        }
+        for (SaleOrder saleOrder : SetUtils.emptyIfNull(manufOrder.getSaleOrderSet())) {
+          mergedManufOrder.addSaleOrderSetItem(saleOrder);
+        }
+        /*
+         * If unit are the same, then add the qty If not, convert the unit and get the
+         * converted qty
+         */
+        if (manufOrder.getUnit().equals(unit)) {
+          qty = qty.add(manufOrder.getQty());
+        } else {
+          BigDecimal qtyConverted =
+              Beans.get(UnitConversionService.class)
+                  .convert(
+                      manufOrder.getUnit(),
+                      unit,
+                      manufOrder.getQty(),
+                      appBaseService.getNbDecimalDigitForQty(),
+                      null);
+          qty = qty.add(qtyConverted);
+        }
+        if (manufOrder.getNote() != null && !manufOrder.getNote().equals("")) {
+          note += manufOrder.getManufOrderSeq() + " : " + manufOrder.getNote() + "\n";
+        }
+
+        if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
+          mergedManufOrder.setMoCommentFromSaleOrder(
+              mergedManufOrder
+                  .getMoCommentFromSaleOrder()
+                  .concat(System.lineSeparator())
+                  .concat(manufOrder.getMoCommentFromSaleOrder()));
+        }
+
+        if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
+          mergedManufOrder.setMoCommentFromSaleOrderLine(
+              mergedManufOrder
+                  .getMoCommentFromSaleOrderLine()
+                  .concat(System.lineSeparator())
+                  .concat(manufOrder.getMoCommentFromSaleOrderLine()));
+        }
       }
-      for (SaleOrder saleOrder : manufOrder.getSaleOrderSet()) {
-        mergedManufOrder.addSaleOrderSetItem(saleOrder);
-      }
+
+      Optional<LocalDateTime> minDate =
+          manufOrderList.stream()
+              .filter(mo -> mo.getPlannedStartDateT() != null)
+              .map(ManufOrder::getPlannedStartDateT)
+              .min(LocalDateTime::compareTo);
+
+      minDate.ifPresent(mergedManufOrder::setPlannedStartDateT);
+
+      /* Update the created manuf order */
+      mergedManufOrder.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);
+      mergedManufOrder.setProduct(product);
+      mergedManufOrder.setUnit(unit);
+      mergedManufOrder.setWorkshopStockLocation(stockLocation);
+      mergedManufOrder.setQty(qty);
+      mergedManufOrder.setBillOfMaterial(billOfMaterial);
+      mergedManufOrder.setCompany(company);
+      mergedManufOrder.setPrioritySelect(priority);
+      mergedManufOrder.setProdProcess(billOfMaterial.getProdProcess());
+      mergedManufOrder.setNote(note);
+
       /*
-       * If unit are the same, then add the qty If not, convert the unit and get the
-       * converted qty
+       * Check the config to see if you directly plan the created manuf order or just
+       * prefill the operations
        */
-      if (manufOrder.getUnit().equals(unit)) {
-        qty = qty.add(manufOrder.getQty());
+      if (appProductionService.isApp("production")
+          && appProductionService.getAppProduction().getIsManufOrderPlannedAfterMerge()) {
+        manufOrderWorkflowService.plan(mergedManufOrder);
       } else {
-        BigDecimal qtyConverted =
-            Beans.get(UnitConversionService.class)
-                .convert(
-                    manufOrder.getUnit(),
-                    unit,
-                    manufOrder.getQty(),
-                    appBaseService.getNbDecimalDigitForQty(),
-                    null);
-        qty = qty.add(qtyConverted);
-      }
-      if (manufOrder.getNote() != null && !manufOrder.getNote().equals("")) {
-        note += manufOrder.getManufOrderSeq() + " : " + manufOrder.getNote() + "\n";
+        preFillOperations(mergedManufOrder);
       }
 
-      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
-        mergedManufOrder.setMoCommentFromSaleOrder(
-            mergedManufOrder
-                .getMoCommentFromSaleOrder()
-                .concat(System.lineSeparator())
-                .concat(manufOrder.getMoCommentFromSaleOrder()));
-      }
-
-      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
-        mergedManufOrder.setMoCommentFromSaleOrderLine(
-            mergedManufOrder
-                .getMoCommentFromSaleOrderLine()
-                .concat(System.lineSeparator())
-                .concat(manufOrder.getMoCommentFromSaleOrderLine()));
-      }
+      manufOrderRepo.save(mergedManufOrder);
     }
-
-    Optional<LocalDateTime> minDate =
-        manufOrderList.stream()
-            .filter(mo -> mo.getPlannedStartDateT() != null)
-            .map(ManufOrder::getPlannedStartDateT)
-            .min(LocalDateTime::compareTo);
-
-    minDate.ifPresent(mergedManufOrder::setPlannedStartDateT);
-
-    /* Update the created manuf order */
-    mergedManufOrder.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);
-    mergedManufOrder.setProduct(product);
-    mergedManufOrder.setUnit(unit);
-    mergedManufOrder.setWorkshopStockLocation(stockLocation);
-    mergedManufOrder.setQty(qty);
-    mergedManufOrder.setBillOfMaterial(billOfMaterial);
-    mergedManufOrder.setCompany(company);
-    mergedManufOrder.setPrioritySelect(priority);
-    mergedManufOrder.setProdProcess(billOfMaterial.getProdProcess());
-    mergedManufOrder.setNote(note);
-
-    /*
-     * Check the config to see if you directly plan the created manuf order or just
-     * prefill the operations
-     */
-    if (appProductionService.isApp("production")
-        && appProductionService.getAppProduction().getIsManufOrderPlannedAfterMerge()) {
-      manufOrderWorkflowService.plan(mergedManufOrder);
-    } else {
-      preFillOperations(mergedManufOrder);
-    }
-
-    manufOrderRepo.save(mergedManufOrder);
   }
 
   public boolean canMerge(List<Long> ids) {
     List<ManufOrder> manufOrderList =
-        manufOrderRepo.all().filter("self.id in (" + Joiner.on(",").join(ids) + ")").fetch();
+        ids != null
+            ? manufOrderRepo.all().filter("self.id in (" + Joiner.on(",").join(ids) + ")").fetch()
+            : new ArrayList<>();
 
     // I check if all the status of the manuf order in the list are Draft or
     // Planned. If not i can return false
-    boolean allStatusDraftOrPlanned =
-        manufOrderList.stream()
-            .allMatch(
-                x ->
-                    x.getStatusSelect().equals(ManufOrderRepository.STATUS_DRAFT)
-                        || x.getStatusSelect().equals(ManufOrderRepository.STATUS_PLANNED));
-    if (!allStatusDraftOrPlanned) {
-      return false;
-    }
-    // I check if all the products are the same. If not i return false
-    Product product = manufOrderList.get(0).getProduct();
-    boolean allSameProducts = manufOrderList.stream().allMatch(x -> x.getProduct().equals(product));
-    if (!allSameProducts) {
-      return false;
-    }
-
-    // Workshop management must be enabled to do the checking
-    if (appProductionService.getAppProduction().getManageWorkshop()) {
-      // Check if one of the workShopStockLocation is null
-      boolean oneWorkShopIsNull =
-          manufOrderList.stream().anyMatch(x -> x.getWorkshopStockLocation() == null);
-      if (oneWorkShopIsNull) {
-        return false;
-      }
-
-      // I check if all the stockLocation are the same. If not i return false
-      StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
-      boolean allSameLocation =
+    if (manufOrderList != null) {
+      boolean allStatusDraftOrPlanned =
           manufOrderList.stream()
               .allMatch(
                   x ->
-                      x.getWorkshopStockLocation() != null
-                          && x.getWorkshopStockLocation().equals(stockLocation));
-      if (!allSameLocation) {
+                      x.getStatusSelect().equals(ManufOrderRepository.STATUS_DRAFT)
+                          || x.getStatusSelect().equals(ManufOrderRepository.STATUS_PLANNED));
+      if (!allStatusDraftOrPlanned) {
+        return false;
+      }
+      // I check if all the products are the same. If not i return false
+      Product product = manufOrderList.get(0).getProduct();
+      boolean allSameProducts =
+          manufOrderList.stream().allMatch(x -> x.getProduct().equals(product));
+      if (!allSameProducts) {
+        return false;
+      }
+
+      // Workshop management must be enabled to do the checking
+      if (appProductionService.getAppProduction().getManageWorkshop()) {
+        // Check if one of the workShopStockLocation is null
+        boolean oneWorkShopIsNull =
+            manufOrderList.stream().anyMatch(x -> x.getWorkshopStockLocation() == null);
+        if (oneWorkShopIsNull) {
+          return false;
+        }
+
+        // I check if all the stockLocation are the same. If not i return false
+        StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
+        boolean allSameLocation =
+            manufOrderList.stream()
+                .allMatch(
+                    x ->
+                        x.getWorkshopStockLocation() != null
+                            && x.getWorkshopStockLocation().equals(stockLocation));
+        if (!allSameLocation) {
+          return false;
+        }
+      }
+
+      // Check if one of the billOfMaterial is null
+      boolean oneBillOfMaterialIsNull =
+          manufOrderList.stream().anyMatch(x -> x.getBillOfMaterial() == null);
+      if (oneBillOfMaterialIsNull) {
+        return false;
+      }
+
+      // Check if one of the billOfMaterial has his version equal to 1
+      boolean oneBillOfMaterialWithFirstVersion =
+          manufOrderList.stream().anyMatch(x -> x.getBillOfMaterial().getVersionNumber() == 1);
+      if (!oneBillOfMaterialWithFirstVersion) {
+        return false;
+      }
+
+      // I check if all the billOfMaterial are the same. If not i will check
+      // if all version are compatible, and if not i can return false
+      BillOfMaterial billOfMaterial =
+          manufOrderList.stream()
+              .filter(x -> x.getBillOfMaterial().getVersionNumber() == 1)
+              .findFirst()
+              .get()
+              .getBillOfMaterial();
+      boolean allSameOrCompatibleBillOfMaterial =
+          manufOrderList.stream()
+              .allMatch(
+                  x ->
+                      x.getBillOfMaterial().equals(billOfMaterial)
+                          || billOfMaterial.equals(
+                              x.getBillOfMaterial().getOriginalBillOfMaterial()));
+      if (!allSameOrCompatibleBillOfMaterial) {
         return false;
       }
     }
-
-    // Check if one of the billOfMaterial is null
-    boolean oneBillOfMaterialIsNull =
-        manufOrderList.stream().anyMatch(x -> x.getBillOfMaterial() == null);
-    if (oneBillOfMaterialIsNull) {
-      return false;
-    }
-
-    // Check if one of the billOfMaterial has his version equal to 1
-    boolean oneBillOfMaterialWithFirstVersion =
-        manufOrderList.stream().anyMatch(x -> x.getBillOfMaterial().getVersionNumber() == 1);
-    if (!oneBillOfMaterialWithFirstVersion) {
-      return false;
-    }
-
-    // I check if all the billOfMaterial are the same. If not i will check
-    // if all version are compatible, and if not i can return false
-    BillOfMaterial billOfMaterial =
-        manufOrderList.stream()
-            .filter(x -> x.getBillOfMaterial().getVersionNumber() == 1)
-            .findFirst()
-            .get()
-            .getBillOfMaterial();
-    boolean allSameOrCompatibleBillOfMaterial =
-        manufOrderList.stream()
-            .allMatch(
-                x ->
-                    x.getBillOfMaterial().equals(billOfMaterial)
-                        || billOfMaterial.equals(
-                            x.getBillOfMaterial().getOriginalBillOfMaterial()));
-    if (!allSameOrCompatibleBillOfMaterial) {
-      return false;
-    }
-
     return true;
   }
 
@@ -1185,40 +1214,42 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     Map<String, ManufOrder> seqMOMap = new HashMap<>();
     List<ManufOrder> generatedMOList = new ArrayList<>();
 
-    for (Map<String, Object> manufOrderMap : manufOrders) {
-      ManufOrder manufOrder = Mapper.toBean(ManufOrder.class, manufOrderMap);
-      Product product = Beans.get(ProductRepository.class).find(manufOrder.getProduct().getId());
+    if (CollectionUtils.isNotEmpty(manufOrders)) {
+      for (Map<String, Object> manufOrderMap : manufOrders) {
+        ManufOrder manufOrder = Mapper.toBean(ManufOrder.class, manufOrderMap);
+        Product product = Beans.get(ProductRepository.class).find(manufOrder.getProduct().getId());
 
-      String backupSeq = manufOrder.getManualMOSeq();
+        String backupSeq = manufOrder.getManualMOSeq();
 
-      if (manufOrder.getParentMO().getId() != null) {
-        if (!seqMOMap.containsKey(manufOrder.getParentMO().getId().toString())) {
-          seqMOMap.put(manufOrder.getParentMO().getId().toString(), manufOrder.getParentMO());
+        if (manufOrder.getParentMO().getId() != null) {
+          if (!seqMOMap.containsKey(manufOrder.getParentMO().getId().toString())) {
+            seqMOMap.put(manufOrder.getParentMO().getId().toString(), manufOrder.getParentMO());
+          }
+          sequenceParentSeqMap.put(backupSeq, manufOrder.getParentMO().getId().toString());
+        } else {
+          sequenceParentSeqMap.put(backupSeq, manufOrder.getParentMO().getManualMOSeq());
         }
-        sequenceParentSeqMap.put(backupSeq, manufOrder.getParentMO().getId().toString());
-      } else {
-        sequenceParentSeqMap.put(backupSeq, manufOrder.getParentMO().getManualMOSeq());
-      }
 
-      if ((boolean) manufOrderMap.get("selected")) {
-        BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
-        billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+        if ((boolean) manufOrderMap.get("selected")) {
+          BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
+          billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-        manufOrder =
-            generateManufOrder(
-                product,
-                manufOrder.getQty().multiply(billOfMaterial.getQty()),
-                billOfMaterial.getPriority(),
-                IS_TO_INVOICE,
-                billOfMaterial,
-                null,
-                manufOrder.getPlannedStartDateT(),
-                ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
+          manufOrder =
+              generateManufOrder(
+                  product,
+                  manufOrder.getQty().multiply(billOfMaterial.getQty()),
+                  billOfMaterial.getPriority(),
+                  IS_TO_INVOICE,
+                  billOfMaterial,
+                  null,
+                  manufOrder.getPlannedStartDateT(),
+                  ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
-        manufOrder.setManualMOSeq(backupSeq);
-        seqMOMap.put(backupSeq, manufOrder);
-        ids.add(manufOrder.getId());
-        generatedMOList.add(manufOrder);
+          manufOrder.setManualMOSeq(backupSeq);
+          seqMOMap.put(backupSeq, manufOrder);
+          ids.add(manufOrder.getId());
+          generatedMOList.add(manufOrder);
+        }
       }
     }
     this.setParentMos(sequenceParentSeqMap, seqMOMap, generatedMOList);
@@ -1238,26 +1269,31 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
     depth++;
 
-    for (Pair<BillOfMaterial, BigDecimal> childBomPair : childBomList) {
-      BillOfMaterial childBom = childBomPair.getLeft();
-      BigDecimal qtyRequested = childBomPair.getRight();
+    if (childBomList != null) {
+      for (Pair<BillOfMaterial, BigDecimal> childBomPair : childBomList) {
+        BillOfMaterial childBom = childBomPair.getLeft();
+        BigDecimal qtyRequested = childBomPair.getRight();
 
-      ManufOrder childMO =
-          createDraftManufOrder(
-              childBom.getProduct(),
-              qtyRequested,
-              childBom.getPriority(),
-              childBom,
-              null,
-              parentMO.getPlannedStartDateT());
+        ManufOrder childMO =
+            createDraftManufOrder(
+                childBom.getProduct(),
+                qtyRequested,
+                childBom.getPriority(),
+                childBom,
+                null,
+                parentMO.getPlannedStartDateT());
 
-      childMO.setManualMOSeq(this.getManualSequence());
-      childMO.setParentMO(parentMO);
-      manufOrderList.add(childMO);
+        childMO.setManualMOSeq(this.getManualSequence());
+        childMO.setParentMO(parentMO);
+        manufOrderList.add(childMO);
 
-      manufOrderList.addAll(
-          this.generateChildMOs(
-              childMO, getToConsumeSubBomList(childMO.getBillOfMaterial(), childMO, null), depth));
+        manufOrderList.addAll(
+            ListUtils.emptyIfNull(
+                this.generateChildMOs(
+                    childMO,
+                    getToConsumeSubBomList(childMO.getBillOfMaterial(), childMO, null),
+                    depth)));
+      }
     }
     return manufOrderList;
   }
@@ -1271,23 +1307,28 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       Map<String, String> sequenceParentSeqMap,
       Map<String, ManufOrder> seqMOMap,
       List<ManufOrder> generatedMOList) {
-    for (ManufOrder mo : generatedMOList) {
-      String seq = mo.getManualMOSeq();
-      ManufOrder parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, seq);
-      mo.setParentMO(parentMO);
+    if (generatedMOList != null) {
+      for (ManufOrder mo : generatedMOList) {
+        String seq = mo.getManualMOSeq();
+        ManufOrder parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, seq);
+        mo.setParentMO(parentMO);
+      }
     }
   }
 
   protected ManufOrder getParentMO(
       Map<String, String> sequenceParentSeqMap, Map<String, ManufOrder> seqMOMap, String seq) {
     ManufOrder parentMO = null;
-    String parentSeq = sequenceParentSeqMap.get(seq);
 
-    if (seqMOMap.containsKey(parentSeq)) {
-      parentMO = seqMOMap.get(parentSeq);
-      parentMO = manufOrderRepo.find(parentMO.getId());
-    } else {
-      parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, parentSeq);
+    if (sequenceParentSeqMap != null) {
+      String parentSeq = sequenceParentSeqMap.get(seq);
+
+      if (seqMOMap != null && seqMOMap.containsKey(parentSeq)) {
+        parentMO = seqMOMap.get(parentSeq);
+        parentMO = manufOrderRepo.find(parentMO.getId());
+      } else {
+        parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, parentSeq);
+      }
     }
     return parentMO;
   }

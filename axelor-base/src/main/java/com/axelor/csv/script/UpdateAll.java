@@ -22,11 +22,13 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class UpdateAll {
 
@@ -40,11 +42,12 @@ public class UpdateAll {
       assert bean instanceof Company;
       Company company = (Company) bean;
       for (Year year :
-          yearRepo
-              .all()
-              .filter("self.company.id = ?1 AND self.typeSelect = 1", company.getId())
-              .fetch()) {
-        if (!year.getPeriodList().isEmpty()) {
+          ListUtils.emptyIfNull(
+              yearRepo
+                  .all()
+                  .filter("self.company.id = ?1 AND self.typeSelect = 1", company.getId())
+                  .fetch())) {
+        if (CollectionUtils.isNotEmpty(year.getPeriodList())) {
           continue;
         }
         for (Integer month : Arrays.asList(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})) {

@@ -32,6 +32,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDistributionService {
 
@@ -50,47 +51,49 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
 
     List<PaymentMoveLineDistribution> list =
         paymentMvlDistributionRepository.all().filter("self.move = ?1", move).fetch();
-    for (PaymentMoveLineDistribution item : list) {
-      item.setExcludeFromDas2Report(state);
-      paymentMvlDistributionRepository.save(item);
+    if (list != null) {
+      for (PaymentMoveLineDistribution item : list) {
+        item.setExcludeFromDas2Report(state);
+        paymentMvlDistributionRepository.save(item);
+      }
     }
   }
 
   @Override
   @Transactional
   public void generatePaymentMoveLineDistributionList(Move move, Reconcile reconcile) {
+    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      BigDecimal invoiceTotalAmount =
+          move.getMoveLineList().stream()
+              .map(MoveLine::getDebit)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      BigDecimal paymentAmount = reconcile.getAmount();
 
-    BigDecimal invoiceTotalAmount =
-        move.getMoveLineList().stream()
-            .map(MoveLine::getDebit)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-    BigDecimal paymentAmount = reconcile.getAmount();
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        // ignore move lines related to taxes
+        if (moveLine
+            .getAccount()
+            .getAccountType()
+            .getTechnicalTypeSelect()
+            .equals(AccountTypeRepository.TYPE_TAX)) {
+          continue;
+        }
+        PaymentMoveLineDistribution paymentMvlD =
+            new PaymentMoveLineDistribution(
+                move.getPartner(), reconcile, moveLine, move, moveLine.getTaxLine());
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      // ignore move lines related to taxes
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
-        continue;
+        paymentMvlD.setOperationDate(reconcile.getReconciliationDate());
+        if (!moveLine.getAccount().getReconcileOk()) {
+          this.computeProratedAmounts(
+              paymentMvlD,
+              invoiceTotalAmount,
+              paymentAmount,
+              moveLine.getCredit().add(moveLine.getDebit()),
+              moveLine.getTaxLine());
+        }
+        reconcile.addPaymentMoveLineDistributionListItem(paymentMvlD);
       }
-      PaymentMoveLineDistribution paymentMvlD =
-          new PaymentMoveLineDistribution(
-              move.getPartner(), reconcile, moveLine, move, moveLine.getTaxLine());
-
-      paymentMvlD.setOperationDate(reconcile.getReconciliationDate());
-      if (!moveLine.getAccount().getReconcileOk()) {
-        this.computeProratedAmounts(
-            paymentMvlD,
-            invoiceTotalAmount,
-            paymentAmount,
-            moveLine.getCredit().add(moveLine.getDebit()),
-            moveLine.getTaxLine());
-      }
-      reconcile.addPaymentMoveLineDistributionListItem(paymentMvlD);
     }
-
     Beans.get(ReconcileRepository.class).save(reconcile);
   }
 
@@ -99,6 +102,9 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
   public void reversePaymentMoveLineDistributionList(Reconcile reconcile) {
 
     List<PaymentMoveLineDistribution> reverseLines = Lists.newArrayList();
+    if (reconcile.getPaymentMoveLineDistributionList() == null) {
+      return;
+    }
     for (PaymentMoveLineDistribution paymentMvlD : reconcile.getPaymentMoveLineDistributionList()) {
       if (!paymentMvlD.getIsAlreadyReverse()) {
         paymentMvlD.setIsAlreadyReverse(true);
@@ -121,6 +127,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
         reverseLines.add(reversePaymentMvlD);
       }
     }
+
     reconcile.getPaymentMoveLineDistributionList().addAll(reverseLines);
     Beans.get(ReconcileRepository.class).save(reconcile);
   }

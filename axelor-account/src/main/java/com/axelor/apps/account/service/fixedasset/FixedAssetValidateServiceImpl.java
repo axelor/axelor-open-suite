@@ -121,12 +121,14 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
   @Override
   public int massValidation(List<Long> fixedAssetIds) throws AxelorException {
     int count = 0;
-    for (Long id : fixedAssetIds) {
-      FixedAsset fixedAsset = fixedAssetRepo.find(id);
-      if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
-        validate(fixedAsset);
-        JPA.clear();
-        count++;
+    if (fixedAssetIds != null) {
+      for (Long id : fixedAssetIds) {
+        FixedAsset fixedAsset = fixedAssetRepo.find(id);
+        if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
+          validate(fixedAsset);
+          JPA.clear();
+          count++;
+        }
       }
     }
     return count;

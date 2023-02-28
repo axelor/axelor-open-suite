@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -161,8 +162,8 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
               invoicePaymentIdList, companyBankDetails, invoice, accountingBatch.getDueDate());
         } catch (Exception e) {
           incrementAnomaly();
-          anomalyList.add(invoice.getId());
-          query.bind("anomalyList", anomalyList);
+          ListUtils.emptyIfNull(anomalyList).add(invoice.getId());
+          query.bind("anomalyList", ListUtils.emptyIfNull(anomalyList));
           TraceBackService.trace(e, "billOfExchangeBatch: create invoice payment", batch.getId());
           break;
         }
@@ -181,6 +182,9 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
       throws AxelorException {
     log.debug("Creating Invoice payments from {}", invoice);
     invoiceRepository.find(invoice.getId());
+    if (invoicePaymentIdList == null) {
+      invoicePaymentIdList = new ArrayList<>();
+    }
     invoicePaymentIdList.add(
         invoicePaymentCreateService
             .createInvoicePayment(invoice, companyBankDetails, paymentDate)
@@ -210,7 +214,7 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
     bindings.put("statusSelect", InvoiceRepository.STATUS_VENTILATED);
     bindings.put("company", accountingBatch.getCompany());
     bindings.put("paymentMode", accountingBatch.getPaymentMode());
-    bindings.put("anomalyList", anomalyList);
+    bindings.put("anomalyList", ListUtils.emptyIfNull(anomalyList));
     bindings.put("dueDate", accountingBatch.getDueDate());
 
     if (accountingBatch.getDueDate() != null) {

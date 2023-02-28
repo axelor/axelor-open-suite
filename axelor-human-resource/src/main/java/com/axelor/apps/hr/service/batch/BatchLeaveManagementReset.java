@@ -35,6 +35,7 @@ import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchLeaveManagementReset extends BatchLeaveManagement {
 
@@ -54,6 +55,11 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
   }
 
   public void resetLeaveManagementLines(List<Employee> employeeList) {
+
+    if (CollectionUtils.isEmpty(employeeList)) {
+      return;
+    }
+
     for (Employee employee :
         employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
       employee = employeeRepository.find(employee.getId());
@@ -84,15 +90,18 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
       return;
     }
     LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();
-    for (LeaveLine leaveLine : employee.getLeaveLineList()) {
-      if (leaveReason.equals(leaveLine.getLeaveReason())) {
-        leaveManagementService.reset(
-            leaveLine,
-            employeeService.getUser(employee),
-            batch.getHrBatch().getComments(),
-            null,
-            batch.getHrBatch().getStartDate(),
-            batch.getHrBatch().getEndDate());
+
+    if (CollectionUtils.isNotEmpty(employee.getLeaveLineList())) {
+      for (LeaveLine leaveLine : employee.getLeaveLineList()) {
+        if (leaveReason.equals(leaveLine.getLeaveReason())) {
+          leaveManagementService.reset(
+              leaveLine,
+              employeeService.getUser(employee),
+              batch.getHrBatch().getComments(),
+              null,
+              batch.getHrBatch().getStartDate(),
+              batch.getHrBatch().getEndDate());
+        }
       }
     }
   }

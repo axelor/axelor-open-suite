@@ -213,7 +213,7 @@ public class AccountingBatchService extends AbstractBatchService {
               .stream()
                   .sorted(Comparator.comparing(Batch::getStartDate))
                   .collect(Collectors.toList());
-      if (batchList.get(batchList.size() - 1).getAnomaly() > 0) {
+      if (batchList != null && batchList.get(batchList.size() - 1).getAnomaly() > 0) {
         return true;
       }
     }

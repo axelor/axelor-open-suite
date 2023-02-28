@@ -432,12 +432,14 @@ public class ImportCityServiceImpl implements ImportCityService {
     try (FileWriter writer = new FileWriter(cityTextFile)) {
       Set<String> checkDuplicateCitySet = new HashSet<>();
 
-      for (String city : cityList) {
-        String[] cityInfo = city.split(SEPARATOR);
+      if (cityList != null) {
+        for (String city : cityList) {
+          String[] cityInfo = city.split(SEPARATOR);
 
-        if (checkDuplicateCitySet.add(
-            cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
-          writer.write(city.replace("\"", ""));
+          if (checkDuplicateCitySet.add(
+              cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
+            writer.write(city.replace("\"", ""));
+          }
         }
       }
     }
@@ -456,27 +458,29 @@ public class ImportCityServiceImpl implements ImportCityService {
     try (FileWriter writer = new FileWriter(cityTextFile)) {
       Set<String> checkDuplicateCitySet = new HashSet<>();
 
-      for (String city : cityList) {
-        String[] cityInfo = city.split(SEPARATOR);
+      if (cityList != null) {
+        for (String city : cityList) {
+          String[] cityInfo = city.split(SEPARATOR);
 
-        if (checkDuplicateCitySet.add(
-            cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
-          writer.write(
-              String.format(
-                      "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
-                      cityInfo[0],
-                      cityInfo[1],
-                      cityInfo[2],
-                      regionMap.get(cityInfo[3]),
-                      cityInfo[3],
-                      departmentMap.get(cityInfo[4]),
-                      cityInfo[4],
-                      cantonMap.get(cityInfo[5]),
-                      cityInfo[5],
-                      cityInfo[6],
-                      cityInfo[7],
-                      cityInfo[8])
-                  .replace("\"", ""));
+          if (checkDuplicateCitySet.add(
+              cityInfo[1].toLowerCase().concat(cityInfo[2].toLowerCase()))) {
+            writer.write(
+                String.format(
+                        "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
+                        cityInfo[0],
+                        cityInfo[1],
+                        cityInfo[2],
+                        regionMap != null ? regionMap.get(cityInfo[3]) : "",
+                        cityInfo[3],
+                        departmentMap != null ? departmentMap.get(cityInfo[4]) : "",
+                        cityInfo[4],
+                        cantonMap != null ? cantonMap.get(cityInfo[5]) : "",
+                        cityInfo[5],
+                        cityInfo[6],
+                        cityInfo[7],
+                        cityInfo[8])
+                    .replace("\"", ""));
+          }
         }
       }
     }

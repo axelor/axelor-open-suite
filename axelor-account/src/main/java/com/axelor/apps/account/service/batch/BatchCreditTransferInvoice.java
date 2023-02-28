@@ -108,7 +108,8 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
     if (manageMultiBanks) {
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
 
-      if (accountingBatch.getIncludeOtherBankAccounts()) {
+      if (accountingBatch.getIncludeOtherBankAccounts()
+          && accountingBatch.getCompany().getBankDetailsList() != null) {
         bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
       }
 

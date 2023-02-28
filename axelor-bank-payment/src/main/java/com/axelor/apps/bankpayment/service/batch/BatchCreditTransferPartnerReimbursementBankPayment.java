@@ -45,6 +45,7 @@ import java.time.LocalDate;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +99,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
     query.bind("company", accountingBatch.getCompany());
     List<Reimbursement> reimbursementList = query.fetch();
 
-    if (reimbursementList.isEmpty()) {
+    if (CollectionUtils.isEmpty(reimbursementList)) {
       return;
     }
 
@@ -145,23 +146,24 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
             BankOrderRepository.FUNCTIONAL_ORIGIN_BATCH_PAYBACK,
             PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
 
-    for (Reimbursement reimbursement : reimbursementList) {
-      BankOrderLine bankOrderLine =
-          bankOrderLineService.createBankOrderLine(
-              accountingBatch.getPaymentMode().getBankOrderFileFormat(),
-              null,
-              reimbursement.getPartner(),
-              reimbursement.getBankDetails(),
-              reimbursement.getAmountToReimburse(),
-              accountingBatch.getCompany().getCurrency(),
-              bankOrderDate,
-              reimbursement.getRef(),
-              reimbursement.getDescription(),
-              reimbursement);
-      bankOrder.addBankOrderLineListItem(bankOrderLine);
-      reimbursementExportService.reimburse(reimbursement, accountingBatch.getCompany());
+    if (CollectionUtils.isNotEmpty(reimbursementList)) {
+      for (Reimbursement reimbursement : reimbursementList) {
+        BankOrderLine bankOrderLine =
+            bankOrderLineService.createBankOrderLine(
+                accountingBatch.getPaymentMode().getBankOrderFileFormat(),
+                null,
+                reimbursement.getPartner(),
+                reimbursement.getBankDetails(),
+                reimbursement.getAmountToReimburse(),
+                accountingBatch.getCompany().getCurrency(),
+                bankOrderDate,
+                reimbursement.getRef(),
+                reimbursement.getDescription(),
+                reimbursement);
+        bankOrder.addBankOrderLineListItem(bankOrderLine);
+        reimbursementExportService.reimburse(reimbursement, accountingBatch.getCompany());
+      }
     }
-
     bankOrder = bankOrderRepo.save(bankOrder);
     bankOrderService.confirm(bankOrder);
     return bankOrder;

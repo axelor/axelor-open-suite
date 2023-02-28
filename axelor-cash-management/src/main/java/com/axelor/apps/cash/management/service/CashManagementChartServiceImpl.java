@@ -22,6 +22,7 @@ import com.axelor.apps.cash.management.db.ForecastRecap;
 import com.axelor.apps.cash.management.db.ForecastRecapLine;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapLineRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.User;
 import java.math.BigDecimal;
@@ -95,7 +96,7 @@ public class CashManagementChartServiceImpl implements CashManagementChartServic
       List<ForecastRecapLine> recapLineList,
       LocalDate fromDate,
       LocalDate toDate) {
-    return recapLineList.stream()
+    return ListUtils.emptyIfNull(recapLineList).stream()
         .filter(line -> DateTool.isBetween(fromDate, toDate, line.getEstimatedDate()))
         .map(ForecastRecapLine::getAmount)
         .reduce(recap.getStartingBalance(), BigDecimal::add);

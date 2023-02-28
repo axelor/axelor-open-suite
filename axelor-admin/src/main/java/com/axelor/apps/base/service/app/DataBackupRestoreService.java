@@ -138,22 +138,25 @@ public class DataBackupRestoreService {
   public Object importObjectWithByteArray(Object bean, Map<String, Object> values)
       throws IOException {
     assert bean instanceof Model;
-    final Path path = (Path) values.get("__path__");
 
-    Mapper mapper = Mapper.of(bean.getClass());
-    for (String fieldName : values.keySet()) {
-      if (fieldName.startsWith("byte_")) {
-        String fileName = (String) values.get(fieldName);
-        if (Strings.isNullOrEmpty((fileName))) {
-          return bean;
-        }
-        try {
-          final File image = path.resolve(fileName).toFile();
-          byte[] bytes = new byte[(int) image.length()];
-          bytes = java.nio.file.Files.readAllBytes(image.toPath());
-          mapper.set(bean, fieldName.substring(5), bytes);
-        } catch (Exception e) {
-          e.printStackTrace();
+    if (values != null) {
+      final Path path = (Path) values.get("__path__");
+
+      Mapper mapper = Mapper.of(bean.getClass());
+      for (String fieldName : values.keySet()) {
+        if (fieldName.startsWith("byte_")) {
+          String fileName = (String) values.get(fieldName);
+          if (Strings.isNullOrEmpty((fileName))) {
+            return bean;
+          }
+          try {
+            final File image = path.resolve(fileName).toFile();
+            byte[] bytes = new byte[(int) image.length()];
+            bytes = java.nio.file.Files.readAllBytes(image.toPath());
+            mapper.set(bean, fieldName.substring(5), bytes);
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
         }
       }
     }

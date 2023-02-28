@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -63,7 +64,7 @@ public class ExportService {
 
     String indent = "\n" + Strings.repeat("\t", count);
     String indentPlus = "\n" + Strings.repeat("\t", count + 1);
-    for (ActionBuilderLine line : lines) {
+    for (ActionBuilderLine line : ListUtils.emptyIfNull(lines)) {
 
       String source = "";
       String target = "";
@@ -169,7 +170,7 @@ public class ExportService {
     String indent = "\n" + Strings.repeat("\t", count);
     String indentPlus = "\n" + Strings.repeat("\t", count + 1);
 
-    for (WsKeyValue wsKeyValue : wsKeyValues) {
+    for (WsKeyValue wsKeyValue : ListUtils.emptyIfNull(wsKeyValues)) {
       xml +=
           indent
               + "<"

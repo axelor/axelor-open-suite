@@ -94,7 +94,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
     if (inPaymentMode != null) {
       List<BankDetails> authorizedInBankDetails =
           paymentModeService.getCompatibleBankDetailsList(inPaymentMode, company);
-      if (authorizedInBankDetails.contains(defaultBankDetails)) {
+      if (authorizedInBankDetails != null && authorizedInBankDetails.contains(defaultBankDetails)) {
         accountingSituation.setCompanyInBankDetails(defaultBankDetails);
       }
     }
@@ -102,7 +102,8 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
     if (outPaymentMode != null) {
       List<BankDetails> authorizedOutBankDetails =
           paymentModeService.getCompatibleBankDetailsList(outPaymentMode, company);
-      if (authorizedOutBankDetails.contains(defaultBankDetails)) {
+      if (authorizedOutBankDetails != null
+          && authorizedOutBankDetails.contains(defaultBankDetails)) {
         accountingSituation.setCompanyOutBankDetails(defaultBankDetails);
       }
     }

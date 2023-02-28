@@ -22,6 +22,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -43,28 +44,32 @@ public class ManufOrderReservedQtyServiceImpl implements ManufOrderReservedQtySe
 
   @Override
   public void allocateAll(ManufOrder manufOrder) throws AxelorException {
-    for (StockMoveLine stockMoveLine : getPlannedConsumedStockMoveLines(manufOrder)) {
+    for (StockMoveLine stockMoveLine :
+        ListUtils.emptyIfNull(getPlannedConsumedStockMoveLines(manufOrder))) {
       reservedQtyService.allocateAll(stockMoveLine);
     }
   }
 
   @Override
   public void deallocateAll(ManufOrder manufOrder) throws AxelorException {
-    for (StockMoveLine stockMoveLine : getPlannedConsumedStockMoveLines(manufOrder)) {
+    for (StockMoveLine stockMoveLine :
+        ListUtils.emptyIfNull(getPlannedConsumedStockMoveLines(manufOrder))) {
       reservedQtyService.updateReservedQty(stockMoveLine, BigDecimal.ZERO);
     }
   }
 
   @Override
   public void reserveAll(ManufOrder manufOrder) throws AxelorException {
-    for (StockMoveLine stockMoveLine : getPlannedConsumedStockMoveLines(manufOrder)) {
+    for (StockMoveLine stockMoveLine :
+        ListUtils.emptyIfNull(getPlannedConsumedStockMoveLines(manufOrder))) {
       reservedQtyService.requestQty(stockMoveLine);
     }
   }
 
   @Override
   public void cancelReservation(ManufOrder manufOrder) throws AxelorException {
-    for (StockMoveLine stockMoveLine : getPlannedConsumedStockMoveLines(manufOrder)) {
+    for (StockMoveLine stockMoveLine :
+        ListUtils.emptyIfNull(getPlannedConsumedStockMoveLines(manufOrder))) {
       reservedQtyService.cancelReservation(stockMoveLine);
     }
   }

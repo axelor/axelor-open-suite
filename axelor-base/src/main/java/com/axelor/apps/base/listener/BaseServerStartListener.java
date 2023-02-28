@@ -75,7 +75,7 @@ public class BaseServerStartListener {
         }
       }
 
-      if (appList.size() == 0) {
+      if (appList.isEmpty()) {
         return;
       }
 

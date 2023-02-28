@@ -22,6 +22,7 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -47,7 +48,7 @@ public class ProductionOrderSaleOrderController {
       List<Long> productionOrderIdList =
           Beans.get(ProductionOrderSaleOrderService.class).generateProductionOrder(saleOrder);
 
-      if (productionOrderIdList != null && productionOrderIdList.size() == 1) {
+      if (ListUtils.size(productionOrderIdList) == 1) {
         response.setView(
             ActionView.define(I18n.get("Production order"))
                 .model(ProductionOrder.class.getName())
@@ -57,7 +58,7 @@ public class ProductionOrderSaleOrderController {
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(productionOrderIdList.get(0)))
                 .map());
-      } else if (productionOrderIdList != null && productionOrderIdList.size() > 1) {
+      } else if (ListUtils.size(productionOrderIdList) > 1) {
         response.setView(
             ActionView.define(I18n.get("Production order"))
                 .model(ProductionOrder.class.getName())

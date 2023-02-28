@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.GlobalTrackingLog;
 import com.axelor.apps.base.db.GlobalTrackingLogLine;
 import com.axelor.apps.base.db.repo.GlobalTrackingConfigurationLineRepository;
 import com.axelor.apps.base.db.repo.GlobalTrackingLogRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuditInterceptor;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
@@ -89,7 +90,7 @@ public class GlobalAuditTracker {
       configLineList =
           configLineRepo.all().filter("self.metaModel.name = ?", log.getMetaModelName()).fetch();
 
-      if (configLineList.isEmpty()) {
+      if (CollectionUtils.isEmpty(configLineList)) {
         continue;
       }
 
@@ -111,7 +112,7 @@ public class GlobalAuditTracker {
         for (GlobalTrackingLogLine line : log.getGlobalTrackingLogLineList()) {
 
           configLine =
-              configLineList.stream()
+              ListUtils.emptyIfNull(configLineList).stream()
                   .filter(l -> l.getMetaField().getName().equals(line.getMetaFieldName()))
                   .findFirst()
                   .orElse(null);
@@ -137,9 +138,10 @@ public class GlobalAuditTracker {
       }
       if (!logLinesToSave.isEmpty()
           || (GlobalTrackingLogRepository.TYPE_DELETE == log.getTypeSelect()
-              && configLineList.stream()
+              && ListUtils.emptyIfNull(configLineList).stream()
                   .anyMatch(l -> Boolean.TRUE.equals(l.getTrackDeletion())))) {
-        log.getGlobalTrackingLogLineList().stream().forEach(l -> l.setGlobalTrackingLog(null));
+        ListUtils.emptyIfNull(log.getGlobalTrackingLogLineList()).stream()
+            .forEach(l -> l.setGlobalTrackingLog(null));
         logLinesToSave.stream().forEach(l -> l.setGlobalTrackingLog(log));
         log.setUser(user);
         logRepo.save(log);
@@ -258,7 +260,7 @@ public class GlobalAuditTracker {
       String fieldName = newValues.getRole().replace(owner.getClass().getCanonicalName() + ".", "");
 
       GlobalTrackingLog log =
-          LOGS.get().stream()
+          ListUtils.emptyIfNull(LOGS.get()).stream()
               .filter(
                   l ->
                       l.getRelatedId().equals(id)
@@ -284,7 +286,7 @@ public class GlobalAuditTracker {
       }
 
       GlobalTrackingLogLine line =
-          log.getGlobalTrackingLogLineList().stream()
+          ListUtils.emptyIfNull(log.getGlobalTrackingLogLineList()).stream()
               .filter(l -> l.getMetaFieldName().equals(fieldName))
               .findFirst()
               .orElse(null);

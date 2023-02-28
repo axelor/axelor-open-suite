@@ -18,6 +18,7 @@
 package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.TaskTemplate;
+import java.util.HashSet;
 import java.util.Set;
 
 public class TaskTemplateServiceImpl implements TaskTemplateService {
@@ -25,8 +26,11 @@ public class TaskTemplateServiceImpl implements TaskTemplateService {
   @Override
   public Set<TaskTemplate> getParentTaskTemplateFromTaskTemplate(
       TaskTemplate taskTemplate, Set<TaskTemplate> taskTemplateSet) {
-    if (taskTemplate == null || taskTemplateSet.contains(taskTemplate)) {
+    if (taskTemplate == null || taskTemplateSet != null && taskTemplateSet.contains(taskTemplate)) {
       return taskTemplateSet;
+    }
+    if (taskTemplateSet == null) {
+      taskTemplateSet = new HashSet<>();
     }
     taskTemplateSet.add(taskTemplate);
     taskTemplateSet.addAll(

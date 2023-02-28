@@ -45,24 +45,26 @@ public class TeamTaskServiceImpl implements TeamTaskService {
         Beans.get(FrequencyService.class)
             .getDates(frequency, teamTask.getTaskDate(), frequency.getEndDate());
 
-    taskDates.removeIf(date -> date.equals(teamTask.getTaskDate()));
+    if (taskDates != null) {
+      taskDates.removeIf(date -> date.equals(teamTask.getTaskDate()));
 
-    // limit how many TeamTask will be generated at once
-    Integer limitNumberTasksGenerated =
-        Beans.get(AppBaseService.class).getAppBase().getLimitNumberTasksGenerated();
-    if (taskDates.size() > limitNumberTasksGenerated) {
-      taskDates = taskDates.subList(0, limitNumberTasksGenerated);
-    }
+      // limit how many TeamTask will be generated at once
+      Integer limitNumberTasksGenerated =
+          Beans.get(AppBaseService.class).getAppBase().getLimitNumberTasksGenerated();
+      if (taskDates.size() > limitNumberTasksGenerated) {
+        taskDates = taskDates.subList(0, limitNumberTasksGenerated);
+      }
 
-    TeamTask lastTask = teamTask;
-    for (LocalDate date : taskDates) {
-      TeamTask newTeamTask = teamTaskRepo.copy(teamTask, false);
-      setModuleFields(teamTask, date, newTeamTask);
-      teamTaskRepo.save(newTeamTask);
+      TeamTask lastTask = teamTask;
+      for (LocalDate date : taskDates) {
+        TeamTask newTeamTask = teamTaskRepo.copy(teamTask, false);
+        setModuleFields(teamTask, date, newTeamTask);
+        teamTaskRepo.save(newTeamTask);
 
-      lastTask.setNextTeamTask(newTeamTask);
-      teamTaskRepo.save(lastTask);
-      lastTask = newTeamTask;
+        lastTask.setNextTeamTask(newTeamTask);
+        teamTaskRepo.save(lastTask);
+        lastTask = newTeamTask;
+      }
     }
   }
 
@@ -107,8 +109,10 @@ public class TeamTaskServiceImpl implements TeamTaskService {
     teamTask.setHasDateOrFrequencyChanged(false);
     teamTaskRepo.save(teamTask);
 
-    for (TeamTask teamTaskToRemove : teamTasks) {
-      teamTaskRepo.remove(teamTaskToRemove);
+    if (teamTasks != null) {
+      for (TeamTask teamTaskToRemove : teamTasks) {
+        teamTaskRepo.remove(teamTaskToRemove);
+      }
     }
   }
 
@@ -126,7 +130,6 @@ public class TeamTaskServiceImpl implements TeamTaskService {
       tt.setNextTeamTask(null);
       teamTaskRepo.save(tt);
     }
-
     return teamTasks;
   }
 }

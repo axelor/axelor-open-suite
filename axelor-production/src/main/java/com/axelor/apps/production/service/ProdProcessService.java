@@ -28,6 +28,7 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -46,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProdProcessService {
 
@@ -86,10 +88,12 @@ public class ProdProcessService {
     Set<Product> keyList = bomMap.keySet();
     Map<Product, BigDecimal> copyMap = new HashMap<Product, BigDecimal>();
     List<String> nameProductList = new ArrayList<String>();
-    for (Product product : keyList) {
-      if (bomMap.get(product).compareTo(BigDecimal.ZERO) > 0) {
-        copyMap.put(product, bomMap.get(product));
-        nameProductList.add(product.getName());
+    if (keyList != null) {
+      for (Product product : keyList) {
+        if (bomMap.get(product).compareTo(BigDecimal.ZERO) > 0) {
+          copyMap.put(product, bomMap.get(product));
+          nameProductList.add(product.getName());
+        }
       }
     }
     if (!copyMap.isEmpty()) {
@@ -101,8 +105,10 @@ public class ProdProcessService {
   }
 
   public ProdProcess changeProdProcessListOutsourcing(ProdProcess prodProcess) {
-    for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
-      prodProcessLine.setOutsourcing(prodProcess.getOutsourcing());
+    if (prodProcess != null && prodProcess.getProdProcessLineList() != null) {
+      for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
+        prodProcessLine.setOutsourcing(prodProcess.getOutsourcing());
+      }
     }
     return prodProcess;
   }
@@ -134,7 +140,7 @@ public class ProdProcessService {
 
     ProdProcess copy = prodProcessRepo.copy(prodProcess, true);
 
-    copy.getProdProcessLineList().forEach(list -> list.setProdProcess(copy));
+    ListUtils.emptyIfNull(copy.getProdProcessLineList()).forEach(list -> list.setProdProcess(copy));
     copy.setOriginalProdProcess(prodProcess);
     copy.setVersionNumber(
         this.getLatestProdProcessVersion(prodProcess, prodProcess.getVersionNumber(), true) + 1);
@@ -155,7 +161,7 @@ public class ProdProcessService {
               .bind("id", previousId)
               .order("-versionNumber")
               .fetch();
-      if (!prodProcessSet.isEmpty()) {
+      if (CollectionUtils.isNotEmpty(prodProcessSet)) {
         latestVersion =
             (prodProcessSet.get(0).getVersionNumber() > latestVersion)
                 ? prodProcessSet.get(0).getVersionNumber()

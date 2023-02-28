@@ -192,7 +192,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
       parameters.add(parameter);
     }
 
-    if (parameters.size() > 0) {
+    if (!parameters.isEmpty()) {
       fULOrderParams.setParameterArray(parameters.toArray(new Parameter[parameters.size()]));
     }
 

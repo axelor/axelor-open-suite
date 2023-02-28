@@ -83,12 +83,14 @@ public class ExternalReportSettings extends ReportSettings {
 
     addParam("__format", format);
 
-    for (String param : params.keySet()) {
+    if (params != null) {
+      for (String param : params.keySet()) {
 
-      try {
-        this.url += this.computeParam(param);
-      } catch (UnsupportedEncodingException e) {
-        logger.error(e.getLocalizedMessage());
+        try {
+          this.url += this.computeParam(param);
+        } catch (UnsupportedEncodingException e) {
+          logger.error(e.getLocalizedMessage());
+        }
       }
     }
 
@@ -96,7 +98,7 @@ public class ExternalReportSettings extends ReportSettings {
   }
 
   protected String computeParam(String param) throws UnsupportedEncodingException {
-    Object paramValue = params.get(param);
+    Object paramValue = params != null ? params.get(param) : null;
     if (paramValue != null) {
       return "&" + param + "=" + URLEncoder.encode(paramValue.toString(), "UTF-8");
     } else {

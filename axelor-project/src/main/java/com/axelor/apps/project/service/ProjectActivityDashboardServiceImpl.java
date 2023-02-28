@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -80,7 +81,8 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       projectIdSet = projectService.getContextProjectIds();
     }
 
-    for (MailMessage message : mailMessageList) {
+    for (MailMessage message : ListUtils.emptyIfNull(mailMessageList)) {
+
       LocalDateTime createdOn = message.getCreatedOn();
       String date = getActivityDate(createdOn);
 
@@ -108,15 +110,19 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       List<Map<String, List<Map<String, Object>>>> titleMapList =
           activityDataMap.getOrDefault(date, new ArrayList<>());
       Optional<Map<String, List<Map<String, Object>>>> titleMapOptional =
-          titleMapList.stream()
+          ListUtils.emptyIfNull(titleMapList).stream()
               .filter(titleMap -> titleMap.get(message.getRelatedName()) != null)
               .findAny();
       if (titleMapOptional.isPresent()) {
         Map<String, List<Map<String, Object>>> titleMap = titleMapOptional.get();
-        List<Map<String, Object>> activitiyList = titleMap.get(message.getRelatedName());
+        List<Map<String, Object>> activitiyList =
+            titleMap != null ? titleMap.get(message.getRelatedName()) : new ArrayList<>();
         List<Map<String, Object>> newActivityList = new ArrayList<>();
         newActivityList.addAll(activitiyList);
         newActivityList.add(activityMap);
+        if (titleMap == null) {
+          titleMap = new HashMap<>();
+        }
         titleMap.put(message.getRelatedName(), newActivityList);
       } else {
         Map<String, List<Map<String, Object>>> newTitleMap = new HashMap<>();
@@ -125,7 +131,7 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
             Arrays.asList(activityMap));
         titleMapList.add(newTitleMap);
       }
-      activityDataMap.put(date, titleMapList);
+      activityDataMap.put(date, ListUtils.emptyIfNull(titleMapList));
     }
 
     dataMap.put("$startDate", startDate.format(DATE_FORMATTER));
@@ -186,7 +192,8 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
     if (ProjectTask.class.getName().equals(message.getRelatedModel())) {
       ProjectTask projectTask = projectTaskRepo.find(message.getRelatedId());
       if (projectTask != null
-          && (project == null || projectIdSet.contains(projectTask.getProject().getId()))) {
+          && (project == null
+              || projectIdSet != null && projectIdSet.contains(projectTask.getProject().getId()))) {
         return projectTask.getProject();
       }
     } else if (Wiki.class.getName().equals(message.getRelatedModel())) {
@@ -194,7 +201,9 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       if (wiki != null) {
         Project wikiProject = wiki.getProject();
         if (project == null
-            || (wikiProject != null && projectIdSet.contains(wikiProject.getId()))) {
+            || (wikiProject != null
+                && projectIdSet != null
+                && projectIdSet.contains(wikiProject.getId()))) {
           return wikiProject;
         }
       }
@@ -231,21 +240,23 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
 
     final List<Map<String, String>> values = new ArrayList<>();
 
-    for (Map<String, String> item : (List<Map>) bodyData.get("tracks")) {
-      values.add(item);
-      final Property property = mapper.getProperty(item.get("name"));
-      if (property == null || StringUtils.isBlank(property.getSelection())) {
-        continue;
+    if (bodyData != null) {
+      for (Map<String, String> item : (List<Map>) bodyData.get("tracks")) {
+        values.add(item);
+        final Property property = mapper.getProperty(item.get("name"));
+        if (property == null || StringUtils.isBlank(property.getSelection())) {
+          continue;
+        }
+        final Selection.Option d1 =
+            MetaStore.getSelectionItem(property.getSelection(), item.get("value"));
+        final Selection.Option d2 =
+            MetaStore.getSelectionItem(property.getSelection(), item.get("oldValue"));
+        item.put("displayValue", d1 == null ? null : d1.getLocalizedTitle());
+        item.put("oldDisplayValue", d2 == null ? null : d2.getLocalizedTitle());
       }
-      final Selection.Option d1 =
-          MetaStore.getSelectionItem(property.getSelection(), item.get("value"));
-      final Selection.Option d2 =
-          MetaStore.getSelectionItem(property.getSelection(), item.get("oldValue"));
-      item.put("displayValue", d1 == null ? null : d1.getLocalizedTitle());
-      item.put("oldDisplayValue", d2 == null ? null : d2.getLocalizedTitle());
-    }
 
-    bodyData.put("tracks", values);
+      bodyData.put("tracks", values);
+    }
     return bodyData;
   }
 }

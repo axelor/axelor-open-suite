@@ -76,7 +76,10 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
           }
         });
 
-    Integer status = Beans.get(PurchaseOrderRepository.class).find(ids.get(0)).getStatusSelect();
+    Integer status =
+        ids != null
+            ? Beans.get(PurchaseOrderRepository.class).find(ids.get(0)).getStatusSelect()
+            : null;
     String fileName = getPurchaseOrderFilesName(status);
     return PdfTool.mergePdfToFileLink(printedPurchaseOrders, fileName);
   }

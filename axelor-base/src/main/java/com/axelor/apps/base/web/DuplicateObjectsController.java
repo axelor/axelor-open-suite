@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.DuplicateObjectsService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +63,7 @@ public class DuplicateObjectsController {
     selectedIds.add(Long.parseLong(originalId));
     List<Map<String, Object>> duplicateObjects =
         (List<Map<String, Object>>) request.getContext().get("duplicateObjects");
-    for (Map map : duplicateObjects) {
+    for (Map map : ListUtils.emptyIfNull(duplicateObjects)) {
       if (!map.get("recordId").toString().equals(originalId)) {
         selectedIds.add(Long.parseLong(map.get("recordId").toString()));
       }
@@ -85,7 +87,7 @@ public class DuplicateObjectsController {
     List<Object> duplicateObj =
         duplicateObjectsService.getAllSelectedObject(selectedIds, modelName);
 
-    for (Object object : duplicateObj) {
+    for (Object object : ListUtils.emptyIfNull(duplicateObj)) {
       Long id = (Long) Mapper.of(object.getClass()).get(object, "id");
       Property propertyNameColumn = Mapper.of(object.getClass()).getNameField();
       String nameColumn =
@@ -107,16 +109,17 @@ public class DuplicateObjectsController {
         wizardDataList.add(wizard);
       }
     }
-    for (Object[] obj : duplicateObjects) {
-      String recordName = obj[1].toString();
-      String recordId = obj[0].toString();
-      Wizard wizard = new Wizard();
-      wizard.setRecordId(recordId);
-      wizard.setRecordName(recordName);
-      wizard.setName(recordName);
-      wizardDataList.add(wizard);
+    if (duplicateObjects != null) {
+      for (Object[] obj : duplicateObjects) {
+        String recordName = obj[1].toString();
+        String recordId = obj[0].toString();
+        Wizard wizard = new Wizard();
+        wizard.setRecordId(recordId);
+        wizard.setRecordName(recordName);
+        wizard.setName(recordName);
+        wizardDataList.add(wizard);
+      }
     }
-
     response.setAttr("$duplicateObjects", "value", wizardDataList);
   }
 
@@ -127,23 +130,25 @@ public class DuplicateObjectsController {
     Object originalObj = null;
     Object original = "";
     boolean flag = false;
-    for (Map map : duplicateObj) {
-      if ((boolean) map.get("selected")) {
-        originalObj = context.get("originalObject");
-        response.setAttr("$originalObject", "value", map);
-        original = map;
-        flag = true;
+    if (duplicateObj != null) {
+      for (Map map : duplicateObj) {
+        if ((boolean) map.get("selected")) {
+          originalObj = context.get("originalObject");
+          response.setAttr("$originalObject", "value", map);
+          original = map;
+          flag = true;
+        }
       }
-    }
-    if (!flag) {
-      response.setAlert(I18n.get(BaseExceptionMessage.GENERAL_11));
-    }
-    duplicateObj.remove(original);
-    if (originalObj != null) {
-      duplicateObj.add((Map<String, Object>) originalObj);
-    }
+      if (!flag) {
+        response.setAlert(I18n.get(BaseExceptionMessage.GENERAL_11));
+      }
+      duplicateObj.remove(original);
+      if (originalObj != null) {
+        duplicateObj.add((Map<String, Object>) originalObj);
+      }
 
-    response.setAttr("$duplicateObjects", "value", duplicateObj);
+      response.setAttr("$duplicateObjects", "value", duplicateObj);
+    }
   }
 
   /**
@@ -161,7 +166,7 @@ public class DuplicateObjectsController {
 
     LOG.debug("Duplicate record model: {}", modelClass.getName());
 
-    if (fields.size() > 0) {
+    if (!fields.isEmpty()) {
 
       String filter = findDuplicated(request, fields, modelClass);
 
@@ -200,7 +205,7 @@ public class DuplicateObjectsController {
         Beans.get(DuplicateObjectsService.class)
             .findDuplicatedRecordIds(fields, modelClass, getCriteria(request, modelClass));
 
-    if (ids.isEmpty()) {
+    if (CollectionUtils.isEmpty(ids)) {
       return null;
     }
 
@@ -216,7 +221,7 @@ public class DuplicateObjectsController {
     if (model == null) {
       model = request.getModel();
       String duplicateFinderFields = (String) context.get("_duplicateFinderFields");
-      if (duplicateFinderFields != null) {
+      if (duplicateFinderFields != null && fields != null) {
         fields.addAll(Arrays.asList(duplicateFinderFields.split(";")));
       }
     } else {
@@ -224,10 +229,12 @@ public class DuplicateObjectsController {
       if (context.get("fieldsSet") != null) {
         List<HashMap<String, Object>> fieldsSet =
             (List<HashMap<String, Object>>) context.get("fieldsSet");
-        for (HashMap<String, Object> field : fieldsSet) {
-          MetaField metaField = metaFieldRepository.find(((Integer) field.get("id")).longValue());
-          if (metaField != null) {
-            fields.add(metaField.getName());
+        if (fieldsSet != null) {
+          for (HashMap<String, Object> field : fieldsSet) {
+            MetaField metaField = metaFieldRepository.find(((Integer) field.get("id")).longValue());
+            if (metaField != null && fields != null) {
+              fields.add(metaField.getName());
+            }
           }
         }
       }
@@ -275,8 +282,8 @@ public class DuplicateObjectsController {
       List<Map> listObj = request.getCriteria().createQuery(modelClass).select("id").fetch(0, 0);
       if (listObj != null) {
         List<?> ids = listObj.stream().map(it -> it.get("id")).collect(Collectors.toList());
-        LOG.debug("Total criteria ids: {}", ids.size());
-        return "self.id in (" + Joiner.on(",").join(ids) + ")";
+        LOG.debug("Total criteria ids: {}", ListUtils.size(ids));
+        return "self.id in (" + Joiner.on(",").join(ListUtils.emptyIfNull(ids)) + ")";
       }
     }
 

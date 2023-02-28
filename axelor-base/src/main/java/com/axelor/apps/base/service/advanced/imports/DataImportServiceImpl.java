@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.apps.tool.service.TranslationService;
@@ -166,7 +167,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     validatorService.sortFileTabList(advancedImport.getFileTabList());
 
-    for (FileTab fileTab : advancedImport.getFileTabList()) {
+    for (FileTab fileTab : ListUtils.emptyIfNull(advancedImport.getFileTabList())) {
       if (!Arrays.stream(sheets).anyMatch(sheet -> sheet.equals(fileTab.getName()))) {
         continue;
       }
@@ -247,6 +248,9 @@ public class DataImportServiceImpl implements DataImportService {
         continue;
       }
       String value = row[cell].trim();
+      if (map == null) {
+        map = new HashMap<>();
+      }
       map.put(isConfig ? value.contains("(") ? value.split("\\(")[0] : value : value, cell);
     }
 
@@ -256,7 +260,7 @@ public class DataImportServiceImpl implements DataImportService {
     int cnt = 0;
     Map<String, Object> searchMap = new HashMap<String, Object>();
 
-    for (FileField fileField : fileTab.getFileFieldList()) {
+    for (FileField fileField : ListUtils.emptyIfNull(fileTab.getFileFieldList())) {
       if (fileField.getImportType() == FileFieldRepository.IMPORT_TYPE_IGNORE_EMPTY) {
         continue;
       }
@@ -307,7 +311,9 @@ public class DataImportServiceImpl implements DataImportService {
     Map<String, Object> map = isConfig ? fieldMap : titleMap;
     List<String> dataList = new ArrayList<String>();
 
-    for (int fieldIndex = 0; fieldIndex < fileTab.getFileFieldList().size(); fieldIndex++) {
+    for (int fieldIndex = 0;
+        fieldIndex < ListUtils.size(fileTab.getFileFieldList());
+        fieldIndex++) {
       FileField fileField = fileTab.getFileFieldList().get(fieldIndex);
 
       String key = null;
@@ -323,7 +329,7 @@ public class DataImportServiceImpl implements DataImportService {
       }
 
       int cell = 0;
-      if (map.containsKey(key)) {
+      if (map != null && map.containsKey(key)) {
         cell = (int) map.get(key);
       }
 
@@ -355,6 +361,9 @@ public class DataImportServiceImpl implements DataImportService {
             parentProp.getSelection(), dataCell, fileField.getForSelectUse(), dataList);
 
       } else {
+        if (dataList == null) {
+          dataList = new ArrayList<>();
+        }
         dataList.add(dataCell);
       }
     } else {
@@ -387,6 +396,9 @@ public class DataImportServiceImpl implements DataImportService {
           if (!Strings.isNullOrEmpty(childProp.getSelection())) {
             this.writeSelectionData(childProp.getSelection(), dataCell, forSelectUse, dataList);
           } else {
+            if (dataList == null) {
+              dataList = new ArrayList<>();
+            }
             dataList.add(dataCell);
           }
         }
@@ -400,6 +412,9 @@ public class DataImportServiceImpl implements DataImportService {
     String value = this.getSelectionValue(selection, dataCell, forSelectUse);
     if (value == null) {
       return;
+    }
+    if (dataList == null) {
+      dataList = new ArrayList<>();
     }
     dataList.add(value);
   }
@@ -471,6 +486,9 @@ public class DataImportServiceImpl implements DataImportService {
     CSVBind dummyBind = null;
     if (!fileField.getIsMatchWithFile()) {
       dummyBind = this.createCSVBind(null, column, null, null, null, null);
+      if (allBindings == null) {
+        allBindings = new ArrayList<>();
+      }
       allBindings.add(0, dummyBind);
     }
 
@@ -492,6 +510,9 @@ public class DataImportServiceImpl implements DataImportService {
         bind = this.createCSVBind(column, prop.getName(), null, expression, adapter, null);
         this.setImportIf(prop, bind, column);
       }
+      if (allBindings == null) {
+        allBindings = new ArrayList<>();
+      }
       allBindings.add(bind);
 
     } else {
@@ -504,6 +525,9 @@ public class DataImportServiceImpl implements DataImportService {
       } else {
         parentBind = this.createCSVBind(null, prop.getName(), null, null, null, true);
         parentBind.setBindings(new ArrayList<>());
+        if (allBindings == null) {
+          allBindings = new ArrayList<>();
+        }
         allBindings.add(parentBind);
         parentBindMap.put(prop.getName(), parentBind);
       }

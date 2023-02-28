@@ -32,6 +32,7 @@ import com.google.inject.Inject;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 
 public class ProductStockRepositorySave {
@@ -67,6 +68,7 @@ public class ProductStockRepositorySave {
     for (StockConfig stockConfig : stockConfigList) {
       Company company = stockConfig.getCompany();
       if (company != null
+          && productCompanies != null
           && !productCompanies.contains(company)
           && stockConfig.getReceiptDefaultStockLocation() != null
           && (company.getArchived() == null || !company.getArchived())) {
@@ -82,11 +84,12 @@ public class ProductStockRepositorySave {
     Mapper mapper = Mapper.of(Product.class);
 
     ProductCompany productCompany = new ProductCompany();
-    for (MetaField specificField : specificProductFieldSet) {
-      mapper.set(
-          productCompany, specificField.getName(), mapper.get(product, specificField.getName()));
+    if (CollectionUtils.isNotEmpty(specificProductFieldSet)) {
+      for (MetaField specificField : specificProductFieldSet) {
+        mapper.set(
+            productCompany, specificField.getName(), mapper.get(product, specificField.getName()));
+      }
     }
-
     // specific case for avgPrice per company
     productCompany.setAvgPrice(
         weightedAveragePriceService.computeAvgPriceForCompany(product, company));

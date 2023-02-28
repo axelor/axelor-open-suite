@@ -23,6 +23,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -50,7 +51,7 @@ public class InvoiceController {
       response.setFlash(
           String.format(
               I18n.get(SupplychainExceptionMessage.TOTAL_SUBSCRIPTION_INVOICE_GENERATED),
-              invoices.size()));
+              ListUtils.size(invoices)));
 
       if (!CollectionUtils.isEmpty(invoices)) {
         response.setReload(true);

@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchUpdateTaskService extends AbstractBatch {
 
@@ -92,7 +93,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     int offset = 0;
     List<ProjectTask> taskList;
 
-    while (!(taskList = taskQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (CollectionUtils.isNotEmpty((taskList = taskQuery.fetch(FETCH_LIMIT, offset)))) {
       findBatch();
       for (ProjectTask projectTask : taskList) {
         try {
@@ -130,7 +131,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     List<ProjectTask> taskList;
     List<Object> updatedTaskList = new ArrayList<Object>();
 
-    while (!(taskList = taskQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (CollectionUtils.isNotEmpty((taskList = taskQuery.fetch(FETCH_LIMIT, offset)))) {
       findBatch();
       offset += taskList.size();
       for (ProjectTask projectTask : taskList) {
@@ -174,7 +175,8 @@ public class BatchUpdateTaskService extends AbstractBatch {
     int offset = 0;
     List<TimesheetLine> timesheetLineList;
 
-    while (!(timesheetLineList = timesheetLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (CollectionUtils.isNotEmpty(
+        (timesheetLineList = timesheetLineQuery.fetch(FETCH_LIMIT, offset)))) {
       findBatch();
       offset += timesheetLineList.size();
       for (TimesheetLine timesheetLine : timesheetLineList) {

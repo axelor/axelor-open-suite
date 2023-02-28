@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.FileSourceConnector;
 import com.axelor.apps.base.db.FileSourceConnectorParameters;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.tool.SFTPUtils;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -73,7 +74,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
       SftpProgressMonitor monitor = createMonitor();
 
       try {
-        for (MetaFile file : files) {
+        for (MetaFile file : ListUtils.emptyIfNull(files)) {
           try (FileInputStream inputStream =
               new FileInputStream(MetaFiles.getPath(file).toFile())) {
             SFTPUtils.put(channel, inputStream, file.getFileName(), monitor);
@@ -110,7 +111,7 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
         SftpProgressMonitor monitor = createMonitor();
         String fileNamingRule =
             parameter.getFileNamingRule() == null ? "" : parameter.getFileNamingRule();
-        return lsEntries.stream()
+        return ListUtils.emptyIfNull(lsEntries).stream()
             .filter(
                 lsEntry ->
                     lsEntry.getFilename().matches(String.format(".*%s.*", fileNamingRule))

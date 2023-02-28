@@ -51,6 +51,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,20 +155,22 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       FixedAssetDerogatoryLine fixedAssetDerogatoryLine, FixedAsset fixedAsset) {
     List<FixedAssetDerogatoryLine> fixedAssetLineList =
         fixedAsset.getFixedAssetDerogatoryLineList();
-    fixedAssetLineList.sort(
-        (line1, line2) -> line1.getDepreciationDate().compareTo(line2.getDepreciationDate()));
-    for (int i = 0; i < fixedAssetLineList.size(); i++) {
-      if (fixedAssetDerogatoryLine
-          .getDepreciationDate()
-          .equals(fixedAssetLineList.get(i).getDepreciationDate())) {
-        if (i > 0) {
-          if (fixedAssetLineList.get(i - 1).getStatusSelect()
-              != FixedAssetLineRepository.STATUS_REALIZED) {
-            return false;
+    if (CollectionUtils.isNotEmpty(fixedAssetLineList)) {
+      fixedAssetLineList.sort(
+          (line1, line2) -> line1.getDepreciationDate().compareTo(line2.getDepreciationDate()));
+      for (int i = 0; i < fixedAssetLineList.size(); i++) {
+        if (fixedAssetDerogatoryLine
+            .getDepreciationDate()
+            .equals(fixedAssetLineList.get(i).getDepreciationDate())) {
+          if (i > 0) {
+            if (fixedAssetLineList.get(i - 1).getStatusSelect()
+                != FixedAssetLineRepository.STATUS_REALIZED) {
+              return false;
+            }
+            return true;
           }
           return true;
         }
-        return true;
       }
     }
     return true;

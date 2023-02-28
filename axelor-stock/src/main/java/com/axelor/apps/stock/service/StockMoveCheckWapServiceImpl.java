@@ -34,6 +34,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockMoveCheckWapServiceImpl implements StockMoveCheckWapService {
 
@@ -58,26 +59,29 @@ public class StockMoveCheckWapServiceImpl implements StockMoveCheckWapService {
   public String checkWap(StockMove stockMove) throws AxelorException {
     List<String> productsWithErrors = new ArrayList<>();
 
-    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+    if (CollectionUtils.isNotEmpty(stockMove.getStockMoveLineList())) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
-      Product product = stockMoveLine.getProduct();
+        Product product = stockMoveLine.getProduct();
 
-      if (product != null
-          && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+        if (product != null
+            && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
 
-        StockLocation toStockLocation = stockMove.getToStockLocation();
-        StockLocationLine stockLocationLine =
-            stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
-        if (!product.getStockManaged()
-            || toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL
-            || stockLocationLine == null
-            || stockLocationLine.getAvgPrice().compareTo(BigDecimal.ZERO) == 0) {
-          continue;
-        }
+          StockLocation toStockLocation = stockMove.getToStockLocation();
+          StockLocationLine stockLocationLine =
+              stockLocationLineService.getStockLocationLine(
+                  stockMove.getToStockLocation(), product);
+          if (!product.getStockManaged()
+              || toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL
+              || stockLocationLine == null
+              || stockLocationLine.getAvgPrice().compareTo(BigDecimal.ZERO) == 0) {
+            continue;
+          }
 
-        if (checkPercentToleranceForWapChange(stockLocationLine, stockMoveLine)) {
-          productsWithErrors.add(
-              (String) productCompanyService.get(product, "name", stockMove.getCompany()));
+          if (checkPercentToleranceForWapChange(stockLocationLine, stockMoveLine)) {
+            productsWithErrors.add(
+                (String) productCompanyService.get(product, "name", stockMove.getCompany()));
+          }
         }
       }
     }

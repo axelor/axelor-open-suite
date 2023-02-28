@@ -23,6 +23,7 @@ import com.axelor.apps.bpm.db.WkfProcessConfig;
 import com.axelor.apps.bpm.db.WkfTaskConfig;
 import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -54,28 +55,31 @@ public class BpmManagerDashboardTaskServiceImpl implements BpmManagerDashboardTa
       String taskByProcessType,
       List<Map<String, Object>> dataMapList) {
 
-    Map<String, Object> taskMap = (Map<String, Object>) _map.get("tasks");
+    Map<String, Object> taskMap =
+        _map != null ? (Map<String, Object>) _map.get("tasks") : new HashMap<>();
 
-    List<Long> lateTaskIds = (List<Long>) taskMap.get("lateTaskIds");
-    List<Long> taskTodayIds = (List<Long>) taskMap.get("taskTodayIds");
-    List<Long> taskNextIds = (List<Long>) taskMap.get("taskNextIds");
+    if (taskMap != null) {
+      List<Long> lateTaskIds = (List<Long>) taskMap.get("lateTaskIds");
+      List<Long> taskTodayIds = (List<Long>) taskMap.get("taskTodayIds");
+      List<Long> taskNextIds = (List<Long>) taskMap.get("taskNextIds");
 
-    int nonTaskCnt = taskTodayIds.size() + taskNextIds.size();
+      int nonTaskCnt = ListUtils.size(taskTodayIds) + ListUtils.size(taskNextIds);
 
-    final String processName =
-        (!StringUtils.isBlank(process.getDescription())
-            ? process.getDescription()
-            : process.getName());
+      final String processName =
+          (!StringUtils.isBlank(process.getDescription())
+              ? process.getDescription()
+              : process.getName());
 
-    Map<String, Object> dataMap = new HashMap<>();
-    dataMap.put("model", taskMap.get("modelName").toString());
-    dataMap.put(
-        "total",
-        taskByProcessType.equals(WkfDashboardCommonService.LATE_TASK)
-            ? lateTaskIds.size()
-            : taskByProcessType.equals(WkfDashboardCommonService.NON_LATE_TASK) ? nonTaskCnt : 0);
-    dataMap.put("process", processName);
-    dataMapList.add(dataMap);
+      Map<String, Object> dataMap = new HashMap<>();
+      dataMap.put("model", taskMap.get("modelName").toString());
+      dataMap.put(
+          "total",
+          taskByProcessType.equals(WkfDashboardCommonService.LATE_TASK)
+              ? ListUtils.size(lateTaskIds)
+              : taskByProcessType.equals(WkfDashboardCommonService.NON_LATE_TASK) ? nonTaskCnt : 0);
+      dataMap.put("process", processName);
+      ListUtils.emptyIfNull(dataMapList).add(dataMap);
+    }
   }
 
   @Override
@@ -91,7 +95,7 @@ public class BpmManagerDashboardTaskServiceImpl implements BpmManagerDashboardTa
     WkfProcess process = processList.get(0);
 
     WkfProcessConfig processConfig =
-        process.getWkfProcessConfigList().stream()
+        ListUtils.emptyIfNull(process.getWkfProcessConfigList()).stream()
             .filter(
                 config ->
                     (config.getMetaModel() != null && config.getMetaModel().getName().equals(model))
@@ -109,7 +113,7 @@ public class BpmManagerDashboardTaskServiceImpl implements BpmManagerDashboardTa
     List<Long> recordIds =
         this.computeTaskByProcessConfig(modelName, isMetaModel, process, wkfModel, typeSelect);
 
-    if (!CollectionUtils.isEmpty(recordIds)) {
+    if (CollectionUtils.isNotEmpty(recordIds)) {
       dataMap.put("modelName", modelName);
       dataMap.put("isMetaModel", isMetaModel);
       dataMap.put("recordIds", recordIds);
@@ -139,24 +143,25 @@ public class BpmManagerDashboardTaskServiceImpl implements BpmManagerDashboardTa
 
     List<Long> recordIds = new ArrayList<>();
 
-    taskConfigs.forEach(
-        config -> {
-          List<String> processInstanceIds =
-              wkfInstanceService.findProcessInstanceByNode(
-                  config.getName(), config.getProcessId(), config.getType(), false);
+    ListUtils.emptyIfNull(taskConfigs)
+        .forEach(
+            config -> {
+              List<String> processInstanceIds =
+                  wkfInstanceService.findProcessInstanceByNode(
+                      config.getName(), config.getProcessId(), config.getType(), false);
 
-          Map<String, Object> taskMap = new HashMap<>();
-          wkfDashboardCommonService.getTasks(
-              config, processInstanceIds, modelName, isMetaModel, null, taskMap, null, null);
+              Map<String, Object> taskMap = new HashMap<>();
+              wkfDashboardCommonService.getTasks(
+                  config, processInstanceIds, modelName, isMetaModel, null, taskMap, null, null);
 
-          if (typeSelect.equals(WkfDashboardCommonService.NON_LATE_TASK)) {
-            recordIds.addAll(((List<Long>) taskMap.get("taskTodayIds")));
-            recordIds.addAll(((List<Long>) taskMap.get("taskNextIds")));
+              if (typeSelect.equals(WkfDashboardCommonService.NON_LATE_TASK)) {
+                recordIds.addAll(((List<Long>) taskMap.get("taskTodayIds")));
+                recordIds.addAll(((List<Long>) taskMap.get("taskNextIds")));
 
-          } else if (typeSelect.equals(WkfDashboardCommonService.LATE_TASK)) {
-            recordIds.addAll((List<Long>) taskMap.get("lateTaskIds"));
-          }
-        });
+              } else if (typeSelect.equals(WkfDashboardCommonService.LATE_TASK)) {
+                recordIds.addAll((List<Long>) taskMap.get("lateTaskIds"));
+              }
+            });
     return recordIds;
   }
 
@@ -173,62 +178,63 @@ public class BpmManagerDashboardTaskServiceImpl implements BpmManagerDashboardTa
       Map<String, Object> lateTaskMap = new HashMap<>();
       Map<String, Object> validatedTaskMap = new HashMap<>();
 
-      for (WkfTaskConfig config : taskConfigs) {
-        List<String> validatedTaskInstanceIds =
-            wkfInstanceService.findProcessInstanceByNode(
-                config.getName(), config.getProcessId(), config.getType(), true);
+      if (CollectionUtils.isNotEmpty(taskConfigs)) {
+        for (WkfTaskConfig config : taskConfigs) {
+          List<String> validatedTaskInstanceIds =
+              wkfInstanceService.findProcessInstanceByNode(
+                  config.getName(), config.getProcessId(), config.getType(), true);
 
-        List<String> lateTaskInstanceIds =
-            wkfInstanceService.findProcessInstanceByNode(
-                config.getName(), config.getProcessId(), config.getType(), false);
+          List<String> lateTaskInstanceIds =
+              wkfInstanceService.findProcessInstanceByNode(
+                  config.getName(), config.getProcessId(), config.getType(), false);
 
-        boolean isMetaModel = StringUtils.isNotEmpty(config.getModelName());
-        String modelName = isMetaModel ? config.getModelName() : config.getJsonModelName();
+          boolean isMetaModel = StringUtils.isNotEmpty(config.getModelName());
+          String modelName = isMetaModel ? config.getModelName() : config.getJsonModelName();
 
-        String qry =
-            "SELECT COUNT(task.id_) AS total FROM act_hi_taskinst task "
-                + "WHERE task.proc_def_id_ = :processInstanceId "
-                + "AND task.name_ = :status "
-                + "AND task.proc_inst_id_ IN (:instanceId) "
-                + "AND DATE(task.end_time_) = :toDate";
+          String qry =
+              "SELECT COUNT(task.id_) AS total FROM act_hi_taskinst task "
+                  + "WHERE task.proc_def_id_ = :processInstanceId "
+                  + "AND task.name_ = :status "
+                  + "AND task.proc_inst_id_ IN (:instanceId) "
+                  + "AND DATE(task.end_time_) = :toDate";
 
-        Query query = JPA.em().createNativeQuery(qry);
-        query.setParameter(
-            "processInstanceId",
-            !Strings.isNullOrEmpty(config.getProcessId()) ? config.getProcessId() : "");
-        query.setParameter("status", config.getDescription());
-        query.setParameter("toDate", date);
-        query.setParameter("instanceId", validatedTaskInstanceIds);
-        validatedTaskCnt += ((BigInteger) query.getSingleResult()).intValue();
+          Query query = JPA.em().createNativeQuery(qry);
+          query.setParameter(
+              "processInstanceId",
+              !Strings.isNullOrEmpty(config.getProcessId()) ? config.getProcessId() : "");
+          query.setParameter("status", config.getDescription());
+          query.setParameter("toDate", date);
+          query.setParameter("instanceId", ListUtils.emptyIfNull(validatedTaskInstanceIds));
+          validatedTaskCnt += ((BigInteger) query.getSingleResult()).intValue();
 
-        if (!isMetaModel) {
-          List<MetaJsonRecord> lateTaskRecords =
-              wkfDashboardCommonService.getMetaJsonRecords(
-                  config,
-                  lateTaskInstanceIds,
-                  modelName,
-                  null,
-                  WkfDashboardCommonService.LATE_TASK,
-                  null,
-                  date);
+          if (!isMetaModel) {
+            List<MetaJsonRecord> lateTaskRecords =
+                wkfDashboardCommonService.getMetaJsonRecords(
+                    config,
+                    lateTaskInstanceIds,
+                    modelName,
+                    null,
+                    WkfDashboardCommonService.LATE_TASK,
+                    null,
+                    date);
 
-          lateTaskCnt += lateTaskRecords.size();
+            lateTaskCnt += ListUtils.size(lateTaskRecords);
 
-        } else {
-          List<Model> lateTaskRecords =
-              wkfDashboardCommonService.getMetaModelRecords(
-                  config,
-                  lateTaskInstanceIds,
-                  modelName,
-                  null,
-                  WkfDashboardCommonService.LATE_TASK,
-                  null,
-                  date);
+          } else {
+            List<Model> lateTaskRecords =
+                wkfDashboardCommonService.getMetaModelRecords(
+                    config,
+                    lateTaskInstanceIds,
+                    modelName,
+                    null,
+                    WkfDashboardCommonService.LATE_TASK,
+                    null,
+                    date);
 
-          lateTaskCnt += lateTaskRecords.size();
+            lateTaskCnt += ListUtils.size(lateTaskRecords);
+          }
         }
       }
-
       lateTaskMap.put("status", WkfDashboardCommonService.NUM_LATE_TASK);
       lateTaskMap.put("total", lateTaskCnt);
       lateTaskMap.put("dates", date.toString());

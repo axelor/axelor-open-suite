@@ -81,9 +81,10 @@ public class WsAuthenticatorServiceImpl implements WsAuthenticatorService {
 
     try {
       URIBuilder uriBuilder = new URIBuilder(url);
-
-      for (WsKeyValue wsKeyValue : authRequest.getPayLoadWsKeyValueList()) {
-        uriBuilder.addParameter(wsKeyValue.getWsKey(), wsKeyValue.getWsValue());
+      if (authRequest.getPayLoadWsKeyValueList() != null) {
+        for (WsKeyValue wsKeyValue : authRequest.getPayLoadWsKeyValueList()) {
+          uriBuilder.addParameter(wsKeyValue.getWsKey(), wsKeyValue.getWsValue());
+        }
       }
 
       uriBuilder.addParameter("state", wsAuthenticator.getId().toString());

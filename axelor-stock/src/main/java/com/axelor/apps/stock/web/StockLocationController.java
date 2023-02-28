@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -63,7 +64,8 @@ public class StockLocationController {
       @SuppressWarnings("unchecked")
       LinkedHashMap<String, Object> stockLocationMap =
           (LinkedHashMap<String, Object>) context.get("_stockLocation");
-      Integer stockLocationId = (Integer) stockLocationMap.get("id");
+      Integer stockLocationId =
+          stockLocationMap != null ? (Integer) stockLocationMap.get("id") : null;
       StockLocationService stockLocationService = Beans.get(StockLocationService.class);
       StockLocationRepository stockLocationRepository = Beans.get(StockLocationRepository.class);
 
@@ -89,7 +91,9 @@ public class StockLocationController {
 
       if (!locationIds.equals("")) {
         locationIds = locationIds.substring(0, locationIds.length() - 1);
-        stockLocation = stockLocationRepository.find(new Long(lstSelectedLocations.get(0)));
+        stockLocation =
+            stockLocationRepository.find(
+                new Long(ListUtils.emptyIfNull(lstSelectedLocations).get(0)));
       } else if (stockLocation != null && stockLocation.getId() != null) {
         Set<Long> idSet =
             stockLocationService.getContentStockLocationIds(
@@ -161,7 +165,7 @@ public class StockLocationController {
             .param("show-toolbar", "false")
             .param("show-confirm", "false")
             .param("popup-save", "false")
-            .context("_ids", lstSelectedLocations)
+            .context("_ids", ListUtils.emptyIfNull(lstSelectedLocations))
             .context("_stockLocation", stockLocation)
             .map());
   }

@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MrpForecastProductionServiceImpl implements MrpForecastProductionService {
 
@@ -44,20 +45,25 @@ public class MrpForecastProductionServiceImpl implements MrpForecastProductionSe
       int technicalOrigin) {
     LocalDate forecastDate = period.getToDate();
 
-    for (LinkedHashMap<String, Object> mrpForecastItem : mrpForecastList) {
-      Long id =
-          mrpForecastItem.get("id") != null
-              ? Long.parseLong(mrpForecastItem.get("id").toString())
-              : null;
-      BigDecimal qty = new BigDecimal(mrpForecastItem.get("qty").toString());
-      @SuppressWarnings("unchecked")
-      LinkedHashMap<String, Object> productMap =
-          (LinkedHashMap<String, Object>) mrpForecastItem.get("product");
-      Product product = productRepo.find(Long.parseLong(productMap.get("id").toString()));
-      if (id != null && qty.compareTo(BigDecimal.ZERO) == 0) {
-        this.RemoveMrpForecast(id);
-      } else if (qty.compareTo(BigDecimal.ZERO) != 0) {
-        this.createMrpForecast(id, forecastDate, product, stockLocation, qty, technicalOrigin);
+    if (CollectionUtils.isNotEmpty(mrpForecastList)) {
+      for (LinkedHashMap<String, Object> mrpForecastItem : mrpForecastList) {
+        Long id =
+            mrpForecastItem.get("id") != null
+                ? Long.parseLong(mrpForecastItem.get("id").toString())
+                : null;
+        BigDecimal qty = new BigDecimal(mrpForecastItem.get("qty").toString());
+        @SuppressWarnings("unchecked")
+        LinkedHashMap<String, Object> productMap =
+            (LinkedHashMap<String, Object>) mrpForecastItem.get("product");
+        Product product =
+            productMap != null
+                ? productRepo.find(Long.parseLong(productMap.get("id").toString()))
+                : null;
+        if (id != null && qty.compareTo(BigDecimal.ZERO) == 0) {
+          this.RemoveMrpForecast(id);
+        } else if (qty.compareTo(BigDecimal.ZERO) != 0) {
+          this.createMrpForecast(id, forecastDate, product, stockLocation, qty, technicalOrigin);
+        }
       }
     }
   }

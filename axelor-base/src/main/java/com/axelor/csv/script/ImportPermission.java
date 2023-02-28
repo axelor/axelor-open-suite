@@ -17,6 +17,7 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
@@ -44,14 +45,15 @@ public class ImportPermission {
       GroupRepository groupRepository = Beans.get(GroupRepository.class);
 
       Permission permission = (Permission) bean;
-      String groups = (String) values.get("group");
+      String groups = values != null ? (String) values.get("group") : "";
       if (permission.getId() != null) {
         if (groups != null && !groups.isEmpty()) {
           for (Group group :
-              groupRepository
-                  .all()
-                  .filter("code in ?1", Arrays.asList(groups.split("\\|")))
-                  .fetch()) {
+              ListUtils.emptyIfNull(
+                  groupRepository
+                      .all()
+                      .filter("code in ?1", Arrays.asList(groups.split("\\|")))
+                      .fetch())) {
             Set<Permission> permissions = group.getPermissions();
             if (permissions == null) permissions = new HashSet<Permission>();
             permissions.add(permissionRepo.find(permission.getId()));
@@ -73,7 +75,7 @@ public class ImportPermission {
     assert bean instanceof Permission;
 
     Permission permission = (Permission) bean;
-    String roleName = values.get("roleName").toString();
+    String roleName = values != null ? values.get("roleName").toString() : "";
     if (Strings.isNullOrEmpty(roleName)) {
       return bean;
     }

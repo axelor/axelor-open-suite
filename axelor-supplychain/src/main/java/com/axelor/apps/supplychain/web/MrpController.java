@@ -26,6 +26,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
 import com.axelor.apps.supplychain.service.MrpService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -185,7 +186,10 @@ public class MrpController {
           Beans.get(MrpFilterSaleOrderLineService.class)
               .getSaleOrderLinesComplyingToMrpLineTypes(mrp);
 
-      String idListStr = idList.stream().map(Object::toString).collect(Collectors.joining(","));
+      String idListStr =
+          ListUtils.emptyIfNull(idList).stream()
+              .map(Object::toString)
+              .collect(Collectors.joining(","));
 
       response.setAttr("saleOrderLineSet", "domain", "self.id IN (" + idListStr + ")");
     } catch (Exception e) {

@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.db.repo.FileTabRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.common.Inflector;
@@ -141,7 +142,7 @@ public class ValidatorService {
 
     sortFileTabList(advancedImport.getFileTabList());
 
-    for (FileTab fileTab : advancedImport.getFileTabList()) {
+    for (FileTab fileTab : ListUtils.emptyIfNull(advancedImport.getFileTabList())) {
       if (!Arrays.stream(sheets).anyMatch(sheet -> sheet.equals(fileTab.getName()))) {
         continue;
       }
@@ -200,7 +201,7 @@ public class ValidatorService {
     }
     List<String> sheetList = Arrays.asList(sheets);
     List<String> tabList =
-        advancedImport.getFileTabList().stream()
+        ListUtils.emptyIfNull(advancedImport.getFileTabList()).stream()
             .map(tab -> tab.getName())
             .collect(Collectors.toList());
 
@@ -318,6 +319,9 @@ public class ValidatorService {
         continue;
       }
       value = value.trim();
+      if (map == null) {
+        map = new HashMap<>();
+      }
       map.put(isConfig ? value.contains("(") ? value.split("\\(")[0] : value : value, cell);
       if (cell == row.length - 1) {
         this.validateFields(startIndex, isConfig, fileTab);
@@ -348,44 +352,50 @@ public class ValidatorService {
       throws IOException, ClassNotFoundException {
 
     List<String> relationalFieldList =
-        fileTab.getFileFieldList().stream()
+        ListUtils.emptyIfNull(fileTab.getFileFieldList()).stream()
             .filter(field -> !Strings.isNullOrEmpty(field.getSubImportField()))
             .map(field -> field.getImportField().getName() + "." + field.getSubImportField())
             .collect(Collectors.toList());
 
-    for (FileField fileField : fileTab.getFileFieldList()) {
-      MetaField importField = fileField.getImportField();
+    if (CollectionUtils.isNotEmpty(fileTab.getFileFieldList())) {
+      for (FileField fileField : fileTab.getFileFieldList()) {
+        MetaField importField = fileField.getImportField();
 
-      if (importField != null && Strings.isNullOrEmpty(fileField.getSubImportField())) {
-        if (importField.getRelationship() != null) {
-          logService.addLog(
-              BaseExceptionMessage.ADVANCED_IMPORT_LOG_4, importField.getName(), line);
-        }
+        if (importField != null && Strings.isNullOrEmpty(fileField.getSubImportField())) {
+          if (importField.getRelationship() != null) {
+            logService.addLog(
+                BaseExceptionMessage.ADVANCED_IMPORT_LOG_4, importField.getName(), line);
+          }
 
-        this.validateImportRequiredField(
-            line,
-            Class.forName(fileTab.getMetaModel().getFullName()),
-            importField.getName(),
-            fileField,
-            null);
-
-        this.validateDateField(line, fileField);
-
-      } else if (!Strings.isNullOrEmpty(fileField.getSubImportField())) {
-
-        Mapper mapper = advancedImportService.getMapper(importField.getMetaModel().getFullName());
-        Property parentProp = mapper.getProperty(importField.getName());
-        if (parentProp == null) {
-          return;
-        }
-
-        Property subProperty = this.getAndValidateSubField(line, parentProp, fileField, false);
-
-        if (subProperty != null) {
           this.validateImportRequiredField(
-              line, subProperty.getEntity(), subProperty.getName(), fileField, relationalFieldList);
+              line,
+              Class.forName(fileTab.getMetaModel().getFullName()),
+              importField.getName(),
+              fileField,
+              null);
 
           this.validateDateField(line, fileField);
+
+        } else if (!Strings.isNullOrEmpty(fileField.getSubImportField())) {
+
+          Mapper mapper = advancedImportService.getMapper(importField.getMetaModel().getFullName());
+          Property parentProp = mapper.getProperty(importField.getName());
+          if (parentProp == null) {
+            return;
+          }
+
+          Property subProperty = this.getAndValidateSubField(line, parentProp, fileField, false);
+
+          if (subProperty != null) {
+            this.validateImportRequiredField(
+                line,
+                subProperty.getEntity(),
+                subProperty.getName(),
+                fileField,
+                relationalFieldList);
+
+            this.validateDateField(line, fileField);
+          }
         }
       }
     }
@@ -440,7 +450,7 @@ public class ValidatorService {
           String newField = StringUtils.substringBeforeLast(field, ".");
           newField = newField + "." + prop.getName();
 
-          if (!relationalFieldList.contains(newField)) {
+          if (relationalFieldList != null && !relationalFieldList.contains(newField)) {
             logService.addLog(BaseExceptionMessage.ADVANCED_IMPORT_LOG_3, newField, null);
           }
         }
@@ -453,81 +463,83 @@ public class ValidatorService {
 
     Map<String, Object> map = isConfig ? fieldMap : titleMap;
 
-    for (int fieldIndex = 0; fieldIndex < fileTab.getFileFieldList().size(); fieldIndex++) {
-      FileField fileField = fileTab.getFileFieldList().get(fieldIndex);
+    if (fileTab != null && fileTab.getFileFieldList() != null) {
+      for (int fieldIndex = 0; fieldIndex < fileTab.getFileFieldList().size(); fieldIndex++) {
+        FileField fileField = fileTab.getFileFieldList().get(fieldIndex);
 
-      if (!fileField.getIsMatchWithFile() || !Strings.isNullOrEmpty(fileField.getExpression())) {
-        continue;
-      }
-
-      Mapper mapper = null;
-      Property property = null;
-
-      String key = null;
-      if (isConfig) {
-        key = this.getField(fileField);
-      } else {
-        key = fileField.getColumnTitle();
-      }
-
-      int cellIndex = 0;
-      if (map.containsKey(key)) {
-        cellIndex = (int) map.get(key);
-      }
-
-      cellIndex =
-          (!isConfig && !fileTab.getAdvancedImport().getIsHeader()) ? fieldIndex : cellIndex;
-
-      if (fileField.getImportField() != null) {
-        mapper =
-            advancedImportService.getMapper(
-                fileField.getImportField().getMetaModel().getFullName());
-        property = mapper.getProperty(fileField.getImportField().getName());
-      }
-
-      if (property != null && Strings.isNullOrEmpty(fileField.getSubImportField())) {
-        if (this.validateDataRequiredField(
-            dataRow,
-            cellIndex,
-            line,
-            Class.forName(fileTab.getMetaModel().getFullName()),
-            property.getName(),
-            fileField)) {
-
+        if (!fileField.getIsMatchWithFile() || !Strings.isNullOrEmpty(fileField.getExpression())) {
           continue;
         }
 
-        if (!Strings.isNullOrEmpty(property.getSelection())
-            && fileField.getForSelectUse() != FileFieldRepository.SELECT_USE_VALUES) {
-          continue;
+        Mapper mapper = null;
+        Property property = null;
+
+        String key = null;
+        if (isConfig) {
+          key = this.getField(fileField);
+        } else {
+          key = fileField.getColumnTitle();
         }
 
-        this.validateDataType(
-            dataRow, cellIndex, line, property.getJavaType().getSimpleName(), fileField);
+        int cellIndex = 0;
+        if (map != null && map.containsKey(key)) {
+          cellIndex = (int) map.get(key);
+        }
 
-      } else if (!Strings.isNullOrEmpty(fileField.getSubImportField())) {
+        cellIndex =
+            (!isConfig && !fileTab.getAdvancedImport().getIsHeader()) ? fieldIndex : cellIndex;
 
-        Property subProperty = this.getAndValidateSubField(line, property, fileField, true);
+        if (fileField.getImportField() != null) {
+          mapper =
+              advancedImportService.getMapper(
+                  fileField.getImportField().getMetaModel().getFullName());
+          property = mapper.getProperty(fileField.getImportField().getName());
+        }
 
-        if (subProperty != null) {
+        if (property != null && Strings.isNullOrEmpty(fileField.getSubImportField())) {
           if (this.validateDataRequiredField(
               dataRow,
               cellIndex,
               line,
-              subProperty.getEntity(),
-              subProperty.getName(),
+              Class.forName(fileTab.getMetaModel().getFullName()),
+              property.getName(),
               fileField)) {
 
             continue;
           }
 
-          if (!Strings.isNullOrEmpty(subProperty.getSelection())
+          if (!Strings.isNullOrEmpty(property.getSelection())
               && fileField.getForSelectUse() != FileFieldRepository.SELECT_USE_VALUES) {
             continue;
           }
 
           this.validateDataType(
-              dataRow, cellIndex, line, subProperty.getJavaType().getSimpleName(), fileField);
+              dataRow, cellIndex, line, property.getJavaType().getSimpleName(), fileField);
+
+        } else if (!Strings.isNullOrEmpty(fileField.getSubImportField())) {
+
+          Property subProperty = this.getAndValidateSubField(line, property, fileField, true);
+
+          if (subProperty != null) {
+            if (this.validateDataRequiredField(
+                dataRow,
+                cellIndex,
+                line,
+                subProperty.getEntity(),
+                subProperty.getName(),
+                fileField)) {
+
+              continue;
+            }
+
+            if (!Strings.isNullOrEmpty(subProperty.getSelection())
+                && fileField.getForSelectUse() != FileFieldRepository.SELECT_USE_VALUES) {
+              continue;
+            }
+
+            this.validateDataType(
+                dataRow, cellIndex, line, subProperty.getJavaType().getSimpleName(), fileField);
+          }
         }
       }
     }
@@ -754,11 +766,15 @@ public class ValidatorService {
   }
 
   public void sortFileTabList(List<FileTab> fileTabList) {
-    fileTabList.sort((tab1, tab2) -> tab1.getSequence().compareTo(tab2.getSequence()));
+    if (fileTabList != null) {
+      fileTabList.sort((tab1, tab2) -> tab1.getSequence().compareTo(tab2.getSequence()));
+    }
   }
 
   public void sortFileFieldList(List<FileField> fileFieldList) {
-    fileFieldList.sort((field1, field2) -> field1.getSequence().compareTo(field2.getSequence()));
+    if (fileFieldList != null) {
+      fileFieldList.sort((field1, field2) -> field1.getSequence().compareTo(field2.getSequence()));
+    }
   }
 
   public void addLog(BufferedWriter writer, String errorType, String log) throws IOException {

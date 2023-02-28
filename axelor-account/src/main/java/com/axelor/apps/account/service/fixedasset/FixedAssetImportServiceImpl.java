@@ -403,11 +403,11 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
 
   protected boolean isFirstDepreciationOnFailoverDate(
       List<FixedAssetLine> fixedAssetLineList, LocalDate failoverDate) {
-    return fixedAssetLineList.size() > 0
+    return !fixedAssetLineList.isEmpty()
         && fixedAssetLineList.get(0).getDepreciationDate().equals(failoverDate);
   }
 
   protected FixedAssetLine getFirstLine(List<FixedAssetLine> fixedAssetLineList) {
-    return fixedAssetLineList.get(0);
+    return fixedAssetLineList != null ? fixedAssetLineList.get(0) : null;
   }
 }

@@ -207,8 +207,10 @@ public class LeadServiceImpl implements LeadService {
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void assignToMeMultipleLead(List<Lead> leadList) throws AxelorException {
-    for (Lead lead : leadList) {
-      assignToMeLead(lead);
+    if (leadList != null) {
+      for (Lead lead : leadList) {
+        assignToMeLead(lead);
+      }
     }
   }
 

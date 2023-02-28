@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.loader;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.FileUtils;
 import com.axelor.common.ResourceUtils;
 import com.axelor.data.Listener;
@@ -127,7 +128,7 @@ public class AppLoaderImportServiceImpl implements AppLoaderImportService {
 
     try (PrintWriter pw = new PrintWriter(logFile)) {
 
-      for (File confiFile : getAppImportConfigFiles(dataDir)) {
+      for (File confiFile : ListUtils.emptyIfNull(getAppImportConfigFiles(dataDir))) {
 
         XMLImporter xmlImporter =
             new XMLImporter(confiFile.getAbsolutePath(), dataDir.getAbsolutePath());

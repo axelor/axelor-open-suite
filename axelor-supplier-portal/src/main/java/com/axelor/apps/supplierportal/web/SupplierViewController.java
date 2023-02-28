@@ -37,7 +37,9 @@ public class SupplierViewController {
   public void completeSupplierViewIndicators(ActionRequest request, ActionResponse response) {
     try {
       Map<String, Object> map = Beans.get(SupplierViewService.class).updateSupplierViewIndicators();
-      response.setValues(map);
+      if (map != null) {
+        response.setValues(map);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

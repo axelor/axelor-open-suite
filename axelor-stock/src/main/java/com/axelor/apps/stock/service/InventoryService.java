@@ -41,6 +41,8 @@ import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.tool.StringHTMLListBuilder;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -209,14 +211,16 @@ public class InventoryService {
     Path filePath = MetaFiles.getPath(inventory.getImportFile());
     List<String[]> data = this.getDatas(filePath);
 
-    List<String> headers = Arrays.asList(data.get(0));
-    inventory.clearInventoryLineList();
+    if (CollectionUtils.isNotEmpty(data)) {
+      List<String> headers = Arrays.asList(data.get(0));
+      inventory.clearInventoryLineList();
 
-    data.remove(0); /* Skip headers */
+      data.remove(0); /* Skip headers */
 
-    for (String[] line : data) {
-      inventory.addInventoryLineListItem(
-          createInventoryLine(inventory, inventoryLineMap, headers, line));
+      for (String[] line : data) {
+        inventory.addInventoryLineListItem(
+            createInventoryLine(inventory, inventoryLineMap, headers, line));
+      }
     }
 
     inventoryRepo.save(inventory);
@@ -238,6 +242,9 @@ public class InventoryService {
           I18n.get(StockExceptionMessage.INVENTORY_3));
     }
 
+    if (headers == null) {
+      return null;
+    }
     String code = line[headers.indexOf(PRODUCT_CODE)].replace("\"", "");
     String rack = line[headers.indexOf(RACK)].replace("\"", "");
     String trackingNumberSeq = line[headers.indexOf(TRACKING_NUMBER)].replace("\"", "");
@@ -260,7 +267,7 @@ public class InventoryService {
           I18n.get(StockExceptionMessage.INVENTORY_4) + " " + code);
     }
 
-    if (inventoryLineMap.containsKey(key)) {
+    if (inventoryLineMap != null && inventoryLineMap.containsKey(key)) {
       return copyAndEditInventoryLine(inventoryLineMap.get(key), description, realQty);
     } else {
       return createInventoryLine(
@@ -339,7 +346,8 @@ public class InventoryService {
       throws AxelorException {
     int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
     try {
-      return new BigDecimal(line[headers.indexOf(CURRENT_QUANTITY)].replace("\"", ""))
+      return new BigDecimal(
+              line[ListUtils.emptyIfNull(headers).indexOf(CURRENT_QUANTITY)].replace("\"", ""))
           .setScale(qtyScale, RoundingMode.HALF_UP);
     } catch (NumberFormatException e) {
       throw new AxelorException(
@@ -354,7 +362,7 @@ public class InventoryService {
       throws AxelorException {
     int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
     try {
-      if (!StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)])) {
+      if (headers != null && !StringUtils.isBlank(line[headers.indexOf(REAL_QUANTITY)])) {
         return new BigDecimal(line[headers.indexOf(REAL_QUANTITY)])
             .setScale(qtyScale, RoundingMode.HALF_UP);
       }
@@ -395,19 +403,21 @@ public class InventoryService {
   public HashMap<String, InventoryLine> getInventoryLines(Inventory inventory) {
     HashMap<String, InventoryLine> inventoryLineMap = new HashMap<>();
 
-    for (InventoryLine line : inventory.getInventoryLineList()) {
-      StringBuilder key = new StringBuilder();
-      if (line.getProduct() != null) {
-        key.append(line.getProduct().getCode());
-      }
-      if (line.getTrackingNumber() != null) {
-        key.append(line.getTrackingNumber().getTrackingNumberSeq());
-      }
-      if (line.getStockLocation() != null) {
-        key.append(line.getStockLocation().getName());
-      }
+    if (CollectionUtils.isNotEmpty(inventory.getInventoryLineList())) {
+      for (InventoryLine line : inventory.getInventoryLineList()) {
+        StringBuilder key = new StringBuilder();
+        if (line.getProduct() != null) {
+          key.append(line.getProduct().getCode());
+        }
+        if (line.getTrackingNumber() != null) {
+          key.append(line.getTrackingNumber().getTrackingNumberSeq());
+        }
+        if (line.getStockLocation() != null) {
+          key.append(line.getStockLocation().getName());
+        }
 
-      inventoryLineMap.put(key.toString(), line);
+        inventoryLineMap.put(key.toString(), line);
+      }
     }
 
     return inventoryLineMap;
@@ -455,7 +465,8 @@ public class InventoryService {
           I18n.get(StockExceptionMessage.INVENTORY_START_WRONG_STATUS));
     }
     inventory.setStatusSelect(InventoryRepository.STATUS_IN_PROGRESS);
-    inventory.getInventoryLineList().stream().forEach(this::updateCurrentQty);
+    ListUtils.emptyIfNull(inventory.getInventoryLineList()).stream()
+        .forEach(this::updateCurrentQty);
   }
 
   protected void updateCurrentQty(InventoryLine inventoryLine) {
@@ -554,8 +565,10 @@ public class InventoryService {
             .bind("originId", inventory.getId())
             .fetch();
 
-    for (StockMove stockMove : stockMoveList) {
-      stockMoveService.cancel(stockMove);
+    if (CollectionUtils.isNotEmpty(stockMoveList)) {
+      for (StockMove stockMove : stockMoveList) {
+        stockMoveService.cancel(stockMove);
+      }
     }
 
     inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
@@ -629,14 +642,14 @@ public class InventoryService {
       throws AxelorException {
     Set<StockLocation> stockLocationSet = new HashSet<>();
 
-    for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
+    for (InventoryLine inventoryLine : ListUtils.emptyIfNull(inventory.getInventoryLineList())) {
       if (inventoryLine.getStockLocation() != null) {
         stockLocationSet.add(inventoryLine.getStockLocation());
       }
     }
 
     InventoryLineRepository inventoryLineRepo = Beans.get(InventoryLineRepository.class);
-    for (StockLocation stockLocation : stockLocationSet) {
+    for (StockLocation stockLocation : SetUtils.emptyIfNull(stockLocationSet)) {
       List<InventoryLine> inventoryLineList =
           inventoryLineRepo
               .all()
@@ -667,7 +680,7 @@ public class InventoryService {
     StockLocation fromStockLocation;
     Company company = inventory.getCompany();
     if (isEnteringStock) {
-      toStockLocation = inventoryLineList.get(0).getStockLocation();
+      toStockLocation = ListUtils.emptyIfNull(inventoryLineList).get(0).getStockLocation();
       fromStockLocation =
           stockConfigService.getInventoryVirtualStockLocation(
               stockConfigService.getStockConfig(company));
@@ -675,7 +688,7 @@ public class InventoryService {
       toStockLocation =
           stockConfigService.getInventoryVirtualStockLocation(
               stockConfigService.getStockConfig(company));
-      fromStockLocation = inventoryLineList.get(0).getStockLocation();
+      fromStockLocation = ListUtils.emptyIfNull(inventoryLineList).get(0).getStockLocation();
     }
 
     String inventorySeq = inventory.getInventorySeq();
@@ -700,8 +713,10 @@ public class InventoryService {
     stockMove.setOriginId(inventory.getId());
     stockMove.setOrigin(inventorySeq);
 
-    for (InventoryLine inventoryLine : inventoryLineList) {
-      generateStockMoveLines(inventoryLine, stockMove, isEnteringStock);
+    if (CollectionUtils.isNotEmpty(inventoryLineList)) {
+      for (InventoryLine inventoryLine : inventoryLineList) {
+        generateStockMoveLines(inventoryLine, stockMove, isEnteringStock);
+      }
     }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
 
@@ -874,16 +889,15 @@ public class InventoryService {
               .all()
               .filter("self.parentStockLocation IN (?)", newStockLocationSet)
               .fetch();
-    }
-    if (CollectionUtils.isNotEmpty(stockLocationList)) {
-      int oldSize = newStockLocationSet.size();
-      newStockLocationSet.addAll(stockLocationList);
-      int newSize = newStockLocationSet.size();
-      if (newSize > oldSize) {
-        newStockLocationSet = getStockLocations(newStockLocationSet);
+      if (CollectionUtils.isNotEmpty(stockLocationList)) {
+        int oldSize = newStockLocationSet.size();
+        newStockLocationSet.addAll(stockLocationList);
+        int newSize = newStockLocationSet.size();
+        if (newSize > oldSize) {
+          newStockLocationSet = getStockLocations(newStockLocationSet);
+        }
       }
     }
-
     return newStockLocationSet;
   }
 
@@ -916,7 +930,7 @@ public class InventoryService {
 
     List<String[]> list = new ArrayList<>();
 
-    for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
+    for (InventoryLine inventoryLine : ListUtils.emptyIfNull(inventory.getInventoryLineList())) {
       String[] item = new String[10];
       String realQty = "";
 
@@ -1023,7 +1037,7 @@ public class InventoryService {
   }
 
   protected void validateInventoryLineList(Inventory inventory) throws AxelorException {
-    if (inventory.getInventoryLineList().stream()
+    if (ListUtils.emptyIfNull(inventory.getInventoryLineList()).stream()
         .anyMatch(inventoryLine -> inventoryLine.getRealQty() == null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
@@ -1034,14 +1048,16 @@ public class InventoryService {
   protected void checkMissingStockLocation(List<InventoryLine> inventoryLineList)
       throws AxelorException {
     List<InventoryLine> inventoryLinesWithMissingStockLocation = new ArrayList<>();
-    for (InventoryLine inventoryLine : inventoryLineList) {
-      if (inventoryLine.getStockLocation() == null) {
-        inventoryLinesWithMissingStockLocation.add(inventoryLine);
+    if (CollectionUtils.isNotEmpty(inventoryLineList)) {
+      for (InventoryLine inventoryLine : inventoryLineList) {
+        if (inventoryLine.getStockLocation() == null) {
+          inventoryLinesWithMissingStockLocation.add(inventoryLine);
+        }
       }
     }
 
     StringHTMLListBuilder stringHTMLListInventoryLine = new StringHTMLListBuilder();
-    inventoryLinesWithMissingStockLocation.stream()
+    ListUtils.emptyIfNull(inventoryLinesWithMissingStockLocation).stream()
         .limit(INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT)
         .forEach(
             inventoryLine -> {

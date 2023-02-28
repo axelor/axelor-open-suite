@@ -125,7 +125,9 @@ public class PurchaseOrderLineProjectController {
       purchaseOrderLine =
           Beans.get(PurchaseOrderLineProjectService.class)
               .updateAnalyticDistributionWithProject(purchaseOrderLine);
-      response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+      if (purchaseOrderLine.getAnalyticMoveLineList() != null) {
+        response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

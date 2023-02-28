@@ -99,17 +99,19 @@ public class BatchJob extends ThreadedJob {
 
     JPA.runInTransaction(
         () -> {
-          for (Map.Entry<String, Object> entry : properties.entrySet()) {
-            String key = entry.getKey();
-            if (PropertyUtils.isWriteable(bean, key)) {
-              try {
-                originalProperties.put(key, BeanUtils.getProperty(bean, key));
-                Object value = evalFunc.apply(entry.getValue());
-                BeanUtils.setProperty(bean, key, value);
-              } catch (IllegalAccessException
-                  | InvocationTargetException
-                  | NoSuchMethodException e) {
-                throw new UncheckedJobExecutionException(e);
+          if (properties != null) {
+            for (Map.Entry<String, Object> entry : properties.entrySet()) {
+              String key = entry.getKey();
+              if (PropertyUtils.isWriteable(bean, key)) {
+                try {
+                  originalProperties.put(key, BeanUtils.getProperty(bean, key));
+                  Object value = evalFunc.apply(entry.getValue());
+                  BeanUtils.setProperty(bean, key, value);
+                } catch (IllegalAccessException
+                    | InvocationTargetException
+                    | NoSuchMethodException e) {
+                  throw new UncheckedJobExecutionException(e);
+                }
               }
             }
           }

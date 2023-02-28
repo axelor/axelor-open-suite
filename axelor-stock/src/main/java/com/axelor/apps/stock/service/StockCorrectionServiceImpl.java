@@ -239,6 +239,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   @Override
   public void getDefaultQtys(
       StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
+    if (stockCorrectionQtys == null) {
+      stockCorrectionQtys = new HashMap<>();
+    }
     stockCorrectionQtys.put("baseQty", stockLocationLine.getCurrentQty());
     stockCorrectionQtys.put("realQty", stockLocationLine.getCurrentQty());
   }

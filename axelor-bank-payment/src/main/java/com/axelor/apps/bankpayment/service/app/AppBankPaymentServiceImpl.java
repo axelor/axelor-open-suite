@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements AppBankPaymentService {
@@ -56,10 +57,12 @@ public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements App
   public void generateBankPaymentConfigurations() {
     List<Company> companies = companyRepo.all().filter("self.bankPaymentConfig IS NULL").fetch();
 
-    for (Company company : companies) {
-      BankPaymentConfig config = new BankPaymentConfig();
-      config.setCompany(company);
-      bankPaymentConfigRepo.save(config);
+    if (CollectionUtils.isNotEmpty(companies)) {
+      for (Company company : companies) {
+        BankPaymentConfig config = new BankPaymentConfig();
+        config.setCompany(company);
+        bankPaymentConfigRepo.save(config);
+      }
     }
   }
 }

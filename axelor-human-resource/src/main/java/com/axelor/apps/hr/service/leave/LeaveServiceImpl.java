@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.mail.MessagingException;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 public class LeaveServiceImpl implements LeaveService {
@@ -901,12 +902,14 @@ public class LeaveServiceImpl implements LeaveService {
                 leaveRequest.getEmployee(),
                 LeaveRequestRepository.STATUS_VALIDATED)
             .fetch();
-    for (LeaveRequest leaveRequest2 : leaveRequestList) {
-      if (isOverlapped(leaveRequest, leaveRequest2)) {
-        throw new AxelorException(
-            leaveRequest,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_DATES_OVERLAPPED));
+    if (CollectionUtils.isNotEmpty(leaveRequestList)) {
+      for (LeaveRequest leaveRequest2 : leaveRequestList) {
+        if (isOverlapped(leaveRequest, leaveRequest2)) {
+          throw new AxelorException(
+              leaveRequest,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_DATES_OVERLAPPED));
+        }
       }
     }
   }
@@ -951,11 +954,13 @@ public class LeaveServiceImpl implements LeaveService {
 
     BigDecimal daysToValidate = BigDecimal.ZERO;
 
-    for (LeaveRequest request : leaveRequests) {
-      if (request.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-        daysToValidate = daysToValidate.add(request.getDuration());
-      } else {
-        daysToValidate = daysToValidate.subtract(request.getDuration());
+    if (CollectionUtils.isNotEmpty(leaveRequests)) {
+      for (LeaveRequest request : leaveRequests) {
+        if (request.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
+          daysToValidate = daysToValidate.add(request.getDuration());
+        } else {
+          daysToValidate = daysToValidate.subtract(request.getDuration());
+        }
       }
     }
 

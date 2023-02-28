@@ -32,6 +32,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class JobPositionServiceImpl implements JobPositionService {
 
@@ -51,7 +52,7 @@ public class JobPositionServiceImpl implements JobPositionService {
     List<JobPosition> jobPositions =
         jobPositionRepo.all().filter("self.mailAccount = ?1", message.getMailAccount()).fetch();
 
-    if (jobPositions.isEmpty()) {
+    if (CollectionUtils.isEmpty(jobPositions)) {
       return;
     }
 
@@ -124,9 +125,11 @@ public class JobPositionServiceImpl implements JobPositionService {
                 Message.class.getName())
             .fetch();
 
-    for (MetaAttachment attachment : attachments) {
-      MetaFile file = attachment.getMetaFile();
-      metaFiles.attach(file, file.getFileName(), application);
+    if (CollectionUtils.isNotEmpty(attachments)) {
+      for (MetaAttachment attachment : attachments) {
+        MetaFile file = attachment.getMetaFile();
+        metaFiles.attach(file, file.getFileName(), application);
+      }
     }
   }
 }

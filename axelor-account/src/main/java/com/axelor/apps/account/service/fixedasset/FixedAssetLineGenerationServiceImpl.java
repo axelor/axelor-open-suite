@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -67,7 +68,7 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
 
       List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
           fixedAssetDerogatoryLineService.computePlannedFixedAssetDerogatoryLineList(fixedAsset);
-      if (fixedAssetDerogatoryLineList.size() != 0) {
+      if (fixedAssetDerogatoryLineList != null && !fixedAssetDerogatoryLineList.isEmpty()) {
         if (fixedAsset.getFixedAssetDerogatoryLineList() == null) {
           fixedAsset.setFixedAssetDerogatoryLineList(new ArrayList<>());
         } else {
@@ -77,7 +78,7 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
                       line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_REALIZED)
                   .collect(Collectors.toList());
           fixedAssetDerogatoryLineService.clear(fixedAsset.getFixedAssetDerogatoryLineList());
-          fixedAsset.getFixedAssetDerogatoryLineList().addAll(linesToKeep);
+          fixedAsset.getFixedAssetDerogatoryLineList().addAll(ListUtils.emptyIfNull(linesToKeep));
         }
         fixedAsset.getFixedAssetDerogatoryLineList().addAll(fixedAssetDerogatoryLineList);
         fixedAssetDerogatoryLineService.computeDerogatoryBalanceAmount(
@@ -212,7 +213,7 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
     while (c < MAX_ITERATION && fixedAssetLine.getAccountingValue().signum() != 0) {
       fixedAssetLine =
           fixedAssetLineComputationService.computePlannedFixedAssetLine(fixedAsset, fixedAssetLine);
-      fixedAssetLineList.add(fixedAssetLine);
+      ListUtils.emptyIfNull(fixedAssetLineList).add(fixedAssetLine);
       fixedAssetLineService.setFixedAsset(fixedAsset, fixedAssetLine);
       c++;
     }

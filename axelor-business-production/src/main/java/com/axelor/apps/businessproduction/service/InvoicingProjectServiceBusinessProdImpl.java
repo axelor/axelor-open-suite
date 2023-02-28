@@ -26,6 +26,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
@@ -66,7 +67,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
     List<Project> projectChildrenList =
         Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 
-    for (Project projectChild : projectChildrenList) {
+    for (Project projectChild : ListUtils.emptyIfNull(projectChildrenList)) {
       this.setLines(invoicingProject, projectChild, counter);
     }
     return;
@@ -91,21 +92,23 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
       invoicingProject
           .getManufOrderSet()
           .addAll(
-              Beans.get(ManufOrderRepository.class)
-                  .all()
-                  .filter(
-                      "self.productionOrderSet.project = ?1 AND (self.realStartDateT < ?2)",
-                      project,
-                      deadlineDateToDateTime)
-                  .fetch());
+              ListUtils.emptyIfNull(
+                  Beans.get(ManufOrderRepository.class)
+                      .all()
+                      .filter(
+                          "self.productionOrderSet.project = ?1 AND (self.realStartDateT < ?2)",
+                          project,
+                          deadlineDateToDateTime)
+                      .fetch()));
     } else {
       invoicingProject
           .getManufOrderSet()
           .addAll(
-              Beans.get(ManufOrderRepository.class)
-                  .all()
-                  .filter("self.productionOrderSet.project = ?1", project)
-                  .fetch());
+              ListUtils.emptyIfNull(
+                  Beans.get(ManufOrderRepository.class)
+                      .all()
+                      .filter("self.productionOrderSet.project = ?1", project)
+                      .fetch()));
     }
   }
 

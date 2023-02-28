@@ -149,6 +149,9 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
       if (Strings.isNullOrEmpty(value) || invalidValue(value)) {
         continue;
       }
+      if (accessMap == null) {
+        return;
+      }
       AccessConfig config = accessMap.get(cell.getColumnIndex());
       Permission permission = getPermission(obj, value.trim(), config);
       addRole(config, permission);

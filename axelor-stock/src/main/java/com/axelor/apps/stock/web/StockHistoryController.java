@@ -20,6 +20,7 @@ package com.axelor.apps.stock.web;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.service.StockHistoryService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -45,7 +46,8 @@ public class StockHistoryController {
    */
   public void fillStockHistoryLineList(ActionRequest request, ActionResponse response) {
     try {
-      response.setValue("$stockHistoryLineList", getStockHistoryLineList(request));
+      response.setValue(
+          "$stockHistoryLineList", ListUtils.emptyIfNull(getStockHistoryLineList(request)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

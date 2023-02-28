@@ -66,10 +66,12 @@ public class WsConnectorController {
       ctx.put("_beans", Beans.class);
       Map<String, Object> res = wsConnectorService.callConnector(wsConnector, authenticator, ctx);
       StringBuilder result = new StringBuilder();
-      for (String key : res.keySet()) {
-        if (!key.startsWith("_") || key.equals("_beans")) continue;
-        result.append(key + ":\n");
-        result.append(res.get(key) + "\n\n");
+      if (res != null) {
+        for (String key : res.keySet()) {
+          if (!key.startsWith("_") || key.equals("_beans")) continue;
+          result.append(key + ":\n");
+          result.append(res.get(key) + "\n\n");
+        }
       }
       response.setValue("$result", result.toString());
     } catch (AxelorException | ClassNotFoundException e) {

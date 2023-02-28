@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FixedAssetLineIfrsComputationServiceImpl
@@ -66,7 +67,9 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected List<FixedAssetLine> getFixedAssetLineList(FixedAsset fixedAsset) {
-    return fixedAsset.getIfrsFixedAssetLineList();
+    return fixedAsset.getIfrsFixedAssetLineList() != null
+        ? fixedAsset.getIfrsFixedAssetLineList()
+        : new ArrayList<>();
   }
 
   @Override

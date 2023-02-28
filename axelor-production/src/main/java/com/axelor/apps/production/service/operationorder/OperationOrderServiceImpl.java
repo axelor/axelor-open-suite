@@ -38,6 +38,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -58,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -202,7 +204,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         createDiffProdProductList(operationOrder, toConsumeList, consumedList);
 
     operationOrder.clearDiffConsumeProdProductList();
-    diffConsumeList.forEach(operationOrder::addDiffConsumeProdProductListItem);
+    ListUtils.emptyIfNull(diffConsumeList)
+        .forEach(operationOrder::addDiffConsumeProdProductListItem);
     return operationOrder;
   }
 
@@ -227,7 +230,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
                 toDateTime)
             .fetch();
     Set<String> machineNameList = new HashSet<String>();
-    for (OperationOrder operationOrder : operationOrderListTemp) {
+    for (OperationOrder operationOrder : ListUtils.emptyIfNull(operationOrderListTemp)) {
       if (operationOrder.getWorkCenter() != null
           && operationOrder.getWorkCenter().getMachine() != null) {
         if (!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())) {
@@ -245,7 +248,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
                   itDateTime.plusHours(1))
               .fetch();
       Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
-      for (OperationOrder operationOrder : operationOrderList) {
+      for (OperationOrder operationOrder : ListUtils.emptyIfNull(operationOrderList)) {
         if (operationOrder.getWorkCenter() != null
             && operationOrder.getWorkCenter().getMachine() != null) {
           String machine = operationOrder.getWorkCenter().getMachine().getName();
@@ -278,19 +281,21 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         }
       }
       Set<String> keyList = map.keySet();
-      for (String key : machineNameList) {
-        if (keyList.contains(key)) {
-          Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
-          dataMap.put("charge", (Object) map.get(key));
-          dataMap.put("machine", (Object) key);
-          dataList.add(dataMap);
-        } else {
-          Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
-          dataMap.put("charge", (Object) BigDecimal.ZERO);
-          dataMap.put("machine", (Object) key);
-          dataList.add(dataMap);
+      if (CollectionUtils.isNotEmpty(machineNameList)) {
+        for (String key : machineNameList) {
+          if (keyList != null && keyList.contains(key)) {
+            Map<String, Object> dataMap = new HashMap<String, Object>();
+            dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
+            dataMap.put("charge", (Object) map.get(key));
+            dataMap.put("machine", (Object) key);
+            dataList.add(dataMap);
+          } else {
+            Map<String, Object> dataMap = new HashMap<String, Object>();
+            dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
+            dataMap.put("charge", (Object) BigDecimal.ZERO);
+            dataMap.put("machine", (Object) key);
+            dataList.add(dataMap);
+          }
         }
       }
 
@@ -322,7 +327,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
                 toDateTime)
             .fetch();
     Set<String> machineNameList = new HashSet<String>();
-    for (OperationOrder operationOrder : operationOrderListTemp) {
+    for (OperationOrder operationOrder : ListUtils.emptyIfNull(operationOrderListTemp)) {
       if (operationOrder.getWorkCenter() != null
           && operationOrder.getWorkCenter().getMachine() != null) {
         if (!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())) {
@@ -341,7 +346,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
               .fetch();
       Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
       WeeklyPlanningService weeklyPlanningService = Beans.get(WeeklyPlanningService.class);
-      for (OperationOrder operationOrder : operationOrderList) {
+      for (OperationOrder operationOrder : ListUtils.emptyIfNull(operationOrderList)) {
         if (operationOrder.getWorkCenter() != null
             && operationOrder.getWorkCenter().getMachine() != null) {
           String machine = operationOrder.getWorkCenter().getMachine().getName();
@@ -411,24 +416,32 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         }
       }
       Set<String> keyList = map.keySet();
-      for (String key : machineNameList) {
-        if (keyList.contains(key)) {
-          int found = 0;
-          for (Map<String, Object> mapIt : dataList) {
-            if (mapIt.get("dateTime").equals((Object) itDateTime.format(DATE_FORMAT))
-                && mapIt.get("machine").equals((Object) key)) {
-              mapIt.put("charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
-              found = 1;
-              break;
+      if (CollectionUtils.isNotEmpty(machineNameList)) {
+        for (String key : machineNameList) {
+          if (keyList != null && keyList.contains(key)) {
+            int found = 0;
+            if (dataList != null) {
+              for (Map<String, Object> mapIt : dataList) {
+                if (mapIt.get("dateTime").equals((Object) itDateTime.format(DATE_FORMAT))
+                    && mapIt.get("machine").equals((Object) key)) {
+                  mapIt.put(
+                      "charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
+                  found = 1;
+                  break;
+                }
+              }
             }
-          }
-          if (found == 0) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
+            if (found == 0) {
+              Map<String, Object> dataMap = new HashMap<String, Object>();
 
-            dataMap.put("dateTime", (Object) itDateTime.format(DATE_FORMAT));
-            dataMap.put("charge", (Object) map.get(key));
-            dataMap.put("machine", (Object) key);
-            dataList.add(dataMap);
+              dataMap.put("dateTime", (Object) itDateTime.format(DATE_FORMAT));
+              dataMap.put("charge", (Object) map.get(key));
+              dataMap.put("machine", (Object) key);
+              if (dataList == null) {
+                dataList = new ArrayList<>();
+              }
+              dataList.add(dataMap);
+            }
           }
         }
       }
@@ -447,8 +460,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     List<ProdProduct> diffConsumeList =
         Beans.get(ManufOrderService.class)
             .createDiffProdProductList(prodProductList, stockMoveLineList);
-    diffConsumeList.forEach(
-        prodProduct -> prodProduct.setDiffConsumeOperationOrder(operationOrder));
+    ListUtils.emptyIfNull(diffConsumeList)
+        .forEach(prodProduct -> prodProduct.setDiffConsumeOperationOrder(operationOrder));
     return diffConsumeList;
   }
 
@@ -471,7 +484,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       return;
     }
     Optional<StockMove> stockMoveOpt =
-        operationOrder.getInStockMoveList().stream()
+        ListUtils.emptyIfNull(operationOrder.getInStockMoveList()).stream()
             .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
             .findFirst();
     StockMove stockMove;

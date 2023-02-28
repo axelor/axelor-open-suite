@@ -22,6 +22,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -31,6 +32,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +101,9 @@ public class ProjectInvoicingAssistantBatchService extends AbstractBatchService 
   public static void updateJsonObject(
       Batch batch, List<Object> recordList, String field, Map<String, Object> contextValues) {
 
+    if (contextValues == null) {
+      return;
+    }
     JsonContext jsonContext = (JsonContext) contextValues.get("jsonContext");
     List<Object> dataList = recordList;
 
@@ -116,8 +121,10 @@ public class ProjectInvoicingAssistantBatchService extends AbstractBatchService 
                         return obj;
                       })
                   .collect(Collectors.toList());
-
-      dataList.addAll(recordList);
+      if (dataList == null) {
+        dataList = new ArrayList<>();
+      }
+      dataList.addAll(ListUtils.emptyIfNull(recordList));
     }
 
     jsonContext.put(field, dataList);

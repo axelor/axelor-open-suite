@@ -36,6 +36,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
 
@@ -81,9 +82,11 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
   protected void removeMoveLineFromBankStatements(MoveLine moveLine) {
     List<BankStatementLineAFB120> bankStatementLineAFB120List =
         bankStatementLineAFB120Repository.all().filter("self.moveLine = ?1", moveLine).fetch();
-    for (BankStatementLineAFB120 bankStatementLineAFB120 : bankStatementLineAFB120List) {
-      bankStatementLineAFB120.setMoveLine(null);
-      bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
+    if (CollectionUtils.isNotEmpty(bankStatementLineAFB120List)) {
+      for (BankStatementLineAFB120 bankStatementLineAFB120 : bankStatementLineAFB120List) {
+        bankStatementLineAFB120.setMoveLine(null);
+        bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
+      }
     }
   }
 }

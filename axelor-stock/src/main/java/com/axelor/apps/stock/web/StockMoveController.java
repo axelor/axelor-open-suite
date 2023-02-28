@@ -36,6 +36,7 @@ import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintS
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -333,7 +334,9 @@ public class StockMoveController {
       Map<String, Object> result = Beans.get(StockMoveService.class).viewDirection(stockMove);
       Map<String, Object> mapView = new HashMap<>();
       mapView.put("title", I18n.get("Map"));
-      mapView.put("resource", result.get("url"));
+      if (result != null) {
+        mapView.put("resource", result.get("url"));
+      }
       mapView.put("viewType", "html");
       response.setView(mapView);
     } catch (Exception e) {
@@ -614,7 +617,8 @@ public class StockMoveController {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       Beans.get(StockMoveService.class).setAvailableStatus(stockMove);
-      response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+      response.setValue(
+          "stockMoveLineList", ListUtils.emptyIfNull(stockMove.getStockMoveLineList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -125,7 +126,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     query.bind("subrogationReleaseStatusAccounted", SubrogationReleaseRepository.STATUS_ACCOUNTED);
     query.bind("subrogationReleaseStatusCleared", SubrogationReleaseRepository.STATUS_CLEARED);
     List<Invoice> invoiceList = query.fetch();
-    return invoiceList;
+    return ListUtils.emptyIfNull(invoiceList);
   }
 
   @Override
@@ -209,28 +210,30 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     Comparator<Invoice> byDueDate = (i1, i2) -> i1.getDueDate().compareTo(i2.getDueDate());
     Comparator<Invoice> byInvoiceId = (i1, i2) -> i1.getInvoiceId().compareTo(i2.getInvoiceId());
 
-    List<Invoice> releaseDetails =
-        subrogationRelease.getInvoiceSet().stream()
-            .sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId))
-            .collect(Collectors.toList());
+    if (subrogationRelease.getInvoiceSet() != null) {
+      List<Invoice> releaseDetails =
+          subrogationRelease.getInvoiceSet().stream()
+              .sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId))
+              .collect(Collectors.toList());
+      if (releaseDetails != null) {
+        for (Invoice invoice : releaseDetails) {
+          String[] items = new String[6];
+          BigDecimal inTaxTotal = invoice.getInTaxTotal().abs();
 
-    for (Invoice invoice : releaseDetails) {
-      String[] items = new String[6];
-      BigDecimal inTaxTotal = invoice.getInTaxTotal().abs();
+          if (InvoiceToolService.isOutPayment(invoice)) {
+            inTaxTotal = inTaxTotal.negate();
+          }
 
-      if (InvoiceToolService.isOutPayment(invoice)) {
-        inTaxTotal = inTaxTotal.negate();
+          items[0] = invoice.getPartner().getPartnerSeq();
+          items[1] = invoice.getInvoiceId();
+          items[2] = invoice.getInvoiceDate().toString();
+          items[3] = invoice.getDueDate().toString();
+          items[4] = inTaxTotal.toString();
+          items[5] = invoice.getCurrency().getCodeISO();
+          allMoveLineData.add(items);
+        }
       }
-
-      items[0] = invoice.getPartner().getPartnerSeq();
-      items[1] = invoice.getInvoiceId();
-      items[2] = invoice.getInvoiceDate().toString();
-      items[3] = invoice.getDueDate().toString();
-      items[4] = inTaxTotal.toString();
-      items[5] = invoice.getCurrency().getCodeISO();
-      allMoveLineData.add(items);
     }
-
     String filePath =
         accountConfigService.getAccountConfig(subrogationRelease.getCompany()).getExportPath();
     filePath = filePath == null ? dataExportDir : dataExportDir + filePath;
@@ -267,71 +270,72 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
     this.checkIfAnOtherSubrogationAlreadyExist(subrogationRelease);
 
-    for (Invoice invoice : subrogationRelease.getInvoiceSet()) {
+    if (subrogationRelease.getInvoiceSet() != null) {
+      for (Invoice invoice : subrogationRelease.getInvoiceSet()) {
 
-      boolean isRefund = false;
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
-        isRefund = true;
+        boolean isRefund = false;
+        if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+          isRefund = true;
+        }
+
+        String origin = subrogationRelease.getSequenceNumber();
+        String description = invoice.getInvoiceId();
+        LocalDate date = subrogationRelease.getAccountingDate();
+        Move move =
+            moveCreateService.createMove(
+                journal,
+                company,
+                company.getCurrency(),
+                invoice.getPartner(),
+                date,
+                date,
+                null,
+                invoice.getFiscalPosition(),
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+                origin,
+                description,
+                invoice.getCompanyBankDetails());
+        MoveLine creditMoveLine, debitMoveLine;
+
+        debitMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                invoice.getPartner(),
+                factorDebitAccount,
+                invoice.getCompanyInTaxTotalRemaining(),
+                !isRefund,
+                date,
+                null,
+                1,
+                origin,
+                description);
+
+        creditMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                invoice.getPartner(),
+                factorCreditAccount,
+                invoice.getCompanyInTaxTotalRemaining(),
+                isRefund,
+                date,
+                null,
+                2,
+                origin,
+                description);
+
+        move.addMoveLineListItem(debitMoveLine);
+        move.addMoveLineListItem(creditMoveLine);
+
+        move = moveRepository.save(move);
+        moveValidateService.accounting(move);
+
+        invoice.setSubrogationRelease(subrogationRelease);
+        invoice.setSubrogationReleaseMove(move);
+
+        subrogationRelease.addMoveListItem(move);
       }
-
-      String origin = subrogationRelease.getSequenceNumber();
-      String description = invoice.getInvoiceId();
-      LocalDate date = subrogationRelease.getAccountingDate();
-      Move move =
-          moveCreateService.createMove(
-              journal,
-              company,
-              company.getCurrency(),
-              invoice.getPartner(),
-              date,
-              date,
-              null,
-              invoice.getFiscalPosition(),
-              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-              MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-              origin,
-              description,
-              invoice.getCompanyBankDetails());
-      MoveLine creditMoveLine, debitMoveLine;
-
-      debitMoveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              invoice.getPartner(),
-              factorDebitAccount,
-              invoice.getCompanyInTaxTotalRemaining(),
-              !isRefund,
-              date,
-              null,
-              1,
-              origin,
-              description);
-
-      creditMoveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              invoice.getPartner(),
-              factorCreditAccount,
-              invoice.getCompanyInTaxTotalRemaining(),
-              isRefund,
-              date,
-              null,
-              2,
-              origin,
-              description);
-
-      move.addMoveLineListItem(debitMoveLine);
-      move.addMoveLineListItem(creditMoveLine);
-
-      move = moveRepository.save(move);
-      moveValidateService.accounting(move);
-
-      invoice.setSubrogationRelease(subrogationRelease);
-      invoice.setSubrogationReleaseMove(move);
-
-      subrogationRelease.addMoveListItem(move);
     }
-
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);
   }
 
@@ -347,7 +351,9 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
   @Override
   public boolean isSubrogationReleaseCompletelyPaid(SubrogationRelease subrogationRelease) {
-
+    if (subrogationRelease.getInvoiceSet() == null) {
+      return false;
+    }
     return subrogationRelease.getInvoiceSet().stream()
             .filter(p -> p.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)
             .count()

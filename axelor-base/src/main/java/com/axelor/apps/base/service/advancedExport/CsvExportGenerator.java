@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -52,13 +53,14 @@ public class CsvExportGenerator extends AdvancedExportGenerator {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
-    totalCols = new String[advancedExport.getAdvancedExportLineList().size()];
+    totalCols = new String[ListUtils.size(advancedExport.getAdvancedExportLineList())];
   }
 
   @Override
   public void generateHeader() {
     int index = 0;
-    for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
+    for (AdvancedExportLine advancedExportLine :
+        ListUtils.emptyIfNull(advancedExport.getAdvancedExportLineList())) {
       totalCols[index++] = I18n.get(advancedExportLine.getTitle());
     }
     csvWriter.writeNext(totalCols);
@@ -67,17 +69,19 @@ public class CsvExportGenerator extends AdvancedExportGenerator {
   @SuppressWarnings("rawtypes")
   @Override
   public void generateBody(List<List> dataList) {
-    for (List listObj : dataList) {
-      for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
-        Object value = listObj.get(colIndex);
-        String columnValue = null;
-        if (!(value == null || value.equals(""))) {
-          if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
-          else columnValue = value.toString();
+    if (dataList != null) {
+      for (List listObj : dataList) {
+        for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
+          Object value = listObj.get(colIndex);
+          String columnValue = null;
+          if (!(value == null || value.equals(""))) {
+            if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
+            else columnValue = value.toString();
+          }
+          totalCols[colIndex] = columnValue;
         }
-        totalCols[colIndex] = columnValue;
+        csvWriter.writeNext(totalCols);
       }
-      csvWriter.writeNext(totalCols);
     }
   }
 

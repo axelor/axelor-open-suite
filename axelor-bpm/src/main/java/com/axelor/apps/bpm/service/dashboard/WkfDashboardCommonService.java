@@ -24,6 +24,8 @@ import com.axelor.apps.bpm.db.WkfTaskConfig;
 import com.axelor.apps.bpm.db.repo.WkfProcessRepository;
 import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
@@ -94,12 +96,13 @@ public class WkfDashboardCommonService {
   }
 
   public boolean isAdmin(WkfModel wkfModel, User user) {
-    boolean isAdminUser = wkfModel.getAdminUserSet().contains(user);
+    boolean isAdminUser =
+        wkfModel.getAdminUserSet() != null && wkfModel.getAdminUserSet().contains(user);
     boolean isAdminRole =
-        wkfModel.getAdminRoleSet().stream()
+        SetUtils.emptyIfNull(wkfModel.getAdminRoleSet()).stream()
             .filter(
                 role -> {
-                  return user.getRoles().contains(role);
+                  return SetUtils.emptyIfNull(user.getRoles()).contains(role);
                 })
             .findAny()
             .isPresent();
@@ -111,12 +114,12 @@ public class WkfDashboardCommonService {
   }
 
   public boolean isManager(WkfModel wkfModel, User user) {
-    boolean isManagerUser = wkfModel.getManagerUserSet().contains(user);
+    boolean isManagerUser = SetUtils.emptyIfNull(wkfModel.getManagerUserSet()).contains(user);
     boolean isManagerRole =
-        wkfModel.getManagerRoleSet().stream()
+        SetUtils.emptyIfNull(wkfModel.getManagerRoleSet()).stream()
             .filter(
                 role -> {
-                  return user.getRoles().contains(role);
+                  return SetUtils.emptyIfNull(user.getRoles()).contains(role);
                 })
             .findAny()
             .isPresent();
@@ -128,12 +131,12 @@ public class WkfDashboardCommonService {
   }
 
   public boolean isUser(WkfModel wkfModel, User user) {
-    boolean isUser = wkfModel.getUserSet().contains(user);
+    boolean isUser = SetUtils.emptyIfNull(user.getRoles()).contains(user);
     boolean isUserRole =
-        wkfModel.getRoleSet().stream()
+        SetUtils.emptyIfNull(wkfModel.getRoleSet()).stream()
             .filter(
                 role -> {
-                  return user.getRoles().contains(role);
+                  return SetUtils.emptyIfNull(user.getRoles()).contains(role);
                 })
             .findAny()
             .isPresent();
@@ -194,7 +197,7 @@ public class WkfDashboardCommonService {
   }
 
   public void sortProcessConfig(List<WkfProcessConfig> processConfigs) {
-    processConfigs.sort(Comparator.comparing(WkfProcessConfig::getId));
+    ListUtils.emptyIfNull(processConfigs).sort(Comparator.comparing(WkfProcessConfig::getId));
   }
 
   @SuppressWarnings("serial")
@@ -249,46 +252,47 @@ public class WkfDashboardCommonService {
     List<Map<String, Object>> taskCntMapList = new ArrayList<>();
     Map<String, Object> taskMap = new HashMap<String, Object>();
 
-    taskConfigs.forEach(
-        config -> {
-          List<String> processInstanceIds =
-              wkfInstanceService.findProcessInstanceByNode(
-                  config.getName(), config.getProcessId(), config.getType(), false);
+    ListUtils.emptyIfNull(taskConfigs)
+        .forEach(
+            config -> {
+              List<String> processInstanceIds =
+                  wkfInstanceService.findProcessInstanceByNode(
+                      config.getName(), config.getProcessId(), config.getType(), false);
 
-          List<Long> recordStatusIds =
-              getStatusRecordIds(
-                  config, processInstanceIds, modelName, isMetaModel, user, assignedType);
+              List<Long> recordStatusIds =
+                  getStatusRecordIds(
+                      config, processInstanceIds, modelName, isMetaModel, user, assignedType);
 
-          if (withTask) {
-            getTasks(
-                config,
-                processInstanceIds,
-                modelName,
-                isMetaModel,
-                user,
-                taskMap,
-                taskCntMapList,
-                assignedType);
-          }
+              if (withTask) {
+                getTasks(
+                    config,
+                    processInstanceIds,
+                    modelName,
+                    isMetaModel,
+                    user,
+                    taskMap,
+                    taskCntMapList,
+                    assignedType);
+              }
 
-          if (CollectionUtils.isNotEmpty(recordStatusIds)) {
-            recordIdsPerModel.addAll(recordStatusIds);
-            statusList.add(
-                new HashMap<String, Object>() {
-                  {
-                    put(
-                        "title",
-                        !StringUtils.isBlank(config.getDescription())
-                            ? config.getDescription()
-                            : config.getName());
-                    put("isMetaModel", isMetaModel);
-                    put("modelName", modelName);
-                    put("statusCount", recordStatusIds.size());
-                    put("statusRecordIds", recordStatusIds);
-                  }
-                });
-          }
-        });
+              if (CollectionUtils.isNotEmpty(recordStatusIds)) {
+                recordIdsPerModel.addAll(recordStatusIds);
+                statusList.add(
+                    new HashMap<String, Object>() {
+                      {
+                        put(
+                            "title",
+                            !StringUtils.isBlank(config.getDescription())
+                                ? config.getDescription()
+                                : config.getName());
+                        put("isMetaModel", isMetaModel);
+                        put("modelName", modelName);
+                        put("statusCount", recordStatusIds.size());
+                        put("statusRecordIds", recordStatusIds);
+                      }
+                    });
+              }
+            });
 
     if (withTask) {
       taskMap.put("isMetaModel", isMetaModel);
@@ -315,7 +319,9 @@ public class WkfDashboardCommonService {
               config, processInstanceIds, modelName, user, null, assignedType, LocalDate.now());
 
       recordIds.addAll(
-          jsonModelrecords.stream().map(record -> record.getId()).collect(Collectors.toList()));
+          ListUtils.emptyIfNull(jsonModelrecords).stream()
+              .map(record -> record.getId())
+              .collect(Collectors.toList()));
 
     } else {
       List<Model> metaModelRecords =
@@ -323,7 +329,9 @@ public class WkfDashboardCommonService {
               config, processInstanceIds, modelName, user, null, assignedType, LocalDate.now());
 
       recordIds.addAll(
-          metaModelRecords.stream().map(record -> record.getId()).collect(Collectors.toList()));
+          ListUtils.emptyIfNull(metaModelRecords).stream()
+              .map(record -> record.getId())
+              .collect(Collectors.toList()));
     }
 
     return recordIds;
@@ -391,7 +399,7 @@ public class WkfDashboardCommonService {
     return metaJsonRecordRepo
         .all()
         .filter(filter)
-        .bind("processInstanceIds", processInstanceIds)
+        .bind("processInstanceIds", ListUtils.emptyIfNull(processInstanceIds))
         .bind("jsonModel", modelName)
         .fetch();
   }
@@ -514,7 +522,10 @@ public class WkfDashboardCommonService {
               WkfDashboardCommonService.TASK_TODAY,
               assignedType,
               LocalDate.now());
-      taskTodayIds.addAll(taskTodayList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      taskTodayIds.addAll(
+          ListUtils.emptyIfNull(taskTodayList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
       List<MetaJsonRecord> taskNextList =
           getMetaJsonRecords(
@@ -525,7 +536,10 @@ public class WkfDashboardCommonService {
               WkfDashboardCommonService.TASK_NEXT,
               assignedType,
               LocalDate.now());
-      taskNextIds.addAll(taskNextList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      taskNextIds.addAll(
+          ListUtils.emptyIfNull(taskNextList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
       List<MetaJsonRecord> lateTaskList =
           getMetaJsonRecords(
@@ -536,11 +550,13 @@ public class WkfDashboardCommonService {
               WkfDashboardCommonService.LATE_TASK,
               assignedType,
               LocalDate.now());
-      lateTaskIds.addAll(lateTaskList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      lateTaskIds.addAll(
+          ListUtils.emptyIfNull(lateTaskList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
-      taskCntMap.put("otherTaskCnt", taskTodayList.size() + taskNextList.size());
-      taskCntMap.put("lateTaskCnt", lateTaskList.size());
-
+      taskCntMap.put("otherTaskCnt", ListUtils.size(taskTodayList) + ListUtils.size(taskNextList));
+      taskCntMap.put("lateTaskCnt", ListUtils.size(lateTaskList));
     } else {
       List<Model> taskTodayList =
           getMetaModelRecords(
@@ -551,7 +567,10 @@ public class WkfDashboardCommonService {
               WkfDashboardCommonService.TASK_TODAY,
               assignedType,
               LocalDate.now());
-      taskTodayIds.addAll(taskTodayList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      taskTodayIds.addAll(
+          ListUtils.emptyIfNull(taskTodayList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
       List<Model> taskNextList =
           getMetaModelRecords(
@@ -562,7 +581,10 @@ public class WkfDashboardCommonService {
               WkfDashboardCommonService.TASK_NEXT,
               assignedType,
               LocalDate.now());
-      taskNextIds.addAll(taskNextList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      taskNextIds.addAll(
+          ListUtils.emptyIfNull(taskNextList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
       List<Model> lateTaskList =
           getMetaModelRecords(
@@ -573,29 +595,34 @@ public class WkfDashboardCommonService {
               WkfDashboardCommonService.LATE_TASK,
               assignedType,
               LocalDate.now());
-      lateTaskIds.addAll(lateTaskList.stream().map(t -> t.getId()).collect(Collectors.toList()));
+      lateTaskIds.addAll(
+          ListUtils.emptyIfNull(lateTaskList).stream()
+              .map(t -> t.getId())
+              .collect(Collectors.toList()));
 
-      taskCntMap.put("otherTaskCnt", taskTodayList.size() + taskNextList.size());
-      taskCntMap.put("lateTaskCnt", lateTaskList.size());
+      taskCntMap.put("otherTaskCnt", ListUtils.size(taskTodayList) + ListUtils.size(taskNextList));
+      taskCntMap.put("lateTaskCnt", ListUtils.size(lateTaskList));
     }
 
-    if ((taskTodayIds.size() > 0 || taskNextIds.size() > 0 || lateTaskIds.size() > 0)
+    if (!(taskTodayIds.isEmpty() || taskNextIds.isEmpty() || lateTaskIds.isEmpty())
         && taskCntMapList != null) {
       taskCntMapList.add(taskCntMap);
     }
 
-    if (taskMap.containsKey("taskTodayIds")) {
-      taskTodayIds.addAll((List<Long>) taskMap.get("taskTodayIds"));
-    }
-    if (taskMap.containsKey("taskNextIds")) {
-      taskNextIds.addAll((List<Long>) taskMap.get("taskNextIds"));
-    }
-    if (taskMap.containsKey("lateTaskIds")) {
-      lateTaskIds.addAll((List<Long>) taskMap.get("lateTaskIds"));
-    }
+    if (taskMap != null) {
+      if (taskMap.containsKey("taskTodayIds")) {
+        taskTodayIds.addAll((List<Long>) taskMap.get("taskTodayIds"));
+      }
+      if (taskMap.containsKey("taskNextIds")) {
+        taskNextIds.addAll((List<Long>) taskMap.get("taskNextIds"));
+      }
+      if (taskMap.containsKey("lateTaskIds")) {
+        lateTaskIds.addAll((List<Long>) taskMap.get("lateTaskIds"));
+      }
 
-    taskMap.put("taskTodayIds", taskTodayIds);
-    taskMap.put("taskNextIds", taskNextIds);
-    taskMap.put("lateTaskIds", lateTaskIds);
+      taskMap.put("taskTodayIds", taskTodayIds);
+      taskMap.put("taskNextIds", taskNextIds);
+      taskMap.put("lateTaskIds", lateTaskIds);
+    }
   }
 }

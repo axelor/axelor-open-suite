@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -127,7 +128,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     MoveLine holdbackMoveLine = null;
 
     for (PaymentConditionLine paymentConditionLine :
-        paymentCondition.getPaymentConditionLineList().stream()
+        ListUtils.emptyIfNull(paymentCondition.getPaymentConditionLineList()).stream()
             .sorted(Comparator.comparing(PaymentConditionLine::getSequence))
             .collect(Collectors.toList())) {
       if (paymentConditionLine.getIsHoldback() == isHoldback) {
@@ -246,7 +247,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   protected MoveLine getHoldbackMoveLine(MoveLine moveLine, Move move, Account holdbackAccount) {
-    return move.getMoveLineList().stream()
+    return ListUtils.emptyIfNull(move.getMoveLineList()).stream()
         .filter(
             it ->
                 it.getAccount().equals(holdbackAccount)
@@ -352,7 +353,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       return true;
     }
 
-    return move.getMoveLineList().stream()
+    return ListUtils.emptyIfNull(move.getMoveLineList()).stream()
         .anyMatch(
             it ->
                 it.getAccount().equals(holdbackAccount)

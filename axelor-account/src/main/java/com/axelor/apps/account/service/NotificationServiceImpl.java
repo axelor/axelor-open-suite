@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
+import org.apache.commons.collections.CollectionUtils;
 
 public class NotificationServiceImpl implements NotificationService {
 
@@ -86,15 +87,18 @@ public class NotificationServiceImpl implements NotificationService {
     Comparator<Invoice> byInvoiceId = (i1, i2) -> i1.getInvoiceId().compareTo(i2.getInvoiceId());
 
     List<Invoice> invoiceList = new ArrayList<Invoice>();
-    if (notification.getSubrogationRelease() != null) {
+    if (notification.getSubrogationRelease() != null
+        && notification.getSubrogationRelease().getInvoiceSet() != null) {
       invoiceList =
           notification.getSubrogationRelease().getInvoiceSet().stream()
               .sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId))
               .collect(Collectors.toList());
     }
-    for (Invoice invoice : invoiceList) {
-      if (invoice.getAmountRemaining().signum() > 0) {
-        notification.addNotificationItemListItem(createNotificationItem(invoice));
+    if (invoiceList != null) {
+      for (Invoice invoice : invoiceList) {
+        if (invoice.getAmountRemaining().signum() > 0) {
+          notification.addNotificationItemListItem(createNotificationItem(invoice));
+        }
       }
     }
   }
@@ -111,11 +115,13 @@ public class NotificationServiceImpl implements NotificationService {
   @Transactional(rollbackOn = {Exception.class})
   public void validate(Notification notification) throws AxelorException {
 
-    for (NotificationItem notificationItem : notification.getNotificationItemList()) {
-      this.createPaymentMove(notificationItem);
-    }
+    if (notification != null && notification.getNotificationItemList() != null) {
+      for (NotificationItem notificationItem : notification.getNotificationItemList()) {
+        this.createPaymentMove(notificationItem);
+      }
 
-    notification.setStatusSelect(NotificationRepository.STATUS_VALIDATED);
+      notification.setStatusSelect(NotificationRepository.STATUS_VALIDATED);
+    }
   }
 
   protected Journal getJournal(AccountConfig accountConfig) throws AxelorException {
@@ -263,9 +269,13 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   protected MoveLine findInvoiceAccountMoveLine(Invoice invoice) {
-    for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
-      if (moveLine.getAccount().equals(invoice.getPartnerAccount())) {
-        return moveLine;
+    if (invoice != null
+        && invoice.getMove() != null
+        && invoice.getMove().getMoveLineList() != null) {
+      for (MoveLine moveLine : invoice.getMove().getMoveLineList()) {
+        if (moveLine.getAccount().equals(invoice.getPartnerAccount())) {
+          return moveLine;
+        }
       }
     }
     throw new NoSuchElementException();
@@ -273,7 +283,8 @@ public class NotificationServiceImpl implements NotificationService {
 
   protected MoveLine findSubrogationReleaseAccountMoveLine(
       Invoice invoice, Account account, boolean isInvoice) throws AxelorException {
-    if (invoice.getSubrogationReleaseMove() != null) {
+    if (invoice.getSubrogationReleaseMove() != null
+        && invoice.getSubrogationReleaseMove().getMoveLineList() != null) {
       for (MoveLine moveLine : invoice.getSubrogationReleaseMove().getMoveLineList()) {
         if (moveLine.getAccount().equals(account)
             && ((!isInvoice && moveLine.getDebit().signum() > 0)
@@ -288,12 +299,16 @@ public class NotificationServiceImpl implements NotificationService {
   @Override
   public List<Long> getMoveLines(Notification notification) {
     List<Long> moveLineIdList = new ArrayList<Long>();
-    for (NotificationItem notificationItem : notification.getNotificationItemList()) {
-      if (notificationItem.getMove() == null) {
-        continue;
-      }
-      for (MoveLine moveLine : notificationItem.getMove().getMoveLineList()) {
-        moveLineIdList.add(moveLine.getId());
+    if (CollectionUtils.isNotEmpty(notification.getNotificationItemList())) {
+      for (NotificationItem notificationItem : notification.getNotificationItemList()) {
+        if (notificationItem.getMove() == null) {
+          continue;
+        }
+        if (CollectionUtils.isNotEmpty(notificationItem.getMove().getMoveLineList())) {
+          for (MoveLine moveLine : notificationItem.getMove().getMoveLineList()) {
+            moveLineIdList.add(moveLine.getId());
+          }
+        }
       }
     }
     return moveLineIdList;

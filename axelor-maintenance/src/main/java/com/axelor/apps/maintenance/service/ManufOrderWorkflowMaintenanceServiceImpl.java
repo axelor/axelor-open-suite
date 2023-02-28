@@ -30,6 +30,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -95,7 +96,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     }
 
-    for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
+    for (OperationOrder operationOrder :
+        ListUtils.emptyIfNull(getSortedOperationOrderList(manufOrder))) {
       operationOrderWorkflowService.plan(operationOrder, null);
     }
 

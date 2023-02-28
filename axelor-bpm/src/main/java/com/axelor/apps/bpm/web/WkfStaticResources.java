@@ -18,12 +18,16 @@
 package com.axelor.apps.bpm.web;
 
 import com.axelor.web.StaticResourceProvider;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WkfStaticResources implements StaticResourceProvider {
 
   @Override
   public void register(List<String> resources) {
+    if (resources == null) {
+      resources = new ArrayList<>();
+    }
     resources.add("wkf/wkf-editor");
   }
 }

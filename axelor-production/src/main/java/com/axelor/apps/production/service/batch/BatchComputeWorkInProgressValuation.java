@@ -40,6 +40,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
@@ -91,7 +92,8 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
     int offset = 0;
 
-    while (!(manufOrderList = manufOrderQuery.order("id").fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (CollectionUtils.isNotEmpty(
+        (manufOrderList = manufOrderQuery.order("id").fetch(FETCH_LIMIT, offset)))) {
 
       for (ManufOrder manufOrder : manufOrderList) {
         ++offset;

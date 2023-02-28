@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,10 +64,13 @@ public class MassUpdateTool {
     List<List<T>> dataList = Lists.partition(objectList, 25);
     AtomicInteger counter = new AtomicInteger(0);
 
-    dataList
-        .parallelStream()
-        .forEach(
-            list -> executor.add(() -> updateStatus(list, newValue, property, counter, beanRepo)));
+    if (dataList != null) {
+      dataList
+          .parallelStream()
+          .forEach(
+              list ->
+                  executor.add(() -> updateStatus(list, newValue, property, counter, beanRepo)));
+    }
     executor.run();
 
     int recordsUpdated = counter.get();
@@ -111,11 +115,13 @@ public class MassUpdateTool {
       Property property,
       AtomicInteger counter,
       JpaRepository<T> beanRepo) {
-    for (T object : dataList) {
-      object = beanRepo.find(object.getId());
-      property.set(object, value);
-      beanRepo.save(object);
-      counter.incrementAndGet();
+    if (CollectionUtils.isNotEmpty(dataList)) {
+      for (T object : dataList) {
+        object = beanRepo.find(object.getId());
+        property.set(object, value);
+        beanRepo.save(object);
+        counter.incrementAndGet();
+      }
     }
   }
 

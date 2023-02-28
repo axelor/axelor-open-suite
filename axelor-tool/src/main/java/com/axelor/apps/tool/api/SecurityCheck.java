@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool.api;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
@@ -58,33 +59,51 @@ public class SecurityCheck {
           throw new ForbiddenException("You can't access " + klass + " for this action.");
         };
 
-    listCreate.stream()
-        .filter(klass -> !jpaSecurity.isPermitted(JpaSecurity.CAN_CREATE, klass))
-        .forEach(handlerUnauthorizedForCreateAccess);
-    mapRead.entrySet().stream()
-        .filter(
-            entry ->
-                !jpaSecurity.isPermitted(
-                    JpaSecurity.CAN_READ, entry.getKey(), entry.getValue().toArray(new Long[0])))
-        .forEach(handlerUnauthorized);
-    mapWrite.entrySet().stream()
-        .filter(
-            entry ->
-                !jpaSecurity.isPermitted(
-                    JpaSecurity.CAN_WRITE, entry.getKey(), entry.getValue().toArray(new Long[0])))
-        .forEach(handlerUnauthorized);
-    mapRemove.entrySet().stream()
-        .filter(
-            entry ->
-                !jpaSecurity.isPermitted(
-                    JpaSecurity.CAN_REMOVE, entry.getKey(), entry.getValue().toArray(new Long[0])))
-        .forEach(handlerUnauthorized);
-    mapExport.entrySet().stream()
-        .filter(
-            entry ->
-                !jpaSecurity.isPermitted(
-                    JpaSecurity.CAN_EXPORT, entry.getKey(), entry.getValue().toArray(new Long[0])))
-        .forEach(handlerUnauthorized);
+    if (this.listCreate != null) {
+      listCreate.stream()
+          .filter(klass -> !jpaSecurity.isPermitted(JpaSecurity.CAN_CREATE, klass))
+          .forEach(handlerUnauthorizedForCreateAccess);
+    }
+
+    if (this.mapRead != null) {
+      mapRead.entrySet().stream()
+          .filter(
+              entry ->
+                  !jpaSecurity.isPermitted(
+                      JpaSecurity.CAN_READ, entry.getKey(), entry.getValue().toArray(new Long[0])))
+          .forEach(handlerUnauthorized);
+    }
+
+    if (this.mapWrite != null) {
+      mapWrite.entrySet().stream()
+          .filter(
+              entry ->
+                  !jpaSecurity.isPermitted(
+                      JpaSecurity.CAN_WRITE, entry.getKey(), entry.getValue().toArray(new Long[0])))
+          .forEach(handlerUnauthorized);
+    }
+
+    if (this.mapRemove != null) {
+      mapRemove.entrySet().stream()
+          .filter(
+              entry ->
+                  !jpaSecurity.isPermitted(
+                      JpaSecurity.CAN_REMOVE,
+                      entry.getKey(),
+                      entry.getValue().toArray(new Long[0])))
+          .forEach(handlerUnauthorized);
+    }
+
+    if (this.mapExport != null) {
+      mapExport.entrySet().stream()
+          .filter(
+              entry ->
+                  !jpaSecurity.isPermitted(
+                      JpaSecurity.CAN_EXPORT,
+                      entry.getKey(),
+                      entry.getValue().toArray(new Long[0])))
+          .forEach(handlerUnauthorized);
+    }
   }
 
   public SecurityCheck createAccess(Class<? extends Model> klass) {
@@ -99,7 +118,7 @@ public class SecurityCheck {
     if (this.listCreate == null) {
       this.listCreate = new ArrayList<>();
     }
-    this.listCreate.addAll(klassList);
+    this.listCreate.addAll(ListUtils.emptyIfNull(klassList));
     return this;
   }
 
@@ -115,8 +134,10 @@ public class SecurityCheck {
     if (this.mapRead == null) {
       this.mapRead = new HashMap<>();
     }
-    for (Class<? extends Model> klass : klassList) {
-      this.mapRead.put(klass, new ArrayList<>());
+    if (klassList != null) {
+      for (Class<? extends Model> klass : klassList) {
+        this.mapRead.put(klass, new ArrayList<>());
+      }
     }
     return this;
   }
@@ -133,8 +154,10 @@ public class SecurityCheck {
     if (this.mapWrite == null) {
       this.mapWrite = new HashMap<>();
     }
-    for (Class<? extends Model> klass : klassList) {
-      this.mapWrite.put(klass, new ArrayList<>());
+    if (klassList != null) {
+      for (Class<? extends Model> klass : klassList) {
+        this.mapWrite.put(klass, new ArrayList<>());
+      }
     }
     return this;
   }
@@ -151,8 +174,10 @@ public class SecurityCheck {
     if (this.mapRemove == null) {
       this.mapRemove = new HashMap<>();
     }
-    for (Class<? extends Model> klass : klassList) {
-      this.mapRemove.put(klass, new ArrayList<>());
+    if (klassList != null) {
+      for (Class<? extends Model> klass : klassList) {
+        this.mapRemove.put(klass, new ArrayList<>());
+      }
     }
     return this;
   }
@@ -169,8 +194,10 @@ public class SecurityCheck {
     if (this.mapExport == null) {
       this.mapExport = new HashMap<>();
     }
-    for (Class<? extends Model> klass : klassList) {
-      this.mapExport.put(klass, new ArrayList<>());
+    if (klassList != null) {
+      for (Class<? extends Model> klass : klassList) {
+        this.mapExport.put(klass, new ArrayList<>());
+      }
     }
     return this;
   }

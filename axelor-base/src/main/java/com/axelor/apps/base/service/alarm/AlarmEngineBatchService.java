@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.AlarmRepository;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -54,7 +55,8 @@ public class AlarmEngineBatchService extends AbstractBatch {
   @Override
   protected void process() {
 
-    for (AlarmEngine alarmEngine : batch.getAlarmEngineBatch().getAlarmEngineSet()) {
+    for (AlarmEngine alarmEngine :
+        SetUtils.emptyIfNull(batch.getAlarmEngineBatch().getAlarmEngineSet())) {
 
       try {
 
@@ -101,12 +103,14 @@ public class AlarmEngineBatchService extends AbstractBatch {
       throws IllegalArgumentException, IllegalAccessException {
 
     Alarm alarm = null;
-    for (T t : alarms.keySet()) {
+    if (alarms != null) {
+      for (T t : alarms.keySet()) {
 
-      alarm = alarms.get(t);
-      associateAlarm(alarm, t);
-      alarmRepo.save(alarm);
-      incrementDone();
+        alarm = alarms.get(t);
+        associateAlarm(alarm, t);
+        alarmRepo.save(alarm);
+        incrementDone();
+      }
     }
   }
 

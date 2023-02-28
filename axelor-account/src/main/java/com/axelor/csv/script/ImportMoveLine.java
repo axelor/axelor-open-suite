@@ -54,34 +54,40 @@ public class ImportMoveLine {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
 
-    String accountId = (String) values.get("account_importId");
+    String accountId = values != null ? (String) values.get("account_importId") : "";
     Account account = getAccount(accountId);
     if (account != null) {
       moveLine.setAccountCode(account.getCode());
       moveLine.setAccountName(account.getName());
     } else {
-      moveLine.setAccountCode((String) values.get("accountCode"));
-      moveLine.setAccountName((String) values.get("accountName"));
+      if (values != null) {
+        moveLine.setAccountCode((String) values.get("accountCode"));
+        moveLine.setAccountName((String) values.get("accountName"));
+      }
     }
 
-    String taxLineId = (String) values.get("taxLine_importId");
+    String taxLineId = values != null ? (String) values.get("taxLine_importId") : "";
     TaxLine taxLine = getTaxLine(taxLineId);
     if (taxLine != null) {
       moveLine.setTaxCode(taxLine.getTax().getCode());
       moveLine.setTaxRate(taxLine.getValue());
     } else {
-      moveLine.setTaxCode((String) values.get("taxCode"));
-      moveLine.setTaxRate(new BigDecimal((String) values.get("taxRate")));
+      if (values != null) {
+        moveLine.setTaxCode((String) values.get("taxCode"));
+        moveLine.setTaxRate(new BigDecimal((String) values.get("taxRate")));
+      }
     }
 
-    String partnerId = (String) values.get("partner_importId");
+    String partnerId = values != null ? (String) values.get("partner_importId") : "";
     Partner partner = getPartner(partnerId);
     if (partner != null) {
       moveLine.setPartnerSeq(partner.getPartnerSeq());
       moveLine.setPartnerFullName(partner.getSimpleFullName());
     } else {
-      moveLine.setPartnerSeq((String) values.get("partnerSeq"));
-      moveLine.setPartnerFullName((String) values.get("partnerSimpleFullName"));
+      if (values != null) {
+        moveLine.setPartnerSeq((String) values.get("partnerSeq"));
+        moveLine.setPartnerFullName((String) values.get("partnerSimpleFullName"));
+      }
     }
 
     moveLineRepository.save(moveLine);

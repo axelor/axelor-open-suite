@@ -27,6 +27,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.apps.supplychain.report.IReport;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -81,46 +82,51 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
                 declarationOfExchanges.getCountry(),
                 declarationOfExchanges.getCompany())
             .fetch();
-    List<String[]> dataList = new ArrayList<>(stockMoveLines.size());
+    List<String[]> dataList = new ArrayList<>(ListUtils.size(stockMoveLines));
     int lineNum = 1;
 
-    for (StockMoveLine stockMoveLine : stockMoveLines) {
-      String[] data = new String[columnHeadersList.size()];
+    if (stockMoveLines != null) {
+      for (StockMoveLine stockMoveLine : stockMoveLines) {
+        String[] data = new String[ListUtils.size(columnHeadersList)];
 
-      StockMove stockMove = stockMoveLine.getStockMove();
+        StockMove stockMove = stockMoveLine.getStockMove();
 
-      BigDecimal fiscalValue =
-          stockMoveLine
-              .getUnitPriceUntaxed()
-              .multiply(stockMoveLine.getRealQty())
-              .setScale(0, RoundingMode.HALF_UP);
+        BigDecimal fiscalValue =
+            stockMoveLine
+                .getUnitPriceUntaxed()
+                .multiply(stockMoveLine.getRealQty())
+                .setScale(0, RoundingMode.HALF_UP);
 
-      String taxNbr;
+        String taxNbr;
 
-      if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-          && stockMoveLine.getRegime() != Regime.OTHER_EXPEDITIONS) {
+        if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+            && stockMoveLine.getRegime() != Regime.OTHER_EXPEDITIONS) {
 
-        if (stockMove.getPartner() == null) {
-          taxNbr =
-              String.format(I18n.get("Partner is missing on stock move %s."), stockMove.getName());
+          if (stockMove.getPartner() == null) {
+            taxNbr =
+                String.format(
+                    I18n.get("Partner is missing on stock move %s."), stockMove.getName());
+          }
+
+          if (StringUtils.isBlank(stockMove.getPartner().getTaxNbr())) {
+            taxNbr =
+                String.format(
+                    I18n.get("Tax number is missing on partner %s."),
+                    stockMove.getPartner().getName());
+          }
+
+          taxNbr = stockMove.getPartner().getTaxNbr();
+        } else {
+          taxNbr = "";
         }
 
-        if (StringUtils.isBlank(stockMove.getPartner().getTaxNbr())) {
-          taxNbr =
-              String.format(
-                  I18n.get("Tax number is missing on partner %s."),
-                  stockMove.getPartner().getName());
+        if (columnHeadersList != null) {
+          data[columnHeadersList.indexOf(LINE_NUM)] = String.valueOf(lineNum++);
+          data[columnHeadersList.indexOf(FISC_VAL)] = String.valueOf(fiscalValue);
+          data[columnHeadersList.indexOf(TAKER)] = taxNbr;
+          dataList.add(data);
         }
-
-        taxNbr = stockMove.getPartner().getTaxNbr();
-      } else {
-        taxNbr = "";
       }
-
-      data[columnHeadersList.indexOf(LINE_NUM)] = String.valueOf(lineNum++);
-      data[columnHeadersList.indexOf(FISC_VAL)] = String.valueOf(fiscalValue);
-      data[columnHeadersList.indexOf(TAKER)] = taxNbr;
-      dataList.add(data);
     }
 
     try {

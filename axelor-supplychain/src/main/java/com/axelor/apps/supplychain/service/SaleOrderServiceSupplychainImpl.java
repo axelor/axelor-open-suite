@@ -51,6 +51,7 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -152,7 +153,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
                 .collect(Collectors.toList())
             : allStockMoves;
     checkAvailabiltyRequest =
-        stockMoves.size() != allStockMoves.size() ? true : checkAvailabiltyRequest;
+        ListUtils.size(stockMoves) != ListUtils.size(allStockMoves)
+            ? true
+            : checkAvailabiltyRequest;
     if (!stockMoves.isEmpty()) {
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
       CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
@@ -165,9 +168,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       for (StockMove stockMove : stockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
         stockMove.setArchived(true);
-        for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
-          stockMoveline.setSaleOrderLine(null);
-          stockMoveline.setArchived(true);
+        if (CollectionUtils.isNotEmpty(stockMove.getStockMoveLineList())) {
+          for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
+            stockMoveline.setSaleOrderLine(null);
+            stockMoveline.setArchived(true);
+          }
         }
       }
     }
@@ -256,6 +261,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   @Override
   public String createShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
+
+    if (saleOrder.getSaleOrderLineList() == null) {
+      saleOrder.setSaleOrderLineList(new ArrayList<>());
+    }
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
     Partner client = saleOrder.getClientPartner();
     ShipmentMode shipmentMode = saleOrder.getShipmentMode();
@@ -271,7 +280,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     if (client != null) {
       List<CustomerShippingCarriagePaid> carriagePaids =
           client.getCustomerShippingCarriagePaidList();
-      for (CustomerShippingCarriagePaid customerShippingCarriagePaid : carriagePaids) {
+      for (CustomerShippingCarriagePaid customerShippingCarriagePaid :
+          ListUtils.emptyIfNull(carriagePaids)) {
         if (shipmentMode.getId() == customerShippingCarriagePaid.getShipmentMode().getId()) {
           if (customerShippingCarriagePaid.getShippingCostsProduct() != null) {
             shippingCostProduct = customerShippingCarriagePaid.getShippingCostsProduct();
@@ -293,6 +303,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       return null;
     }
     SaleOrderLine shippingCostLine = createShippingCostLine(saleOrder, shippingCostProduct);
+    if (saleOrderLines == null) {
+      saleOrderLines = new ArrayList<>();
+    }
     saleOrderLines.add(shippingCostLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderMarginService.computeMarginSaleOrder(saleOrder);
@@ -400,7 +413,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
           clientPartner.getPartner1SupplychainLinkList();
       // Retrieve all Invoiced by Type
       List<PartnerSupplychainLink> partnerSupplychainLinkInvoicedByList =
-          partnerSupplychainLinkList.stream()
+          ListUtils.emptyIfNull(partnerSupplychainLinkList).stream()
               .filter(
                   partnerSupplychainLink ->
                       PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY.equals(
@@ -408,7 +421,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
               .collect(Collectors.toList());
       // Retrieve all Delivered by Type
       List<PartnerSupplychainLink> partnerSupplychainLinkDeliveredByList =
-          partnerSupplychainLinkList.stream()
+          ListUtils.emptyIfNull(partnerSupplychainLinkList).stream()
               .filter(
                   partnerSupplychainLink ->
                       PartnerSupplychainLinkTypeRepository.TYPE_SELECT_DELIVERED_BY.equals(
@@ -416,7 +429,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
               .collect(Collectors.toList());
 
       // If there is only one, then it is the default one
-      if (partnerSupplychainLinkInvoicedByList.size() == 1) {
+      if (ListUtils.size(partnerSupplychainLinkInvoicedByList) == 1) {
         PartnerSupplychainLink partnerSupplychainLinkInvoicedBy =
             partnerSupplychainLinkInvoicedByList.get(0);
         saleOrder.setInvoicedPartner(partnerSupplychainLinkInvoicedBy.getPartner2());
@@ -425,7 +438,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       } else {
         saleOrder.setInvoicedPartner(null);
       }
-      if (partnerSupplychainLinkDeliveredByList.size() == 1) {
+      if (ListUtils.size(partnerSupplychainLinkDeliveredByList) == 1) {
         PartnerSupplychainLink partnerSupplychainLinkDeliveredBy =
             partnerSupplychainLinkDeliveredByList.get(0);
         saleOrder.setDeliveredPartner(partnerSupplychainLinkDeliveredBy.getPartner2());

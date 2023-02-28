@@ -28,6 +28,7 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.mail.db.repo.MailFollowerRepository;
@@ -128,7 +129,9 @@ public class AppraisalServiceImpl implements AppraisalService {
     }
 
     for (Employee employee :
-        employees.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+        SetUtils.emptyIfNull(employees).stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList())) {
       if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
         continue;
       }

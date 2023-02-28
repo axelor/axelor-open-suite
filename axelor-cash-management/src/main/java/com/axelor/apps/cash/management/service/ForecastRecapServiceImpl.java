@@ -51,6 +51,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -221,7 +223,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       functionalOriginList.add(0);
     }
     List<Long> journalIdList =
-        forecastRecapLineType.getJournalSet().stream()
+        SetUtils.emptyIfNull(forecastRecapLineType.getJournalSet()).stream()
             .map(Journal::getId)
             .collect(Collectors.toList());
     if (CollectionUtils.isEmpty(journalIdList)) {
@@ -715,7 +717,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       functionalOriginList.add(0);
     }
     List<Long> journalIdList =
-        forecastRecapLineType.getJournalSet().stream()
+        SetUtils.emptyIfNull(forecastRecapLineType.getJournalSet()).stream()
             .map(Journal::getId)
             .collect(Collectors.toList());
     if (CollectionUtils.isEmpty(journalIdList)) {
@@ -737,7 +739,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .bind("fromDate", forecastRecap.getFromDate())
               .bind("toDate", forecastRecap.getToDate())
               .bind("company", forecastRecap.getCompany())
-              .bind("saleOrderStatusList", statusList)
+              .bind("saleOrderStatusList", ListUtils.emptyIfNull(statusList))
               .bind(
                   "bankDetailsSet",
                   CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
@@ -748,25 +750,27 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                   invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
               .fetch();
 
-      for (Timetable timetable : timetableList) {
-        timetable = timetableRepo.find(timetable.getId());
-        BigDecimal amountCompanyCurr =
-            currencyService
-                .getAmountCurrencyConvertedAtDate(
-                    timetable.getSaleOrder().getCurrency(),
-                    forecastRecap.getCompany().getCurrency(),
-                    timetable.getAmount(),
-                    today)
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        this.createForecastRecapLine(
-            timetable.getEstimatedDate(),
-            forecastRecapLineType.getTypeSelect(),
-            amountCompanyCurr,
-            SaleOrder.class.getName(),
-            timetable.getSaleOrder().getId(),
-            timetable.getSaleOrder().getSaleOrderSeq(),
-            forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
-            forecastRecapRepo.find(forecastRecap.getId()));
+      if (CollectionUtils.isNotEmpty(timetableList)) {
+        for (Timetable timetable : timetableList) {
+          timetable = timetableRepo.find(timetable.getId());
+          BigDecimal amountCompanyCurr =
+              currencyService
+                  .getAmountCurrencyConvertedAtDate(
+                      timetable.getSaleOrder().getCurrency(),
+                      forecastRecap.getCompany().getCurrency(),
+                      timetable.getAmount(),
+                      today)
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          this.createForecastRecapLine(
+              timetable.getEstimatedDate(),
+              forecastRecapLineType.getTypeSelect(),
+              amountCompanyCurr,
+              SaleOrder.class.getName(),
+              timetable.getSaleOrder().getId(),
+              timetable.getSaleOrder().getSaleOrderSeq(),
+              forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
+              forecastRecapRepo.find(forecastRecap.getId()));
+        }
       }
 
     } else if (forecastRecapLineType.getElementSelect()
@@ -784,7 +788,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .bind("fromDate", forecastRecap.getFromDate())
               .bind("toDate", forecastRecap.getToDate())
               .bind("company", forecastRecap.getCompany())
-              .bind("purchaseOrderStatusList", statusList)
+              .bind("purchaseOrderStatusList", ListUtils.emptyIfNull(statusList))
               .bind(
                   "bankDetailsSet",
                   CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
@@ -795,25 +799,27 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                   invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE))
               .fetch();
 
-      for (Timetable timetable : timetableList) {
-        timetable = timetableRepo.find(timetable.getId());
-        BigDecimal amountCompanyCurr =
-            currencyService
-                .getAmountCurrencyConvertedAtDate(
-                    timetable.getPurchaseOrder().getCurrency(),
-                    forecastRecap.getCompany().getCurrency(),
-                    timetable.getAmount(),
-                    today)
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        this.createForecastRecapLine(
-            timetable.getEstimatedDate(),
-            forecastRecapLineType.getTypeSelect(),
-            amountCompanyCurr,
-            PurchaseOrder.class.getName(),
-            timetable.getPurchaseOrder().getId(),
-            timetable.getPurchaseOrder().getPurchaseOrderSeq(),
-            forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
-            forecastRecapRepo.find(forecastRecap.getId()));
+      if (CollectionUtils.isNotEmpty(timetableList)) {
+        for (Timetable timetable : timetableList) {
+          timetable = timetableRepo.find(timetable.getId());
+          BigDecimal amountCompanyCurr =
+              currencyService
+                  .getAmountCurrencyConvertedAtDate(
+                      timetable.getPurchaseOrder().getCurrency(),
+                      forecastRecap.getCompany().getCurrency(),
+                      timetable.getAmount(),
+                      today)
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          this.createForecastRecapLine(
+              timetable.getEstimatedDate(),
+              forecastRecapLineType.getTypeSelect(),
+              amountCompanyCurr,
+              PurchaseOrder.class.getName(),
+              timetable.getPurchaseOrder().getId(),
+              timetable.getPurchaseOrder().getPurchaseOrderSeq(),
+              forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
+              forecastRecapRepo.find(forecastRecap.getId()));
+        }
       }
     } else if (forecastRecapLineType.getElementSelect()
         == ForecastRecapLineTypeRepository.ELEMENT_MOVE) {
@@ -834,7 +840,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .bind("fromDate", forecastRecap.getFromDate())
               .bind("toDate", forecastRecap.getToDate())
               .bind("company", forecastRecap.getCompany())
-              .bind("moveStatusList", statusList)
+              .bind("moveStatusList", ListUtils.emptyIfNull(statusList))
               .bind(
                   "bankDetailsSet",
                   CollectionUtils.isEmpty(forecastRecap.getBankDetailsSet())
@@ -852,26 +858,28 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .bind("functionalOrigin", functionalOriginList)
               .fetch();
 
-      for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        invoiceTerm = invoiceTermRepo.find(invoiceTerm.getId());
-        BigDecimal amountCompanyCurr =
-            currencyService
-                .getAmountCurrencyConvertedAtDate(
-                    invoiceTerm.getMoveLine().getMove().getCurrency(),
-                    forecastRecap.getCompany().getCurrency(),
-                    invoiceTerm.getAmount(),
-                    today)
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      if (CollectionUtils.isNotEmpty(invoiceTermList)) {
+        for (InvoiceTerm invoiceTerm : invoiceTermList) {
+          invoiceTerm = invoiceTermRepo.find(invoiceTerm.getId());
+          BigDecimal amountCompanyCurr =
+              currencyService
+                  .getAmountCurrencyConvertedAtDate(
+                      invoiceTerm.getMoveLine().getMove().getCurrency(),
+                      forecastRecap.getCompany().getCurrency(),
+                      invoiceTerm.getAmount(),
+                      today)
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
-        this.createForecastRecapLine(
-            invoiceTerm.getDueDate(),
-            forecastRecapLineType.getTypeSelect(),
-            amountCompanyCurr,
-            Move.class.getName(),
-            invoiceTerm.getMoveLine().getMove().getId(),
-            invoiceTerm.getMoveLine().getMove().getReference(),
-            forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
-            forecastRecapRepo.find(forecastRecap.getId()));
+          this.createForecastRecapLine(
+              invoiceTerm.getDueDate(),
+              forecastRecapLineType.getTypeSelect(),
+              amountCompanyCurr,
+              Move.class.getName(),
+              invoiceTerm.getMoveLine().getMove().getId(),
+              invoiceTerm.getMoveLine().getMove().getReference(),
+              forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
+              forecastRecapRepo.find(forecastRecap.getId()));
+        }
       }
     }
   }
@@ -926,12 +934,14 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
           }
         });
 
-    for (ForecastRecapLine forecastRecapLine : forecastRecapLines) {
-      forecastRecap.setCurrentBalance(
-          forecastRecap.getCurrentBalance().add(forecastRecapLine.getAmount()));
-      forecastRecapLine.setBalance(forecastRecap.getCurrentBalance());
+    if (CollectionUtils.isNotEmpty(forecastRecapLines)) {
+      for (ForecastRecapLine forecastRecapLine : forecastRecapLines) {
+        forecastRecap.setCurrentBalance(
+            forecastRecap.getCurrentBalance().add(forecastRecapLine.getAmount()));
+        forecastRecapLine.setBalance(forecastRecap.getCurrentBalance());
+      }
+      forecastRecap.setForecastRecapLineList(forecastRecapLines);
     }
-    forecastRecap.setForecastRecapLineList(forecastRecapLines);
   }
 
   @Override

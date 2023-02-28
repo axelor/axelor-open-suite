@@ -75,14 +75,16 @@ public class ActionBuilderController {
     builderView.setViewName(view.getName());
     builderView.setViewType(view.getType());
     builderView.setSequence(sequence);
-
+    if (views == null) {
+      views = new ArrayList<>();
+    }
     views.add(builderView);
   }
 
   public void createMapperScript(ActionRequest request, ActionResponse response) {
 
     Map<String, Object> ctx = (Map<String, Object>) request.getData().get("context");
-    String jsonString = (String) ctx.get("_jsonString");
+    String jsonString = ctx != null ? (String) ctx.get("_jsonString") : null;
 
     if (jsonString != null) {
       String scriptString = Beans.get(MapperScriptGeneratorService.class).generate(jsonString);

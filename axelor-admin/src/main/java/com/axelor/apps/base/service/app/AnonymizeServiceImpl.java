@@ -34,6 +34,7 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,6 +97,10 @@ public class AnonymizeServiceImpl implements AnonymizeService {
 
   protected List<String> getMetaJsonFieldsNameToAnonymize(
       HashMap<MetaJsonField, FakerApiField> fakerMap) {
+
+    if (fakerMap == null) {
+      return new ArrayList<>();
+    }
     List<String> metaJsonFieldsNameToAnonymize =
         fakerMap.keySet().stream().map(MetaJsonField::getName).collect(Collectors.toList());
     for (MetaJsonField metaJsonField : fakerMap.keySet()) {
@@ -111,7 +116,8 @@ public class AnonymizeServiceImpl implements AnonymizeService {
       JSONObject jsonObject,
       Object field)
       throws JSONException, AxelorException {
-    if (metaJsonFieldsNameToAnonymize.contains(field.toString())) {
+    if (metaJsonFieldsNameToAnonymize != null
+        && metaJsonFieldsNameToAnonymize.contains(field.toString())) {
       anonymizedJson.put(
           field.toString(),
           anonymizeJsonValue(
@@ -124,17 +130,20 @@ public class AnonymizeServiceImpl implements AnonymizeService {
   protected Object anonymizeJsonValue(
       HashMap<MetaJsonField, FakerApiField> fakerMap, String fieldName, String objectValue)
       throws AxelorException {
-    MetaJsonField metaJsonField =
-        fakerMap.keySet().stream()
-            .filter(metaJsonField1 -> fieldName.equals(metaJsonField1.getName()))
-            .findAny()
-            .get(); // we will always find a metaJsonField since we called contains on the list
-    // before
-    if (fakerMap.get(metaJsonField) != null) {
-      return fakerService.generateFakeData(fakerMap.get(metaJsonField));
-    } else {
-      return anonymize(objectValue, metaJsonField.getType(), metaJsonField.getMaxSize());
+    if (fakerMap != null) {
+      MetaJsonField metaJsonField =
+          fakerMap.keySet().stream()
+              .filter(metaJsonField1 -> fieldName.equals(metaJsonField1.getName()))
+              .findAny()
+              .get(); // we will always find a metaJsonField since we called contains on the list
+      // before
+      if (fakerMap.get(metaJsonField) != null) {
+        return fakerService.generateFakeData(fakerMap.get(metaJsonField));
+      } else {
+        return anonymize(objectValue, metaJsonField.getType(), metaJsonField.getMaxSize());
+      }
     }
+    return null;
   }
 
   protected Object anonymize(Object object, String type, int maxSize) {

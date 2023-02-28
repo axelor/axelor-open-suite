@@ -68,9 +68,11 @@ public class GdprAnonymizeServiceImpl implements GdprAnonymizeService {
     Mapper mapper = Mapper.of(reference.getClass());
     ObjectMapper json = Beans.get(ObjectMapper.class);
 
-    for (MailMessage mm : mailMessages) {
-      anonymizeMailMessage(reference, mapper, json, mm);
-      mailMessageRepository.save(mm);
+    if (mailMessages != null) {
+      for (MailMessage mm : mailMessages) {
+        anonymizeMailMessage(reference, mapper, json, mm);
+        mailMessageRepository.save(mm);
+      }
     }
   }
 

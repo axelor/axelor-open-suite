@@ -33,7 +33,9 @@ class ImporterCSV extends Importer {
 
     ImporterListener listener = new ImporterListener(getConfiguration().getName());
     importer.addListener(listener);
-    importer.setContext(importContext);
+    if (importContext != null) {
+      importer.setContext(importContext);
+    }
     importer.run();
 
     return addHistory(listener);

@@ -71,6 +71,10 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
     resetStockLocations();
     List<StockMoveGroup> groups = fetchStockMoveGroup();
 
+    if (groups == null) {
+      return;
+    }
+
     // Recomputing stockLocationLine with realized stock move
     groups.stream()
         .filter(
@@ -251,8 +255,10 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
                     + " ORDER BY self.realDate, self.toStockLocation.typeSelect");
 
     List<Object[]> resultList = query.getResultList();
-    for (Object[] result : resultList) {
-      stockMoveGroups.add(createStockMoveGroup(result));
+    if (resultList != null) {
+      for (Object[] result : resultList) {
+        stockMoveGroups.add(createStockMoveGroup(result));
+      }
     }
 
     return stockMoveGroups;

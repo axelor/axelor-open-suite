@@ -37,6 +37,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,29 +229,31 @@ public class CurrencyService {
           I18n.get(BaseExceptionMessage.CURRENCY_4));
     }
 
-    for (CurrencyConversionLine existingCcl : currencyConversionLines) {
-      if (existingCcl.equals(currentCcl)
-          || !(existingCcl.getStartCurrency().equals(startCurrency)
-              && existingCcl.getEndCurrency().equals(endCurrency))) {
-        continue;
-      }
+    if (CollectionUtils.isNotEmpty(currencyConversionLines)) {
+      for (CurrencyConversionLine existingCcl : currencyConversionLines) {
+        if (existingCcl.equals(currentCcl)
+            || !(existingCcl.getStartCurrency().equals(startCurrency)
+                && existingCcl.getEndCurrency().equals(endCurrency))) {
+          continue;
+        }
 
-      LocalDate existingFromDate = existingCcl.getFromDate();
-      LocalDate existingToDate = existingCcl.getToDate();
+        LocalDate existingFromDate = existingCcl.getFromDate();
+        LocalDate existingToDate = existingCcl.getToDate();
 
-      if (existingToDate == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.CURRENCY_3),
-            startCurrency.getCodeISO(),
-            endCurrency.getCodeISO(),
-            existingFromDate);
-      } else if (DateTool.isBetween(existingFromDate, existingToDate, fromDate)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.CURRENCY_11),
-            startCurrency.getCodeISO(),
-            endCurrency.getCodeISO());
+        if (existingToDate == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BaseExceptionMessage.CURRENCY_3),
+              startCurrency.getCodeISO(),
+              endCurrency.getCodeISO(),
+              existingFromDate);
+        } else if (DateTool.isBetween(existingFromDate, existingToDate, fromDate)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BaseExceptionMessage.CURRENCY_11),
+              startCurrency.getCodeISO(),
+              endCurrency.getCodeISO());
+        }
       }
     }
   }

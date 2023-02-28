@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -426,31 +427,34 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       String chequeNumber)
       throws AxelorException {
     InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
+
     List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 
-    for (Long invoiceId : invoiceList) {
-      Invoice invoice = invoiceRepository.find(invoiceId);
+    if (invoiceList != null) {
+      for (Long invoiceId : invoiceList) {
+        Invoice invoice = invoiceRepository.find(invoiceId);
 
-      this.createInvoicePayment(
-          invoice,
-          invoicePaymentList,
-          paymentMode,
-          companyBankDetails,
-          paymentDate,
-          bankDepositDate,
-          chequeNumber,
-          false);
-      this.createInvoicePayment(
-          invoice,
-          invoicePaymentList,
-          paymentMode,
-          companyBankDetails,
-          paymentDate,
-          bankDepositDate,
-          chequeNumber,
-          true);
+        this.createInvoicePayment(
+            invoice,
+            invoicePaymentList,
+            paymentMode,
+            companyBankDetails,
+            paymentDate,
+            bankDepositDate,
+            chequeNumber,
+            false);
+        this.createInvoicePayment(
+            invoice,
+            invoicePaymentList,
+            paymentMode,
+            companyBankDetails,
+            paymentDate,
+            bankDepositDate,
+            chequeNumber,
+            true);
 
-      invoicePaymentToolService.updateAmountPaid(invoice);
+        invoicePaymentToolService.updateAmountPaid(invoice);
+      }
     }
 
     return invoicePaymentList;
@@ -466,7 +470,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       String chequeNumber,
       boolean holdback) {
     List<InvoiceTerm> invoiceTermList =
-        invoice.getInvoiceTermList().stream()
+        ListUtils.emptyIfNull(invoice.getInvoiceTermList()).stream()
             .filter(
                 it ->
                     !it.getIsPaid()
@@ -485,9 +489,10 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             null);
 
     if (invoicePayment != null) {
-      invoicePaymentList.add(invoicePayment);
+      ListUtils.emptyIfNull(invoicePaymentList).add(invoicePayment);
 
-      if (!invoice.getInvoicePaymentList().contains(invoicePayment)) {
+      if (invoice.getInvoicePaymentList() != null
+          && !invoice.getInvoicePaymentList().contains(invoicePayment)) {
         invoice.addInvoicePaymentListItem(invoicePayment);
       }
     }
@@ -499,52 +504,54 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     Currency currency = null;
     List<Long> invoiceToPay = new ArrayList<>();
 
-    for (Long invoiceId : invoiceIdList) {
-      Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
+    if (invoiceIdList != null) {
+      for (Long invoiceId : invoiceIdList) {
+        Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
 
-      if ((invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
-              && invoice.getOperationSubTypeSelect()
-                  != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-          || (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
-              && invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED)) {
+        if ((invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
+                && invoice.getOperationSubTypeSelect()
+                    != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            || (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+                && invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED)) {
 
-        continue;
+          continue;
+        }
+
+        if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0
+            || !invoiceService.checkInvoiceTerms(invoice)) {
+
+          continue;
+        }
+
+        if (company == null) {
+          company = invoice.getCompany();
+        }
+        if (currency == null) {
+          currency = invoice.getCurrency();
+        }
+
+        if (invoice.getCompany() == null
+            || company == null
+            || !invoice.getCompany().equals(company)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
+        }
+        if (invoice.getCurrency() == null
+            || currency == null
+            || !invoice.getCurrency().equals(currency)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
+        }
+        if (invoiceVisibilityService.getPfpCondition(invoice)
+            && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION));
+        }
+        invoiceToPay.add(invoiceId);
       }
-
-      if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0
-          || !invoiceService.checkInvoiceTerms(invoice)) {
-
-        continue;
-      }
-
-      if (company == null) {
-        company = invoice.getCompany();
-      }
-
-      if (currency == null) {
-        currency = invoice.getCurrency();
-      }
-
-      if (invoice.getCompany() == null || !invoice.getCompany().equals(company)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
-      }
-
-      if (invoice.getCurrency() == null || !invoice.getCurrency().equals(currency)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
-      }
-
-      if (invoiceVisibilityService.getPfpCondition(invoice)
-          && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(AccountExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION));
-      }
-
-      invoiceToPay.add(invoiceId);
     }
 
     return invoiceToPay;

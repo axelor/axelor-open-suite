@@ -24,6 +24,7 @@ import com.axelor.apps.bpm.db.repo.WkfInstanceRepository;
 import com.axelor.apps.bpm.db.repo.WkfProcessRepository;
 import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -160,15 +161,17 @@ public class WkfExecutionListener implements ExecutionListener {
     msgBuilder.setVariable(processKey, execution.getProcessInstanceId());
 
     Collection<MessageCorrelationResult> results = msgBuilder.correlateAllWithResult();
-    log.debug("Message result : {}", results.size());
+    log.debug("Message result : {}", CollectionUtils.size(results));
 
-    for (MessageCorrelationResult result : results) {
-      ProcessInstance resultInstance = result.getProcessInstance();
-      log.debug("Resulted process instance: {}", resultInstance);
-      if (resultInstance != null) {
-        execution.setVariable(
-            getProcessKey(execution, resultInstance.getProcessDefinitionId()),
-            resultInstance.getId());
+    if (results != null) {
+      for (MessageCorrelationResult result : results) {
+        ProcessInstance resultInstance = result.getProcessInstance();
+        log.debug("Resulted process instance: {}", resultInstance);
+        if (resultInstance != null) {
+          execution.setVariable(
+              getProcessKey(execution, resultInstance.getProcessDefinitionId()),
+              resultInstance.getId());
+        }
       }
     }
   }

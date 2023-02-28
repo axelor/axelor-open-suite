@@ -272,8 +272,11 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     // recuperation of excess payment
+    if (creditMoveLineList == null) {
+      creditMoveLineList = new ArrayList<>();
+    }
     creditMoveLineList.addAll(moveExcessPaymentService.getExcessPayment(invoice));
-    if (creditMoveLineList != null && creditMoveLineList.size() != 0) {
+    if (creditMoveLineList != null && !creditMoveLineList.isEmpty()) {
 
       Partner partner = invoice.getPartner();
       Account account = invoice.getPartnerAccount();
@@ -328,7 +331,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                   1,
                   origin,
                   null);
-          move.getMoveLineList().add(creditMoveLine);
+          move.addMoveLineListItem(creditMoveLine);
 
           // Use of excess payment
           paymentService.useExcessPaymentWithAmountConsolidated(
@@ -412,7 +415,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               1,
               origin,
               null);
-      oDmove.getMoveLineList().add(debitMoveLine);
+      oDmove.addMoveLineListItem(debitMoveLine);
 
       // Use of excess payment
       paymentService.createExcessPaymentWithAmount(

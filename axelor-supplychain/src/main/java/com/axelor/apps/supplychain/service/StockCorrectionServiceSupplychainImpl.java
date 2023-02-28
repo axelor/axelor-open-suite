@@ -26,6 +26,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.google.inject.Inject;
+import java.util.HashMap;
 import java.util.Map;
 
 public class StockCorrectionServiceSupplychainImpl extends StockCorrectionServiceImpl {
@@ -51,6 +52,9 @@ public class StockCorrectionServiceSupplychainImpl extends StockCorrectionServic
   public void getDefaultQtys(
       StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
     super.getDefaultQtys(stockLocationLine, stockCorrectionQtys);
+    if (stockCorrectionQtys == null) {
+      stockCorrectionQtys = new HashMap<>();
+    }
     stockCorrectionQtys.put("reservedQty", stockLocationLine.getReservedQty());
   }
 }

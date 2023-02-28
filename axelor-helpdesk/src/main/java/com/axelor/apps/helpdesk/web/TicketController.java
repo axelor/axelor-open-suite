@@ -38,6 +38,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class TicketController {
@@ -158,7 +159,7 @@ public class TicketController {
       if (timer != null) {
         hideStart = timer.getStatusSelect() == TimerRepository.TIMER_STARTED;
         hideCancel =
-            timer.getTimerHistoryList().isEmpty()
+            CollectionUtils.isEmpty(timer.getTimerHistoryList())
                 || timer.getStatusSelect().equals(TimerRepository.TIMER_STOPPED);
       }
 

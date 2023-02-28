@@ -34,6 +34,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -111,7 +113,9 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
-      Invoice invoiceAttached = invoiceTermList.get(0).getInvoice();
+
+      Invoice invoiceAttached =
+          invoiceTermList != null ? invoiceTermList.get(0).getInvoice() : null;
       BigDecimal total = moveLine.getCredit().max(moveLine.getDebit());
 
       if (invoiceAttached != null) {
@@ -140,7 +144,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   protected boolean compareInvoiceTermAmountSumToTotal(
       List<InvoiceTerm> invoiceTermList, BigDecimal total) {
-    return invoiceTermList.stream()
+    return ListUtils.emptyIfNull(invoiceTermList).stream()
             .map(InvoiceTerm::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add)
             .compareTo(total)
@@ -167,7 +171,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
     total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     BigDecimal invoiceTermTotal =
-        invoiceTermList.stream()
+        ListUtils.emptyIfNull(invoiceTermList).stream()
             .map(it -> isCompanyAmount ? it.getCompanyAmount() : it.getAmount())
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -179,8 +183,8 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         if (invoiceAttached == null) {
           moveLineService.computeFinancialDiscount(moveLine);
         } else {
-          invoiceTermList.forEach(
-              it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
+          ListUtils.emptyIfNull(invoiceTermList)
+              .forEach(it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
         }
       }
 
@@ -208,8 +212,9 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     return false;
   }
 
-  protected boolean checkRoles(Set<Role> roles, AccountConfig accountConfig) {
-    return roles.stream().anyMatch(it -> accountConfig.getClosureAuthorizedRoleList().contains(it));
+  private boolean checkRoles(Set<Role> roles, AccountConfig accountConfig) {
+    return SetUtils.emptyIfNull(roles).stream()
+        .anyMatch(it -> accountConfig.getClosureAuthorizedRoleList().contains(it));
   }
 
   @Override
@@ -222,13 +227,13 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         ObjectUtils.notEmpty(move.getInvoice()) && moveLine.getAccount().getUseForPartnerBalance();
     List<MoveLine> moveLines = move.getMoveLineList();
     boolean containsInvoiceTerm =
-        moveLines.stream()
+        ListUtils.emptyIfNull(moveLines).stream()
             .anyMatch(
                 ml ->
                     ObjectUtils.notEmpty(ml.getInvoiceTermList())
                         && ml.getInvoiceTermList().stream().anyMatch(InvoiceTerm::getIsHoldBack));
     boolean hasInvoiceTermMoveLines =
-        moveLines.stream()
+        ListUtils.emptyIfNull(moveLines).stream()
                 .filter(
                     ml ->
                         ObjectUtils.notEmpty(ml.getAccount())

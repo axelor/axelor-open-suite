@@ -47,6 +47,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -60,6 +61,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -231,17 +233,19 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       throws AxelorException {
     StringBuilder numSeq = new StringBuilder();
     StringBuilder externalRef = new StringBuilder();
-    for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
-      if (numSeq.length() > 0) {
-        numSeq.append("-");
-      }
-      numSeq.append(purchaseOrderLocal.getPurchaseOrderSeq());
+    if (CollectionUtils.isNotEmpty(purchaseOrderList)) {
+      for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
+        if (numSeq.length() > 0) {
+          numSeq.append("-");
+        }
+        numSeq.append(purchaseOrderLocal.getPurchaseOrderSeq());
 
-      if (externalRef.length() > 0) {
-        externalRef.append("|");
-      }
-      if (purchaseOrderLocal.getExternalReference() != null) {
-        externalRef.append(purchaseOrderLocal.getExternalReference());
+        if (externalRef.length() > 0) {
+          externalRef.append("|");
+        }
+        if (purchaseOrderLocal.getExternalReference() != null) {
+          externalRef.append(purchaseOrderLocal.getExternalReference());
+        }
       }
     }
 
@@ -287,6 +291,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   @Transactional
   @Override
   public void applyToallBudgetDistribution(PurchaseOrder purchaseOrder) {
+
+    if (CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      return;
+    }
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
       BudgetDistribution newBudgetDistribution = new BudgetDistribution();
@@ -340,8 +348,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   public void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder) {
 
     Budget budget = purchaseOrder.getBudget();
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      purchaseOrderLine.setBudget(budget);
+    if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        purchaseOrderLine.setBudget(budget);
+      }
     }
   }
 
@@ -384,7 +394,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       return null;
     }
     PurchaseOrderLine shippingCostLine = createShippingCostLine(purchaseOrder, shippingCostProduct);
-    purchaseOrderLines.add(shippingCostLine);
+    ListUtils.emptyIfNull(purchaseOrderLines).add(shippingCostLine);
     this.computePurchaseOrder(purchaseOrder);
     return null;
   }

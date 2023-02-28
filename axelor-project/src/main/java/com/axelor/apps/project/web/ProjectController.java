@@ -36,7 +36,7 @@ public class ProjectController {
 
   public void importMembers(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
-    if (project.getTeam() != null) {
+    if (project.getTeam() != null && project.getTeam().getMembers() != null) {
       project.getTeam().getMembers().forEach(project::addMembersUserSetItem);
       response.setValue("membersUserSet", project.getMembersUserSet());
     }
@@ -53,7 +53,9 @@ public class ProjectController {
                 "My open tasks",
                 "self.assignedTo = :__user__ AND self.status.isCompleted = false AND self.typeSelect = :_typeSelect AND self.project = :_project",
                 context);
-    response.setView(view);
+    if (view != null) {
+      response.setView(view);
+    }
   }
 
   public void getMyTasks(ActionRequest request, ActionResponse response) {
@@ -67,7 +69,9 @@ public class ProjectController {
                 "My tasks",
                 "self.createdBy = :__user__ AND self.typeSelect = :_typeSelect AND self.project = :_project",
                 context);
-    response.setView(view);
+    if (view != null) {
+      response.setView(view);
+    }
   }
 
   public void getAllOpenTasks(ActionRequest request, ActionResponse response) {
@@ -81,7 +85,9 @@ public class ProjectController {
                 "All open tasks",
                 "self.status.isCompleted = false AND self.typeSelect = :_typeSelect AND self.project = :_project",
                 context);
-    response.setView(view);
+    if (view != null) {
+      response.setView(view);
+    }
   }
 
   public void getAllTasks(ActionRequest request, ActionResponse response) {
@@ -95,7 +101,9 @@ public class ProjectController {
                 "All tasks",
                 "self.typeSelect = :_typeSelect AND self.project = :_project",
                 context);
-    response.setView(view);
+    if (view != null) {
+      response.setView(view);
+    }
   }
 
   public void perStatusKanban(ActionRequest request, ActionResponse response) {
@@ -103,7 +111,9 @@ public class ProjectController {
         Beans.get(ProjectRepository.class).find(request.getContext().asType(Project.class).getId());
     Map<String, Object> context = getTaskContext(project);
     Map<String, Object> view = Beans.get(ProjectService.class).getPerStatusKanban(project, context);
-    response.setView(view);
+    if (view != null) {
+      response.setView(view);
+    }
   }
 
   protected Map<String, Object> getTaskContext(Project project) {

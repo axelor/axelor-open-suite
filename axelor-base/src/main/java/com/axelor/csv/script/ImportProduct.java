@@ -47,22 +47,23 @@ public class ImportProduct {
     assert bean instanceof Product;
 
     Product product = (Product) bean;
-    String fileName = (String) values.get("picture_fileName");
+    String fileName = values != null ? (String) values.get("picture_fileName") : "";
 
     if (!StringUtils.isEmpty(fileName)) {
-      final Path path = (Path) values.get("__path__");
+      final Path path = values != null ? (Path) values.get("__path__") : null;
 
       try {
-        final File image = path.resolve(fileName).toFile();
-        if (image != null && image.isFile()) {
-          final MetaFile metaFile = metaFiles.upload(image);
-          product.setPicture(metaFile);
-        } else {
-          LOG.debug(
-              "No image file found: {}",
-              image == null ? path.toAbsolutePath() : image.getAbsolutePath());
+        if (path != null) {
+          final File image = path.resolve(fileName).toFile();
+          if (image != null && image.isFile()) {
+            final MetaFile metaFile = metaFiles.upload(image);
+            product.setPicture(metaFile);
+          } else {
+            LOG.debug(
+                "No image file found: {}",
+                image == null ? path.toAbsolutePath() : image.getAbsolutePath());
+          }
         }
-
       } catch (Exception e) {
         LOG.error("Error when importing product picture : {}", e);
       }

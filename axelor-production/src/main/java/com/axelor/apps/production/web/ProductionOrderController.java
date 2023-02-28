@@ -55,9 +55,12 @@ public class ProductionOrderController {
       response.setFlash(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_4) + "!");
     } else {
       Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
+
       BillOfMaterial billOfMaterial =
-          Beans.get(BillOfMaterialRepository.class)
-              .find(((Integer) bomContext.get("id")).longValue());
+          bomContext != null
+              ? Beans.get(BillOfMaterialRepository.class)
+                  .find(((Integer) bomContext.get("id")).longValue())
+              : null;
 
       BigDecimal qty = new BigDecimal(context.get("qty").toString());
 
@@ -66,10 +69,12 @@ public class ProductionOrderController {
       if (context.get("product") != null) {
         Map<String, Object> productContext = (Map<String, Object>) context.get("product");
         product =
-            Beans.get(ProductRepository.class)
-                .find(((Integer) productContext.get("id")).longValue());
+            productContext != null
+                ? Beans.get(ProductRepository.class)
+                    .find(((Integer) productContext.get("id")).longValue())
+                : null;
       } else {
-        product = billOfMaterial.getProduct();
+        product = billOfMaterial != null ? billOfMaterial.getProduct() : null;
       }
 
       ZonedDateTime startDateT;
@@ -86,7 +91,7 @@ public class ProductionOrderController {
           Beans.get(ProductionOrderRepository.class)
               .find(Long.parseLong(request.getContext().get("_id").toString()));
 
-      if (billOfMaterial.getProdProcess() != null) {
+      if (billOfMaterial != null && billOfMaterial.getProdProcess() != null) {
         Beans.get(ProductionOrderService.class)
             .addManufOrder(
                 productionOrder,

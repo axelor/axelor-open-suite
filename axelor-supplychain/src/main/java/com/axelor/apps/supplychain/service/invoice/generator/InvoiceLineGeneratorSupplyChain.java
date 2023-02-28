@@ -42,6 +42,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -217,7 +218,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           } else {
             analyticMoveLineList =
                 invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-            analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+            ListUtils.emptyIfNull(analyticMoveLineList).stream()
+                .forEach(invoiceLine::addAnalyticMoveLineListItem);
           }
           break;
 
@@ -236,7 +238,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       } else {
         analyticMoveLineList =
             invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-        analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+        ListUtils.emptyIfNull(analyticMoveLineList).stream()
+            .forEach(invoiceLine::addAnalyticMoveLineListItem);
       }
 
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
@@ -276,7 +279,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
       analyticMoveLineList =
           invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-      analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+      ListUtils.emptyIfNull(analyticMoveLineList).stream()
+          .forEach(invoiceLine::addAnalyticMoveLineListItem);
     }
 
     if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {

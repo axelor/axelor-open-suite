@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
@@ -155,7 +156,7 @@ public class SelectionBuilderService {
     if (metaSelect == null) {
       metaSelect = new MetaSelect(name);
     } else {
-      for (MetaSelectItem item : metaSelect.getItems()) {
+      for (MetaSelectItem item : ListUtils.emptyIfNull(metaSelect.getItems())) {
         itemMap.put(item.getValue(), item);
       }
     }
@@ -164,10 +165,12 @@ public class SelectionBuilderService {
     List<Map<String, String>> optionMapList = getSelectOptions(selectionText);
 
     int order = 1;
-    for (Map<String, String> optionMap : optionMapList) {
-      MetaSelectItem metaSelectItem = updateItem(itemMap, order, optionMap);
-      metaSelect.addItem(metaSelectItem);
-      order++;
+    if (CollectionUtils.isNotEmpty(optionMapList)) {
+      for (Map<String, String> optionMap : optionMapList) {
+        MetaSelectItem metaSelectItem = updateItem(itemMap, order, optionMap);
+        metaSelect.addItem(metaSelectItem);
+        order++;
+      }
     }
     return metaSelect;
   }
@@ -177,17 +180,17 @@ public class SelectionBuilderService {
 
     String title = null;
     String value = null;
-    if (optionMap.containsKey(TITLE)) {
+    if (optionMap != null && optionMap.containsKey(TITLE)) {
       title = optionMap.get(TITLE);
       value = optionMap.get(VALUE);
     } else {
-      title = optionMap.get(VALUE);
+      title = optionMap != null ? optionMap.get(VALUE) : "";
       value = title;
     }
-    String color = optionMap.get(COLOR);
-    String icon = optionMap.get(ICON);
+    String color = optionMap != null ? optionMap.get(COLOR) : "";
+    String icon = optionMap != null ? optionMap.get(ICON) : "";
 
-    MetaSelectItem metaSelectItem = itemMap.get(value);
+    MetaSelectItem metaSelectItem = itemMap != null ? itemMap.get(value) : null;
     if (metaSelectItem == null) {
       metaSelectItem = new MetaSelectItem();
     }

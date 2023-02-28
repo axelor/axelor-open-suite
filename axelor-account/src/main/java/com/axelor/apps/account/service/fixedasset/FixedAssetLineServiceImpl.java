@@ -135,39 +135,35 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   @Transactional
   @Override
   public void copyFixedAssetLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset) {
-    if (newFixedAsset.getFixedAssetLineList() == null) {
-      if (fixedAsset.getFixedAssetLineList() != null) {
-        fixedAsset
-            .getFixedAssetLineList()
-            .forEach(
-                line -> {
-                  FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
-                  newFixedAsset.addFixedAssetLineListItem(fixedAssetLineRepository.save(copy));
-                });
-      }
+    if (newFixedAsset.getFixedAssetLineList() == null
+        && fixedAsset.getFixedAssetLineList() != null) {
+      fixedAsset
+          .getFixedAssetLineList()
+          .forEach(
+              line -> {
+                FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
+                newFixedAsset.addFixedAssetLineListItem(fixedAssetLineRepository.save(copy));
+              });
     }
-    if (newFixedAsset.getFiscalFixedAssetLineList() == null) {
-      if (fixedAsset.getFiscalFixedAssetLineList() != null) {
-        fixedAsset
-            .getFiscalFixedAssetLineList()
-            .forEach(
-                line -> {
-                  FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
-                  newFixedAsset.addFiscalFixedAssetLineListItem(
-                      fixedAssetLineRepository.save(copy));
-                });
-      }
+    if (newFixedAsset.getFiscalFixedAssetLineList() == null
+        && fixedAsset.getFiscalFixedAssetLineList() != null) {
+      fixedAsset
+          .getFiscalFixedAssetLineList()
+          .forEach(
+              line -> {
+                FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
+                newFixedAsset.addFiscalFixedAssetLineListItem(fixedAssetLineRepository.save(copy));
+              });
     }
-    if (newFixedAsset.getIfrsFixedAssetLineList() == null) {
-      if (fixedAsset.getIfrsFixedAssetLineList() != null) {
-        fixedAsset
-            .getIfrsFixedAssetLineList()
-            .forEach(
-                line -> {
-                  FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
-                  newFixedAsset.addIfrsFixedAssetLineListItem(fixedAssetLineRepository.save(copy));
-                });
-      }
+    if (newFixedAsset.getIfrsFixedAssetLineList() == null
+        && fixedAsset.getIfrsFixedAssetLineList() != null) {
+      fixedAsset
+          .getIfrsFixedAssetLineList()
+          .forEach(
+              line -> {
+                FixedAssetLine copy = fixedAssetLineRepository.copy(line, false);
+                newFixedAsset.addIfrsFixedAssetLineListItem(fixedAssetLineRepository.save(copy));
+              });
     }
     fixedAssetDerogatoryLineService.copyFixedAssetDerogatoryLineList(fixedAsset, newFixedAsset);
   }

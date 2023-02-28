@@ -40,6 +40,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,6 +98,10 @@ public class PayerQualityService {
     List<DebtRecoveryHistory> debtRecoveryHistoryList = this.getDebtRecoveryHistoryList(partner);
     List<MoveLine> moveLineList = this.getMoveLineRejectList(partner);
 
+    if (debtRecoveryHistoryList == null || moveLineList == null) {
+      return burden;
+    }
+
     log.debug(
         "Partner {} : Number of recovery concerned : {}",
         partner.getName(),
@@ -120,10 +125,12 @@ public class PayerQualityService {
       List<PayerQualityConfigLine> payerQualityConfigLineList) {
     Integer debtRecoveryLevel = this.getDebtRecoveryLevel(debtRecoveryHistory);
     if (debtRecoveryLevel != null) {
-      for (PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList) {
-        if (payerQualityConfigLine.getIncidentTypeSelect() == 0
-            && payerQualityConfigLine.getSequence() == debtRecoveryLevel) {
-          return payerQualityConfigLine.getBurden();
+      if (CollectionUtils.isNotEmpty(payerQualityConfigLineList)) {
+        for (PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList) {
+          if (payerQualityConfigLine.getIncidentTypeSelect() == 0
+              && payerQualityConfigLine.getSequence() == debtRecoveryLevel) {
+            return payerQualityConfigLine.getBurden();
+          }
         }
       }
     }
@@ -132,10 +139,12 @@ public class PayerQualityService {
 
   public BigDecimal getPayerQualityNote(
       MoveLine moveLine, List<PayerQualityConfigLine> payerQualityConfigLineList) {
-    for (PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList) {
-      if (payerQualityConfigLine.getIncidentTypeSelect() == 1
-          && !moveLine.getInterbankCodeLine().getTechnicalRejectOk()) {
-        return payerQualityConfigLine.getBurden();
+    if (CollectionUtils.isNotEmpty(payerQualityConfigLineList)) {
+      for (PayerQualityConfigLine payerQualityConfigLine : payerQualityConfigLineList) {
+        if (payerQualityConfigLine.getIncidentTypeSelect() == 1
+            && !moveLine.getInterbankCodeLine().getTechnicalRejectOk()) {
+          return payerQualityConfigLine.getBurden();
+        }
       }
     }
     return BigDecimal.ZERO;
@@ -164,7 +173,7 @@ public class PayerQualityService {
   public void payerQualityProcess() throws AxelorException {
     List<PayerQualityConfigLine> payerQualityConfigLineList =
         appAccountService.getAppAccount().getPayerQualityConfigLineList();
-    if (payerQualityConfigLineList == null || payerQualityConfigLineList.size() == 0) {
+    if (payerQualityConfigLineList == null || payerQualityConfigLineList.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.PAYER_QUALITY_1),
@@ -172,7 +181,7 @@ public class PayerQualityService {
     }
 
     List<Partner> partnerList = this.getPartnerList();
-    if (partnerList != null && partnerList.size() != 0) {
+    if (partnerList != null && !partnerList.isEmpty()) {
       for (Partner partner : partnerList) {
         BigDecimal burden = this.getPayerQualityNote(partner, payerQualityConfigLineList);
 

@@ -108,7 +108,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
       JPA.clear();
     }
 
-    if (partnerIdList.size() > 0) {
+    if (!partnerIdList.isEmpty()) {
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
       paymentSession.setHasEmailsSent(true);
       paymentSession.setPartnerForEmail(null);
@@ -140,7 +140,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
       PaymentSession paymentSession, Partner partner, List<Long> partnerIdList)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException, JSONException {
-    if (partner == null || partnerIdList.contains(partner.getId())) {
+    if (partner == null || partnerIdList == null || partnerIdList.contains(partner.getId())) {
       return;
     }
 

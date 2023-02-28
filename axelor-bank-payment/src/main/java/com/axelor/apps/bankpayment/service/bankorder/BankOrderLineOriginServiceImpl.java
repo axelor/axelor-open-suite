@@ -261,6 +261,10 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
 
   protected Map<String, Object> setRelatedData(
       Map<String, Object> relatedDataMap, String relatedModel, Long relatedId) {
+
+    if (relatedDataMap == null) {
+      relatedDataMap = new HashMap<>();
+    }
     relatedDataMap.put(RELATED_MODEL_KEY, relatedModel);
     relatedDataMap.put(RELATED_ID_KEY, relatedId);
     return relatedDataMap;
@@ -268,6 +272,9 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
 
   public boolean dmsFilePresent(BankOrderLineOrigin bankOrderLineOrigin) {
     Map<String, Object> relatedDataMap = getRelatedDataMap(bankOrderLineOrigin);
+    if (relatedDataMap == null) {
+      return false;
+    }
     return dmsFileRepository
             .all()
             .filter(

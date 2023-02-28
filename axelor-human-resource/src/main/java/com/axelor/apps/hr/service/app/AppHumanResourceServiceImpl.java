@@ -36,6 +36,7 @@ import com.google.inject.persist.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
@@ -89,7 +90,6 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
 
       response.setData(map);
       response.setTotal(map.size());
-
     } catch (Exception e) {
       e.printStackTrace();
       response.setException(e);
@@ -101,11 +101,12 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
   public void generateHrConfigurations() {
 
     List<Company> companies = companyRepo.all().filter("self.hrConfig is null").fetch();
-
-    for (Company company : companies) {
-      HRConfig hrConfig = new HRConfig();
-      hrConfig.setCompany(company);
-      hrConfigRepo.save(hrConfig);
+    if (CollectionUtils.isNotEmpty(companies)) {
+      for (Company company : companies) {
+        HRConfig hrConfig = new HRConfig();
+        hrConfig.setCompany(company);
+        hrConfigRepo.save(hrConfig);
+      }
     }
   }
 }

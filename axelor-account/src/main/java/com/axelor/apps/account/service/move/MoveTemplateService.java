@@ -112,8 +112,10 @@ public class MoveTemplateService {
   public void validateMoveTemplateLine(MoveTemplate moveTemplate) {
     moveTemplate.setIsValid(true);
 
-    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      line.setIsValid(true);
+    if (moveTemplate.getMoveTemplateLineList() != null) {
+      for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
+        line.setIsValid(true);
+      }
     }
 
     moveTemplateRepo.save(moveTemplate);
@@ -206,22 +208,62 @@ public class MoveTemplateService {
 
         int counter = 1;
 
-        for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
-          if (!AccountTypeRepository.TYPE_TAX.equals(
-              moveTemplateLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-            partner = null;
-            if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.DEBIT)) {
-              isDebit = true;
-              if (moveTemplateLine.getHasPartnerToDebit()) {
-                partner = debitPartner;
+        if (CollectionUtils.isNotEmpty(moveTemplate.getMoveTemplateLineList())) {
+          for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
+            if (!AccountTypeRepository.TYPE_TAX.equals(
+                moveTemplateLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+              partner = null;
+              if (moveTemplateLine
+                  .getDebitCreditSelect()
+                  .equals(MoveTemplateLineRepository.DEBIT)) {
+                isDebit = true;
+                if (moveTemplateLine.getHasPartnerToDebit()) {
+                  partner = debitPartner;
+                }
+              } else if (moveTemplateLine
+                  .getDebitCreditSelect()
+                  .equals(MoveTemplateLineRepository.CREDIT)) {
+                isDebit = false;
+                if (moveTemplateLine.getHasPartnerToCredit()) {
+                  partner = creditPartner;
+                }
               }
-            } else if (moveTemplateLine
-                .getDebitCreditSelect()
-                .equals(MoveTemplateLineRepository.CREDIT)) {
-              isDebit = false;
-              if (moveTemplateLine.getHasPartnerToCredit()) {
-                partner = creditPartner;
+
+              BigDecimal amount =
+                  moveBalance
+                      .multiply(moveTemplateLine.getPercentage())
+                      .divide(hundred, RoundingMode.HALF_UP);
+
+              MoveLine moveLine =
+                  moveLineCreateService.createMoveLine(
+                      move,
+                      partner,
+                      moveTemplateLine.getAccount(),
+                      amount,
+                      isDebit,
+                      moveDate,
+                      moveDate,
+                      counter,
+                      origin,
+                      moveTemplateLine.getName());
+              move.addMoveLineListItem(moveLine);
+
+              Tax tax = moveTemplateLine.getTax();
+
+              if (tax != null) {
+                TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
+                if (taxLine != null) {
+                  moveLine.setTaxLine(taxLine);
+                  moveLine.setTaxRate(taxLine.getValue());
+                  moveLine.setTaxCode(tax.getCode());
+                  moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+                }
               }
+              moveLine.setAnalyticDistributionTemplate(
+                  moveTemplateLine.getAnalyticDistributionTemplate());
+              moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+
+              counter++;
             }
 
             BigDecimal amount =
@@ -286,6 +328,10 @@ public class MoveTemplateService {
     List<Long> moveList = new ArrayList<>();
     String taxLineDescription = "";
 
+    if (moveTemplateList == null) {
+      return moveList;
+    }
+
     for (HashMap<String, Object> moveTemplateMap : moveTemplateList) {
 
       MoveTemplate moveTemplate =
@@ -340,59 +386,62 @@ public class MoveTemplateService {
 
         int counter = 1;
 
-        for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
-          if (!AccountTypeRepository.TYPE_TAX.equals(
-              moveTemplateLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-            BigDecimal amount = moveTemplateLine.getDebit().add(moveTemplateLine.getCredit());
+        if (CollectionUtils.isNotEmpty(moveTemplate.getMoveTemplateLineList())) {
+          for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
+            if (!AccountTypeRepository.TYPE_TAX.equals(
+                moveTemplateLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+              BigDecimal amount = moveTemplateLine.getDebit().add(moveTemplateLine.getCredit());
 
-            MoveLine moveLine =
-                moveLineCreateService.createMoveLine(
-                    move,
-                    moveTemplateLine.getPartner(),
-                    moveTemplateLine.getAccount(),
-                    amount,
-                    moveTemplateLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
-                    moveDate,
-                    moveDate,
-                    counter,
-                    moveTemplate.getFullName(),
-                    moveTemplateLine.getName());
-            move.getMoveLineList().add(moveLine);
+              MoveLine moveLine =
+                  moveLineCreateService.createMoveLine(
+                      move,
+                      moveTemplateLine.getPartner(),
+                      moveTemplateLine.getAccount(),
+                      amount,
+                      moveTemplateLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
+                      moveDate,
+                      moveDate,
+                      counter,
+                      moveTemplate.getFullName(),
+                      moveTemplateLine.getName());
+              move.getMoveLineList().add(moveLine);
 
-            Tax tax = moveTemplateLine.getTax();
+              Tax tax = moveTemplateLine.getTax();
 
-            if (tax != null) {
-              TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
-              if (taxLine != null) {
-                moveLine.setTaxLine(taxLine);
-                moveLine.setTaxRate(taxLine.getValue());
-                moveLine.setTaxCode(tax.getCode());
-                moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+              if (tax != null) {
+                TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
+                if (taxLine != null) {
+                  moveLine.setTaxLine(taxLine);
+                  moveLine.setTaxRate(taxLine.getValue());
+                  moveLine.setTaxCode(tax.getCode());
+                  moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+                }
               }
+
+              List<AnalyticMoveLine> analyticMoveLineList =
+                  CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                      ? new ArrayList<>()
+                      : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+              moveLine.clearAnalyticMoveLineList();
+              moveLine.setAnalyticDistributionTemplate(
+                  moveTemplateLine.getAnalyticDistributionTemplate());
+
+              moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+
+              if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+                moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+              }
+              counter++;
+            } else {
+              taxLineDescription = moveTemplateLine.getName();
             }
-
-            List<AnalyticMoveLine> analyticMoveLineList =
-                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-                    ? new ArrayList<>()
-                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
-            moveLine.clearAnalyticMoveLineList();
-            moveLine.setAnalyticDistributionTemplate(
-                moveTemplateLine.getAnalyticDistributionTemplate());
-
-            moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
-
-            if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
-              moveLine.setAnalyticMoveLineList(analyticMoveLineList);
-            }
-            counter++;
-          } else {
-            taxLineDescription = moveTemplateLine.getName();
           }
         }
-
         if (ObjectUtils.notEmpty(move)
             && ObjectUtils.notEmpty(move.getMoveLineList())
-            && ObjectUtils.notEmpty(move.getMoveLineList().get(0).getPartner())) {
+            && ObjectUtils.notEmpty(move.getMoveLineList().get(0).getPartner())
+            && ObjectUtils.notEmpty(
+                move.getMoveLineList().get(0).getPartner().getBankDetailsList())) {
           move.getMoveLineList().get(0).getPartner().getBankDetailsList().stream()
               .filter(it -> it.getIsDefault() && it.getActive())
               .findFirst()
@@ -404,7 +453,7 @@ public class MoveTemplateService {
         manageAccounting(moveTemplate, move);
 
         move.setDescription(moveTemplate.getDescription());
-        if (!Strings.isNullOrEmpty(move.getDescription())) {
+        if (!Strings.isNullOrEmpty(move.getDescription()) && move.getMoveLineList() != null) {
           for (MoveLine moveline : move.getMoveLineList()) {
             moveline.setDescription(move.getDescription());
           }
@@ -449,12 +498,15 @@ public class MoveTemplateService {
   protected boolean checkValidityInPercentage(MoveTemplate moveTemplate) {
     BigDecimal debitPercent = BigDecimal.ZERO;
     BigDecimal creditPercent = BigDecimal.ZERO;
-    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      LOG.debug("Adding percent: {}", line.getPercentage());
-      if (MoveTemplateLineRepository.DEBIT.equals(line.getDebitCreditSelect())) {
-        debitPercent = debitPercent.add(line.getPercentage());
-      } else {
-        creditPercent = creditPercent.add(line.getPercentage());
+    if (moveTemplate != null
+        && CollectionUtils.isNotEmpty(moveTemplate.getMoveTemplateLineList())) {
+      for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
+        LOG.debug("Adding percent: {}", line.getPercentage());
+        if (MoveTemplateLineRepository.DEBIT.equals(line.getDebitCreditSelect())) {
+          debitPercent = debitPercent.add(line.getPercentage());
+        } else {
+          creditPercent = creditPercent.add(line.getPercentage());
+        }
       }
     }
 
@@ -472,9 +524,12 @@ public class MoveTemplateService {
   protected boolean checkValidityInAmount(MoveTemplate moveTemplate) {
     BigDecimal debit = BigDecimal.ZERO;
     BigDecimal credit = BigDecimal.ZERO;
-    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      debit = debit.add(line.getDebit());
-      credit = credit.add(line.getCredit());
+    if (moveTemplate != null
+        && CollectionUtils.isNotEmpty(moveTemplate.getMoveTemplateLineList())) {
+      for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
+        debit = debit.add(line.getDebit());
+        credit = credit.add(line.getCredit());
+      }
     }
 
     LOG.debug("Debit : {}, Credit : {}", debit, credit);
@@ -518,12 +573,13 @@ public class MoveTemplateService {
   public Partner fillPartnerWithMoveTemplate(MoveTemplate moveTemplate) {
     Partner partner = null;
 
-    if (moveTemplate.getMoveTemplateLineList().stream()
-            .filter(it -> it.getPartner() != null)
-            .map(it -> it.getPartner())
-            .distinct()
-            .count()
-        == 1) {
+    if (moveTemplate.getMoveTemplateLineList() != null
+        && moveTemplate.getMoveTemplateLineList().stream()
+                .filter(it -> it.getPartner() != null)
+                .map(it -> it.getPartner())
+                .distinct()
+                .count()
+            == 1) {
       partner = moveTemplate.getMoveTemplateLineList().get(0).getPartner();
     }
     return partner;

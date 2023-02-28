@@ -26,6 +26,7 @@ import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestScoped
@@ -72,7 +73,10 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected List<FixedAssetLine> getFixedAssetLineList(FixedAsset fixedAsset) {
-    return fixedAsset.getFixedAssetLineList();
+    if (fixedAsset.getFixedAssetLineList() != null) {
+      return fixedAsset.getFixedAssetLineList();
+    }
+    return new ArrayList<>();
   }
 
   @Override

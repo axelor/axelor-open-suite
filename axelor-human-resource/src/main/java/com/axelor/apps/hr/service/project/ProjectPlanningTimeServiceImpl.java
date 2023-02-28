@@ -41,6 +41,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +125,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Transactional(rollbackOn = {Exception.class})
   public void addMultipleProjectPlanningTime(Map<String, Object> datas) throws AxelorException {
 
-    if (datas.get("project") == null
+    if (datas == null
+        || datas.get("project") == null
         || datas.get("employee") == null
         || datas.get("fromDate") == null
         || datas.get("toDate") == null) {
@@ -139,7 +141,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     ProjectTask projectTask = null;
 
     Map<String, Object> objMap = (Map) datas.get("project");
-    Project project = projectRepo.find(Long.parseLong(objMap.get("id").toString()));
+    Project project =
+        objMap != null ? projectRepo.find(Long.parseLong(objMap.get("id").toString())) : null;
     Integer timePercent = 0;
 
     if (datas.get("timepercent") != null) {
@@ -147,7 +150,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
 
     objMap = (Map) datas.get("employee");
-    Employee employee = employeeRepo.find(Long.parseLong(objMap.get("id").toString()));
+    Employee employee =
+        objMap != null ? employeeRepo.find(Long.parseLong(objMap.get("id").toString())) : null;
 
     if (employee == null) {
       return;
@@ -155,13 +159,15 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
     if (datas.get("projectTask") != null) {
       objMap = (Map) datas.get("projectTask");
-      projectTask = projectTaskRepo.find(Long.valueOf(objMap.get("id").toString()));
+      projectTask =
+          objMap != null ? projectTaskRepo.find(Long.valueOf(objMap.get("id").toString())) : null;
     }
 
     Product activity = null;
     if (datas.get("product") != null) {
       objMap = (Map) datas.get("product");
-      activity = productRepo.find(Long.valueOf(objMap.get("id").toString()));
+      activity =
+          objMap != null ? productRepo.find(Long.valueOf(objMap.get("id").toString())) : null;
     }
 
     BigDecimal dailyWorkHrs = employee.getDailyWorkHours();
@@ -207,10 +213,12 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   @Transactional
   public void removeProjectPlanningLines(List<Map<String, Object>> projectPlanningLines) {
 
-    for (Map<String, Object> line : projectPlanningLines) {
-      ProjectPlanningTime projectPlanningTime =
-          planningTimeRepo.find(Long.parseLong(line.get("id").toString()));
-      planningTimeRepo.remove(projectPlanningTime);
+    if (CollectionUtils.isNotEmpty(projectPlanningLines)) {
+      for (Map<String, Object> line : projectPlanningLines) {
+        ProjectPlanningTime projectPlanningTime =
+            planningTimeRepo.find(Long.parseLong(line.get("id").toString()));
+        planningTimeRepo.remove(projectPlanningTime);
+      }
     }
   }
 

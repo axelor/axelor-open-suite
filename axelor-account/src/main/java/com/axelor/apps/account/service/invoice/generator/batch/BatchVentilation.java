@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -44,7 +45,7 @@ public class BatchVentilation extends BatchWkf {
   @Override
   protected void process() {
 
-    for (Invoice invoice : invoices(batch.getInvoiceBatch(), true)) {
+    for (Invoice invoice : CollectionUtils.emptyIfNull(invoices(batch.getInvoiceBatch(), true))) {
 
       try {
 

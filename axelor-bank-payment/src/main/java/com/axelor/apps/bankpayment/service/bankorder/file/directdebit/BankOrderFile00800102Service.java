@@ -60,6 +60,7 @@ import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -231,6 +232,9 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      */
     PaymentInstructionInformation4 paymentInstructionInformation4 =
         factory.createPaymentInstructionInformation4();
+    if (paymentInstructionInformationList == null) {
+      paymentInstructionInformationList = new ArrayList<>();
+    }
     paymentInstructionInformationList.add(paymentInstructionInformation4);
 
     /*
@@ -458,225 +462,230 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
       throws DatatypeConfigurationException, AxelorException {
     DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
 
-    for (BankOrderLine bankOrderLine : bankOrderLineList) {
+    if (bankOrderLineList != null) {
+      for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
-      BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
-      Umr receiverUmr = bankOrderLine.getPartner().getActiveUmr();
+        BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
+        Umr receiverUmr = bankOrderLine.getPartner().getActiveUmr();
 
-      if (receiverUmr == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
+        if (receiverUmr == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
+        }
+
+        /*
+         * Direct Debit Transaction Information (mandatory)
+         * Set of elements providing information specific to the individual transaction(s) included in the message.
+         */
+        DirectDebitTransactionInformation9 directDebitTransactionInformation9 =
+            factory.createDirectDebitTransactionInformation9();
+        if (directDebitTransactionInformation9List == null) {
+          directDebitTransactionInformation9List = new ArrayList<>();
+        }
+        directDebitTransactionInformation9List.add(directDebitTransactionInformation9);
+
+        /*
+         * Payment Identification (mandatory)
+         * Set of elements to reference a payment instruction.
+         */
+        PaymentIdentification1 paymentIdentification1 = factory.createPaymentIdentification1();
+        directDebitTransactionInformation9.setPmtId(paymentIdentification1);
+        /*
+         * Instruction Identification (optional)
+         * The Instruction Identification is a unique reference assigned by the Initiator to unambiguously identify the transaction.
+         * It can be used in status messages related to the transaction.
+         */
+        // paymentIdentification1.setInstrId();
+        /*
+         * End To End Identification (mandatory)
+         * Unique identification assigned by the initiating party to unumbiguously identify the transaction.
+         * This identification is passed on, unchanged, throughout the entire end-to-end chain.
+         */
+        paymentIdentification1.setEndToEndId(bankOrderLine.getSequence());
+
+        /*
+         * Instructed Amount (mandatory)
+         * Amount of the direct debit, expressed in euro.
+         *
+         * Format : Max. 11 digits of which 2 for the fractional part.
+         *          Decimal separator is "."
+         *          Currency "EUR" is explicit, and included in the XML tag.
+         * Usage  : Amount must be between 0.01 and 999999999.99
+         */
+        ActiveOrHistoricCurrencyAndAmount activeOrHistoricCurrencyAndAmount =
+            factory.createActiveOrHistoricCurrencyAndAmount();
+        activeOrHistoricCurrencyAndAmount.setCcy(CURRENCY_CODE);
+        activeOrHistoricCurrencyAndAmount.setValue(bankOrderLine.getBankOrderAmount());
+        directDebitTransactionInformation9.setInstdAmt(activeOrHistoricCurrencyAndAmount);
+
+        /*
+         * Direct Debit Transaction (mandatory)
+         * Set of elements providing information specific to the direct debit mandate.
+         */
+        DirectDebitTransaction6 directDebitTransaction6 = factory.createDirectDebitTransaction6();
+        directDebitTransactionInformation9.setDrctDbtTx(directDebitTransaction6);
+        /*
+         * Mandate Related Information (mandatory)
+         * Set of elements used to provide further details related to a direct debit mandate signed between the creditor and the debtor.
+         */
+        MandateRelatedInformation6 mandateRelatedInformation6 =
+            factory.createMandateRelatedInformation6();
+        directDebitTransaction6.setMndtRltdInf(mandateRelatedInformation6);
+        /*
+         * Mandate Identification (mandatory)
+         * Reference of the direct debit mandate that has been signed between by the debtor and the creditor.
+         */
+        mandateRelatedInformation6.setMndtId(receiverUmr.getUmrNumber());
+        /*
+         * Date of Signature (mandatory)
+         * Date on which the direct debit mandate has been signed by the debtor.
+         *
+         * Format : YYYY-MM-DD
+         */
+        mandateRelatedInformation6.setDtOfSgntr(
+            datatypeFactory.newXMLGregorianCalendar(
+                receiverUmr
+                    .getMandateSignatureDate()
+                    .format(DateTimeFormatter.ofPattern(("yyyy-MM-dd")))));
+        /*
+         * Amendment Indicator (optional)
+         * Indicator notifying whether the underlying mandate is amended or not.
+         *
+         * Usage : - If not present, considered as "false".
+         *         - If true, 'Amendment Information Details' is mandatory.
+         *
+         * 'true'  if : The mandate is amended or migrated from Dom'80.
+         * 'false' if : The mandate is not amended.
+         */
+        // mandateRelatedInformation6.setAmdmntInd(???);
+        /*
+         * Amendment Info Details (optional)
+         * List of direct debit mandate elements that have been modified.
+         */
+        // AmendmentInformationDetails6 amendmentInformationDetails6 =
+        // factory.createAmendmentInformationDetails6();
+        // mandateRelatedInformation6.setAmdmntInfDtls(amendmentInformationDetails6);
+        // amendmentInformationDetails6.setOrgnlMndtId(???);
+        // amendmentInformationDetails6.setOrgnlCdtrSchmeId(???);
+        // amendmentInformationDetails6.setOrgnlDbtrAcct(???);
+        // amendmentInformationDetails6.setOrgnlDbtrAgt(???);
+        /*
+         * Electronic Signature (optional)
+         * Digital signature as provided by the creditor.
+         *
+         * Usage : - If the direct debit is based on an electronic mandate, this data
+         *           element must contain the reference of the Mandate Acceptance Report.
+         *         - If the direct debit is based on a paper mandate, this data element
+         *           is not allowed.
+         */
+        // mandateRelatedInformation6.setElctrncSgntr(???);
+        /*
+         * Creditor Scheme Identification
+         * Creditor identification as given by his bank.
+         */
+        PartyIdentification32 creditorSchemeId = factory.createPartyIdentification32();
+        directDebitTransaction6.setCdtrSchmeId(creditorSchemeId);
+        Party6Choice party6Choice = factory.createParty6Choice();
+        creditorSchemeId.setId(party6Choice);
+        PersonIdentification5 personIdentification5 = factory.createPersonIdentification5();
+        party6Choice.setPrvtId(personIdentification5);
+        GenericPersonIdentification1 genericPersonIdentification1 =
+            factory.createGenericPersonIdentification1();
+        personIdentification5.getOthr().add(genericPersonIdentification1);
+        genericPersonIdentification1.setId(
+            Beans.get(BankPaymentConfigService.class)
+                .getIcsNumber(senderCompany.getBankPaymentConfig()));
+        PersonIdentificationSchemeName1Choice personIdentificationSchemeName1Choice =
+            factory.createPersonIdentificationSchemeName1Choice();
+        genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
+        personIdentificationSchemeName1Choice.setPrtry("SEPA");
+
+        /*
+         * Ultimate Creditor (optional)
+         * Ultimate party to which an amount of money is due. Ultimate Creditor is only to be used if different from Creditor.
+         */
+        // directDebitTransaction6.setUltmtCdtr();
+
+        /*
+         * Debtor Agent (mandatory)
+         * Financial institution servicing an account for the debtor.
+         */
+        BranchAndFinancialInstitutionIdentification4 branchAndFinancialInstitutionIdentification4 =
+            factory.createBranchAndFinancialInstitutionIdentification4();
+        FinancialInstitutionIdentification7 financialInstitutionIdentification7 =
+            factory.createFinancialInstitutionIdentification7();
+
+        fillBic(financialInstitutionIdentification7, receiverBankDetails.getBank()); // BIC
+
+        branchAndFinancialInstitutionIdentification4.setFinInstnId(
+            financialInstitutionIdentification7);
+        directDebitTransactionInformation9.setDbtrAgt(branchAndFinancialInstitutionIdentification4);
+
+        /*
+         * Debtor (mandatory)
+         * Party that owes an amount of money to the (ultimate) creditor.
+         */
+        PartyIdentification32 debtor = factory.createPartyIdentification32();
+        debtor.setNm(receiverBankDetails.getOwnerName());
+        directDebitTransactionInformation9.setDbtr(debtor);
+
+        /*
+         * Debtor Account (mandatory)
+         * Identification of the account of the debtor to which a debit entry will be made to execute the transfer.
+         */
+        AccountIdentification4Choice accountIdentification4Choice =
+            factory.createAccountIdentification4Choice();
+        accountIdentification4Choice.setIBAN(receiverBankDetails.getIban());
+        CashAccount16 cashAccount16 = factory.createCashAccount16();
+        cashAccount16.setId(accountIdentification4Choice);
+        directDebitTransactionInformation9.setDbtrAcct(cashAccount16);
+
+        /*
+         * Ultimate Debtor (optional)
+         * Ultimate party that owes an amount of money to the (ultimate) creditor. Ultimate Debtor is only to be used if different from Debtor.
+         */
+        // directDebitTransactionInformation9.setUltmtDbtr(???);
+
+        /*
+         * Purpose (optional)
+         * Underlying reason for the payment transaction.
+         * Purpose is used by the Debtor to provide information to the Creditor, concerning thenature of the payment transaction.
+         * It is not used for processing by any of the banks involved.
+         */
+        // Purpose2Choice purpose2Choice = factory.createPurpose2Choice();
+        // directDebitTransactionInformation9.setPurp(purpose2Choice);
+        /*
+         * Code (mandatory)
+         * Specifies the underlying reason of the payment transaction.
+         */
+        // purpose2Choice.setCd(???);
+
+        /*
+         * Remittance Information (optional)
+         * Information that enables the matching, ie, reconciliation, of a payment with the items that the payment
+         * is intended to settle, eg, commercial invoices in an account receivable system.
+         *
+         * Usage : Either Structured or Unstructured, but not both.
+         */
+        RemittanceInformation5 remittanceInformation5 = factory.createRemittanceInformation5();
+        directDebitTransactionInformation9.setRmtInf(remittanceInformation5);
+        /*
+         * Unstructured (choice 1 of 2)
+         * Information supplied to enable the matching of an entry with the items that the transfer is intended
+         * to settle, eg, commercial invoices in an accounts' receivable system in an unstructured form.
+         */
+        remittanceInformation5.getUstrd().add(bankOrderLine.getReceiverReference());
+
+        /*
+         * Structured   (choice 2 of 2)
+         * Information supplied to enable the matching of an entry with the items that the transfer is intended
+         * to settle, eg, commercial invoices in an accounts' receivable system in a structured form.
+         */
+        // StructuredRemittanceInformation7 structuredRemittanceInformation7 =
+        // factory.createStructuredRemittanceInformation7();
+        // remittanceInformation5.getStrd().add(structuredRemittanceInformation7);
       }
-
-      /*
-       * Direct Debit Transaction Information (mandatory)
-       * Set of elements providing information specific to the individual transaction(s) included in the message.
-       */
-      DirectDebitTransactionInformation9 directDebitTransactionInformation9 =
-          factory.createDirectDebitTransactionInformation9();
-      directDebitTransactionInformation9List.add(directDebitTransactionInformation9);
-
-      /*
-       * Payment Identification (mandatory)
-       * Set of elements to reference a payment instruction.
-       */
-      PaymentIdentification1 paymentIdentification1 = factory.createPaymentIdentification1();
-      directDebitTransactionInformation9.setPmtId(paymentIdentification1);
-      /*
-       * Instruction Identification (optional)
-       * The Instruction Identification is a unique reference assigned by the Initiator to unambiguously identify the transaction.
-       * It can be used in status messages related to the transaction.
-       */
-      // paymentIdentification1.setInstrId();
-      /*
-       * End To End Identification (mandatory)
-       * Unique identification assigned by the initiating party to unumbiguously identify the transaction.
-       * This identification is passed on, unchanged, throughout the entire end-to-end chain.
-       */
-      paymentIdentification1.setEndToEndId(bankOrderLine.getSequence());
-
-      /*
-       * Instructed Amount (mandatory)
-       * Amount of the direct debit, expressed in euro.
-       *
-       * Format : Max. 11 digits of which 2 for the fractional part.
-       *          Decimal separator is "."
-       *          Currency "EUR" is explicit, and included in the XML tag.
-       * Usage  : Amount must be between 0.01 and 999999999.99
-       */
-      ActiveOrHistoricCurrencyAndAmount activeOrHistoricCurrencyAndAmount =
-          factory.createActiveOrHistoricCurrencyAndAmount();
-      activeOrHistoricCurrencyAndAmount.setCcy(CURRENCY_CODE);
-      activeOrHistoricCurrencyAndAmount.setValue(bankOrderLine.getBankOrderAmount());
-      directDebitTransactionInformation9.setInstdAmt(activeOrHistoricCurrencyAndAmount);
-
-      /*
-       * Direct Debit Transaction (mandatory)
-       * Set of elements providing information specific to the direct debit mandate.
-       */
-      DirectDebitTransaction6 directDebitTransaction6 = factory.createDirectDebitTransaction6();
-      directDebitTransactionInformation9.setDrctDbtTx(directDebitTransaction6);
-      /*
-       * Mandate Related Information (mandatory)
-       * Set of elements used to provide further details related to a direct debit mandate signed between the creditor and the debtor.
-       */
-      MandateRelatedInformation6 mandateRelatedInformation6 =
-          factory.createMandateRelatedInformation6();
-      directDebitTransaction6.setMndtRltdInf(mandateRelatedInformation6);
-      /*
-       * Mandate Identification (mandatory)
-       * Reference of the direct debit mandate that has been signed between by the debtor and the creditor.
-       */
-      mandateRelatedInformation6.setMndtId(receiverUmr.getUmrNumber());
-      /*
-       * Date of Signature (mandatory)
-       * Date on which the direct debit mandate has been signed by the debtor.
-       *
-       * Format : YYYY-MM-DD
-       */
-      mandateRelatedInformation6.setDtOfSgntr(
-          datatypeFactory.newXMLGregorianCalendar(
-              receiverUmr
-                  .getMandateSignatureDate()
-                  .format(DateTimeFormatter.ofPattern(("yyyy-MM-dd")))));
-      /*
-       * Amendment Indicator (optional)
-       * Indicator notifying whether the underlying mandate is amended or not.
-       *
-       * Usage : - If not present, considered as "false".
-       *         - If true, 'Amendment Information Details' is mandatory.
-       *
-       * 'true'  if : The mandate is amended or migrated from Dom'80.
-       * 'false' if : The mandate is not amended.
-       */
-      // mandateRelatedInformation6.setAmdmntInd(???);
-      /*
-       * Amendment Info Details (optional)
-       * List of direct debit mandate elements that have been modified.
-       */
-      // AmendmentInformationDetails6 amendmentInformationDetails6 =
-      // factory.createAmendmentInformationDetails6();
-      // mandateRelatedInformation6.setAmdmntInfDtls(amendmentInformationDetails6);
-      // amendmentInformationDetails6.setOrgnlMndtId(???);
-      // amendmentInformationDetails6.setOrgnlCdtrSchmeId(???);
-      // amendmentInformationDetails6.setOrgnlDbtrAcct(???);
-      // amendmentInformationDetails6.setOrgnlDbtrAgt(???);
-      /*
-       * Electronic Signature (optional)
-       * Digital signature as provided by the creditor.
-       *
-       * Usage : - If the direct debit is based on an electronic mandate, this data
-       *           element must contain the reference of the Mandate Acceptance Report.
-       *         - If the direct debit is based on a paper mandate, this data element
-       *           is not allowed.
-       */
-      // mandateRelatedInformation6.setElctrncSgntr(???);
-      /*
-       * Creditor Scheme Identification
-       * Creditor identification as given by his bank.
-       */
-      PartyIdentification32 creditorSchemeId = factory.createPartyIdentification32();
-      directDebitTransaction6.setCdtrSchmeId(creditorSchemeId);
-      Party6Choice party6Choice = factory.createParty6Choice();
-      creditorSchemeId.setId(party6Choice);
-      PersonIdentification5 personIdentification5 = factory.createPersonIdentification5();
-      party6Choice.setPrvtId(personIdentification5);
-      GenericPersonIdentification1 genericPersonIdentification1 =
-          factory.createGenericPersonIdentification1();
-      personIdentification5.getOthr().add(genericPersonIdentification1);
-      genericPersonIdentification1.setId(
-          Beans.get(BankPaymentConfigService.class)
-              .getIcsNumber(senderCompany.getBankPaymentConfig()));
-      PersonIdentificationSchemeName1Choice personIdentificationSchemeName1Choice =
-          factory.createPersonIdentificationSchemeName1Choice();
-      genericPersonIdentification1.setSchmeNm(personIdentificationSchemeName1Choice);
-      personIdentificationSchemeName1Choice.setPrtry("SEPA");
-
-      /*
-       * Ultimate Creditor (optional)
-       * Ultimate party to which an amount of money is due. Ultimate Creditor is only to be used if different from Creditor.
-       */
-      // directDebitTransaction6.setUltmtCdtr();
-
-      /*
-       * Debtor Agent (mandatory)
-       * Financial institution servicing an account for the debtor.
-       */
-      BranchAndFinancialInstitutionIdentification4 branchAndFinancialInstitutionIdentification4 =
-          factory.createBranchAndFinancialInstitutionIdentification4();
-      FinancialInstitutionIdentification7 financialInstitutionIdentification7 =
-          factory.createFinancialInstitutionIdentification7();
-
-      fillBic(financialInstitutionIdentification7, receiverBankDetails.getBank()); // BIC
-
-      branchAndFinancialInstitutionIdentification4.setFinInstnId(
-          financialInstitutionIdentification7);
-      directDebitTransactionInformation9.setDbtrAgt(branchAndFinancialInstitutionIdentification4);
-
-      /*
-       * Debtor (mandatory)
-       * Party that owes an amount of money to the (ultimate) creditor.
-       */
-      PartyIdentification32 debtor = factory.createPartyIdentification32();
-      debtor.setNm(receiverBankDetails.getOwnerName());
-      directDebitTransactionInformation9.setDbtr(debtor);
-
-      /*
-       * Debtor Account (mandatory)
-       * Identification of the account of the debtor to which a debit entry will be made to execute the transfer.
-       */
-      AccountIdentification4Choice accountIdentification4Choice =
-          factory.createAccountIdentification4Choice();
-      accountIdentification4Choice.setIBAN(receiverBankDetails.getIban());
-      CashAccount16 cashAccount16 = factory.createCashAccount16();
-      cashAccount16.setId(accountIdentification4Choice);
-      directDebitTransactionInformation9.setDbtrAcct(cashAccount16);
-
-      /*
-       * Ultimate Debtor (optional)
-       * Ultimate party that owes an amount of money to the (ultimate) creditor. Ultimate Debtor is only to be used if different from Debtor.
-       */
-      // directDebitTransactionInformation9.setUltmtDbtr(???);
-
-      /*
-       * Purpose (optional)
-       * Underlying reason for the payment transaction.
-       * Purpose is used by the Debtor to provide information to the Creditor, concerning thenature of the payment transaction.
-       * It is not used for processing by any of the banks involved.
-       */
-      // Purpose2Choice purpose2Choice = factory.createPurpose2Choice();
-      // directDebitTransactionInformation9.setPurp(purpose2Choice);
-      /*
-       * Code (mandatory)
-       * Specifies the underlying reason of the payment transaction.
-       */
-      // purpose2Choice.setCd(???);
-
-      /*
-       * Remittance Information (optional)
-       * Information that enables the matching, ie, reconciliation, of a payment with the items that the payment
-       * is intended to settle, eg, commercial invoices in an account receivable system.
-       *
-       * Usage : Either Structured or Unstructured, but not both.
-       */
-      RemittanceInformation5 remittanceInformation5 = factory.createRemittanceInformation5();
-      directDebitTransactionInformation9.setRmtInf(remittanceInformation5);
-      /*
-       * Unstructured (choice 1 of 2)
-       * Information supplied to enable the matching of an entry with the items that the transfer is intended
-       * to settle, eg, commercial invoices in an accounts' receivable system in an unstructured form.
-       */
-      remittanceInformation5.getUstrd().add(bankOrderLine.getReceiverReference());
-
-      /*
-       * Structured   (choice 2 of 2)
-       * Information supplied to enable the matching of an entry with the items that the transfer is intended
-       * to settle, eg, commercial invoices in an accounts' receivable system in a structured form.
-       */
-      // StructuredRemittanceInformation7 structuredRemittanceInformation7 =
-      // factory.createStructuredRemittanceInformation7();
-      // remittanceInformation5.getStrd().add(structuredRemittanceInformation7);
     }
   }
 

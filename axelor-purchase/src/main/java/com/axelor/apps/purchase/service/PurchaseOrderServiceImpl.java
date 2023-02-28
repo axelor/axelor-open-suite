@@ -48,6 +48,7 @@ import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -360,17 +361,19 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     String numSeq = "";
     String externalRef = "";
-    for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
-      }
-      numSeq += purchaseOrderLocal.getPurchaseOrderSeq();
+    if (CollectionUtils.isNotEmpty(purchaseOrderList)) {
+      for (PurchaseOrder purchaseOrderLocal : purchaseOrderList) {
+        if (!numSeq.isEmpty()) {
+          numSeq += "-";
+        }
+        numSeq += purchaseOrderLocal.getPurchaseOrderSeq();
 
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
-      }
-      if (purchaseOrderLocal.getExternalReference() != null) {
-        externalRef += purchaseOrderLocal.getExternalReference();
+        if (!externalRef.isEmpty()) {
+          externalRef += "|";
+        }
+        if (purchaseOrderLocal.getExternalReference() != null) {
+          externalRef += purchaseOrderLocal.getExternalReference();
+        }
       }
     }
 
@@ -402,20 +405,26 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   // Attachment of all purchase order lines to new purchase order
   public void attachToNewPurchaseOrder(
       List<PurchaseOrder> purchaseOrderList, PurchaseOrder purchaseOrderMerged) {
-    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
-      int countLine = 1;
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        purchaseOrderLine.setSequence(countLine * 10);
-        purchaseOrderMerged.addPurchaseOrderLineListItem(purchaseOrderLine);
-        countLine++;
+    if (CollectionUtils.isNotEmpty(purchaseOrderList)) {
+      for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+        int countLine = 1;
+        if (purchaseOrder != null && purchaseOrder.getPurchaseOrderLineList() != null) {
+          for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+            purchaseOrderLine.setSequence(countLine * 10);
+            purchaseOrderMerged.addPurchaseOrderLineListItem(purchaseOrderLine);
+            countLine++;
+          }
+        }
       }
     }
   }
 
   // Remove old purchase orders after merge
   public void removeOldPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
-    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
-      purchaseOrderRepo.remove(purchaseOrder);
+    if (purchaseOrderList != null) {
+      for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+        purchaseOrderRepo.remove(purchaseOrder);
+      }
     }
   }
 

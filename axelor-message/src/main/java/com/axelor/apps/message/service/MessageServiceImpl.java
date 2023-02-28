@@ -26,6 +26,7 @@ import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.apps.message.exception.MessageExceptionMessage;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -421,7 +422,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     }
 
     if (!isTemporaryEmail) {
-      for (MetaAttachment metaAttachment : getMetaAttachments(message)) {
+      for (MetaAttachment metaAttachment : SetUtils.emptyIfNull(getMetaAttachments(message))) {
         MetaFile metaFile = metaAttachment.getMetaFile();
         mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
       }
@@ -513,7 +514,13 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
                 "self.objectId = ?1 AND self.objectName = ?2",
                 message.getId(),
                 Message.class.getName());
-    return Sets.newHashSet(query.fetch());
+    List<MetaAttachment> metaAttachmentList = query.fetch();
+
+    if (metaAttachmentList == null) {
+      return Sets.newHashSet();
+    }
+
+    return Sets.newHashSet(metaAttachmentList);
   }
 
   public List<String> getEmailAddresses(Set<EmailAddress> emailAddressSet) {

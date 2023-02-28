@@ -49,6 +49,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -265,16 +266,18 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     move = this.fillMove(invoicePayment, move, customerAccount, maxAmount);
     moveValidateService.accounting(move);
 
-    for (MoveLine moveline : move.getMoveLineList()) {
-      if (customerAccount.equals(moveline.getAccount())) {
-        customerMoveLine = moveline;
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveline : move.getMoveLineList()) {
+        if (customerAccount.equals(moveline.getAccount())) {
+          customerMoveLine = moveline;
+        }
       }
     }
 
     invoicePayment.setMove(move);
     if (customerMoveLine != null
         && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-      for (MoveLine invoiceMoveLine : invoiceMoveLines) {
+      for (MoveLine invoiceMoveLine : ListUtils.emptyIfNull(invoiceMoveLines)) {
         Reconcile reconcile =
             reconcileService.reconcile(
                 invoiceMoveLine, customerMoveLine, true, true, invoicePayment);
@@ -344,7 +347,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     BigDecimal companyPaymentAmount =
-        invoicePayment.getInvoiceTermPaymentList().stream()
+        ListUtils.emptyIfNull(invoicePayment.getInvoiceTermPaymentList()).stream()
             .map(InvoiceTermPayment::getCompanyPaidAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
@@ -494,7 +497,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             ? accountConfigService.getPurchFinancialDiscountTax(accountConfig)
             : accountConfigService.getSaleFinancialDiscountTax(accountConfig);
     AccountManagement accountManagement =
-        tax.getAccountManagementList().stream()
+        ListUtils.emptyIfNull(tax.getAccountManagementList()).stream()
             .filter(it -> it.getCompany().equals(company))
             .findFirst()
             .orElse(null);

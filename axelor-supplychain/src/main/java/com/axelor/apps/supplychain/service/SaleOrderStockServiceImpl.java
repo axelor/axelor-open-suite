@@ -61,6 +61,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
@@ -129,6 +130,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap =
         getAllSaleOrderLinePerDate(saleOrder);
 
+    if (saleOrderLinePerDateMap == null) {
+      return stockMoveList;
+    }
+
     for (LocalDate estimatedDeliveryDate :
         saleOrderLinePerDateMap.keySet().stream()
             .filter(Objects::nonNull)
@@ -161,11 +166,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         this.createStockMove(saleOrder, saleOrder.getCompany(), estimatedDeliveryDate);
     stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
 
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      if (saleOrderLine.getProduct() != null) {
-        BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
-        if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
-          createStockMoveLine(stockMove, saleOrderLine, qty);
+    if (CollectionUtils.isNotEmpty(saleOrderLineList)) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        if (saleOrderLine.getProduct() != null) {
+          BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
+          if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
+            createStockMoveLine(stockMove, saleOrderLine, qty);
+          }
         }
       }
     }
@@ -216,6 +223,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected Map<LocalDate, List<SaleOrderLine>> getAllSaleOrderLinePerDate(SaleOrder saleOrder) {
 
     Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap = new HashMap<>();
+
+    if (CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
+      return saleOrderLinePerDateMap;
+    }
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 

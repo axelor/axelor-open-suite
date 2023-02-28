@@ -31,6 +31,7 @@ import com.axelor.apps.stock.db.repo.StockHistoryLineManagementRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockHistoryServiceImpl implements StockHistoryService {
 
@@ -174,16 +176,18 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       List<StockHistoryLine> stockHistoryLineList, String fileName) throws IOException {
     List<String[]> list = new ArrayList<>();
 
-    for (StockHistoryLine stockHistoryLine : stockHistoryLineList) {
-      String[] item = new String[7];
-      item[0] = stockHistoryLine.getLabel();
-      item[1] = stockHistoryLine.getCountIncMvtStockPeriod().toString();
-      item[2] = stockHistoryLine.getSumIncQtyPeriod().toString();
-      item[3] = stockHistoryLine.getPriceIncStockMovePeriod().toString();
-      item[4] = stockHistoryLine.getCountOutMvtStockPeriod().toString();
-      item[5] = stockHistoryLine.getSumOutQtyPeriod().toString();
-      item[6] = stockHistoryLine.getPriceOutStockMovePeriod().toString();
-      list.add(item);
+    if (CollectionUtils.isNotEmpty(stockHistoryLineList)) {
+      for (StockHistoryLine stockHistoryLine : stockHistoryLineList) {
+        String[] item = new String[7];
+        item[0] = stockHistoryLine.getLabel();
+        item[1] = stockHistoryLine.getCountIncMvtStockPeriod().toString();
+        item[2] = stockHistoryLine.getSumIncQtyPeriod().toString();
+        item[3] = stockHistoryLine.getPriceIncStockMovePeriod().toString();
+        item[4] = stockHistoryLine.getCountOutMvtStockPeriod().toString();
+        item[5] = stockHistoryLine.getSumOutQtyPeriod().toString();
+        item[6] = stockHistoryLine.getPriceOutStockMovePeriod().toString();
+        list.add(item);
+      }
     }
 
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
@@ -219,23 +223,26 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             .filter(filter)
             .bind("productId", productId)
             .bind("companyId", companyId)
-            .bind("stockLocationIdList", stockLocationIdList)
+            .bind("stockLocationIdList", ListUtils.emptyIfNull(stockLocationIdList))
             .bind("realized", StockMoveRepository.STATUS_REALIZED)
             .bind("beginDate", periodBeginDate.minusMonths(12))
             .bind("endDate", periodBeginDate)
             .fetch();
 
     BigDecimal avgOutQtyOn12PastMonth = BigDecimal.ZERO;
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      // quantity in product unit
-      BigDecimal qtyConverted =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              stockMoveLine.getProduct().getUnit(),
-              stockMoveLine.getRealQty(),
-              stockMoveLine.getRealQty().scale(),
-              stockMoveLine.getProduct());
-      avgOutQtyOn12PastMonth = avgOutQtyOn12PastMonth.add(qtyConverted);
+
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        // quantity in product unit
+        BigDecimal qtyConverted =
+            unitConversionService.convert(
+                stockMoveLine.getUnit(),
+                stockMoveLine.getProduct().getUnit(),
+                stockMoveLine.getRealQty(),
+                stockMoveLine.getRealQty().scale(),
+                stockMoveLine.getProduct());
+        avgOutQtyOn12PastMonth = avgOutQtyOn12PastMonth.add(qtyConverted);
+      }
     }
     avgOutQtyOn12PastMonth =
         avgOutQtyOn12PastMonth.divide(
@@ -273,7 +280,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             .filter(filter)
             .bind("productId", productId)
             .bind("companyId", companyId)
-            .bind("stockLocationIdList", stockLocationIdList)
+            .bind("stockLocationIdList", ListUtils.emptyIfNull(stockLocationIdList))
             .bind("realized", StockMoveRepository.STATUS_REALIZED)
             .bind("beginDate", periodBeginDate)
             .bind("endDate", periodEndDate)
@@ -290,6 +297,10 @@ public class StockHistoryServiceImpl implements StockHistoryService {
   protected void fillIncomingStockHistoryLineFields(
       StockHistoryLine stockHistoryLine, List<StockMoveLine> stockMoveLineList)
       throws AxelorException {
+
+    if (stockMoveLineList == null) {
+      return;
+    }
 
     stockHistoryLine.setCountIncMvtStockPeriod(
         Math.toIntExact(
@@ -317,6 +328,10 @@ public class StockHistoryServiceImpl implements StockHistoryService {
   protected void fillOutgoingStockHistoryLineFields(
       StockHistoryLine stockHistoryLine, List<StockMoveLine> stockMoveLineList)
       throws AxelorException {
+
+    if (stockMoveLineList == null) {
+      return;
+    }
 
     stockHistoryLine.setCountOutMvtStockPeriod(
         Math.toIntExact(
@@ -352,54 +367,55 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     StockHistoryLine stockHistoryLine = new StockHistoryLine();
     stockHistoryLine.setLabel(I18n.get("Total"));
 
-    Integer countIncMvtStock =
-        stockHistoryLineList.stream()
-            .map(StockHistoryLine::getCountIncMvtStockPeriod)
-            .filter(Objects::nonNull)
-            .mapToInt(Integer::intValue)
-            .sum();
-    stockHistoryLine.setCountIncMvtStockPeriod(countIncMvtStock);
+    if (stockHistoryLineList != null) {
+      Integer countIncMvtStock =
+          stockHistoryLineList.stream()
+              .map(StockHistoryLine::getCountIncMvtStockPeriod)
+              .filter(Objects::nonNull)
+              .mapToInt(Integer::intValue)
+              .sum();
+      stockHistoryLine.setCountIncMvtStockPeriod(countIncMvtStock);
 
-    BigDecimal sumIncQtyPeriod =
-        stockHistoryLineList.stream()
-            .map(StockHistoryLine::getSumIncQtyPeriod)
-            .filter(Objects::nonNull)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    stockHistoryLine.setSumIncQtyPeriod(sumIncQtyPeriod);
+      BigDecimal sumIncQtyPeriod =
+          stockHistoryLineList.stream()
+              .map(StockHistoryLine::getSumIncQtyPeriod)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      stockHistoryLine.setSumIncQtyPeriod(sumIncQtyPeriod);
 
-    BigDecimal priceIncStockMove =
-        stockHistoryLineList.stream()
-            .map(StockHistoryLine::getPriceIncStockMovePeriod)
-            .filter(Objects::nonNull)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    stockHistoryLine.setPriceIncStockMovePeriod(priceIncStockMove);
+      BigDecimal priceIncStockMove =
+          stockHistoryLineList.stream()
+              .map(StockHistoryLine::getPriceIncStockMovePeriod)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      stockHistoryLine.setPriceIncStockMovePeriod(priceIncStockMove);
 
-    Integer countOutMvtStock =
-        stockHistoryLineList.stream()
-            .map(StockHistoryLine::getCountOutMvtStockPeriod)
-            .filter(Objects::nonNull)
-            .mapToInt(Integer::intValue)
-            .sum();
-    stockHistoryLine.setCountOutMvtStockPeriod(countOutMvtStock);
+      Integer countOutMvtStock =
+          stockHistoryLineList.stream()
+              .map(StockHistoryLine::getCountOutMvtStockPeriod)
+              .filter(Objects::nonNull)
+              .mapToInt(Integer::intValue)
+              .sum();
+      stockHistoryLine.setCountOutMvtStockPeriod(countOutMvtStock);
 
-    BigDecimal sumOutQtyPeriod =
-        stockHistoryLineList.stream()
-            .map(StockHistoryLine::getSumOutQtyPeriod)
-            .filter(Objects::nonNull)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    stockHistoryLine.setSumOutQtyPeriod(sumOutQtyPeriod);
+      BigDecimal sumOutQtyPeriod =
+          stockHistoryLineList.stream()
+              .map(StockHistoryLine::getSumOutQtyPeriod)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      stockHistoryLine.setSumOutQtyPeriod(sumOutQtyPeriod);
 
-    BigDecimal priceOutStockMove =
-        stockHistoryLineList.stream()
-            .map(StockHistoryLine::getPriceOutStockMovePeriod)
-            .filter(Objects::nonNull)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    stockHistoryLine.setPriceOutStockMovePeriod(priceOutStockMove);
-
+      BigDecimal priceOutStockMove =
+          stockHistoryLineList.stream()
+              .map(StockHistoryLine::getPriceOutStockMovePeriod)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      stockHistoryLine.setPriceOutStockMovePeriod(priceOutStockMove);
+    }
     return stockHistoryLine;
   }
 
@@ -417,7 +433,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
 
     int qtyScale = Beans.get(AppBaseService.class).getAppBase().getNbDecimalDigitForQty();
 
-    int sizeOfList = stockHistoryLineList.size();
+    int sizeOfList = ListUtils.size(stockHistoryLineList);
     if (sizeOfList == 0) {
       return stockHistoryLine;
     }

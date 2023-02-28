@@ -395,24 +395,27 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Product product = invoiceLine.getProduct();
 
     Map<String, Object> productInformation = fillPriceAndAccount(invoice, invoiceLine, isPurchase);
-    if (productInformation.get("productName") == null
-        && productInformation.get("productCode") == null) {
-      productInformation.put("productName", product.getName());
-      productInformation.put("productCode", product.getCode());
+    if (productInformation != null) {
+      if (productInformation.get("productName") == null
+          && productInformation.get("productCode") == null) {
+        productInformation.put("productName", product.getName());
+        productInformation.put("productCode", product.getCode());
+      }
+      productInformation.put("unit", this.getUnit(product, isPurchase));
+
+      AppInvoice appInvoice = appAccountService.getAppInvoice();
+      Boolean isEnabledProductDescriptionCopy =
+          isPurchase
+              ? appInvoice.getIsEnabledProductDescriptionCopyForSuppliers()
+              : appInvoice.getIsEnabledProductDescriptionCopyForCustomers();
+
+      if (isEnabledProductDescriptionCopy) {
+        productInformation.put("description", product.getDescription());
+      }
+
+      return productInformation;
     }
-    productInformation.put("unit", this.getUnit(product, isPurchase));
-
-    AppInvoice appInvoice = appAccountService.getAppInvoice();
-    Boolean isEnabledProductDescriptionCopy =
-        isPurchase
-            ? appInvoice.getIsEnabledProductDescriptionCopyForSuppliers()
-            : appInvoice.getIsEnabledProductDescriptionCopyForCustomers();
-
-    if (isEnabledProductDescriptionCopy) {
-      productInformation.put("description", product.getDescription());
-    }
-
-    return productInformation;
+    return Collections.emptyMap();
   }
 
   @Override
@@ -426,6 +429,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Company company = invoice.getCompany();
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
 
+    if (productInformation == null) {
+      productInformation = new HashMap<>();
+    }
     try {
       taxLine = this.getTaxLine(invoice, invoiceLine, isPurchase);
       invoiceLine.setTaxLine(taxLine);
@@ -584,7 +590,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
 
     if (CollectionUtils.isEmpty(invoiceLineList)) {
-      return null;
+      return new ArrayList<>();
     }
 
     for (InvoiceLine invoiceLine : invoiceLineList) {

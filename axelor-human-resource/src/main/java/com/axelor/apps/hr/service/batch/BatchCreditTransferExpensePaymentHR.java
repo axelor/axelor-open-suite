@@ -30,6 +30,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -43,6 +44,7 @@ import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +137,8 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
     if (manageMultiBanks) {
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
 
-      if (accountingBatch.getIncludeOtherBankAccounts()) {
+      if (accountingBatch.getIncludeOtherBankAccounts()
+          && accountingBatch.getCompany().getBankDetailsList() != null) {
         bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
       }
 
@@ -195,15 +198,17 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
     List<Expense> expenseList = new ArrayList<>();
     List<BankOrder> bankOrderList = new ArrayList<>();
 
-    for (Expense expense : doneList) {
-      BankOrder bankOrder = expense.getBankOrder();
-      if (bankOrder != null) {
-        expenseList.add(expense);
-        bankOrderList.add(bankOrder);
+    if (CollectionUtils.isNotEmpty(doneList)) {
+      for (Expense expense : doneList) {
+        BankOrder bankOrder = expense.getBankOrder();
+        if (bankOrder != null) {
+          expenseList.add(expense);
+          bankOrderList.add(bankOrder);
+        }
       }
     }
 
-    if (bankOrderList.size() > 1) {
+    if (ListUtils.size(bankOrderList) > 1) {
       BankOrder mergedBankOrder = bankOrderMergeService.mergeBankOrders(bankOrderList);
       for (Expense expense : expenseList) {
         expense.setBankOrder(mergedBankOrder);

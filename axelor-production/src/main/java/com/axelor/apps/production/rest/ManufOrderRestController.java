@@ -37,6 +37,7 @@ import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestValidator;
 import com.axelor.apps.tool.api.ResponseConstructor;
 import com.axelor.apps.tool.api.SecurityCheck;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.util.Arrays;
@@ -72,7 +73,8 @@ public class ManufOrderRestController {
     return ResponseConstructor.build(
         Response.Status.OK,
         "Request successfully completed",
-        new ManufOrderProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
+        new ManufOrderProductListResponse(
+            ListUtils.emptyIfNull(consumedProductList), requestBody.fetchManufOrder()));
   }
 
   @Path("/produced-products/fetch")
@@ -92,7 +94,8 @@ public class ManufOrderRestController {
     return ResponseConstructor.build(
         Response.Status.OK,
         "Request successfully completed",
-        new ManufOrderProductListResponse(producedProductList, requestBody.fetchManufOrder()));
+        new ManufOrderProductListResponse(
+            ListUtils.emptyIfNull(producedProductList), requestBody.fetchManufOrder()));
   }
 
   @Path("/update-product-qty")

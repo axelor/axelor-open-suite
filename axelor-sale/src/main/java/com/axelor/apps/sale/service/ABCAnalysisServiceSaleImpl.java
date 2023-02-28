@@ -41,6 +41,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ABCAnalysisServiceSaleImpl extends ABCAnalysisServiceImpl {
   protected SaleOrderLineRepository saleOrderLineRepository;
@@ -92,7 +93,8 @@ public class ABCAnalysisServiceSaleImpl extends ABCAnalysisServiceImpl {
             .bind("productId", product.getId())
             .order("id");
 
-    while (!(saleOrderLineList = saleOrderLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (CollectionUtils.isNotEmpty(
+        (saleOrderLineList = saleOrderLineQuery.fetch(FETCH_LIMIT, offset)))) {
       offset += saleOrderLineList.size();
       abcAnalysis = abcAnalysisRepository.find(abcAnalysis.getId());
 

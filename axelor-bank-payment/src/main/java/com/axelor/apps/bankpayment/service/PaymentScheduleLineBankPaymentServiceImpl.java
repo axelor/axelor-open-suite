@@ -187,8 +187,12 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     moveValidateService.accounting(rejectionMove);
 
     List<MoveLine> moveLineList = new ArrayList<>();
-    moveLineList.addAll(advanceOrPaymentMove.getMoveLineList());
-    moveLineList.addAll(rejectionMove.getMoveLineList());
+    if (advanceOrPaymentMove.getMoveLineList() != null) {
+      moveLineList.addAll(advanceOrPaymentMove.getMoveLineList());
+    }
+    if (rejectionMove.getMoveLineList() != null) {
+      moveLineList.addAll(rejectionMove.getMoveLineList());
+    }
     moveLineService.reconcileMoveLines(moveLineList);
 
     return rejectionMove;
@@ -210,9 +214,13 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
         continue;
       }
 
-      for (InvoicePayment invoicePayment :
-          invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch()) {
-        invoicePaymentCancelService.cancel(invoicePayment);
+      List<InvoicePayment> invoicePaymentList =
+          invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch();
+
+      if (invoicePaymentList != null) {
+        for (InvoicePayment invoicePayment : invoicePaymentList) {
+          invoicePaymentCancelService.cancel(invoicePayment);
+        }
       }
     }
   }
@@ -234,6 +242,9 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
 
   protected void refindPaymentScheduleLines(
       List<PaymentScheduleLine> paymentScheduleLines, int index) {
+    if (paymentScheduleLines == null) {
+      return;
+    }
     List<Long> idList =
         paymentScheduleLines
             .subList(Math.max(index, paymentScheduleLines.size()), paymentScheduleLines.size())
@@ -244,15 +255,16 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     if (!idList.isEmpty()) {
       List<PaymentScheduleLine> foundPaymentScheduleLines =
           paymentScheduleLineRepo.findByIdList(idList).fetch();
+      if (foundPaymentScheduleLines != null) {
+        if (foundPaymentScheduleLines.size() != idList.size()) {
+          throw new IllegalStateException(
+              String.format(
+                  "Expected size: %d, got: %d", idList.size(), foundPaymentScheduleLines.size()));
+        }
 
-      if (foundPaymentScheduleLines.size() != idList.size()) {
-        throw new IllegalStateException(
-            String.format(
-                "Expected size: %d, got: %d", idList.size(), foundPaymentScheduleLines.size()));
-      }
-
-      for (int i = 0; i < foundPaymentScheduleLines.size(); ++i) {
-        paymentScheduleLines.set(index + i, foundPaymentScheduleLines.get(i));
+        for (int i = 0; i < foundPaymentScheduleLines.size(); ++i) {
+          paymentScheduleLines.set(index + i, foundPaymentScheduleLines.get(i));
+        }
       }
     }
   }
@@ -279,16 +291,18 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
 
     int errorCount = 0;
 
-    for (Entry<T, InterbankCodeLine> entry : map.entrySet()) {
-      T key = entry.getKey();
-      InterbankCodeLine rejectionReason = entry.getValue();
-      PaymentScheduleLine paymentScheduleLine = findFunc.apply(key);
+    if (map != null) {
+      for (Entry<T, InterbankCodeLine> entry : map.entrySet()) {
+        T key = entry.getKey();
+        InterbankCodeLine rejectionReason = entry.getValue();
+        PaymentScheduleLine paymentScheduleLine = findFunc.apply(key);
 
-      try {
-        reject(paymentScheduleLine, rejectionReason, represent);
-      } catch (Exception e) {
-        TraceBackService.trace(e);
-        ++errorCount;
+        try {
+          reject(paymentScheduleLine, rejectionReason, represent);
+        } catch (Exception e) {
+          TraceBackService.trace(e);
+          ++errorCount;
+        }
       }
     }
 

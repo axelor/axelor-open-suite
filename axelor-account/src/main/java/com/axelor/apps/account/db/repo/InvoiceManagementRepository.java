@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.PersistenceException;
@@ -75,7 +76,11 @@ public class InvoiceManagementRepository extends InvoiceRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     try {
       final String subrogationStatusSelect = "$subrogationStatusSelect";
-      if (context.get("_model") != null
+      if (json == null) {
+        json = new HashMap<>();
+      }
+      if (context != null
+          && context.get("_model") != null
           && context.get("_model").toString().equals(SubrogationRelease.class.getName())) {
         if (context.get("id") != null) {
           long id = (long) context.get("id");

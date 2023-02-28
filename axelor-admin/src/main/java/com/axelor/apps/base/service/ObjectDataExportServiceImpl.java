@@ -103,26 +103,28 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
     Map<String, List<String[]>> data = new HashMap<>();
 
-    for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
+    if (objectDataConfig.getDataConfigLineList() != null) {
+      for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
 
-      MetaModel metaModel = line.getMetaModel();
+        MetaModel metaModel = line.getMetaModel();
 
-      logger.debug("Create data for: {}", metaModel.getName());
+        logger.debug("Create data for: {}", metaModel.getName());
 
-      Class<? extends Model> modelClass = ObjectDataCommonService.findModelClass(metaModel);
+        Class<? extends Model> modelClass = ObjectDataCommonService.findModelClass(metaModel);
 
-      Query<? extends Model> query =
-          ObjectDataCommonService.createQuery(recordId, line, modelClass);
+        Query<? extends Model> query =
+            ObjectDataCommonService.createQuery(recordId, line, modelClass);
 
-      ResourceBundle bundle = ObjectDataCommonService.getResourceBundle(language);
+        ResourceBundle bundle = ObjectDataCommonService.getResourceBundle(language);
 
-      String[][] fieldsData = createFieldsData(line.getToExportMetaFieldSet(), bundle);
+        String[][] fieldsData = createFieldsData(line.getToExportMetaFieldSet(), bundle);
 
-      Map<String, String> selectMap = getSelectMap(Mapper.of(modelClass));
+        Map<String, String> selectMap = getSelectMap(Mapper.of(modelClass));
 
-      List<String[]> dataList = fetchData(fieldsData, query, selectMap, bundle);
+        List<String[]> dataList = fetchData(fieldsData, query, selectMap, bundle);
 
-      data.put(line.getTabName(), dataList);
+        data.put(line.getTabName(), dataList);
+      }
     }
 
     return data;
@@ -148,26 +150,28 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
     List<String> names = new ArrayList<>();
     List<String> labels = new ArrayList<>();
 
-    for (MetaField field : metaFields) {
-      String label = field.getLabel();
-      String name = field.getName();
+    if (metaFields != null) {
+      for (MetaField field : metaFields) {
+        String label = field.getLabel();
+        String name = field.getName();
 
-      if (Strings.isNullOrEmpty(label)) {
-        label = inflector.humanize(name);
-      }
+        if (Strings.isNullOrEmpty(label)) {
+          label = inflector.humanize(name);
+        }
 
-      if (field.getRelationship() != null) {
-        name = name + "." + ObjectDataCommonService.getNameColumn(field);
-      }
+        if (field.getRelationship() != null) {
+          name = name + "." + ObjectDataCommonService.getNameColumn(field);
+        }
 
-      names.add(name);
+        names.add(name);
 
-      String translated = bundle.getString(label);
+        String translated = bundle.getString(label);
 
-      if (!Strings.isNullOrEmpty(translated)) {
-        labels.add(translated);
-      } else {
-        labels.add(label);
+        if (!Strings.isNullOrEmpty(translated)) {
+          labels.add(translated);
+        } else {
+          labels.add(label);
+        }
       }
     }
 
@@ -190,36 +194,38 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
     List<Map> records = query.select(fieldsData[0]).fetch(0, 0);
 
-    for (Map<String, Object> recordMap : records) {
+    if (records != null) {
+      for (Map<String, Object> recordMap : records) {
 
-      List<String> datas = new ArrayList<>();
+        List<String> datas = new ArrayList<>();
 
-      for (String field : fieldsData[0]) {
-        Object object = recordMap.get(field);
-        if (object == null) {
-          datas.add("");
-          continue;
-        }
-        if (selectMap.containsKey(field)) {
-          String selection = selectMap.get(field);
-          Option option = MetaStore.getSelectionItem(selection, object.toString());
-          if (option == null) {
+        for (String field : fieldsData[0]) {
+          Object object = recordMap.get(field);
+          if (object == null) {
             datas.add("");
             continue;
           }
-          String optionTitle = option.getTitle();
-          optionTitle = bundle.getString(optionTitle);
-          if (optionTitle != null) {
-            datas.add(optionTitle);
+          if (selectMap.containsKey(field)) {
+            String selection = selectMap.get(field);
+            Option option = MetaStore.getSelectionItem(selection, object.toString());
+            if (option == null) {
+              datas.add("");
+              continue;
+            }
+            String optionTitle = option.getTitle();
+            optionTitle = bundle.getString(optionTitle);
+            if (optionTitle != null) {
+              datas.add(optionTitle);
+            } else {
+              datas.add(option.getTitle());
+            }
           } else {
-            datas.add(option.getTitle());
+            datas.add(object.toString());
           }
-        } else {
-          datas.add(object.toString());
         }
-      }
 
-      dataList.add(datas.toArray(new String[fieldsData[0].length]));
+        dataList.add(datas.toArray(new String[fieldsData[0].length]));
+      }
     }
 
     return dataList;
@@ -230,15 +236,17 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
     File zipFile = MetaFiles.createTempFile("Data", ".zip").toFile();
     try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zipFile))) {
 
-      for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
-        String key = modelEntry.getKey();
-        File modelFile = MetaFiles.createTempFile(key, ".csv").toFile();
-        CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
-        writer.writeAll(modelEntry.getValue());
-        writer.close();
-        zout.putNextEntry(new ZipEntry(key + ".csv"));
-        zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
-        zout.closeEntry();
+      if (data != null) {
+        for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
+          String key = modelEntry.getKey();
+          File modelFile = MetaFiles.createTempFile(key, ".csv").toFile();
+          CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
+          writer.writeAll(modelEntry.getValue());
+          writer.close();
+          zout.putNextEntry(new ZipEntry(key + ".csv"));
+          zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
+          zout.closeEntry();
+        }
       }
     }
 
@@ -249,18 +257,20 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
     XSSFWorkbook workBook = new XSSFWorkbook();
 
-    for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
-      XSSFSheet sheet = workBook.createSheet(modelEntry.getKey());
-      int count = 0;
-      for (String[] recordArray : modelEntry.getValue()) {
-        XSSFRow row = sheet.createRow(count);
-        int cellCount = 0;
-        for (String val : recordArray) {
-          XSSFCell cell = row.createCell(cellCount);
-          cell.setCellValue(val);
-          cellCount++;
+    if (data != null) {
+      for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
+        XSSFSheet sheet = workBook.createSheet(modelEntry.getKey());
+        int count = 0;
+        for (String[] recordArray : modelEntry.getValue()) {
+          XSSFRow row = sheet.createRow(count);
+          int cellCount = 0;
+          for (String val : recordArray) {
+            XSSFCell cell = row.createCell(cellCount);
+            cell.setCellValue(val);
+            cellCount++;
+          }
+          count++;
         }
-        count++;
       }
     }
 

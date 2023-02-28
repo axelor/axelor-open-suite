@@ -54,6 +54,7 @@ import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -349,7 +350,9 @@ public class InvoiceController {
       }
 
       List<InvoiceTerm> invoiceTermList = invoiceTermService.updateFinancialDiscount(invoice);
-      response.setValue("invoiceTermList", invoiceTermList);
+      if (invoiceTermList != null) {
+        response.setValue("invoiceTermList", invoiceTermList);
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -705,7 +708,9 @@ public class InvoiceController {
     try {
       Set<Invoice> invoices =
           Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice);
-      response.setValue("advancePaymentInvoiceSet", invoices);
+      if (invoices != null) {
+        response.setValue("advancePaymentInvoiceSet", invoices);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -962,8 +967,8 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       if (invoice.getInvoiceLineList() != null) {
         Beans.get(InvoiceLineService.class).updateLinesAfterFiscalPositionChange(invoice);
+        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       }
-      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -980,8 +985,9 @@ public class InvoiceController {
 
       if (invoiceService.checkManageCutOffDates(invoice)) {
         invoiceService.applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate);
-
-        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+        if (invoice.getInvoiceLineList() != null) {
+          response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+        }
       } else {
         response.setFlash(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
@@ -1053,7 +1059,7 @@ public class InvoiceController {
 
       Beans.get(InvoiceService.class).updateUnpaidInvoiceTerms(invoice);
 
-      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+      response.setValue("invoiceTermList", ListUtils.emptyIfNull(invoice.getInvoiceTermList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -1169,11 +1175,13 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
 
-      invoice.getInvoiceTermList().stream()
-          .filter(invoiceTermService::isNotReadonly)
-          .forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
+      if (invoice.getInvoiceTermList() != null) {
+        invoice.getInvoiceTermList().stream()
+            .filter(invoiceTermService::isNotReadonly)
+            .forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
 
-      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+        response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -1225,7 +1233,9 @@ public class InvoiceController {
 
       if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
         Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoice);
-        response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+        if (invoice.getInvoiceTermList() != null) {
+          response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+        }
       }
 
       response.setValue("financialDiscount", invoice.getFinancialDiscount());

@@ -27,6 +27,7 @@ import com.axelor.apps.supplychain.db.TimetableTemplate;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.TimetableService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -106,7 +107,7 @@ public class TimetableController {
               (BigDecimal) context.get("exTaxTotal"),
               (LocalDate) context.get("computationDate"));
 
-      response.setValue("timetableList", timetableList);
+      response.setValue("timetableList", ListUtils.emptyIfNull(timetableList));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

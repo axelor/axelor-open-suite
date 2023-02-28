@@ -64,7 +64,9 @@ public class MetaJsonAttrsBuilder {
     Objects.requireNonNull(value);
     Map.Entry<String, Object> entry = MetaJsonAttrsAdapter.adaptValueForMap(metaJsonField, value);
 
-    this.attrs.put(entry.getKey(), entry.getValue());
+    if (entry != null) {
+      this.attrs.put(entry.getKey(), entry.getValue());
+    }
 
     return this;
   }

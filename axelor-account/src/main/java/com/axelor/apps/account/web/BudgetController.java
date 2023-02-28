@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Budget;
 import com.axelor.apps.account.db.BudgetLine;
 import com.axelor.apps.account.db.repo.BudgetRepository;
 import com.axelor.apps.account.service.BudgetService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -45,7 +46,9 @@ public class BudgetController {
       Budget budget = request.getContext().asType(Budget.class);
       budget = Beans.get(BudgetRepository.class).find(budget.getId());
       List<BudgetLine> budgetLineList = Beans.get(BudgetService.class).updateLines(budget);
-      response.setValue("budgetLineList", budgetLineList);
+      if (budgetLineList != null) {
+        response.setValue("budgetLineList", budgetLineList);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -54,7 +57,9 @@ public class BudgetController {
   public void generatePeriods(ActionRequest request, ActionResponse response) {
     try {
       Budget budget = request.getContext().asType(Budget.class);
-      response.setValue("budgetLineList", Beans.get(BudgetService.class).generatePeriods(budget));
+      response.setValue(
+          "budgetLineList",
+          ListUtils.emptyIfNull(Beans.get(BudgetService.class).generatePeriods(budget)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

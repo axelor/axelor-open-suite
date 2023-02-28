@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -40,11 +41,11 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
     List<FixedAssetLine> allFixedAssetLineList = new ArrayList<>();
     // This method will only compute line that are not realized.
     allFixedAssetLineList.addAll(
-        fixedAsset.getFiscalFixedAssetLineList().stream()
+        ListUtils.emptyIfNull(fixedAsset.getFiscalFixedAssetLineList()).stream()
             .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
             .collect(Collectors.toList()));
     allFixedAssetLineList.addAll(
-        fixedAsset.getFixedAssetLineList().stream()
+        ListUtils.emptyIfNull(fixedAsset.getFixedAssetLineList()).stream()
             .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
             .collect(Collectors.toList()));
 

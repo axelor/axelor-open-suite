@@ -52,7 +52,7 @@ public class ImportAccountingReportConfigLine {
 
     if (configLine.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_SUM_OF_ACCOUNTS) {
-      String accountTypeValues = (String) values.get("accountType");
+      String accountTypeValues = values != null ? (String) values.get("accountType") : null;
       if (accountTypeValues != null && !accountTypeValues.isEmpty()) {
         String[] types = accountTypeValues.split("\\|");
         Set<AccountType> accountTypes = new HashSet<>();
@@ -71,7 +71,7 @@ public class ImportAccountingReportConfigLine {
         configLine.setAccountTypeSet(accountTypes);
       }
 
-      String accountValues = (String) values.get("accountCode");
+      String accountValues = values != null ? (String) values.get("accountCode") : null;
       if (accountValues != null && !accountValues.isEmpty()) {
         String[] codes = accountValues.split("\\|");
         Set<Account> accounts = new HashSet<>();
@@ -83,10 +83,12 @@ public class ImportAccountingReportConfigLine {
 
           if (accountToAdd == null) {
             fetched = accountRepo.all().fetch();
-            for (Account account : fetched) {
-              if (compareCodes(account.getCode(), code)) {
-                accountToAdd = account;
-                break;
+            if (fetched != null) {
+              for (Account account : fetched) {
+                if (compareCodes(account.getCode(), code)) {
+                  accountToAdd = account;
+                  break;
+                }
               }
             }
           }

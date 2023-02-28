@@ -44,6 +44,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
@@ -62,8 +63,10 @@ public class EmployeeBonusService {
   @Transactional(rollbackOn = {Exception.class})
   public void compute(EmployeeBonusMgt bonus) throws AxelorException {
     Map<Employee, EmployeeBonusMgtLine> employeeStatus = new HashMap<>();
-    for (EmployeeBonusMgtLine line : bonus.getEmployeeBonusMgtLineList()) {
-      employeeStatus.put(line.getEmployee(), line);
+    if (CollectionUtils.isNotEmpty(bonus.getEmployeeBonusMgtLineList())) {
+      for (EmployeeBonusMgtLine line : bonus.getEmployeeBonusMgtLineList()) {
+        employeeStatus.put(line.getEmployee(), line);
+      }
     }
 
     List<Employee> allEmployee =
@@ -86,71 +89,73 @@ public class EmployeeBonusService {
     GroovyShell shell = new GroovyShell(binding, conf);
 
     Integer employeeBonusStatus = EmployeeBonusMgtRepository.STATUS_CALCULATED;
-    for (Employee employee : allEmployee) {
-      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
-      }
-
-      // check if line is already calculated
-      if (employeeStatus.get(employee) != null) {
-        if (employeeStatus
-            .get(employee)
-            .getStatusSelect()
-            .equals(EmployeeBonusMgtLineRepository.STATUS_CALCULATED)) {
+    if (CollectionUtils.isNotEmpty(allEmployee)) {
+      for (Employee employee : allEmployee) {
+        if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
           continue;
-        } else {
-          bonus.removeEmployeeBonusMgtLineListItem(employeeStatus.get(employee));
         }
-      }
 
-      maker.setContext(employee, "Employee");
-      EmployeeBonusMgtLine line = new EmployeeBonusMgtLine();
-      line.setEmployeeBonusMgt(bonus);
-      line.setEmployee(employee);
-      maker.addInContext("EmployeeBonusMgtLine", line);
-      String formula = bonus.getEmployeeBonusType().getApplicationCondition();
-      Integer lineStatus = EmployeeBonusMgtLineRepository.STATUS_CALCULATED;
-      try {
-        formula =
-            replaceExpressionInFormula(
-                formula, bonus.getCompany().getHrConfig(), employee, bonus.getPayPeriod());
-      } catch (Exception e) {
-        TraceBackService.trace(e);
-        formula = "true";
-        lineStatus = EmployeeBonusMgtLineRepository.STATUS_ANOMALY;
-      }
-      maker.setTemplate(formula);
-      eval = maker.make();
+        // check if line is already calculated
+        if (employeeStatus.get(employee) != null) {
+          if (employeeStatus
+              .get(employee)
+              .getStatusSelect()
+              .equals(EmployeeBonusMgtLineRepository.STATUS_CALCULATED)) {
+            continue;
+          } else {
+            bonus.removeEmployeeBonusMgtLineListItem(employeeStatus.get(employee));
+          }
+        }
 
-      if (shell.evaluate(eval).toString().equals("true")) {
+        maker.setContext(employee, "Employee");
+        EmployeeBonusMgtLine line = new EmployeeBonusMgtLine();
+        line.setEmployeeBonusMgt(bonus);
+        line.setEmployee(employee);
+        maker.addInContext("EmployeeBonusMgtLine", line);
+        String formula = bonus.getEmployeeBonusType().getApplicationCondition();
+        Integer lineStatus = EmployeeBonusMgtLineRepository.STATUS_CALCULATED;
         try {
           formula =
               replaceExpressionInFormula(
-                  bonus.getEmployeeBonusType().getFormula(),
-                  bonus.getCompany().getHrConfig(),
-                  employee,
-                  bonus.getPayPeriod());
+                  formula, bonus.getCompany().getHrConfig(), employee, bonus.getPayPeriod());
         } catch (Exception e) {
+          TraceBackService.trace(e);
+          formula = "true";
           lineStatus = EmployeeBonusMgtLineRepository.STATUS_ANOMALY;
         }
-
-        line.setStatusSelect(lineStatus);
-
-        if (lineStatus.equals(EmployeeBonusMgtLineRepository.STATUS_ANOMALY)) {
-          employeeBonusStatus = EmployeeBonusMgtRepository.STATUS_ANOMALY;
-          employeeBonusMgtLineRepo.save(line);
-          continue;
-        }
-
-        line.setSeniorityDate(employee.getSeniorityDate());
-        line.setCoef(employee.getBonusCoef());
-        line.setWeeklyPlanning(employee.getWeeklyPlanning());
-
         maker.setTemplate(formula);
         eval = maker.make();
-        line.setAmount(new BigDecimal(shell.evaluate(eval).toString()));
 
-        employeeBonusMgtLineRepo.save(line);
+        if (shell.evaluate(eval).toString().equals("true")) {
+          try {
+            formula =
+                replaceExpressionInFormula(
+                    bonus.getEmployeeBonusType().getFormula(),
+                    bonus.getCompany().getHrConfig(),
+                    employee,
+                    bonus.getPayPeriod());
+          } catch (Exception e) {
+            lineStatus = EmployeeBonusMgtLineRepository.STATUS_ANOMALY;
+          }
+
+          line.setStatusSelect(lineStatus);
+
+          if (lineStatus.equals(EmployeeBonusMgtLineRepository.STATUS_ANOMALY)) {
+            employeeBonusStatus = EmployeeBonusMgtRepository.STATUS_ANOMALY;
+            employeeBonusMgtLineRepo.save(line);
+            continue;
+          }
+
+          line.setSeniorityDate(employee.getSeniorityDate());
+          line.setCoef(employee.getBonusCoef());
+          line.setWeeklyPlanning(employee.getWeeklyPlanning());
+
+          maker.setTemplate(formula);
+          eval = maker.make();
+          line.setAmount(new BigDecimal(shell.evaluate(eval).toString()));
+
+          employeeBonusMgtLineRepo.save(line);
+        }
       }
     }
     bonus.setStatusSelect(employeeBonusStatus);

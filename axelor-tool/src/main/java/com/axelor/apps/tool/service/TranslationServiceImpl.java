@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool.service;
 
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
@@ -24,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 public class TranslationServiceImpl implements TranslationService {
   protected MetaTranslationRepository metaTranslationRepo;
@@ -47,7 +49,7 @@ public class TranslationServiceImpl implements TranslationService {
   public void createFormatedValueTranslations(String format, Object... args) {
     String key = VALUE_KEY_PREFIX + String.format(format, args);
 
-    for (String language : getLanguages(args)) {
+    for (String language : CollectionUtils.emptyIfNull(getLanguages(args))) {
       MetaTranslation metaTranslation = metaTranslationRepo.findByKey(key, language);
 
       if (metaTranslation == null) {
@@ -69,13 +71,17 @@ public class TranslationServiceImpl implements TranslationService {
     if (StringUtils.isBlank(key)) {
       return;
     }
-    for (MetaTranslation metaTranslation :
+
+    List<MetaTranslation> metaTranslationList =
         metaTranslationRepo
             .all()
             .filter("self.key = :key")
             .bind("key", VALUE_KEY_PREFIX + key)
-            .fetch()) {
-      metaTranslationRepo.remove(metaTranslation);
+            .fetch();
+    if (CollectionUtils.isNotEmpty(metaTranslationList)) {
+      for (MetaTranslation metaTranslation : metaTranslationList) {
+        metaTranslationRepo.remove(metaTranslation);
+      }
     }
   }
 
@@ -124,13 +130,16 @@ public class TranslationServiceImpl implements TranslationService {
     Collection<String> languages = new HashSet<>();
 
     for (Object arg : args) {
-      for (MetaTranslation metaTranslation :
+      List<MetaTranslation> metaTranslationList =
           metaTranslationRepo
               .all()
               .filter("self.key = :key")
               .bind("key", VALUE_KEY_PREFIX + arg)
-              .fetch()) {
-        languages.add(metaTranslation.getLanguage());
+              .fetch();
+      if (CollectionUtils.isNotEmpty(metaTranslationList)) {
+        for (MetaTranslation metaTranslation : metaTranslationList) {
+          languages.add(metaTranslation.getLanguage());
+        }
       }
     }
 

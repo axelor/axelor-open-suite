@@ -27,6 +27,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProdProductProductionRepository extends ProdProductRepository {
 
@@ -38,10 +39,10 @@ public class ProdProductProductionRepository extends ProdProductRepository {
       return super.populate(json, context);
     }
 
-    Object productFromView = json.get("product");
-    Object qtyFromView = json.get("qty");
+    Object productFromView = json != null ? json.get("product") : null;
+    Object qtyFromView = json != null ? json.get("qty") : null;
     Object toProduceManufOrderIdFromView;
-    if (context == null || context.isEmpty()) {
+    if (json != null && (context == null || context.isEmpty())) {
       toProduceManufOrderIdFromView =
           json.get("toConsumeManufOrder") == null
               ? null
@@ -80,7 +81,7 @@ public class ProdProductProductionRepository extends ProdProductRepository {
             .setParameter("manufOrderId", toProduceManufOrderId)
             .getResultList();
     BigDecimal availableQty;
-    if (queryResult.isEmpty()) {
+    if (CollectionUtils.isEmpty(queryResult)) {
       availableQty = BigDecimal.ZERO;
     } else {
       availableQty = queryResult.get(0);

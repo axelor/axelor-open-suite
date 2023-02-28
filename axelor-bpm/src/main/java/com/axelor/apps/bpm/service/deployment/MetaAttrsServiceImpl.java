@@ -19,6 +19,7 @@ package com.axelor.apps.bpm.service.deployment;
 
 import com.axelor.apps.bpm.db.WkfTaskConfig;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.db.Query;
@@ -34,7 +35,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.slf4j.Logger;
@@ -82,7 +82,7 @@ public class MetaAttrsServiceImpl implements MetaAttrsService {
     Collection<CamundaProperty> properties =
         modelElementInstance.getChildElementsByType(CamundaProperty.class);
 
-    log.debug("Extension elements: {}", properties.size());
+    log.debug("Extension elements: {}", CollectionUtils.size(properties));
 
     String model = null;
     String view = null;
@@ -91,78 +91,61 @@ public class MetaAttrsServiceImpl implements MetaAttrsService {
     String roles = null;
     String permanent = null;
 
-    for (CamundaProperty property : properties) {
+    if (properties != null) {
+      for (CamundaProperty property : properties) {
 
-      String name = property.getCamundaName();
-      String value = property.getCamundaValue();
+        String name = property.getCamundaName();
+        String value = property.getCamundaValue();
 
-      if (name == null) {
-        continue;
-      }
-      log.debug("Processing property: {}, value: {}", name, value);
+        if (name == null) {
+          continue;
+        }
+        log.debug("Processing property: {}, value: {}", name, value);
 
-      switch (name) {
-        case "model":
-          model = getModel(value);
-          view = null;
-          relatedField = null;
-          item = null;
-          roles = null;
-          break;
-        case "view":
-          view = value;
-          break;
-        case "relatedField":
-          relatedField = value;
-          break;
-        case "item":
-          item = value;
-          break;
-        case "roles":
-          roles = value;
-          break;
-        case "modelName":
-          break;
-        case "modelType":
-          break;
-        case "modelLabel":
-          break;
-        case "itemType":
-          break;
-        case "itemLabel":
-          break;
-        case "permanent":
-          permanent = value;
-          break;
-        default:
-          if (model != null && item != null) {
-            MetaAttrs metaAttrs = new MetaAttrs();
-            metaAttrs.setModel(model);
-            metaAttrs.setView(view);
-            metaAttrs.setField(item);
-            metaAttrs.setRoles(findRoles(roles));
-            if (permanent != null && permanent.equals("true")) {
-              if (!StringUtils.isEmpty(relatedField)) {
-                metaAttrs.setCondition(
-                    String.format(
-                        META_ATTRS_RELATED_FIELD_CONDITION_PERMANENT, relatedField, taskName));
-              } else {
+        switch (name) {
+          case "model":
+            model = getModel(value);
+            view = null;
+            item = null;
+            roles = null;
+            break;
+          case "view":
+            view = value;
+            break;
+          case "item":
+            item = value;
+            break;
+          case "roles":
+            roles = value;
+            break;
+          case "modelName":
+            break;
+          case "modelType":
+            break;
+          case "itemLabel":
+            break;
+          case "permanent":
+            permanent = value;
+            break;
+          default:
+            if (model != null && item != null) {
+              MetaAttrs metaAttrs = new MetaAttrs();
+              metaAttrs.setModel(model);
+              metaAttrs.setView(view);
+              metaAttrs.setField(item);
+              metaAttrs.setRoles(findRoles(roles));
+              if (permanent != null && permanent.equals("true")) {
                 metaAttrs.setCondition(String.format(META_ATTRS_CONDITION_PERMANENT, taskName));
-              }
-            } else {
-              if (!StringUtils.isEmpty(relatedField)) {
-                metaAttrs.setCondition(
-                    String.format(META_ATTRS_RELATED_FIELD_CONDITION, relatedField, taskName));
               } else {
                 metaAttrs.setCondition(String.format(META_ATTRS_CONDITION, taskName));
               }
+              metaAttrs.setValue(value);
+              metaAttrs.setName(name);
+              metaAttrs.setWkfModelId(wkfModelId);
+              metaAttrsList.add(metaAttrs);
             }
-            metaAttrs.setValue(value);
-            metaAttrs.setName(name);
-            metaAttrs.setWkfModelId(wkfModelId);
-            metaAttrsList.add(metaAttrs);
-          }
-          break;
+            break;
+        }
       }
     }
 
@@ -226,13 +209,15 @@ public class MetaAttrsServiceImpl implements MetaAttrsService {
     List<Long> metaAttrsIds = new ArrayList<Long>();
     metaAttrsIds.add(0L);
 
-    for (MetaAttrs metaAttrs : metaAttrsList) {
-      MetaAttrs saved = findMetaAttrs(metaAttrs, wkfModelId);
-      log.debug("Creating meta attrs: {}", saved);
-      saved.setValue(metaAttrs.getValue());
-      saved.setRoles(metaAttrs.getRoles());
-      metaAttrsRepository.save(saved);
-      metaAttrsIds.add(saved.getId());
+    if (metaAttrsList != null) {
+      for (MetaAttrs metaAttrs : metaAttrsList) {
+        MetaAttrs saved = findMetaAttrs(metaAttrs, wkfModelId);
+        log.debug("Creating meta attrs: {}", saved);
+        saved.setValue(metaAttrs.getValue());
+        saved.setRoles(metaAttrs.getRoles());
+        metaAttrsRepository.save(saved);
+        metaAttrsIds.add(saved.getId());
+      }
     }
 
     long attrsRemoved =

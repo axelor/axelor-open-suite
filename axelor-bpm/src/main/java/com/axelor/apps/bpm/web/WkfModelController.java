@@ -234,7 +234,9 @@ public class WkfModelController {
   public void getProcessPerStatus(ActionRequest request, ActionResponse response) {
     try {
       List<Map<String, Object>> dataList = this.getDataList(request, PROCESS_PER_STATUS);
-      response.setData(dataList);
+      if (dataList != null) {
+        response.setData(dataList);
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -244,7 +246,9 @@ public class WkfModelController {
   public void getProcessPerUser(ActionRequest request, ActionResponse response) {
     try {
       List<Map<String, Object>> dataList = this.getDataList(request, PROCESS_PER_USER);
-      response.setData(dataList);
+      if (dataList != null) {
+        response.setData(dataList);
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -282,18 +286,21 @@ public class WkfModelController {
         (LinkedHashMap<String, Object>) request.getData().get("context");
 
     String status = "";
-    if (statusKey != null) {
-      status = _map.get("title").toString();
+    if (_map != null) {
+      if (statusKey != null) {
+        status = _map.get("title").toString();
+      }
+      String modelName = _map.get(modelKey).toString();
+      boolean isMetaModel = (boolean) _map.get("isMetaModel");
+      List<Long> recordIds = (List<Long>) _map.get(recordkey);
+
+      ActionViewBuilder actionViewBuilder =
+          Beans.get(WkfDashboardCommonService.class)
+              .computeActionView(status, modelName, isMetaModel);
+
+      response.setView(
+          actionViewBuilder.context("ids", !recordIds.isEmpty() ? recordIds : 0).map());
     }
-    String modelName = _map.get(modelKey).toString();
-    boolean isMetaModel = (boolean) _map.get("isMetaModel");
-    List<Long> recordIds = (List<Long>) _map.get(recordkey);
-
-    ActionViewBuilder actionViewBuilder =
-        Beans.get(WkfDashboardCommonService.class)
-            .computeActionView(status, modelName, isMetaModel);
-
-    response.setView(actionViewBuilder.context("ids", !recordIds.isEmpty() ? recordIds : 0).map());
   }
 
   public void getStatusPerView(ActionRequest request, ActionResponse response) {
@@ -319,12 +326,13 @@ public class WkfModelController {
     try {
       LinkedHashMap<String, Object> _map =
           (LinkedHashMap<String, Object>) request.getData().get("context");
-      String modelName = _map.get("modelName").toString();
-      boolean isMetaModel = (boolean) _map.get("isMetaModel");
+      if (_map != null) {
+        String modelName = _map.get("modelName").toString();
+        boolean isMetaModel = (boolean) _map.get("isMetaModel");
 
-      ActionViewBuilder actionViewBuilder = this.viewNewRecord(modelName, isMetaModel);
-      response.setView(actionViewBuilder.map());
-
+        ActionViewBuilder actionViewBuilder = this.viewNewRecord(modelName, isMetaModel);
+        response.setView(actionViewBuilder.map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -336,17 +344,18 @@ public class WkfModelController {
       LinkedHashMap<String, Object> _map =
           (LinkedHashMap<String, Object>) request.getData().get("context");
 
-      WkfProcessConfig config =
-          Beans.get(WkfProcessConfigRepository.class)
-              .find(Long.valueOf(((Map) _map.get("processConfig")).get("id").toString()));
+      if (_map != null) {
+        WkfProcessConfig config =
+            Beans.get(WkfProcessConfigRepository.class)
+                .find(Long.valueOf(((Map) _map.get("processConfig")).get("id").toString()));
 
-      boolean isMetaModel = config.getMetaModel() != null;
-      String modelName =
-          isMetaModel ? config.getMetaModel().getName() : config.getMetaJsonModel().getName();
+        boolean isMetaModel = config.getMetaModel() != null;
+        String modelName =
+            isMetaModel ? config.getMetaModel().getName() : config.getMetaJsonModel().getName();
 
-      ActionViewBuilder actionViewBuilder = this.viewNewRecord(modelName, isMetaModel);
-      response.setView(actionViewBuilder.map());
-
+        ActionViewBuilder actionViewBuilder = this.viewNewRecord(modelName, isMetaModel);
+        response.setView(actionViewBuilder.map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

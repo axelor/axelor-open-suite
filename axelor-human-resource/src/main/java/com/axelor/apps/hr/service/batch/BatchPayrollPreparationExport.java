@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchPayrollPreparationExport extends BatchStrategy {
 
@@ -130,22 +131,24 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     List<String[]> list = new ArrayList<>();
     LocalDate today = Beans.get(AppBaseService.class).getTodayDate(hrBatch.getCompany());
 
-    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
-      String[] item = new String[5];
-      item[0] = payrollPreparation.getEmployee().getName();
-      item[1] = payrollPreparation.getDuration().toString();
-      item[2] = payrollPreparation.getLunchVoucherNumber().toString();
-      item[3] = payrollPreparation.getEmployeeBonusAmount().toString();
-      item[4] = payrollPreparation.getExtraHoursNumber().toString();
-      list.add(item);
+    if (CollectionUtils.isNotEmpty(payrollPreparationList)) {
+      for (PayrollPreparation payrollPreparation : payrollPreparationList) {
+        String[] item = new String[5];
+        item[0] = payrollPreparation.getEmployee().getName();
+        item[1] = payrollPreparation.getDuration().toString();
+        item[2] = payrollPreparation.getLunchVoucherNumber().toString();
+        item[3] = payrollPreparation.getEmployeeBonusAmount().toString();
+        item[4] = payrollPreparation.getExtraHoursNumber().toString();
+        list.add(item);
 
-      payrollPreparation.setExported(true);
-      payrollPreparation.setExportDate(today);
-      payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_STANDARD);
-      payrollPreparation.addBatchListItem(batch);
-      payrollPreparationRepository.save(payrollPreparation);
-      total++;
-      incrementDone();
+        payrollPreparation.setExported(true);
+        payrollPreparation.setExportDate(today);
+        payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_STANDARD);
+        payrollPreparation.addBatchListItem(batch);
+        payrollPreparationRepository.save(payrollPreparation);
+        total++;
+        incrementDone();
+      }
     }
 
     String fileName = payrollPreparationService.getPayrollPreparationExportName();
@@ -170,11 +173,13 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 
     List<String[]> list = new ArrayList<>();
 
-    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
+    if (CollectionUtils.isNotEmpty(payrollPreparationList)) {
+      for (PayrollPreparation payrollPreparation : payrollPreparationList) {
 
-      payrollPreparation.addBatchListItem(batch);
-      payrollPreparationService.exportNibelis(payrollPreparation, list);
-      total++;
+        payrollPreparation.addBatchListItem(batch);
+        payrollPreparationService.exportNibelis(payrollPreparation, list);
+        total++;
+      }
     }
 
     String fileName = payrollPreparationService.getPayrollPreparationExportName();
@@ -211,11 +216,13 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 
     List<String[]> list = new ArrayList<>();
 
-    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
-      payrollPreparation.addBatchListItem(batch);
-      payrollPreparationService.exportSilae(payrollPreparation, list);
-      total++;
-      incrementDone();
+    if (CollectionUtils.isNotEmpty(payrollPreparationList)) {
+      for (PayrollPreparation payrollPreparation : payrollPreparationList) {
+        payrollPreparation.addBatchListItem(batch);
+        payrollPreparationService.exportSilae(payrollPreparation, list);
+        total++;
+        incrementDone();
+      }
     }
 
     String fileName = payrollPreparationService.getPayrollPreparationExportName();

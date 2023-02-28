@@ -33,6 +33,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -58,7 +59,8 @@ public class SaleOrderLineController {
               .computeAnalyticDistribution(saleOrderLine);
       response.setValue(
           "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());
-      response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
+      response.setValue(
+          "analyticMoveLineList", ListUtils.emptyIfNull(saleOrderLine.getAnalyticMoveLineList()));
     }
   }
 
@@ -68,7 +70,8 @@ public class SaleOrderLineController {
     saleOrderLine =
         Beans.get(SaleOrderLineServiceSupplyChain.class)
             .createAnalyticDistributionWithTemplate(saleOrderLine);
-    response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
+    response.setValue(
+        "analyticMoveLineList", ListUtils.emptyIfNull(saleOrderLine.getAnalyticMoveLineList()));
   }
 
   public void checkStocks(ActionRequest request, ActionResponse response) {

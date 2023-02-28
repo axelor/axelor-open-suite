@@ -29,6 +29,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.PersistenceException;
 
@@ -94,7 +95,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long stockMoveId = (Long) json.get("id");
+    Long stockMoveId = json != null ? (Long) json.get("id") : 0L;
     StockMove stockMove = find(stockMoveId);
 
     if (stockMove.getStatusSelect() > STATUS_PLANNED
@@ -130,6 +131,10 @@ public class StockMoveManagementRepository extends StockMoveRepository {
           && stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty()) < 0) {
         missing++;
       }
+    }
+
+    if (json == null) {
+      json = new HashMap<>();
     }
 
     if ((available > 0 || availableForProduct > 0) && missing == 0) {

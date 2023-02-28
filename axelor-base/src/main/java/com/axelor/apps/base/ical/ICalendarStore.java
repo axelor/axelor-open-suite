@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.ical;
 
+import com.axelor.apps.tool.collection.SetUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
@@ -122,7 +123,7 @@ public class ICalendarStore {
         if (instant == null || event.getLastModified().getDate().toInstant().isAfter(instant)) {
           events.add(event);
         }
-        remoteUids.add(event.getUid().getValue());
+        SetUtils.emptyIfNull(remoteUids).add(event.getUid().getValue());
       }
     }
     return events;
@@ -150,7 +151,7 @@ public class ICalendarStore {
         if (event.getLastModified().getDate().toInstant().isAfter(instant)) {
           events.add(event);
         }
-        remoteUids.add(event.getUid().getValue());
+        SetUtils.emptyIfNull(remoteUids).add(event.getUid().getValue());
       }
     }
     return events;

@@ -74,7 +74,9 @@ public final class CsvTool {
     if (headers != null) {
       reconWriter.writeNext(headers);
     }
-    reconWriter.writeAll(dataList);
+    if (dataList != null) {
+      reconWriter.writeAll(dataList);
+    }
     reconWriter.flush();
     try {
       reconWriter.close();
@@ -96,7 +98,9 @@ public final class CsvTool {
     if (headers != null) {
       reconWriter.writeNext(headers);
     }
-    reconWriter.writeAll(dataList);
+    if (dataList != null) {
+      reconWriter.writeAll(dataList);
+    }
     reconWriter.flush();
     try {
       reconWriter.close();

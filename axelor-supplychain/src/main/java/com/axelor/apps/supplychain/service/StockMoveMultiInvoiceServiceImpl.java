@@ -41,6 +41,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -60,6 +61,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceService {
 
@@ -91,7 +93,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         stockMoveRepository
             .all()
             .filter("self.id IN :stockMoveIdList")
-            .bind("stockMoveIdList", stockMoveIdList)
+            .bind("stockMoveIdList", ListUtils.emptyIfNull(stockMoveIdList))
             .order("id");
     int offset = 0;
 
@@ -132,7 +134,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     checkForAlreadyInvoicedStockMove(stockMoveList);
     List<Invoice> dummyInvoiceList =
-        stockMoveList.stream().map(this::createDummyOutInvoice).collect(Collectors.toList());
+        ListUtils.emptyIfNull(stockMoveList).stream()
+            .map(this::createDummyOutInvoice)
+            .collect(Collectors.toList());
     checkOutStockMoveRequiredFieldsAreTheSame(dummyInvoiceList);
 
     if (!dummyInvoiceList.isEmpty()) {
@@ -239,7 +243,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     checkForAlreadyInvoicedStockMove(stockMoveList);
     List<Invoice> dummyInvoiceList =
-        stockMoveList.stream().map(this::createDummyInInvoice).collect(Collectors.toList());
+        ListUtils.emptyIfNull(stockMoveList).stream()
+            .map(this::createDummyInInvoice)
+            .collect(Collectors.toList());
     checkInStockMoveRequiredFieldsAreTheSame(dummyInvoiceList);
 
     if (!dummyInvoiceList.isEmpty()) {
@@ -417,9 +423,11 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     StringBuilder deliveryAddressStr = new StringBuilder();
     AddressService addressService = Beans.get(AddressService.class);
 
-    for (Address address : deliveryAddressSet) {
-      deliveryAddressStr.append(
-          addressService.computeAddressStr(address).replace("\n", ", ") + "\n");
+    if (CollectionUtils.isNotEmpty(deliveryAddressSet)) {
+      for (Address address : deliveryAddressSet) {
+        deliveryAddressStr.append(
+            addressService.computeAddressStr(address).replace("\n", ", ") + "\n");
+      }
     }
 
     invoice.setDeliveryAddressStr(deliveryAddressStr.toString());
@@ -433,10 +441,11 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
               invoice, stockMoveLocal, stockMoveLocal.getStockMoveLineList(), null);
-      if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+          && createdInvoiceLines != null) {
         createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
       }
-      invoiceLineList.addAll(createdInvoiceLines);
+      invoiceLineList.addAll(ListUtils.emptyIfNull(createdInvoiceLines));
     }
 
     invoiceGenerator.populate(invoice, invoiceLineList);
@@ -533,10 +542,11 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
               invoice, stockMoveLocal, stockMoveLocal.getStockMoveLineList(), null);
-      if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+          && createdInvoiceLines != null) {
         createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
       }
-      invoiceLineList.addAll(createdInvoiceLines);
+      invoiceLineList.addAll(ListUtils.emptyIfNull(createdInvoiceLines));
     }
 
     invoiceGenerator.populate(invoice, invoiceLineList);
@@ -698,14 +708,16 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       throws AxelorException {
     StringBuilder invoiceAlreadyGeneratedMessage = new StringBuilder();
 
-    for (StockMove stockMove : stockMoveList) {
-      try {
-        checkIfAlreadyInvoiced(stockMove);
-      } catch (AxelorException e) {
-        if (invoiceAlreadyGeneratedMessage.length() > 0) {
-          invoiceAlreadyGeneratedMessage.append("<br/>");
+    if (CollectionUtils.isNotEmpty(stockMoveList)) {
+      for (StockMove stockMove : stockMoveList) {
+        try {
+          checkIfAlreadyInvoiced(stockMove);
+        } catch (AxelorException e) {
+          if (invoiceAlreadyGeneratedMessage.length() > 0) {
+            invoiceAlreadyGeneratedMessage.append("<br/>");
+          }
+          invoiceAlreadyGeneratedMessage.append(e.getMessage());
         }
-        invoiceAlreadyGeneratedMessage.append(e.getMessage());
       }
     }
     if (invoiceAlreadyGeneratedMessage.length() > 0) {
@@ -830,25 +842,27 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     // Concat sequence, internal ref and external ref from all saleOrder
     List<String> externalRefList = new ArrayList<>();
     List<String> internalRefList = new ArrayList<>();
-    for (StockMove stockMove : stockMoveList) {
-      SaleOrder saleOrder =
-          StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
-                  && stockMove.getOriginId() != null
-              ? saleOrderRepository.find(stockMove.getOriginId())
-              : null;
-      if (saleOrder != null) {
-        externalRefList.add(saleOrder.getExternalReference());
+    if (CollectionUtils.isNotEmpty(stockMoveList)) {
+      for (StockMove stockMove : stockMoveList) {
+        SaleOrder saleOrder =
+            StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
+                    && stockMove.getOriginId() != null
+                ? saleOrderRepository.find(stockMove.getOriginId())
+                : null;
+        if (saleOrder != null) {
+          externalRefList.add(saleOrder.getExternalReference());
+        }
+        internalRefList.add(
+            stockMove.getStockMoveSeq()
+                + (saleOrder != null ? (":" + saleOrder.getSaleOrderSeq()) : ""));
       }
-      internalRefList.add(
-          stockMove.getStockMoveSeq()
-              + (saleOrder != null ? (":" + saleOrder.getSaleOrderSeq()) : ""));
+
+      String externalRef = String.join("|", externalRefList);
+      String internalRef = String.join("|", internalRefList);
+
+      dummyInvoice.setExternalReference(StringTool.cutTooLongString(externalRef));
+      dummyInvoice.setInternalReference(StringTool.cutTooLongString(internalRef));
     }
-
-    String externalRef = String.join("|", externalRefList);
-    String internalRef = String.join("|", internalRefList);
-
-    dummyInvoice.setExternalReference(StringTool.cutTooLongString(externalRef));
-    dummyInvoice.setInternalReference(StringTool.cutTooLongString(internalRef));
   }
 
   /**
@@ -863,18 +877,20 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     List<String> externalRefList = new ArrayList<>();
     List<String> internalRefList = new ArrayList<>();
-    for (StockMove stockMove : stockMoveList) {
-      PurchaseOrder purchaseOrder =
-          StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
-                  && stockMove.getOriginId() != null
-              ? purchaseOrderRepository.find(stockMove.getOriginId())
-              : null;
-      if (purchaseOrder != null) {
-        externalRefList.add(purchaseOrder.getExternalReference());
+    if (CollectionUtils.isNotEmpty(stockMoveList)) {
+      for (StockMove stockMove : stockMoveList) {
+        PurchaseOrder purchaseOrder =
+            StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
+                    && stockMove.getOriginId() != null
+                ? purchaseOrderRepository.find(stockMove.getOriginId())
+                : null;
+        if (purchaseOrder != null) {
+          externalRefList.add(purchaseOrder.getExternalReference());
+        }
+        internalRefList.add(
+            stockMove.getStockMoveSeq()
+                + (purchaseOrder != null ? (":" + purchaseOrder.getPurchaseOrderSeq()) : ""));
       }
-      internalRefList.add(
-          stockMove.getStockMoveSeq()
-              + (purchaseOrder != null ? (":" + purchaseOrder.getPurchaseOrderSeq()) : ""));
     }
 
     String externalRef = String.join("|", externalRefList);

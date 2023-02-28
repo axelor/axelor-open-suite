@@ -24,10 +24,12 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.service.BankService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.Map;
 
 public class EbicsUserImport {
@@ -50,8 +52,11 @@ public class EbicsUserImport {
     if (partner != null) {
       EbicsBank ebicsBank = partner.getEbicsBank();
       if (ebicsBank.getVersion() == 0) {
-        for (EbicsCertificate cert : ebicsBank.getEbicsCertificateList()) {
-          updateCertificate(cert);
+        List<EbicsCertificate> ebicsCertificateList = ebicsBank.getEbicsCertificateList();
+        if (ObjectUtils.notEmpty(ebicsCertificateList)) {
+          for (EbicsCertificate cert : ebicsCertificateList) {
+            updateCertificate(cert);
+          }
         }
         Bank bank = ebicsBank.getBank();
         if (bank.getVersion() == 0) {

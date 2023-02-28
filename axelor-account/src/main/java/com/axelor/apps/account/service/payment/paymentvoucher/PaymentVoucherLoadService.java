@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -153,7 +154,7 @@ public class PaymentVoucherLoadService {
     }
 
     int sequence = 0;
-    for (InvoiceTerm invoiceTerm : this.getInvoiceTerms(paymentVoucher)) {
+    for (InvoiceTerm invoiceTerm : ListUtils.emptyIfNull(this.getInvoiceTerms(paymentVoucher))) {
       PayVoucherDueElement payVoucherDueElement =
           this.createPayVoucherDueElement(paymentVoucher, invoiceTerm);
       if (payVoucherDueElement != null) {
@@ -202,7 +203,7 @@ public class PaymentVoucherLoadService {
   public boolean loadSelectedLines(PaymentVoucher paymentVoucher) throws AxelorException {
     boolean generateAll = true;
 
-    if (paymentVoucher.getPayVoucherElementToPayList() != null) {
+    if (paymentVoucher != null && paymentVoucher.getPayVoucherElementToPayList() != null) {
 
       if (paymentVoucher.getPaidAmount() == null) {
         throw new AxelorException(
@@ -230,18 +231,18 @@ public class PaymentVoucherLoadService {
    */
   public boolean completeElementToPay(PaymentVoucher paymentVoucher) throws AxelorException {
 
-    int sequence = paymentVoucher.getPayVoucherElementToPayList().size() + 1;
+    int sequence = ListUtils.size(paymentVoucher.getPayVoucherElementToPayList()) + 1;
     boolean generateAll = true;
 
     List<PayVoucherDueElement> selectedElements =
-        paymentVoucher.getPayVoucherDueElementList().stream()
+        ListUtils.emptyIfNull(paymentVoucher.getPayVoucherDueElementList()).stream()
             .filter(Model::isSelected)
             .sorted(Comparator.comparing(PayVoucherDueElement::getSequence))
             .sorted(this.getDueElementComparator())
             .collect(Collectors.toList());
     List<PayVoucherDueElement> toRemove = new ArrayList<>();
 
-    for (PayVoucherDueElement payVoucherDueElement : selectedElements) {
+    for (PayVoucherDueElement payVoucherDueElement : ListUtils.emptyIfNull(selectedElements)) {
       PayVoucherElementToPay payVoucherElementToPay =
           this.createPayVoucherElementToPay(
               paymentVoucher, payVoucherDueElement, sequence++, false);
@@ -258,6 +259,7 @@ public class PaymentVoucherLoadService {
         generateAll = false;
       }
     }
+
     for (PayVoucherDueElement payVoucherDueElement : toRemove) {
       paymentVoucher.removePayVoucherDueElementListItem(payVoucherDueElement);
     }
@@ -339,9 +341,11 @@ public class PaymentVoucherLoadService {
       List<PayVoucherElementToPay> payVoucherElementToPayList, MoveLine moveLine) {
     if (moveLine != null) {
       Account account = moveLine.getAccount();
-      for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList) {
-        if (!payVoucherElementToPay.getMoveLine().getAccount().equals(account)) {
-          return false;
+      if (payVoucherElementToPayList != null) {
+        for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList) {
+          if (!payVoucherElementToPay.getMoveLine().getAccount().equals(account)) {
+            return false;
+          }
         }
       }
       return true;
@@ -379,8 +383,8 @@ public class PaymentVoucherLoadService {
    */
   public List<MoveLine> assignMaxAmountToReconcile(
       List<MoveLine> moveLineInvoiceToPay, BigDecimal amountToPay) {
-    List<MoveLine> debitMoveLines = new ArrayList<>();
-    if (moveLineInvoiceToPay != null && moveLineInvoiceToPay.size() != 0) {
+    List<MoveLine> debitMoveLines = new ArrayList<MoveLine>();
+    if (moveLineInvoiceToPay != null && !moveLineInvoiceToPay.isEmpty()) {
       // Récupération du montant imputé sur l'échéance, et assignation de la valeur
       // dans la moveLine (champ temporaire)
       BigDecimal maxAmountToPayRemaining = amountToPay;
@@ -425,11 +429,10 @@ public class PaymentVoucherLoadService {
 
     paymentVoucher.setCompanyBankDetails(companyBankDetails);
 
-    for (InvoiceTerm invoiceTerm : getInvoiceTerms(paymentVoucher)) {
+    for (InvoiceTerm invoiceTerm : ListUtils.emptyIfNull(getInvoiceTerms(paymentVoucher))) {
       paymentVoucher.addPayVoucherDueElementListItem(
           createPayVoucherDueElement(paymentVoucher, invoiceTerm));
     }
-
     if (paymentVoucher.getPayVoucherDueElementList() == null) {
       return;
     }
@@ -460,12 +463,15 @@ public class PaymentVoucherLoadService {
     List<PayVoucherElementToPay> listToKeep = paymentVoucherContext.getPayVoucherElementToPayList();
     paymentVoucher.clearPayVoucherElementToPayList();
 
-    listToKeep.forEach(
-        elementToPay ->
+    if (listToKeep != null) {
+      listToKeep.forEach(
+          elementToPay -> {
             paymentVoucher.addPayVoucherElementToPayListItem(
-                payVoucherElementToPayRepo.find(elementToPay.getId())));
+                payVoucherElementToPayRepo.find(elementToPay.getId()));
+          });
 
-    paymentVoucherRepository.save(paymentVoucher);
+      paymentVoucherRepository.save(paymentVoucher);
+    }
   }
 
   public void computeFinancialDiscount(PaymentVoucher paymentVoucher) throws AxelorException {

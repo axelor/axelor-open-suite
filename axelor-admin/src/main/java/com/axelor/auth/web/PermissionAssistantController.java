@@ -87,7 +87,9 @@ public class PermissionAssistantController {
                 .fetch();
 
         Set<MetaModel> objectSet = new HashSet<>();
-        objectSet.addAll(models);
+        if (models != null) {
+          objectSet.addAll(models);
+        }
         response.setValue("objectSet", objectSet);
       }
     } catch (Exception e) {

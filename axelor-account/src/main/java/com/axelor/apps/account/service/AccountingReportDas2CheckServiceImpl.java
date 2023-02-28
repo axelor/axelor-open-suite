@@ -24,12 +24,14 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas2CheckService {
 
@@ -53,9 +55,9 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
 
     List<String> errorList = new ArrayList<>();
 
-    errorList.addAll(checkDasToDeclarePartners(accountingExport));
-    errorList.addAll(checkDasContactPartner(accountingExport));
-    errorList.addAll(checkDasDeclarantCompany(accountingExport));
+    errorList.addAll(ListUtils.emptyIfNull(checkDasToDeclarePartners(accountingExport)));
+    errorList.addAll(ListUtils.emptyIfNull(checkDasContactPartner(accountingExport)));
+    errorList.addAll(ListUtils.emptyIfNull(checkDasDeclarantCompany(accountingExport)));
 
     return errorList;
   }
@@ -171,8 +173,10 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
             accountingExport);
     List<String> errorList = new ArrayList<>();
 
-    for (Partner partner : partners) {
-      errorList.addAll(checkDasToDeclarePartner(partner));
+    if (CollectionUtils.isNotEmpty(partners)) {
+      for (Partner partner : partners) {
+        errorList.addAll(ListUtils.emptyIfNull(checkDasToDeclarePartner(partner)));
+      }
     }
     return errorList;
   }
@@ -216,6 +220,9 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
 
   protected void checkDasToDeclarePartnerMainAddress(Partner partner, List<String> errorList) {
 
+    if (errorList == null) {
+      errorList = new ArrayList<>();
+    }
     if (partner.getMainAddress() == null) {
       errorList.add(
           String.format(

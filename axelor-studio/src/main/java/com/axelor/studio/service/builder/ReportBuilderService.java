@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.xml.bind.JAXBException;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,14 +116,16 @@ public class ReportBuilderService {
 
     FormView formView = (FormView) view;
 
-    for (AbstractWidget widget : formView.getItems()) {
-      if (widget instanceof PanelTabs) {
-        PanelTabs panelTabs = (PanelTabs) widget;
-        AbstractWidget tabItem = panelTabs.getItems().get(0);
-        processAbstractWidget(tabItem, false);
-        continue;
+    if (formView.getItems() != null) {
+      for (AbstractWidget widget : formView.getItems()) {
+        if (widget instanceof PanelTabs) {
+          PanelTabs panelTabs = (PanelTabs) widget;
+          AbstractWidget tabItem = panelTabs.getItems().get(0);
+          processAbstractWidget(tabItem, false);
+          continue;
+        }
+        processAbstractWidget(widget, false);
       }
-      processAbstractWidget(widget, false);
     }
   }
 
@@ -166,8 +169,10 @@ public class ReportBuilderService {
         panels.add(new String[] {"12", title});
       }
     }
-    for (AbstractWidget widget : panel.getItems()) {
-      processAbstractWidget(widget, sidePanel);
+    if (panel.getItems() != null) {
+      for (AbstractWidget widget : panel.getItems()) {
+        processAbstractWidget(widget, sidePanel);
+      }
     }
   }
 
@@ -444,21 +449,23 @@ public class ReportBuilderService {
     String header = "";
     String row = "";
 
-    for (AbstractWidget widget : widgets) {
+    if (CollectionUtils.isNotEmpty(widgets)) {
+      for (AbstractWidget widget : widgets) {
 
-      if (widget instanceof Field) {
+        if (widget instanceof Field) {
 
-        Field field = (Field) widget;
-        String name = field.getName();
-        String title = field.getTitle();
-        MetaField metaField = getMetaField(name, refModel);
-        if (Strings.isNullOrEmpty(title)) {
-          title = getFieldTitle(name, metaField);
+          Field field = (Field) widget;
+          String name = field.getName();
+          String title = field.getTitle();
+          MetaField metaField = getMetaField(name, refModel);
+          if (Strings.isNullOrEmpty(title)) {
+            title = getFieldTitle(name, metaField);
+          }
+          name = processRelational(name, metaField);
+
+          header += "<th>" + title + "</th>";
+          row += "<td>$" + fieldName + "." + name + "$</td>";
         }
-        name = processRelational(name, metaField);
-
-        header += "<th>" + title + "</th>";
-        row += "<td>$" + fieldName + "." + name + "$</td>";
       }
     }
 

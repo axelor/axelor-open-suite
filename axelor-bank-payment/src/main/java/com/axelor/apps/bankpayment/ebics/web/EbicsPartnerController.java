@@ -21,6 +21,7 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -41,7 +42,7 @@ public class EbicsPartnerController {
               .getBankStatements(
                   Beans.get(EbicsPartnerRepository.class).find(ebicsPartner.getId()));
       response.setFlash(
-          String.format(I18n.get("%s bank statements get."), bankStatementList.size()));
+          String.format(I18n.get("%s bank statements get."), ListUtils.size(bankStatementList)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

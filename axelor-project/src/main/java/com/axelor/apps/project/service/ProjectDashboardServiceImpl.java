@@ -23,6 +23,8 @@ import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskCategoryRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -88,26 +90,30 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
                     },
                     LinkedHashMap::new));
 
-    for (Map.Entry<ProjectTaskCategory, List<ProjectTask>> entry : categoryTaskMap.entrySet()) {
-      Map<String, Object> categoryMap = new HashMap<>();
-      List<ProjectTask> projectTaskList = entry.getValue();
-      ProjectTaskCategory category = entry.getKey();
-      int totalCount = projectTaskList.size();
-      long closedCount =
-          projectTaskList.stream().filter(task -> task.getStatus().getIsCompleted()).count();
+    if (categoryTaskMap != null) {
+      for (Map.Entry<ProjectTaskCategory, List<ProjectTask>> entry : categoryTaskMap.entrySet()) {
+        Map<String, Object> categoryMap = new HashMap<>();
+        List<ProjectTask> projectTaskList = entry.getValue();
+        ProjectTaskCategory category = entry.getKey();
+        if (projectTaskList != null) {
+          int totalCount = projectTaskList.size();
+          long closedCount =
+              projectTaskList.stream().filter(task -> task.getStatus().getIsCompleted()).count();
 
-      if (category == null) {
-        categoryMap.put("categoryId", 0);
-        categoryMap.put("categoryName", "Others");
-      } else {
-        categoryMap.put("categoryId", category.getId());
-        categoryMap.put("categoryName", category.getName());
+          if (category == null) {
+            categoryMap.put("categoryId", 0);
+            categoryMap.put("categoryName", "Others");
+          } else {
+            categoryMap.put("categoryId", category.getId());
+            categoryMap.put("categoryName", category.getName());
+          }
+          categoryMap.put("open", totalCount - closedCount);
+          categoryMap.put("closed", closedCount);
+          categoryMap.put("total", totalCount);
+
+          categoryList.add(categoryMap);
+        }
       }
-      categoryMap.put("open", totalCount - closedCount);
-      categoryMap.put("closed", closedCount);
-      categoryMap.put("total", totalCount);
-
-      categoryList.add(categoryMap);
     }
 
     return categoryList;
@@ -115,9 +121,14 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
 
   protected Set<User> getMembers(Project project) {
     Set<User> membersSet = new HashSet<>();
-    projectRepo.all().filter("self.id IN ?1", projectService.getContextProjectIds()).fetch()
+    ListUtils.emptyIfNull(
+            projectRepo
+                .all()
+                .filter("self.id IN ?1", projectService.getContextProjectIds())
+                .fetch())
         .stream()
-        .forEach(subProject -> membersSet.addAll(subProject.getMembersUserSet()));
+        .forEach(
+            subProject -> membersSet.addAll(SetUtils.emptyIfNull(subProject.getMembersUserSet())));
     return membersSet;
   }
 

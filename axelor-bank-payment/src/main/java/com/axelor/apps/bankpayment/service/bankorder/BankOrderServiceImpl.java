@@ -79,6 +79,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -241,7 +242,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   public void checkLines(BankOrder bankOrder) throws AxelorException {
     List<BankOrderLine> bankOrderLines = bankOrder.getBankOrderLineList();
-    if (bankOrderLines.isEmpty()) {
+    if (bankOrderLines == null || bankOrderLines.isEmpty()) {
       throw new AxelorException(
           bankOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -256,12 +257,14 @@ public class BankOrderServiceImpl implements BankOrderService {
       List<BankOrderLine> bankOrderLines, int orderType, BigDecimal arithmeticTotal)
       throws AxelorException {
     BigDecimal totalAmount = BigDecimal.ZERO;
-    for (BankOrderLine bankOrderLine : bankOrderLines) {
+    if (CollectionUtils.isNotEmpty(bankOrderLines)) {
+      for (BankOrderLine bankOrderLine : bankOrderLines) {
 
-      bankOrderLineService.checkPreconditions(bankOrderLine);
-      totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
-      bankOrderLineService.checkBankDetails(
-          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder(), bankOrderLine);
+        bankOrderLineService.checkPreconditions(bankOrderLine);
+        totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
+        bankOrderLineService.checkBankDetails(
+            bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder(), bankOrderLine);
+      }
     }
     if (!totalAmount.equals(arithmeticTotal)) {
       throw new AxelorException(
@@ -279,16 +282,17 @@ public class BankOrderServiceImpl implements BankOrderService {
     InvoicePaymentValidateServiceBankPayImpl invoicePaymentValidateServiceBankPayImpl =
         Beans.get(InvoicePaymentValidateServiceBankPayImpl.class);
 
-    for (InvoicePayment invoicePayment : invoicePaymentList) {
+    if (CollectionUtils.isNotEmpty(invoicePaymentList)) {
+      for (InvoicePayment invoicePayment : invoicePaymentList) {
+        if (invoicePayment != null
+            && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
+            && invoicePayment.getInvoice() != null) {
 
-      if (invoicePayment != null
-          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
-          && invoicePayment.getInvoice() != null) {
+          if (bankOrderLineOriginService.existBankOrderLineOrigin(
+              bankOrder, invoicePayment.getInvoice())) {
 
-        if (bankOrderLineOriginService.existBankOrderLineOrigin(
-            bankOrder, invoicePayment.getInvoice())) {
-
-          invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
+            invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
+          }
         }
       }
     }
@@ -299,10 +303,12 @@ public class BankOrderServiceImpl implements BankOrderService {
   public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException {
     List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
 
-    for (InvoicePayment invoicePayment : invoicePaymentList) {
-      if (invoicePayment != null
-          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
-        invoicePaymentCancelService.cancel(invoicePayment);
+    if (CollectionUtils.isNotEmpty(invoicePaymentList)) {
+      for (InvoicePayment invoicePayment : invoicePaymentList) {
+        if (invoicePayment != null
+            && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
+          invoicePaymentCancelService.cancel(invoicePayment);
+        }
       }
     }
 
@@ -821,62 +827,68 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   protected void resetPartners(BankOrder bankOrder) {
     if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
-      for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
-        bankOrderLine.setPartner(null);
+      if (CollectionUtils.isNotEmpty(bankOrder.getBankOrderLineList())) {
+        for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+          bankOrderLine.setPartner(null);
+        }
       }
 
       return;
     }
 
-    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
-      bankOrderLine.setReceiverCompany(null);
-      Partner partner = bankOrderLine.getPartner();
+    if (CollectionUtils.isNotEmpty(bankOrder.getBankOrderLineList())) {
+      for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+        bankOrderLine.setReceiverCompany(null);
+        Partner partner = bankOrderLine.getPartner();
 
-      if (partner == null) {
-        continue;
-      }
+        if (partner == null) {
+          continue;
+        }
 
-      boolean keep;
+        boolean keep;
 
-      switch (bankOrder.getPartnerTypeSelect()) {
-        case BankOrderRepository.PARTNER_TYPE_SUPPLIER:
-          keep = partner.getIsSupplier();
-          break;
-        case BankOrderRepository.PARTNER_TYPE_EMPLOYEE:
-          keep = partner.getIsEmployee();
-          break;
-        case BankOrderRepository.PARTNER_TYPE_CUSTOMER:
-          keep = partner.getIsCustomer();
-          break;
-        default:
-          keep = false;
-      }
+        switch (bankOrder.getPartnerTypeSelect()) {
+          case BankOrderRepository.PARTNER_TYPE_SUPPLIER:
+            keep = partner.getIsSupplier();
+            break;
+          case BankOrderRepository.PARTNER_TYPE_EMPLOYEE:
+            keep = partner.getIsEmployee();
+            break;
+          case BankOrderRepository.PARTNER_TYPE_CUSTOMER:
+            keep = partner.getIsCustomer();
+            break;
+          default:
+            keep = false;
+        }
 
-      if (!keep) {
-        bankOrderLine.setPartner(null);
+        if (!keep) {
+          bankOrderLine.setPartner(null);
+        }
       }
     }
   }
 
-  protected void resetBankDetails(BankOrder bankOrder) {
-    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
-      if (bankOrderLine.getReceiverBankDetails() == null) {
-        continue;
-      }
+  private void resetBankDetails(BankOrder bankOrder) {
+    if (CollectionUtils.isNotEmpty(bankOrder.getBankOrderLineList())) {
+      for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+        if (bankOrderLine.getReceiverBankDetails() == null) {
+          continue;
+        }
 
-      Collection<BankDetails> bankDetailsCollection;
+        Collection<BankDetails> bankDetailsCollection;
 
-      if (bankOrderLine.getReceiverCompany() != null) {
-        bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsList();
-      } else if (bankOrderLine.getPartner() != null) {
-        bankDetailsCollection = bankOrderLine.getPartner().getBankDetailsList();
-      } else {
-        bankDetailsCollection = Collections.emptyList();
-      }
+        if (bankOrderLine.getReceiverCompany() != null) {
+          bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsList();
+        } else if (bankOrderLine.getPartner() != null) {
+          bankDetailsCollection = bankOrderLine.getPartner().getBankDetailsList();
+        } else {
+          bankDetailsCollection = Collections.emptyList();
+        }
 
-      if (ObjectUtils.isEmpty(bankDetailsCollection)
-          || !bankDetailsCollection.contains(bankOrderLine.getReceiverBankDetails())) {
-        bankOrderLine.setReceiverBankDetails(null);
+        if (ObjectUtils.isEmpty(bankDetailsCollection)
+            || !bankDetailsCollection.contains(bankOrderLine.getReceiverBankDetails())) {
+          bankOrderLine.setReceiverBankDetails(null);
+        }
       }
     }
   }

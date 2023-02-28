@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -62,7 +63,7 @@ public class AccountingBatchController {
         if (Beans.get(AppAccountService.class).getAppBase().getManageMultiBanks()
             && accountingBatch.getIncludeOtherBankAccounts()) {
           bankDetailsIds.addAll(
-              accountingBatch.getCompany().getBankDetailsList().stream()
+              ListUtils.emptyIfNull(accountingBatch.getCompany().getBankDetailsList()).stream()
                   .map(bd -> bd.getId())
                   .collect(Collectors.toList()));
         }

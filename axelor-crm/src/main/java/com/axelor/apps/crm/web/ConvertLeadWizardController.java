@@ -55,7 +55,10 @@ public class ConvertLeadWizardController {
       Map<String, Object> partnerMap = null;
       Map<String, Object> contactPartnerMap = null;
 
-      Lead lead = Beans.get(LeadRepository.class).find(((Integer) leadMap.get("id")).longValue());
+      Lead lead =
+          leadMap != null
+              ? Beans.get(LeadRepository.class).find(((Integer) leadMap.get("id")).longValue())
+              : null;
       Integer leadToPartnerSelect = (Integer) context.get("leadToPartnerSelect");
       Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
 

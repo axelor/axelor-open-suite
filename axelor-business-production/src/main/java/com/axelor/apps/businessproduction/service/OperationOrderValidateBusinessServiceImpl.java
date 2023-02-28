@@ -20,6 +20,7 @@ package com.axelor.apps.businessproduction.service;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.tool.collection.ListUtils;
 import java.util.Objects;
 
 public class OperationOrderValidateBusinessServiceImpl
@@ -27,7 +28,7 @@ public class OperationOrderValidateBusinessServiceImpl
 
   @Override
   public long checkTimesheet(OperationOrder operationOrder) {
-    return operationOrder.getTimesheetLineList().stream()
+    return ListUtils.emptyIfNull(operationOrder.getTimesheetLineList()).stream()
         .map(TimesheetLine::getTimesheet)
         .filter(Objects::nonNull)
         .filter(timesheet -> timesheet.getStatusSelect() == TimesheetRepository.STATUS_CONFIRMED)

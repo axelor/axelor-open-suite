@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class ImportAdvancedImport {
   @SuppressWarnings("unchecked")
   public Object importGeneral(Object bean, Map<String, Object> values)
       throws ClassNotFoundException {
-    if (bean == null) {
+    if (bean == null || values == null) {
       return bean;
     }
 
@@ -84,22 +85,23 @@ public class ImportAdvancedImport {
 
       int fieldSeq = 2;
       int btnSeq = 3;
-      for (Property prop : propList) {
-        validatorService.createCustomObjectSet(
-            fileTab.getClass().getName(), prop.getTarget().getName(), fieldSeq);
-        validatorService.createCustomButton(
-            fileTab.getClass().getName(), prop.getTarget().getName(), btnSeq);
+      if (CollectionUtils.isNotEmpty(propList)) {
+        for (Property prop : propList) {
+          validatorService.createCustomObjectSet(
+              fileTab.getClass().getName(), prop.getTarget().getName(), fieldSeq);
+          validatorService.createCustomButton(
+              fileTab.getClass().getName(), prop.getTarget().getName(), btnSeq);
 
-        this.addJsonObjectRecord(
-            prop.get(bean),
-            fileTab,
-            StringUtils.substringAfterLast(prop.getTarget().getName(), "."),
-            values);
-        fieldSeq++;
-        btnSeq++;
+          this.addJsonObjectRecord(
+              prop.get(bean),
+              fileTab,
+              StringUtils.substringAfterLast(prop.getTarget().getName(), "."),
+              values);
+          fieldSeq++;
+          btnSeq++;
+        }
       }
     }
-
     final String ACTIONS_TO_APPLY = "actionsToApply" + fileTab.getId();
     if (!ObjectUtils.isEmpty(values.get(ACTIONS_TO_APPLY))) {
       bean = actionService.apply(values.get(ACTIONS_TO_APPLY).toString(), bean);
@@ -133,7 +135,9 @@ public class ImportAdvancedImport {
     recordMap.put("id", ((Model) bean).getId());
 
     Map<String, Object> jsonContextValues =
-        (Map<String, Object>) values.get("jsonContextValues" + fileTab.getId());
+        values != null
+            ? (Map<String, Object>) values.get("jsonContextValues" + fileTab.getId())
+            : Collections.emptyMap();
 
     JsonContext jsonContext = (JsonContext) jsonContextValues.get("jsonContext");
     Context context = (Context) jsonContextValues.get("context");

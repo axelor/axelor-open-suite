@@ -103,12 +103,13 @@ public class PaymentScheduleLineController {
 
       PaymentScheduleLineBankPaymentService paymentScheduleLineBankPaymentService =
           Beans.get(PaymentScheduleLineBankPaymentService.class);
-
       if (idMap.size() == 1) {
         Entry<Long, InterbankCodeLine> entry = idMap.entrySet().iterator().next();
-        long id = entry.getKey();
-        InterbankCodeLine rejectionReason = entry.getValue();
-        paymentScheduleLineBankPaymentService.reject(id, rejectionReason, represent);
+        if (entry != null) {
+          long id = entry.getKey();
+          InterbankCodeLine rejectionReason = entry.getValue();
+          paymentScheduleLineBankPaymentService.reject(id, rejectionReason, represent);
+        }
       } else {
         int errorCount = paymentScheduleLineBankPaymentService.rejectFromIdMap(idMap, represent);
 

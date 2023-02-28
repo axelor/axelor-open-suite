@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections4.map.HashedMap;
 
 public class LogService {
 
@@ -44,11 +45,11 @@ public class LogService {
   public void addLog(String key, String log, Integer rowNumber) {
     Map<String, List<Integer>> map;
     List<Integer> list;
-    if (!logMap.containsKey(key)) {
+    if (logMap != null && !logMap.containsKey(key)) {
       logMap.put(key, new LinkedHashMap<String, List<Integer>>());
     }
 
-    map = logMap.get(key);
+    map = logMap != null ? logMap.get(key) : new HashedMap<>();
     if (!map.containsKey(log)) {
       map.put(log, new ArrayList<Integer>());
     }

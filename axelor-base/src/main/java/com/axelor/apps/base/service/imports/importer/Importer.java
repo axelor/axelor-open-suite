@@ -241,14 +241,15 @@ public abstract class Importer {
     Workbook workBook = new XSSFWorkbook(inputStream);
 
     try {
-      for (int i = 0; i < sheetList.size(); i++) {
-        Sheet sheet = workBook.getSheet(sheetList.get(i).get("name").toString());
-        File sheetFile =
-            new File(
-                excelFile.getParent() + "/" + sheetList.get(i).get("name").toString() + ".csv");
-        excelToCSV.writeTOCSV(sheetFile, sheet, 0, 0);
+      if (sheetList != null) {
+        for (int i = 0; i < sheetList.size(); i++) {
+          Sheet sheet = workBook.getSheet(sheetList.get(i).get("name").toString());
+          File sheetFile =
+              new File(
+                  excelFile.getParent() + "/" + sheetList.get(i).get("name").toString() + ".csv");
+          excelToCSV.writeTOCSV(sheetFile, sheet, 0, 0);
+        }
       }
-
     } catch (Exception e) {
       e.printStackTrace();
     }

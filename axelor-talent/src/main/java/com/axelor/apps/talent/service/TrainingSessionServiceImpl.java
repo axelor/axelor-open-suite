@@ -30,6 +30,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TrainingSessionServiceImpl implements TrainingSessionService {
 
@@ -48,8 +49,10 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
     List<TrainingRegister> trainingRegisters =
         trainingRegisterRepo.all().filter("self.trainingSession = ?1", trainingSession).fetch();
 
-    for (TrainingRegister trainingRegister : trainingRegisters) {
-      trainingRegisterService.complete(trainingRegister);
+    if (CollectionUtils.isNotEmpty(trainingRegisters)) {
+      for (TrainingRegister trainingRegister : trainingRegisters) {
+        trainingRegisterService.complete(trainingRegister);
+      }
     }
 
     trainingSessionRepo.save(trainingSession);
@@ -73,8 +76,10 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
 
     trainingSession.setRating(overallRatingToApply);
 
-    for (TrainingRegister register : trainingSession.getTrainingRegisterList()) {
-      register.setRating(overallRatingToApply);
+    if (CollectionUtils.isNotEmpty(trainingSession.getTrainingRegisterList())) {
+      for (TrainingRegister register : trainingSession.getTrainingRegisterList()) {
+        register.setRating(overallRatingToApply);
+      }
     }
 
     trainingSessionRepo.save(trainingSession);
@@ -86,8 +91,10 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
 
     trainingSession.setStatusSelect(3);
 
-    for (TrainingRegister register : trainingSession.getTrainingRegisterList()) {
-      register.setStatusSelect(3);
+    if (CollectionUtils.isNotEmpty(trainingSession.getTrainingRegisterList())) {
+      for (TrainingRegister register : trainingSession.getTrainingRegisterList()) {
+        register.setStatusSelect(3);
+      }
     }
 
     trainingSessionRepo.save(trainingSession);
@@ -99,12 +106,16 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
 
     Training training = trainingSession.getTraining();
 
-    for (TrainingRegister register : trainingSession.getTrainingRegisterList()) {
-      register.setTraining(training);
+    if (CollectionUtils.isNotEmpty(trainingSession.getTrainingRegisterList())) {
+      for (TrainingRegister register : trainingSession.getTrainingRegisterList()) {
+        register.setTraining(training);
 
-      for (Event event : register.getEventList()) {
-        event.setSubject(training.getName());
-        Beans.get(EventRepository.class).save(event);
+        if (CollectionUtils.isNotEmpty(register.getEventList())) {
+          for (Event event : register.getEventList()) {
+            event.setSubject(training.getName());
+            Beans.get(EventRepository.class).save(event);
+          }
+        }
       }
     }
 

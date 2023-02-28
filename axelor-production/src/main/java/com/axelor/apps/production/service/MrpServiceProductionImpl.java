@@ -61,6 +61,8 @@ import com.axelor.apps.supplychain.service.MrpLineTypeService;
 import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -73,6 +75,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,14 +195,16 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                 statusList)
             .fetch();
 
-    for (ManufOrder manufOrder : manufOrderList) {
+    if (CollectionUtils.isNotEmpty(manufOrderList)) {
+      for (ManufOrder manufOrder : manufOrderList) {
 
-      this.createManufOrderMrpLines(
-          mrpRepository.find(mrp.getId()),
-          manufOrderRepository.find(manufOrder.getId()),
-          mrpLineTypeRepository.find(manufOrderMrpLineType.getId()),
-          mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId()));
-      JPA.clear();
+        this.createManufOrderMrpLines(
+            mrpRepository.find(mrp.getId()),
+            manufOrderRepository.find(manufOrder.getId()),
+            mrpLineTypeRepository.find(manufOrderMrpLineType.getId()),
+            mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId()));
+        JPA.clear();
+      }
     }
   }
 
@@ -223,7 +228,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     maturityDate = this.computeMaturityDate(maturityDate, manufOrderMrpLineType);
 
-    for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
+    for (ProdProduct prodProduct :
+        ListUtils.emptyIfNull(manufOrder.getToProduceProdProductList())) {
 
       Product product = prodProduct.getProduct();
 
@@ -256,8 +262,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     }
 
     if (manufOrder.getIsConsProOnOperation()) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
+      for (OperationOrder operationOrder :
+          ListUtils.emptyIfNull(manufOrder.getOperationOrderList())) {
+        for (ProdProduct prodProduct :
+            ListUtils.emptyIfNull(operationOrder.getToConsumeProdProductList())) {
 
           Product product = prodProduct.getProduct();
 
@@ -296,7 +304,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
       }
     } else {
-      for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
+      for (ProdProduct prodProduct :
+          ListUtils.emptyIfNull(manufOrder.getToConsumeProdProductList())) {
 
         Product product = prodProduct.getProduct();
 
@@ -355,7 +364,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       List<StockMoveLine> stockMoveLineList, ProdProduct prodProduct) {
     BigDecimal qtyToProcess = prodProduct.getQty();
     BigDecimal processedQty =
-        stockMoveLineList.stream()
+        ListUtils.emptyIfNull(stockMoveLineList).stream()
             .filter(
                 stockMoveLine ->
                     stockMoveLine.getStockMove().getStatusSelect()
@@ -393,7 +402,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                 mrp.getEndDate())
             .fetch();
 
-    for (MrpLine mpsMrpLine : mpsMrpLineList) {
+    for (MrpLine mpsMrpLine : ListUtils.emptyIfNull(mpsMrpLineList)) {
 
       this.createMpsMrpLines(
           mrpRepository.find(mrp.getId()),
@@ -473,7 +482,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         return;
       }
 
-      for (BillOfMaterial billOfMaterial : defaultBillOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterial billOfMaterial :
+          SetUtils.emptyIfNull(defaultBillOfMaterial.getBillOfMaterialSet())) {
 
         Product subProduct = billOfMaterial.getProduct();
 
@@ -509,7 +519,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       throws AxelorException {
 
     long totalDuration = 0;
-    if (defaultBillOfMaterial.getProdProcess() != null) {
+    if (defaultBillOfMaterial.getProdProcess() != null
+        && defaultBillOfMaterial.getProdProcess().getProdProcessLineList() != null) {
       for (ProdProcessLine prodProcessLine :
           defaultBillOfMaterial.getProdProcess().getProdProcessLineList()) {
         totalDuration +=
@@ -658,8 +669,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           }
           List<BillOfMaterial> alternativesBOM =
               billOfMaterialService.getAlternativesBOM(subProduct, company);
-          for (BillOfMaterial alternativeBom : alternativesBOM) {
-            this.assignProductLevel(alternativeBom, level);
+          if (alternativesBOM != null) {
+            for (BillOfMaterial alternativeBom : alternativesBOM) {
+              this.assignProductLevel(alternativeBom, level);
+            }
           }
         }
       }

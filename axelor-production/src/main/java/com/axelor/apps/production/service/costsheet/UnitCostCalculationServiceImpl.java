@@ -34,6 +34,7 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -73,6 +74,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.ValidationException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,7 +124,10 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   public MetaFile exportUnitCostCalc(UnitCostCalculation unitCostCalculation, String fileName)
       throws IOException {
     List<String[]> list = new ArrayList<>();
-    List<UnitCostCalcLine> unitCostCalcLineList = unitCostCalculation.getUnitCostCalcLineList();
+    List<UnitCostCalcLine> unitCostCalcLineList =
+        unitCostCalculation.getUnitCostCalcLineList() == null
+            ? new ArrayList<>()
+            : unitCostCalculation.getUnitCostCalcLineList();
 
     Collections.sort(
         unitCostCalcLineList,
@@ -137,16 +142,18 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           }
         });
 
-    for (UnitCostCalcLine unitCostCalcLine : unitCostCalcLineList) {
-      String[] item = new String[4];
-      item[0] =
-          unitCostCalcLine.getProduct() == null ? "" : unitCostCalcLine.getProduct().getCode();
-      item[1] =
-          unitCostCalcLine.getProduct() == null ? "" : unitCostCalcLine.getProduct().getName();
-      item[2] = unitCostCalcLine.getComputedCost().toString();
-      item[3] = unitCostCalcLine.getCostToApply().toString();
+    if (unitCostCalcLineList != null) {
+      for (UnitCostCalcLine unitCostCalcLine : unitCostCalcLineList) {
+        String[] item = new String[4];
+        item[0] =
+            unitCostCalcLine.getProduct() == null ? "" : unitCostCalcLine.getProduct().getCode();
+        item[1] =
+            unitCostCalcLine.getProduct() == null ? "" : unitCostCalcLine.getProduct().getName();
+        item[2] = unitCostCalcLine.getComputedCost().toString();
+        item[3] = unitCostCalcLine.getCostToApply().toString();
 
-      list.add(item);
+        list.add(item);
+      }
     }
 
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
@@ -206,7 +213,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public void runUnitCostCalc(UnitCostCalculation unitCostCalculation) throws AxelorException {
 
-    if (!unitCostCalculation.getUnitCostCalcLineList().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(unitCostCalculation.getUnitCostCalcLineList())) {
       clear(unitCostCalculation);
     }
 
@@ -244,7 +251,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     for (int level = this.getMaxLevel(); level >= 0; level--) {
 
-      for (Product product : this.getProductList(level)) {
+      for (Product product : ListUtils.emptyIfNull(this.getProductList(level))) {
 
         this.calculationProductProcess(
             unitCostCalculationRepository.find(unitCostCalculation.getId()),
@@ -286,7 +293,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     Set<Product> productSet = Sets.newHashSet();
 
-    if (!unitCostCalculation.getProductSet().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(unitCostCalculation.getProductSet())) {
 
       productSet.addAll(unitCostCalculation.getProductSet());
     }
@@ -294,40 +301,46 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     List<Integer> productSubTypeSelects =
         StringTool.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
 
-    if (!unitCostCalculation.getProductCategorySet().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(unitCostCalculation.getProductCategorySet())
+        && CollectionUtils.isNotEmpty(unitCostCalculation.getCompanySet())
+        && CollectionUtils.isNotEmpty(productSubTypeSelects)) {
 
       productSet.addAll(
-          productRepository
-              .all()
-              .filter(
-                  "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
-                      + " AND self.dtype = 'Product'",
-                  unitCostCalculation.getProductCategorySet(),
-                  ProductRepository.PRODUCT_TYPE_STORABLE,
-                  productSubTypeSelects,
-                  unitCostCalculation.getCompanySet(),
-                  ProductRepository.PROCUREMENT_METHOD_PRODUCE,
-                  ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
-              .fetch());
+          ListUtils.emptyIfNull(
+              productRepository
+                  .all()
+                  .filter(
+                      "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
+                          + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                          + " AND self.dtype = 'Product'",
+                      unitCostCalculation.getProductCategorySet(),
+                      ProductRepository.PRODUCT_TYPE_STORABLE,
+                      productSubTypeSelects,
+                      unitCostCalculation.getCompanySet(),
+                      ProductRepository.PROCUREMENT_METHOD_PRODUCE,
+                      ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
+                  .fetch()));
     }
 
-    if (!unitCostCalculation.getProductFamilySet().isEmpty()) {
+    if (CollectionUtils.isNotEmpty(unitCostCalculation.getProductFamilySet())
+        && CollectionUtils.isNotEmpty(unitCostCalculation.getCompanySet())
+        && CollectionUtils.isNotEmpty(productSubTypeSelects)) {
 
       productSet.addAll(
-          productRepository
-              .all()
-              .filter(
-                  "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
-                      + " AND self.dtype = 'Product'",
-                  unitCostCalculation.getProductFamilySet(),
-                  ProductRepository.PRODUCT_TYPE_STORABLE,
-                  productSubTypeSelects,
-                  unitCostCalculation.getCompanySet(),
-                  ProductRepository.PROCUREMENT_METHOD_PRODUCE,
-                  ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
-              .fetch());
+          ListUtils.emptyIfNull(
+              productRepository
+                  .all()
+                  .filter(
+                      "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
+                          + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                          + " AND self.dtype = 'Product'",
+                      unitCostCalculation.getProductFamilySet(),
+                      ProductRepository.PRODUCT_TYPE_STORABLE,
+                      productSubTypeSelects,
+                      unitCostCalculation.getCompanySet(),
+                      ProductRepository.PROCUREMENT_METHOD_PRODUCE,
+                      ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
+                  .fetch()));
     }
 
     if (productSet.isEmpty()) {
@@ -349,10 +362,12 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     List<Product> productList = Lists.newArrayList();
 
-    for (Long productId : this.productMap.keySet()) {
+    if (this.productMap != null) {
+      for (Long productId : this.productMap.keySet()) {
 
-      if (this.productMap.get(productId) == level) {
-        productList.add(productRepository.find(productId));
+        if (this.productMap.get(productId) == level) {
+          productList.add(productRepository.find(productId));
+        }
       }
     }
 
@@ -364,9 +379,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     productMap = Maps.newHashMap();
 
-    for (Product product : productList) {
+    if (productList != null) {
+      for (Product product : productList) {
 
-      this.assignProductAndLevel(product, company);
+        this.assignProductAndLevel(product, company);
+      }
     }
   }
 
@@ -411,10 +428,12 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     int maxLevel = 0;
 
-    for (int level : this.productMap.values()) {
+    if (this.productMap != null) {
+      for (int level : this.productMap.values()) {
 
-      if (level > maxLevel) {
-        maxLevel = level;
+        if (level > maxLevel) {
+          maxLevel = level;
+        }
       }
     }
 
@@ -464,7 +483,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
   public void updateUnitCosts(UnitCostCalculation unitCostCalculation) throws AxelorException {
 
-    for (UnitCostCalcLine unitCostCalcLine : unitCostCalculation.getUnitCostCalcLineList()) {
+    for (UnitCostCalcLine unitCostCalcLine :
+        ListUtils.emptyIfNull(unitCostCalculation.getUnitCostCalcLineList())) {
 
       updateUnitCosts(unitCostCalcLineRepository.find(unitCostCalcLine.getId()));
 
@@ -569,7 +589,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       companySet.add(company);
     }
 
-    return billOfMaterialService.getBillOfMaterialProductsId(companySet).stream()
+    return ListUtils.emptyIfNull(billOfMaterialService.getBillOfMaterialProductsId(companySet))
+        .stream()
         .map(id -> id.toString())
         .collect(Collectors.joining(","));
   }
@@ -578,7 +599,9 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Transactional
   public void fillCompanySet(UnitCostCalculation unitCostCalculation, Company company) {
     if (company != null) {
-      unitCostCalculation.getCompanySet().clear();
+      if (unitCostCalculation.getCompanySet() != null) {
+        unitCostCalculation.getCompanySet().clear();
+      }
       unitCostCalculation.addCompanySetItem(company);
       unitCostCalculationRepository.save(unitCostCalculation);
     }
@@ -589,10 +612,12 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     Boolean containsDefaultBOMField = false;
     Set<MetaField> companySpecificFields =
         appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
-    for (MetaField field : companySpecificFields) {
-      if (field.getName().equals("defaultBillOfMaterial")) {
-        containsDefaultBOMField = true;
-        break;
+    if (companySpecificFields != null) {
+      for (MetaField field : companySpecificFields) {
+        if (field.getName().equals("defaultBillOfMaterial")) {
+          containsDefaultBOMField = true;
+          break;
+        }
       }
     }
     return containsDefaultBOMField;

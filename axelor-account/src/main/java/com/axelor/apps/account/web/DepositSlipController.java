@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
 import com.axelor.apps.account.service.DepositSlipService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.mapper.Adapter;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -39,7 +40,8 @@ public class DepositSlipController {
     DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
     DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
     response.setValue(
-        "__paymentVoucherDueList", depositSlipService.fetchPaymentVouchers(depositSlip));
+        "__paymentVoucherDueList",
+        ListUtils.emptyIfNull(depositSlipService.fetchPaymentVouchers(depositSlip)));
   }
 
   public void updateDepositChequeDate(ActionRequest request, ActionResponse response) {
@@ -50,8 +52,10 @@ public class DepositSlipController {
                 request.getContext().get("__depositDate"), LocalDate.class, LocalDate.class, null);
     DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
     List<PaymentVoucher> paymentVouchers = depositSlip.getPaymentVoucherList();
-    paymentVouchers.stream().forEach(paymentVoucher -> paymentVoucher.setChequeDate(chequeDate));
-    response.setValue("paymentVoucherList", paymentVouchers);
+    if (paymentVouchers != null) {
+      paymentVouchers.stream().forEach(paymentVoucher -> paymentVoucher.setChequeDate(chequeDate));
+      response.setValue("paymentVoucherList", paymentVouchers);
+    }
   }
 
   public void publish(ActionRequest request, ActionResponse response) {

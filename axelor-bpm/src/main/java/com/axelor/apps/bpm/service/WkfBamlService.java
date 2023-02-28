@@ -80,12 +80,14 @@ public class WkfBamlService implements JavaDelegate {
 
     Map<String, Object> context = new HashMap<String, Object>();
 
-    for (String varName : variables.keySet()) {
-      Object variable = variables.get(varName);
-      if (variable instanceof FullContext) {
-        context.put(varName, ((FullContext) variable).getTarget());
-      } else {
-        context.put(varName, variable);
+    if (variables != null) {
+      for (String varName : variables.keySet()) {
+        Object variable = variables.get(varName);
+        if (variable instanceof FullContext) {
+          context.put(varName, ((FullContext) variable).getTarget());
+        } else {
+          context.put(varName, variable);
+        }
       }
     }
     context.put("$ctx", WkfContextHelper.class);

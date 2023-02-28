@@ -28,6 +28,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -85,42 +86,50 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   @Override
   public boolean isBalanced(List<Reconcile> reconcileList) {
-    List<MoveLine> debitMoveLineList =
-        reconcileList.stream()
-            .map(Reconcile::getDebitMoveLine)
-            .distinct()
-            .collect(Collectors.toList());
-    List<MoveLine> creditMoveLineList =
-        reconcileList.stream()
-            .map(Reconcile::getCreditMoveLine)
-            .distinct()
-            .collect(Collectors.toList());
-    List<Account> accountList =
-        debitMoveLineList.stream()
-            .map(MoveLine::getAccount)
-            .distinct()
-            .collect(Collectors.toList());
-    accountList.addAll(
-        creditMoveLineList.stream()
-            .map(MoveLine::getAccount)
-            .distinct()
-            .collect(Collectors.toList()));
 
-    for (Account account : accountList) {
-      BigDecimal totalDebit =
-          debitMoveLineList.stream()
-              .filter(moveLine -> moveLine.getAccount().equals(account))
-              .map(MoveLine::getDebit)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
-      BigDecimal totalCredit =
-          creditMoveLineList.stream()
-              .filter(moveLine -> moveLine.getAccount().equals(account))
-              .map(MoveLine::getCredit)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
-      if (totalDebit.compareTo(totalCredit) != 0) {
-        return false;
+    if (CollectionUtils.isNotEmpty(reconcileList)) {
+      List<MoveLine> debitMoveLineList =
+          reconcileList.stream()
+              .map(Reconcile::getDebitMoveLine)
+              .distinct()
+              .collect(Collectors.toList());
+      List<MoveLine> creditMoveLineList =
+          reconcileList.stream()
+              .map(Reconcile::getCreditMoveLine)
+              .distinct()
+              .collect(Collectors.toList());
+      if (CollectionUtils.isNotEmpty(debitMoveLineList)) {
+        List<Account> accountList =
+            debitMoveLineList.stream()
+                .map(MoveLine::getAccount)
+                .distinct()
+                .collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(creditMoveLineList)) {
+          accountList.addAll(
+              creditMoveLineList.stream()
+                  .map(MoveLine::getAccount)
+                  .distinct()
+                  .collect(Collectors.toList()));
+          if (CollectionUtils.isNotEmpty(accountList)) {
+            for (Account account : accountList) {
+              BigDecimal totalDebit =
+                  debitMoveLineList.stream()
+                      .filter(moveLine -> moveLine.getAccount().equals(account))
+                      .map(MoveLine::getDebit)
+                      .reduce(BigDecimal::add)
+                      .orElse(BigDecimal.ZERO);
+              BigDecimal totalCredit =
+                  creditMoveLineList.stream()
+                      .filter(moveLine -> moveLine.getAccount().equals(account))
+                      .map(MoveLine::getCredit)
+                      .reduce(BigDecimal::add)
+                      .orElse(BigDecimal.ZERO);
+              if (totalDebit.compareTo(totalCredit) != 0) {
+                return false;
+              }
+            }
+          }
+        }
       }
     }
     return true;
@@ -158,23 +167,28 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   @Transactional
   public ReconcileGroup mergeReconcileGroups(List<ReconcileGroup> reconcileGroupList) {
-    Company company = reconcileGroupList.get(0).getCompany();
+
+    Company company = ListUtils.emptyIfNull(reconcileGroupList).get(0).getCompany();
     ReconcileGroup reconcileGroup = createReconcileGroup(company);
+    if (CollectionUtils.isNotEmpty(reconcileGroupList)) {
+      List<Reconcile> reconcileList =
+          reconcileRepository
+              .all()
+              .filter("self.reconcileGroup.id IN (:reconcileGroupIds)")
+              .bind(
+                  "reconcileGroupIds",
+                  reconcileGroupList.stream()
+                      .map(ReconcileGroup::getId)
+                      .collect(Collectors.toList()))
+              .fetch();
+      if (reconcileList != null) {
+        reconcileList.forEach(reconcile -> addToReconcileGroup(reconcileGroup, reconcile));
+      }
 
-    List<Reconcile> reconcileList =
-        reconcileRepository
-            .all()
-            .filter("self.reconcileGroup.id IN (:reconcileGroupIds)")
-            .bind(
-                "reconcileGroupIds",
-                reconcileGroupList.stream().map(ReconcileGroup::getId).collect(Collectors.toList()))
-            .fetch();
-    reconcileList.forEach(reconcile -> addToReconcileGroup(reconcileGroup, reconcile));
-
-    for (ReconcileGroup toDeleteReconcileGroup : reconcileGroupList) {
-      reconcileGroupRepository.remove(toDeleteReconcileGroup);
+      for (ReconcileGroup toDeleteReconcileGroup : reconcileGroupList) {
+        reconcileGroupRepository.remove(toDeleteReconcileGroup);
+      }
     }
-
     return reconcileGroupRepository.save(reconcileGroup);
   }
 
@@ -190,6 +204,9 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   public void addAndValidate(ReconcileGroup reconcileGroup, Reconcile reconcile)
       throws AxelorException {
     List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
+    if (reconcileGroup == null || reconcileList == null) {
+      return;
+    }
     reconcileList.add(reconcile);
     addToReconcileGroup(reconcileGroup, reconcile);
     if (isBalanced(reconcileList)) {
@@ -216,16 +233,20 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     // update move lines
     List<MoveLine> moveLineToRemoveList =
         moveLineRepository.findByReconcileGroup(reconcileGroup).fetch();
+    if (moveLineToRemoveList == null) {
+      return;
+    }
     moveLineToRemoveList.forEach(moveLine -> moveLine.setReconcileGroup(null));
 
     List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
-    reconcileList.stream()
-        .map(Reconcile::getDebitMoveLine)
-        .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
-    reconcileList.stream()
-        .map(Reconcile::getCreditMoveLine)
-        .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
-
+    if (CollectionUtils.isNotEmpty(reconcileList)) {
+      reconcileList.stream()
+          .map(Reconcile::getDebitMoveLine)
+          .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
+      reconcileList.stream()
+          .map(Reconcile::getCreditMoveLine)
+          .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
+    }
     // update status
     updateStatus(reconcileGroup);
   }
@@ -269,10 +290,11 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   public void unletter(ReconcileGroup reconcileGroup) throws AxelorException {
     List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
 
-    for (Reconcile reconcile : reconcileList) {
-      reconcileService.unreconcile(reconcile);
+    if (CollectionUtils.isNotEmpty(reconcileList)) {
+      for (Reconcile reconcile : reconcileList) {
+        reconcileService.unreconcile(reconcile);
+      }
     }
-
     reconcileGroup.setUnletteringDate(appBaseService.getTodayDate(reconcileGroup.getCompany()));
     reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
     reconcileGroupRepository.save(reconcileGroup);

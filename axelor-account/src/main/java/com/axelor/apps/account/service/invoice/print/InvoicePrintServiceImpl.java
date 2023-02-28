@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -162,7 +163,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     List<File> printedInvoices = new ArrayList<>();
     List<String> invalidPrintSettingsInvoiceIds = checkInvalidPrintSettingsInvoices(ids);
 
-    if (invalidPrintSettingsInvoiceIds.size() > 0) {
+    if (ListUtils.size(invalidPrintSettingsInvoiceIds) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.INVOICES_MISSING_PRINTING_SETTINGS),
@@ -196,11 +197,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   public List<String> checkInvalidPrintSettingsInvoices(List<Long> ids) {
 
     List<String> invalidPrintSettingsInvoiceIds = new ArrayList<>();
-
-    for (Long id : ids) {
-      Invoice invoice = invoiceRepo.find(id);
-      if (invoice.getPrintingSettings() == null) {
-        invalidPrintSettingsInvoiceIds.add(invoice.getInvoiceId());
+    if (ids != null) {
+      for (Long id : ids) {
+        Invoice invoice = invoiceRepo.find(id);
+        if (invoice.getPrintingSettings() == null) {
+          invalidPrintSettingsInvoiceIds.add(invoice.getInvoiceId());
+        }
       }
     }
     return invalidPrintSettingsInvoiceIds;

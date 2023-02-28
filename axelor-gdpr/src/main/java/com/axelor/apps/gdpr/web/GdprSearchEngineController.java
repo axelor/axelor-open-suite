@@ -85,8 +85,10 @@ public class GdprSearchEngineController {
           (List<Map<String, Object>>) context.get("__searchResults");
       Map<String, Object> selectedObject =
           Beans.get(GdprSearchEngineService.class).checkSelectedObject(resultList);
-      response.setValue("modelSelect", selectedObject.get("typeClass").toString());
-      response.setValue("modelId", selectedObject.get("objectId"));
+      if (selectedObject != null) {
+        response.setValue("modelSelect", selectedObject.get("typeClass").toString());
+        response.setValue("modelId", selectedObject.get("objectId"));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

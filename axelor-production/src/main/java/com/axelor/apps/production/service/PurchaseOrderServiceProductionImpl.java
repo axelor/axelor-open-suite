@@ -38,6 +38,7 @@ import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -92,7 +93,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
 
     List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(null));
+    ListUtils.emptyIfNull(manufOrderList).forEach(manufOrder -> manufOrder.setPurchaseOrder(null));
 
     PurchaseOrder mergedPurchaseOrder =
         super.mergePurchaseOrders(
@@ -104,7 +105,8 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             priceList,
             tradingName);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
+    ListUtils.emptyIfNull(manufOrderList)
+        .forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
     return mergedPurchaseOrder;
   }
 
@@ -123,7 +125,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
 
     List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(null));
+    ListUtils.emptyIfNull(manufOrderList).forEach(manufOrder -> manufOrder.setPurchaseOrder(null));
 
     PurchaseOrder mergedPurchaseOrder =
         super.mergePurchaseOrders(
@@ -136,16 +138,22 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             priceList,
             tradingName);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
+    ListUtils.emptyIfNull(manufOrderList)
+        .forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
 
     return mergedPurchaseOrder;
   }
 
   protected List<ManufOrder> getManufOrdersOfPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
     List<ManufOrder> manufOrderList = new ArrayList<>();
-    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
-      manufOrderList.addAll(
-          manufOrderRepo.all().filter("self.purchaseOrder.id = ?1", purchaseOrder.getId()).fetch());
+    if (purchaseOrderList != null) {
+      for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+        manufOrderList.addAll(
+            manufOrderRepo
+                .all()
+                .filter("self.purchaseOrder.id = ?1", purchaseOrder.getId())
+                .fetch());
+      }
     }
     return manufOrderList;
   }

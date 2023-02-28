@@ -33,6 +33,7 @@ import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
@@ -187,7 +188,8 @@ public class EventController {
         leadService.assignToMeLead(lead);
       } else if (((List) request.getContext().get("_ids")) != null) {
         for (Lead lead :
-            leadRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch()) {
+            ListUtils.emptyIfNull(
+                leadRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch())) {
           lead.setUser(AuthUtils.getUser());
           leadService.assignToMeLead(lead);
         }
@@ -209,7 +211,8 @@ public class EventController {
       Beans.get(EventService.class).saveEvent(event);
     } else if (!((List) request.getContext().get("_ids")).isEmpty()) {
       for (Event event :
-          eventRepository.all().filter("id in ?1", request.getContext().get("_ids")).fetch()) {
+          ListUtils.emptyIfNull(
+              eventRepository.all().filter("id in ?1", request.getContext().get("_ids")).fetch())) {
         event.setUser(AuthUtils.getUser());
         Beans.get(EventService.class).saveEvent(event);
       }
@@ -367,9 +370,11 @@ public class EventController {
       daysMap.put(DayOfWeek.SATURDAY.getValue(), saturday);
       daysMap.put(DayOfWeek.SUNDAY.getValue(), sunday);
 
-      for (Integer day : daysMap.keySet()) {
-        if (daysMap.get(day)) {
-          daysCheckedMap.put(day, daysMap.get(day));
+      if (daysMap != null) {
+        for (Integer day : daysMap.keySet()) {
+          if (daysMap.get(day)) {
+            daysCheckedMap.put(day, daysMap.get(day));
+          }
         }
       }
       if (daysMap.isEmpty()) {

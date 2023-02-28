@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -89,12 +90,14 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
   public void createAccountingReportMoveLines(
       List<Long> paymentMoveLineDistributioneIds, AccountingReport accountingReport) {
 
-    for (Long id : paymentMoveLineDistributioneIds) {
-      PaymentMoveLineDistribution paymentMoveLineDistribution =
-          paymentMoveLineDistributionRepo.find(id);
-      if (paymentMoveLineDistribution != null) {
-        createAccountingReportMoveLine(
-            paymentMoveLineDistribution, accountingReportRepo.find(accountingReport.getId()));
+    if (CollectionUtils.isNotEmpty(paymentMoveLineDistributioneIds)) {
+      for (Long id : paymentMoveLineDistributioneIds) {
+        PaymentMoveLineDistribution paymentMoveLineDistribution =
+            paymentMoveLineDistributionRepo.find(id);
+        if (paymentMoveLineDistribution != null) {
+          createAccountingReportMoveLine(
+              paymentMoveLineDistribution, accountingReportRepo.find(accountingReport.getId()));
+        }
       }
     }
   }
@@ -164,7 +167,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
       throws AxelorException, IOException {
 
     List<String> lines = Lists.newArrayList();
-    lines.addAll(generateN4DSLines(accountingExport));
+    lines.addAll(ListUtils.emptyIfNull(generateN4DSLines(accountingExport)));
 
     File file =
         FileTool.writer(
@@ -348,52 +351,54 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_DDMMYYYY))));
 
     List<Object[]> dataList = getN4DSDeclaredPartnersData(accountingExport);
-    for (Object[] listObj : dataList) {
-      // S70.G10.00 Bénéficiaire des honoraires
-      lines.add(
-          setN4DSLine(
-              "S70.G10.00.001", StringUtils.stripAccents(listObj[0].toString().toUpperCase())));
-      String title = listObj[1].toString();
-      String countryAlpha2code = listObj[9].toString();
-      String zip = "0";
-      if (listObj[7] != null) {
-        zip = compileAddressValue(listObj[7].toString());
-        zip = StringUtils.isEmpty(zip) ? "0" : zip;
-      }
-
-      if (title.equals(String.valueOf(PartnerRepository.PARTNER_TYPE_COMPANY))) {
-        String declarantRegistrationCode = listObj[4].toString().replaceAll(" ", "");
-
-        String declarantSiren = computeSiren(declarantRegistrationCode, countryAlpha2code);
-        String declarantNic = computeNic(declarantRegistrationCode, countryAlpha2code);
-        lines.add(setN4DSLine("S70.G10.00.003.001", declarantSiren));
-        lines.add(setN4DSLine("S70.G10.00.003.002", declarantNic));
-        lines.add(setN4DSLine("S70.G10.00.003.003", listObj[2].toString()));
-      } else {
-        lines.add(setN4DSLine("S70.G10.00.002.001", compileIdentityValue(listObj[2].toString())));
-        lines.add(setN4DSLine("S70.G10.00.002.002", compileIdentityValue(listObj[3].toString())));
-      }
-      if (listObj[5] != null && !Strings.isNullOrEmpty(listObj[5].toString())) {
-        lines.add(setN4DSLine("S70.G10.00.004.001", compileAddressValue(listObj[5].toString())));
-      }
-      if (listObj[6] != null && !Strings.isNullOrEmpty(listObj[6].toString())) {
-        lines.add(setN4DSLine("S70.G10.00.004.006", compileAddressValue(listObj[6].toString())));
-      }
-      if (countryAlpha2code.equals("FR")) {
-        lines.add(setN4DSLine("S70.G10.00.004.010", zip));
+    if (CollectionUtils.isNotEmpty(dataList)) {
+      for (Object[] listObj : dataList) {
+        // S70.G10.00 Bénéficiaire des honoraires
         lines.add(
             setN4DSLine(
-                "S70.G10.00.004.012",
-                compileStringValue(regexForCity, listObj[8].toString(), " ")));
-      } else {
-        lines.add(setN4DSLine("S70.G10.00.004.013", countryAlpha2code));
-        lines.add(setN4DSLine("S70.G10.00.004.016", zip));
+                "S70.G10.00.001", StringUtils.stripAccents(listObj[0].toString().toUpperCase())));
+        String title = listObj[1].toString();
+        String countryAlpha2code = listObj[9].toString();
+        String zip = "0";
+        if (listObj[7] != null) {
+          zip = compileAddressValue(listObj[7].toString());
+          zip = StringUtils.isEmpty(zip) ? "0" : zip;
+        }
+
+        if (title.equals(String.valueOf(PartnerRepository.PARTNER_TYPE_COMPANY))) {
+          String declarantRegistrationCode = listObj[4].toString().replaceAll(" ", "");
+
+          String declarantSiren = computeSiren(declarantRegistrationCode, countryAlpha2code);
+          String declarantNic = computeNic(declarantRegistrationCode, countryAlpha2code);
+          lines.add(setN4DSLine("S70.G10.00.003.001", declarantSiren));
+          lines.add(setN4DSLine("S70.G10.00.003.002", declarantNic));
+          lines.add(setN4DSLine("S70.G10.00.003.003", listObj[2].toString()));
+        } else {
+          lines.add(setN4DSLine("S70.G10.00.002.001", compileIdentityValue(listObj[2].toString())));
+          lines.add(setN4DSLine("S70.G10.00.002.002", compileIdentityValue(listObj[3].toString())));
+        }
+        if (listObj[5] != null && !Strings.isNullOrEmpty(listObj[5].toString())) {
+          lines.add(setN4DSLine("S70.G10.00.004.001", compileAddressValue(listObj[5].toString())));
+        }
+        if (listObj[6] != null && !Strings.isNullOrEmpty(listObj[6].toString())) {
+          lines.add(setN4DSLine("S70.G10.00.004.006", compileAddressValue(listObj[6].toString())));
+        }
+        if (countryAlpha2code.equals("FR")) {
+          lines.add(setN4DSLine("S70.G10.00.004.010", zip));
+          lines.add(
+              setN4DSLine(
+                  "S70.G10.00.004.012",
+                  compileStringValue(regexForCity, listObj[8].toString(), " ")));
+        } else {
+          lines.add(setN4DSLine("S70.G10.00.004.013", countryAlpha2code));
+          lines.add(setN4DSLine("S70.G10.00.004.016", zip));
+        }
+        String serviceTypeCode = listObj[10].toString();
+        String amount = listObj[11].toString();
+        // S70.G10.15 Rémunérations
+        lines.add(setN4DSLine("S70.G10.15.001", serviceTypeCode));
+        lines.add(setN4DSLine("S70.G10.15.002", amount));
       }
-      String serviceTypeCode = listObj[10].toString();
-      String amount = listObj[11].toString();
-      // S70.G10.15 Rémunérations
-      lines.add(setN4DSLine("S70.G10.15.001", serviceTypeCode));
-      lines.add(setN4DSLine("S70.G10.15.002", amount));
     }
     // S80.G01.00
     lines.add(setN4DSLine("S80.G01.00.001.002", nic));
@@ -415,7 +420,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     }
     lines.add(setN4DSLine("S80.G01.00.005", "02"));
     lines.add(setN4DSLine("S80.G01.00.006", companyPartner.getMainActivity().getCode()));
-    lines.add(setN4DSLine("S90.G01.00.001", String.valueOf(lines.size() + 2)));
+    lines.add(setN4DSLine("S90.G01.00.001", String.valueOf(ListUtils.size(lines) + 2)));
     lines.add(setN4DSLine("S90.G01.00.002", "1"));
 
     return lines;

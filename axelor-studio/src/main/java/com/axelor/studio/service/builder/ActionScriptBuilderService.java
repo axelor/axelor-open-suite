@@ -25,6 +25,7 @@ import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_ONE;
 import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
 import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_ONE;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -45,6 +46,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,7 +147,7 @@ public class ActionScriptBuilderService {
 
     addRootFunction(builder, stb, level);
 
-    stb.append(Joiner.on("").join(fbuilder));
+    stb.append(Joiner.on("").join(ListUtils.emptyIfNull(fbuilder)));
 
     return stb.toString();
   }
@@ -223,60 +225,61 @@ public class ActionScriptBuilderService {
   protected String addFieldsBinding(String target, List<ActionBuilderLine> lines, int level) {
 
     StringBuilder stb = new StringBuilder();
+    if (CollectionUtils.isNotEmpty(lines)) {
+      lines.sort(
+          (l1, l2) -> {
+            if (l1.getDummy() && !l2.getDummy()) {
+              return -1;
+            }
+            if (!l1.getDummy() && l2.getDummy()) {
+              return 1;
+            }
+            return 0;
+          });
 
-    lines.sort(
-        (l1, l2) -> {
-          if (l1.getDummy() && !l2.getDummy()) {
-            return -1;
-          }
-          if (!l1.getDummy() && l2.getDummy()) {
-            return 1;
-          }
-          return 0;
-        });
+      for (ActionBuilderLine line : lines) {
 
-    for (ActionBuilderLine line : lines) {
+        String name = line.getName();
+        String value = line.getValue();
+        if (value != null && value.contains(".sum(")) {
+          value = getSum(value, line.getFilter());
+        }
+        if (line.getDummy()) {
+          stb.append(format("_$." + name + " = " + value + ";", level));
+          continue;
+        }
 
-      String name = line.getName();
-      String value = line.getValue();
-      if (value != null && value.contains(".sum(")) {
-        value = getSum(value, line.getFilter());
-      }
-      if (line.getDummy()) {
-        stb.append(format("_$." + name + " = " + value + ";", level));
-        continue;
-      }
+        MetaJsonField jsonField = line.getMetaJsonField();
+        MetaField metaField = line.getMetaField();
 
-      MetaJsonField jsonField = line.getMetaJsonField();
-      MetaField metaField = line.getMetaField();
+        if (jsonField != null
+            && (jsonField.getTargetJsonModel() != null || jsonField.getTargetModel() != null)) {
+          value = addRelationalBinding(line, target, true);
+        } else if (metaField != null && metaField.getRelationship() != null) {
+          value = addRelationalBinding(line, target, false);
+        }
+        // else {
+        // MetaJsonField valueJson = line.getValueJson();
+        // if (valueJson != null && valueJson.getType().contentEquals("many-to-one")) {
+        // value = value.replace("$." + valueJson.getName(),"$json.create($json.find($."
+        // +
+        // valueJson.getName() + ".id))");
+        // }
+        // }
 
-      if (jsonField != null
-          && (jsonField.getTargetJsonModel() != null || jsonField.getTargetModel() != null)) {
-        value = addRelationalBinding(line, target, true);
-      } else if (metaField != null && metaField.getRelationship() != null) {
-        value = addRelationalBinding(line, target, false);
-      }
-      // else {
-      // MetaJsonField valueJson = line.getValueJson();
-      // if (valueJson != null && valueJson.getType().contentEquals("many-to-one")) {
-      // value = value.replace("$." + valueJson.getName(),"$json.create($json.find($."
-      // +
-      // valueJson.getName() + ".id))");
-      // }
-      // }
+        if (value != null
+            && metaField != null
+            && metaField.getTypeName().equals(BigDecimal.class.getSimpleName())) {
+          value = "new BigDecimal(" + value + ")";
+        }
 
-      if (value != null
-          && metaField != null
-          && metaField.getTypeName().equals(BigDecimal.class.getSimpleName())) {
-        value = "new BigDecimal(" + value + ")";
-      }
-
-      String condition = line.getConditionText();
-      if (condition != null) {
-        stb.append(
-            format("if(" + condition + "){" + target + "." + name + " = " + value + ";}", level));
-      } else {
-        stb.append(format(target + "." + name + " = " + value + ";", level));
+        String condition = line.getConditionText();
+        if (condition != null) {
+          stb.append(
+              format("if(" + condition + "){" + target + "." + name + " = " + value + ";}", level));
+        } else {
+          stb.append(format(target + "." + name + " = " + value + ";", level));
+        }
       }
     }
 

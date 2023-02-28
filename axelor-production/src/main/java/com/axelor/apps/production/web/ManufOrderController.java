@@ -41,6 +41,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -230,7 +231,7 @@ public class ManufOrderController {
 
       String message = "";
 
-      for (ManufOrder manufOrder : manufOrders) {
+      for (ManufOrder manufOrder : ListUtils.emptyIfNull(manufOrders)) {
         Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
         if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
           message = manufOrder.getMoCommentFromSaleOrder();
@@ -601,7 +602,7 @@ public class ManufOrderController {
       ProdProductProductionRepository prodProductProductionRepository =
           Beans.get(ProdProductProductionRepository.class);
       List<ProdProduct> prodProducts =
-          mo.getToConsumeProdProductList().stream()
+          ListUtils.emptyIfNull(mo.getToConsumeProdProductList()).stream()
               .filter(
                   prodProduct ->
                       prodProduct.getProduct().getProductSubTypeSelect()
@@ -617,7 +618,7 @@ public class ManufOrderController {
                                   .compareTo(BigDecimal.ZERO)
                               > 0)
               .collect(Collectors.toList());
-      response.setValue("$components", prodProducts);
+      response.setValue("$components", ListUtils.emptyIfNull(prodProducts));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -636,11 +637,12 @@ public class ManufOrderController {
       ManufOrder mo = Beans.get(ManufOrderRepository.class).find(moId);
       ProdProductRepository prodProductRepository = Beans.get(ProdProductRepository.class);
       List<ProdProduct> prodProductList =
-          ((List<LinkedHashMap<String, Object>>) request.getContext().get("components"))
+          ListUtils.emptyIfNull(
+                  ((List<LinkedHashMap<String, Object>>) request.getContext().get("components")))
               .stream()
-                  .filter(map -> (boolean) map.get("selected"))
-                  .map(map -> prodProductRepository.find(Long.valueOf(map.get("id").toString())))
-                  .collect(Collectors.toList());
+              .filter(map -> (boolean) map.get("selected"))
+              .map(map -> prodProductRepository.find(Long.valueOf(map.get("id").toString())))
+              .collect(Collectors.toList());
       if (prodProductList.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -670,7 +672,7 @@ public class ManufOrderController {
               .param("popup-save", "false")
               .param("show-toolbar", "false")
               .param("show-confirm", "false")
-              .context("_moList", moList)
+              .context("_moList", ListUtils.emptyIfNull(moList))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

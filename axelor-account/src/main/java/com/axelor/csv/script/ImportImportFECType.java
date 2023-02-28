@@ -46,9 +46,9 @@ public class ImportImportFECType {
     assert bean instanceof ImportFECType;
 
     ImportFECType importFECType = (ImportFECType) bean;
-    String fileName = (String) values.get("bindMetaFile_name");
+    String fileName = values != null ? (String) values.get("bindMetaFile_name") : "";
 
-    if (!StringUtils.isEmpty(fileName)) {
+    if (!StringUtils.isEmpty(fileName) && values != null) {
       final Path path = (Path) values.get("__path__");
 
       try {

@@ -37,10 +37,12 @@ public class StringHTMLListBuilder {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("<ul>");
-    for (String s : listElements) {
-      sb.append("<li>");
-      sb.append(s);
-      sb.append("</li>");
+    if (listElements != null) {
+      for (String s : listElements) {
+        sb.append("<li>");
+        sb.append(s);
+        sb.append("</li>");
+      }
     }
     sb.append("</ul>");
     return sb.toString();

@@ -61,10 +61,12 @@ public class BankOrderManagementRepository extends BankOrderRepository {
     copy.setSendingDateTime(null);
     copy.setBankOrderSeq(null);
 
-    for (BankOrderLine bankOrderLine : copy.getBankOrderLineList()) {
-      bankOrderLine.setSenderMove(null);
-      bankOrderLine.setReceiverMove(null);
-      bankOrderLine.setRejectMove(null);
+    if (copy.getBankOrderLineList() != null) {
+      for (BankOrderLine bankOrderLine : copy.getBankOrderLineList()) {
+        bankOrderLine.setSenderMove(null);
+        bankOrderLine.setReceiverMove(null);
+        bankOrderLine.setRejectMove(null);
+      }
     }
     copy.setAreMovesGenerated(false);
 

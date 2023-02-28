@@ -32,6 +32,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -394,18 +396,26 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
   protected void reconcile(Move move, Move reverseMove) throws AxelorException {
 
     List<MoveLine> moveLineSortedList = move.getMoveLineList();
-    Collections.sort(moveLineSortedList, Comparator.comparing(MoveLine::getCounter));
 
-    List<MoveLine> reverseMoveLineSortedList = reverseMove.getMoveLineList();
-    Collections.sort(reverseMoveLineSortedList, Comparator.comparing(MoveLine::getCounter));
+    if (moveLineSortedList != null) {
 
-    Iterator<MoveLine> reverseMoveLinesIt = reverseMoveLineSortedList.iterator();
+      Collections.sort(moveLineSortedList, Comparator.comparing(MoveLine::getCounter));
 
-    for (MoveLine moveLine : moveLineSortedList) {
+      List<MoveLine> reverseMoveLineSortedList = reverseMove.getMoveLineList();
 
-      MoveLine reverseMoveLine = reverseMoveLinesIt.next();
+      if (reverseMoveLineSortedList != null) {
 
-      reconcileService.reconcile(moveLine, reverseMoveLine, false, false);
+        Collections.sort(reverseMoveLineSortedList, Comparator.comparing(MoveLine::getCounter));
+
+        Iterator<MoveLine> reverseMoveLinesIt = reverseMoveLineSortedList.iterator();
+
+        for (MoveLine moveLine : moveLineSortedList) {
+
+          MoveLine reverseMoveLine = reverseMoveLinesIt.next();
+
+          reconcileService.reconcile(moveLine, reverseMoveLine, false, false);
+        }
+      }
     }
   }
 
@@ -413,7 +423,9 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     List<Long> accountIdList =
         accountService.getAllAccountsSubAccountIncluded(
-            accountSet.stream().map(Account::getId).collect(Collectors.toList()));
+            SetUtils.emptyIfNull(accountSet).stream()
+                .map(Account::getId)
+                .collect(Collectors.toList()));
 
     if (CollectionUtils.isEmpty(accountIdList)) {
       return new ArrayList<>();
@@ -440,14 +452,16 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     List<Pair<Long, Long>> accountAndPartnerPair = new ArrayList<>();
 
-    for (Long accountId : accountIdList) {
-      if (allocatePerPartner && accountRepository.find(accountId).getUseForPartnerBalance()) {
-        for (Long partnerId : getPartner(accountId, year)) {
-          accountAndPartnerPair.add(Pair.of(accountId, partnerId));
-        }
+    if (CollectionUtils.isNotEmpty(accountIdList)) {
+      for (Long accountId : accountIdList) {
+        if (allocatePerPartner && accountRepository.find(accountId).getUseForPartnerBalance()) {
+          for (Long partnerId : ListUtils.emptyIfNull(getPartner(accountId, year))) {
+            accountAndPartnerPair.add(Pair.of(accountId, partnerId));
+          }
 
-      } else {
-        accountAndPartnerPair.add(Pair.of(accountId, null));
+        } else {
+          accountAndPartnerPair.add(Pair.of(accountId, null));
+        }
       }
     }
     return accountAndPartnerPair;

@@ -55,6 +55,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.NoResultException;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,11 +92,17 @@ public class StudioMetaService {
             .filter("self.xmlId in ?1 OR self.name in ?1 ", Arrays.asList(xmlIds.split(",")))
             .fetch();
 
+    if (CollectionUtils.isEmpty(metaActions)) {
+      return;
+    }
+
     for (MetaAction action : metaActions) {
       List<MetaMenu> menus = metaMenuRepo.all().filter("self.action = ?1", action).fetch();
-      for (MetaMenu metaMenu : menus) {
-        metaMenu.setAction(null);
-        metaMenuRepo.save(metaMenu);
+      if (menus != null) {
+        for (MetaMenu metaMenu : menus) {
+          metaMenu.setAction(null);
+          metaMenuRepo.save(metaMenu);
+        }
       }
       metaActionRepo.remove(action);
     }
@@ -274,14 +281,21 @@ public class StudioMetaService {
     Preconditions.checkNotNull(metaMenu, "metaMenu cannot be null.");
 
     List<MetaMenu> subMenus = metaMenuRepo.all().filter("self.parent = ?1", metaMenu).fetch();
-    for (MetaMenu subMenu : subMenus) {
-      subMenu.setParent(null);
+
+    if (CollectionUtils.isNotEmpty(subMenus)) {
+      for (MetaMenu subMenu : subMenus) {
+        subMenu.setParent(null);
+      }
     }
+
     List<MenuBuilder> subBuilders =
         menuBuilderRepo.all().filter("self.parentMenu = ?1", metaMenu).fetch();
-    for (MenuBuilder subBuilder : subBuilders) {
-      subBuilder.setParentMenu(null);
-      menuBuilderRepo.save(subBuilder);
+
+    if (CollectionUtils.isNotEmpty(subBuilders)) {
+      for (MenuBuilder subBuilder : subBuilders) {
+        subBuilder.setParentMenu(null);
+        menuBuilderRepo.save(subBuilder);
+      }
     }
 
     metaMenuRepo.remove(metaMenu);
@@ -315,7 +329,7 @@ public class StudioMetaService {
 
     List<MetaJsonField> jsonFieldList = new ArrayList<MetaJsonField>(jsonModel.getFields());
 
-    if (metaJsonFieldList.equals(jsonFieldList)) {
+    if (metaJsonFieldList == null || metaJsonFieldList.equals(jsonFieldList)) {
       return;
     }
 

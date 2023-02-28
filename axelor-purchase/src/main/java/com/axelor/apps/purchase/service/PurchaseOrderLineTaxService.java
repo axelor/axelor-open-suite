@@ -138,27 +138,31 @@ public class PurchaseOrderLineTaxService {
       }
     }
 
-    for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
+    if (map != null) {
+      for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
 
-      // Dans la devise de la commande
-      BigDecimal exTaxBase =
-          (purchaseOrderLineTax.getReverseCharged())
-              ? purchaseOrderLineTax.getExTaxBase().negate()
-              : purchaseOrderLineTax.getExTaxBase();
-      BigDecimal taxTotal = BigDecimal.ZERO;
-      if (purchaseOrderLineTax.getTaxLine() != null)
-        taxTotal =
-            purchaseOrderToolService.computeAmount(
-                exTaxBase,
-                purchaseOrderLineTax.getTaxLine().getValue().divide(new BigDecimal(100)));
-      purchaseOrderLineTax.setTaxTotal(taxTotal);
-      purchaseOrderLineTax.setInTaxTotal(purchaseOrderLineTax.getExTaxBase().add(taxTotal));
+        // Dans la devise de la commande
+        BigDecimal exTaxBase =
+            (purchaseOrderLineTax.getReverseCharged())
+                ? purchaseOrderLineTax.getExTaxBase().negate()
+                : purchaseOrderLineTax.getExTaxBase();
+        BigDecimal taxTotal = BigDecimal.ZERO;
+        if (purchaseOrderLineTax.getTaxLine() != null)
+          taxTotal =
+              purchaseOrderToolService.computeAmount(
+                  exTaxBase,
+                  purchaseOrderLineTax.getTaxLine().getValue().divide(new BigDecimal(100)));
+        purchaseOrderLineTax.setTaxTotal(taxTotal);
+        purchaseOrderLineTax.setInTaxTotal(purchaseOrderLineTax.getExTaxBase().add(taxTotal));
 
-      purchaseOrderLineTaxList.add(purchaseOrderLineTax);
+        purchaseOrderLineTaxList.add(purchaseOrderLineTax);
 
-      LOG.debug(
-          "Tax line : Tax total => {}, Total W.T. => {}",
-          new Object[] {purchaseOrderLineTax.getTaxTotal(), purchaseOrderLineTax.getInTaxTotal()});
+        LOG.debug(
+            "Tax line : Tax total => {}, Total W.T. => {}",
+            new Object[] {
+              purchaseOrderLineTax.getTaxTotal(), purchaseOrderLineTax.getInTaxTotal()
+            });
+      }
     }
 
     if (!customerSpecificNote) {

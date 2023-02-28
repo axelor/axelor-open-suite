@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
@@ -176,15 +177,17 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
           Arrays.stream(attribute.getClass().getDeclaredFields())
               .filter(field -> field.getType().equals(String.class))
               .collect(Collectors.toList());
-      for (Field field : fieldsToUpdate) {
-        Mapper mapper = Mapper.of(attribute.getClass());
-        Method getter = mapper.getGetter(field.getName());
-        String fieldString = (String) getter.invoke(attribute);
+      if (fieldsToUpdate != null) {
+        for (Field field : fieldsToUpdate) {
+          Mapper mapper = Mapper.of(attribute.getClass());
+          Method getter = mapper.getGetter(field.getName());
+          String fieldString = (String) getter.invoke(attribute);
 
-        if (fieldString != null && fieldString.contains("_")) {
-          String updatedFieldString = updateFieldIds(fieldString, creator.getId());
-          Method setter = mapper.getSetter(field.getName());
-          setter.invoke(attribute, updatedFieldString);
+          if (fieldString != null && fieldString.contains("_")) {
+            String updatedFieldString = updateFieldIds(fieldString, creator.getId());
+            Method setter = mapper.getSetter(field.getName());
+            setter.invoke(attribute, updatedFieldString);
+          }
         }
       }
     } catch (Exception e) {
@@ -236,12 +239,13 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
       String oldAttributeName,
       String newAttributeName) {
 
-    formulas.forEach(
-        configuratorFormula -> {
-          if (!StringUtils.isEmpty(configuratorFormula.getFormula())) {
-            configuratorFormula.setFormula(
-                configuratorFormula.getFormula().replace(oldAttributeName, newAttributeName));
-          }
-        });
+    ListUtils.emptyIfNull(formulas)
+        .forEach(
+            configuratorFormula -> {
+              if (!StringUtils.isEmpty(configuratorFormula.getFormula())) {
+                configuratorFormula.setFormula(
+                    configuratorFormula.getFormula().replace(oldAttributeName, newAttributeName));
+              }
+            });
   }
 }

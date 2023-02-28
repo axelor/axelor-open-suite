@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FullContextHelper {
 
@@ -141,8 +142,12 @@ public class FullContextHelper {
 
     Query<? extends Model> query = createQuery(modelName, queryStr, null, null);
 
-    for (Model model : query.fetch()) {
-      wkfEntities.add(new FullContext(model));
+    List<? extends Model> modelList = query.fetch();
+
+    if (CollectionUtils.isNotEmpty(modelList)) {
+      for (Model model : modelList) {
+        wkfEntities.add(new FullContext(model));
+      }
     }
 
     return wkfEntities;
@@ -158,8 +163,12 @@ public class FullContextHelper {
 
     Query<? extends Model> query = createQuery(modelName, queryStr, null, params);
 
-    for (Model model : query.fetch()) {
-      wkfEntities.add(new FullContext(model));
+    List<? extends Model> modelList = query.fetch();
+
+    if (CollectionUtils.isNotEmpty(modelList)) {
+      for (Model model : modelList) {
+        wkfEntities.add(new FullContext(model));
+      }
     }
 
     return wkfEntities;
@@ -172,8 +181,12 @@ public class FullContextHelper {
 
     Query<? extends Model> query = createQuery(modelName, queryStr, paramMap, null);
 
-    for (Model model : query.fetch()) {
-      wkfEntities.add(new FullContext(model));
+    List<? extends Model> modelList = query.fetch();
+
+    if (CollectionUtils.isNotEmpty(modelList)) {
+      for (Model model : modelList) {
+        wkfEntities.add(new FullContext(model));
+      }
     }
 
     return wkfEntities;

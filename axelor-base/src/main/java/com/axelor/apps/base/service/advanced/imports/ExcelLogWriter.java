@@ -60,24 +60,26 @@ public class ExcelLogWriter {
   public void writeBody(Map<String, Map<String, List<Integer>>> dataMap) {
     CellStyle cellStyle = this.setStyle();
 
-    for (Entry<String, Map<String, List<Integer>>> keyEntry : dataMap.entrySet()) {
-      Row titleRow = sheet.createRow(sheet.getLastRowNum() + 1);
-      Cell titleCell = titleRow.createCell(0);
-      titleCell.setCellStyle(cellStyle);
-      titleCell.setCellValue(keyEntry.getKey());
+    if (dataMap != null) {
+      for (Entry<String, Map<String, List<Integer>>> keyEntry : dataMap.entrySet()) {
+        Row titleRow = sheet.createRow(sheet.getLastRowNum() + 1);
+        Cell titleCell = titleRow.createCell(0);
+        titleCell.setCellStyle(cellStyle);
+        titleCell.setCellValue(keyEntry.getKey());
 
-      for (Entry<String, List<Integer>> dataEntry : keyEntry.getValue().entrySet()) {
-        sheet.autoSizeColumn(0);
-        sheet.autoSizeColumn(1);
-        Row dataRow = sheet.createRow(sheet.getLastRowNum() + 1);
-        Cell dataCell1 = dataRow.createCell(0);
-        dataCell1.setCellValue(dataEntry.getKey());
-        Cell dataCell2 = dataRow.createCell(1);
-        if (!CollectionUtils.isEmpty(dataEntry.getValue())) {
-          dataCell2.setCellValue(
-              dataEntry.getValue().stream()
-                  .map(num -> String.valueOf(num))
-                  .collect(Collectors.joining(",")));
+        for (Entry<String, List<Integer>> dataEntry : keyEntry.getValue().entrySet()) {
+          sheet.autoSizeColumn(0);
+          sheet.autoSizeColumn(1);
+          Row dataRow = sheet.createRow(sheet.getLastRowNum() + 1);
+          Cell dataCell1 = dataRow.createCell(0);
+          dataCell1.setCellValue(dataEntry.getKey());
+          Cell dataCell2 = dataRow.createCell(1);
+          if (!CollectionUtils.isEmpty(dataEntry.getValue())) {
+            dataCell2.setCellValue(
+                dataEntry.getValue().stream()
+                    .map(num -> String.valueOf(num))
+                    .collect(Collectors.joining(",")));
+          }
         }
       }
     }

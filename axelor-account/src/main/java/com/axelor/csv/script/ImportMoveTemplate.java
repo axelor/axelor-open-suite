@@ -49,7 +49,7 @@ public class ImportMoveTemplate {
     try {
       if (moveTemplate.getJournal() != null) {
         moveTemplate.setCompany(moveTemplate.getJournal().getCompany());
-        String dateShift = values.get("endOfValidityDateShift").toString();
+        String dateShift = values != null ? values.get("endOfValidityDateShift").toString() : "";
         if (StringUtils.notBlank(dateShift)) {
           moveTemplate.setEndOfValidityDate(
               Beans.get(AppBaseService.class)

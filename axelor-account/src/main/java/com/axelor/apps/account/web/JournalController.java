@@ -42,6 +42,10 @@ public class JournalController {
 
     Map<String, BigDecimal> resultMap = journalService.computeBalance(journal);
 
+    if (resultMap == null) {
+      return;
+    }
+
     response.setValue("$balance", resultMap.get("balance"));
     response.setValue("$totalDebit", resultMap.get("debit"));
     response.setValue("$totalCredit", resultMap.get("credit"));

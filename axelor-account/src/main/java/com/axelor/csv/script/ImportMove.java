@@ -71,12 +71,12 @@ public class ImportMove {
     MoveLine moveLine = (MoveLine) bean;
     FECImport fecImport = null;
     try {
-      if (values.get("FECImport") != null) {
+      if (values != null && values.get("FECImport") != null) {
         fecImport = fecImportRepository.find(((FECImport) values.get("FECImport")).getId());
       }
       moveLine.setCounter(1);
 
-      if (values.get("EcritureNum") == null) {
+      if (values != null && values.get("EcritureNum") == null) {
         return null;
       }
       Company company = null;
@@ -86,7 +86,7 @@ public class ImportMove {
         company = getCompany(values);
       }
 
-      String csvReference = values.get("EcritureNum").toString();
+      String csvReference = values != null ? values.get("EcritureNum").toString() : "";
       if (lastImportDate == null) {
         lastImportDate =
             appAccountService
@@ -106,7 +106,7 @@ public class ImportMove {
         moveLine.setCounter(counter);
       }
 
-      if (values.get("EcritureDate") != null) {
+      if (values != null && values.get("EcritureDate") != null) {
         moveLine.setDate(parseDate(values.get("EcritureDate").toString()));
       }
 
@@ -118,18 +118,18 @@ public class ImportMove {
         move = new Move();
         move.setFecImport(fecImport);
         move.setReference(importReference);
-        if (values.get("PieceRef") != null) {
+        if (values != null && values.get("PieceRef") != null) {
           move.setOrigin(values.get("PieceRef").toString());
         }
 
-        if (values.get("ValidDate") != null) {
+        if (values != null && values.get("ValidDate") != null) {
           move.setAccountingDate(parseDate(values.get("ValidDate").toString()));
         }
         move.setStatusSelect(MoveRepository.STATUS_NEW);
         move.setCompany(company);
         move.setCompanyCurrency(move.getCompany().getCurrency());
 
-        if (values.get("EcritureDate") != null) {
+        if (values != null && values.get("EcritureDate") != null) {
           move.setDate(parseDate(values.get("EcritureDate").toString()));
         }
         if (period == null) {
@@ -142,14 +142,14 @@ public class ImportMove {
         }
         move.setPeriod(period);
 
-        if (values.get("Idevise") != null) {
+        if (values != null && values.get("Idevise") != null) {
           move.setCurrency(
               Beans.get(CurrencyRepository.class).findByCode(values.get("Idevise").toString()));
           move.setCurrencyCode(values.get("Idevise").toString());
         }
 
         Journal journal = null;
-        if (values.get("JournalCode") != null) {
+        if (values != null && values.get("JournalCode") != null) {
           journal =
               Beans.get(JournalRepository.class)
                   .all()
@@ -168,7 +168,7 @@ public class ImportMove {
           move.setJournal(journal);
         }
 
-        if (values.get("PieceDate") != null) {
+        if (values != null && values.get("PieceDate") != null) {
           move.setOriginDate(parseDate(values.get("PieceDate").toString()));
         }
         move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_IMPORT);
@@ -186,7 +186,7 @@ public class ImportMove {
 
         moveRepository.save(move);
       }
-      if (values.get("CompteNum") != null) {
+      if (values != null && values.get("CompteNum") != null) {
         Account account =
             Beans.get(AccountRepository.class)
                 .all()
@@ -211,7 +211,8 @@ public class ImportMove {
 
       move.addMoveLineListItem(moveLine);
 
-      if (values.get("Montantdevise") == null || "".equals(values.get("Montantdevise"))) {
+      if (values != null && values.get("Montantdevise") == null
+          || "".equals(values.get("Montantdevise"))) {
         moveLine.setMove(move);
         moveLineToolService.setCurrencyAmount(moveLine);
       }
@@ -227,8 +228,8 @@ public class ImportMove {
   }
 
   protected Company getCompany(Map<String, Object> values) {
-    final Path path = (Path) values.get("__path__");
-    String fileName = path.getFileName().toString();
+    final Path path = values != null ? (Path) values.get("__path__") : null;
+    String fileName = path != null ? path.getFileName().toString() : "";
     String registrationCode = fileName.substring(0, fileName.indexOf('F'));
 
     Company company =

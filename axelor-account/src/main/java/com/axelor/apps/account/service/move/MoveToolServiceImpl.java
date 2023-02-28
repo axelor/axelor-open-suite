@@ -40,6 +40,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -287,9 +289,11 @@ public class MoveToolServiceImpl implements MoveToolService {
    */
   @Override
   public boolean isSameAccount(List<MoveLine> moveLineList, Account account) {
-    for (MoveLine moveLine : moveLineList) {
-      if (!moveLine.getAccount().equals(account)) {
-        return false;
+    if (CollectionUtils.isNotEmpty(moveLineList)) {
+      for (MoveLine moveLine : moveLineList) {
+        if (!moveLine.getAccount().equals(account)) {
+          return false;
+        }
       }
     }
     return true;
@@ -304,8 +308,10 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public BigDecimal getTotalCreditAmount(List<MoveLine> creditMoveLineList) {
     BigDecimal totalCredit = BigDecimal.ZERO;
-    for (MoveLine moveLine : creditMoveLineList) {
-      totalCredit = totalCredit.add(moveLine.getAmountRemaining());
+    if (CollectionUtils.isNotEmpty(creditMoveLineList)) {
+      for (MoveLine moveLine : creditMoveLineList) {
+        totalCredit = totalCredit.add(moveLine.getAmountRemaining());
+      }
     }
     return totalCredit;
   }
@@ -319,8 +325,10 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public BigDecimal getTotalDebitAmount(List<MoveLine> debitMoveLineList) {
     BigDecimal totalDebit = BigDecimal.ZERO;
-    for (MoveLine moveLine : debitMoveLineList) {
-      totalDebit = totalDebit.add(moveLine.getAmountRemaining());
+    if (CollectionUtils.isNotEmpty(debitMoveLineList)) {
+      for (MoveLine moveLine : debitMoveLineList) {
+        totalDebit = totalDebit.add(moveLine.getAmountRemaining());
+      }
     }
     return totalDebit;
   }
@@ -375,7 +383,9 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     Invoice originalInvoice = invoice.getOriginalInvoice();
 
-    if (originalInvoice != null && originalInvoice.getMove() != null) {
+    if (originalInvoice != null
+        && originalInvoice.getMove() != null
+        && originalInvoice.getMove().getMoveLineList() != null) {
       for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
         if (moveLine.getAccount().getUseForPartnerBalance()
             && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
@@ -425,14 +435,16 @@ public class MoveToolServiceImpl implements MoveToolService {
    */
   @Override
   public MoveLine getOppositeMoveLine(MoveLine moveLine) {
-    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+        && CollectionUtils.isNotEmpty(moveLine.getMove().getMoveLineList())) {
       for (MoveLine oppositeMoveLine : moveLine.getMove().getMoveLineList()) {
         if (oppositeMoveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
           return oppositeMoveLine;
         }
       }
     }
-    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+        && CollectionUtils.isNotEmpty(moveLine.getMove().getMoveLineList())) {
       for (MoveLine oppositeMoveLine : moveLine.getMove().getMoveLineList()) {
         if (oppositeMoveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
           return oppositeMoveLine;
@@ -444,17 +456,18 @@ public class MoveToolServiceImpl implements MoveToolService {
 
   @Override
   public List<MoveLine> orderListByDate(List<MoveLine> list) {
-    Collections.sort(
-        list,
-        new Comparator<MoveLine>() {
+    if (list != null) {
+      Collections.sort(
+          list,
+          new Comparator<MoveLine>() {
 
-          @Override
-          public int compare(MoveLine o1, MoveLine o2) {
+            @Override
+            public int compare(MoveLine o1, MoveLine o2) {
 
-            return o1.getDate().compareTo(o2.getDate());
-          }
-        });
-
+              return o1.getDate().compareTo(o2.getDate());
+            }
+          });
+    }
     return list;
   }
 
@@ -474,11 +487,13 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
         || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAccount().getUseForPartnerBalance()) {
-          moveLineList.add(moveLine);
+      if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+              && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+              && moveLine.getAccount().getUseForPartnerBalance()) {
+            moveLineList.add(moveLine);
+          }
         }
       }
     }
@@ -488,7 +503,7 @@ public class MoveToolServiceImpl implements MoveToolService {
 
   @Override
   public MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException {
-    return move.getMoveLineList().stream()
+    return ListUtils.emptyIfNull(move.getMoveLineList()).stream()
         .filter(moveLine -> moveLine.getAccount().equals(account))
         .findFirst()
         .orElseThrow(
@@ -503,18 +518,22 @@ public class MoveToolServiceImpl implements MoveToolService {
 
   @Override
   public void setOriginOnMoveLineList(Move move) {
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine != null) {
-        moveLine.setOrigin(move.getOrigin());
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine != null) {
+          moveLine.setOrigin(move.getOrigin());
+        }
       }
     }
   }
 
   @Override
   public void setDescriptionOnMoveLineList(Move move) {
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine != null) {
-        moveLine.setDescription(move.getDescription());
+    if (move != null && move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine != null) {
+          moveLine.setDescription(move.getDescription());
+        }
       }
     }
   }
@@ -578,7 +597,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public List<Move> findDaybookAndAccountingByYear(Set<Year> yearList) {
     List<Long> idList = new ArrayList<>();
-    yearList.forEach(y -> idList.add(y.getId()));
+    SetUtils.emptyIfNull(yearList).forEach(y -> idList.add(y.getId()));
     if (!CollectionUtils.isEmpty(idList)) {
       List<Integer> status =
           Arrays.asList(MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK);
@@ -603,11 +622,13 @@ public class MoveToolServiceImpl implements MoveToolService {
     List<MoveLine> moveLineList = new ArrayList<>();
     if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
         || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAccount().getUseForPartnerBalance()) {
-          moveLineList.add(moveLine);
+      if (move.getMoveLineList() != null) {
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+              && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+              && moveLine.getAccount().getUseForPartnerBalance()) {
+            moveLineList.add(moveLine);
+          }
         }
       }
     }

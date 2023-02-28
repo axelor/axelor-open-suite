@@ -118,63 +118,66 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
             || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED;
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      log.debug("Moveline {}", moveLine);
-      boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        log.debug("Moveline {}", moveLine);
+        boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
 
-      MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
-      AnalyticMoveLineRepository analyticMoveLineRepository =
-          Beans.get(AnalyticMoveLineRepository.class);
-      newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
-      List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
-      if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
-        for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
-          AnalyticMoveLine newAnalyticMoveLine =
-              analyticMoveLineRepository.copy(analyticMoveLine, true);
-          newAnalyticMoveLine.setDate(newMoveLine.getDate());
-          analyticMoveLineList.add(newAnalyticMoveLine);
+        MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
+        AnalyticMoveLineRepository analyticMoveLineRepository =
+            Beans.get(AnalyticMoveLineRepository.class);
+        newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
+        List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
+        if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+          for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+            AnalyticMoveLine newAnalyticMoveLine =
+                analyticMoveLineRepository.copy(analyticMoveLine, true);
+            newAnalyticMoveLine.setDate(newMoveLine.getDate());
+            analyticMoveLineList.add(newAnalyticMoveLine);
+          }
+        } else if (moveLine.getAnalyticDistributionTemplate() != null) {
+          analyticMoveLineList =
+              Beans.get(AnalyticMoveLineService.class)
+                  .generateLines(
+                      newMoveLine.getAnalyticDistributionTemplate(),
+                      newMoveLine.getDebit().add(newMoveLine.getCredit()),
+                      AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
+                      dateOfReversion);
         }
-      } else if (moveLine.getAnalyticDistributionTemplate() != null) {
-        analyticMoveLineList =
-            Beans.get(AnalyticMoveLineService.class)
-                .generateLines(
-                    newMoveLine.getAnalyticDistributionTemplate(),
-                    newMoveLine.getDebit().add(newMoveLine.getCredit()),
-                    AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
-                    dateOfReversion);
-      }
-      if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
-        newMoveLine.clearAnalyticMoveLineList();
-        analyticMoveLineList.forEach(newMoveLine::addAnalyticMoveLineListItem);
-      }
-
-      newMove.addMoveLineListItem(newMoveLine);
-
-      if (isUnreconcileOriginalMove) {
-        List<Reconcile> reconcileList =
-            Beans.get(ReconcileRepository.class)
-                .all()
-                .filter(
-                    "self.statusSelect != ?1 AND (self.debitMoveLine = ?2 OR self.creditMoveLine = ?2)",
-                    ReconcileRepository.STATUS_CANCELED,
-                    moveLine)
-                .fetch();
-        for (Reconcile reconcile : reconcileList) {
-          reconcileService.unreconcile(reconcile);
+        if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
+          newMoveLine.clearAnalyticMoveLineList();
+          analyticMoveLineList.forEach(newMoveLine::addAnalyticMoveLineListItem);
         }
-      }
 
-      cancelInvoicePayment(move);
+        newMove.addMoveLineListItem(newMoveLine);
 
-      if (validatedMove && isAutomaticReconcile) {
-        if (isDebit) {
-          reconcileService.reconcile(moveLine, newMoveLine, false, true);
-        } else {
-          reconcileService.reconcile(newMoveLine, moveLine, false, true);
+        if (isUnreconcileOriginalMove) {
+          List<Reconcile> reconcileList =
+              Beans.get(ReconcileRepository.class)
+                  .all()
+                  .filter(
+                      "self.statusSelect != ?1 AND (self.debitMoveLine = ?2 OR self.creditMoveLine = ?2)",
+                      ReconcileRepository.STATUS_CANCELED,
+                      moveLine)
+                  .fetch();
+          if (reconcileList != null) {
+            for (Reconcile reconcile : reconcileList) {
+              reconcileService.unreconcile(reconcile);
+            }
+          }
+        }
+
+        cancelInvoicePayment(move);
+
+        if (validatedMove && isAutomaticReconcile) {
+          if (isDebit) {
+            reconcileService.reconcile(moveLine, newMoveLine, false, true);
+          } else {
+            reconcileService.reconcile(newMoveLine, moveLine, false, true);
+          }
         }
       }
     }
-
     if (validatedMove && isAutomaticAccounting) {
       moveValidateService.accounting(newMove);
     }
@@ -198,13 +201,15 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
   @Override
   public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
-    move =
-        generateReverse(
-            move,
-            (boolean) assistantMap.get("isAutomaticReconcile"),
-            (boolean) assistantMap.get("isAutomaticAccounting"),
-            (boolean) assistantMap.get("isUnreconcileOriginalMove"),
-            (LocalDate) assistantMap.get("dateOfReversion"));
+    if (assistantMap != null) {
+      move =
+          generateReverse(
+              move,
+              (boolean) assistantMap.get("isAutomaticReconcile"),
+              (boolean) assistantMap.get("isAutomaticAccounting"),
+              (boolean) assistantMap.get("isUnreconcileOriginalMove"),
+              (LocalDate) assistantMap.get("dateOfReversion"));
+    }
     return move;
   }
 
@@ -236,6 +241,10 @@ public class MoveReverseServiceImpl implements MoveReverseService {
 
   public List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
       throws AxelorException {
+
+    if (assistantMap == null) {
+      return new ArrayList<>();
+    }
     boolean isAutomaticReconcile = (boolean) assistantMap.get("isAutomaticReconcile");
     boolean isAutomaticAccounting = (boolean) assistantMap.get("isAutomaticAccounting");
     boolean isUnreconcileOriginalMove = (boolean) assistantMap.get("isUnreconcileOriginalMove");
@@ -246,19 +255,21 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         isChooseDate ? (LocalDate) assistantMap.get("dateOfReversion") : null;
     List<Move> reverseMoveList = new ArrayList<>();
 
-    for (Move move : moveList) {
-      if (!isChooseDate) {
-        dateOfReversion =
-            extractContextMoveService.getDateOfReversion(null, move, dateOfReversionSelect);
-      }
+    if (CollectionUtils.isNotEmpty(moveList)) {
+      for (Move move : moveList) {
+        if (!isChooseDate) {
+          dateOfReversion =
+              extractContextMoveService.getDateOfReversion(null, move, dateOfReversionSelect);
+        }
 
-      reverseMoveList.add(
-          this.generateReverse(
-              move,
-              isAutomaticReconcile,
-              isAutomaticAccounting,
-              isUnreconcileOriginalMove,
-              dateOfReversion));
+        reverseMoveList.add(
+            this.generateReverse(
+                move,
+                isAutomaticReconcile,
+                isAutomaticAccounting,
+                isUnreconcileOriginalMove,
+                dateOfReversion));
+      }
     }
 
     return reverseMoveList;

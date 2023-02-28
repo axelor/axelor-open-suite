@@ -50,6 +50,9 @@ public class WorkflowCancelServiceContractImpl extends WorkflowCancelServiceSupp
   @Override
   public void afterCancel(Invoice invoice) throws AxelorException {
     super.afterCancel(invoice);
+    if (invoice == null || invoice.getInvoiceLineList() == null) {
+      return;
+    }
     invoice.getInvoiceLineList().stream()
         .filter(invoiceLine -> invoiceLine.getContractLine() != null)
         .forEach(

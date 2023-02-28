@@ -136,7 +136,9 @@ public class TemplateMaker {
     if (localContext == null) {
       localContext = new HashMap<>();
     }
-    localContext.putAll(map);
+    if (map != null) {
+      localContext.putAll(map);
+    }
   }
 
   public Class<?> getBeanClass(Model model) {

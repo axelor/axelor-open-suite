@@ -21,6 +21,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.inject.Beans;
+import java.util.HashMap;
 import java.util.Map;
 
 public class StockMoveLineStockRepository extends StockMoveLineRepository {
@@ -35,7 +36,7 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long stockMoveLineId = (Long) json.get("id");
+    Long stockMoveLineId = json != null ? (Long) json.get("id") : 0L;
     StockMoveLine stockMoveLine = find(stockMoveLineId);
 
     StockMove stockMove = stockMoveLine.getStockMove();
@@ -50,6 +51,10 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
 
     if (stockMove.getStatusSelect() < StockMoveRepository.STATUS_REALIZED) {
       Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+
+      if (json == null) {
+        json = new HashMap<>();
+      }
       json.put(
           "availableStatus",
           stockMoveLine.getProduct() != null && stockMoveLine.getProduct().getStockManaged()

@@ -18,6 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.service.TraceBackService;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
@@ -32,7 +33,7 @@ public class AccountAnalyticDistributionTemplateRepository
       if (analyticDistributionTemplate.getId() == null) {
         return super.save(analyticDistributionTemplate);
       }
-      if (analyticDistributionTemplate.getAnalyticDistributionLineList().size() == 1) {
+      if (ListUtils.size(analyticDistributionTemplate.getAnalyticDistributionLineList()) == 1) {
         analyticDistributionTemplate
             .getAnalyticDistributionLineList()
             .get(0)

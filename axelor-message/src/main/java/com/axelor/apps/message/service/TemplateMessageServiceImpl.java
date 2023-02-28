@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.mail.MessagingException;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
@@ -309,8 +310,11 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
                 EntityHelper.getEntityClass(template).getName())
             .fetch();
     Set<MetaFile> metaFiles = Sets.newHashSet();
-    for (DMSFile metaAttachment : metaAttachments) {
-      if (!metaAttachment.getIsDirectory()) metaFiles.add(metaAttachment.getMetaFile());
+
+    if (CollectionUtils.isNotEmpty(metaAttachments)) {
+      for (DMSFile metaAttachment : metaAttachments) {
+        if (!metaAttachment.getIsDirectory()) metaFiles.add(metaAttachment.getMetaFile());
+      }
     }
 
     log.debug("Metafile to attach: {}", metaFiles);
@@ -322,6 +326,10 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   public Map<String, Object> initMaker(
       long objectId, String model, String tag, boolean isJson, Map<String, Object> templatesContext)
       throws ClassNotFoundException {
+
+    if (templatesContext == null) {
+      templatesContext = new HashMap<>();
+    }
 
     if (isJson) {
       templatesContext.put(tag, JPA.find(MetaJsonRecord.class, objectId));
@@ -353,6 +361,10 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     } else {
       Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
       context = new com.axelor.rpc.Context(objectId, myClass);
+    }
+
+    if (templatesContext == null) {
+      templatesContext = new HashMap<>();
     }
 
     for (TemplateContext templateContext : templateContextList) {

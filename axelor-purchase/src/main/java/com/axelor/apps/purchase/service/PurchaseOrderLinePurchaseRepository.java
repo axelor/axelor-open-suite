@@ -27,10 +27,11 @@ public class PurchaseOrderLinePurchaseRepository extends PurchaseOrderLineReposi
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    if (context.get("_model") != null
+    if (context != null
+        && context.get("_model") != null
         && context.get("_model").toString().contains("PurchaseOrder")
         && context.get("id") != null) {
-      Long id = (Long) json.get("id");
+      Long id = json != null ? (Long) json.get("id") : null;
       if (id != null) {
         PurchaseOrderLine purchaseOrderLine = find(id);
         PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();

@@ -23,6 +23,8 @@ import com.axelor.apps.bpm.db.WkfInstance;
 import com.axelor.apps.bpm.db.repo.WkfInstanceRepository;
 import com.axelor.apps.bpm.service.WkfDisplayService;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -66,6 +68,10 @@ public class WkfRequestListener {
 
   protected void processUpdated(BeforeTransactionComplete event, String tenantId)
       throws AxelorException {
+
+    if (event.getUpdated() == null) {
+      return;
+    }
 
     Set<? extends Model> updated = new HashSet<Model>(event.getUpdated());
 
@@ -173,11 +179,15 @@ public class WkfRequestListener {
   @Transactional
   public void processDeleted(BeforeTransactionComplete event, String tenantId) {
 
+    if (event.getDeleted() == null) {
+      return;
+    }
+
     Set<? extends Model> deleted = new HashSet<Model>(event.getDeleted());
 
     WkfInstanceRepository wkfInstanceRepository = Beans.get(WkfInstanceRepository.class);
 
-    for (Model model : deleted) {
+    for (Model model : SetUtils.emptyIfNull(deleted)) {
       String modelName = EntityHelper.getEntityClass(model).getName();
       if (model instanceof MetaJsonRecord) {
         modelName = ((MetaJsonRecord) model).getJsonModel();
@@ -188,7 +198,8 @@ public class WkfRequestListener {
           WkfInstance wkfInstance =
               wkfInstanceRepository.findByInstnaceId(model.getProcessInstanceId());
           if (wkfInstance != null
-              && wkfInstance.getWkfProcess().getWkfProcessConfigList().size() == 1) {
+              && wkfInstance.getWkfProcess() != null
+              && ListUtils.size(wkfInstance.getWkfProcess().getWkfProcessConfigList()) == 1) {
             wkfInstanceRepository.remove(wkfInstance);
           }
         } catch (Exception e) {

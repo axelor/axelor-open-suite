@@ -30,6 +30,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -145,7 +146,8 @@ public class AccountService {
       for (Long accountId : accountList) {
 
         allAccountsSubAccountIncluded.addAll(
-            getAllAccountsSubAccountIncluded(getSubAccounts(accountId), counter));
+            ListUtils.emptyIfNull(
+                getAllAccountsSubAccountIncluded(getSubAccounts(accountId), counter)));
       }
     }
     return allAccountsSubAccountIncluded;
@@ -153,8 +155,13 @@ public class AccountService {
 
   public List<Long> getSubAccounts(Long accountId) {
 
-    return accountRepository.all().filter("self.parentAccount.id = ?1", accountId).select("id")
-        .fetch(0, 0).stream()
+    return ListUtils.emptyIfNull(
+            accountRepository
+                .all()
+                .filter("self.parentAccount.id = ?1", accountId)
+                .select("id")
+                .fetch(0, 0))
+        .stream()
         .map(m -> (Long) m.get("id"))
         .collect(Collectors.toList());
   }
@@ -184,7 +191,9 @@ public class AccountService {
             List<Long> rulesAnalyticAccountList = getRulesIds(account);
 
             if (CollectionUtils.isNotEmpty(rulesAnalyticAccountList)
-                && analyticDistributionTemplate.getAnalyticDistributionLineList().stream()
+                && ListUtils.emptyIfNull(
+                        account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList())
+                    .stream()
                     .map(AnalyticDistributionLine::getAnalyticAccount)
                     .filter(Objects::nonNull)
                     .map(AnalyticAccount::getId)

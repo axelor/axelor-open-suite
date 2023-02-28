@@ -34,6 +34,7 @@ import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,7 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
             .bind("dateLimit", LocalDateTime.now().minusMonths(months));
 
     for (List<GlobalTrackingLog> globalTrackingLogList;
-        !(globalTrackingLogList = query.fetch(FETCH_LIMIT)).isEmpty(); ) {
+        CollectionUtils.isNotEmpty((globalTrackingLogList = query.fetch(FETCH_LIMIT))); ) {
       removeGlobalTrackingLogs(globalTrackingLogList);
       JPA.clear();
     }
@@ -83,6 +84,9 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
   @Override
   @Transactional
   public void removeGlobalTrackingLogs(List<GlobalTrackingLog> globalTrackingLogList) {
+    if (globalTrackingLogList == null) {
+      return;
+    }
     for (GlobalTrackingLog globalTrackingLog : globalTrackingLogList) {
       MetaFile metaFile = globalTrackingLog.getMetaFile();
       globalTrackingLogRepo.remove(globalTrackingLog);

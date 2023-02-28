@@ -37,8 +37,10 @@ public class ContractLineManagementRepository extends ContractLineRepository {
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
 
-    if (context.containsKey("additionalBenefitContractLineList")
+    if (context != null
+        && context.containsKey("additionalBenefitContractLineList")
         && context.get("_field").equals("additionalBenefitContractLineList")
+        && json != null
         && json.get("id") != null) {
       Long contractLineId = (Long) json.get("id");
       InvoiceLine invoiceLine =

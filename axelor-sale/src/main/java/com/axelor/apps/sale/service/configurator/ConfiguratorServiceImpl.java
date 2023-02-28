@@ -36,6 +36,8 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.tool.MetaTool;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -65,6 +67,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
@@ -110,16 +113,19 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
     addSpecialAttributeParentSaleOrderId(jsonAttributes, saleOrderId);
     indicators = filterIndicators(configurator, indicators);
-    for (MetaJsonField indicator : indicators) {
-      try {
-        String indicatorName = indicator.getName();
+    if (indicators != null) {
+      for (MetaJsonField indicator : indicators) {
+        try {
+          String indicatorName = indicator.getName();
 
-        Object calculatedValue = computeIndicatorValue(configurator, indicatorName, jsonAttributes);
-        checkType(calculatedValue, indicator);
-        jsonIndicators.put(indicatorName, calculatedValue);
-      } catch (MissingPropertyException e) {
-        // if a field is missing, the value needs to be set to null
-        continue;
+          Object calculatedValue =
+              computeIndicatorValue(configurator, indicatorName, jsonAttributes);
+          checkType(calculatedValue, indicator);
+          jsonIndicators.put(indicatorName, calculatedValue);
+        } catch (MissingPropertyException e) {
+          // if a field is missing, the value needs to be set to null
+          continue;
+        }
       }
     }
   }
@@ -136,10 +142,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       Configurator configurator, List<MetaJsonField> indicators) {
 
     List<ConfiguratorFormula> formulas = new ArrayList<>();
-    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorProductFormulaList());
-    formulas.addAll(configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList());
+    formulas.addAll(
+        ListUtils.emptyIfNull(
+            configurator.getConfiguratorCreator().getConfiguratorProductFormulaList()));
+    formulas.addAll(
+        ListUtils.emptyIfNull(
+            configurator.getConfiguratorCreator().getConfiguratorSOLineFormulaList()));
 
-    return indicators.stream()
+    return ListUtils.emptyIfNull(indicators).stream()
         .filter(metaJsonField -> !isOneToManyNotAttr(formulas, metaJsonField))
         .collect(Collectors.toList());
   }
@@ -208,7 +218,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         jsonIndicators,
         Product.class,
         product);
-    for (Entry<String, Object> entry : jsonIndicators.entrySet()) {
+    for (Entry<String, Object> entry : SetUtils.emptyIfNull(jsonIndicators.entrySet())) {
       mapper.set(product, entry.getKey(), entry.getValue());
     }
 
@@ -332,7 +342,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       formulas = creator.getConfiguratorSOLineFormulaList();
     }
     String groovyFormula = null;
-    for (ConfiguratorFormula formula : formulas) {
+    for (ConfiguratorFormula formula : ListUtils.emptyIfNull(formulas)) {
       String fieldName = indicatorName;
       fieldName = fieldName.substring(0, fieldName.indexOf('_'));
 
@@ -423,7 +433,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    */
   protected void cleanIndicators(JsonContext jsonIndicators) {
     Map<String, Object> newKeyMap = new HashMap<>();
-    for (Map.Entry entry : jsonIndicators.entrySet()) {
+    for (Map.Entry entry : SetUtils.emptyIfNull(jsonIndicators.entrySet())) {
       String oldKey = entry.getKey().toString();
       newKeyMap.put(oldKey.substring(0, oldKey.indexOf('_')), entry.getValue());
     }
@@ -446,21 +456,23 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         methodArg[0] = SaleOrderLine.class;
       }
       configuratorFormulaList =
-          configuratorFormulaList.stream()
+          ListUtils.emptyIfNull(configuratorFormulaList).stream()
               .filter(
                   configuratorFormula ->
                       "OneToMany".equals(configuratorFormula.getMetaField().getRelationship()))
               .collect(Collectors.toList());
-      for (ConfiguratorFormula formula : configuratorFormulaList) {
-        List<? extends Model> computedValue =
-            (List<? extends Model>) computeFormula(formula.getFormula(), jsonAttributes);
-        if (computedValue == null) {
-          continue;
-        }
-        Method setMappedByMethod = computeMappedByMethod(formula);
-        for (Model listElement : computedValue) {
-          setMappedByMethod.invoke(listElement, model);
-          JPA.save(listElement);
+      if (configuratorFormulaList != null) {
+        for (ConfiguratorFormula formula : configuratorFormulaList) {
+          List<? extends Model> computedValue =
+              (List<? extends Model>) computeFormula(formula.getFormula(), jsonAttributes);
+          if (computedValue == null) {
+            continue;
+          }
+          Method setMappedByMethod = computeMappedByMethod(formula);
+          for (Model listElement : computedValue) {
+            setMappedByMethod.invoke(listElement, model);
+            JPA.save(listElement);
+          }
         }
       }
     } catch (InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
@@ -504,6 +516,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             .bind("name", model.getClass().getSimpleName())
             .fetch();
 
+    if (CollectionUtils.isEmpty(manyToManyFields)) {
+      return;
+    }
+
     Mapper mapper = Mapper.of(model.getClass());
     for (MetaField manyToManyField : manyToManyFields) {
       Set<? extends Model> manyToManyValue =
@@ -521,6 +537,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
             .filter("self.metaModel.name = :name " + "AND self.relationship = 'ManyToOne'")
             .bind("name", model.getClass().getSimpleName())
             .fetch();
+
+    if (CollectionUtils.isEmpty(manyToOneFields)) {
+      return;
+    }
 
     Mapper mapper = Mapper.of(model.getClass());
     for (MetaField manyToOneField : manyToOneFields) {

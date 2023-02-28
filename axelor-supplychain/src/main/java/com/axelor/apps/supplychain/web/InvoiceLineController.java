@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -122,7 +123,8 @@ public class InvoiceLineController {
         .computeBudgetDistributionSumAmount(invoiceLine, invoice);
 
     response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
-    response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
+    response.setValue(
+        "budgetDistributionList", ListUtils.emptyIfNull(invoiceLine.getBudgetDistributionList()));
   }
 
   public void checkQty(ActionRequest request, ActionResponse response) {

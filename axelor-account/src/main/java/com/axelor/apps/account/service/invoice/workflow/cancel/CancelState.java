@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveCancelService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -76,9 +77,13 @@ public class CancelState extends WorkflowInvoice {
 
     budgetService.updateBudgetLinesFromInvoice(invoice);
 
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      invoiceLine.clearBudgetDistributionList();
+    if (invoice.getInvoiceLineList() != null) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        invoiceLine.clearBudgetDistributionList();
+      }
     }
+
+    workflowService.afterCancel(invoice);
   }
 
   @Transactional
@@ -106,7 +111,7 @@ public class CancelState extends WorkflowInvoice {
     InvoiceToolService.setPfpStatus(invoice);
     invoice.setDecisionPfpTakenDate(null);
 
-    invoice.getInvoiceTermList().stream()
+    ListUtils.emptyIfNull(invoice.getInvoiceTermList()).stream()
         .filter(it -> it.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_NO_PFP)
         .forEach(it -> it.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_AWAITING));
   }

@@ -46,6 +46,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,7 +127,7 @@ public class ReimbursementImportService {
                 seq,
                 null,
                 null);
-        move.getMoveLineList().add(debitMoveLine);
+        move.addMoveLineListItem(debitMoveLine);
         this.validateMove(move);
       }
     }
@@ -170,7 +171,7 @@ public class ReimbursementImportService {
             seq,
             refReject,
             null);
-    move.getMoveLineList().add(creditMoveLine);
+    move.addMoveLineListItem(creditMoveLine);
 
     moveLineRepo.save(creditMoveLine);
 
@@ -213,9 +214,10 @@ public class ReimbursementImportService {
 
   public BigDecimal getTotalAmount(Move move) {
     BigDecimal totalAmount = BigDecimal.ZERO;
-
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      totalAmount = totalAmount.add(moveLine.getCredit());
+    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        totalAmount = totalAmount.add(moveLine.getCredit());
+      }
     }
     return totalAmount;
   }
@@ -236,7 +238,7 @@ public class ReimbursementImportService {
             seq,
             null,
             null);
-    move.getMoveLineList().add(debitMoveLine);
+    move.addMoveLineListItem(debitMoveLine);
     moveRepo.save(move);
     return debitMoveLine;
   }

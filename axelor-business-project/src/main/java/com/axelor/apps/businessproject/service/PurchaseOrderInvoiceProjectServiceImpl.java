@@ -110,7 +110,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       throws AxelorException {
     super.processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
 
-    if (appBusinessProjectService.isApp("business-project")) {
+    if (appBusinessProjectService.isApp("business-project") && invoiceLineList != null) {
       invoiceLineList.get(invoiceLineList.size() - 1).setProject(purchaseOrderLine.getProject());
     }
   }
@@ -329,8 +329,10 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
     if (project != null
         && !appBusinessProjectService.getAppBusinessProject().getProjectInvoiceLines()) {
       invoiceMerged.setProject(project);
-      for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()) {
-        invoiceLine.setProject(project);
+      if (invoiceMerged.getInvoiceLineList() != null) {
+        for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()) {
+          invoiceLine.setProject(project);
+        }
       }
     }
     return invoiceMerged;

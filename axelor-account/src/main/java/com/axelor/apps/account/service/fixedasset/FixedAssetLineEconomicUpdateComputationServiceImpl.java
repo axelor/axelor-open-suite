@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -28,6 +29,7 @@ import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -121,7 +123,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
 
   @Override
   protected List<FixedAssetLine> getFixedAssetLineList(FixedAsset fixedAsset) {
-    return fixedAsset.getFixedAssetLineList();
+    return fixedAsset.getFixedAssetLineList() != null
+        ? fixedAsset.getFixedAssetLineList()
+        : new ArrayList<>();
   }
 
   @Override
@@ -201,7 +205,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     // We can proceed the next part.
     FixedAssetLine firstPlannedFixedAssetLine = optFixedAssetLine.get();
     clearPlannedFixedAssetLineListExcept(fixedAssetLineList, firstPlannedFixedAssetLine);
-    this.listSizeAfterClear = fixedAssetLineList.size();
+    this.listSizeAfterClear = ListUtils.size(fixedAssetLineList);
     if (fixedAsset.getNumberOfDepreciation() <= this.listSizeAfterClear) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -216,19 +220,21 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   protected void clearPlannedFixedAssetLineListExcept(
       List<FixedAssetLine> fixedAssetLineList, FixedAssetLine firstPlannedFixedAssetLine) {
     // We remove all fixedAssetLine that are not realized but we keep first planned line.
-    List<FixedAssetLine> linesToRemove =
-        fixedAssetLineList.stream()
-            .filter(
-                fixedAssetLine ->
-                    fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
-                        && !fixedAssetLine.equals(firstPlannedFixedAssetLine))
-            .collect(Collectors.toList());
+    if (fixedAssetLineList != null) {
+      List<FixedAssetLine> linesToRemove =
+          fixedAssetLineList.stream()
+              .filter(
+                  fixedAssetLine ->
+                      fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
+                          && !fixedAssetLine.equals(firstPlannedFixedAssetLine))
+              .collect(Collectors.toList());
 
-    fixedAssetLineList.removeIf(
-        fixedAssetLine ->
-            fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
-                && !fixedAssetLine.equals(firstPlannedFixedAssetLine));
-    fixedAssetLineService.clear(linesToRemove);
+      fixedAssetLineList.removeIf(
+          fixedAssetLine ->
+              fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
+                  && !fixedAssetLine.equals(firstPlannedFixedAssetLine));
+      fixedAssetLineService.clear(linesToRemove);
+    }
   }
 
   protected void recomputeFirstPlannedLine(

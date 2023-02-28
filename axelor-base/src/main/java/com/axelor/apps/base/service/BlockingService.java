@@ -40,7 +40,8 @@ public class BlockingService {
 
     if (blockings != null && !blockings.isEmpty()) {
       for (Blocking blocking : blockings) {
-        if (blocking.getCompanySet().contains(company)
+        if (blocking.getCompanySet() != null
+            && blocking.getCompanySet().contains(company)
             && blocking.getBlockingSelect().equals(blockingType)
             && blocking
                     .getBlockingToDate()

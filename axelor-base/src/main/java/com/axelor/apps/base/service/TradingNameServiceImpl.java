@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.TradingNamePrintingSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class TradingNameServiceImpl implements TradingNameService {
               .bind("tradingName", tradingName.getId())
               .fetch();
       printingSettingsList =
-          tradingNamePrintingSettingsList.stream()
+          ListUtils.emptyIfNull(tradingNamePrintingSettingsList).stream()
               .map(TradingNamePrintingSettings::getPrintingSettings)
               .collect(Collectors.toList());
     }

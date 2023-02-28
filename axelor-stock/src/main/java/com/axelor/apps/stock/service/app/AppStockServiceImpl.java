@@ -26,6 +26,7 @@ import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AppStockServiceImpl implements AppStockService {
 
@@ -41,10 +42,12 @@ public class AppStockServiceImpl implements AppStockService {
 
     List<Company> companies = companyRepo.all().filter("self.stockConfig is null").fetch();
 
-    for (Company company : companies) {
-      StockConfig stockConfig = new StockConfig();
-      stockConfig.setCompany(company);
-      stockConfigRepo.save(stockConfig);
+    if (CollectionUtils.isNotEmpty(companies)) {
+      for (Company company : companies) {
+        StockConfig stockConfig = new StockConfig();
+        stockConfig.setCompany(company);
+        stockConfigRepo.save(stockConfig);
+      }
     }
   }
 

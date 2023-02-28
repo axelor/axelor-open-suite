@@ -53,6 +53,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -74,6 +75,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -476,7 +478,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
     if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-      stockMove.getStockMoveLineList().forEach(stockMoveLineService::fillRealizeWapPrice);
+      ListUtils.emptyIfNull(stockMove.getStockMoveLineList())
+          .forEach(stockMoveLineService::fillRealizeWapPrice);
     }
     stockMoveLineService.checkExpirationDates(stockMove);
 
@@ -587,7 +590,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     List<Product> productList =
-        stockMove.getStockMoveLineList().stream()
+        ListUtils.emptyIfNull(stockMove.getStockMoveLineList()).stream()
             .map(StockMoveLine::getProduct)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
@@ -704,11 +707,13 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList) {
 
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
 
-      if (stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) != 0) {
+        if (stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) != 0) {
 
-        return true;
+          return true;
+        }
       }
     }
 
@@ -817,9 +822,11 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   protected void copyStockMoveLines(
       StockMove newStockMove, List<StockMoveLine> stockMoveLines, boolean split) {
-    for (StockMoveLine stockMoveLine : stockMoveLines) {
-      if (!split || stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0) {
-        newStockMove.addStockMoveLineListItem(copyStockMoveLine(stockMoveLine, split));
+    if (stockMoveLines != null) {
+      for (StockMoveLine stockMoveLine : stockMoveLines) {
+        if (!split || stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0) {
+          newStockMove.addStockMoveLineListItem(copyStockMoveLine(stockMoveLine, split));
+        }
       }
     }
   }
@@ -952,31 +959,33 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     boolean selected = false;
 
-    for (StockMoveLine moveLine : stockMoveLines) {
-      if (moveLine.isSelected()) {
-        selected = true;
-        StockMoveLine line = stockMoveLineRepo.find(moveLine.getId());
-        BigDecimal totalQty = line.getQty();
-        LOG.debug("Move Line selected: {}, Qty: {}", line, totalQty);
-        while (splitQty.compareTo(totalQty) < 0) {
-          totalQty = totalQty.subtract(splitQty);
-          StockMoveLine newLine = stockMoveLineRepo.copy(line, false);
-          newLine.setQty(splitQty);
-          newLine.setRealQty(splitQty);
-          newLine.setStockMove(line.getStockMove());
-          stockMoveLineRepo.save(newLine);
+    if (stockMoveLines != null) {
+      for (StockMoveLine moveLine : stockMoveLines) {
+        if (moveLine.isSelected()) {
+          selected = true;
+          StockMoveLine line = stockMoveLineRepo.find(moveLine.getId());
+          BigDecimal totalQty = line.getQty();
+          LOG.debug("Move Line selected: {}, Qty: {}", line, totalQty);
+          while (splitQty.compareTo(totalQty) < 0) {
+            totalQty = totalQty.subtract(splitQty);
+            StockMoveLine newLine = stockMoveLineRepo.copy(line, false);
+            newLine.setQty(splitQty);
+            newLine.setRealQty(splitQty);
+            newLine.setStockMove(line.getStockMove());
+            stockMoveLineRepo.save(newLine);
+          }
+          LOG.debug("Qty remains: {}", totalQty);
+          if (totalQty.compareTo(BigDecimal.ZERO) > 0) {
+            StockMoveLine newLine = stockMoveLineRepo.copy(line, false);
+            newLine.setQty(totalQty);
+            newLine.setRealQty(totalQty);
+            newLine.setStockMove(line.getStockMove());
+            stockMoveLineRepo.save(newLine);
+            LOG.debug("New line created: {}", newLine);
+          }
+          stockMove.removeStockMoveLineListItem(line);
+          stockMoveLineRepo.remove(line);
         }
-        LOG.debug("Qty remains: {}", totalQty);
-        if (totalQty.compareTo(BigDecimal.ZERO) > 0) {
-          StockMoveLine newLine = stockMoveLineRepo.copy(line, false);
-          newLine.setQty(totalQty);
-          newLine.setRealQty(totalQty);
-          newLine.setStockMove(line.getStockMove());
-          stockMoveLineRepo.save(newLine);
-          LOG.debug("New line created: {}", newLine);
-        }
-        stockMove.removeStockMoveLineListItem(line);
-        stockMoveLineRepo.remove(line);
       }
     }
 
@@ -1001,14 +1010,14 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setStockMoveLineList(new ArrayList<>());
 
     modifiedStockMoveLines =
-        modifiedStockMoveLines.stream()
+        ListUtils.emptyIfNull(modifiedStockMoveLines).stream()
             .filter(stockMoveLine -> stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0)
             .collect(Collectors.toList());
-    for (StockMoveLine moveLine : modifiedStockMoveLines) {
+    for (StockMoveLine moveLine : ListUtils.emptyIfNull(modifiedStockMoveLines)) {
 
       // find the original move line to update it
       Optional<StockMoveLine> correspondingMoveLine =
-          originalStockMove.getStockMoveLineList().stream()
+          ListUtils.emptyIfNull(originalStockMove.getStockMoveLineList()).stream()
               .filter(stockMoveLine -> stockMoveLine.getId().equals(moveLine.getId()))
               .findFirst();
       if (BigDecimal.ZERO.compareTo(moveLine.getQty()) > 0
@@ -1077,7 +1086,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public void copyQtyToRealQty(StockMove stockMove) {
-    for (StockMoveLine line : stockMove.getStockMoveLineList()) line.setRealQty(line.getQty());
+    for (StockMoveLine line : ListUtils.emptyIfNull(stockMove.getStockMoveLineList()))
+      line.setRealQty(line.getQty());
     stockMoveRepo.save(stockMove);
   }
 
@@ -1135,10 +1145,14 @@ public class StockMoveServiceImpl implements StockMoveService {
             .fetch();
 
     Double inQty =
-        inLines.stream().mapToDouble(inl -> Double.parseDouble(inl.getQty().toString())).sum();
+        ListUtils.emptyIfNull(inLines).stream()
+            .mapToDouble(inl -> Double.parseDouble(inl.getQty().toString()))
+            .sum();
 
     Double outQty =
-        outLines.stream().mapToDouble(out -> Double.parseDouble(out.getQty().toString())).sum();
+        ListUtils.emptyIfNull(outLines).stream()
+            .mapToDouble(out -> Double.parseDouble(out.getQty().toString()))
+            .sum();
 
     Double qty = inQty - outQty;
 
@@ -1249,7 +1263,10 @@ public class StockMoveServiceImpl implements StockMoveService {
           lstSelectedMove.stream()
               .map(integer -> Long.parseLong(integer.toString()))
               .collect(Collectors.toList());
-      stockMove = stockMoveRepo.find(selectedStockMoveListId.get(0));
+      stockMove =
+          selectedStockMoveListId != null
+              ? stockMoveRepo.find(selectedStockMoveListId.get(0))
+              : null;
     } else if (stockMove != null && stockMove.getId() != null) {
       selectedStockMoveListId = new ArrayList<>();
       selectedStockMoveListId.add(stockMove.getId());
@@ -1265,12 +1282,12 @@ public class StockMoveServiceImpl implements StockMoveService {
             .all()
             .filter(
                 "self.id IN ("
-                    + selectedStockMoveListId.stream()
+                    + ListUtils.emptyIfNull(selectedStockMoveListId).stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(","))
                     + ") AND self.printingSettings IS NULL")
             .fetch();
-    if (!stockMoveList.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(stockMoveList)) {
       String exceptionMessage =
           String.format(
               I18n.get(StockExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
@@ -1283,12 +1300,14 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     String stockMoveIds =
-        selectedStockMoveListId.stream().map(Object::toString).collect(Collectors.joining(","));
+        ListUtils.emptyIfNull(selectedStockMoveListId).stream()
+            .map(Object::toString)
+            .collect(Collectors.joining(","));
 
     String title = I18n.get("Stock move");
     if (stockMove.getStockMoveSeq() != null) {
       title =
-          selectedStockMoveListId.size() == 1
+          ListUtils.size(selectedStockMoveListId) == 1
               ? I18n.get("StockMove") + " " + stockMove.getStockMoveSeq()
               : I18n.get("StockMove(s)");
     }
@@ -1349,8 +1368,10 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   public void setAvailableStatus(StockMove stockMove) {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      stockMoveLineService.setAvailableStatus(stockMoveLine);
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        stockMoveLineService.setAvailableStatus(stockMoveLine);
+      }
     }
   }
 

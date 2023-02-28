@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.reader.DataReaderFactory;
 import com.axelor.apps.tool.reader.DataReaderService;
 import com.axelor.common.Inflector;
@@ -252,7 +253,11 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
 
-      if (ignoreFields.contains(i)) {
+      if (fileFieldList == null) {
+        return;
+      }
+
+      if (ignoreFields != null && ignoreFields.contains(i)) {
         continue;
       }
 
@@ -272,7 +277,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         fileField = fileFieldList.get(i);
       }
 
-      if (line == 2) {
+      if (line == 2 && fileField != null) {
         fileField.setColumnTitle(value);
         continue;
       }
@@ -282,11 +287,11 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         this.setFileFieldConfig(row, i, fileField);
       }
 
-      if (isTabConfig && i > 0 && row[0] == null) {
+      if (isTabConfig && i > 0 && row[0] == null && fileField != null) {
         line += -(tabConfigRowCount + 2);
         this.setSampleLines(line, value, fileField);
         line = index;
-      } else if (!isTabConfig) {
+      } else if (!isTabConfig && fileField != null) {
         line += -2;
         this.setSampleLines(line, value, fileField);
         line = index;
@@ -310,6 +315,9 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       if (line == 0) {
         fileField = new FileField();
         fileField.setIsMatchWithFile(true);
+        if (fileFieldList == null) {
+          fileFieldList = new ArrayList<>();
+        }
         fileFieldList.add(fileField);
         fileField.setFileTab(fileTab);
 
@@ -324,7 +332,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
 
-      if (fileFieldList.size() <= i) {
+      if (ListUtils.size(fileFieldList) <= i) {
         break;
       }
 
@@ -333,7 +341,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       }
 
       if (fileField == null) {
-        fileField = fileFieldList.get(i);
+        fileField = ListUtils.emptyIfNull(fileFieldList).get(i);
       }
 
       setSampleLines(line, value, fileField);
@@ -406,7 +414,13 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     if (isValid) {
       this.setImportFields(mapper, fileField, importField, subImportField);
     } else {
+      if (ignoreFields == null) {
+        ignoreFields = new ArrayList<>();
+      }
       ignoreFields.add(index);
+    }
+    if (fileFieldList == null) {
+      fileFieldList = new ArrayList<>();
     }
     fileFieldList.add(fileField);
     fileField = fileFieldRepository.save(fileField);
@@ -570,31 +584,34 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
             KEY_IMPORT_TYPE, KEY_OBJECT, KEY_SEARCH_FIELD_SET, KEY_ACTIONS, KEY_SEARCH_CALL);
     Map<String, String> tabConfigDataMap = getTabConfigDataMap(row, KEY_LIST);
 
-    MetaModel model = metaModelRepo.findByName(tabConfigDataMap.get(KEY_OBJECT));
-    fileTab.setMetaModel(model);
+    if (tabConfigDataMap != null) {
+      MetaModel model = metaModelRepo.findByName(tabConfigDataMap.get(KEY_OBJECT));
+      fileTab.setMetaModel(model);
 
-    if (tabConfigDataMap.containsKey(KEY_IMPORT_TYPE)) {
+      if (tabConfigDataMap.containsKey(KEY_IMPORT_TYPE)) {
 
-      Integer importType = this.getImportType(null, tabConfigDataMap.get(KEY_IMPORT_TYPE));
-      fileTab.setImportType(importType);
+        Integer importType = this.getImportType(null, tabConfigDataMap.get(KEY_IMPORT_TYPE));
+        fileTab.setImportType(importType);
 
-      if (importType != FileFieldRepository.IMPORT_TYPE_NEW) {
-        if (!tabConfigDataMap.containsKey(KEY_SEARCH_FIELD_SET)
-            && !tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_6),
-              fileTab.getName());
-        }
-        if (tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
-          fileTab.setSearchCall(tabConfigDataMap.get(KEY_SEARCH_CALL));
-        } else {
-          searchFieldList = Arrays.asList(tabConfigDataMap.get(KEY_SEARCH_FIELD_SET).split("\\,"));
+        if (importType != FileFieldRepository.IMPORT_TYPE_NEW) {
+          if (!tabConfigDataMap.containsKey(KEY_SEARCH_FIELD_SET)
+              && !tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_6),
+                fileTab.getName());
+          }
+          if (tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
+            fileTab.setSearchCall(tabConfigDataMap.get(KEY_SEARCH_CALL));
+          } else {
+            searchFieldList =
+                Arrays.asList(tabConfigDataMap.get(KEY_SEARCH_FIELD_SET).split("\\,"));
+          }
         }
       }
-    }
 
-    fileTab.setActions(tabConfigDataMap.get(KEY_ACTIONS));
+      fileTab.setActions(tabConfigDataMap.get(KEY_ACTIONS));
+    }
   }
 
   protected void setFileFieldConfig(String[] row, Integer i, FileField fileField) {
@@ -640,10 +657,14 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       FileTab fileTab, List<String> searchFieldList, List<FileField> fileFieldList) {
     Set<FileField> searchFieldSet = new HashSet<FileField>();
 
-    for (String searchField : searchFieldList) {
-      for (FileField fileField : fileFieldList) {
-        if (fileField.getFullName().endsWith("- " + searchField)) {
-          searchFieldSet.add(fileField);
+    if (CollectionUtils.isNotEmpty(searchFieldList)) {
+      for (String searchField : searchFieldList) {
+        if (CollectionUtils.isNotEmpty(fileFieldList)) {
+          for (FileField fileField : fileFieldList) {
+            if (fileField.getFullName().endsWith("- " + searchField)) {
+              searchFieldSet.add(fileField);
+            }
+          }
         }
       }
     }
@@ -694,22 +715,27 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     boolean isResetValue = false;
 
-    for (FileTab fileTab : fileTabList) {
+    if (CollectionUtils.isNotEmpty(fileTabList)) {
+      for (FileTab fileTab : fileTabList) {
 
-      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
-      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
-      String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
+        Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
+        JsonContext jsonContext =
+            jsonContextMap != null ? (JsonContext) jsonContextMap.get("jsonContext") : null;
+        String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
 
-      List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
-      if (CollectionUtils.isEmpty(recordList)) {
-        continue;
+        if (jsonContextMap != null) {
+          List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
+          if (CollectionUtils.isEmpty(recordList)) {
+            continue;
+          }
+          isResetValue = true;
+
+          Class<? extends Model> modelKlass =
+              (Class<? extends Model>) Class.forName(fileTab.getMetaModel().getFullName());
+          this.resetPropertyValue(modelKlass, recordList);
+          this.resetSubPropertyValue(modelKlass, jsonContext);
+        }
       }
-      isResetValue = true;
-
-      Class<? extends Model> modelKlass =
-          (Class<? extends Model>) Class.forName(fileTab.getMetaModel().getFullName());
-      this.resetPropertyValue(modelKlass, recordList);
-      this.resetSubPropertyValue(modelKlass, jsonContext);
     }
     return isResetValue;
   }
@@ -725,12 +751,14 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
 
-      for (Object obj : recordList) {
-        Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
-        Long id = Long.valueOf(recordMap.get("id").toString());
-        Object bean = modelRepo.find(id);
-        if (bean != null) {
-          prop.set(bean, null);
+      if (CollectionUtils.isNotEmpty(recordList)) {
+        for (Object obj : recordList) {
+          Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
+          Long id = recordMap != null ? Long.valueOf(recordMap.get("id").toString()) : 0L;
+          Object bean = modelRepo.find(id);
+          if (bean != null) {
+            prop.set(bean, null);
+          }
         }
       }
     }
@@ -764,22 +792,27 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   @SuppressWarnings("unchecked")
   public void removeRecords(List<FileTab> fileTabList) throws ClassNotFoundException {
 
-    for (FileTab fileTab : fileTabList) {
+    if (CollectionUtils.isNotEmpty(fileTabList)) {
+      for (FileTab fileTab : fileTabList) {
 
-      String targetModelName = fileTab.getMetaModel().getFullName();
+        String targetModelName = fileTab.getMetaModel().getFullName();
 
-      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
-      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
-      String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
+        Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
+        if (jsonContextMap != null) {
+          JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
+          String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
 
-      List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
-      if (CollectionUtils.isEmpty(recordList)) {
-        continue;
+          List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
+          if (CollectionUtils.isEmpty(recordList)) {
+            continue;
+          }
+
+          Class<? extends Model> modelKlass =
+              (Class<? extends Model>) Class.forName(targetModelName);
+          removeRecord(fileTab, modelKlass, recordList, fileTabList);
+          removeSubRecords(modelKlass, jsonContext);
+        }
       }
-
-      Class<? extends Model> modelKlass = (Class<? extends Model>) Class.forName(targetModelName);
-      removeRecord(fileTab, modelKlass, recordList, fileTabList);
-      removeSubRecords(modelKlass, jsonContext);
     }
   }
 
@@ -794,31 +827,35 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     JpaRepository<? extends Model> modelRepo = JpaRepository.of(modelKlass);
 
-    for (FileTab tab : fileTabList) {
+    if (CollectionUtils.isNotEmpty(fileTabList)) {
+      for (FileTab tab : fileTabList) {
 
-      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(tab);
-      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
-      String fieldName = inflector.camelize(tab.getMetaModel().getName(), true) + "Set";
+        Map<String, Object> jsonContextMap = dataImportService.createJsonContext(tab);
+        JsonContext jsonContext =
+            jsonContextMap != null ? (JsonContext) jsonContextMap.get("jsonContext") : null;
+        String fieldName = inflector.camelize(tab.getMetaModel().getName(), true) + "Set";
 
-      List<Object> recList = (List<Object>) jsonContext.get(fieldName);
-      if (CollectionUtils.isEmpty(recList)) {
-        continue;
-      }
+        List<Object> recList =
+            jsonContext != null ? (List<Object>) jsonContext.get(fieldName) : new ArrayList<>();
+        if (CollectionUtils.isEmpty(recList)) {
+          continue;
+        }
 
-      Class<? extends Model> klass =
-          (Class<? extends Model>) Class.forName(tab.getMetaModel().getFullName());
+        Class<? extends Model> klass =
+            (Class<? extends Model>) Class.forName(tab.getMetaModel().getFullName());
 
-      Property[] props = Mapper.of(klass).getProperties();
+        Property[] props = Mapper.of(klass).getProperties();
 
-      for (Property prop : props) {
-        if (prop.getTarget() != null && prop.getTarget() == modelKlass && prop.isRequired()) {
-          removeRecord(tab, klass, recList, fileTabList);
+        for (Property prop : props) {
+          if (prop.getTarget() != null && prop.getTarget() == modelKlass && prop.isRequired()) {
+            removeRecord(tab, klass, recList, fileTabList);
+          }
         }
       }
     }
 
     String ids =
-        recordList.stream()
+        ListUtils.emptyIfNull(recordList).stream()
             .map(
                 obj -> {
                   Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
@@ -852,7 +889,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       List<Object> recList = (List<Object>) jsonContext.get(field);
 
       String ids =
-          recList.stream()
+          ListUtils.emptyIfNull(recList).stream()
               .map(
                   obj -> {
                     Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
@@ -879,7 +916,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
       String key = keyValue[0].replaceAll("(^\\h*)|(\\h*$)", "").trim().toLowerCase();
-      if (keys.contains(key)) {
+      if (keys != null && keys.contains(key)) {
         tabConfigDataMap.put(key, keyValue[1].trim());
       }
     }

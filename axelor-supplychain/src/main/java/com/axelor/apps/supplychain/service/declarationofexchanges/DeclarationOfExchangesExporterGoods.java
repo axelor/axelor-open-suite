@@ -34,6 +34,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.apps.supplychain.report.IReport;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -55,6 +56,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesExporter {
   protected static final String NAME_GOODS = /*$$(*/ "Declaration of exchanges of goods" /*)*/;
@@ -121,15 +123,17 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
                 declarationOfExchanges.getCountry(),
                 declarationOfExchanges.getCompany())
             .fetch();
-    List<String[]> dataList = new ArrayList<>(stockMoveLines.size());
+    List<String[]> dataList = new ArrayList<>(ListUtils.size(stockMoveLines));
     int lineNum = 1;
 
-    for (StockMoveLine stockMoveLine : stockMoveLines) {
+    if (CollectionUtils.isNotEmpty(stockMoveLines)) {
+      for (StockMoveLine stockMoveLine : stockMoveLines) {
 
-      String[] data = exportLineToCsv(stockMoveLine, lineNum);
-      if (data != null && data.length != 0) {
-        dataList.add(data);
-        lineNum++;
+        String[] data = exportLineToCsv(stockMoveLine, lineNum);
+        if (data != null && data.length != 0) {
+          dataList.add(data);
+          lineNum++;
+        }
       }
     }
 
@@ -152,7 +156,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
   protected String[] exportLineToCsv(StockMoveLine stockMoveLine, int lineNum)
       throws AxelorException {
 
-    String[] data = new String[columnHeadersList.size()];
+    String[] data = new String[ListUtils.size(columnHeadersList)];
 
     StockMove stockMove = stockMoveLine.getStockMove();
 
@@ -294,23 +298,24 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       }
     }
 
-    data[columnHeadersList.indexOf(LINE_NUM)] = String.valueOf(lineNum);
-    data[columnHeadersList.indexOf(NOMENCLATURE)] = customsCode;
-    data[columnHeadersList.indexOf(SRC_DST_COUNTRY)] = srcDstCountry;
-    data[columnHeadersList.indexOf(FISC_VAL)] = String.valueOf(fiscalValue);
-    data[columnHeadersList.indexOf(REGIME)] = String.valueOf(regime.getValue());
-    data[columnHeadersList.indexOf(MASS)] = String.valueOf(totalNetMass);
-    data[columnHeadersList.indexOf(UNITS)] = String.valueOf(supplementaryUnit);
-    data[columnHeadersList.indexOf(NAT_TRANS)] = String.valueOf(natTrans.getValue());
-    data[columnHeadersList.indexOf(TRANSP)] = String.valueOf(modeOfTransport.getValue());
-    data[columnHeadersList.indexOf(DEPT)] = dept;
-    data[columnHeadersList.indexOf(COUNTRY_ORIG)] = countryOrigCode;
-    data[columnHeadersList.indexOf(ACQUIRER)] = taxNbr;
-    data[columnHeadersList.indexOf(PRODUCT_CODE)] = productCode;
-    data[columnHeadersList.indexOf(PRODUCT_NAME)] = productName;
-    data[columnHeadersList.indexOf(PARTNER_SEQ)] = partnerSeq;
-    data[columnHeadersList.indexOf(INVOICE)] = invoiceId;
-
+    if (columnHeadersList != null) {
+      data[columnHeadersList.indexOf(LINE_NUM)] = String.valueOf(lineNum);
+      data[columnHeadersList.indexOf(NOMENCLATURE)] = customsCode;
+      data[columnHeadersList.indexOf(SRC_DST_COUNTRY)] = srcDstCountry;
+      data[columnHeadersList.indexOf(FISC_VAL)] = String.valueOf(fiscalValue);
+      data[columnHeadersList.indexOf(REGIME)] = String.valueOf(regime.getValue());
+      data[columnHeadersList.indexOf(MASS)] = String.valueOf(totalNetMass);
+      data[columnHeadersList.indexOf(UNITS)] = String.valueOf(supplementaryUnit);
+      data[columnHeadersList.indexOf(NAT_TRANS)] = String.valueOf(natTrans.getValue());
+      data[columnHeadersList.indexOf(TRANSP)] = String.valueOf(modeOfTransport.getValue());
+      data[columnHeadersList.indexOf(DEPT)] = dept;
+      data[columnHeadersList.indexOf(COUNTRY_ORIG)] = countryOrigCode;
+      data[columnHeadersList.indexOf(ACQUIRER)] = taxNbr;
+      data[columnHeadersList.indexOf(PRODUCT_CODE)] = productCode;
+      data[columnHeadersList.indexOf(PRODUCT_NAME)] = productName;
+      data[columnHeadersList.indexOf(PARTNER_SEQ)] = partnerSeq;
+      data[columnHeadersList.indexOf(INVOICE)] = invoiceId;
+    }
     return data;
   }
 

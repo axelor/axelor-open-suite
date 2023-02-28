@@ -103,19 +103,24 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
         };
 
     List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
-    invoiceLineList.addAll(invoiceOneLineList);
+    if (invoiceOneLineList != null) {
+      invoiceLineList.addAll(invoiceOneLineList);
+    }
 
     return invoiceLineList;
   }
 
   public BigDecimal computeSumInvoices(List<Invoice> invoices) {
     BigDecimal sumInvoices = BigDecimal.ZERO;
-    for (Invoice invoice : invoices) {
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
-          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
-        sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
-      } else {
-        sumInvoices = sumInvoices.add(invoice.getExTaxTotal());
+    if (invoices != null) {
+      for (Invoice invoice : invoices) {
+        if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+            || invoice.getOperationTypeSelect()
+                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+          sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
+        } else {
+          sumInvoices = sumInvoices.add(invoice.getExTaxTotal());
+        }
       }
     }
     return sumInvoices;

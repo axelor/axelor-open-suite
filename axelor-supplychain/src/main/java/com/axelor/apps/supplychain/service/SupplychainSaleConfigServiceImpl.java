@@ -24,6 +24,7 @@ import com.axelor.apps.sale.service.config.SaleConfigServiceImpl;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
     implements SupplychainSaleConfigService {
@@ -39,9 +40,11 @@ public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
             .filter("self.partner.isContact = false and self.partner.isCustomer = true")
             .fetch();
 
-    for (AccountingSituation accountingSituation : accountingSituationList) {
-      accountingSituation.setAcceptedCredit(saleConfig.getAcceptedCredit());
-      accountingSituationRepo.save(accountingSituation);
+    if (CollectionUtils.isNotEmpty(accountingSituationList)) {
+      for (AccountingSituation accountingSituation : accountingSituationList) {
+        accountingSituation.setAcceptedCredit(saleConfig.getAcceptedCredit());
+        accountingSituationRepo.save(accountingSituation);
+      }
     }
   }
 }

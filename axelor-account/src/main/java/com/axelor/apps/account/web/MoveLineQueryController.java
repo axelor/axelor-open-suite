@@ -66,11 +66,13 @@ public class MoveLineQueryController {
       BigDecimal selectedDebitTotal = BigDecimal.ZERO;
       BigDecimal selectedBalanceTotal = BigDecimal.ZERO;
 
-      for (MoveLineQueryLine moveLineQueryLine : moveLineQuery.getMoveLineQueryLineList()) {
-        if (moveLineQueryLine.getIsSelected()) {
-          MoveLine moveLine = moveLineQueryLine.getMoveLine();
-          selectedCreditTotal = selectedCreditTotal.add(moveLine.getCredit());
-          selectedDebitTotal = selectedDebitTotal.add(moveLine.getDebit());
+      if (moveLineQuery.getMoveLineQueryLineList() != null) {
+        for (MoveLineQueryLine moveLineQueryLine : moveLineQuery.getMoveLineQueryLineList()) {
+          if (moveLineQueryLine.getIsSelected()) {
+            MoveLine moveLine = moveLineQueryLine.getMoveLine();
+            selectedCreditTotal = selectedCreditTotal.add(moveLine.getCredit());
+            selectedDebitTotal = selectedDebitTotal.add(moveLine.getDebit());
+          }
         }
       }
       selectedBalanceTotal = selectedDebitTotal.subtract(selectedCreditTotal);
@@ -104,9 +106,11 @@ public class MoveLineQueryController {
                 .filter(l -> l.getIsSelected())
                 .map(l -> l.getMoveLine())
                 .collect(Collectors.toList());
-        for (MoveLine moveLine : moveLineSelectedList) {
-          if (Beans.get(MoveLineControlService.class).canReconcile(moveLine)) {
-            moveLineList.add(moveLine);
+        if (moveLineSelectedList != null) {
+          for (MoveLine moveLine : moveLineSelectedList) {
+            if (Beans.get(MoveLineControlService.class).canReconcile(moveLine)) {
+              moveLineList.add(moveLine);
+            }
           }
         }
       }
@@ -130,18 +134,24 @@ public class MoveLineQueryController {
                 .filter(l -> l.getIsSelected())
                 .map(l -> l.getMoveLine())
                 .collect(Collectors.toList());
-        for (MoveLine moveLine : moveLineSelectedList) {
-          for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
-            if (reconcile.getStatusSelect().equals(ReconcileRepository.STATUS_CONFIRMED)
-                && !reconcileList.contains(reconcile)) {
-              reconcileList.add(reconcile);
+        if (moveLineSelectedList != null) {
+          for (MoveLine moveLine : moveLineSelectedList) {
+            if (moveLine.getDebitReconcileList() != null) {
+              for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+                if (reconcile.getStatusSelect().equals(ReconcileRepository.STATUS_CONFIRMED)
+                    && !reconcileList.contains(reconcile)) {
+                  reconcileList.add(reconcile);
+                }
+              }
             }
-          }
 
-          for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
-            if (reconcile.getStatusSelect().equals(ReconcileRepository.STATUS_CONFIRMED)
-                && !reconcileList.contains(reconcile)) {
-              reconcileList.add(reconcile);
+            if (moveLine.getCreditReconcileList() != null) {
+              for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+                if (reconcile.getStatusSelect().equals(ReconcileRepository.STATUS_CONFIRMED)
+                    && !reconcileList.contains(reconcile)) {
+                  reconcileList.add(reconcile);
+                }
+              }
             }
           }
         }

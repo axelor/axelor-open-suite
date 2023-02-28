@@ -52,6 +52,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -230,11 +231,14 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     Map<String, String> productSupplierInfos =
         supplierCatalogService.getProductSupplierInfos(supplierPartner, company, product);
-    if (!line.getEnableFreezeFields()) {
-      line.setProductName(productSupplierInfos.get("productName"));
-      line.setQty(supplierCatalogService.getQty(product, supplierPartner, company));
+
+    if (productSupplierInfos != null) {
+      if (!line.getEnableFreezeFields()) {
+        line.setProductName(productSupplierInfos.get("productName"));
+        line.setQty(supplierCatalogService.getQty(product, supplierPartner, company));
+      }
+      line.setProductCode(productSupplierInfos.get("productCode"));
     }
-    line.setProductCode(productSupplierInfos.get("productCode"));
 
     if (line.getProductName() == null || line.getProductName().isEmpty()) {
       line.setProductName(product.getName());
@@ -629,7 +633,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
 
     if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
-      return null;
+      return new ArrayList<>();
     }
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {

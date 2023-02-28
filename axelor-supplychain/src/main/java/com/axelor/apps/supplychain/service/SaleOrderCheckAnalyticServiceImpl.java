@@ -26,6 +26,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderCheckAnalyticServiceImpl implements SaleOrderCheckAnalyticService {
 
@@ -33,10 +34,12 @@ public class SaleOrderCheckAnalyticServiceImpl implements SaleOrderCheckAnalytic
   public void checkSaleOrderLinesAnalyticDistribution(SaleOrder saleOrder) throws AxelorException {
 
     List<String> productList = new ArrayList<>();
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL
-          && saleOrderLine.getAnalyticDistributionTemplate() == null) {
-        productList.add(saleOrderLine.getProductName());
+    if (saleOrder != null && CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL
+            && saleOrderLine.getAnalyticDistributionTemplate() == null) {
+          productList.add(saleOrderLine.getProductName());
+        }
       }
     }
     if (!productList.isEmpty()) {

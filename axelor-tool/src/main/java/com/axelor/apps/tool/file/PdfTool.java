@@ -30,6 +30,7 @@ import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +62,10 @@ public final class PdfTool {
    */
   public static File mergePdf(List<File> fileList) throws IOException {
     PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
-    for (File file : fileList) {
-      pdfMergerUtility.addSource(file);
+    if (CollectionUtils.isNotEmpty(fileList)) {
+      for (File file : fileList) {
+        pdfMergerUtility.addSource(file);
+      }
     }
     Path tmpFile = MetaFiles.createTempFile(null, "");
     FileOutputStream stream = new FileOutputStream(tmpFile.toFile());

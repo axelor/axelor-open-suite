@@ -24,6 +24,7 @@ import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.PersistenceException;
 
@@ -65,6 +66,10 @@ public class OpportunityManagementRepository extends OpportunityRepository {
       final String closedLostId = "$closedLostId";
 
       AppCrm appCrm = Beans.get(AppCrmService.class).getAppCrm();
+
+      if (json == null) {
+        json = new HashMap<>();
+      }
 
       if (appCrm.getClosedWinOpportunityStatus() != null) {
         json.put(closedWonId, appCrm.getClosedWinOpportunityStatus().getId());

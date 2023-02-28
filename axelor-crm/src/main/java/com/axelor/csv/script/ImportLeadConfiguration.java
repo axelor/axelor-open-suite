@@ -40,15 +40,17 @@ public class ImportLeadConfiguration {
 
     assert bean instanceof ImportConfiguration;
 
-    final Path path = (Path) values.get("__path__");
+    final Path path = values != null ? (Path) values.get("__path__") : null;
 
     ImportConfiguration importConfig = (ImportConfiguration) bean;
 
     try {
-      File file = path.resolve(FILES_DIR + File.separator + IMPORT_LEAD_CONFIG).toFile();
-      importConfig.setBindMetaFile(metaFiles.upload(file));
-      file = path.resolve(FILES_DIR + File.separator + IMPORT_LEAD_CSV).toFile();
-      importConfig.setDataMetaFile(metaFiles.upload(file));
+      if (path != null) {
+        File file = path.resolve(FILES_DIR + File.separator + IMPORT_LEAD_CONFIG).toFile();
+        importConfig.setBindMetaFile(metaFiles.upload(file));
+        file = path.resolve(FILES_DIR + File.separator + IMPORT_LEAD_CSV).toFile();
+        importConfig.setDataMetaFile(metaFiles.upload(file));
+      }
     } catch (IOException e) {
       log.debug("Error importing lead import config", e);
       return null;

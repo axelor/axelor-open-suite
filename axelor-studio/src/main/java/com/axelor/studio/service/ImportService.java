@@ -60,6 +60,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.io.IOUtils;
+import org.apache.shiro.util.CollectionUtils;
 
 public class ImportService {
 
@@ -147,11 +148,13 @@ public class ImportService {
     assert bean instanceof AppBuilder;
 
     AppBuilder appBuilder = (AppBuilder) bean;
-    String fileName = (String) values.get("fileName");
-    String imageData = (String) values.get("imageData");
+    if (values != null) {
+      String fileName = (String) values.get("fileName");
+      String imageData = (String) values.get("imageData");
 
-    if (fileName != null && imageData != null) {
-      appBuilder.setImage(importImg(fileName, imageData));
+      if (fileName != null && imageData != null) {
+        appBuilder.setImage(importImg(fileName, imageData));
+      }
     }
 
     appBuilder = appBuilderRepo.save(appBuilder);
@@ -167,7 +170,7 @@ public class ImportService {
 
     appBuilder = appBuilderRepo.save(appBuilder);
 
-    Long appLoaderId = (Long) values.get("appLoaderId");
+    Long appLoaderId = values != null ? (Long) values.get("appLoaderId") : 0L;
 
     if (appLoaderId != null) {
       appLoaderRepository.find(appLoaderId).addImportedAppBuilderSetItem(appBuilder);
@@ -260,7 +263,7 @@ public class ImportService {
 
     AppLoader appLoader = (AppLoader) bean;
 
-    String importPath = (String) values.get("importFilePath");
+    String importPath = values != null ? (String) values.get("importFilePath") : null;
 
     if (importPath != null) {
       File importZipFile = createAppLoaderImportZip(importPath);
@@ -277,7 +280,7 @@ public class ImportService {
     importPath = importPath.replaceAll("/|\\\\", "(/|\\\\\\\\)");
     List<URL> fileUrls = MetaScanner.findAll(importPath);
 
-    if (fileUrls.isEmpty()) {
+    if (CollectionUtils.isEmpty(fileUrls)) {
       return null;
     }
 

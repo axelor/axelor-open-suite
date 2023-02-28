@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
 import com.axelor.apps.tool.ContextTool;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -53,9 +54,11 @@ public class AnalyticMoveLineQueryController {
               .getAnalyticMoveLineQuery(analyticMoveLineQuery);
       List<AnalyticMoveLine> analyticMoveLineList =
           Beans.get(AnalyticMoveLineRepository.class).all().filter(query).fetch();
-      response.setValue(
-          "__analyticMoveLineList",
-          analyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
+      if (analyticMoveLineList != null) {
+        response.setValue(
+            "__analyticMoveLineList",
+            analyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
+      }
       response.setAttr("filteredAnalyticmoveLinesDashlet", "refresh", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -128,12 +131,14 @@ public class AnalyticMoveLineQueryController {
         String.format(
             I18n.get(
                 "The analytic revision process has ended and generated %s reverse and %s revision analytic move lines."),
-            reverseAnalyticMoveLines.size(),
-            newAnalyticMoveLines.size()));
+            SetUtils.size(reverseAnalyticMoveLines),
+            SetUtils.size(newAnalyticMoveLines)));
 
-    response.setValue(
-        "__analyticMoveLineList",
-        filteredAnalyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
+    if (filteredAnalyticMoveLineList != null) {
+      response.setValue(
+          "__analyticMoveLineList",
+          filteredAnalyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
+    }
     response.setAttr("filteredAnalyticmoveLinesDashlet", "refresh", true);
   }
 

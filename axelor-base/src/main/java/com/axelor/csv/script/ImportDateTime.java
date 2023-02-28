@@ -18,6 +18,7 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
@@ -56,8 +57,8 @@ public class ImportDateTime {
     }
 
     List<String> dates = Arrays.asList(inputDate.split("\\["));
-    inputDate = computeInputDate(dates.get(0));
-    if (dates.size() > 1) {
+    inputDate = computeInputDate(ListUtils.emptyIfNull(dates).get(0));
+    if (ListUtils.size(dates) > 1) {
       LocalDateTime localDate =
           LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE).atStartOfDay();
       localDate = updateDateElements(localDate, dates.get(1));
@@ -74,8 +75,10 @@ public class ImportDateTime {
     }
     List<String> timeList = Arrays.asList(inputDateTime.split("\\["));
     inputDateTime =
-        timeList.get(0).equals(NOW_KEYWORD) ? LocalDateTime.now().toString() : timeList.get(0);
-    if (timeList.size() > 1) {
+        ListUtils.emptyIfNull(timeList).get(0).equals(NOW_KEYWORD)
+            ? LocalDateTime.now().toString()
+            : timeList.get(0);
+    if (ListUtils.size(timeList) > 1) {
       LocalDateTime datetime = LocalDateTime.parse(inputDateTime, DateTimeFormatter.ISO_DATE_TIME);
       datetime = updateDateTimeElements(datetime, timeList.get(1));
       return datetime.toString();

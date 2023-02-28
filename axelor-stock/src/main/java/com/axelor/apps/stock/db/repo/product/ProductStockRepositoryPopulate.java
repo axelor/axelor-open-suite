@@ -29,6 +29,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,8 +58,12 @@ public class ProductStockRepositoryPopulate {
   @SuppressWarnings({"unchecked", "rawtypes"})
   public void setAvailableQty(Map<String, Object> json, Map<String, Object> context) {
     try {
-      Long productId = (Long) json.get("id");
+      Long productId = json != null ? (Long) json.get("id") : 0L;
       Product product = productRepo.find(productId);
+
+      if (json == null) {
+        json = new HashMap<>();
+      }
 
       if (context.get("_parent") != null) {
         Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
@@ -95,44 +100,48 @@ public class ProductStockRepositoryPopulate {
 
   public void fillFromStockWizard(Map<String, Object> json, Map<String, Object> context) {
     try {
-      Long productId = (Long) json.get("id");
-      Long locationId = Long.parseLong(context.get("locationId").toString());
-      LocalDate fromDate = LocalDate.parse(context.get("stockFromDate").toString());
-      LocalDate toDate = LocalDate.parse(context.get("stockToDate").toString());
-      List<Map<String, Object>> stock =
-          stockMoveService.getStockPerDate(locationId, productId, fromDate, toDate);
+      Long productId = json != null ? (Long) json.get("id") : 0L;
+      if (context != null) {
+        Long locationId = Long.parseLong(context.get("locationId").toString());
+        LocalDate fromDate = LocalDate.parse(context.get("stockFromDate").toString());
+        LocalDate toDate = LocalDate.parse(context.get("stockToDate").toString());
+        List<Map<String, Object>> stock =
+            stockMoveService.getStockPerDate(locationId, productId, fromDate, toDate);
 
-      if (ObjectUtils.isEmpty(stock)) {
-        return;
-      }
-
-      LocalDate minDate = null;
-      LocalDate maxDate = null;
-      BigDecimal minQty = BigDecimal.ZERO;
-      BigDecimal maxQty = BigDecimal.ZERO;
-
-      for (Map<String, Object> dateStock : stock) {
-        LocalDate date = (LocalDate) dateStock.get("$date");
-        BigDecimal qty = (BigDecimal) dateStock.get("$qty");
-        if (minDate == null
-            || qty.compareTo(minQty) < 0
-            || qty.compareTo(minQty) == 0 && date.isAfter(minDate)) {
-          minDate = date;
-          minQty = qty;
+        if (ObjectUtils.isEmpty(stock)) {
+          return;
         }
-        if (maxDate == null
-            || qty.compareTo(maxQty) > 0
-            || qty.compareTo(maxQty) == 0 && date.isBefore(maxDate)) {
-          maxDate = date;
-          maxQty = qty;
+
+        LocalDate minDate = null;
+        LocalDate maxDate = null;
+        BigDecimal minQty = BigDecimal.ZERO;
+        BigDecimal maxQty = BigDecimal.ZERO;
+
+        for (Map<String, Object> dateStock : stock) {
+          LocalDate date = (LocalDate) dateStock.get("$date");
+          BigDecimal qty = (BigDecimal) dateStock.get("$qty");
+          if (minDate == null
+              || qty.compareTo(minQty) < 0
+              || qty.compareTo(minQty) == 0 && date.isAfter(minDate)) {
+            minDate = date;
+            minQty = qty;
+          }
+          if (maxDate == null
+              || qty.compareTo(maxQty) > 0
+              || qty.compareTo(maxQty) == 0 && date.isBefore(maxDate)) {
+            maxDate = date;
+            maxQty = qty;
+          }
         }
+
+        if (json == null) {
+          json = new HashMap<>();
+        }
+        json.put("$stockMinDate", minDate);
+        json.put("$stockMin", minQty);
+        json.put("$stockMaxDate", maxDate);
+        json.put("$stockMax", maxQty);
       }
-
-      json.put("$stockMinDate", minDate);
-      json.put("$stockMin", minQty);
-      json.put("$stockMaxDate", maxDate);
-      json.put("$stockMax", maxQty);
-
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

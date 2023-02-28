@@ -45,6 +45,10 @@ public class FetchEmailJob implements Job {
     List<EmailAccount> mailAccounts =
         mailAccountRepo.all().filter("self.isValid = true and self.serverTypeSelect > 1").fetch();
 
+    if (mailAccounts == null || mailAccounts.isEmpty()) {
+      return;
+    }
+
     log.debug("Total email fetching accounts : {}", mailAccounts.size());
     for (EmailAccount account : mailAccounts) {
       try {

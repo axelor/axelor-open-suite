@@ -33,6 +33,8 @@ import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -113,7 +115,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       int analyticCounter = 0;
 
       for (AnalyticAccount configAnalyticAccount :
-          this.getSortedAnalyticAccountSet(configAnalyticAccountSet)) {
+          SetUtils.emptyIfNull(this.getSortedAnalyticAccountSet(configAnalyticAccountSet))) {
         this.computeReportValues(accountingReport, configAnalyticAccount, analyticCounter++);
       }
     }
@@ -128,7 +130,9 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     }
 
     analyticConfigLineList.forEach(
-        it -> configAnalyticAccountSet.addAll(this.fetchConfigAnalyticAccountSet(it)));
+        it ->
+            configAnalyticAccountSet.addAll(
+                SetUtils.emptyIfNull(this.fetchConfigAnalyticAccountSet(it))));
 
     return configAnalyticAccountSet;
   }
@@ -143,7 +147,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       case AccountingReportAnalyticConfigLineRepository.TYPE_ACCOUNT:
         return new HashSet<>(Collections.singletonList(analyticConfigLine.getAnalyticAccount()));
       default:
-        return null;
+        return new HashSet<>();
     }
   }
 
@@ -161,7 +165,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       Set<AnalyticAccount> sortedAnalyticAccountSet,
       AnalyticAccount parentAnalyticAccount) {
     Set<AnalyticAccount> currentLevelAnalyticAccountSet =
-        analyticAccountSet.stream()
+        SetUtils.emptyIfNull(analyticAccountSet).stream()
             .filter(
                 it ->
                     it.getParent() == parentAnalyticAccount
@@ -171,6 +175,10 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
     if (CollectionUtils.isEmpty(currentLevelAnalyticAccountSet)) {
       return;
+    }
+
+    if (sortedAnalyticAccountSet == null) {
+      sortedAnalyticAccountSet = new HashSet<>();
     }
 
     for (AnalyticAccount currentLevelAnalyticAccount : currentLevelAnalyticAccountSet) {
@@ -285,6 +293,11 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   }
 
   protected int getNullCount(Map<String, Map<String, AccountingReportValue>> valuesMapByColumn) {
+
+    if (valuesMapByColumn == null) {
+      return 0;
+    }
+
     return (int)
         valuesMapByColumn.values().stream()
             .map(Map::values)
@@ -303,20 +316,23 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       int analyticCounter)
       throws AxelorException {
     List<AccountingReportConfigLine> columnList =
-        accountingReport.getReportType().getAccountingReportConfigLineColumnList().stream()
+        ListUtils.emptyIfNull(
+                accountingReport.getReportType().getAccountingReportConfigLineColumnList())
+            .stream()
             .sorted(Comparator.comparing(AccountingReportConfigLine::getSequence))
             .collect(Collectors.toList());
     List<AccountingReportConfigLine> lineList =
-        accountingReport.getReportType().getAccountingReportConfigLineList().stream()
+        ListUtils.emptyIfNull(accountingReport.getReportType().getAccountingReportConfigLineList())
+            .stream()
             .sorted(Comparator.comparing(AccountingReportConfigLine::getSequence))
             .collect(Collectors.toList());
 
     List<AccountingReportConfigLine> groupColumnList =
-        columnList.stream()
+        ListUtils.emptyIfNull(columnList).stream()
             .filter(it -> it.getTypeSelect() == AccountingReportConfigLineRepository.TYPE_GROUP)
             .collect(Collectors.toList());
     AccountingReportConfigLine groupByAccountColumn =
-        columnList.stream()
+        ListUtils.emptyIfNull(columnList).stream()
             .filter(
                 it ->
                     it.getTypeSelect()
@@ -331,26 +347,28 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     }
 
     if (groupByAccountColumn != null) {
-      columnList.remove(groupByAccountColumn);
+      ListUtils.emptyIfNull(columnList).remove(groupByAccountColumn);
       Set<Account> accountSet = this.getColumnGroupAccounts(groupByAccountColumn);
 
-      for (Account account : accountSet) {
-        this.createReportValues(
-            accountingReport,
-            valuesMapByColumn,
-            valuesMapByLine,
-            null,
-            columnList,
-            lineList,
-            account,
-            configAnalyticAccount,
-            account.getLabel(),
-            startDate,
-            endDate,
-            analyticCounter);
+      if (CollectionUtils.isNotEmpty(accountSet)) {
+        for (Account account : accountSet) {
+          this.createReportValues(
+              accountingReport,
+              valuesMapByColumn,
+              valuesMapByLine,
+              null,
+              columnList,
+              lineList,
+              account,
+              configAnalyticAccount,
+              account.getLabel(),
+              startDate,
+              endDate,
+              analyticCounter);
+        }
       }
     } else if (CollectionUtils.isNotEmpty(groupColumnList)) {
-      columnList.removeAll(groupColumnList);
+      ListUtils.emptyIfNull(columnList).removeAll(groupColumnList);
 
       for (AccountingReportConfigLine groupColumn : groupColumnList) {
         this.createReportValues(
@@ -391,8 +409,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
         accountRepo
             .all()
             .filter(this.getAccountQuery(groupColumn))
-            .bind("accountSet", groupColumn.getAccountSet())
-            .bind("accountTypeSet", groupColumn.getAccountTypeSet());
+            .bind("accountSet", SetUtils.emptyIfNull(groupColumn.getAccountSet()))
+            .bind("accountTypeSet", SetUtils.emptyIfNull(groupColumn.getAccountTypeSet()));
 
     this.bindAccountFilters(accountQuery, groupColumn.getAccountCode(), "groupColumn");
 
@@ -413,56 +431,62 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       LocalDate endDate,
       int analyticCounter)
       throws AxelorException {
-    for (AccountingReportConfigLine column : columnList) {
-      if (StringUtils.notEmpty(column.getGroupsWithoutColumn()) && groupColumn != null) {
-        List<String> groupsWithoutColumnCodeList =
-            Arrays.asList(column.getGroupsWithoutColumn().split(","));
+    if (CollectionUtils.isNotEmpty(columnList)) {
+      for (AccountingReportConfigLine column : columnList) {
+        if (StringUtils.notEmpty(column.getGroupsWithoutColumn()) && groupColumn != null) {
+          List<String> groupsWithoutColumnCodeList =
+              Arrays.asList(column.getGroupsWithoutColumn().split(","));
 
-        if (groupsWithoutColumnCodeList.contains(groupColumn.getCode())) {
-          continue;
-        }
-      }
-
-      String columnCode =
-          this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
-
-      if (!valuesMapByColumn.containsKey(columnCode)) {
-        valuesMapByColumn.put(columnCode, new HashMap<>());
-      }
-
-      for (AccountingReportConfigLine line : lineList) {
-        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
-        line = JPA.find(AccountingReportConfigLine.class, line.getId());
-        column = JPA.find(AccountingReportConfigLine.class, column.getId());
-        groupColumn =
-            groupColumn != null
-                ? JPA.find(AccountingReportConfigLine.class, groupColumn.getId())
-                : null;
-        groupAccount = groupAccount != null ? JPA.find(Account.class, groupAccount.getId()) : null;
-        configAnalyticAccount =
-            configAnalyticAccount != null
-                ? JPA.find(AnalyticAccount.class, configAnalyticAccount.getId())
-                : null;
-        if (!valuesMapByLine.containsKey(line.getCode())) {
-          valuesMapByLine.put(line.getCode(), new HashMap<>());
+          if (groupsWithoutColumnCodeList.contains(groupColumn.getCode())) {
+            continue;
+          }
         }
 
-        if (!valuesMapByColumn.get(columnCode).containsKey(line.getCode())
-            || valuesMapByColumn.get(columnCode).get(line.getCode()) == null) {
-          this.createValue(
-              accountingReport,
-              groupColumn,
-              column,
-              line,
-              valuesMapByColumn,
-              valuesMapByLine,
-              groupAccount,
-              configAnalyticAccount,
-              parentTitle,
-              startDate,
-              endDate,
-              analyticCounter);
-          JPA.clear();
+        String columnCode =
+            this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
+
+        if (valuesMapByColumn != null && !valuesMapByColumn.containsKey(columnCode)) {
+          valuesMapByColumn.put(columnCode, new HashMap<>());
+        }
+
+        if (CollectionUtils.isNotEmpty(lineList)) {
+          for (AccountingReportConfigLine line : lineList) {
+            accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
+            line = JPA.find(AccountingReportConfigLine.class, line.getId());
+            column = JPA.find(AccountingReportConfigLine.class, column.getId());
+            groupColumn =
+                groupColumn != null
+                    ? JPA.find(AccountingReportConfigLine.class, groupColumn.getId())
+                    : null;
+            groupAccount =
+                groupAccount != null ? JPA.find(Account.class, groupAccount.getId()) : null;
+            configAnalyticAccount =
+                configAnalyticAccount != null
+                    ? JPA.find(AnalyticAccount.class, configAnalyticAccount.getId())
+                    : null;
+            if (valuesMapByLine != null && !valuesMapByLine.containsKey(line.getCode())) {
+              valuesMapByLine.put(line.getCode(), new HashMap<>());
+            }
+
+            if (valuesMapByColumn != null
+                    && !valuesMapByColumn.get(columnCode).containsKey(line.getCode())
+                || valuesMapByColumn.get(columnCode).get(line.getCode()) == null) {
+              this.createValue(
+                  accountingReport,
+                  groupColumn,
+                  column,
+                  line,
+                  valuesMapByColumn,
+                  valuesMapByLine,
+                  groupAccount,
+                  configAnalyticAccount,
+                  parentTitle,
+                  startDate,
+                  endDate,
+                  analyticCounter);
+              JPA.clear();
+            }
+          }
         }
       }
     }
@@ -611,6 +635,11 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       String parentTitle) {
     String columnCode =
         this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
+
+    if (valuesMapByColumn == null) {
+      return false;
+    }
+
     if (valuesMapByColumn.get(columnCode).get(line.getCode()) != null) {
       return true;
     } else {
@@ -628,12 +657,13 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected String getAccountQuery(AccountingReportConfigLine configLine) {
     return String.join(
         " AND ",
-        this.getAccountFilters(
-            configLine.getAccountSet(),
-            configLine.getAccountTypeSet(),
-            configLine.getAccountCode(),
-            null,
-            null,
-            false));
+        ListUtils.emptyIfNull(
+            this.getAccountFilters(
+                configLine.getAccountSet(),
+                configLine.getAccountTypeSet(),
+                configLine.getAccountCode(),
+                null,
+                null,
+                false)));
   }
 }

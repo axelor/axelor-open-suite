@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -55,7 +56,7 @@ public class PdfExportGenerator extends AdvancedExportGenerator {
     this.advancedExport = advancedExport;
     exportFileName = advancedExport.getMetaModel().getName() + ".pdf";
     document = new Document();
-    table = new PdfPTable(advancedExport.getAdvancedExportLineList().size());
+    table = new PdfPTable(ListUtils.size(advancedExport.getAdvancedExportLineList()));
     try {
       exportFile = File.createTempFile(advancedExport.getMetaModel().getName(), ".pdf");
       FileOutputStream outStream = new FileOutputStream(exportFile);
@@ -71,7 +72,8 @@ public class PdfExportGenerator extends AdvancedExportGenerator {
   public void generateHeader() throws AxelorException {
     try {
       PdfPCell headerCell;
-      for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
+      for (AdvancedExportLine advancedExportLine :
+          ListUtils.emptyIfNull(advancedExport.getAdvancedExportLineList())) {
         headerCell =
             new PdfPCell(
                 new Phrase(
@@ -94,16 +96,20 @@ public class PdfExportGenerator extends AdvancedExportGenerator {
     Font font = new Font();
     font.setSize(7);
 
-    for (List listObj : dataList) {
-      for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
-        Object value = listObj.get(colIndex);
-        String columnValue = null;
-        if (!(value == null || value.equals(""))) {
-          if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
-          else columnValue = value.toString();
+    if (dataList != null) {
+      for (List listObj : dataList) {
+        if (listObj != null) {
+          for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
+            Object value = listObj.get(colIndex);
+            String columnValue = null;
+            if (!(value == null || value.equals(""))) {
+              if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
+              else columnValue = value.toString();
+            }
+            cell = new PdfPCell(new Phrase(columnValue, font));
+            table.addCell(cell);
+          }
         }
-        cell = new PdfPCell(new Phrase(columnValue, font));
-        table.addCell(cell);
       }
     }
   }

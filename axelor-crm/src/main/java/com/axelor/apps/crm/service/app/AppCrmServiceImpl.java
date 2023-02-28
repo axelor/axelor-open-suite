@@ -34,6 +34,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmService {
 
@@ -49,10 +50,12 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
 
     List<Company> companies = companyRepo.all().filter("self.crmConfig is null").fetch();
 
-    for (Company company : companies) {
-      CrmConfig crmConfig = new CrmConfig();
-      crmConfig.setCompany(company);
-      crmConfigRepo.save(crmConfig);
+    if (CollectionUtils.isNotEmpty(companies)) {
+      for (Company company : companies) {
+        CrmConfig crmConfig = new CrmConfig();
+        crmConfig.setCompany(company);
+        crmConfigRepo.save(crmConfig);
+      }
     }
   }
 

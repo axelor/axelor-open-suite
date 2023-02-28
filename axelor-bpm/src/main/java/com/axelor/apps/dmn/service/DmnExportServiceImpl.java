@@ -19,6 +19,7 @@ package com.axelor.apps.dmn.service;
 
 import com.axelor.apps.bpm.db.WkfDmnModel;
 import com.axelor.apps.bpm.exception.BpmExceptionMessage;
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -65,7 +66,9 @@ public class DmnExportServiceImpl implements DmnExportService {
         Dmn.readModelFromStream(new ByteArrayInputStream(wkfDmnModel.getDiagramXml().getBytes()));
 
     Collection<DecisionTable> tables = dmnModelInstance.getModelElementsByType(DecisionTable.class);
-    this.processTables(tables);
+    if (tables != null) {
+      this.processTables(tables);
+    }
 
     FileOutputStream fout;
     try {
@@ -79,11 +82,13 @@ public class DmnExportServiceImpl implements DmnExportService {
   }
 
   protected void processTables(Collection<DecisionTable> tables) throws AxelorException {
-    for (DecisionTable table : tables) {
-      String sheetName = table.getParentElement().getAttributeValue("id");
-      Sheet sheet = workbook.createSheet(sheetName);
-      this.createHeaderRow(sheet, table);
-      this.createDataRow(sheet, table);
+    if (CollectionUtils.isNotEmpty(tables)) {
+      for (DecisionTable table : tables) {
+        String sheetName = table.getParentElement().getAttributeValue("id");
+        Sheet sheet = workbook.createSheet(sheetName);
+        this.createHeaderRow(sheet, table);
+        this.createDataRow(sheet, table);
+      }
     }
   }
 
@@ -95,7 +100,7 @@ public class DmnExportServiceImpl implements DmnExportService {
 
     Row row = sheet.createRow(sheet.getLastRowNum() + 1);
     int inputIndex = 0;
-    for (Input input : table.getInputs()) {
+    for (Input input : CollectionUtils.emptyIfNull(table.getInputs())) {
       if (Strings.isNullOrEmpty(input.getLabel())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE, BpmExceptionMessage.MISSING_INPUT_LABEL);
@@ -107,7 +112,7 @@ public class DmnExportServiceImpl implements DmnExportService {
     }
 
     int outputIndex = row.getLastCellNum();
-    for (Output output : table.getOutputs()) {
+    for (Output output : CollectionUtils.emptyIfNull(table.getOutputs())) {
       if (Strings.isNullOrEmpty(output.getLabel())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE, BpmExceptionMessage.MISSING_OUTPUT_LABEL);
@@ -125,30 +130,32 @@ public class DmnExportServiceImpl implements DmnExportService {
 
   protected void createDataRow(Sheet sheet, DecisionTable table) {
     int index = sheet.getLastRowNum() + 1;
-    for (Rule rule : table.getRules()) {
-      Row row = sheet.createRow(index);
-      int ipCellIndex = 0;
-      for (InputEntry ie : rule.getInputEntries()) {
-        Cell cell = row.createCell(ipCellIndex);
-        cell.setCellValue(ie.getTextContent());
-        sheet.autoSizeColumn(ipCellIndex);
-        ipCellIndex++;
-      }
+    if (table.getRules() != null) {
+      for (Rule rule : table.getRules()) {
+        Row row = sheet.createRow(index);
+        int ipCellIndex = 0;
+        for (InputEntry ie : CollectionUtils.emptyIfNull(rule.getInputEntries())) {
+          Cell cell = row.createCell(ipCellIndex);
+          cell.setCellValue(ie.getTextContent());
+          sheet.autoSizeColumn(ipCellIndex);
+          ipCellIndex++;
+        }
 
-      int opCellIndex = row.getLastCellNum();
-      for (OutputEntry oe : rule.getOutputEntries()) {
+        int opCellIndex = row.getLastCellNum();
+        for (OutputEntry oe : CollectionUtils.emptyIfNull(rule.getOutputEntries())) {
+          Cell cell = row.createCell(opCellIndex);
+          cell.setCellValue(oe.getTextContent());
+          sheet.autoSizeColumn(opCellIndex);
+          opCellIndex++;
+        }
+
         Cell cell = row.createCell(opCellIndex);
-        cell.setCellValue(oe.getTextContent());
+        cell.setCellValue(
+            rule.getDescription() != null ? rule.getDescription().getTextContent() : null);
         sheet.autoSizeColumn(opCellIndex);
-        opCellIndex++;
+
+        index++;
       }
-
-      Cell cell = row.createCell(opCellIndex);
-      cell.setCellValue(
-          rule.getDescription() != null ? rule.getDescription().getTextContent() : null);
-      sheet.autoSizeColumn(opCellIndex);
-
-      index++;
     }
   }
 }

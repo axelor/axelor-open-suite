@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 
 /** @author axelor */
 public class ArchivingToolServiceImpl implements ArchivingToolService {
@@ -42,6 +43,11 @@ public class ArchivingToolServiceImpl implements ArchivingToolService {
                     + " WHERE field.type_name like :objectName");
     FindModelWithobjectFieldQuery.setParameter("objectName", object.getClass().getSimpleName());
     List<Object[]> resultList = FindModelWithobjectFieldQuery.getResultList();
+
+    if (CollectionUtils.isEmpty(resultList)) {
+      return objectsLinkToMap;
+    }
+
     for (Object[] result : resultList) {
 
       String fieldName = ((String) result[0]).replaceAll("([A-Z])", "_$1").toLowerCase();

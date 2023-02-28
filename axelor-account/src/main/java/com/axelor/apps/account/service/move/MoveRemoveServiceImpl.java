@@ -26,6 +26,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.service.ArchivingToolService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -94,18 +95,18 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   }
 
   protected void cleanMoveToArchived(Move move) throws Exception {
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+    for (MoveLine moveLine : ListUtils.emptyIfNull(move.getMoveLineList())) {
+      for (Reconcile reconcile : ListUtils.emptyIfNull(moveLine.getDebitReconcileList())) {
         reconcileService.unreconcile(reconcile);
       }
-      for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+      for (Reconcile reconcile : ListUtils.emptyIfNull(moveLine.getCreditReconcileList())) {
         reconcileService.unreconcile(reconcile);
       }
     }
   }
 
   protected void updateSystem(Move move) throws Exception {
-    for (MoveLine moveLine : move.getMoveLineList()) {
+    for (MoveLine moveLine : ListUtils.emptyIfNull(move.getMoveLineList())) {
       if (moveLine.getPartner() != null) {
         accountCustomerService.updateAccountingSituationCustomerAccount(
             accountingSituationService.getAccountingSituation(
@@ -124,13 +125,15 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
     Map<String, String> objectsLinkToMoveMap =
         archivingToolService.getObjectLinkTo(move, move.getId());
     String moveModelError = null;
-    for (Map.Entry<String, String> entry : objectsLinkToMoveMap.entrySet()) {
-      String modelName = I18n.get(archivingToolService.getModelTitle(entry.getKey()));
-      if (!entry.getKey().equals("MoveLine")) {
-        if (moveModelError == null) {
-          moveModelError = modelName;
-        } else {
-          moveModelError += ", " + modelName;
+    if (objectsLinkToMoveMap != null) {
+      for (Map.Entry<String, String> entry : objectsLinkToMoveMap.entrySet()) {
+        String modelName = I18n.get(archivingToolService.getModelTitle(entry.getKey()));
+        if (!entry.getKey().equals("MoveLine")) {
+          if (moveModelError == null) {
+            moveModelError = modelName;
+          } else {
+            moveModelError += ", " + modelName;
+          }
         }
       }
     }
@@ -150,7 +153,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
               moveModelError);
     }
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
+    for (MoveLine moveLine : ListUtils.emptyIfNull(move.getMoveLineList())) {
 
       errorMessage += checkMoveLineBeforeRemove(moveLine);
     }
@@ -163,26 +166,28 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
     String errorMessage = "";
     Map<String, String> objectsLinkToMoveLineMap =
         archivingToolService.getObjectLinkTo(moveLine, moveLine.getId());
-    for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
-      String modelName = entry.getKey();
-      List<String> modelsToIgnore =
-          Lists.newArrayList(
-              "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
-      if (!modelsToIgnore.contains(modelName)
-          && moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-        errorMessage +=
-            String.format(
-                I18n.get(AccountExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-                moveLine.getName(),
-                modelName);
-      } else if (!modelsToIgnore.contains(modelName)
-          && (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_NEW
-              || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
-        errorMessage +=
-            String.format(
-                I18n.get(AccountExceptionMessage.MOVE_LINE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-                moveLine.getName(),
-                modelName);
+    if (objectsLinkToMoveLineMap != null) {
+      for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
+        String modelName = entry.getKey();
+        List<String> modelsToIgnore =
+            Lists.newArrayList(
+                "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
+        if (!modelsToIgnore.contains(modelName)
+            && moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
+          errorMessage +=
+              String.format(
+                  I18n.get(AccountExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+                  moveLine.getName(),
+                  modelName);
+        } else if (!modelsToIgnore.contains(modelName)
+            && (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_NEW
+                || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_SIMULATED)) {
+          errorMessage +=
+              String.format(
+                  I18n.get(AccountExceptionMessage.MOVE_LINE_REMOVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+                  moveLine.getName(),
+                  modelName);
+        }
       }
     }
     return errorMessage;
@@ -192,7 +197,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   @Transactional
   public Move archiveMove(Move move) {
     move.setArchived(true);
-    for (MoveLine moveLine : move.getMoveLineList()) {
+    for (MoveLine moveLine : ListUtils.emptyIfNull(move.getMoveLineList())) {
       moveLine.setArchived(true);
     }
     return move;

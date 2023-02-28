@@ -37,6 +37,7 @@ import com.google.inject.persist.Transactional;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchImportData extends AbstractImportBatch {
 
@@ -100,13 +101,15 @@ public class BatchImportData extends AbstractImportBatch {
     ImportBatch importBatch = batch.getImportBatch();
     MetaFile originalFile = importConfiguration.getDataMetaFile();
 
-    for (MetaFile file : files) {
-      try {
-        importFile(importConfiguration, importBatch, file, originalFile);
-        incrementDone();
-      } catch (Exception e) {
-        TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
-        incrementAnomaly();
+    if (CollectionUtils.isNotEmpty(files)) {
+      for (MetaFile file : files) {
+        try {
+          importFile(importConfiguration, importBatch, file, originalFile);
+          incrementDone();
+        } catch (Exception e) {
+          TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
+          incrementAnomaly();
+        }
       }
     }
   }

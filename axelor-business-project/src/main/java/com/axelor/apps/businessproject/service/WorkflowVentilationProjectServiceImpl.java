@@ -116,30 +116,39 @@ public class WorkflowVentilationProjectServiceImpl
         invoicingProjectRepo.all().filter("self.invoice.id = ?", invoice.getId()).fetchOne();
 
     if (invoicingProject != null) {
-      for (SaleOrderLine saleOrderLine : invoicingProject.getSaleOrderLineSet()) {
-        saleOrderLine.setInvoiced(true);
-      }
-      for (PurchaseOrderLine purchaseOrderLine : invoicingProject.getPurchaseOrderLineSet()) {
-        purchaseOrderLine.setInvoiced(true);
-      }
-      for (TimesheetLine timesheetLine : invoicingProject.getLogTimesSet()) {
-        timesheetLine.setInvoiced(true);
-
-        if (timesheetLine.getProjectTask() == null) {
-          continue;
+      if (invoicingProject.getSaleOrderLineSet() != null) {
+        for (SaleOrderLine saleOrderLine : invoicingProject.getSaleOrderLineSet()) {
+          saleOrderLine.setInvoiced(true);
         }
+      }
+      if (invoicingProject.getPurchaseOrderLineSet() != null) {
+        for (PurchaseOrderLine purchaseOrderLine : invoicingProject.getPurchaseOrderLineSet()) {
+          purchaseOrderLine.setInvoiced(true);
+        }
+      }
+      if (invoicingProject.getLogTimesSet() != null) {
+        for (TimesheetLine timesheetLine : invoicingProject.getLogTimesSet()) {
+          timesheetLine.setInvoiced(true);
 
-        timesheetLine
-            .getProjectTask()
-            .setInvoiced(this.checkInvoicedTimesheetLines(timesheetLine.getProjectTask()));
-      }
-      for (ExpenseLine expenseLine : invoicingProject.getExpenseLineSet()) {
-        expenseLine.setInvoiced(true);
-      }
-      for (ProjectTask projectTask : invoicingProject.getProjectTaskSet()) {
-        projectTask.setInvoiced(true);
-      }
+          if (timesheetLine.getProjectTask() == null) {
+            continue;
+          }
 
+          timesheetLine
+              .getProjectTask()
+              .setInvoiced(this.checkInvoicedTimesheetLines(timesheetLine.getProjectTask()));
+        }
+      }
+      if (invoicingProject.getExpenseLineSet() != null) {
+        for (ExpenseLine expenseLine : invoicingProject.getExpenseLineSet()) {
+          expenseLine.setInvoiced(true);
+        }
+      }
+      if (invoicingProject.getProjectTaskSet() != null) {
+        for (ProjectTask projectTask : invoicingProject.getProjectTaskSet()) {
+          projectTask.setInvoiced(true);
+        }
+      }
       invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_VENTILATED);
       invoicingProjectRepo.save(invoicingProject);
     }

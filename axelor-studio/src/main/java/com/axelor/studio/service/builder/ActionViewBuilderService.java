@@ -27,6 +27,7 @@ import com.axelor.studio.service.StudioMetaService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 public class ActionViewBuilderService {
@@ -123,14 +124,16 @@ public class ActionViewBuilderService {
 
   protected void appendViews(List<ActionBuilderView> views, StringBuilder xml) {
 
-    views.sort((action1, action2) -> action1.getSequence().compareTo(action2.getSequence()));
-    for (ActionBuilderView view : views) {
-      xml.append("\n" + INDENT + "<view type=\"" + view.getViewType() + "\" ");
-      xml.append("name=\"" + view.getViewName() + "\" ");
-      if (StringUtils.notEmpty(view.getViewConditionToCheck())) {
-        xml.append("if=\"" + view.getViewConditionToCheck() + "\" />");
-      } else {
-        xml.append("/>");
+    if (CollectionUtils.isNotEmpty(views)) {
+      views.sort((action1, action2) -> action1.getSequence().compareTo(action2.getSequence()));
+      for (ActionBuilderView view : views) {
+        xml.append("\n" + INDENT + "<view type=\"" + view.getViewType() + "\" ");
+        xml.append("name=\"" + view.getViewName() + "\" ");
+        if (StringUtils.notEmpty(view.getViewConditionToCheck())) {
+          xml.append("if=\"" + view.getViewConditionToCheck() + "\" />");
+        } else {
+          xml.append("/>");
+        }
       }
     }
   }

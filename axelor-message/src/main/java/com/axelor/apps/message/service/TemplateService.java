@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class TemplateService {
@@ -156,12 +157,14 @@ public class TemplateService {
   }
 
   public void addMetaSelectItems(List<MetaModel> metaModelList, MetaSelect metaSelect) {
-    for (MetaModel model : metaModelList) {
-      MetaSelectItem item = new MetaSelectItem();
-      item.setTitle(model.getName());
-      item.setValue(model.getFullName());
-      item.setSelect(metaSelect);
-      metaSelect.addItem(item);
+    if (CollectionUtils.isNotEmpty(metaModelList)) {
+      for (MetaModel model : metaModelList) {
+        MetaSelectItem item = new MetaSelectItem();
+        item.setTitle(model.getName());
+        item.setValue(model.getFullName());
+        item.setSelect(metaSelect);
+        metaSelect.addItem(item);
+      }
     }
   }
 

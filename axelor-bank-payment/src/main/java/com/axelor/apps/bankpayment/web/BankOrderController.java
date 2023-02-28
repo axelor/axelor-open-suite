@@ -228,7 +228,9 @@ public class BankOrderController {
     try {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       Beans.get(BankOrderService.class).resetReceivers(bankOrder);
-      response.setValue("bankOrderLineList", bankOrder.getBankOrderLineList());
+      if (bankOrder.getBankOrderLineList() != null) {
+        response.setValue("bankOrderLineList", bankOrder.getBankOrderLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

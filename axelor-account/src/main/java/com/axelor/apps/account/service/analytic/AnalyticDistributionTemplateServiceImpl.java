@@ -87,15 +87,17 @@ public class AnalyticDistributionTemplateServiceImpl
     if (!CollectionUtils.isEmpty(analyticDistributionLineList)) {
       List<AnalyticAxis> axisList = getAllAxis(analyticDistributionTemplate);
       BigDecimal sum;
-      for (AnalyticAxis analyticAxis : axisList) {
-        sum = BigDecimal.ZERO;
-        for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
-          sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
-        }
-        if (sum.compareTo(new BigDecimal(100)) != 0) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED));
+      if (CollectionUtils.isNotEmpty(axisList)) {
+        for (AnalyticAxis analyticAxis : axisList) {
+          sum = BigDecimal.ZERO;
+          for (AnalyticDistributionLine analyticDistributionLine : analyticDistributionLineList) {
+            sum = sum.add(getPercentage(analyticDistributionLine, analyticAxis));
+          }
+          if (sum.compareTo(new BigDecimal(100)) != 0) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(AccountExceptionMessage.ANALYTIC_DISTRIBUTION_TEMPLATE_NOT_VALIDATED));
+          }
         }
       }
     }
@@ -191,14 +193,17 @@ public class AnalyticDistributionTemplateServiceImpl
       analyticDistributionTemplate.setIsSpecific(true);
       analyticDistributionTemplate.setAnalyticDistributionLineList(
           new ArrayList<AnalyticDistributionLine>());
-      for (AnalyticAxisByCompany analyticAxisByCompany :
-          accountConfig.getAnalyticAxisByCompanyList()) {
-        analyticDistributionTemplate.addAnalyticDistributionLineListItem(
-            analyticDistributionLineService.createAnalyticDistributionLine(
-                analyticAxisByCompany.getAnalyticAxis(),
-                null,
-                accountConfig.getAnalyticJournal(),
-                BigDecimal.valueOf(100)));
+      if (accountConfig != null
+          && CollectionUtils.isNotEmpty(accountConfig.getAnalyticAxisByCompanyList())) {
+        for (AnalyticAxisByCompany analyticAxisByCompany :
+            accountConfig.getAnalyticAxisByCompanyList()) {
+          analyticDistributionTemplate.addAnalyticDistributionLineListItem(
+              analyticDistributionLineService.createAnalyticDistributionLine(
+                  analyticAxisByCompany.getAnalyticAxis(),
+                  null,
+                  accountConfig.getAnalyticJournal(),
+                  BigDecimal.valueOf(100)));
+        }
       }
       analyticDistributionTemplateRepository.save(analyticDistributionTemplate);
       analyticDistributionTemplate.setName(name + " - " + analyticDistributionTemplate.getId());
@@ -234,16 +239,19 @@ public class AnalyticDistributionTemplateServiceImpl
     newAnalyticDistributionTemplate.setName("Template - ");
     newAnalyticDistributionTemplate.setIsSpecific(true);
 
-    for (AnalyticAxisByCompany analyticAxisByCompany :
-        accountConfig.getAnalyticAxisByCompanyList()) {
-      List<AnalyticDistributionLine> analyticDistributionLineList =
-          extractAnalyticDistributionLineListByAxis(
-              analyticAxisByCompany.getAnalyticAxis(), analyticDistributionTemplate);
-      updateCreatedTemplate(
-          analyticDistributionLineList,
-          newAnalyticDistributionTemplate,
-          analyticAxisByCompany.getAnalyticAxis(),
-          accountConfig);
+    if (accountConfig != null
+        && CollectionUtils.isNotEmpty(accountConfig.getAnalyticAxisByCompanyList())) {
+      for (AnalyticAxisByCompany analyticAxisByCompany :
+          accountConfig.getAnalyticAxisByCompanyList()) {
+        List<AnalyticDistributionLine> analyticDistributionLineList =
+            extractAnalyticDistributionLineListByAxis(
+                analyticAxisByCompany.getAnalyticAxis(), analyticDistributionTemplate);
+        updateCreatedTemplate(
+            analyticDistributionLineList,
+            newAnalyticDistributionTemplate,
+            analyticAxisByCompany.getAnalyticAxis(),
+            accountConfig);
+      }
     }
     return newAnalyticDistributionTemplate;
   }

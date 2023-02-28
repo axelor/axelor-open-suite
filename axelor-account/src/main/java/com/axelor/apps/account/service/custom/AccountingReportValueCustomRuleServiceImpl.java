@@ -34,6 +34,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -63,7 +64,8 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       LocalDate endDate,
       int analyticCounter) {
     if (accountingReport.getDisplayDetails()
-        && line.getDetailBySelect() != AccountingReportConfigLineRepository.DETAIL_BY_NOTHING) {
+        && line.getDetailBySelect() != AccountingReportConfigLineRepository.DETAIL_BY_NOTHING
+        && valuesMapByLine != null) {
       for (String lineCode :
           valuesMapByLine.keySet().stream()
               .filter(it -> it.matches(String.format("%s_[0-9]+", line.getCode())))
@@ -167,10 +169,11 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     }
 
     String lineTitle = line.getLabel();
-    if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
-        || (groupColumn != null
-            && groupColumn.getRuleTypeSelect()
-                == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
+    if ((column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+            || (groupColumn != null
+                && groupColumn.getRuleTypeSelect()
+                    == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE))
+        && valuesMap != null) {
       lineTitle =
           valuesMap.values().stream()
               .filter(Objects::nonNull)
@@ -206,9 +209,13 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       String parentTitle,
       String lineCode) {
     Map<String, AccountingReportValue> columnValues =
-        valuesMapByColumn.get(
-            this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount));
-    Map<String, AccountingReportValue> lineValues = valuesMapByLine.get(lineCode);
+        valuesMapByColumn != null
+            ? valuesMapByColumn.get(
+                this.getColumnCode(
+                    column.getCode(), parentTitle, groupColumn, configAnalyticAccount))
+            : Collections.emptyMap();
+    Map<String, AccountingReportValue> lineValues =
+        valuesMapByLine != null ? valuesMapByLine.get(lineCode) : Collections.emptyMap();
 
     if (groupColumn != null
         && groupColumn.getRuleTypeSelect()
@@ -274,34 +281,36 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       String rule) {
     Map<String, Object> contextMap = new HashMap<>();
 
-    for (String code : valuesMap.keySet()) {
-      if (valuesMap.get(code) != null) {
-        if ((groupColumn != null
-                && (groupColumn.getRuleTypeSelect()
-                        == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
-                    || line.getRuleTypeSelect()
-                        != AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE))
-            || (!Strings.isNullOrEmpty(parentTitle)
-                && column.getRuleTypeSelect()
-                    == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)
-            || (configAnalyticAccount != null
-                && (StringUtils.isEmpty(line.getRule()) || !line.getRule().equals(rule)))) {
-          String[] tokens = code.split("__");
+    if (valuesMap != null) {
+      for (String code : valuesMap.keySet()) {
+        if (valuesMap.get(code) != null) {
+          if ((groupColumn != null
+                  && (groupColumn.getRuleTypeSelect()
+                          == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+                      || line.getRuleTypeSelect()
+                          != AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE))
+              || (!Strings.isNullOrEmpty(parentTitle)
+                  && column.getRuleTypeSelect()
+                      == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)
+              || (configAnalyticAccount != null
+                  && (StringUtils.isEmpty(line.getRule()) || !line.getRule().equals(rule)))) {
+            String[] tokens = code.split("__");
 
-          if (tokens.length > 1) {
-            if (groupColumn != null
-                && groupColumn.getRuleTypeSelect()
-                    == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
-                && tokens[0].equals(column.getCode())) {
-              contextMap.put(tokens[1], valuesMap.get(code).getResult());
-            } else if ((groupColumn != null && tokens[1].equals(groupColumn.getCode()))
-                || (configAnalyticAccount != null
-                    && Arrays.asList(tokens).contains(configAnalyticAccount.getCode()))) {
-              contextMap.put(tokens[0], valuesMap.get(code).getResult());
+            if (tokens.length > 1) {
+              if (groupColumn != null
+                  && groupColumn.getRuleTypeSelect()
+                      == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+                  && tokens[0].equals(column.getCode())) {
+                contextMap.put(tokens[1], valuesMap.get(code).getResult());
+              } else if ((groupColumn != null && tokens[1].equals(groupColumn.getCode()))
+                  || (configAnalyticAccount != null
+                      && Arrays.asList(tokens).contains(configAnalyticAccount.getCode()))) {
+                contextMap.put(tokens[0], valuesMap.get(code).getResult());
+              }
             }
+          } else {
+            contextMap.put(code, valuesMap.get(code).getResult());
           }
-        } else {
-          contextMap.put(code, valuesMap.get(code).getResult());
         }
       }
     }

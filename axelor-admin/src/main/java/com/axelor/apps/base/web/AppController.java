@@ -134,7 +134,6 @@ public class AppController {
       App app = appRepository.find(Long.parseLong(appData.get("id").toString()));
       appList.add(app);
     }
-
     Beans.get(AppService.class).bulkInstall(appList, importDemo, language);
 
     response.setFlash(I18n.get(AdminExceptionMessage.BULK_INSTALL_SUCCESS));

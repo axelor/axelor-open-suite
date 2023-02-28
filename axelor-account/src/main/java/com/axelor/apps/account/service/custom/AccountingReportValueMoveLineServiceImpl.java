@@ -32,6 +32,8 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -131,45 +133,47 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         accountSet = this.mergeWithAccountCode(accountSet, groupColumn.getAccountCode());
       }
 
-      for (Account account : accountSet) {
-        String lineCode = String.format("%s_%d", line.getCode(), counter++);
+      if (CollectionUtils.isNotEmpty(accountSet)) {
+        for (Account account : accountSet) {
+          String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
-        if (!valuesMapByLine.containsKey(lineCode)) {
-          valuesMapByLine.put(lineCode, new HashMap<>());
+          if (valuesMapByLine != null && !valuesMapByLine.containsKey(lineCode)) {
+            valuesMapByLine.put(lineCode, new HashMap<>());
+          }
+
+          account = JPA.find(Account.class, account.getId());
+          accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
+          line = JPA.find(AccountingReportConfigLine.class, line.getId());
+          column = JPA.find(AccountingReportConfigLine.class, column.getId());
+          groupColumn =
+              groupColumn != null
+                  ? JPA.find(AccountingReportConfigLine.class, groupColumn.getId())
+                  : null;
+          configAnalyticAccount =
+              configAnalyticAccount != null
+                  ? JPA.find(AnalyticAccount.class, configAnalyticAccount.getId())
+                  : null;
+
+          this.createValueFromMoveLine(
+              accountingReport,
+              groupColumn,
+              column,
+              line,
+              valuesMapByColumn,
+              valuesMapByLine,
+              new HashSet<>(Collections.singletonList(account)),
+              accountTypeSet,
+              analyticAccountSet,
+              configAnalyticAccount,
+              startDate,
+              endDate,
+              parentTitle,
+              account.getLabel(),
+              lineCode,
+              analyticCounter);
+          JPA.clear();
+          AccountingReportValueServiceImpl.incrementLineOffset();
         }
-
-        account = JPA.find(Account.class, account.getId());
-        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
-        line = JPA.find(AccountingReportConfigLine.class, line.getId());
-        column = JPA.find(AccountingReportConfigLine.class, column.getId());
-        groupColumn =
-            groupColumn != null
-                ? JPA.find(AccountingReportConfigLine.class, groupColumn.getId())
-                : null;
-        configAnalyticAccount =
-            configAnalyticAccount != null
-                ? JPA.find(AnalyticAccount.class, configAnalyticAccount.getId())
-                : null;
-
-        this.createValueFromMoveLine(
-            accountingReport,
-            groupColumn,
-            column,
-            line,
-            valuesMapByColumn,
-            valuesMapByLine,
-            new HashSet<>(Collections.singletonList(account)),
-            accountTypeSet,
-            analyticAccountSet,
-            configAnalyticAccount,
-            startDate,
-            endDate,
-            parentTitle,
-            account.getLabel(),
-            lineCode,
-            analyticCounter);
-        JPA.clear();
-        AccountingReportValueServiceImpl.incrementLineOffset();
       }
     } else if (accountingReport.getDisplayDetails()
         && line.getDetailBySelect() == AccountingReportConfigLineRepository.DETAIL_BY_ACCOUNT_TYPE
@@ -183,7 +187,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       for (AccountType accountType : accountTypeSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
-        if (!valuesMapByLine.containsKey(lineCode)) {
+        if (valuesMapByLine != null && !valuesMapByLine.containsKey(lineCode)) {
           valuesMapByLine.put(lineCode, new HashMap<>());
         }
         accountType = JPA.find(AccountType.class, accountType.getId());
@@ -227,7 +231,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       for (AnalyticAccount analyticAccount : analyticAccountSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
-        if (!valuesMapByLine.containsKey(lineCode)) {
+        if (valuesMapByLine != null && !valuesMapByLine.containsKey(lineCode)) {
           valuesMapByLine.put(lineCode, new HashMap<>());
         }
         analyticAccount = JPA.find(AnalyticAccount.class, analyticAccount.getId());
@@ -343,7 +347,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       Set<Account> accountSet, Set<AccountType> accountTypeSet) {
     Set<Account> tempSet =
         this.getSetFromStream(
-            accountTypeSet.stream(),
+            SetUtils.emptyIfNull(accountTypeSet).stream(),
             accountType -> accountRepo.findByAccountType(accountType).fetch());
 
     return this.mergeSets(accountSet, tempSet);
@@ -367,7 +371,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   protected Set<AccountType> mergeWithAccounts(
       Set<AccountType> accountTypeSet, Set<Account> accountSet) {
     Set<AccountType> tempSet =
-        accountSet.stream().map(Account::getAccountType).collect(Collectors.toSet());
+        SetUtils.emptyIfNull(accountSet).stream()
+            .map(Account::getAccountType)
+            .collect(Collectors.toSet());
 
     return this.mergeSets(accountTypeSet, tempSet);
   }
@@ -528,14 +534,14 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             .bind("currency", accountingReport.getCurrency())
             .bind("company", accountingReport.getCompany())
             .bind("statusList", this.getMoveLineStatusList(accountingReport))
-            .bind("accountSet", accountSet)
+            .bind("accountSet", SetUtils.emptyIfNull(accountSet))
             .bind(
                 "groupColumnAnalyticAccountFilter",
                 groupColumn == null ? "" : groupColumn.getAnalyticAccountCode())
             .bind("columnAnalyticAccountFilter", column.getAnalyticAccountCode())
             .bind("lineAnalyticAccountFilter", line.getAnalyticAccountCode())
-            .bind("accountTypeSet", accountTypeSet)
-            .bind("analyticAccountSet", analyticAccountSet);
+            .bind("accountTypeSet", SetUtils.emptyIfNull(accountTypeSet))
+            .bind("analyticAccountSet", SetUtils.emptyIfNull(analyticAccountSet));
 
     if (groupColumn != null) {
       moveLineQuery =
@@ -577,13 +583,14 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     }
 
     queryList.addAll(
-        this.getAccountFilters(
-            accountSet,
-            accountTypeSet,
-            groupColumn == null ? null : groupColumn.getAccountCode(),
-            column.getAccountCode(),
-            line.getAccountCode(),
-            true));
+        ListUtils.emptyIfNull(
+            this.getAccountFilters(
+                accountSet,
+                accountTypeSet,
+                groupColumn == null ? null : groupColumn.getAccountCode(),
+                column.getAccountCode(),
+                line.getAccountCode(),
+                true)));
 
     if (CollectionUtils.isNotEmpty(analyticAccountSet)) {
       queryList.add(
@@ -609,6 +616,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   }
 
   protected void addDateQueries(List<String> queryList, AccountingReport accountingReport) {
+    if (queryList == null) {
+      queryList = new ArrayList<>();
+    }
     if (accountingReport.getDateFrom() != null) {
       queryList.add("(self.date IS NULL OR self.date >= :dateFrom)");
     }
@@ -644,7 +654,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         StringUtils.notEmpty(lineAnalyticAccountCode)
             ? this.fetchAnalyticAccountsFromCode(lineAnalyticAccountCode)
             : new HashSet<>();
-    return moveLineList.stream()
+    return ListUtils.emptyIfNull(moveLineList).stream()
         .map(
             it ->
                 this.getMoveLineAmount(

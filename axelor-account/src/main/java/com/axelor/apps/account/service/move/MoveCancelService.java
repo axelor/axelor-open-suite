@@ -50,24 +50,18 @@ public class MoveCancelService {
       return;
     }
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
+    if (move.getMoveLineList() != null) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
 
-      if (moveLine.getReconcileGroup() != null) {
-        throw new AxelorException(
-            move,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(AccountExceptionMessage.MOVE_CANCEL_7));
-      }
-
-      if (moveLine.getAccount().getUseForPartnerBalance()
-          && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
-        throw new AxelorException(
-            move,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.MOVE_CANCEL_1));
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
+          throw new AxelorException(
+              move,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MOVE_CANCEL_1));
+        }
       }
     }
-
     if (move.getPeriod() == null
         || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
         || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {

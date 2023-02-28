@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FECImporter extends Importer {
 
@@ -159,21 +160,23 @@ public class FECImporter extends Importer {
     if (fecImport != null) {
       int i = 0;
       Long companyId = null;
-      for (Move move : moveList) {
-        move = moveRepository.find(move.getId());
-        if (companyId == null && move != null) {
-          companyId = move.getCompany().getId();
+      if (CollectionUtils.isNotEmpty(moveList)) {
+        for (Move move : moveList) {
+          move = moveRepository.find(move.getId());
+          if (companyId == null && move != null) {
+            companyId = move.getCompany().getId();
+          }
+          // We modify move in two parts. First part we set description and fecImport on the move
+          // Second part we set reference and validate the move if necessary.
+          // We do this in two parts because reference for move must be unique, and in case there is
+          // an error the rollback must not undo description and fecImport.
+          move = setDescriptionAndFecImport(fecImport, listener, move);
+          move = setReferenceAndValidate(fecImport, listener, move);
+          if (i % 10 == 0) {
+            JPA.clear();
+          }
+          i++;
         }
-        // We modify move in two parts. First part we set description and fecImport on the move
-        // Second part we set reference and validate the move if necessary.
-        // We do this in two parts because reference for move must be unique, and in case there is
-        // an error the rollback must not undo description and fecImport.
-        move = setDescriptionAndFecImport(fecImport, listener, move);
-        move = setReferenceAndValidate(fecImport, listener, move);
-        if (i % 10 == 0) {
-          JPA.clear();
-        }
-        i++;
       }
       if (companyId != null) {
         this.company = companyRepository.find(companyId);

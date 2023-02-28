@@ -26,6 +26,7 @@ import com.google.inject.Inject;
 import java.util.List;
 import javax.validation.ValidationException;
 import javax.xml.bind.JAXBException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ChartBuilderRepo extends ChartBuilderRepository {
 
@@ -54,8 +55,11 @@ public class ChartBuilderRepo extends ChartBuilderRepository {
         all()
             .filter("self.metaViewGenerated = ?1 and self.id != ?2", metaView, chartBuilder.getId())
             .fetch();
-    for (ChartBuilder builder : chartBuilders) {
-      builder.setMetaViewGenerated(null);
+
+    if (CollectionUtils.isNotEmpty(chartBuilders)) {
+      for (ChartBuilder builder : chartBuilders) {
+        builder.setMetaViewGenerated(null);
+      }
     }
 
     if (metaView != null) {

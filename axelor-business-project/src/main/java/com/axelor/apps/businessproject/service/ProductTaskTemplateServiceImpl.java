@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateService {
 
@@ -61,39 +62,43 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     List<ProjectTask> tasks = new ArrayList<>();
     Product product = saleOrderLine.getProduct();
 
-    for (TaskTemplate template : templates) {
-      BigDecimal qtyTmp = (template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
+    if (CollectionUtils.isNotEmpty(templates)) {
+      for (TaskTemplate template : templates) {
+        BigDecimal qtyTmp = (template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
 
-      while (qtyTmp.signum() > 0) {
-        LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
+        while (qtyTmp.signum() > 0) {
+          LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
 
-        ProjectTask task =
-            projectTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
-        task.setParentTask(parent);
-        task.setProduct(product);
-        task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
-        task.setUnit(product.getUnit());
-        task.setUnitPrice(
-            (BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
-        task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
-        if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
-          task.setToInvoice(true);
-          task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+          ProjectTask task =
+              projectTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
+          task.setParentTask(parent);
+          task.setProduct(product);
+          task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
+          task.setUnit(product.getUnit());
+          task.setUnitPrice(
+              (BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
+          task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
+          if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
+            task.setToInvoice(true);
+            task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+          }
+          tasks.add(projectTaskRepo.save(task));
+
+          // Only parent task can have multiple quantities
+          List<ProjectTask> children =
+              convert(
+                  template.getTaskTemplateList(),
+                  project,
+                  task,
+                  dateWithDelay,
+                  BigDecimal.ONE,
+                  saleOrderLine);
+          if (children != null) {
+            tasks.addAll(children);
+          }
+
+          qtyTmp = qtyTmp.subtract(BigDecimal.ONE);
         }
-        tasks.add(projectTaskRepo.save(task));
-
-        // Only parent task can have multiple quantities
-        List<ProjectTask> children =
-            convert(
-                template.getTaskTemplateList(),
-                project,
-                task,
-                dateWithDelay,
-                BigDecimal.ONE,
-                saleOrderLine);
-        tasks.addAll(children);
-
-        qtyTmp = qtyTmp.subtract(BigDecimal.ONE);
       }
     }
 

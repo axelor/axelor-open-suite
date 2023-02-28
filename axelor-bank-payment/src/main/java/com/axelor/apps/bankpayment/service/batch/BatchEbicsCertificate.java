@@ -30,6 +30,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -73,7 +75,7 @@ public class BatchEbicsCertificate extends AbstractBatch {
     LocalDate today = Beans.get(AppBaseService.class).getTodayDate(bankPaymentBatch.getCompany());
     LocalDate commingDay = today.plusDays(bankPaymentBatch.getDaysNbr());
 
-    for (EbicsUser user : users) {
+    for (EbicsUser user : ListUtils.emptyIfNull(users)) {
       if (user.getA005Certificate() != null
           && user.getA005Certificate().getValidTo().isBefore(commingDay)) {
         certificatesSet.add(user.getA005Certificate());
@@ -91,12 +93,13 @@ public class BatchEbicsCertificate extends AbstractBatch {
     }
 
     certificatesSet.addAll(
-        Beans.get(EbicsCertificateRepository.class)
-            .all()
-            .filter("self.ebicsBank != null AND self.validTo <= ?1", commingDay)
-            .fetch());
+        ListUtils.emptyIfNull(
+            Beans.get(EbicsCertificateRepository.class)
+                .all()
+                .filter("self.ebicsBank != null AND self.validTo <= ?1", commingDay)
+                .fetch()));
 
-    for (EbicsCertificate certificate : certificatesSet) {
+    for (EbicsCertificate certificate : SetUtils.emptyIfNull(certificatesSet)) {
 
       certificate.addBatchSetItem(batchRepo.find(batch.getId()));
 

@@ -42,6 +42,7 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -64,6 +65,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +134,8 @@ public class TimesheetController {
           Beans.get(TimesheetService.class)
               .generateLines(
                   timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
-      response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
+      response.setValue(
+          "timesheetLineList", ListUtils.emptyIfNull(timesheet.getTimesheetLineList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -147,7 +150,7 @@ public class TimesheetController {
                 AuthUtils.getUser().getId(),
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
-    if (timesheetList.isEmpty()) {
+    if (CollectionUtils.isEmpty(timesheetList)) {
       response.setView(
           ActionView.define(I18n.get("Timesheet"))
               .model(Timesheet.class.getName())
@@ -256,6 +259,9 @@ public class TimesheetController {
 
   public void editTimesheetSelected(ActionRequest request, ActionResponse response) {
     Map<?, ?> timesheetMap = (Map<?, ?>) request.getContext().get("timesheetSelect");
+    if (timesheetMap == null) {
+      return;
+    }
     Timesheet timesheet =
         Beans.get(TimesheetRepository.class).find(Long.valueOf((Integer) timesheetMap.get("id")));
     response.setView(
@@ -630,7 +636,8 @@ public class TimesheetController {
           "title",
           Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet));
       response.setValue("timeLoggingPreferenceSelect", timesheet.getTimeLoggingPreferenceSelect());
-      response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
+      response.setValue(
+          "timesheetLineList", ListUtils.emptyIfNull(timesheet.getTimesheetLineList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

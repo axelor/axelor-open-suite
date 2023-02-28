@@ -33,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class EventManagementRepository extends EventRepository {
 
@@ -100,7 +101,8 @@ public class EventManagementRepository extends EventRepository {
 
       User user = AuthUtils.getUser();
       List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
-      if (calendarIdlist.isEmpty() || !calendarIdlist.contains(entity.getCalendar().getId())) {
+      if (CollectionUtils.isEmpty(calendarIdlist)
+          || !calendarIdlist.contains(entity.getCalendar().getId())) {
         throw new AxelorException(
             entity,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

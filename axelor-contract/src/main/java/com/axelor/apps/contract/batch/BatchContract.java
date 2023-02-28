@@ -31,6 +31,7 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchContract extends BatchStrategy {
 
@@ -69,7 +70,7 @@ public class BatchContract extends BatchStrategy {
       Query<Contract> query = factory.prepare(batch);
       List<Contract> contracts;
 
-      while (!(contracts = query.fetch(FETCH_LIMIT)).isEmpty()) {
+      while (CollectionUtils.isNotEmpty((contracts = query.fetch(FETCH_LIMIT)))) {
         findBatch();
         for (Contract contract : contracts) {
           try {

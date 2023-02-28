@@ -25,6 +25,7 @@ import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -46,8 +47,12 @@ public class MrpForecastController {
 
     LinkedHashMap<String, Object> sopLineMap =
         (LinkedHashMap<String, Object>) context.get("_sopLine");
+
     LinkedHashMap<String, Object> periodMap =
-        (LinkedHashMap<String, Object>) sopLineMap.get("period");
+        sopLineMap != null
+            ? (LinkedHashMap<String, Object>) sopLineMap.get("period")
+            : new LinkedHashMap<>();
+
     Period period =
         Beans.get(PeriodRepository.class).find(Long.parseLong(periodMap.get("id").toString()));
 
@@ -56,10 +61,11 @@ public class MrpForecastController {
 
     LinkedHashMap<String, Object> stockLocationMap =
         (LinkedHashMap<String, Object>) context.get("stockLocation");
-
     StockLocation stockLocation =
-        Beans.get(StockLocationRepository.class)
-            .find(Long.parseLong(stockLocationMap.get("id").toString()));
+        stockLocationMap != null
+            ? Beans.get(StockLocationRepository.class)
+                .find(Long.parseLong(stockLocationMap.get("id").toString()))
+            : null;
     if (mrpForecastList != null && !mrpForecastList.isEmpty()) {
       mrpForecastProductionService.generateMrpForecast(
           period,
@@ -67,6 +73,7 @@ public class MrpForecastController {
           stockLocation,
           MrpForecastRepository.TECHNICAL_ORIGIN_CREATED_FROM_SOP);
     }
+
     response.setCanClose(true);
   }
 
@@ -87,7 +94,11 @@ public class MrpForecastController {
         @SuppressWarnings("unchecked")
         LinkedHashMap<String, Object> productMap =
             (LinkedHashMap<String, Object>) mrpForecastItem.get("product");
-        BigDecimal unitPrice = new BigDecimal(productMap.get("salePrice").toString());
+
+        BigDecimal unitPrice =
+            productMap != null
+                ? new BigDecimal(productMap.get("salePrice").toString())
+                : BigDecimal.ZERO;
         totalForecast = totalForecast.add(qty.multiply(unitPrice));
       }
     }
@@ -113,13 +124,16 @@ public class MrpForecastController {
         @SuppressWarnings("unchecked")
         LinkedHashMap<String, Object> productMap =
             (LinkedHashMap<String, Object>) mrpForecastItem.get("product");
-        BigDecimal unitPrice = new BigDecimal(productMap.get("salePrice").toString());
+        BigDecimal unitPrice =
+            productMap != null
+                ? new BigDecimal(productMap.get("salePrice").toString())
+                : BigDecimal.ZERO;
         mrpForecastItem.put("qty", BigDecimal.ZERO);
         mrpForecastItem.put("$totalPrice", BigDecimal.ZERO);
         mrpForecastItem.put("$unitPrice", unitPrice);
       }
     }
-    response.setValue("$mrpForecasts", mrpForecastList);
+    response.setValue("$mrpForecasts", ListUtils.emptyIfNull(mrpForecastList));
     response.setValue("$totalForecast", totalForecast);
     response.setValue("$difference", sopSalesForecast);
   }

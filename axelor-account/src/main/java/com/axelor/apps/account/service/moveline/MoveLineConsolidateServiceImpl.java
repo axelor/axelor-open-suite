@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +66,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
           List<AnalyticMoveLine> list1 = moveLineIt.getAnalyticMoveLineList();
           List<AnalyticMoveLine> list2 = moveLine.getAnalyticMoveLineList();
           List<AnalyticMoveLine> copyList = new ArrayList<AnalyticMoveLine>(list1);
-          if (list1.size() == list2.size()) {
+          if (ListUtils.size(list1) == ListUtils.size(list2)) {
             for (AnalyticMoveLine analyticDistributionLine : list2) {
               for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
                 if (checkAnalyticDistributionLine(
@@ -99,112 +101,117 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
     Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
     MoveLine consolidateMoveLine = null;
     boolean haveHoldBack =
-        moveLines.stream()
+        ListUtils.emptyIfNull(moveLines).stream()
             .anyMatch(
                 ml ->
                     ObjectUtils.notEmpty(ml.getMove().getPaymentCondition())
                         && ml.getMove().getPaymentCondition().getPaymentConditionLineList().stream()
                             .anyMatch(PaymentConditionLine::getIsHoldback));
 
-    for (MoveLine moveLine : moveLines) {
+    if (CollectionUtils.isNotEmpty(moveLines)) {
+      for (MoveLine moveLine : moveLines) {
 
-      List<Object> keys = new ArrayList<Object>();
+        List<Object> keys = new ArrayList<Object>();
 
-      keys.add(moveLine.getCounter());
-      keys.add(moveLine.getAccount());
-      keys.add(moveLine.getTaxLine());
-      keys.add(moveLine.getAnalyticDistributionTemplate());
-      keys.add(moveLine.getCutOffStartDate());
-      keys.add(moveLine.getCutOffEndDate());
+        keys.add(moveLine.getCounter());
+        keys.add(moveLine.getAccount());
+        keys.add(moveLine.getTaxLine());
+        keys.add(moveLine.getAnalyticDistributionTemplate());
+        keys.add(moveLine.getCutOffStartDate());
+        keys.add(moveLine.getCutOffEndDate());
 
-      if (!haveHoldBack) {
-        consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
-      }
-
-      if (consolidateMoveLine != null) {
-
-        BigDecimal consolidateCurrencyAmount = BigDecimal.ZERO;
-
-        log.debug(
-            "MoveLine :: Debit : {}, Credit : {}, Currency amount : {}",
-            moveLine.getDebit(),
-            moveLine.getCredit(),
-            moveLine.getCurrencyAmount());
-        log.debug(
-            "Consolidate moveLine :: Debit : {}, Credit : {}, Currency amount : {}",
-            consolidateMoveLine.getDebit(),
-            consolidateMoveLine.getCredit(),
-            consolidateMoveLine.getCurrencyAmount());
-
-        if (moveLine.getDebit().subtract(moveLine.getCredit()).compareTo(BigDecimal.ZERO)
-            != consolidateMoveLine
-                .getDebit()
-                .subtract(consolidateMoveLine.getCredit())
-                .compareTo(BigDecimal.ZERO)) {
-          consolidateCurrencyAmount =
-              consolidateMoveLine.getCurrencyAmount().subtract(moveLine.getCurrencyAmount());
-        } else {
-          consolidateCurrencyAmount =
-              consolidateMoveLine.getCurrencyAmount().add(moveLine.getCurrencyAmount());
+        if (!haveHoldBack) {
+          consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
         }
-        consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount.abs());
-        consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
-        consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
 
-        if (consolidateMoveLine.getAnalyticMoveLineList() != null
-            && !consolidateMoveLine.getAnalyticMoveLineList().isEmpty()) {
-          for (AnalyticMoveLine analyticDistributionLine :
-              consolidateMoveLine.getAnalyticMoveLineList()) {
-            for (AnalyticMoveLine analyticDistributionLineIt : moveLine.getAnalyticMoveLineList()) {
-              if (checkAnalyticDistributionLine(
-                  analyticDistributionLine, analyticDistributionLineIt)) {
-                analyticDistributionLine.setAmount(
-                    analyticDistributionLine
-                        .getAmount()
-                        .add(analyticDistributionLineIt.getAmount()));
-                break;
+        if (consolidateMoveLine != null) {
+
+          BigDecimal consolidateCurrencyAmount = BigDecimal.ZERO;
+
+          log.debug(
+              "MoveLine :: Debit : {}, Credit : {}, Currency amount : {}",
+              moveLine.getDebit(),
+              moveLine.getCredit(),
+              moveLine.getCurrencyAmount());
+          log.debug(
+              "Consolidate moveLine :: Debit : {}, Credit : {}, Currency amount : {}",
+              consolidateMoveLine.getDebit(),
+              consolidateMoveLine.getCredit(),
+              consolidateMoveLine.getCurrencyAmount());
+
+          if (moveLine.getDebit().subtract(moveLine.getCredit()).compareTo(BigDecimal.ZERO)
+              != consolidateMoveLine
+                  .getDebit()
+                  .subtract(consolidateMoveLine.getCredit())
+                  .compareTo(BigDecimal.ZERO)) {
+            consolidateCurrencyAmount =
+                consolidateMoveLine.getCurrencyAmount().subtract(moveLine.getCurrencyAmount());
+          } else {
+            consolidateCurrencyAmount =
+                consolidateMoveLine.getCurrencyAmount().add(moveLine.getCurrencyAmount());
+          }
+          consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount.abs());
+          consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
+          consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
+
+          if (consolidateMoveLine.getAnalyticMoveLineList() != null
+              && !consolidateMoveLine.getAnalyticMoveLineList().isEmpty()) {
+            for (AnalyticMoveLine analyticDistributionLine :
+                consolidateMoveLine.getAnalyticMoveLineList()) {
+              for (AnalyticMoveLine analyticDistributionLineIt :
+                  moveLine.getAnalyticMoveLineList()) {
+                if (checkAnalyticDistributionLine(
+                    analyticDistributionLine, analyticDistributionLineIt)) {
+                  analyticDistributionLine.setAmount(
+                      analyticDistributionLine
+                          .getAmount()
+                          .add(analyticDistributionLineIt.getAmount()));
+                  break;
+                }
               }
             }
           }
+        } else {
+          map.put(keys, moveLine);
         }
-      } else {
-        map.put(keys, moveLine);
       }
-    }
 
-    BigDecimal credit = null;
-    BigDecimal debit = null;
+      BigDecimal credit = null;
+      BigDecimal debit = null;
 
-    int moveLineId = 1;
-    moveLines.clear();
+      int moveLineId = 1;
+      if (moveLines == null) {
+        moveLines = new ArrayList<>();
+      }
+      moveLines.clear();
 
-    for (MoveLine moveLine : map.values()) {
+      for (MoveLine moveLine : map.values()) {
 
-      credit = moveLine.getCredit();
-      debit = moveLine.getDebit();
+        credit = moveLine.getCredit();
+        debit = moveLine.getDebit();
 
-      moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().abs());
+        moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().abs());
 
-      if (debit.compareTo(BigDecimal.ZERO) > 0 && credit.compareTo(BigDecimal.ZERO) > 0) {
+        if (debit.compareTo(BigDecimal.ZERO) > 0 && credit.compareTo(BigDecimal.ZERO) > 0) {
 
-        if (debit.compareTo(credit) > 0) {
-          moveLine.setDebit(debit.subtract(credit));
-          moveLine.setCredit(BigDecimal.ZERO);
+          if (debit.compareTo(credit) > 0) {
+            moveLine.setDebit(debit.subtract(credit));
+            moveLine.setCredit(BigDecimal.ZERO);
+            moveLine.setCounter(moveLineId++);
+            moveLines.add(moveLine);
+          } else if (credit.compareTo(debit) > 0) {
+            moveLine.setCredit(credit.subtract(debit));
+            moveLine.setDebit(BigDecimal.ZERO);
+            moveLine.setCounter(moveLineId++);
+            moveLines.add(moveLine);
+          }
+
+        } else if (debit.compareTo(BigDecimal.ZERO) > 0 || credit.compareTo(BigDecimal.ZERO) > 0) {
           moveLine.setCounter(moveLineId++);
           moveLines.add(moveLine);
-        } else if (credit.compareTo(debit) > 0) {
-          moveLine.setCredit(credit.subtract(debit));
-          moveLine.setDebit(BigDecimal.ZERO);
-          moveLine.setCounter(moveLineId++);
-          moveLines.add(moveLine);
         }
-
-      } else if (debit.compareTo(BigDecimal.ZERO) > 0 || credit.compareTo(BigDecimal.ZERO) > 0) {
-        moveLine.setCounter(moveLineId++);
-        moveLines.add(moveLine);
       }
     }
-
     return moveLines;
   }
 

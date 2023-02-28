@@ -26,6 +26,7 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -185,7 +186,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     ReportSettings reportSettings =
         ReportFactory.createReport(modelPath, fileName).addFormat(format);
 
-    for (BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList) {
+    for (BirtTemplateParameter birtTemplateParameter :
+        ListUtils.emptyIfNull(birtTemplateParameterList)) {
 
       try {
         String parseValue = null;

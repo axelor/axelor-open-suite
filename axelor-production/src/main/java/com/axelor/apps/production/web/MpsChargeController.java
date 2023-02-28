@@ -65,8 +65,9 @@ public class MpsChargeController {
         mpsChargeService.countTotalHours(startMonthDate, endMonthDate);
     List<Map<String, Object>> dataMapList =
         mpsChargeService.getTableDataMapList(totalHoursCountMap);
-
-    response.setData(dataMapList);
+    if (dataMapList != null) {
+      response.setData(dataMapList);
+    }
   }
 
   public void getMpsWeeklyScheduleChartFirstYear(ActionRequest request, ActionResponse response) {
@@ -84,8 +85,9 @@ public class MpsChargeController {
         mpsChargeService.countTotalHours(startMonthDate, endMonthDate);
     List<Map<String, Object>> dataMapList =
         mpsChargeService.getChartDataMapList(totalHoursCountMap);
-
-    response.setData(dataMapList);
+    if (dataMapList != null) {
+      response.setData(dataMapList);
+    }
   }
 
   public void getMpsWeeklyScheduleChartSecondYear(ActionRequest request, ActionResponse response) {
@@ -102,8 +104,9 @@ public class MpsChargeController {
         mpsChargeService.countTotalHours(startMonthDate, endMonthDate);
     List<Map<String, Object>> dataMapList =
         mpsChargeService.getChartDataMapList(totalHoursCountMap);
-
-    response.setData(dataMapList);
+    if (dataMapList != null) {
+      response.setData(dataMapList);
+    }
   }
 
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {

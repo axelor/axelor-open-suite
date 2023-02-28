@@ -30,6 +30,7 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -49,6 +50,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
 public class StockLocationServiceImpl implements StockLocationService {
@@ -187,18 +189,20 @@ public class StockLocationServiceImpl implements StockLocationService {
 
     StockRulesRepository stockRulesRepository = Beans.get(StockRulesRepository.class);
 
-    for (StockLocationLine stockLocationLine : stockLocationLineList) {
-      StockRules stockRules =
-          stockRulesRepository
-              .all()
-              .filter(
-                  "self.stockLocation = ?1 AND self.product = ?2",
-                  stockLocationLine.getStockLocation(),
-                  stockLocationLine.getProduct())
-              .fetchOne();
-      if (stockRules != null
-          && stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
-        idList.add(stockLocationLine.getId());
+    if (CollectionUtils.isNotEmpty(stockLocationLineList)) {
+      for (StockLocationLine stockLocationLine : stockLocationLineList) {
+        StockRules stockRules =
+            stockRulesRepository
+                .all()
+                .filter(
+                    "self.stockLocation = ?1 AND self.product = ?2",
+                    stockLocationLine.getStockLocation(),
+                    stockLocationLine.getProduct())
+                .fetchOne();
+        if (stockRules != null
+            && stockLocationLine.getFutureQty().compareTo(stockRules.getMinQty()) < 0) {
+          idList.add(stockLocationLine.getId());
+        }
       }
     }
 
@@ -214,7 +218,7 @@ public class StockLocationServiceImpl implements StockLocationService {
     locationIdSet = new HashSet<>();
     if (stockLocation != null) {
       List<StockLocation> stockLocations = getAllLocationAndSubLocation(stockLocation, true);
-      for (StockLocation item : stockLocations) {
+      for (StockLocation item : ListUtils.emptyIfNull(stockLocations)) {
         locationIdSet.add(item.getId());
       }
     } else {
@@ -233,25 +237,31 @@ public class StockLocationServiceImpl implements StockLocationService {
     }
     if (isVirtualInclude) {
       for (StockLocation subLocation :
-          stockLocationRepo
-              .all()
-              .filter("self.parentStockLocation.id = :stockLocationId")
-              .bind("stockLocationId", stockLocation.getId())
-              .fetch()) {
+          ListUtils.emptyIfNull(
+              stockLocationRepo
+                  .all()
+                  .filter("self.parentStockLocation.id = :stockLocationId")
+                  .bind("stockLocationId", stockLocation.getId())
+                  .fetch())) {
 
-        resultList.addAll(this.getAllLocationAndSubLocation(subLocation, isVirtualInclude));
+        resultList.addAll(
+            ListUtils.emptyIfNull(
+                this.getAllLocationAndSubLocation(subLocation, isVirtualInclude)));
       }
     } else {
       for (StockLocation subLocation :
-          stockLocationRepo
-              .all()
-              .filter(
-                  "self.parentStockLocation.id = :stockLocationId AND self.typeSelect != :virtual")
-              .bind("stockLocationId", stockLocation.getId())
-              .bind("virtual", StockLocationRepository.TYPE_VIRTUAL)
-              .fetch()) {
+          ListUtils.emptyIfNull(
+              stockLocationRepo
+                  .all()
+                  .filter(
+                      "self.parentStockLocation.id = :stockLocationId AND self.typeSelect != :virtual")
+                  .bind("stockLocationId", stockLocation.getId())
+                  .bind("virtual", StockLocationRepository.TYPE_VIRTUAL)
+                  .fetch())) {
 
-        resultList.addAll(this.getAllLocationAndSubLocation(subLocation, isVirtualInclude));
+        resultList.addAll(
+            ListUtils.emptyIfNull(
+                this.getAllLocationAndSubLocation(subLocation, isVirtualInclude)));
       }
     }
     resultList.add(stockLocation);
@@ -314,9 +324,11 @@ public class StockLocationServiceImpl implements StockLocationService {
   @Transactional
   public void changeProductLocker(StockLocation stockLocation, Product product, String newLocker) {
     List<StockLocationLine> stockLocationLineList = stockLocation.getStockLocationLineList();
-    for (StockLocationLine stockLocationLine : stockLocationLineList) {
-      if (stockLocationLine.getProduct() == product) {
-        stockLocationLine.setRack(newLocker);
+    if (CollectionUtils.isNotEmpty(stockLocationLineList)) {
+      for (StockLocationLine stockLocationLine : stockLocationLineList) {
+        if (stockLocationLine.getProduct() == product) {
+          stockLocationLine.setRack(newLocker);
+        }
       }
     }
     stockLocationRepo.save(stockLocation);

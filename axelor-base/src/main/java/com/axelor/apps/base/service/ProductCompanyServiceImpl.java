@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -153,7 +154,7 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
     Set<MetaField> companySpecificFields =
         appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
 
-    return companySpecificFields.stream()
+    return SetUtils.emptyIfNull(companySpecificFields).stream()
         .anyMatch(metaField -> metaField.getName().equals(fieldName));
   }
 }

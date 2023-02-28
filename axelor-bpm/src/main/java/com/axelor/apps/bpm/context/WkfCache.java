@@ -20,11 +20,13 @@ package com.axelor.apps.bpm.context;
 import com.axelor.apps.baml.tools.BpmTools;
 import com.axelor.apps.bpm.db.WkfProcessConfig;
 import com.axelor.apps.bpm.db.WkfTaskConfig;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MultiMap;
 import org.apache.commons.collections.map.MultiValueMap;
 
@@ -40,12 +42,14 @@ public class WkfCache {
 
     Map<Long, String> modelMap = new HashMap<Long, String>();
     modelMap.put(0L, "");
-    for (WkfProcessConfig config : wkfProcessConfigs) {
-      String model = config.getModel();
-      if (config.getMetaJsonModel() != null) {
-        model = config.getMetaJsonModel().getName();
+    if (CollectionUtils.isNotEmpty(wkfProcessConfigs)) {
+      for (WkfProcessConfig config : wkfProcessConfigs) {
+        String model = config.getModel();
+        if (config.getMetaJsonModel() != null) {
+          model = config.getMetaJsonModel().getName();
+        }
+        modelMap.put(config.getId(), model);
       }
-      modelMap.put(config.getId(), model);
     }
     WKF_MODEL_CACHE.put(BpmTools.getCurentTenant(), modelMap);
   }
@@ -56,7 +60,7 @@ public class WkfCache {
 
     MultiMap multiMap = new MultiValueMap();
     multiMap.put(0L, null);
-    for (WkfTaskConfig config : wkfTaskConfigs) {
+    for (WkfTaskConfig config : ListUtils.emptyIfNull(wkfTaskConfigs)) {
       if (config.getButton() != null) {
         for (String btnName : config.getButton().split(",")) {
           multiMap.put(config.getId(), btnName);

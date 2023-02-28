@@ -19,6 +19,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -51,7 +52,7 @@ public class AccountAccountRepository extends AccountRepository {
         if (account.getCompatibleAccountSet() != null) {
           for (Account acc : account.getCompatibleAccountSet()) {
             acc.removeCompatibleAccountSetItem(account);
-            if (acc.getCompatibleAccountSet().size() == 0) {
+            if (ObjectUtils.isEmpty(acc.getCompatibleAccountSet())) {
               acc.setReconcileOk(false);
             }
             JPA.save(acc);

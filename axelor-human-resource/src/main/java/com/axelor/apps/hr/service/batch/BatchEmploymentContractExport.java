@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchEmploymentContractExport extends BatchStrategy {
 
@@ -62,7 +63,6 @@ public class BatchEmploymentContractExport extends BatchStrategy {
                 hrBatch.getCompany(),
                 EmploymentContractRepository.STATUS_ACTIVE)
             .fetch();
-
     switch (hrBatch.getEmploymentContractExportTypeSelect()) {
       case HrBatchRepository.EMPLOYMENT_CONTRACT_EXPORT_TYPE_SILAE:
         try {
@@ -82,13 +82,14 @@ public class BatchEmploymentContractExport extends BatchStrategy {
       throws IOException {
 
     List<String[]> list = new ArrayList<>();
+    if (CollectionUtils.isNotEmpty(employmentContractList)) {
+      for (EmploymentContract employmentContract : employmentContractList) {
+        Beans.get(EmploymentContractService.class)
+            .employmentContractExportSilae(employmentContract, list);
 
-    for (EmploymentContract employmentContract : employmentContractList) {
-      Beans.get(EmploymentContractService.class)
-          .employmentContractExportSilae(employmentContract, list);
-
-      total++;
-      incrementDone();
+        total++;
+        incrementDone();
+      }
     }
 
     File tempFile =

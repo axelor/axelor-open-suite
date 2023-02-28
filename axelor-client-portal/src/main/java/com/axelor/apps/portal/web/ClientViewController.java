@@ -49,7 +49,9 @@ public class ClientViewController {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
         map = clientViewService.updateClientViewIndicators();
-        response.setValues(map);
+        if (map != null) {
+          response.setValues(map);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -22,6 +22,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -45,7 +46,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void allocateAll(SaleOrder saleOrder) throws AxelorException {
-    for (SaleOrderLine saleOrderLine : getNonDeliveredLines(saleOrder)) {
+    for (SaleOrderLine saleOrderLine : ListUtils.emptyIfNull(getNonDeliveredLines(saleOrder))) {
       reservedQtyService.allocateAll(saleOrderLine);
     }
   }
@@ -53,7 +54,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void deallocateAll(SaleOrder saleOrder) throws AxelorException {
-    for (SaleOrderLine saleOrderLine : getNonDeliveredLines(saleOrder)) {
+    for (SaleOrderLine saleOrderLine : ListUtils.emptyIfNull(getNonDeliveredLines(saleOrder))) {
       reservedQtyService.updateReservedQty(saleOrderLine, BigDecimal.ZERO);
     }
   }
@@ -61,7 +62,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void reserveAll(SaleOrder saleOrder) throws AxelorException {
-    for (SaleOrderLine saleOrderLine : getNonDeliveredLines(saleOrder)) {
+    for (SaleOrderLine saleOrderLine : ListUtils.emptyIfNull(getNonDeliveredLines(saleOrder))) {
       reservedQtyService.requestQty(saleOrderLine);
     }
   }
@@ -69,7 +70,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancelReservation(SaleOrder saleOrder) throws AxelorException {
-    for (SaleOrderLine saleOrderLine : getNonDeliveredLines(saleOrder)) {
+    for (SaleOrderLine saleOrderLine : ListUtils.emptyIfNull(getNonDeliveredLines(saleOrder))) {
       reservedQtyService.cancelReservation(saleOrderLine);
     }
   }

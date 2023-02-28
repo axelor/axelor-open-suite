@@ -42,6 +42,8 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -55,6 +57,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,7 +125,7 @@ public class AccountClearanceService {
                 MoveRepository.STATUS_ACCOUNTED,
                 MoveRepository.STATUS_DAYBOOK,
                 accountClearance.getAmountThreshold(),
-                company.getAccountConfig().getClearanceAccountSet(),
+                SetUtils.emptyIfNull(company.getAccountConfig().getClearanceAccountSet()),
                 accountClearance.getDateThreshold())
             .fetch();
 
@@ -136,7 +139,7 @@ public class AccountClearanceService {
   public void setExcessPayment(AccountClearance accountClearance) throws AxelorException {
     accountClearance.setMoveLineSet(new HashSet<MoveLine>());
     List<MoveLine> moveLineList = (List<MoveLine>) this.getExcessPayment(accountClearance);
-    if (moveLineList != null && moveLineList.size() != 0) {
+    if (CollectionUtils.isNotEmpty(moveLineList)) {
       accountClearance.getMoveLineSet().addAll(moveLineList);
     }
     accountClearanceRepo.save(accountClearance);
@@ -156,26 +159,28 @@ public class AccountClearanceService {
 
     Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getAccount().getVatSystemSelect() == null
-          || moveLine.getAccount().getVatSystemSelect() == 0) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
-            moveLine.getAccount().getCode());
+    if (CollectionUtils.isNotEmpty(moveLineList)) {
+      for (MoveLine moveLine : moveLineList) {
+        if (moveLine.getAccount().getVatSystemSelect() == null
+            || moveLine.getAccount().getVatSystemSelect() == 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+              moveLine.getAccount().getCode());
+        }
+        Account taxAccount =
+            taxAccountService.getAccount(
+                tax,
+                company,
+                journal,
+                moveLine.getAccount().getVatSystemSelect(),
+                false,
+                moveLine.getMove().getFunctionalOriginSelect());
+        Move move =
+            this.createAccountClearanceMove(
+                moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
+        moveValidateService.accounting(move);
       }
-      Account taxAccount =
-          taxAccountService.getAccount(
-              tax,
-              company,
-              journal,
-              moveLine.getAccount().getVatSystemSelect(),
-              false,
-              moveLine.getMove().getFunctionalOriginSelect());
-      Move move =
-          this.createAccountClearanceMove(
-              moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
-      moveValidateService.accounting(move);
     }
 
     accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
@@ -249,7 +254,7 @@ public class AccountClearanceService {
             2,
             null,
             null);
-    move.getMoveLineList().add(creditMoveLine1);
+    move.addMoveLineListItem(creditMoveLine1);
 
     // Credit MoveLine 445 (Tax account)
     BigDecimal taxAmount = amount.subtract(profitAmount);
@@ -264,7 +269,7 @@ public class AccountClearanceService {
             3,
             null,
             null);
-    move.getMoveLineList().add(creditMoveLine2);
+    move.addMoveLineListItem(creditMoveLine2);
 
     Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
     if (reconcile != null) {
@@ -287,7 +292,10 @@ public class AccountClearanceService {
     accountClearance.setAmountThreshold(amountThreshold);
     accountClearance.setCompany(company);
     accountClearance.setDateThreshold(dateThreshold);
-    accountClearance.getMoveLineSet().addAll(moveLineSet);
+    if (accountClearance.getMoveLineSet() == null) {
+      accountClearance.setMoveLineSet(new HashSet<>());
+    }
+    accountClearance.getMoveLineSet().addAll(ListUtils.emptyIfNull(moveLineSet));
     accountClearance.setName(name);
     accountClearance.setDateTime(appBaseService.getTodayDateTime());
     accountClearance.setUser(this.user);
@@ -330,7 +338,7 @@ public class AccountClearanceService {
     }
 
     if (accountConfig.getClearanceAccountSet() == null
-        || accountConfig.getClearanceAccountSet().size() == 0) {
+        || accountConfig.getClearanceAccountSet().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_4),

@@ -126,12 +126,14 @@ public class ClosureAssistantServiceImpl implements ClosureAssistantService {
           closureAssistant.getClosureAssistantLineList().stream()
               .sorted(Comparator.comparing(ClosureAssistantLine::getSequence))
               .collect(Collectors.toList());
-      if (!lines.get(0).getIsValidated()
+      if (lines != null
+          && !lines.get(0).getIsValidated()
           && closureAssistant.getStatusSelect() != ClosureAssistantRepository.STATUS_NEW) {
         closureAssistant.setStatusSelect(ClosureAssistantRepository.STATUS_NEW);
         closureAssistantRepository.save(closureAssistant);
         return true;
-      } else if (lines.get(lines.size() - 1).getIsValidated()
+      } else if (lines != null
+          && lines.get(lines.size() - 1).getIsValidated()
           && closureAssistant.getStatusSelect() != ClosureAssistantRepository.STATUS_TERMINATED) {
         closureAssistant.setStatusSelect(ClosureAssistantRepository.STATUS_TERMINATED);
         closureAssistantRepository.save(closureAssistant);

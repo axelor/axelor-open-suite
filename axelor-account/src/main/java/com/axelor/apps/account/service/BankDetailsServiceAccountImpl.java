@@ -32,6 +32,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
 
@@ -68,10 +69,12 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
 
       authorizedBankDetails = new ArrayList<>();
 
-      for (AccountManagement accountManagement : accountManagementList) {
-        if (accountManagement.getCompany() != null
-            && accountManagement.getCompany().equals(company)) {
-          authorizedBankDetails.add(accountManagement.getBankDetails());
+      if (CollectionUtils.isNotEmpty(accountManagementList)) {
+        for (AccountManagement accountManagement : accountManagementList) {
+          if (accountManagement.getCompany() != null
+              && accountManagement.getCompany().equals(company)) {
+            authorizedBankDetails.add(accountManagement.getBankDetails());
+          }
         }
       }
 
@@ -116,19 +119,20 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       List<BankDetails> authorizedBankDetails =
           Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
 
-      if ((partner == null || !partner.getFactorizedCustomer())
-          && candidateBankDetails != null
-          && authorizedBankDetails.contains(candidateBankDetails)
-          && candidateBankDetails.getActive()) {
-        return candidateBankDetails;
-      }
-      // we did not find a bank details in accounting situation
-      else {
-        if (authorizedBankDetails.size() == 1 && authorizedBankDetails.get(0).getActive()) {
-          return authorizedBankDetails.get(0);
+      if (authorizedBankDetails != null) {
+        if ((partner == null || !partner.getFactorizedCustomer())
+            && candidateBankDetails != null
+            && authorizedBankDetails.contains(candidateBankDetails)
+            && candidateBankDetails.getActive()) {
+          return candidateBankDetails;
+        }
+        // we did not find a bank details in accounting situation
+        else {
+          if (authorizedBankDetails.size() == 1 && authorizedBankDetails.get(0).getActive()) {
+            return authorizedBankDetails.get(0);
+          }
         }
       }
-
       return null;
     }
   }

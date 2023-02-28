@@ -36,6 +36,7 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BatchAdvancedImportData extends AbstractImportBatch {
 
@@ -91,14 +92,16 @@ public class BatchAdvancedImportData extends AbstractImportBatch {
 
     AdvancedImport advancedImport = batch.getImportBatch().getAdvancedImport();
 
-    for (MetaFile file : files) {
-      try {
-        advancedImport.setImportFile(file);
-        importData(advancedImport);
-        incrementDone();
-      } catch (Exception e) {
-        TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
-        incrementAnomaly();
+    if (CollectionUtils.isNotEmpty(files)) {
+      for (MetaFile file : files) {
+        try {
+          advancedImport.setImportFile(file);
+          importData(advancedImport);
+          incrementDone();
+        } catch (Exception e) {
+          TraceBackService.trace(e, TRACE_ORIGIN, batch.getId());
+          incrementAnomaly();
+        }
       }
     }
   }

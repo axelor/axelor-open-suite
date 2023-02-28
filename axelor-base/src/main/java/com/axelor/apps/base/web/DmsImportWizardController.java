@@ -36,7 +36,10 @@ public class DmsImportWizardController {
     try {
       @SuppressWarnings("unchecked")
       Map<String, Object> metaFileMap = (Map<String, Object>) request.getContext().get("metaFile");
-      MetaFile metaFile = metaFileRepo.find(Long.parseLong(metaFileMap.get("id").toString()));
+      MetaFile metaFile =
+          metaFileMap != null
+              ? metaFileRepo.find(Long.parseLong(metaFileMap.get("id").toString()))
+              : null;
       dmsImportWizardService.importDMS(metaFile);
       response.setReload(true);
     } catch (AxelorException e) {

@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -297,19 +298,21 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
       boolean updateDueCustAccount,
       boolean updateDueDebtRecoveryCustAccount)
       throws AxelorException {
-    for (Partner partner : partnerList) {
-      AccountingSituation accountingSituation =
-          accountingSituationService.getAccountingSituation(partner, company);
-      if (accountingSituation == null) {
-        accountingSituation =
-            accountingSituationInitService.createAccountingSituation(partner, company);
-      }
-      if (accountingSituation != null) {
-        this.updateAccountingSituationCustomerAccount(
-            accountingSituation,
-            updateCustAccount,
-            updateDueCustAccount,
-            updateDueDebtRecoveryCustAccount);
+    if (CollectionUtils.isNotEmpty(partnerList)) {
+      for (Partner partner : partnerList) {
+        AccountingSituation accountingSituation =
+            accountingSituationService.getAccountingSituation(partner, company);
+        if (accountingSituation == null) {
+          accountingSituation =
+              accountingSituationInitService.createAccountingSituation(partner, company);
+        }
+        if (accountingSituation != null) {
+          this.updateAccountingSituationCustomerAccount(
+              accountingSituation,
+              updateCustAccount,
+              updateDueCustAccount,
+              updateDueDebtRecoveryCustAccount);
+        }
       }
     }
   }
@@ -317,16 +320,18 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void flagPartners(List<Partner> partnerList, Company company) throws AxelorException {
-    for (Partner partner : partnerList) {
-      AccountingSituation accountingSituation =
-          accountingSituationService.getAccountingSituation(partner, company);
-      if (accountingSituation == null) {
-        accountingSituation =
-            accountingSituationInitService.createAccountingSituation(partner, company);
-      }
-      if (accountingSituation != null) {
-        accountingSituation.setCustAccountMustBeUpdateOk(true);
-        accSituationRepo.save(accountingSituation);
+    if (CollectionUtils.isNotEmpty(partnerList)) {
+      for (Partner partner : partnerList) {
+        AccountingSituation accountingSituation =
+            accountingSituationService.getAccountingSituation(partner, company);
+        if (accountingSituation == null) {
+          accountingSituation =
+              accountingSituationInitService.createAccountingSituation(partner, company);
+        }
+        if (accountingSituation != null) {
+          accountingSituation.setCustAccountMustBeUpdateOk(true);
+          accSituationRepo.save(accountingSituation);
+        }
       }
     }
   }

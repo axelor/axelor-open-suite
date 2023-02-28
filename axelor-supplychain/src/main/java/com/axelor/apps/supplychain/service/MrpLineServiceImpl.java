@@ -48,6 +48,7 @@ import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.EntityHelper;
@@ -63,6 +64,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -199,7 +201,7 @@ public class MrpLineServiceImpl implements MrpLineService {
           purchaseOrders.put(key, purchaseOrder);
         }
       }
-      if (mrpLine.getMrpLineOriginList().size() == 1) {
+      if (ListUtils.size(mrpLine.getMrpLineOriginList()) == 1) {
         if (mrpLine
             .getMrpLineOriginList()
             .get(0)
@@ -240,11 +242,13 @@ public class MrpLineServiceImpl implements MrpLineService {
   protected String getPurchaseOrderOrigin(MrpLine mrpLine) {
     StringBuilder origin = new StringBuilder();
     int count = 0;
-    for (MrpLineOrigin mrpLineOrigin : mrpLine.getMrpLineOriginList()) {
-      count++;
-      origin.append(getMrpLineOriginStr(mrpLineOrigin));
-      if (count < mrpLine.getMrpLineOriginList().size()) {
-        origin.append(" & ");
+    if (CollectionUtils.isNotEmpty(mrpLine.getMrpLineOriginList())) {
+      for (MrpLineOrigin mrpLineOrigin : mrpLine.getMrpLineOriginList()) {
+        count++;
+        origin.append(getMrpLineOriginStr(mrpLineOrigin));
+        if (count < mrpLine.getMrpLineOriginList().size()) {
+          origin.append(" & ");
+        }
       }
     }
     return origin.toString();
@@ -378,10 +382,12 @@ public class MrpLineServiceImpl implements MrpLineService {
   @Override
   public void updateProposalToProcess(List<Integer> mrpLineIds, boolean proposalToProcess) {
     MrpLine mrpLine;
-    for (Integer mrpId : mrpLineIds) {
-      mrpLine = mrpLineRepo.find(Long.valueOf(mrpId));
+    if (mrpLineIds != null) {
+      for (Integer mrpId : mrpLineIds) {
+        mrpLine = mrpLineRepo.find(Long.valueOf(mrpId));
 
-      updateProposalToProcess(mrpLine, proposalToProcess);
+        updateProposalToProcess(mrpLine, proposalToProcess);
+      }
     }
   }
 

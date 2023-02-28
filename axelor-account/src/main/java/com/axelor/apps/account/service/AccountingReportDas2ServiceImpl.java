@@ -79,7 +79,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
     List<String> errorList =
         accountingReportDas2CheckService.checkMandatoryDataForDas2Export(accountingReport);
 
-    if (!CollectionUtils.isEmpty(errorList)) {
+    if (CollectionUtils.isNotEmpty(errorList)) {
       StringHTMLListBuilder errorMessageBuilder = new StringHTMLListBuilder();
       errorList.forEach(errorMessageBuilder::append);
       throw new AxelorException(

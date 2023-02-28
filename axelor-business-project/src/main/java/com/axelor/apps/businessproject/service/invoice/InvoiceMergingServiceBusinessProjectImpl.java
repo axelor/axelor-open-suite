@@ -27,6 +27,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -106,7 +107,7 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
   protected void extractFirstNonNullCommonFields(
       List<Invoice> invoicesToMerge, InvoiceMergingResult result) {
     super.extractFirstNonNullCommonFields(invoicesToMerge, result);
-    invoicesToMerge.stream()
+    ListUtils.emptyIfNull(invoicesToMerge).stream()
         .map(Invoice::getProject)
         .filter(Objects::nonNull)
         .findFirst()

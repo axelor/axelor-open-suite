@@ -21,6 +21,7 @@ import com.axelor.apps.gdpr.db.GDPRSearchConfig;
 import com.axelor.apps.gdpr.db.GDPRSearchConfigLine;
 import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
@@ -110,18 +112,21 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
 
     List<Map<String, Object>> results = new ArrayList<>();
 
-    for (GDPRSearchConfig searchConfig : searchConfigs) {
-      MetaModel metaModel = searchConfig.getMetaModel();
-      Class<? extends AuditableModel> modelClass =
-          (Class<? extends AuditableModel>) Class.forName(metaModel.getFullName());
+    if (CollectionUtils.isNotEmpty(searchConfigs)) {
+      for (GDPRSearchConfig searchConfig : searchConfigs) {
+        MetaModel metaModel = searchConfig.getMetaModel();
+        Class<? extends AuditableModel> modelClass =
+            (Class<? extends AuditableModel>) Class.forName(metaModel.getFullName());
 
-      String query = buildSearchQuery(searchParams, searchConfig);
+        String query = buildSearchQuery(searchParams, searchConfig);
 
-      //       apply search config query
-      List<? extends AuditableModel> models =
-          Query.of(modelClass).filter(query).bind(searchParams).fetch();
+        //       apply search config query
+        List<? extends AuditableModel> models =
+            Query.of(modelClass).filter(query).bind(searchParams).fetch();
 
-      models.forEach(model -> results.add(convertResultToDisplayMap(searchConfig, model)));
+        ListUtils.emptyIfNull(models)
+            .forEach(model -> results.add(convertResultToDisplayMap(searchConfig, model)));
+      }
     }
 
     return results;
@@ -131,18 +136,20 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
     StringBuilder query = new StringBuilder();
     List<GDPRSearchConfigLine> searchConfigLines = searchConfig.getSearchConfigLineList();
 
-    for (GDPRSearchConfigLine searchConfigLine : searchConfigLines) {
-      String param =
-          Optional.ofNullable(searchParams.get(searchConfigLine.getKey()))
-              .map(Object::toString)
-              .orElse("");
+    if (CollectionUtils.isNotEmpty(searchConfigLines)) {
+      for (GDPRSearchConfigLine searchConfigLine : searchConfigLines) {
+        String param =
+            Optional.ofNullable(searchParams.get(searchConfigLine.getKey()))
+                .map(Object::toString)
+                .orElse("");
 
-      if (StringUtils.isEmpty(param)) {
-        continue;
+        if (StringUtils.isEmpty(param)) {
+          continue;
+        }
+
+        query.append(searchConfigLine.getQuery());
+        query.append(" AND ");
       }
-
-      query.append(searchConfigLine.getQuery());
-      query.append(" AND ");
     }
 
     query.append(" 1 = 1");
@@ -163,9 +170,11 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
     mappedObject.put("typeClass", reference.getClass().getName());
     mappedObject.put("objectId", reference.getId());
 
-    for (GDPRSearchConfigLine searchConfigLine : searchConfig.getSearchConfigLineList()) {
-      mappedObject.put(
-          searchConfigLine.getKey(), evalField(scriptContext, searchConfigLine.getMapping()));
+    if (CollectionUtils.isNotEmpty(searchConfig.getSearchConfigLineList())) {
+      for (GDPRSearchConfigLine searchConfigLine : searchConfig.getSearchConfigLineList()) {
+        mappedObject.put(
+            searchConfigLine.getKey(), evalField(scriptContext, searchConfigLine.getMapping()));
+      }
     }
 
     return mappedObject;
@@ -218,7 +227,7 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
     } else {
       // handle subobject case
       MetaField metaField =
-          metaModel.getMetaFields().stream()
+          ListUtils.emptyIfNull(metaModel.getMetaFields()).stream()
               .filter(mf -> fields[0].equals(mf.getName()))
               .findFirst()
               .orElseThrow(

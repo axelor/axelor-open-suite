@@ -61,7 +61,9 @@ public class JobApplicationController {
     Map<String, String> urlMap =
         Beans.get(PartnerService.class)
             .getSocialNetworkUrl(application.getFirstName(), application.getLastName(), 2);
-    response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
+    if (urlMap != null) {
+      response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
+    }
   }
 
   public void showResume(ActionRequest request, ActionResponse response) {

@@ -105,23 +105,25 @@ public class SaleOrderLineTaxService {
       }
     }
 
-    for (SaleOrderLineTax saleOrderLineTax : map.values()) {
+    if (map != null) {
+      for (SaleOrderLineTax saleOrderLineTax : map.values()) {
 
-      // Dans la devise de la facture
-      BigDecimal exTaxBase = saleOrderLineTax.getExTaxBase();
-      BigDecimal taxTotal = BigDecimal.ZERO;
-      if (saleOrderLineTax.getTaxLine() != null) {
-        taxTotal =
-            saleOrderToolService.computeAmount(
-                exTaxBase, saleOrderLineTax.getTaxLine().getValue().divide(new BigDecimal(100)));
-        saleOrderLineTax.setTaxTotal(taxTotal);
+        // Dans la devise de la facture
+        BigDecimal exTaxBase = saleOrderLineTax.getExTaxBase();
+        BigDecimal taxTotal = BigDecimal.ZERO;
+        if (saleOrderLineTax.getTaxLine() != null) {
+          taxTotal =
+              saleOrderToolService.computeAmount(
+                  exTaxBase, saleOrderLineTax.getTaxLine().getValue().divide(new BigDecimal(100)));
+          saleOrderLineTax.setTaxTotal(taxTotal);
+        }
+        saleOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
+        saleOrderLineTaxList.add(saleOrderLineTax);
+
+        LOG.debug(
+            "VAT line : VAT total => {}, W.T. total => {}",
+            new Object[] {saleOrderLineTax.getTaxTotal(), saleOrderLineTax.getInTaxTotal()});
       }
-      saleOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
-      saleOrderLineTaxList.add(saleOrderLineTax);
-
-      LOG.debug(
-          "VAT line : VAT total => {}, W.T. total => {}",
-          new Object[] {saleOrderLineTax.getTaxTotal(), saleOrderLineTax.getInTaxTotal()});
     }
 
     if (!customerSpecificNote) {

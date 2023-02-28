@@ -37,6 +37,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +105,10 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
 
       // Get all different saleOrders from invoice
       List<SaleOrder> saleOrderList = Lists.newArrayList();
+
+      if (CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+        return;
+      }
 
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 
@@ -177,6 +182,9 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
       // Get all different purchaseOrders from invoice
 
       List<PurchaseOrder> purchaseOrderList = Lists.newArrayList();
+      if (CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+        return;
+      }
 
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 

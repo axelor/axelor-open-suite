@@ -40,8 +40,10 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProductionProductStockLocationServiceImpl extends ProductStockLocationServiceImpl {
 
@@ -92,9 +94,14 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
         this.getConsumeManufOrderQty(product, company, stockLocation)
             .setScale(scale, RoundingMode.HALF_UP);
     BigDecimal availableQty =
-        (BigDecimal)
-            map.getOrDefault(
-                "$availableQty", BigDecimal.ZERO.setScale(scale, RoundingMode.HALF_UP));
+        map != null
+            ? (BigDecimal)
+                map.getOrDefault(
+                    "$availableQty", BigDecimal.ZERO.setScale(scale, RoundingMode.HALF_UP))
+            : BigDecimal.ZERO;
+    if (map == null) {
+      map = new HashMap<>();
+    }
     map.put(
         "$buildingQty",
         this.getBuildingQty(product, company, stockLocation).setScale(scale, RoundingMode.HALF_UP));
@@ -126,7 +133,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumBuildingQty = BigDecimal.ZERO;
-    if (!stockMoveLineList.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
 
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
@@ -162,7 +169,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumConsumeManufOrderQty = BigDecimal.ZERO;
-    if (!stockMoveLineList.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         BigDecimal productConsumeManufOrderQty = stockMoveLine.getRealQty();
@@ -197,7 +204,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumMissingManufOrderQty = BigDecimal.ZERO;
-    if (!stockMoveLineList.isEmpty()) {
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         BigDecimal productMissingManufOrderQty = getMissingQtyOfStockMoveLine(stockMoveLine);

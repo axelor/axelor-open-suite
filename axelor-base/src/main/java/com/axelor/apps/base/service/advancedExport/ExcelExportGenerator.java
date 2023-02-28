@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.advancedExport;
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -73,7 +74,8 @@ public class ExcelExportGenerator extends AdvancedExportGenerator {
   public void generateHeader() {
     Row headerRow = sheet.createRow(sheet.getFirstRowNum());
     int colHeaderNum = 0;
-    for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
+    for (AdvancedExportLine advancedExportLine :
+        ListUtils.emptyIfNull(advancedExport.getAdvancedExportLineList())) {
       Cell headerCell = headerRow.createCell(colHeaderNum++);
       headerCell.setCellValue(I18n.get(advancedExportLine.getTitle()));
     }
@@ -107,34 +109,40 @@ public class ExcelExportGenerator extends AdvancedExportGenerator {
               .createDataFormat()
               .getFormat(DateFormatConverter.convert(AppFilter.getLocale(), pattern)));
     }
-
-    for (List listObj : dataList) {
-      Row row = sheet.createRow(sheet.getLastRowNum() + 1);
-      for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
-        Object value = listObj.get(colIndex);
-        Cell cell = row.createCell(colIndex);
-        String columnValue = null;
-        if (!(value == null || value.equals(""))) {
-          if (value instanceof LocalDate) {
-            cell.setCellStyle(dateCellStyle);
-            cell.setCellValue(
-                Date.from(
-                    ((LocalDate) value).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-          }
-          if (value instanceof LocalDateTime) {
-            cell.setCellStyle(dateTimeCellStyle);
-            cell.setCellValue(
-                Date.from(((LocalDateTime) value).atZone(ZoneId.systemDefault()).toInstant()));
-          } else if (value instanceof ZonedDateTime) {
-            cell.setCellStyle(dateTimeCellStyle);
-            cell.setCellValue(Date.from(((ZonedDateTime) value).toInstant()));
-          } else if (value instanceof Instant) {
-            cell.setCellStyle(dateTimeCellStyle);
-            cell.setCellValue(Date.from((Instant) value));
-          } else if (value instanceof Number) {
-            cell.setCellValue(((Number) value).doubleValue());
-          } else {
-            cell.setCellValue(value.toString());
+    if (dataList != null) {
+      for (List listObj : dataList) {
+        Row row = sheet.createRow(sheet.getLastRowNum() + 1);
+        if (listObj != null) {
+          for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
+            Object value = listObj.get(colIndex);
+            Cell cell = row.createCell(colIndex);
+            String columnValue = null;
+            if (!(value == null || value.equals(""))) {
+              if (value instanceof LocalDate) {
+                cell.setCellStyle(dateCellStyle);
+                cell.setCellValue(
+                    Date.from(
+                        ((LocalDate) value)
+                            .atStartOfDay()
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()));
+              }
+              if (value instanceof LocalDateTime) {
+                cell.setCellStyle(dateTimeCellStyle);
+                cell.setCellValue(
+                    Date.from(((LocalDateTime) value).atZone(ZoneId.systemDefault()).toInstant()));
+              } else if (value instanceof ZonedDateTime) {
+                cell.setCellStyle(dateTimeCellStyle);
+                cell.setCellValue(Date.from(((ZonedDateTime) value).toInstant()));
+              } else if (value instanceof Instant) {
+                cell.setCellStyle(dateTimeCellStyle);
+                cell.setCellValue(Date.from((Instant) value));
+              } else if (value instanceof Number) {
+                cell.setCellValue(((Number) value).doubleValue());
+              } else {
+                cell.setCellValue(value.toString());
+              }
+            }
           }
         }
       }

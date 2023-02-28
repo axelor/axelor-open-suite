@@ -26,6 +26,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -47,7 +48,7 @@ public class ProjectFolderServiceImpl implements ProjectFolderService {
     List<File> printedProjects = new ArrayList<>();
     List<Long> ids = new ArrayList<Long>();
 
-    for (Project project : projectFolder.getProjectSet()) {
+    for (Project project : SetUtils.emptyIfNull(projectFolder.getProjectSet())) {
       ids.add(project.getId());
     }
     ModelTool.apply(
@@ -75,7 +76,7 @@ public class ProjectFolderServiceImpl implements ProjectFolderService {
     List<File> printedProjects = new ArrayList<>();
     List<Long> ids = new ArrayList<Long>();
 
-    for (Project project : projectFolder.getProjectSet()) {
+    for (Project project : SetUtils.emptyIfNull(projectFolder.getProjectSet())) {
       ids.add(project.getId());
     }
     ModelTool.apply(

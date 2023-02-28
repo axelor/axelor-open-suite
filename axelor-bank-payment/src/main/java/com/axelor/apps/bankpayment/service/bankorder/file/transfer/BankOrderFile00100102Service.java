@@ -52,6 +52,7 @@ import java.time.format.DateTimeFormatter;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankOrderFile00100102Service extends BankOrderFileService {
 
@@ -136,78 +137,82 @@ public class BankOrderFile00100102Service extends BankOrderFileService {
     BranchAndFinancialInstitutionIdentification3 cbtrAgt = null;
     RemittanceInformation1 rmtInf = null;
 
-    for (BankOrderLine bankOrderLine : bankOrderLineList) {
+    if (CollectionUtils.isNotEmpty(bankOrderLineList)) {
+      for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
-      BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
+        BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
 
-      // Reference
-      pmtId = factory.createPaymentIdentification1();
-      //			pmtId.setInstrId(bankOrderLine.getSequence());
-      pmtId.setEndToEndId(bankOrderLine.getSequence());
+        // Reference
+        pmtId = factory.createPaymentIdentification1();
+        //			pmtId.setInstrId(bankOrderLine.getSequence());
+        pmtId.setEndToEndId(bankOrderLine.getSequence());
 
-      // Amount
-      instdAmt = factory.createCurrencyAndAmount();
-      instdAmt.setCcy(bankOrderCurrency.getCodeISO());
-      instdAmt.setValue(bankOrderLine.getBankOrderAmount());
+        // Amount
+        instdAmt = factory.createCurrencyAndAmount();
+        instdAmt.setCcy(bankOrderCurrency.getCodeISO());
+        instdAmt.setValue(bankOrderLine.getBankOrderAmount());
 
-      amt = factory.createAmountType2Choice();
-      amt.setInstdAmt(instdAmt);
+        amt = factory.createAmountType2Choice();
+        amt.setInstdAmt(instdAmt);
 
-      // Receiver
-      cbtr = factory.createPartyIdentification8();
-      cbtr.setNm(receiverBankDetails.getOwnerName());
+        // Receiver
+        cbtr = factory.createPartyIdentification8();
+        cbtr.setNm(receiverBankDetails.getOwnerName());
 
-      // IBAN
-      iban = factory.createAccountIdentification3Choice();
-      iban.setIBAN(receiverBankDetails.getIban());
+        // IBAN
+        iban = factory.createAccountIdentification3Choice();
+        iban.setIBAN(receiverBankDetails.getIban());
 
-      cbtrAcct = factory.createCashAccount7();
-      cbtrAcct.setId(iban);
+        cbtrAcct = factory.createCashAccount7();
+        cbtrAcct.setId(iban);
 
-      // BIC
-      finInstnId = factory.createFinancialInstitutionIdentification5Choice();
+        // BIC
+        finInstnId = factory.createFinancialInstitutionIdentification5Choice();
 
-      fillBic(finInstnId, receiverBankDetails.getBank());
+        fillBic(finInstnId, receiverBankDetails.getBank());
 
-      cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
-      cbtrAgt.setFinInstnId(finInstnId);
+        cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification3();
+        cbtrAgt.setFinInstnId(finInstnId);
 
-      rmtInf = factory.createRemittanceInformation1();
+        rmtInf = factory.createRemittanceInformation1();
 
-      String ustrd = "";
-      if (!Strings.isNullOrEmpty(bankOrderLine.getReceiverReference())) {
-        ustrd += bankOrderLine.getReceiverReference();
-      }
-      if (!Strings.isNullOrEmpty(bankOrderLine.getReceiverLabel())) {
-        if (!Strings.isNullOrEmpty(ustrd)) {
-          ustrd += " - ";
+        String ustrd = "";
+        if (!Strings.isNullOrEmpty(bankOrderLine.getReceiverReference())) {
+          ustrd += bankOrderLine.getReceiverReference();
         }
-        ustrd += bankOrderLine.getReceiverLabel();
+        if (!Strings.isNullOrEmpty(bankOrderLine.getReceiverLabel())) {
+          if (!Strings.isNullOrEmpty(ustrd)) {
+            ustrd += " - ";
+          }
+          ustrd += bankOrderLine.getReceiverLabel();
+        }
+
+        if (!Strings.isNullOrEmpty(ustrd)) {
+          rmtInf.getUstrd().add(ustrd);
+        }
+
+        //			StructuredRemittanceInformation6 strd =
+        // factory.createStructuredRemittanceInformation6();
+        //
+        //			CreditorReferenceInformation1 cdtrRefInf =
+        // factory.createCreditorReferenceInformation1();
+        //			cdtrRefInf.setCdtrRef(bankOrderLine.getReceiverReference());
+        //
+        //			strd.setCdtrRefInf(cdtrRefInf);
+        //
+        //			rmtInf.getStrd().add(strd);
+
+        // Transaction
+        cdtTrfTxInf = factory.createCreditTransferTransactionInformation1();
+        cdtTrfTxInf.setPmtId(pmtId);
+        cdtTrfTxInf.setAmt(amt);
+        cdtTrfTxInf.setCdtr(cbtr);
+        cdtTrfTxInf.setCdtrAcct(cbtrAcct);
+        cdtTrfTxInf.setCdtrAgt(cbtrAgt);
+        cdtTrfTxInf.setRmtInf(rmtInf);
+
+        pmtInf.getCdtTrfTxInf().add(cdtTrfTxInf);
       }
-
-      if (!Strings.isNullOrEmpty(ustrd)) {
-        rmtInf.getUstrd().add(ustrd);
-      }
-
-      //			StructuredRemittanceInformation6 strd = factory.createStructuredRemittanceInformation6();
-      //
-      //			CreditorReferenceInformation1 cdtrRefInf = factory.createCreditorReferenceInformation1();
-      //			cdtrRefInf.setCdtrRef(bankOrderLine.getReceiverReference());
-      //
-      //			strd.setCdtrRefInf(cdtrRefInf);
-      //
-      //			rmtInf.getStrd().add(strd);
-
-      // Transaction
-      cdtTrfTxInf = factory.createCreditTransferTransactionInformation1();
-      cdtTrfTxInf.setPmtId(pmtId);
-      cdtTrfTxInf.setAmt(amt);
-      cdtTrfTxInf.setCdtr(cbtr);
-      cdtTrfTxInf.setCdtrAcct(cbtrAcct);
-      cdtTrfTxInf.setCdtrAgt(cbtrAgt);
-      cdtTrfTxInf.setRmtInf(rmtInf);
-
-      pmtInf.getCdtTrfTxInf().add(cdtTrfTxInf);
     }
 
     // Header

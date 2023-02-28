@@ -36,13 +36,13 @@ public class ImportVehicle {
 
     Vehicle vehicle = (Vehicle) bean;
 
-    final Path path = (Path) values.get("__path__");
-    String fileName = (String) values.get("image_fileName");
+    final Path path = values != null ? (Path) values.get("__path__") : null;
+    String fileName = values != null ? (String) values.get("image_fileName") : null;
     if (Strings.isNullOrEmpty(fileName)) {
       return bean;
     }
 
-    final File image = path.resolve(fileName).toFile();
+    final File image = path != null ? path.resolve(fileName).toFile() : null;
 
     try {
       final MetaFile metaFile = metaFiles.upload(image);

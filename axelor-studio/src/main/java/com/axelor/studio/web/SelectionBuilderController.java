@@ -83,7 +83,9 @@ public class SelectionBuilderController {
           Beans.get(SelectionBuilderService.class)
               .getSelectOptions(selectionBuilder.getSelectionText());
 
-      response.setValue(SELECTION_OPTION_LIST, selectOptions);
+      if (selectOptions != null) {
+        response.setValue(SELECTION_OPTION_LIST, selectOptions);
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

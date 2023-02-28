@@ -79,7 +79,9 @@ public class PaymentVoucherController {
     try {
       List<PayVoucherDueElement> pvDueElementList =
           Beans.get(PaymentVoucherLoadService.class).searchDueElements(paymentVoucher);
-      response.setValue("payVoucherDueElementList", pvDueElementList);
+      if (pvDueElementList != null) {
+        response.setValue("payVoucherDueElementList", pvDueElementList);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -93,9 +95,13 @@ public class PaymentVoucherController {
     try {
       boolean generateAll =
           Beans.get(PaymentVoucherLoadService.class).loadSelectedLines(paymentVoucher);
-      response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
-      response.setValue(
-          "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+      if (paymentVoucher.getPayVoucherDueElementList() != null) {
+        response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
+      }
+      if (paymentVoucher.getPayVoucherElementToPayList() != null) {
+        response.setValue(
+            "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+      }
 
       if (!generateAll) {
         response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
@@ -112,9 +118,13 @@ public class PaymentVoucherController {
 
     try {
       Beans.get(PaymentVoucherLoadService.class).resetImputation(paymentVoucher);
-      response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
-      response.setValue(
-          "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+      if (paymentVoucher.getPayVoucherDueElementList() != null) {
+        response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
+      }
+      if (paymentVoucher.getPayVoucherElementToPayList() != null) {
+        response.setValue(
+            "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

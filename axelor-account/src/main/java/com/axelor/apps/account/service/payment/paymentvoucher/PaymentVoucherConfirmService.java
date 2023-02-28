@@ -52,6 +52,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -66,6 +67,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,8 +175,11 @@ public class PaymentVoucherConfirmService {
 
   protected void invoiceSetHasPendingPayments(PaymentVoucher paymentVoucher) {
 
-    paymentVoucher.getPayVoucherElementToPayList().stream()
-        .forEach(payVoucherElementToPay -> invoiceSetHasPendingPayment(payVoucherElementToPay));
+    if (paymentVoucher != null
+        && CollectionUtils.isNotEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
+      paymentVoucher.getPayVoucherElementToPayList().stream()
+          .forEach(payVoucherElementToPay -> invoiceSetHasPendingPayment(payVoucherElementToPay));
+    }
   }
 
   protected void invoiceSetHasPendingPayment(PayVoucherElementToPay payVoucherElementToPay) {
@@ -337,7 +342,7 @@ public class PaymentVoucherConfirmService {
   protected Optional<MoveLine> extractMoveLineFromValueForCollectionMove(
       Move move, Account account) {
 
-    return move.getMoveLineList().stream()
+    return ListUtils.emptyIfNull(move.getMoveLineList()).stream()
         .filter(moveLine -> Objects.equals(account, moveLine.getAccount()))
         .findFirst();
   }
@@ -415,7 +420,7 @@ public class PaymentVoucherConfirmService {
       boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(paymentVoucher);
 
       for (PayVoucherElementToPay payVoucherElementToPay :
-          this.getPayVoucherElementToPayList(paymentVoucher)) {
+          ListUtils.emptyIfNull(this.getPayVoucherElementToPayList(paymentVoucher))) {
         MoveLine moveLineToPay = payVoucherElementToPay.getMoveLine();
         log.debug("PV moveLineToPay debit : {}", moveLineToPay.getDebit());
         log.debug("PV moveLineToPay amountPaid : {}", moveLineToPay.getAmountPaid());
@@ -474,13 +479,16 @@ public class PaymentVoucherConfirmService {
       // in the else case we create a classical balance on the bank account of the
       // payment mode
       BigDecimal companyPaidAmount =
-          move.getMoveLineList().stream()
+          ListUtils.emptyIfNull(move.getMoveLineList()).stream()
               .map(it -> isDebitToPay ? it.getCredit() : it.getDebit())
               .reduce(BigDecimal::add)
               .orElse(paymentVoucher.getPaidAmount());
       companyPaidAmount = companyPaidAmount.subtract(financialDiscountAmount);
 
-      BigDecimal currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
+      BigDecimal currencyRate =
+          move.getMoveLineList() != null
+              ? move.getMoveLineList().get(0).getCurrencyRate()
+              : BigDecimal.ZERO;
 
       if (paymentVoucher.getMoveLine() != null) {
         moveLine =
@@ -522,7 +530,7 @@ public class PaymentVoucherConfirmService {
                 paymentVoucher.getRef(),
                 null);
       }
-      move.getMoveLineList().add(moveLine);
+      move.addMoveLineListItem(moveLine);
       // Check if the paid amount is > paid lines total
       // Then Use Excess payment on old invoices / moveLines
       if (paymentVoucher.getPaidAmount().compareTo(paidLineTotal) > 0) {
@@ -557,7 +565,7 @@ public class PaymentVoucherConfirmService {
                 moveLineNo++,
                 paymentVoucher.getRef(),
                 null);
-        move.getMoveLineList().add(moveLine);
+        move.addMoveLineListItem(moveLine);
 
         if (isDebitToPay) {
           reconcileService.balanceCredit(moveLine);
@@ -671,7 +679,7 @@ public class PaymentVoucherConfirmService {
     if (financialDiscountVat
         && BigDecimal.ZERO.compareTo(payVoucherElementToPay.getFinancialDiscountTaxAmount()) != 0) {
       AccountManagement accountManagement =
-          financialDiscountTax.getAccountManagementList().stream()
+          ListUtils.emptyIfNull(financialDiscountTax.getAccountManagementList()).stream()
               .filter(it -> it.getCompany().equals(company))
               .findFirst()
               .orElse(null);
@@ -772,9 +780,11 @@ public class PaymentVoucherConfirmService {
     boolean scheduleToBePaid2 = scheduleToBePaid;
 
     List<MoveLine> debitMoveLines = new ArrayList<MoveLine>();
-    for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList) {
+    if (payVoucherElementToPayList != null) {
+      for (PayVoucherElementToPay payVoucherElementToPay : payVoucherElementToPayList) {
 
-      debitMoveLines.add(payVoucherElementToPay.getMoveLine());
+        debitMoveLines.add(payVoucherElementToPay.getMoveLine());
+      }
     }
     List<MoveLine> creditMoveLines = new ArrayList<MoveLine>();
     creditMoveLines.add(creditMoveLine);

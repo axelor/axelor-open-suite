@@ -107,6 +107,9 @@ public class ActionBuilderService {
     ActionBuilderView actionBuilderView = new ActionBuilderView();
     actionBuilderView.setViewType(viewType);
     actionBuilderView.setViewName(viewName);
+    if (actionBuilderViews == null) {
+      actionBuilderViews = new ArrayList<>();
+    }
     actionBuilderViews.add(actionBuilderView);
   }
 }

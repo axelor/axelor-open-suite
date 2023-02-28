@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
+import com.axelor.apps.tool.collection.CollectionUtils;
 import com.axelor.apps.tool.service.ListToolService;
 import com.google.inject.Inject;
 import java.util.List;
@@ -57,8 +58,10 @@ public class InvoiceLineAnalyticContractServiceImpl
     List<AnalyticMoveLine> analyticMoveLineList =
         super.createAnalyticDistributionWithTemplate(invoiceLine);
 
-    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-      analyticMoveLine.setContractLine(invoiceLine.getContractLine());
+    if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        analyticMoveLine.setContractLine(invoiceLine.getContractLine());
+      }
     }
     return analyticMoveLineList;
   }

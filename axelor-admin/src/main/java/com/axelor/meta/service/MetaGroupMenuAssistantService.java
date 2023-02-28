@@ -23,6 +23,7 @@ import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.RoleRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
@@ -56,6 +57,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,62 +177,74 @@ public class MetaGroupMenuAssistantService {
       groupList.add(getBundle().getString("Title"));
     }
 
-    for (Group group : groupMenuAssistant.getGroupSet()) {
-      String code = group.getCode();
-      if (!groupList.contains(code)) {
-        groupList.add(code);
+    if (groupMenuAssistant != null
+        && CollectionUtils.isNotEmpty(groupMenuAssistant.getGroupSet())) {
+      for (Group group : groupMenuAssistant.getGroupSet()) {
+        String code = group.getCode();
+        if (!groupList.contains(code)) {
+          groupList.add(code);
+        }
       }
     }
 
-    for (Role role : groupMenuAssistant.getRoleSet()) {
-      String name = role.getName();
-      if (!groupList.contains(name)) {
-        groupList.add(name);
+    if (groupMenuAssistant != null && CollectionUtils.isNotEmpty(groupMenuAssistant.getRoleSet())) {
+      for (Role role : groupMenuAssistant.getRoleSet()) {
+        String name = role.getName();
+        if (!groupList.contains(name)) {
+          groupList.add(name);
+        }
       }
     }
 
     return groupList.toArray(new String[groupList.size()]);
   }
 
-  protected void addMenuRows(MetaGroupMenuAssistant groupMenuAssistant, List<String[]> rows) {
-    String[] groupRow = rows.get(0);
-    rows.remove(0);
-    Set<String> names = new HashSet<>();
+  private void addMenuRows(MetaGroupMenuAssistant groupMenuAssistant, List<String[]> rows) {
+    if (CollectionUtils.isNotEmpty(rows)) {
+      String[] groupRow = rows.get(0);
+      rows.remove(0);
+      Set<String> names = new HashSet<>();
 
-    for (String[] line : rows) {
-      names.add(line[0]);
-    }
-
-    for (MetaMenu metaMenu : groupMenuAssistant.getMenuSet()) {
-
-      String name = metaMenu.getName();
-
-      if (names.contains(name)) {
-        continue;
+      for (String[] line : rows) {
+        names.add(line[0]);
       }
 
-      String title = metaMenu.getTitle();
-      String translation = getBundle().getString(title);
+      if (CollectionUtils.isNotEmpty(groupMenuAssistant.getMenuSet())) {
+        for (MetaMenu metaMenu : groupMenuAssistant.getMenuSet()) {
 
-      if (!Strings.isNullOrEmpty(translation)) {
-        title = translation;
+          String name = metaMenu.getName();
+
+          if (names.contains(name)) {
+            continue;
+          }
+
+          String title = metaMenu.getTitle();
+          String translation = getBundle().getString(title);
+
+          if (!Strings.isNullOrEmpty(translation)) {
+            title = translation;
+          }
+
+          String[] menu = new String[groupRow.length];
+          menu[0] = name;
+          menu[1] = title;
+          rows.add(menu);
+        }
       }
 
-      String[] menu = new String[groupRow.length];
-      menu[0] = name;
-      menu[1] = title;
-      rows.add(menu);
+      Collections.sort(rows, (first, second) -> first[0].compareTo(second[0]));
+
+      rows.add(0, groupRow);
     }
-
-    Collections.sort(rows, (first, second) -> first[0].compareTo(second[0]));
-
-    rows.add(0, groupRow);
   }
 
   protected void addGroupAccess(List<String[]> rows) {
 
-    ListIterator<String[]> rowIter = rows.listIterator();
-
+    ListIterator<String[]> rowIter =
+        rows != null ? rows.listIterator() : Collections.emptyListIterator();
+    if (!rowIter.hasNext()) {
+      return;
+    }
     String[] header = rowIter.next();
 
     while (rowIter.hasNext()) {
@@ -244,14 +258,18 @@ public class MetaGroupMenuAssistantService {
       }
 
       for (int i = 2; i < header.length; i++) {
-        for (Group group : menu.getGroups()) {
-          if (header[i] != null && header[i].equals(group.getCode())) {
-            row[i] = "x";
+        if (menu != null && CollectionUtils.isNotEmpty(menu.getGroups())) {
+          for (Group group : menu.getGroups()) {
+            if (header[i] != null && header[i].equals(group.getCode())) {
+              row[i] = "x";
+            }
           }
         }
-        for (Role role : menu.getRoles()) {
-          if (header[i] != null && header[i].equals(role.getName())) {
-            row[i] = "x";
+        if (menu != null && CollectionUtils.isNotEmpty(menu.getRoles())) {
+          for (Role role : menu.getRoles()) {
+            if (header[i] != null && header[i].equals(role.getName())) {
+              row[i] = "x";
+            }
           }
         }
       }
@@ -310,9 +328,11 @@ public class MetaGroupMenuAssistantService {
       }
 
       Map<String, Object> groupMap = checkGroups(groupRow);
-      groupMap.putAll(checkRoles(groupRow));
-      badGroups.removeAll(groupMap.keySet());
-      badRoles.removeAll(groupMap.keySet());
+      if (ObjectUtils.notEmpty(groupMap)) {
+        groupMap.putAll(checkRoles(groupRow));
+        badGroups.removeAll(groupMap.keySet());
+        badRoles.removeAll(groupMap.keySet());
+      }
       if (!badGroups.isEmpty()) {
         errorLog += "\n" + String.format(I18n.get(IMessage.NO_GROUP), badGroups);
       }
@@ -321,8 +341,11 @@ public class MetaGroupMenuAssistantService {
       }
       Group admin = groupRepository.findByCode("admins");
 
-      for (String[] row : csvReader.readAll()) {
-        importMenus(row, groupRow, groupMap, admin);
+      List<String[]> readAllCsv = csvReader.readAll();
+      if (CollectionUtils.isNotEmpty(readAllCsv)) {
+        for (String[] row : readAllCsv) {
+          importMenus(row, groupRow, groupMap, admin);
+        }
       }
 
       saveMenus();
@@ -360,7 +383,7 @@ public class MetaGroupMenuAssistantService {
       for (Integer mIndex = 2; mIndex < row.length; mIndex++) {
 
         String code = groupRow[mIndex];
-        Object object = groupMap.get(code);
+        Object object = groupMap != null ? groupMap.get(code) : null;
 
         Role role = null;
         Group group = null;
@@ -379,10 +402,10 @@ public class MetaGroupMenuAssistantService {
             menu.addRole(role);
           }
           updatedMenus.add(menu);
-        } else if (group != null && menu.getGroups().contains(group)) {
+        } else if (group != null && menu.getGroups() != null && menu.getGroups().contains(group)) {
           menu.removeGroup(group);
           updatedMenus.add(menu);
-        } else if (role != null && menu.getRoles().contains(role)) {
+        } else if (role != null && menu.getRoles() != null && menu.getRoles().contains(role)) {
           menu.removeRole(role);
           updatedMenus.add(menu);
         }

@@ -47,6 +47,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -77,8 +78,9 @@ public class SaleOrderLineController {
     Map<String, BigDecimal> map =
         Beans.get(SaleOrderMarginService.class)
             .getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine);
-
-    response.setValues(map);
+    if (map != null) {
+      response.setValues(map);
+    }
   }
 
   /**
@@ -377,6 +379,9 @@ public class SaleOrderLineController {
     Map<String, BigDecimal> map =
         Beans.get(SaleOrderLineService.class).computeValues(saleOrder, orderLine);
 
+    if (map == null) {
+      map = new HashMap<>();
+    }
     map.put("price", orderLine.getPrice());
     map.put("inTaxPrice", orderLine.getInTaxPrice());
     map.put("companyCostPrice", orderLine.getCompanyCostPrice());
@@ -441,6 +446,9 @@ public class SaleOrderLineController {
             internationalService.getProductDescriptionAndNameTranslation(
                 product, partner, userLanguage);
 
+        if (translation == null) {
+          return;
+        }
         String description = translation.get("description");
         String productName = translation.get("productName");
 

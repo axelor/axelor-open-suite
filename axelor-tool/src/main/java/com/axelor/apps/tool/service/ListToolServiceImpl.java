@@ -19,6 +19,7 @@ package com.axelor.apps.tool.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ListToolServiceImpl implements ListToolService {
 
@@ -26,9 +27,11 @@ public class ListToolServiceImpl implements ListToolService {
   public <T> List<T> intersection(List<T> list1, List<T> list2) {
     List<T> list = new ArrayList<T>();
 
-    for (T t : list1) {
-      if (list2.contains(t)) {
-        list.add(t);
+    if (CollectionUtils.isNotEmpty(list1) && CollectionUtils.isNotEmpty(list2)) {
+      for (T t : list1) {
+        if (list2.contains(t)) {
+          list.add(t);
+        }
       }
     }
 

@@ -22,6 +22,7 @@ import com.axelor.apps.bpm.db.WkfProcessConfig;
 import com.axelor.apps.bpm.db.repo.WkfModelRepository;
 import com.axelor.apps.bpm.db.repo.WkfProcessConfigRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaRepository;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.script.SimpleBindings;
+import org.apache.commons.collections.CollectionUtils;
 import org.camunda.bpm.engine.impl.bpmn.parser.BpmnParser;
 import org.camunda.bpm.engine.impl.variable.serializer.jpa.JPAVariableSerializer;
 import org.camunda.bpm.engine.variable.Variables;
@@ -87,6 +89,10 @@ public class WkfCommonServiceImpl implements WkfCommonService {
                 isActive)
             .order("pathCondition")
             .fetch();
+
+    if (CollectionUtils.isEmpty(configs)) {
+      return null;
+    }
 
     Map<String, Object> ctxMap = new HashMap<String, Object>();
     ctxMap.put(getVarName(model), new FullContext(model));
@@ -138,37 +144,39 @@ public class WkfCommonServiceImpl implements WkfCommonService {
   public Map<String, Object> createVariables(Map<String, Object> modelMap) {
 
     Map<String, Object> varMap = new HashMap<String, Object>();
-    for (String name : modelMap.keySet()) {
+    if (modelMap != null) {
+      for (String name : modelMap.keySet()) {
 
-      Object model = modelMap.get(name);
+        Object model = modelMap.get(name);
 
-      if (model == null) {
-        varMap.put(name, Variables.objectValue(null, true).create());
-        continue;
-      }
-
-      ObjectValue var = null;
-      Long id = null;
-      if (model instanceof Model) {
-        var =
-            Variables.objectValue(model, true)
-                .serializationDataFormat(JPAVariableSerializer.NAME)
-                .create();
-        id = ((Model) model).getId();
-      } else {
-        var =
-            Variables.objectValue(model, true)
-                .serializationDataFormat(SerializationDataFormats.JSON)
-                .create();
-
-        if (model instanceof FullContext) {
-          id = (Long) ((FullContext) model).get("id");
+        if (model == null) {
+          varMap.put(name, Variables.objectValue(null, true).create());
+          continue;
         }
-      }
-      varMap.put(name, var);
 
-      if (id != null) {
-        varMap.put(name + "Id", Variables.longValue(id));
+        ObjectValue var = null;
+        Long id = null;
+        if (model instanceof Model) {
+          var =
+              Variables.objectValue(model, true)
+                  .serializationDataFormat(JPAVariableSerializer.NAME)
+                  .create();
+          id = ((Model) model).getId();
+        } else {
+          var =
+              Variables.objectValue(model, true)
+                  .serializationDataFormat(SerializationDataFormats.JSON)
+                  .create();
+
+          if (model instanceof FullContext) {
+            id = (Long) ((FullContext) model).get("id");
+          }
+        }
+        varMap.put(name, var);
+
+        if (id != null) {
+          varMap.put(name + "Id", Variables.longValue(id));
+        }
       }
     }
 
@@ -220,7 +228,7 @@ public class WkfCommonServiceImpl implements WkfCommonService {
 
     if (path.startsWith("_find(")) {
       List<String> params = Arrays.asList(path.replace("_find(", "").replace(")", "").split(","));
-      if (params.size() >= 2) {
+      if (ListUtils.size(params) >= 2) {
         List<Object> queryParams =
             params.stream().map(it -> evalExpression(wkfModel, it)).collect(Collectors.toList());
         String queryModel = (String) queryParams.get(0);
@@ -243,26 +251,28 @@ public class WkfCommonServiceImpl implements WkfCommonService {
 
     Mapper mapper = Mapper.of(EntityHelper.getEntityClass(model));
 
-    for (String property : propertyMap.keySet()) {
-      Object value =
-          element.getAttributeValueNs(
-              BpmnParser.CAMUNDA_BPMN_EXTENSIONS_NS, propertyMap.get(property));
-      if (value != null && value.equals("undefined")) {
-        value = null;
-      }
-      Property field = mapper.getProperty(property);
-      if (field.isReference()) {
-        try {
-          value =
-              JpaRepository.of((Class<? extends Model>) field.getTarget())
-                  .all()
-                  .filter("self.name = ?1", value)
-                  .fetchOne();
-        } catch (Exception e) {
-          e.printStackTrace();
+    if (propertyMap != null) {
+      for (String property : propertyMap.keySet()) {
+        Object value =
+            element.getAttributeValueNs(
+                BpmnParser.CAMUNDA_BPMN_EXTENSIONS_NS, propertyMap.get(property));
+        if (value != null && value.equals("undefined")) {
+          value = null;
         }
+        Property field = mapper.getProperty(property);
+        if (field.isReference()) {
+          try {
+            value =
+                JpaRepository.of((Class<? extends Model>) field.getTarget())
+                    .all()
+                    .filter("self.name = ?1", value)
+                    .fetchOne();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
+        mapper.set(model, property, value);
       }
-      mapper.set(model, property, value);
     }
 
     return model;

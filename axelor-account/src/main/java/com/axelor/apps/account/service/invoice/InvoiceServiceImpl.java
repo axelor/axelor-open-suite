@@ -70,6 +70,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -333,26 +334,28 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI));
     }
 
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      Account account = invoiceLine.getAccount();
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        Account account = invoiceLine.getAccount();
 
-      if (invoiceLine.getAccount() == null
-          && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)) {
-        throw new AxelorException(
-            invoice,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(AccountExceptionMessage.VENTILATE_STATE_6),
-            invoiceLine.getProductName());
-      }
+        if (invoiceLine.getAccount() == null
+            && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)) {
+          throw new AxelorException(
+              invoice,
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(AccountExceptionMessage.VENTILATE_STATE_6),
+              invoiceLine.getProductName());
+        }
 
-      if (account != null
-          && !account.getAnalyticDistributionAuthorized()
-          && (invoiceLine.getAnalyticDistributionTemplate() != null
-              || !CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList()))) {
-        throw new AxelorException(
-            invoice,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.VENTILATE_STATE_7));
+        if (account != null
+            && !account.getAnalyticDistributionAuthorized()
+            && (invoiceLine.getAnalyticDistributionTemplate() != null
+                || !CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList()))) {
+          throw new AxelorException(
+              invoice,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.VENTILATE_STATE_7));
+        }
       }
     }
 
@@ -422,13 +425,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Move move = invoice.getMove();
 
     if (move != null) {
-      if (invoice.getUsherPassageOk()) {
-        for (MoveLine moveLine : move.getMoveLineList()) {
-          moveLine.setUsherPassageOk(true);
-        }
-      } else {
-        for (MoveLine moveLine : move.getMoveLineList()) {
-          moveLine.setUsherPassageOk(false);
+      List<MoveLine> moveLineList = move.getMoveLineList();
+      if (moveLineList != null) {
+        if (invoice.getUsherPassageOk()) {
+          for (MoveLine moveLine : moveLineList) {
+            moveLine.setUsherPassageOk(true);
+          }
+        } else {
+          for (MoveLine moveLine : moveLineList) {
+            moveLine.setUsherPassageOk(false);
+          }
         }
       }
 
@@ -550,22 +556,23 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       throws AxelorException {
     StringBuilder numSeq = new StringBuilder();
     StringBuilder externalRef = new StringBuilder();
-    for (Invoice invoiceLocal : invoiceList) {
-      if (numSeq.length() > 0) {
-        numSeq.append("-");
-      }
-      if (invoiceLocal.getInternalReference() != null) {
-        numSeq.append(invoiceLocal.getInternalReference());
-      }
+    if (CollectionUtils.isNotEmpty(invoiceList)) {
+      for (Invoice invoiceLocal : invoiceList) {
+        if (numSeq.length() > 0) {
+          numSeq.append("-");
+        }
+        if (invoiceLocal.getInternalReference() != null) {
+          numSeq.append(invoiceLocal.getInternalReference());
+        }
 
-      if (externalRef.length() > 0) {
-        externalRef.append("|");
-      }
-      if (invoiceLocal.getExternalReference() != null) {
-        externalRef.append(invoiceLocal.getExternalReference());
+        if (externalRef.length() > 0) {
+          externalRef.append("|");
+        }
+        if (invoiceLocal.getExternalReference() != null) {
+          externalRef.append(invoiceLocal.getExternalReference());
+        }
       }
     }
-
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
             InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
@@ -649,22 +656,23 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       throws AxelorException {
     StringBuilder numSeq = new StringBuilder();
     StringBuilder externalRef = new StringBuilder();
-    for (Invoice invoiceLocal : invoiceList) {
-      if (numSeq.length() > 0) {
-        numSeq.append("-");
-      }
-      if (invoiceLocal.getInternalReference() != null) {
-        numSeq.append(invoiceLocal.getInternalReference());
-      }
+    if (CollectionUtils.isNotEmpty(invoiceList)) {
+      for (Invoice invoiceLocal : invoiceList) {
+        if (numSeq.length() > 0) {
+          numSeq.append("-");
+        }
+        if (invoiceLocal.getInternalReference() != null) {
+          numSeq.append(invoiceLocal.getInternalReference());
+        }
 
-      if (externalRef.length() > 0) {
-        externalRef.append("|");
-      }
-      if (invoiceLocal.getExternalReference() != null) {
-        externalRef.append(invoiceLocal.getExternalReference());
+        if (externalRef.length() > 0) {
+          externalRef.append("|");
+        }
+        if (invoiceLocal.getExternalReference() != null) {
+          externalRef.append(invoiceLocal.getExternalReference());
+        }
       }
     }
-
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
             InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
@@ -704,6 +712,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   @Transactional
   public void deleteOldInvoices(List<Invoice> invoiceList) {
+    if (invoiceList == null) {
+      return;
+    }
     for (Invoice invoicetemp : invoiceList) {
       invoiceRepo.remove(invoicetemp);
     }
@@ -712,12 +723,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public List<InvoiceLine> getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList) {
     List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
-    for (Invoice invoice : invoiceList) {
-      int countLine = 1;
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        invoiceLine.setSequence(countLine * 10);
-        invoiceLines.add(invoiceLine);
-        countLine++;
+    if (invoiceList != null) {
+      for (Invoice invoice : invoiceList) {
+        int countLine = 1;
+        if (invoice.getInvoiceLineList() != null) {
+          for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+            invoiceLine.setSequence(countLine * 10);
+            invoiceLines.add(invoiceLine);
+            countLine++;
+          }
+        }
       }
     }
     return invoiceLines;
@@ -725,6 +740,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public void setInvoiceForInvoiceLines(List<InvoiceLine> invoiceLines, Invoice invoice) {
+    if (invoiceLines == null) {
+      return;
+    }
     for (InvoiceLine invoiceLine : invoiceLines) {
       invoiceLine.setInvoice(invoice);
     }
@@ -751,6 +769,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException {
     Set<Invoice> invoices = getDefaultAdvancePaymentInvoice(invoice);
+
     String domain = "self.id IN (" + StringTool.getIdListString(invoices) + ")";
 
     return domain;
@@ -789,12 +808,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public void filterAdvancePaymentInvoice(Invoice invoice, Set<Invoice> advancePaymentInvoices)
       throws AxelorException {
-    Iterator<Invoice> advPaymentInvoiceIt = advancePaymentInvoices.iterator();
-    while (advPaymentInvoiceIt.hasNext()) {
-      Invoice candidateAdvancePayment = advPaymentInvoiceIt.next();
-      if (removeBecauseOfTotalAmount(invoice, candidateAdvancePayment)
-          || removeBecauseOfAmountRemaining(invoice, candidateAdvancePayment)) {
-        advPaymentInvoiceIt.remove();
+    if (advancePaymentInvoices != null) {
+      Iterator<Invoice> advPaymentInvoiceIt = advancePaymentInvoices.iterator();
+      while (advPaymentInvoiceIt.hasNext()) {
+        Invoice candidateAdvancePayment = advPaymentInvoiceIt.next();
+        if (removeBecauseOfTotalAmount(invoice, candidateAdvancePayment)
+            || removeBecauseOfAmountRemaining(invoice, candidateAdvancePayment)) {
+          advPaymentInvoiceIt.remove();
+        }
       }
     }
   }
@@ -888,11 +909,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       if (moveToolService.isDebitCustomer(invoice, true)) {
         List<MoveLine> creditMoveLines =
             invoicePaymentToolService.getMoveLinesFromPayments(invoicePayments, true);
-        advancePaymentMoveLines.addAll(creditMoveLines);
+        advancePaymentMoveLines.addAll(ListUtils.emptyIfNull(creditMoveLines));
       } else {
         List<MoveLine> debitMoveLines =
             invoicePaymentToolService.getMoveLinesFromPayments(invoicePayments, false);
-        advancePaymentMoveLines.addAll(debitMoveLines);
+        advancePaymentMoveLines.addAll(ListUtils.emptyIfNull(debitMoveLines));
       }
     }
     return advancePaymentMoveLines;
@@ -1035,7 +1056,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 || paymentModeTypeSelect == PaymentModeRepository.TYPE_DD))
         || (paymentModeInOutSelect == PaymentModeRepository.OUT
             && paymentModeTypeSelect == PaymentModeRepository.TYPE_TRANSFER)) {
-      return partner.getBankDetailsList().stream().anyMatch(bankDetails -> bankDetails.getActive());
+
+      return ListUtils.emptyIfNull(partner.getBankDetailsList()).stream()
+          .anyMatch(bankDetails -> bankDetails.getActive());
     }
 
     return true;
@@ -1047,9 +1070,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
 
     User currentUser = AuthUtils.getUser();
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTermPfpService.refusalToPay(
-          invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        invoiceTermPfpService.refusalToPay(
+            invoiceTerm, reasonOfRefusalToPay, reasonOfRefusalToPayStr);
+      }
     }
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
@@ -1158,8 +1183,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Invoice invoice = invoiceRepo.find(invoiceId);
     User currentUser = AuthUtils.getUser();
 
-    for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTermPfpService.validatePfp(invoiceTerm, currentUser);
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        invoiceTermPfpService.validatePfp(invoiceTerm, currentUser);
+      }
     }
 
     invoice.setPfpValidatorUser(currentUser);
@@ -1169,7 +1196,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public void updateUnpaidInvoiceTerms(Invoice invoice) {
-    invoice.getInvoiceTermList().stream()
+    ListUtils.emptyIfNull(invoice.getInvoiceTermList()).stream()
         .filter(it -> !it.getIsPaid() && it.getAmount().equals(it.getAmountRemaining()))
         .forEach(it -> this.updateUnpaidInvoiceTerm(invoice, it));
   }

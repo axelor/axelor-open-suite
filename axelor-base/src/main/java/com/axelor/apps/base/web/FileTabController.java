@@ -47,8 +47,9 @@ public class FileTabController {
 
       FileTab fileTab = context.asType(FileTab.class);
       Beans.get(FileTabService.class).updateFields(fileTab);
-      response.setValue("fileFieldList", fileTab.getFileFieldList());
-
+      if (fileTab.getFileFieldList() != null) {
+        response.setValue("fileFieldList", fileTab.getFileFieldList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

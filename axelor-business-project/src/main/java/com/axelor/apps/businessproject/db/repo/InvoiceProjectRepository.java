@@ -23,6 +23,7 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import java.util.List;
@@ -48,7 +49,7 @@ public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
           projectTask.setInvoiceLine(null);
         }
       }
-      for (InvoicingProject invoiceProject : invoiceProjectList) {
+      for (InvoicingProject invoiceProject : ListUtils.emptyIfNull(invoiceProjectList)) {
         invoiceProject.setInvoice(null);
         invoiceProject.setStatusSelect(InvoicingProjectRepository.STATUS_DRAFT);
       }

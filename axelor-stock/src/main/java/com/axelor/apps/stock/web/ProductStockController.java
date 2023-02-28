@@ -36,6 +36,7 @@ import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ProductStockController {
@@ -51,7 +52,9 @@ public class ProductStockController {
 
     List<Map<String, Object>> stocks =
         Beans.get(StockMoveService.class).getStockPerDate(locationId, productId, fromDate, toDate);
-    response.setValue("$stockPerDayList", stocks);
+    if (stocks != null) {
+      response.setValue("$stockPerDayList", stocks);
+    }
   }
 
   public void displayStockMoveLine(ActionRequest request, ActionResponse response) {
@@ -90,8 +93,10 @@ public class ProductStockController {
       List<StockLocationLine> stockLocationLineList =
           stockLocationLineService.getStockLocationLines(product);
 
-      for (StockLocationLine stockLocationLine : stockLocationLineList) {
-        stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);
+      if (CollectionUtils.isNotEmpty(stockLocationLineList)) {
+        for (StockLocationLine stockLocationLine : stockLocationLineList) {
+          stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);
+        }
       }
       Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
       response.setReload(true);

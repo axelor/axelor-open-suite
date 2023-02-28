@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeService {
 
@@ -59,28 +60,31 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     try {
       String rootModel = objectDataConfig.getModelSelect();
 
-      for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
-        Class<? extends Model> modelClass =
-            ObjectDataCommonService.findModelClass(line.getMetaModel());
-        Query<? extends Model> query =
-            ObjectDataCommonService.createQuery(recordId, line, modelClass);
-        List<? extends Model> data = query.fetch();
-        Mapper mapper = Mapper.of(modelClass);
+      if (CollectionUtils.isNotEmpty(objectDataConfig.getDataConfigLineList())) {
+        for (DataConfigLine line : objectDataConfig.getDataConfigLineList()) {
 
-        int reset = line.getResetPathSelect();
-        if (reset != DataConfigLineRepository.RESET_NONE
-            && line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH) {
+          Class<? extends Model> modelClass =
+              ObjectDataCommonService.findModelClass(line.getMetaModel());
+          Query<? extends Model> query =
+              ObjectDataCommonService.createQuery(recordId, line, modelClass);
+          List<? extends Model> data = query.fetch();
+          Mapper mapper = Mapper.of(modelClass);
 
-          String path = getPath(line);
+          int reset = line.getResetPathSelect();
+          if (reset != DataConfigLineRepository.RESET_NONE
+              && line.getTypeSelect() == DataConfigLineRepository.TYPE_PATH) {
 
-          if (reset == DataConfigLineRepository.RESET_DELETE) {
-            deleteLink(mapper, path, data);
-          } else {
-            replaceLink(mapper, path, data, rootModel, line.getRecordSelectId());
+            String path = getPath(line);
+
+            if (reset == DataConfigLineRepository.RESET_DELETE) {
+              deleteLink(mapper, path, data);
+            } else {
+              replaceLink(mapper, path, data, rootModel, line.getRecordSelectId());
+            }
           }
-        }
 
-        deleteFields(line.getToDeleteMetaFieldSet(), mapper, data);
+          deleteFields(line.getToDeleteMetaFieldSet(), mapper, data);
+        }
       }
 
     } catch (Exception e) {
@@ -127,7 +131,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
 
     path = path.split("\\.")[0];
     Property property = mapper.getProperty(path);
-    if (property == null || property.isRequired()) {
+    if (property == null || property.isRequired() || data == null) {
       return;
     }
     for (Model model : data) {
@@ -156,9 +160,11 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
           I18n.get(AdminExceptionMessage.OBJECT_DATA_REPLACE_MISSING),
           recordValue);
     }
-    for (Model model : data) {
-      mapper.set(model, path, object);
-      JPA.save(model);
+    if (data != null) {
+      for (Model model : data) {
+        mapper.set(model, path, object);
+        JPA.save(model);
+      }
     }
   }
 
@@ -171,19 +177,23 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
 
     Map<String, Object> defaultValues = getDefaultValues(mapper, fields);
 
-    for (Model model : data) {
-      for (Entry<String, Object> fieldEntry : defaultValues.entrySet()) {
-        mapper.set(model, fieldEntry.getKey(), fieldEntry.getValue());
-      }
-      JPA.save(model);
+    if (data != null) {
+      for (Model model : data) {
+        if (defaultValues != null) {
+          for (Entry<String, Object> fieldEntry : defaultValues.entrySet()) {
+            mapper.set(model, fieldEntry.getKey(), fieldEntry.getValue());
+          }
+        }
+        JPA.save(model);
 
-      mailMessageRepo
-          .all()
-          .filter(
-              "self.relatedId = ?1 AND self.relatedModel = ?2",
-              model.getId(),
-              mapper.getBeanClass().getName())
-          .delete();
+        mailMessageRepo
+            .all()
+            .filter(
+                "self.relatedId = ?1 AND self.relatedModel = ?2",
+                model.getId(),
+                mapper.getBeanClass().getName())
+            .delete();
+      }
     }
   }
 
@@ -192,68 +202,68 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     Map<String, Object> defaultValues = new HashMap<>();
 
     LocalDate defaultDate = LocalDate.of(1900, 01, 01);
+    if (fields != null) {
+      for (MetaField field : fields) {
 
-    for (MetaField field : fields) {
+        String name = field.getName();
+        Property property = mapper.getProperty(name);
 
-      String name = field.getName();
-      Property property = mapper.getProperty(name);
+        if (!property.isRequired()) {
+          defaultValues.put(name, null);
+          continue;
+        }
+        if (property.getTarget() != null) {
+          continue;
+        }
 
-      if (!property.isRequired()) {
-        defaultValues.put(name, null);
-        continue;
-      }
-      if (property.getTarget() != null) {
-        continue;
-      }
-
-      switch (field.getTypeName()) {
-        case "String":
-          {
-            defaultValues.put(name, "anonymous");
-            break;
-          }
-        case "BigDecimal":
-          {
-            defaultValues.put(name, BigDecimal.ZERO);
-            break;
-          }
-        case "Integer":
-          {
-            defaultValues.put(name, Integer.valueOf(0));
-            break;
-          }
-        case "Boolean":
-          {
-            defaultValues.put(name, Boolean.FALSE);
-            break;
-          }
-        case "Long":
-          {
-            defaultValues.put(name, Long.valueOf(0));
-            break;
-          }
-        case "LocalTime":
-          {
-            defaultValues.put(name, LocalTime.MIDNIGHT);
-            break;
-          }
-        case "LocalDateTime":
-          {
-            defaultValues.put(name, defaultDate.atStartOfDay());
-            break;
-          }
-        case "ZonedDateTime":
-          {
-            defaultValues.put(name, defaultDate.atStartOfDay(ZoneId.systemDefault()));
-            break;
-          }
-        default:
-          {
-            break;
-          }
+        switch (field.getTypeName()) {
+          case "String":
+            {
+              defaultValues.put(name, "anonymous");
+              break;
+            }
+          case "BigDecimal":
+            {
+              defaultValues.put(name, BigDecimal.ZERO);
+              break;
+            }
+          case "Integer":
+            {
+              defaultValues.put(name, Integer.valueOf(0));
+              break;
+            }
+          case "Boolean":
+            {
+              defaultValues.put(name, Boolean.FALSE);
+              break;
+            }
+          case "Long":
+            {
+              defaultValues.put(name, Long.valueOf(0));
+              break;
+            }
+          case "LocalTime":
+            {
+              defaultValues.put(name, LocalTime.MIDNIGHT);
+              break;
+            }
+          case "LocalDateTime":
+            {
+              defaultValues.put(name, defaultDate.atStartOfDay());
+              break;
+            }
+          case "ZonedDateTime":
+            {
+              defaultValues.put(name, defaultDate.atStartOfDay(ZoneId.systemDefault()));
+              break;
+            }
+          default:
+            {
+              break;
+            }
+        }
       }
     }
-
     return defaultValues;
   }
 }

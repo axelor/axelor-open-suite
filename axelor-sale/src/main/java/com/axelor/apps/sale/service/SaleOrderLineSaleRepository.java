@@ -26,10 +26,11 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    if (context.get("_model") != null
+    if (context != null
+        && context.get("_model") != null
         && context.get("_model").toString().contains("SaleOrder")
         && context.get("id") != null) {
-      Long id = (Long) json.get("id");
+      Long id = json != null ? (Long) json.get("id") : null;
       if (id != null) {
         SaleOrderLine saleOrderLine = find(id);
         json.put(

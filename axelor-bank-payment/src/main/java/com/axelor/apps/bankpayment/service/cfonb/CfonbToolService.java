@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.service.cfonb;
 
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -86,7 +87,7 @@ public class CfonbToolService {
    */
   public List<String> toUpperCase(List<String> cFONB) {
     List<String> upperCase = new ArrayList<String>();
-    for (String s : cFONB) {
+    for (String s : ListUtils.emptyIfNull(cFONB)) {
       upperCase.add(StringTool.deleteAccent(s.toUpperCase()));
     }
     return upperCase;
@@ -288,7 +289,7 @@ public class CfonbToolService {
 
     List<String> cFONB = new ArrayList<String>();
     cFONB.add(senderRecord);
-    cFONB.addAll(recipientRecord);
+    cFONB.addAll(ListUtils.emptyIfNull(recipientRecord));
     cFONB.add(totalRecord);
     return cFONB;
   }

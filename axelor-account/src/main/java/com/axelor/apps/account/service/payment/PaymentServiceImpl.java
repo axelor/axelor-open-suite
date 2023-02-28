@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -244,69 +246,70 @@ public class PaymentServiceImpl implements PaymentService {
     BigDecimal remainingPaidAmount2 = remainingPaidAmount;
 
     List<Reconcile> reconcileList = new ArrayList<Reconcile>();
-    int i = debitMoveLines.size();
-    for (MoveLine debitMoveLine : debitMoveLines) {
-      i--;
-      BigDecimal amountRemaining = debitMoveLine.getAmountRemaining();
+    if (CollectionUtils.isNotEmpty(debitMoveLines)) {
+      int i = debitMoveLines.size();
+      for (MoveLine debitMoveLine : debitMoveLines) {
+        i--;
+        BigDecimal amountRemaining = debitMoveLine.getAmountRemaining();
 
-      // Afin de pouvoir arrêter si il n'y a plus rien pour payer
-      if (remainingPaidAmount2.compareTo(BigDecimal.ZERO) <= 0) {
-        break;
-      }
-      BigDecimal amountToPay = remainingPaidAmount2.min(amountRemaining);
+        // Afin de pouvoir arrêter si il n'y a plus rien pour payer
+        if (remainingPaidAmount2.compareTo(BigDecimal.ZERO) <= 0) {
+          break;
+        }
+        BigDecimal amountToPay = remainingPaidAmount2.min(amountRemaining);
 
-      String invoiceName = "";
-      if (debitMoveLine.getMove().getInvoice() != null) {
-        invoiceName = debitMoveLine.getMove().getInvoice().getInvoiceId();
-      } else if (payVoucherElementToPay != null) {
-        invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
-      }
+        String invoiceName = "";
+        if (debitMoveLine.getMove().getInvoice() != null) {
+          invoiceName = debitMoveLine.getMove().getInvoice().getInvoiceId();
+        } else if (payVoucherElementToPay != null) {
+          invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
+        }
 
-      MoveLine creditMoveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              debitMoveLine.getPartner(),
-              debitMoveLine.getAccount(),
-              amountToPay,
-              false,
-              appAccountService.getTodayDate(company),
-              moveLineNo2,
-              invoiceName,
-              null);
-      move.getMoveLineList().add(creditMoveLine);
+        MoveLine creditMoveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                debitMoveLine.getPartner(),
+                debitMoveLine.getAccount(),
+                amountToPay,
+                false,
+                appAccountService.getTodayDate(company),
+                moveLineNo2,
+                invoiceName,
+                null);
+        move.addMoveLineListItem(creditMoveLine);
 
-      // Utiliser uniquement dans le cas du paiemnt des échéances lors d'une saisie paiement
-      if (payVoucherElementToPay != null) {
-        creditMoveLine.setPaymentScheduleLine(
-            payVoucherElementToPay.getMoveLine().getPaymentScheduleLine());
+        // Utiliser uniquement dans le cas du paiemnt des échéances lors d'une saisie paiement
+        if (payVoucherElementToPay != null) {
+          creditMoveLine.setPaymentScheduleLine(
+              payVoucherElementToPay.getMoveLine().getPaymentScheduleLine());
 
-        payVoucherElementToPay.setMoveLineGenerated(creditMoveLine);
-      }
+          payVoucherElementToPay.setMoveLineGenerated(creditMoveLine);
+        }
 
-      moveLineNo2++;
-      Reconcile reconcile = null;
+        moveLineNo2++;
+        Reconcile reconcile = null;
 
-      // Gestion du passage en 580
-      if (i == 0) {
-        log.debug("last loop");
-        reconcile =
-            reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, true);
-      } else {
-        reconcile =
-            reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, false);
-      }
-      // End gestion du passage en 580
+        // Gestion du passage en 580
+        if (i == 0) {
+          log.debug("last loop");
+          reconcile =
+              reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, true);
+        } else {
+          reconcile =
+              reconcileService.createReconcile(debitMoveLine, creditMoveLine, amountToPay, false);
+        }
+        // End gestion du passage en 580
 
-      if (reconcile != null) {
-        reconcileList.add(reconcile);
-        remainingPaidAmount2 = remainingPaidAmount2.subtract(amountRemaining);
+        if (reconcile != null) {
+          reconcileList.add(reconcile);
+          remainingPaidAmount2 = remainingPaidAmount2.subtract(amountRemaining);
+        }
       }
     }
 
     for (Reconcile reconcile : reconcileList) {
       reconcileService.confirmReconcile(reconcile, true, true);
     }
-
     // Si il y a un restant à payer, alors on crée un trop-perçu.
     if (remainingPaidAmount2.compareTo(BigDecimal.ZERO) > 0) {
 
@@ -322,7 +325,7 @@ public class PaymentServiceImpl implements PaymentService {
               null,
               null);
 
-      move.getMoveLineList().add(moveLine);
+      move.addMoveLineListItem(moveLine);
       moveLineNo2++;
       // Gestion du passage en 580
       reconcileService.balanceCredit(moveLine);
@@ -351,7 +354,7 @@ public class PaymentServiceImpl implements PaymentService {
     BigDecimal remainingPaidAmount2 = remainingPaidAmount;
 
     List<Reconcile> reconcileList = new ArrayList<Reconcile>();
-    int i = creditMoveLines.size();
+    int i = ListUtils.size(creditMoveLines);
 
     if (i != 0) {
       Query q =
@@ -359,58 +362,61 @@ public class PaymentServiceImpl implements PaymentService {
               .createQuery(
                   "select new map(ml.account, SUM(ml.amountRemaining)) FROM MoveLine as ml "
                       + "WHERE ml in ?1 group by ml.account");
-      q.setParameter(1, creditMoveLines);
+      q.setParameter(1, ListUtils.emptyIfNull(creditMoveLines));
 
       List<Map<Account, BigDecimal>> allMap = new ArrayList<Map<Account, BigDecimal>>();
       allMap = q.getResultList();
-      for (Map<Account, BigDecimal> map : allMap) {
-        Account accountMap = (Account) map.values().toArray()[0];
-        BigDecimal amountMap = (BigDecimal) map.values().toArray()[1];
-        BigDecimal amountDebit = amountMap.min(remainingPaidAmount2);
-        if (amountDebit.compareTo(BigDecimal.ZERO) > 0) {
-          MoveLine debitMoveLine =
-              moveLineCreateService.createMoveLine(
-                  move,
-                  partner,
-                  accountMap,
-                  amountDebit,
-                  true,
-                  date,
-                  dueDate,
-                  moveLineNo2,
-                  null,
-                  null);
-          move.getMoveLineList().add(debitMoveLine);
-          moveLineNo2++;
+      if (CollectionUtils.isNotEmpty(allMap)) {
+        for (Map<Account, BigDecimal> map : allMap) {
+          Account accountMap = (Account) map.values().toArray()[0];
+          BigDecimal amountMap = (BigDecimal) map.values().toArray()[1];
+          BigDecimal amountDebit = amountMap.min(remainingPaidAmount2);
+          if (amountDebit.compareTo(BigDecimal.ZERO) > 0) {
+            MoveLine debitMoveLine =
+                moveLineCreateService.createMoveLine(
+                    move,
+                    partner,
+                    accountMap,
+                    amountDebit,
+                    true,
+                    date,
+                    dueDate,
+                    moveLineNo2,
+                    null,
+                    null);
+            move.addMoveLineListItem(debitMoveLine);
+            moveLineNo2++;
+            if (creditMoveLines != null) {
+              for (MoveLine creditMoveLine : creditMoveLines) {
+                if (creditMoveLine.getAccount().equals(accountMap)) {
+                  Reconcile reconcile = null;
+                  i--;
 
-          for (MoveLine creditMoveLine : creditMoveLines) {
-            if (creditMoveLine.getAccount().equals(accountMap)) {
-              Reconcile reconcile = null;
-              i--;
+                  // Afin de pouvoir arrêter si il n'y a plus rien à payer
+                  if (amountDebit.compareTo(BigDecimal.ZERO) <= 0) {
+                    break;
+                  }
 
-              // Afin de pouvoir arrêter si il n'y a plus rien à payer
-              if (amountDebit.compareTo(BigDecimal.ZERO) <= 0) {
-                break;
-              }
+                  BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining());
 
-              BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining());
+                  // Gestion du passage en 580
+                  if (i == 0) {
+                    reconcile =
+                        reconcileService.createReconcile(
+                            debitMoveLine, creditMoveLine, amountToPay, true);
+                  } else {
+                    reconcile =
+                        reconcileService.createReconcile(
+                            debitMoveLine, creditMoveLine, amountToPay, false);
+                  }
+                  // End gestion du passage en 580
 
-              // Gestion du passage en 580
-              if (i == 0) {
-                reconcile =
-                    reconcileService.createReconcile(
-                        debitMoveLine, creditMoveLine, amountToPay, true);
-              } else {
-                reconcile =
-                    reconcileService.createReconcile(
-                        debitMoveLine, creditMoveLine, amountToPay, false);
-              }
-              // End gestion du passage en 580
-
-              if (reconcile != null) {
-                remainingPaidAmount2 = remainingPaidAmount2.subtract(amountToPay);
-                amountDebit = amountDebit.subtract(amountToPay);
-                reconcileList.add(reconcile);
+                  if (reconcile != null) {
+                    remainingPaidAmount2 = remainingPaidAmount2.subtract(amountToPay);
+                    amountDebit = amountDebit.subtract(amountToPay);
+                    reconcileList.add(reconcile);
+                  }
+                }
               }
             }
           }
@@ -437,7 +443,7 @@ public class PaymentServiceImpl implements PaymentService {
               null,
               null);
 
-      move.getMoveLineList().add(debitmoveLine);
+      move.addMoveLineListItem(debitmoveLine);
       moveLineNo2++;
     }
     log.debug("End useExcessPaymentWithAmount");

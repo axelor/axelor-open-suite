@@ -94,13 +94,16 @@ public abstract class DeclarationOfExchangesExporter {
   }
 
   protected String[] getTranslatedHeaders() {
-    String[] headers = new String[columnHeadersList.size()];
+    if (columnHeadersList != null) {
+      String[] headers = new String[columnHeadersList.size()];
 
-    for (int i = 0; i < columnHeadersList.size(); ++i) {
-      headers[i] = getTranslation(columnHeadersList.get(i));
+      for (int i = 0; i < columnHeadersList.size(); ++i) {
+        headers[i] = getTranslation(columnHeadersList.get(i));
+      }
+
+      return headers;
     }
-
-    return headers;
+    return new String[0];
   }
 
   protected String getExportDir() {

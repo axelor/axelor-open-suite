@@ -489,7 +489,9 @@ public class InvoiceTermController {
                         + invoiceTerm.getMoveLine().getMove().getId()
                         + " AND self.relatedModel = 'com.axelor.apps.account.db.Move'")
                 .fetch();
-        response.setValue("$invoiceTermMoveFile", dmsFileList);
+        if (dmsFileList != null) {
+          response.setValue("$invoiceTermMoveFile", dmsFileList);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -64,6 +64,7 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -86,6 +87,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -100,7 +102,7 @@ import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
-import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import wslite.json.JSONException;
 
 /** @author axelor */
@@ -209,6 +211,9 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     Map<Integer, String> correspMap = getCorresMap();
 
     List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+    if (CollectionUtils.isEmpty(timesheetLines)) {
+      return;
+    }
     timesheetLines.sort(Comparator.comparing(TimesheetLine::getDate));
     for (int i = 0; i < timesheetLines.size(); i++) {
 
@@ -450,10 +455,13 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   protected boolean isWorkedDay(
       LocalDate date, Map<Integer, String> correspMap, List<DayPlanning> dayPlanningList) {
     DayPlanning dayPlanningCurr = new DayPlanning();
-    for (DayPlanning dayPlanning : dayPlanningList) {
-      if (dayPlanning.getNameSelect().equals(correspMap.get(date.getDayOfWeek().getValue()))) {
-        dayPlanningCurr = dayPlanning;
-        break;
+    if (CollectionUtils.isNotEmpty(dayPlanningList)) {
+      for (DayPlanning dayPlanning : dayPlanningList) {
+        if (correspMap != null
+            && dayPlanning.getNameSelect().equals(correspMap.get(date.getDayOfWeek().getValue()))) {
+          dayPlanningCurr = dayPlanning;
+          break;
+        }
       }
     }
 
@@ -536,70 +544,74 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     // Check if a consolidation by product and user must be done
     boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
 
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      Object[] tabInformations = new Object[5];
-      tabInformations[0] = timesheetLine.getProduct();
-      tabInformations[1] = timesheetLine.getEmployee();
-      // Start date
-      tabInformations[2] = timesheetLine.getDate();
-      // End date, useful only for consolidation
-      tabInformations[3] = timesheetLine.getDate();
-      tabInformations[4] = timesheetLine.getHoursDuration();
+    if (CollectionUtils.isNotEmpty(timesheetLineList)) {
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        Object[] tabInformations = new Object[5];
+        tabInformations[0] = timesheetLine.getProduct();
+        tabInformations[1] = timesheetLine.getEmployee();
+        // Start date
+        tabInformations[2] = timesheetLine.getDate();
+        // End date, useful only for consolidation
+        tabInformations[3] = timesheetLine.getDate();
+        tabInformations[4] = timesheetLine.getHoursDuration();
 
-      String key = null;
-      if (consolidate) {
-        key = timesheetLine.getProduct().getId() + "|" + timesheetLine.getEmployee().getId();
-        if (timeSheetInformationsMap.containsKey(key)) {
-          tabInformations = timeSheetInformationsMap.get(key);
-          // Update date
-          if (timesheetLine.getDate().compareTo((LocalDate) tabInformations[2]) < 0) {
-            // If date is lower than start date then replace start date by this one
-            tabInformations[2] = timesheetLine.getDate();
-          } else if (timesheetLine.getDate().compareTo((LocalDate) tabInformations[3]) > 0) {
-            // If date is upper than end date then replace end date by this one
-            tabInformations[3] = timesheetLine.getDate();
+        String key = null;
+        if (consolidate) {
+          key = timesheetLine.getProduct().getId() + "|" + timesheetLine.getEmployee().getId();
+          if (timeSheetInformationsMap.containsKey(key)) {
+            tabInformations = timeSheetInformationsMap.get(key);
+            // Update date
+            if (timesheetLine.getDate().compareTo((LocalDate) tabInformations[2]) < 0) {
+              // If date is lower than start date then replace start date by this one
+              tabInformations[2] = timesheetLine.getDate();
+            } else if (timesheetLine.getDate().compareTo((LocalDate) tabInformations[3]) > 0) {
+              // If date is upper than end date then replace end date by this one
+              tabInformations[3] = timesheetLine.getDate();
+            }
+            tabInformations[4] =
+                ((BigDecimal) tabInformations[4]).add(timesheetLine.getHoursDuration());
+          } else {
+            timeSheetInformationsMap.put(key, tabInformations);
           }
-          tabInformations[4] =
-              ((BigDecimal) tabInformations[4]).add(timesheetLine.getHoursDuration());
         } else {
+          key = String.valueOf(timesheetLine.getId());
           timeSheetInformationsMap.put(key, tabInformations);
         }
-      } else {
-        key = String.valueOf(timesheetLine.getId());
-        timeSheetInformationsMap.put(key, tabInformations);
-      }
 
-      timesheetLine.setInvoiced(true);
+        timesheetLine.setInvoiced(true);
+      }
     }
 
-    for (Object[] timesheetInformations : timeSheetInformationsMap.values()) {
+    if (timeSheetInformationsMap != null) {
+      for (Object[] timesheetInformations : timeSheetInformationsMap.values()) {
 
-      String strDate = null;
-      Product product = (Product) timesheetInformations[0];
-      Employee employee = (Employee) timesheetInformations[1];
-      LocalDate startDate = (LocalDate) timesheetInformations[2];
-      LocalDate endDate = (LocalDate) timesheetInformations[3];
-      BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
-      PriceList priceList =
-          Beans.get(PartnerPriceListService.class)
-              .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
+        String strDate = null;
+        Product product = (Product) timesheetInformations[0];
+        Employee employee = (Employee) timesheetInformations[1];
+        LocalDate startDate = (LocalDate) timesheetInformations[2];
+        LocalDate endDate = (LocalDate) timesheetInformations[3];
+        BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
+        PriceList priceList =
+            Beans.get(PartnerPriceListService.class)
+                .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
 
-      if (consolidate) {
-        strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
-      } else {
-        strDate = ddmmFormat.format(startDate);
+        if (consolidate) {
+          strDate = ddmmFormat.format(startDate) + " - " + ddmmFormat.format(endDate);
+        } else {
+          strDate = ddmmFormat.format(startDate);
+        }
+
+        invoiceLineList.addAll(
+            this.createInvoiceLine(
+                invoice,
+                product,
+                employee,
+                strDate,
+                hoursDuration,
+                priority * 100 + count,
+                priceList));
+        count++;
       }
-
-      invoiceLineList.addAll(
-          this.createInvoiceLine(
-              invoice,
-              product,
-              employee,
-              strDate,
-              hoursDuration,
-              priority * 100 + count,
-              priceList));
-      count++;
     }
 
     return invoiceLineList;
@@ -713,7 +725,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       Map<Project, BigDecimal> projectTimeSpentMap =
           timesheetLineService.getProjectTimeSpentMap(timesheetLineList);
 
-      Iterator<Project> projectIterator = projectTimeSpentMap.keySet().iterator();
+      Iterator<Project> projectIterator =
+          projectTimeSpentMap != null
+              ? projectTimeSpentMap.keySet().iterator()
+              : Collections.emptyIterator();
 
       while (projectIterator.hasNext()) {
         Project project = projectIterator.next();
@@ -815,8 +830,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                 project,
                 TimesheetRepository.STATUS_VALIDATED)
             .fetch();
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      sum = sum.add(timesheetLine.getHoursDuration());
+    if (CollectionUtils.isNotEmpty(timesheetLineList)) {
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        sum = sum.add(timesheetLine.getHoursDuration());
+      }
     }
     return sum;
   }
@@ -941,17 +958,19 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                 user.getId())
             .fetch();
 
-    for (Project project : projects) {
-      TimesheetLine line =
-          timesheetLineService.createTimesheetLine(
-              project,
-              product,
-              timesheet.getEmployee(),
-              timesheet.getFromDate(),
-              timesheet,
-              new BigDecimal(0),
-              null);
-      lines.add(Mapper.toMap(line));
+    if (CollectionUtils.isNotEmpty(projects)) {
+      for (Project project : projects) {
+        TimesheetLine line =
+            timesheetLineService.createTimesheetLine(
+                project,
+                product,
+                timesheet.getEmployee(),
+                timesheet.getFromDate(),
+                timesheet,
+                new BigDecimal(0),
+                null);
+        lines.add(Mapper.toMap(line));
+      }
     }
 
     return lines;
@@ -1071,6 +1090,9 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException {
     List<ProjectPlanningTime> planningList = getExpectedProjectPlanningTimeList(timesheet);
+    if (CollectionUtils.isEmpty(planningList)) {
+      return;
+    }
     for (ProjectPlanningTime projectPlanningTime : planningList) {
       TimesheetLine timesheetLine = createTimeSheetLineFromPPT(timesheet, projectPlanningTime);
       timesheet.addTimesheetLineListItem(timesheetLine);
@@ -1175,6 +1197,9 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional
   public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd) {
+    if (CollectionUtils.isEmpty(timesheetLines)) {
+      return;
+    }
     for (TimesheetLine timesheetLine : timesheetLines) {
       ProjectTask projectTask = timesheetLine.getProjectTask();
       if (projectTask != null) {
@@ -1234,8 +1259,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     if (contextProject == null) {
       List<Project> allTimeSpentProjectList =
           projectRepo.all().filter("self.isShowTimeSpent = true").fetch();
-      for (Project timeSpentProject : allTimeSpentProjectList) {
-        projectService.getChildProjectIds(projectIdsSet, timeSpentProject);
+      if (CollectionUtils.isNotEmpty(allTimeSpentProjectList)) {
+        for (Project timeSpentProject : allTimeSpentProjectList) {
+          projectService.getChildProjectIds(projectIdsSet, timeSpentProject);
+        }
       }
     } else {
       if (!currentUser.getIsIncludeSubContextProjects()) {

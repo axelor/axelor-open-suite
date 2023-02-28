@@ -37,6 +37,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.translation.ITranslation;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -54,6 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PurchaseOrderController {
@@ -71,7 +73,7 @@ public class PurchaseOrderController {
                 .createStockMoveFromPurchaseOrder(
                     Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
 
-        if (stockMoveList != null && stockMoveList.size() == 1) {
+        if (ListUtils.size(stockMoveList) == 1) {
           response.setView(
               ActionView.define(I18n.get("Stock move"))
                   .model(StockMove.class.getName())
@@ -82,7 +84,7 @@ public class PurchaseOrderController {
                   .domain("self.id = " + stockMoveList.get(0))
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
                   .map());
-        } else if (stockMoveList != null && stockMoveList.size() > 1) {
+        } else if (ListUtils.size(stockMoveList) > 1) {
           response.setView(
               ActionView.define(I18n.get("Stock move"))
                   .model(StockMove.class.getName())
@@ -146,7 +148,7 @@ public class PurchaseOrderController {
       if (request.getContext().get("purchaseOrderToMerge") instanceof List) {
         // No confirmation popup, purchase orders are content in a parameter list
         List<Map> purchaseOrderMap = (List<Map>) request.getContext().get("purchaseOrderToMerge");
-        for (Map map : purchaseOrderMap) {
+        for (Map map : ListUtils.emptyIfNull(purchaseOrderMap)) {
           purchaseOrderIdList.add(new Long((Integer) map.get("id")));
         }
       } else {
@@ -365,7 +367,9 @@ public class PurchaseOrderController {
       } else {
         purchaseOrderSupplychainService.setPurchaseOrderLineBudget(purchaseOrder);
 
-        response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+        response.setValue(
+            "purchaseOrderLineList",
+            ListUtils.emptyIfNull(purchaseOrder.getPurchaseOrderLineList()));
       }
 
     } catch (Exception e) {
@@ -386,8 +390,9 @@ public class PurchaseOrderController {
           purchaseOrderLine.setEstimatedReceiptDate(purchaseOrder.getEstimatedReceiptDate());
         }
       }
+
+      response.setValue("purchaseOrderLineList", purchaseOrderLineList);
     }
-    response.setValue("purchaseOrderLineList", purchaseOrderLineList);
   }
 
   /**
@@ -402,9 +407,12 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       List<String> productList = new ArrayList<>();
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        if (purchaseOrderLine.getAnalyticDistributionTemplate() == null) {
-          productList.add(purchaseOrderLine.getProduct().getFullName());
+      if (purchaseOrder != null
+          && CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+        for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+          if (purchaseOrderLine.getAnalyticDistributionTemplate() == null) {
+            productList.add(purchaseOrderLine.getProduct().getFullName());
+          }
         }
       }
       if (productList != null && !productList.isEmpty()) {

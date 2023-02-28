@@ -97,7 +97,7 @@ public class WkfDashboardController {
 
       String process = (String) request.getContext().get("_process");
 
-      if (wkfModel != null) {
+      if (wkfModel != null && CollectionUtils.isNotEmpty(wkfModel.getWkfProcessList())) {
         for (WkfProcess wkfProcess : wkfModel.getWkfProcessList()) {
           if (CollectionUtils.isEmpty(wkfProcess.getWkfProcessConfigList())
               || !wkfProcess.getName().equals(process)) {

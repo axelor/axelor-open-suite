@@ -117,8 +117,10 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
     if (project != null
         && !appBusinessProjectService.getAppBusinessProject().getProjectInvoiceLines()) {
       invoiceMerged.setProject(project);
-      for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()) {
-        invoiceLine.setProject(project);
+      if (invoiceMerged.getInvoiceLineList() != null) {
+        for (InvoiceLine invoiceLine : invoiceMerged.getInvoiceLineList()) {
+          invoiceLine.setProject(project);
+        }
       }
     }
     return invoiceMerged;
@@ -134,9 +136,11 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       return invoiceLines;
     }
 
-    for (InvoiceLine invoiceLine : invoiceLines) {
-      if (saleOrderLine != null) {
-        invoiceLine.setProject(saleOrderLine.getProject());
+    if (invoiceLines != null) {
+      for (InvoiceLine invoiceLine : invoiceLines) {
+        if (saleOrderLine != null) {
+          invoiceLine.setProject(saleOrderLine.getProject());
+        }
       }
     }
     return invoiceLines;

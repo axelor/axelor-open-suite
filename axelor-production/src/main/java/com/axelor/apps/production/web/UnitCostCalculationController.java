@@ -116,8 +116,11 @@ public class UnitCostCalculationController {
     try {
       LinkedHashMap<String, Object> map =
           (LinkedHashMap<String, Object>) request.getContext().get("metaFile");
+
       MetaFile dataFile =
-          Beans.get(MetaFileRepository.class).find(((Integer) map.get("id")).longValue());
+          map != null
+              ? Beans.get(MetaFileRepository.class).find(((Integer) map.get("id")).longValue())
+              : null;
       File csvFile = MetaFiles.getPath(dataFile).toFile();
       Long unitCostCalculationId = Long.valueOf(request.getContext().get("_id").toString());
       UnitCostCalculation unitCostCalculation =

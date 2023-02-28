@@ -49,8 +49,10 @@ public abstract class EmployeeComputeDaysLeaveService {
     List<LeaveRequest> leaveRequestList = getEmployeeDaysLeave(employee, fromDate, toDate);
 
     BigDecimal daysLeave = BigDecimal.ZERO;
-    for (LeaveRequest leaveRequest : leaveRequestList) {
-      daysLeave = daysLeave.add(this.computeDuration(leaveRequest, fromDate, toDate));
+    if (leaveRequestList != null) {
+      for (LeaveRequest leaveRequest : leaveRequestList) {
+        daysLeave = daysLeave.add(this.computeDuration(leaveRequest, fromDate, toDate));
+      }
     }
     return daysLeave;
   }

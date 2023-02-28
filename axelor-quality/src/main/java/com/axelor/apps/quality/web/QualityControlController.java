@@ -26,6 +26,7 @@ import com.axelor.apps.quality.db.repo.QualityProcessRepository;
 import com.axelor.apps.quality.service.QualityControlService;
 import com.axelor.apps.quality.service.print.QualityControlPrintServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -84,6 +85,9 @@ public class QualityControlController {
     LinkedHashMap<String, Object> qualityControlMap =
         (LinkedHashMap<String, Object>) request.getContext().get("_qualityControl");
 
+    if (qualityProcessMap == null || qualityControlMap == null) {
+      return;
+    }
     QualityProcess qualityProcess =
         Beans.get(QualityProcessRepository.class)
             .find(((Integer) qualityProcessMap.get("id")).longValue());
@@ -109,7 +113,8 @@ public class QualityControlController {
       optionalControlPoints.addAll(optionalControlPointSet);
     }
 
-    for (Map<String, Object> optionalControlPointData : optionalControlPoints) {
+    for (Map<String, Object> optionalControlPointData :
+        SetUtils.emptyIfNull(optionalControlPoints)) {
       ControlPoint optionalControlPoint =
           Beans.get(ControlPointRepository.class)
               .find(Long.parseLong(optionalControlPointData.get("id").toString()));
@@ -118,6 +123,9 @@ public class QualityControlController {
 
     LinkedHashMap<String, Object> qualityControlMap =
         (LinkedHashMap<String, Object>) request.getContext().get("_qualityControl");
+    if (qualityControlMap == null) {
+      return;
+    }
     QualityControl qualityControl =
         Beans.get(QualityControlRepository.class)
             .find(((Integer) qualityControlMap.get("id")).longValue());
@@ -164,10 +172,12 @@ public class QualityControlController {
 
         QualityControlRepository qualityControlRepo = Beans.get(QualityControlRepository.class);
 
-        for (Long id : idList) {
-          QualityControl qualityControl = qualityControlRepo.find(id);
-          if (qualityControl.getStatusSelect() == QualityControlRepository.STATUS_FINISHED) {
-            qualityControlService.sendEmail(qualityControl);
+        if (idList != null) {
+          for (Long id : idList) {
+            QualityControl qualityControl = qualityControlRepo.find(id);
+            if (qualityControl.getStatusSelect() == QualityControlRepository.STATUS_FINISHED) {
+              qualityControlService.sendEmail(qualityControl);
+            }
           }
         }
       } else if (!ObjectUtils.isEmpty(context.get("id"))) {

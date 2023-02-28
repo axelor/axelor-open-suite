@@ -30,6 +30,8 @@ import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -44,6 +46,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,10 +74,12 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     Map<Partner, List<SaleOrderLine>> saleOrderLinesBySupplierPartner =
         this.splitBySupplierPartner(saleOrder.getSaleOrderLineList());
 
-    for (Partner supplierPartner : saleOrderLinesBySupplierPartner.keySet()) {
+    if (saleOrderLinesBySupplierPartner != null) {
+      for (Partner supplierPartner : saleOrderLinesBySupplierPartner.keySet()) {
 
-      this.createPurchaseOrder(
-          supplierPartner, saleOrderLinesBySupplierPartner.get(supplierPartner), saleOrder);
+        this.createPurchaseOrder(
+            supplierPartner, saleOrderLinesBySupplierPartner.get(supplierPartner), saleOrder);
+      }
     }
   }
 
@@ -84,25 +89,27 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
 
     Map<Partner, List<SaleOrderLine>> saleOrderLinesBySupplierPartner = new HashMap<>();
 
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+    if (CollectionUtils.isNotEmpty(saleOrderLineList)) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
-      if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE) {
+        if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE) {
 
-        Partner supplierPartner = saleOrderLine.getSupplierPartner();
+          Partner supplierPartner = saleOrderLine.getSupplierPartner();
 
-        if (supplierPartner == null) {
-          throw new AxelorException(
-              saleOrderLine,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(SupplychainExceptionMessage.SO_PURCHASE_1),
-              saleOrderLine.getProductName());
+          if (supplierPartner == null) {
+            throw new AxelorException(
+                saleOrderLine,
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(SupplychainExceptionMessage.SO_PURCHASE_1),
+                saleOrderLine.getProductName());
+          }
+
+          if (!saleOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
+            saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<>());
+          }
+
+          saleOrderLinesBySupplierPartner.get(supplierPartner).add(saleOrderLine);
         }
-
-        if (!saleOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
-          saleOrderLinesBySupplierPartner.put(supplierPartner, new ArrayList<>());
-        }
-
-        saleOrderLinesBySupplierPartner.get(supplierPartner).add(saleOrderLine);
       }
     }
 
@@ -121,7 +128,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
         purchaseOrderSupplychainService.createPurchaseOrder(
             AuthUtils.getUser(),
             saleOrder.getCompany(),
-            supplierPartner.getContactPartnerSet().size() == 1
+            SetUtils.size(supplierPartner.getContactPartnerSet()) == 1
                 ? supplierPartner.getContactPartnerSet().iterator().next()
                 : null,
             supplierPartner.getCurrency(),
@@ -153,7 +160,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     }
 
     Collections.sort(saleOrderLineList, Comparator.comparing(SaleOrderLine::getSequence));
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+    for (SaleOrderLine saleOrderLine : ListUtils.emptyIfNull(saleOrderLineList)) {
       purchaseOrder.addPurchaseOrderLineListItem(
           purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
               purchaseOrder, saleOrderLine));

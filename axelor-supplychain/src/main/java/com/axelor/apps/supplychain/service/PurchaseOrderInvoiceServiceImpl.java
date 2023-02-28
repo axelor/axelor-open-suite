@@ -49,6 +49,7 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -67,6 +68,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,9 +166,10 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       Invoice invoice, List<PurchaseOrderLine> purchaseOrderLineList) throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
-
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-      processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
+    if (CollectionUtils.isNotEmpty(purchaseOrderLineList)) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
+      }
     }
     return invoiceLineList;
   }
@@ -175,7 +178,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   public void processPurchaseOrderLine(
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
-    invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
+    ListUtils.emptyIfNull(invoiceLineList)
+        .addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
     purchaseOrderLine.setInvoiced(true);
   }
 
@@ -352,20 +356,22 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      BigDecimal realQty =
-          purchaseOrderLine
-              .getQty()
-              .multiply(percentSum)
-              .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-      qtyToInvoiceMap.put(purchaseOrderLine.getId(), realQty);
+    if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        BigDecimal realQty =
+            purchaseOrderLine
+                .getQty()
+                .multiply(percentSum)
+                .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        qtyToInvoiceMap.put(purchaseOrderLine.getId(), realQty);
 
-      if (qtyToInvoiceMap.get(purchaseOrderLine.getId()).compareTo(purchaseOrderLine.getQty())
-          > 0) {
-        throw new AxelorException(
-            purchaseOrderLine,
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(SupplychainExceptionMessage.PO_INVOICE_QTY_MAX));
+        if (qtyToInvoiceMap.get(purchaseOrderLine.getId()).compareTo(purchaseOrderLine.getQty())
+            > 0) {
+          throw new AxelorException(
+              purchaseOrderLine,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(SupplychainExceptionMessage.PO_INVOICE_QTY_MAX));
+        }
       }
     }
     return this.generateInvoice(
@@ -411,14 +417,18 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throws AxelorException {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+    if (CollectionUtils.isNotEmpty(purchaseOrderLineList)) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-      if (qtyToInvoiceMap.containsKey(purchaseOrderLine.getId())) {
-        List<InvoiceLine> invoiceLines =
-            this.createInvoiceLine(
-                invoice, purchaseOrderLine, qtyToInvoiceMap.get(purchaseOrderLine.getId()));
-        invoiceLineList.addAll(invoiceLines);
-        purchaseOrderLine.setInvoiced(true);
+        if (qtyToInvoiceMap != null && qtyToInvoiceMap.containsKey(purchaseOrderLine.getId())) {
+          List<InvoiceLine> invoiceLines =
+              this.createInvoiceLine(
+                  invoice, purchaseOrderLine, qtyToInvoiceMap.get(purchaseOrderLine.getId()));
+          if (invoiceLines != null) {
+            invoiceLineList.addAll(invoiceLines);
+          }
+          purchaseOrderLine.setInvoiced(true);
+        }
       }
     }
 
@@ -487,8 +497,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     if (purchaseOrder != null) {
       StringBuilder numSeq = new StringBuilder();
       StringBuilder externalRef = new StringBuilder();
-
-      for (Invoice invoiceLocal : invoiceList) {
+      for (Invoice invoiceLocal : ListUtils.emptyIfNull(invoiceList)) {
         if (numSeq.length() > 0) {
           numSeq.append("-");
         }
@@ -552,7 +561,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throws AxelorException {
 
     BigDecimal total =
-        purchaseOrder.getPurchaseOrderLineList().stream()
+        ListUtils.emptyIfNull(purchaseOrder.getPurchaseOrderLineList()).stream()
             .map(
                 purchaseOrderLine ->
                     purchaseOrderLine.getQty().multiply(purchaseOrderLine.getPriceDiscounted()))
@@ -662,10 +671,12 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
         List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
         // link to the created invoice line the first line of the sale order.
-        for (InvoiceLine invoiceLine : invoiceOneLineList) {
-          PurchaseOrderLine purchaseOrderLine =
-              purchaseOrderLineTax.getPurchaseOrder().getPurchaseOrderLineList().get(0);
-          invoiceLine.setPurchaseOrderLine(purchaseOrderLine);
+        if (CollectionUtils.isNotEmpty(invoiceOneLineList)) {
+          for (InvoiceLine invoiceLine : invoiceOneLineList) {
+            PurchaseOrderLine purchaseOrderLine =
+                purchaseOrderLineTax.getPurchaseOrder().getPurchaseOrderLineList().get(0);
+            invoiceLine.setPurchaseOrderLine(purchaseOrderLine);
+          }
         }
         createdInvoiceLineList.addAll(invoiceOneLineList);
       }

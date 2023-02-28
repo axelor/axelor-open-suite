@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.mobile;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BusinessProjectMobileController {
 
@@ -56,18 +58,20 @@ public class BusinessProjectMobileController {
       if (user != null) {
         List<Project> projectList =
             Beans.get(ProjectRepository.class).all().filter("self.imputable = true").fetch();
-        for (Project project : projectList) {
-          if ((project.getMembersUserSet() != null && project.getMembersUserSet().contains(user))
-              || user.equals(project.getAssignedTo())) {
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("name", project.getName());
-            map.put("id", project.getId().toString());
-            dataList.add(map);
+        if (CollectionUtils.isNotEmpty(projectList)) {
+          for (Project project : projectList) {
+            if ((project.getMembersUserSet() != null && project.getMembersUserSet().contains(user))
+                || user.equals(project.getAssignedTo())) {
+              Map<String, String> map = new HashMap<String, String>();
+              map.put("name", project.getName());
+              map.put("id", project.getId().toString());
+              dataList.add(map);
+            }
           }
         }
       }
       response.setData(dataList);
-      response.setTotal(dataList.size());
+      response.setTotal(ListUtils.size(dataList));
     } catch (Exception e) {
       response.setStatus(-1);
       response.setError(e.getMessage());

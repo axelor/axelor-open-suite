@@ -49,6 +49,7 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
@@ -64,6 +65,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     implements InvoiceServiceSupplychain {
@@ -130,9 +132,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     List<Timetable> timetableList =
         timeTableRepo.all().filter("self.invoice.id = ?1", invoice.getId()).fetch();
 
-    for (Timetable timetable : timetableList) {
-      timetable.setInvoiced(true);
-      timeTableRepo.save(timetable);
+    if (CollectionUtils.isNotEmpty(timetableList)) {
+      for (Timetable timetable : timetableList) {
+        timetable.setInvoiced(true);
+        timeTableRepo.save(timetable);
+      }
     }
   }
 
@@ -197,39 +201,47 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     SaleOrder saleOrder = invoice.getSaleOrder();
     // search sale order in invoice lines
     List<SaleOrder> saleOrderList =
-        invoice.getInvoiceLineList().stream()
+        ListUtils.emptyIfNull(invoice.getInvoiceLineList()).stream()
             .map(invoiceLine -> invoice.getSaleOrder())
             .collect(Collectors.toList());
 
-    saleOrderList.add(saleOrder);
+    ListUtils.emptyIfNull(saleOrderList).add(saleOrder);
 
     // remove null value and duplicates
     saleOrderList =
-        saleOrderList.stream().filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        ListUtils.emptyIfNull(saleOrderList).stream()
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
 
     if (saleOrderList.isEmpty()) {
       return new ArrayList<>();
     } else {
       // get move lines from sale order
       return saleOrderList.stream()
-          .flatMap(saleOrder1 -> saleOrder1.getAdvancePaymentList().stream())
+          .flatMap(saleOrder1 -> ListUtils.emptyIfNull(saleOrder1.getAdvancePaymentList()).stream())
           .filter(Objects::nonNull)
           .distinct()
           .map(AdvancePayment::getMove)
           .filter(Objects::nonNull)
           .distinct()
-          .flatMap(move -> moveToolService.getToReconcileCreditMoveLines(move).stream())
+          .flatMap(
+              move ->
+                  ListUtils.emptyIfNull(moveToolService.getToReconcileCreditMoveLines(move))
+                      .stream())
           .collect(Collectors.toList());
     }
   }
 
   @Override
   public void computePackTotal(Invoice invoice) {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    List<InvoiceLine> invoiceLineList =
+        invoice.getInvoiceLineList() == null ? new ArrayList<>() : invoice.getInvoiceLineList();
 
     if (!invoiceLineService.hasEndOfPackTypeLine(invoiceLineList)) {
       return;
     }
+
     invoiceLineList.sort(Comparator.comparing(InvoiceLine::getSequence));
     BigDecimal totalExTaxTotal = BigDecimal.ZERO;
     BigDecimal totalInTaxTotal = BigDecimal.ZERO;
@@ -286,7 +298,9 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice updateProductQtyWithPackHeaderQty(Invoice invoice) throws AxelorException {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    List<InvoiceLine> invoiceLineList =
+        invoice.getInvoiceLineList() == null ? new ArrayList<>() : invoice.getInvoiceLineList();
+
     invoiceLineList.sort(Comparator.comparing(InvoiceLine::getSequence));
     boolean isStartOfPack = false;
     BigDecimal oldQty = BigDecimal.ZERO;
@@ -300,7 +314,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         if (newQty.compareTo(oldQty) != 0) {
           isStartOfPack = true;
           oldInvoiceLine = EntityHelper.getEntity(invoiceLine);
-          oldInvoiceLine.setSubLineList(invoiceLine.getSubLineList());
+          oldInvoiceLine.setSubLineList(ListUtils.emptyIfNull(invoiceLine.getSubLineList()));
           invoiceLineRepo.save(oldInvoiceLine);
         }
       } else if (isStartOfPack) {
@@ -316,21 +330,25 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
   @Transactional
   @Override
   public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice) {
-    for (Invoice invoice : invoiceList) {
-      List<StockMove> stockMoveList =
-          stockMoveRepository
-              .all()
-              .filter(":invoiceId in self.invoiceSet.id")
-              .bind("invoiceId", invoice.getId())
-              .fetch();
-      for (StockMove stockMove : stockMoveList) {
-        stockMove.removeInvoiceSetItem(invoice);
-        stockMove.addInvoiceSetItem(newInvoice);
-        invoice.removeStockMoveSetItem(stockMove);
-        newInvoice.addStockMoveSetItem(stockMove);
-        invoiceRepo.save(invoice);
-        invoiceRepo.save(newInvoice);
-        stockMoveRepository.save(stockMove);
+    if (CollectionUtils.isNotEmpty(invoiceList)) {
+      for (Invoice invoice : invoiceList) {
+        List<StockMove> stockMoveList =
+            stockMoveRepository
+                .all()
+                .filter(":invoiceId in self.invoiceSet.id")
+                .bind("invoiceId", invoice.getId())
+                .fetch();
+        if (CollectionUtils.isNotEmpty(stockMoveList)) {
+          for (StockMove stockMove : stockMoveList) {
+            stockMove.removeInvoiceSetItem(invoice);
+            stockMove.addInvoiceSetItem(newInvoice);
+            invoice.removeStockMoveSetItem(stockMove);
+            newInvoice.addStockMoveSetItem(stockMove);
+            invoiceRepo.save(invoice);
+            invoiceRepo.save(newInvoice);
+            stockMoveRepository.save(stockMove);
+          }
+        }
       }
     }
   }

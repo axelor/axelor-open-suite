@@ -21,8 +21,10 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.repo.AppRepository;
 import com.axelor.apps.base.exceptions.AdminExceptionMessage;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.FileUtils;
 import com.axelor.common.Inflector;
+import com.axelor.common.ObjectUtils;
 import com.axelor.data.Importer;
 import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
@@ -60,6 +62,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,10 +183,12 @@ public class AppServiceImpl implements AppService {
 
     List<App> depends = getDepends(app, true);
 
-    for (App parent : depends) {
-      parent = appRepo.find(parent.getId());
-      if (!parent.getDemoDataLoaded()) {
-        importDataDemo(parent);
+    if (depends != null) {
+      for (App parent : depends) {
+        parent = appRepo.find(parent.getId());
+        if (!parent.getDemoDataLoaded()) {
+          importDataDemo(parent);
+        }
       }
     }
   }
@@ -328,12 +333,13 @@ public class AppServiceImpl implements AppService {
     List<App> apps = new ArrayList<>();
     app = appRepo.find(app.getId());
 
-    for (App depend : app.getDependsOnSet()) {
-      if (depend.getActive().equals(active)) {
-        apps.add(depend);
+    if (app != null && app.getDependsOnSet() != null) {
+      for (App depend : app.getDependsOnSet()) {
+        if (depend.getActive().equals(active)) {
+          apps.add(depend);
+        }
       }
     }
-
     return sortApps(apps);
   }
 
@@ -341,8 +347,10 @@ public class AppServiceImpl implements AppService {
 
     List<String> names = new ArrayList<>();
 
-    for (App app : apps) {
-      names.add(app.getName());
+    if (CollectionUtils.isNotEmpty(apps)) {
+      for (App app : apps) {
+        names.add(app.getName());
+      }
     }
 
     return names;
@@ -359,7 +367,7 @@ public class AppServiceImpl implements AppService {
     }
     List<App> apps = appRepo.all().filter(query, code).fetch();
 
-    log.debug("Parent app: {}, Total children: {}", app.getName(), apps.size());
+    log.debug("Parent app: {}, Total children: {}", app.getName(), ListUtils.size(apps));
 
     return apps;
   }
@@ -380,11 +388,11 @@ public class AppServiceImpl implements AppService {
     }
 
     List<App> apps = getDepends(app, false);
-
-    for (App parentApp : apps) {
-      installApp(parentApp, language);
+    if (CollectionUtils.isNotEmpty(apps)) {
+      for (App parentApp : apps) {
+        installApp(parentApp, language);
+      }
     }
-
     log.debug("Init data loaded: {}, for app: {}", app.getInitDataLoaded(), app.getCode());
     if (!app.getInitDataLoaded()) {
       app = importDataInit(app);
@@ -400,9 +408,9 @@ public class AppServiceImpl implements AppService {
   private List<App> sortApps(Collection<App> apps) {
 
     List<App> appsList = new ArrayList<>();
-
-    appsList.addAll(apps);
-
+    if (apps != null) {
+      appsList.addAll(apps);
+    }
     appsList.sort(this::compare);
 
     log.debug("Apps sorted: {}", getNames(appsList));
@@ -451,57 +459,61 @@ public class AppServiceImpl implements AppService {
             .map(Class::getName)
             .collect(Collectors.toList());
 
-    log.debug("Total app models: {}", metaModels.size());
-    for (MetaModel metaModel : metaModels) {
-      if (!appFieldTargetList.contains(metaModel.getFullName())) {
-        log.debug("Not a App class : {}", metaModel.getName());
-        continue;
+    if (CollectionUtils.isNotEmpty(metaModels)) {
+
+      log.debug("Total app models: {}", metaModels.size());
+
+      for (MetaModel metaModel : metaModels) {
+        if (appFieldTargetList != null && !appFieldTargetList.contains(metaModel.getFullName())) {
+          log.debug("Not a App class : {}", metaModel.getName());
+          continue;
+        }
+        Class<?> klass;
+        try {
+          klass = Class.forName(metaModel.getFullName());
+        } catch (ClassNotFoundException e) {
+          continue;
+        }
+        Object obj = null;
+        Query query = JPA.em().createQuery("SELECT id FROM " + metaModel.getName());
+        try {
+          obj = query.setMaxResults(1).getSingleResult();
+        } catch (Exception ex) {
+        }
+        if (obj != null) {
+          continue;
+        }
+        log.debug("App without app record: {}", metaModel.getName());
+        String csvName = "base_" + inflector.camelize(klass.getSimpleName(), true) + ".csv";
+        String pngName = inflector.dasherize(klass.getSimpleName()) + ".png";
+
+        CSVInput input = new CSVInput();
+        input.setFileName(csvName);
+        input.setTypeName(App.class.getName());
+        input.setCallable("com.axelor.csv.script.ImportApp:importApp");
+        input.setSearch("self.code =:code");
+        input.setSeparator(';');
+        csvConfig.getInputs().add(input);
+
+        CSVInput appInput = new CSVInput();
+        appInput.setFileName(csvName);
+        appInput.setTypeName(klass.getName());
+        appInput.setSearch("self.app.code =:code");
+        appInput.setSeparator(';');
+
+        CSVBind appBind = new CSVBind();
+        appBind.setColumn("code");
+        appBind.setField("app");
+        appBind.setSearch("self.code = :code");
+        appInput.getBindings().add(appBind);
+
+        csvConfig.getInputs().add(appInput);
+
+        InputStream stream = klass.getResourceAsStream("/data-init/input/" + csvName);
+        copyStream(stream, new File(dataDir, csvName));
+        stream = klass.getResourceAsStream("/data-init/input/img/" + pngName);
+        copyStream(stream, new File(imgDir, pngName));
       }
-      Class<?> klass;
-      try {
-        klass = Class.forName(metaModel.getFullName());
-      } catch (ClassNotFoundException e) {
-        continue;
-      }
-      Object obj = null;
-      Query query = JPA.em().createQuery("SELECT id FROM " + metaModel.getName());
-      try {
-        obj = query.setMaxResults(1).getSingleResult();
-      } catch (Exception ex) {
-      }
-      if (obj != null) {
-        continue;
-      }
-      log.debug("App without app record: {}", metaModel.getName());
-      String csvName = "base_" + inflector.camelize(klass.getSimpleName(), true) + ".csv";
-      String pngName = inflector.dasherize(klass.getSimpleName()) + ".png";
-
-      CSVInput input = new CSVInput();
-      input.setFileName(csvName);
-      input.setTypeName(App.class.getName());
-      input.setCallable("com.axelor.csv.script.ImportApp:importApp");
-      input.setSearch("self.code =:code");
-      input.setSeparator(';');
-      csvConfig.getInputs().add(input);
-
-      CSVInput appInput = new CSVInput();
-      appInput.setFileName(csvName);
-      appInput.setTypeName(klass.getName());
-      appInput.setSearch("self.app.code =:code");
-      appInput.setSeparator(';');
-
-      CSVBind appBind = new CSVBind();
-      appBind.setColumn("code");
-      appBind.setField("app");
-      appBind.setSearch("self.code = :code");
-      appInput.getBindings().add(appBind);
-
-      csvConfig.getInputs().add(appInput);
-
-      InputStream stream = klass.getResourceAsStream("/data-init/input/" + csvName);
-      copyStream(stream, new File(dataDir, csvName));
-      stream = klass.getResourceAsStream("/data-init/input/img/" + pngName);
-      copyStream(stream, new File(imgDir, pngName));
     }
 
     if (!csvConfig.getInputs().isEmpty()) {
@@ -540,11 +552,12 @@ public class AppServiceImpl implements AppService {
       throws AxelorException, IOException {
 
     apps = sortApps(apps);
-
-    for (App app : apps) {
-      app = installApp(app, language);
-      if (importDemo != null && importDemo) {
-        importDataDemo(app);
+    if (ObjectUtils.notEmpty(apps)) {
+      for (App app : apps) {
+        app = installApp(app, language);
+        if (importDemo != null && importDemo) {
+          importDataDemo(app);
+        }
       }
     }
   }
@@ -570,11 +583,12 @@ public class AppServiceImpl implements AppService {
   protected void importParentRoles(App app) throws AxelorException, IOException {
 
     List<App> depends = getDepends(app, true);
-
-    for (App parent : depends) {
-      parent = appRepo.find(parent.getId());
-      if (!parent.getIsRolesImported()) {
-        importRoles(parent);
+    if (CollectionUtils.isNotEmpty(depends)) {
+      for (App parent : depends) {
+        parent = appRepo.find(parent.getId());
+        if (!parent.getIsRolesImported()) {
+          importRoles(parent);
+        }
       }
     }
   }
@@ -584,9 +598,10 @@ public class AppServiceImpl implements AppService {
 
     List<App> apps = appRepo.all().filter("self.isRolesImported = false").fetch();
     apps = sortApps(apps);
-
-    for (App app : apps) {
-      importRoles(app);
+    if (CollectionUtils.isNotEmpty(apps)) {
+      for (App app : apps) {
+        importRoles(app);
+      }
     }
   }
 

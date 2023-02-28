@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.Column;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public final class ModelTool {
@@ -100,11 +101,14 @@ public final class ModelTool {
   public static Map<String, String> getUniqueErrors(Model model, Map<String, String> messages) {
     Map<String, String> errors = new HashMap<>();
     Collection<Field> fields = ModelTool.checkUniqueFields(model);
-
-    for (Field field : fields) {
-      String message =
-          messages.getOrDefault(field.getName(), ToolExceptionMessage.RECORD_UNIQUE_FIELD);
-      errors.put(field.getName(), message);
+    if (fields != null) {
+      for (Field field : fields) {
+        String message =
+            messages != null
+                ? messages.getOrDefault(field.getName(), ToolExceptionMessage.RECORD_UNIQUE_FIELD)
+                : "";
+        errors.put(field.getName(), message);
+      }
     }
 
     return errors;
@@ -191,9 +195,11 @@ public final class ModelTool {
    */
   public static <T extends Model> List<T> copy(JpaRepository<T> repo, List<T> src, boolean deep) {
     List<T> dest = new ArrayList<>();
-    for (T obj : src) {
-      T cpy = repo.copy(obj, deep);
-      dest.add(cpy);
+    if (CollectionUtils.isNotEmpty(src)) {
+      for (T obj : src) {
+        T cpy = repo.copy(obj, deep);
+        dest.add(cpy);
+      }
     }
     return dest;
   }

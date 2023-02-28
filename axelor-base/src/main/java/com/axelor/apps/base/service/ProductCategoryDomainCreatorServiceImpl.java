@@ -19,6 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.ProductCategoryRepository;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.List;
@@ -50,7 +51,7 @@ public class ProductCategoryDomainCreatorServiceImpl
           productCategoryService.fetchChildrenCategoryList(productCategory);
       productCategoryList.add(productCategory);
       String childrenIdList =
-          productCategoryList.stream()
+          ListUtils.emptyIfNull(productCategoryList).stream()
               .map(ProductCategory::getId)
               .map(Object::toString)
               .collect(Collectors.joining(","));

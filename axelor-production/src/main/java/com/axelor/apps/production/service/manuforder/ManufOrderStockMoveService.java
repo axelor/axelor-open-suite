@@ -40,6 +40,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -122,8 +123,10 @@ public class ManufOrderStockMoveService {
 
   /** Request reservation (and allocate if possible) all stock for this stock move. */
   protected void requestStockReservation(StockMove stockMove) throws AxelorException {
-    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      reservedQtyService.allocateAll(stockMoveLine);
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        reservedQtyService.allocateAll(stockMoveLine);
+      }
     }
   }
 
@@ -276,7 +279,7 @@ public class ManufOrderStockMoveService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void consumeInStockMoves(ManufOrder manufOrder) throws AxelorException {
-    for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+    for (StockMove stockMove : ListUtils.emptyIfNull(manufOrder.getInStockMoveList())) {
 
       finishStockMove(stockMove);
     }
@@ -365,18 +368,16 @@ public class ManufOrderStockMoveService {
 
   public void finish(ManufOrder manufOrder) throws AxelorException {
     // clear empty stock move
-    manufOrder
-        .getInStockMoveList()
+    ListUtils.emptyIfNull(manufOrder.getInStockMoveList())
         .removeIf(stockMove -> CollectionUtils.isEmpty(stockMove.getStockMoveLineList()));
-    manufOrder
-        .getOutStockMoveList()
+    ListUtils.emptyIfNull(manufOrder.getOutStockMoveList())
         .removeIf(stockMove -> CollectionUtils.isEmpty(stockMove.getStockMoveLineList()));
 
     // finish remaining stock move
-    for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+    for (StockMove stockMove : ListUtils.emptyIfNull(manufOrder.getInStockMoveList())) {
       this.finishStockMove(stockMove);
     }
-    for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
+    for (StockMove stockMove : ListUtils.emptyIfNull(manufOrder.getOutStockMoveList())) {
       updateRealPrice(manufOrder, stockMove);
       this.finishStockMove(stockMove);
     }
@@ -390,7 +391,7 @@ public class ManufOrderStockMoveService {
    * @param stockMove
    */
   protected void updateRealPrice(ManufOrder manufOrder, StockMove stockMove) {
-    stockMove.getStockMoveLineList().stream()
+    ListUtils.emptyIfNull(stockMove.getStockMoveLineList()).stream()
         .filter(
             stockMoveLine ->
                 stockMoveLine.getProduct() != null
@@ -417,7 +418,8 @@ public class ManufOrderStockMoveService {
   @Transactional(rollbackOn = {Exception.class})
   public void partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+      for (OperationOrder operationOrder :
+          ListUtils.emptyIfNull(manufOrder.getOperationOrderList())) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
           Beans.get(OperationOrderStockMoveService.class).partialFinish(operationOrder);
         }
@@ -517,7 +519,7 @@ public class ManufOrderStockMoveService {
    * @return an optional stock move
    */
   public Optional<StockMove> getPlannedStockMove(List<StockMove> stockMoveList) {
-    return stockMoveList.stream()
+    return ListUtils.emptyIfNull(stockMoveList).stream()
         .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
         .findFirst();
   }
@@ -566,6 +568,11 @@ public class ManufOrderStockMoveService {
   public void createNewStockMoveLines(
       List<ProdProduct> diffProdProductList, StockMove stockMove, int stockMoveLineType)
       throws AxelorException {
+
+    if (diffProdProductList == null) {
+      return;
+    }
+
     diffProdProductList.forEach(prodProduct -> prodProduct.setQty(prodProduct.getQty().negate()));
     for (ProdProduct prodProduct : diffProdProductList) {
       if (prodProduct.getQty().signum() >= 0) {
@@ -576,10 +583,10 @@ public class ManufOrderStockMoveService {
 
   public void cancel(ManufOrder manufOrder) throws AxelorException {
 
-    for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+    for (StockMove stockMove : ListUtils.emptyIfNull(manufOrder.getInStockMoveList())) {
       this.cancel(stockMove);
     }
-    for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
+    for (StockMove stockMove : ListUtils.emptyIfNull(manufOrder.getOutStockMoveList())) {
       this.cancel(stockMove);
     }
   }
@@ -590,7 +597,7 @@ public class ManufOrderStockMoveService {
 
       stockMoveService.cancel(stockMove);
 
-      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      for (StockMoveLine stockMoveLine : ListUtils.emptyIfNull(stockMove.getStockMoveLineList())) {
 
         stockMoveLine.setProducedManufOrder(null);
       }
@@ -616,8 +623,7 @@ public class ManufOrderStockMoveService {
     stockMoveService.cancel(stockMove);
 
     // clear all lists from planned lines
-    manufOrder
-        .getConsumedStockMoveLineList()
+    ListUtils.emptyIfNull(manufOrder.getConsumedStockMoveLineList())
         .removeIf(
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
@@ -625,12 +631,13 @@ public class ManufOrderStockMoveService {
     stockMove.clearStockMoveLineList();
 
     // create a new list
-    for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
+    for (ProdProduct prodProduct :
+        ListUtils.emptyIfNull(manufOrder.getToConsumeProdProductList())) {
       BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
       _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
 
       // Update consumed StockMoveLineList with created stock move lines
-      stockMove.getStockMoveLineList().stream()
+      ListUtils.emptyIfNull(stockMove.getStockMoveLineList()).stream()
           .filter(
               stockMoveLine1 -> !manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addConsumedStockMoveLineListItem);
@@ -656,8 +663,7 @@ public class ManufOrderStockMoveService {
     stockMoveService.cancel(stockMove);
 
     // clear all lists
-    manufOrder
-        .getProducedStockMoveLineList()
+    ListUtils.emptyIfNull(manufOrder.getProducedStockMoveLineList())
         .removeIf(
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
@@ -665,7 +671,8 @@ public class ManufOrderStockMoveService {
     stockMove.clearStockMoveLineList();
 
     // create a new list
-    for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
+    for (ProdProduct prodProduct :
+        ListUtils.emptyIfNull(manufOrder.getToProduceProdProductList())) {
       BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
       BigDecimal productCostPrice =
           prodProduct.getProduct() != null
@@ -677,7 +684,7 @@ public class ManufOrderStockMoveService {
           prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS, qty, productCostPrice);
 
       // Update produced StockMoveLineList with created stock move lines
-      stockMove.getStockMoveLineList().stream()
+      ListUtils.emptyIfNull(stockMove.getStockMoveLineList()).stream()
           .filter(
               stockMoveLine1 -> !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addProducedStockMoveLineListItem);

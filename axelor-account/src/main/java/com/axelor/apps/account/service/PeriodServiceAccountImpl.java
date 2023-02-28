@@ -128,9 +128,12 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       if (period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED) {
         AccountConfig accountConfig =
             accountConfigService.getAccountConfig(period.getYear().getCompany());
-        for (Role role : accountConfig.getMoveOnTempClosureAuthorizedRoleList()) {
-          if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
-            return true;
+        if (accountConfig != null
+            && CollectionUtils.isNotEmpty(accountConfig.getMoveOnTempClosureAuthorizedRoleList())) {
+          for (Role role : accountConfig.getMoveOnTempClosureAuthorizedRoleList()) {
+            if (user.getGroup().getRoles().contains(role) || user.getRoles().contains(role)) {
+              return true;
+            }
           }
         }
         return false;

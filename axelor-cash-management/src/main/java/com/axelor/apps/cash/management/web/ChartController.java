@@ -45,7 +45,9 @@ public class ChartController {
       }
       List<Map<String, Object>> dataList =
           Beans.get(CashManagementChartService.class).getCashBalanceData(user, bankDetails);
-      response.setData(dataList);
+      if (dataList != null) {
+        response.setData(dataList);
+      }
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

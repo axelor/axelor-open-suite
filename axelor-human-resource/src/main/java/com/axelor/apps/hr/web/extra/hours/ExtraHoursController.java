@@ -46,6 +46,7 @@ import com.google.inject.Singleton;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections4.CollectionUtils;
 
 @Singleton
 public class ExtraHoursController {
@@ -59,7 +60,7 @@ public class ExtraHoursController {
                 AuthUtils.getUser().getId(),
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
-    if (extraHoursList.isEmpty()) {
+    if (CollectionUtils.isEmpty(extraHoursList)) {
       response.setView(
           ActionView.define(I18n.get("Extra Hours"))
               .model(ExtraHours.class.getName())

@@ -65,7 +65,9 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 
     Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
     BillOfMaterial billOfMaterial =
-        billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue());
+        bomContext != null
+            ? billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue())
+            : null;
 
     BigDecimal qty = new BigDecimal((String) context.get("qty"));
 
@@ -73,9 +75,12 @@ public class ProductionOrderWizardServiceImpl implements ProductionOrderWizardSe
 
     if (context.get("product") != null) {
       Map<String, Object> productContext = (Map<String, Object>) context.get("product");
-      product = productRepo.find(((Integer) productContext.get("id")).longValue());
+      product =
+          productContext != null
+              ? productRepo.find(((Integer) productContext.get("id")).longValue())
+              : null;
     } else {
-      product = billOfMaterial.getProduct();
+      product = billOfMaterial != null ? billOfMaterial.getProduct() : null;
     }
 
     ZonedDateTime startDateT;

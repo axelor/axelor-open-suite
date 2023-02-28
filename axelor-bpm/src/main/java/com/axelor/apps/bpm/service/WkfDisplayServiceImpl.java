@@ -25,6 +25,8 @@ import com.axelor.apps.bpm.db.repo.WkfInstanceRepository;
 import com.axelor.apps.bpm.db.repo.WkfTaskConfigRepository;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
 import com.axelor.apps.bpm.service.init.ProcessEngineService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -42,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.camunda.bpm.engine.ActivityTypes;
 import org.camunda.bpm.engine.HistoryService;
 import org.camunda.bpm.engine.ProcessEngine;
@@ -100,13 +103,14 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
         HistoricVariableInstance variableInstance =
             variableQuery.variableName(process.getId()).singleResult();
         if (variableInstance != null) {
-          activeIds.addAll(getActivityIds((String) variableInstance.getValue()));
+          ListUtils.emptyIfNull(activeIds)
+              .addAll(getActivityIds((String) variableInstance.getValue()));
           getActivityPassCount((String) variableInstance.getValue(), activityCountMap);
         }
       }
 
       String activityCount =
-          activityCountMap.keySet().stream()
+          SetUtils.emptyIfNull(activityCountMap.keySet()).stream()
               .map(it -> it + ":" + activityCountMap.get(it))
               .collect(Collectors.joining(","));
 
@@ -116,7 +120,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
           String.format(
               engineService.getWkfViewerUrl(),
               "instanceId=" + wkfInstance.getInstanceId(),
-              Joiner.on(",").join(activeIds),
+              Joiner.on(",").join(ListUtils.emptyIfNull(activeIds)),
               activityCount);
 
       log.debug("Url created: {}", url);
@@ -138,7 +142,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
 
     List<String> activityIds = new ArrayList<>();
 
-    for (HistoricProcessInstance instance : query.list()) {
+    for (HistoricProcessInstance instance : ListUtils.emptyIfNull(query.list())) {
       activityIds.add(instance.getEndActivityId());
     }
 
@@ -152,7 +156,8 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
     List<String> activityIds = getTerminatedActivityIds(instanceId);
 
     if (wkfInstanceService.isActiveProcessInstance(instanceId, runtimeService)) {
-      activityIds.addAll(runtimeService.getActiveActivityIds(instanceId));
+      ListUtils.emptyIfNull(activityIds)
+          .addAll(ListUtils.emptyIfNull(runtimeService.getActiveActivityIds(instanceId)));
     }
 
     return activityIds;
@@ -167,6 +172,10 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
 
     List<HistoricActivityInstance> activityInstances =
         historyService.createHistoricActivityInstanceQuery().processInstanceId(instanceId).list();
+
+    if (CollectionUtils.isEmpty(activityInstances)) {
+      return;
+    }
 
     Set<String> multiInstanceIds = new HashSet<>();
     for (HistoricActivityInstance historicActivityInstance : activityInstances) {
@@ -205,14 +214,14 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
               .filter("self.wkfProcess.wkfModel.id = ?1", wkfModel.getId())
               .fetch();
 
-      log.trace("Total process instances: {}", instances.size());
-      for (WkfInstance instance : instances) {
+      log.trace("Total process instances: {}", ListUtils.size(instances));
+      for (WkfInstance instance : ListUtils.emptyIfNull(instances)) {
         getActivityPassCount(instance.getInstanceId(), activityCountMap);
       }
 
       log.trace("Count map: {}", activityCountMap);
       String activityCount =
-          activityCountMap.keySet().stream()
+          SetUtils.emptyIfNull(activityCountMap.keySet()).stream()
               .map(it -> it + ":" + activityCountMap.get(it))
               .collect(Collectors.joining(","));
 
@@ -319,7 +328,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
     if (activeNodes.isEmpty()) {
 
       List<String> terminatedNodeIds = getTerminatedActivityIds(wkfInstance.getInstanceId());
-      if (!terminatedNodeIds.isEmpty()) {
+      if (CollectionUtils.isNotEmpty(terminatedNodeIds)) {
         activeNodes =
             historyService
                 .createHistoricActivityInstanceQuery()
@@ -331,7 +340,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
 
     User activeUser = AuthUtils.getUser();
 
-    for (HistoricActivityInstance node : activeNodes) {
+    for (HistoricActivityInstance node : ListUtils.emptyIfNull(activeNodes)) {
       boolean valid = isValidNode(node.getActivityId(), wkfInstance.getWkfProcess(), klassName);
       if (!valid) {
         continue;
@@ -362,6 +371,9 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
         if (config != null) {
           statusMap.put("help", config.getHelpText());
         }
+      }
+      if (statusList == null) {
+        statusList = new ArrayList<>();
       }
       statusList.add(statusMap);
     }

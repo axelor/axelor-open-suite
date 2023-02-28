@@ -77,6 +77,7 @@ import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -202,7 +203,9 @@ public class ExpenseServiceImpl implements ExpenseService {
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
             date);
 
-    expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
+    if (analyticMoveLineList != null) {
+      expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
     return expenseLine;
   }
 
@@ -421,37 +424,41 @@ public class ExpenseServiceImpl implements ExpenseService {
             expense.getFullName()));
 
     List<ExpenseLine> expenseLineList = getExpenseLineList(expense);
-    for (ExpenseLine expenseLine : expenseLineList) {
-      moveLines.add(
-          generateMoveLine(expense, company, partner, expenseLine, move, moveLineCounter));
-      moveLineCounter++;
+    if (CollectionUtils.isNotEmpty(expenseLineList)) {
+      for (ExpenseLine expenseLine : expenseLineList) {
+        moveLines.add(
+            generateMoveLine(expense, company, partner, expenseLine, move, moveLineCounter));
+        moveLineCounter++;
+      }
+
+      moveLineConsolidateService.consolidateMoveLines(moveLines);
+      Account productAccount = accountConfigService.getExpenseTaxAccount(accountConfig);
+
+      BigDecimal taxTotal =
+          expenseLineList.stream()
+              .map(ExpenseLine::getTotalTax)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+
+      if (taxTotal.signum() != 0) {
+        MoveLine moveLine =
+            moveLineCreateService.createMoveLine(
+                move,
+                partner,
+                productAccount,
+                taxTotal,
+                true,
+                moveDate,
+                moveDate,
+                moveLineCounter,
+                expense.getExpenseSeq(),
+                expense.getFullName());
+        moveLines.add(moveLine);
+      }
     }
-
-    moveLineConsolidateService.consolidateMoveLines(moveLines);
-    Account productAccount = accountConfigService.getExpenseTaxAccount(accountConfig);
-
-    BigDecimal taxTotal =
-        expenseLineList.stream()
-            .map(ExpenseLine::getTotalTax)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-
-    if (taxTotal.signum() != 0) {
-      MoveLine moveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              partner,
-              productAccount,
-              taxTotal,
-              true,
-              moveDate,
-              moveDate,
-              moveLineCounter,
-              expense.getExpenseSeq(),
-              expense.getFullName());
-      moveLines.add(moveLine);
+    if (move.getMoveLineList() == null) {
+      move.setMoveLineList(new ArrayList<>());
     }
-
     move.getMoveLineList().addAll(moveLines);
 
     moveValidateService.accounting(move);
@@ -516,8 +523,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             ? new ArrayList<>()
             : new ArrayList<>(moveLine.getAnalyticMoveLineList());
     moveLine.clearAnalyticMoveLineList();
-    expenseLine
-        .getAnalyticMoveLineList()
+    ListUtils.emptyIfNull(expenseLine.getAnalyticMoveLineList())
         .forEach(
             analyticMoveLine ->
                 moveLine.addAnalyticMoveLineListItem(
@@ -693,9 +699,12 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   protected MoveLine getExpenseEmployeeMoveLineByLoop(Expense expense) {
     MoveLine expenseEmployeeMoveLine = null;
-    for (MoveLine moveline : expense.getMove().getMoveLineList()) {
-      if (moveline.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-        expenseEmployeeMoveLine = moveline;
+    List<MoveLine> moveLineList = expense.getMove().getMoveLineList();
+    if (moveLineList != null) {
+      for (MoveLine moveline : moveLineList) {
+        if (moveline.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+          expenseEmployeeMoveLine = moveline;
+        }
       }
     }
     return expenseEmployeeMoveLine;
@@ -758,11 +767,14 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     int count = 0;
-    for (ExpenseLine expenseLine : expenseLineList) {
+    if (CollectionUtils.isNotEmpty(expenseLineList)) {
+      for (ExpenseLine expenseLine : expenseLineList) {
 
-      invoiceLineList.addAll(this.createInvoiceLine(invoice, expenseLine, priority * 100 + count));
-      count++;
-      expenseLine.setInvoiced(true);
+        invoiceLineList.addAll(
+            this.createInvoiceLine(invoice, expenseLine, priority * 100 + count));
+        count++;
+        expenseLine.setInvoiced(true);
+      }
     }
 
     return invoiceLineList;
@@ -891,7 +903,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     BigDecimal personalExpenseAmount = new BigDecimal("0.00");
 
-    for (ExpenseLine expenseLine : getExpenseLineList(expense)) {
+    for (ExpenseLine expenseLine : ListUtils.emptyIfNull(getExpenseLineList(expense))) {
       if (expenseLine.getExpenseProduct() != null
           && expenseLine.getExpenseProduct().getPersonalExpense()) {
         personalExpenseAmount = personalExpenseAmount.add(expenseLine.getTotalAmount());
@@ -975,19 +987,21 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     List<EmployeeVehicle> vehicleList = expense.getEmployee().getEmployeeVehicleList();
 
-    for (EmployeeVehicle vehicle : vehicleList) {
-      LocalDate startDate = vehicle.getStartDate();
-      LocalDate endDate = vehicle.getEndDate();
-      if (startDate == null) {
-        if (endDate == null || expenseDate.compareTo(endDate) <= 0) {
+    if (CollectionUtils.isNotEmpty(vehicleList)) {
+      for (EmployeeVehicle vehicle : vehicleList) {
+        LocalDate startDate = vehicle.getStartDate();
+        LocalDate endDate = vehicle.getEndDate();
+        if (startDate == null) {
+          if (endDate == null || expenseDate.compareTo(endDate) <= 0) {
+            kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+          }
+        } else if (endDate == null) {
+          if (expenseDate.compareTo(startDate) >= 0) {
+            kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+          }
+        } else if (expenseDate.compareTo(startDate) >= 0 && expenseDate.compareTo(endDate) <= 0) {
           kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
         }
-      } else if (endDate == null) {
-        if (expenseDate.compareTo(startDate) >= 0) {
-          kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
-        }
-      } else if (expenseDate.compareTo(startDate) >= 0 && expenseDate.compareTo(endDate) <= 0) {
-        kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
       }
     }
     return kilometricAllowParamList;
@@ -1020,18 +1034,20 @@ public class ExpenseServiceImpl implements ExpenseService {
           I18n.get(HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_NO_DATE_SELECTED));
     }
 
-    for (EmployeeVehicle vehicle : vehicleList) {
-      if (vehicle.getKilometricAllowParam() == null) {
-        break;
-      }
-      LocalDate startDate = vehicle.getStartDate();
-      LocalDate endDate = vehicle.getEndDate();
-      if ((startDate == null && (endDate == null || expenseDate.compareTo(endDate) <= 0))
-          || (endDate == null
-              && (expenseDate.compareTo(startDate) >= 0
-                  || (expenseDate.compareTo(startDate) >= 0
-                      && expenseDate.compareTo(endDate) <= 0)))) {
-        kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+    if (CollectionUtils.isNotEmpty(vehicleList)) {
+      for (EmployeeVehicle vehicle : vehicleList) {
+        if (vehicle.getKilometricAllowParam() == null) {
+          break;
+        }
+        LocalDate startDate = vehicle.getStartDate();
+        LocalDate endDate = vehicle.getEndDate();
+        if ((startDate == null && (endDate == null || expenseDate.compareTo(endDate) <= 0))
+            || (endDate == null
+                && (expenseDate.compareTo(startDate) >= 0
+                    || (expenseDate.compareTo(startDate) >= 0
+                        && expenseDate.compareTo(endDate) <= 0)))) {
+          kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
+        }
       }
     }
     return kilometricAllowParamList;
@@ -1062,11 +1078,15 @@ public class ExpenseServiceImpl implements ExpenseService {
     List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
 
     // removing expense from one O2M also remove the link
-    for (ExpenseLine expenseLine : expenseLineList) {
-      if (!kilometricExpenseLineList.contains(expenseLine)
-          && !generalExpenseLineList.contains(expenseLine)) {
-        expenseLine.setExpense(null);
-        expenseLineRepository.remove(expenseLine);
+    if (CollectionUtils.isNotEmpty(expenseLineList)) {
+      for (ExpenseLine expenseLine : expenseLineList) {
+        if (kilometricExpenseLineList != null
+            && !kilometricExpenseLineList.contains(expenseLine)
+            && generalExpenseLineList != null
+            && !generalExpenseLineList.contains(expenseLine)) {
+          expenseLine.setExpense(null);
+          expenseLineRepository.remove(expenseLine);
+        }
       }
     }
 
@@ -1104,7 +1124,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       expenseLines.addAll(expense.getKilometricExpenseLineList());
     }
     expense.setMoveDate(
-        expenseLines.stream()
+        ListUtils.emptyIfNull(expenseLines).stream()
             .map(ExpenseLine::getExpenseDate)
             .filter(Objects::nonNull)
             .max(LocalDate::compareTo)

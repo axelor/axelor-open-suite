@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.google.common.base.Joiner;
@@ -78,13 +79,17 @@ public class QueryBuilder<T extends Model> {
    */
   public Query<T> build() {
     String filter =
-        Joiner.on(" AND ").join(Lists.transform(filterList, input -> String.format("(%s)", input)));
+        Joiner.on(" AND ")
+            .join(
+                Lists.transform(
+                    ListUtils.emptyIfNull(filterList), input -> String.format("(%s)", input)));
     Query<T> query = Query.of(modelClass).filter(filter);
 
-    for (Entry<String, Object> entry : bindingMap.entrySet()) {
-      query.bind(entry.getKey(), entry.getValue());
+    if (bindingMap != null) {
+      for (Entry<String, Object> entry : bindingMap.entrySet()) {
+        query.bind(entry.getKey(), entry.getValue());
+      }
     }
-
     return query;
   }
 }

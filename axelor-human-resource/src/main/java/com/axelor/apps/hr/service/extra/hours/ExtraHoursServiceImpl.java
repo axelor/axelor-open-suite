@@ -157,8 +157,10 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
     BigDecimal totalQty = BigDecimal.ZERO;
     List<ExtraHoursLine> extraHoursLines = extraHours.getExtraHoursLineList();
 
-    for (ExtraHoursLine extraHoursLine : extraHoursLines) {
-      totalQty = totalQty.add(extraHoursLine.getQty());
+    if (extraHoursLines != null) {
+      for (ExtraHoursLine extraHoursLine : extraHoursLines) {
+        totalQty = totalQty.add(extraHoursLine.getQty());
+      }
     }
 
     extraHours.setTotalQty(totalQty);

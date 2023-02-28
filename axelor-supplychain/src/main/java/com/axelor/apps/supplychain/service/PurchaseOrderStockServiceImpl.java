@@ -67,6 +67,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +133,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     Map<LocalDate, List<PurchaseOrderLine>> purchaseOrderLinePerDateMap =
         getAllPurchaseOrderLinePerDate(purchaseOrder);
+
+    if (purchaseOrderLinePerDateMap == null) {
+
+      return new ArrayList<>();
+    }
 
     for (LocalDate estimatedDeliveryDate :
         purchaseOrderLinePerDateMap.keySet().stream()
@@ -261,12 +267,14 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .plusDays(supplychainConfig.getNumberOfDaysForPurchaseOrder().longValue()));
     }
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-      BigDecimal qty =
-          purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
+    if (CollectionUtils.isNotEmpty(purchaseOrderLineList)) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        BigDecimal qty =
+            purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
 
-      if (qty.signum() > 0 && !existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
-        this.createStockMoveLine(stockMove, qualityStockMove, purchaseOrderLine, qty);
+        if (qty.signum() > 0 && !existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
+          this.createStockMoveLine(stockMove, qualityStockMove, purchaseOrderLine, qty);
+        }
       }
     }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
@@ -315,27 +323,32 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     Map<LocalDate, List<PurchaseOrderLine>> purchaseOrderLinePerDateMap = new HashMap<>();
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+    if (purchaseOrder != null
+        && CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 
-      if (purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine).signum()
-          <= 0) {
-        continue;
+        if (purchaseOrderLineServiceSupplychainImpl
+                .computeUndeliveredQty(purchaseOrderLine)
+                .signum()
+            <= 0) {
+          continue;
+        }
+
+        LocalDate dateKey = purchaseOrderLine.getEstimatedReceiptDate();
+
+        if (dateKey == null) {
+          dateKey = purchaseOrderLine.getPurchaseOrder().getEstimatedReceiptDate();
+        }
+
+        List<PurchaseOrderLine> purchaseOrderLineLists = purchaseOrderLinePerDateMap.get(dateKey);
+
+        if (purchaseOrderLineLists == null) {
+          purchaseOrderLineLists = new ArrayList<>();
+          purchaseOrderLinePerDateMap.put(dateKey, purchaseOrderLineLists);
+        }
+
+        purchaseOrderLineLists.add(purchaseOrderLine);
       }
-
-      LocalDate dateKey = purchaseOrderLine.getEstimatedReceiptDate();
-
-      if (dateKey == null) {
-        dateKey = purchaseOrderLine.getPurchaseOrder().getEstimatedReceiptDate();
-      }
-
-      List<PurchaseOrderLine> purchaseOrderLineLists = purchaseOrderLinePerDateMap.get(dateKey);
-
-      if (purchaseOrderLineLists == null) {
-        purchaseOrderLineLists = new ArrayList<>();
-        purchaseOrderLinePerDateMap.put(dateKey, purchaseOrderLineLists);
-      }
-
-      purchaseOrderLineLists.add(purchaseOrderLine);
     }
 
     return purchaseOrderLinePerDateMap;
@@ -487,9 +500,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
                 purchaseOrder.getId())
             .fetch();
 
-    for (StockMove stockMove : stockMoveList) {
+    if (CollectionUtils.isNotEmpty(stockMoveList)) {
+      for (StockMove stockMove : stockMoveList) {
 
-      stockMoveService.cancel(stockMove);
+        stockMoveService.cancel(stockMove);
+      }
     }
   }
 

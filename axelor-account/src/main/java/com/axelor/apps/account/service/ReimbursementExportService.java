@@ -42,6 +42,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -52,6 +53,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,17 +104,19 @@ public class ReimbursementExportService {
       Reimbursement reimbursement, List<MoveLine> moveLineList, BigDecimal total) {
 
     log.debug("In fillMoveLineSet");
-    log.debug("Number of overpayment(s) found: {}", moveLineList.size());
+    log.debug("Number of overpayment(s) found: {}", ListUtils.size(moveLineList));
 
-    for (MoveLine moveLine : moveLineList) {
-      // On passe les lignes d'écriture (trop perçu) à l'état 'en cours de remboursement'
-      moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_REIMBURSING);
+    if (CollectionUtils.isNotEmpty(moveLineList)) {
+      for (MoveLine moveLine : moveLineList) {
+        // On passe les lignes d'écriture (trop perçu) à l'état 'en cours de remboursement'
+        moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_REIMBURSING);
+      }
+
+      reimbursement.setMoveLineSet(new HashSet<MoveLine>());
+      reimbursement.getMoveLineSet().addAll(moveLineList);
+
+      log.debug("End fillMoveLineSet");
     }
-
-    reimbursement.setMoveLineSet(new HashSet<MoveLine>());
-    reimbursement.getMoveLineSet().addAll(moveLineList);
-
-    log.debug("End fillMoveLineSet");
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -143,7 +147,6 @@ public class ReimbursementExportService {
       reimbursement = reimbursementRepo.save(reimbursement);
       return reimbursement;
     }
-
     log.debug("End runReimbursementProcess");
     return null;
   }
@@ -156,10 +159,11 @@ public class ReimbursementExportService {
    */
   public BigDecimal getTotalAmountRemaining(List<MoveLine> moveLineList) {
     BigDecimal total = BigDecimal.ZERO;
-    for (MoveLine moveLine : moveLineList) {
-      total = total.add(moveLine.getAmountRemaining());
+    if (moveLineList != null) {
+      for (MoveLine moveLine : moveLineList) {
+        total = total.add(moveLine.getAmountRemaining());
+      }
     }
-
     log.debug("Total Amount Remaining : {}", total);
 
     return total;
@@ -219,7 +223,7 @@ public class ReimbursementExportService {
                   seq,
                   reimbursement.getRef(),
                   reimbursement.getDescription());
-          newMove.getMoveLineList().add(newDebitMoveLine);
+          newMove.addMoveLineListItem(newDebitMoveLine);
           if (reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty()) {
             newDebitMoveLine.setDescription(reimbursement.getDescription());
           }
@@ -246,8 +250,7 @@ public class ReimbursementExportService {
               seq,
               reimbursement.getRef(),
               reimbursement.getDescription());
-
-      newMove.getMoveLineList().add(newCreditMoveLine);
+      newMove.addMoveLineListItem(newCreditMoveLine);
       if (reimbursement.getDescription() != null && !reimbursement.getDescription().isEmpty()) {
         newCreditMoveLine.setDescription(reimbursement.getDescription());
       }
@@ -520,6 +523,9 @@ public class ReimbursementExportService {
       Partner partner, Company company, List<? extends MoveLine> moveLineList)
       throws AxelorException {
 
+    if (moveLineList == null) {
+      return;
+    }
     BigDecimal total = this.getTotalAmountRemaining((List<MoveLine>) moveLineList);
 
     if (total.compareTo(BigDecimal.ZERO) > 0) {
@@ -566,7 +572,6 @@ public class ReimbursementExportService {
                 partner,
                 MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
             .fetch();
-
     this.createReimbursementInvoice(partner, company, moveLineList);
   }
 }

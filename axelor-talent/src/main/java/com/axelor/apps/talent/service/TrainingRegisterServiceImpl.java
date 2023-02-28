@@ -39,6 +39,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -100,6 +101,9 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
     if (CollectionUtils.isNotEmpty(skills)) {
 
       Employee employee = trainingRegister.getEmployee();
+      if (employee.getSkillSet() == null) {
+        employee.setSkillSet(new HashSet<>());
+      }
       employee.getSkillSet().addAll(skills);
 
       skills.forEach(
@@ -139,20 +143,21 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 
     List<TrainingRegister> trainingTrs = trainingRegisterRepo.all().filter(query, training).fetch();
 
-    long totalTrainingsRating =
-        trainingTrs.stream().mapToLong(tr -> tr.getRating().longValue()).sum();
-    int totalTrainingSize = trainingTrs.size();
+    if (CollectionUtils.isNotEmpty(trainingTrs)) {
+      long totalTrainingsRating =
+          trainingTrs.stream().mapToLong(tr -> tr.getRating().longValue()).sum();
+      int totalTrainingSize = trainingTrs.size();
 
-    log.debug("Training: {}", training.getName());
-    log.debug("Total trainings TR: {}", totalTrainingSize);
-    log.debug("Total ratings:: training: {}", totalTrainingsRating);
+      log.debug("Training: {}", training.getName());
+      log.debug("Total trainings TR: {}", totalTrainingSize);
+      log.debug("Total ratings:: training: {}", totalTrainingsRating);
 
-    double avgRating = totalTrainingSize == 0 ? 0 : totalTrainingsRating / totalTrainingSize;
+      double avgRating = totalTrainingSize == 0 ? 0 : totalTrainingsRating / totalTrainingSize;
 
-    log.debug("Avg training rating : {}", avgRating);
+      log.debug("Avg training rating : {}", avgRating);
 
-    training.setRating(BigDecimal.valueOf(avgRating));
-
+      training.setRating(BigDecimal.valueOf(avgRating));
+    }
     return trainingRepo.save(training);
   }
 
@@ -167,17 +172,18 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 
     List<TrainingRegister> sessionTrs = trainingRegisterRepo.all().filter(query, session).fetch();
 
-    long totalSessionsRating =
-        sessionTrs.stream().mapToLong(tr -> tr.getRating().longValue()).sum();
-    int totalSessionSize = sessionTrs.size();
+    if (CollectionUtils.isNotEmpty(sessionTrs)) {
+      long totalSessionsRating =
+          sessionTrs.stream().mapToLong(tr -> tr.getRating().longValue()).sum();
+      int totalSessionSize = sessionTrs.size();
 
-    double avgRating = totalSessionSize == 0 ? 0 : totalSessionsRating / totalSessionSize;
+      double avgRating = totalSessionSize == 0 ? 0 : totalSessionsRating / totalSessionSize;
 
-    log.debug("Avg session rating : {}", avgRating);
+      log.debug("Avg session rating : {}", avgRating);
 
-    session.setRating(BigDecimal.valueOf(avgRating));
-    session.setNbrRegistered(totalSessionSize);
-
+      session.setRating(BigDecimal.valueOf(avgRating));
+      session.setNbrRegistered(totalSessionSize);
+    }
     return trainingSessionRepo.save(session);
   }
 
@@ -231,31 +237,33 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 
     List<Long> eventsIds = new ArrayList<>();
 
-    for (LinkedHashMap<String, Object> employeeMap : employeeList) {
+    if (CollectionUtils.isNotEmpty(employeeList)) {
+      for (LinkedHashMap<String, Object> employeeMap : employeeList) {
 
-      Employee employee =
-          Beans.get(EmployeeRepository.class)
-              .find(Long.parseLong(employeeMap.get("id").toString()));
+        Employee employee =
+            Beans.get(EmployeeRepository.class)
+                .find(Long.parseLong(employeeMap.get("id").toString()));
 
-      if (employee.getUser() == null) {
-        continue;
+        if (employee.getUser() == null) {
+          continue;
+        }
+
+        TrainingRegister trainingRegister = new TrainingRegister();
+        trainingRegister.setTraining(trainingSession.getTraining());
+        trainingRegister.setFromDate(trainingSession.getFromDate());
+        trainingRegister.setToDate(trainingSession.getToDate());
+        trainingRegister.setTrainingSession(trainingSession);
+        trainingRegister.setEmployee(employee);
+        trainingRegister.setRating(trainingSession.getOverallRatingToApply());
+
+        Event event = this.plan(trainingRegister);
+
+        trainingRegister.addEventListItem(event);
+
+        eventsIds.add(event.getId());
+
+        trainingSession.addTrainingRegisterListItem(trainingRegister);
       }
-
-      TrainingRegister trainingRegister = new TrainingRegister();
-      trainingRegister.setTraining(trainingSession.getTraining());
-      trainingRegister.setFromDate(trainingSession.getFromDate());
-      trainingRegister.setToDate(trainingSession.getToDate());
-      trainingRegister.setTrainingSession(trainingSession);
-      trainingRegister.setEmployee(employee);
-      trainingRegister.setRating(trainingSession.getOverallRatingToApply());
-
-      Event event = this.plan(trainingRegister);
-
-      trainingRegister.getEventList().add(event);
-
-      eventsIds.add(event.getId());
-
-      trainingSession.getTrainingRegisterList().add(trainingRegister);
     }
 
     trainingSessionRepo.save(trainingSession);

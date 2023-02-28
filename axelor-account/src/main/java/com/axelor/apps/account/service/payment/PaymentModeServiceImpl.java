@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -122,7 +123,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       Journal journal,
       BankDetails defaultBankDetails) {
     List<AccountManagement> accountManagementFiltered =
-        accountManagementList.stream()
+        ListUtils.emptyIfNull(accountManagementList).stream()
             .filter(
                 accountManagement ->
                     company.equals(accountManagement.getCompany())
@@ -130,7 +131,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
             .sorted(Comparator.comparing(AccountManagement::getId))
             .collect(Collectors.toList());
     Optional<Account> accountOpt = Optional.empty();
-    if (defaultBankDetails != null) {
+    if (defaultBankDetails != null && accountManagementFiltered != null) {
       accountOpt =
           accountManagementFiltered.stream()
               .filter(
@@ -141,7 +142,9 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     }
     if (!accountOpt.isPresent()) {
       accountOpt =
-          accountManagementFiltered.stream().map(AccountManagement::getCashAccount).findFirst();
+          ListUtils.emptyIfNull(accountManagementFiltered).stream()
+              .map(AccountManagement::getCashAccount)
+              .findFirst();
     }
     return accountOpt;
   }

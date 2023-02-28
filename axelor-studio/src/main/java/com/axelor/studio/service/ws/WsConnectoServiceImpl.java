@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.ws;
 
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -53,6 +54,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -101,6 +103,10 @@ public class WsConnectoServiceImpl implements WsConnectorService {
     String lastRepeatIf = null;
     int repeatRequestCount = 0;
     int count = 1;
+
+    if (wsConnector.getWsRequestList() == null) {
+      return new HashMap<>();
+    }
 
     while (count < wsConnector.getWsRequestList().size() + 1) {
 
@@ -197,26 +203,28 @@ public class WsConnectoServiceImpl implements WsConnectorService {
     url = UrlEscapers.urlFragmentEscaper().escape(url);
 
     MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
-    for (WsKeyValue wsKeyValue : wsRequest.getHeaderWsKeyValueList()) {
-      if (wsKeyValue.getSubWsKeyValueList() != null
-          && !wsKeyValue.getSubWsKeyValueList().isEmpty()) {
-        Map<String, Object> subHeaders = new HashMap<>();
-        for (WsKeyValue key : wsKeyValue.getSubWsKeyValueList()) {
-          subHeaders.put(key.getWsKey(), templates.fromText(key.getWsValue()).make(ctx).render());
-        }
-        headers.add(wsKeyValue.getWsKey(), subHeaders);
-      } else {
-        String value = wsKeyValue.getWsValue();
-        if (!Strings.isNullOrEmpty(value)) {
-          value = templates.fromText(wsKeyValue.getWsValue()).make(ctx).render();
-          if (!StringUtils.isBlank(value)
-              && value.startsWith("Basic")
-              && wsKeyValue.getWsKey().equals("Authorization")) {
-            headers.add(
-                wsKeyValue.getWsKey(),
-                "Basic " + new String(Base64.encodeBase64(value.getBytes())));
-          } else {
-            headers.add(wsKeyValue.getWsKey(), value);
+    if (wsRequest != null && CollectionUtils.isNotEmpty(wsRequest.getHeaderWsKeyValueList())) {
+      for (WsKeyValue wsKeyValue : wsRequest.getHeaderWsKeyValueList()) {
+        if (wsKeyValue.getSubWsKeyValueList() != null
+            && !wsKeyValue.getSubWsKeyValueList().isEmpty()) {
+          Map<String, Object> subHeaders = new HashMap<>();
+          for (WsKeyValue key : wsKeyValue.getSubWsKeyValueList()) {
+            subHeaders.put(key.getWsKey(), templates.fromText(key.getWsValue()).make(ctx).render());
+          }
+          headers.add(wsKeyValue.getWsKey(), subHeaders);
+        } else {
+          String value = wsKeyValue.getWsValue();
+          if (!Strings.isNullOrEmpty(value)) {
+            value = templates.fromText(wsKeyValue.getWsValue()).make(ctx).render();
+            if (!StringUtils.isBlank(value)
+                && value.startsWith("Basic")
+                && wsKeyValue.getWsKey().equals("Authorization")) {
+              headers.add(
+                  wsKeyValue.getWsKey(),
+                  "Basic " + new String(Base64.encodeBase64(value.getBytes())));
+            } else {
+              headers.add(wsKeyValue.getWsKey(), value);
+            }
           }
         }
       }
@@ -227,25 +235,26 @@ public class WsConnectoServiceImpl implements WsConnectorService {
     if (requestType.equals("GET") || requestType.equals("DELETE")) {
       try {
         URIBuilder uriBuilder = new URIBuilder(url);
-
-        for (WsKeyValue wsKeyValue : wsRequest.getPayLoadWsKeyValueList()) {
-          String value = wsKeyValue.getWsValue();
-          if (value != null) {
-            if (value.startsWith("_encode:")) {
-              value = value.split("_encode:")[1];
-              uriBuilder.addParameter(
-                  wsKeyValue.getWsKey(),
-                  new String(
-                      Base64.encodeBase64(
-                          templates
-                              .fromText(wsKeyValue.getWsValue())
-                              .make(ctx)
-                              .render()
-                              .getBytes())));
-            } else {
-              uriBuilder.addParameter(
-                  wsKeyValue.getWsKey(),
-                  templates.fromText(wsKeyValue.getWsValue()).make(ctx).render());
+        if (wsRequest != null && CollectionUtils.isNotEmpty(wsRequest.getPayLoadWsKeyValueList())) {
+          for (WsKeyValue wsKeyValue : wsRequest.getPayLoadWsKeyValueList()) {
+            String value = wsKeyValue.getWsValue();
+            if (value != null) {
+              if (value.startsWith("_encode:")) {
+                value = value.split("_encode:")[1];
+                uriBuilder.addParameter(
+                    wsKeyValue.getWsKey(),
+                    new String(
+                        Base64.encodeBase64(
+                            templates
+                                .fromText(wsKeyValue.getWsValue())
+                                .make(ctx)
+                                .render()
+                                .getBytes())));
+              } else {
+                uriBuilder.addParameter(
+                    wsKeyValue.getWsKey(),
+                    templates.fromText(wsKeyValue.getWsValue()).make(ctx).render());
+              }
             }
           }
         }
@@ -368,8 +377,10 @@ public class WsConnectoServiceImpl implements WsConnectorService {
 
     Map<String, Object> payLoads = new HashMap<>();
 
-    for (WsKeyValue wsKeyValue : wsRequest.getPayLoadWsKeyValueList()) {
-      payLoads.put(wsKeyValue.getWsKey(), createJson(templates, ctx, wsKeyValue));
+    if (wsRequest != null && wsRequest.getPayLoadWsKeyValueList() != null) {
+      for (WsKeyValue wsKeyValue : wsRequest.getPayLoadWsKeyValueList()) {
+        payLoads.put(wsKeyValue.getWsKey(), createJson(templates, ctx, wsKeyValue));
+      }
     }
 
     return Entity.json(payLoads);
@@ -381,7 +392,7 @@ public class WsConnectoServiceImpl implements WsConnectorService {
     if (wsKeyValue.getWsValue() == null) {
       if (wsKeyValue.getIsList()) {
         List<Object> subPayLoad = new ArrayList<>();
-        for (WsKeyValue subKeyValue : wsKeyValue.getSubWsKeyValueList()) {
+        for (WsKeyValue subKeyValue : ListUtils.emptyIfNull(wsKeyValue.getSubWsKeyValueList())) {
           Map<String, Object> subMap = new HashMap<>();
           subMap.put(subKeyValue.getWsKey(), createJson(templates, ctx, subKeyValue));
           subPayLoad.add(subMap);
@@ -389,7 +400,7 @@ public class WsConnectoServiceImpl implements WsConnectorService {
         jsonVal = subPayLoad;
       } else {
         Map<String, Object> subPayLoad = new HashMap<>();
-        for (WsKeyValue subKeyValue : wsKeyValue.getSubWsKeyValueList()) {
+        for (WsKeyValue subKeyValue : ListUtils.emptyIfNull(wsKeyValue.getSubWsKeyValueList())) {
           subPayLoad.put(subKeyValue.getWsKey(), createJson(templates, ctx, subKeyValue));
         }
         jsonVal = subPayLoad;
@@ -419,7 +430,7 @@ public class WsConnectoServiceImpl implements WsConnectorService {
       WsRequest wsRequest, Templates templates, Map<String, Object> ctx) {
 
     MultivaluedHashMap<String, String> payLoads = new MultivaluedHashMap<>();
-    for (WsKeyValue wsKeyValue : wsRequest.getPayLoadWsKeyValueList()) {
+    for (WsKeyValue wsKeyValue : ListUtils.emptyIfNull(wsRequest.getPayLoadWsKeyValueList())) {
       payLoads.add(
           wsKeyValue.getWsKey(), templates.fromText(wsKeyValue.getWsValue()).make(ctx).render());
     }

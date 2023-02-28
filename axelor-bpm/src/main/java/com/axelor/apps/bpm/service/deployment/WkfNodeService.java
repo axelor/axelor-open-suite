@@ -64,16 +64,14 @@ public class WkfNodeService {
     activities.addAll(bpmInstance.getModelElementsByType(CatchEvent.class));
     activities.addAll(bpmInstance.getModelElementsByType(EndEvent.class));
 
-    if (activities != null) {
-      for (FlowNode activity : activities) {
-        WkfTaskConfig config = updateTaskConfig(wkfModel, configMap, metaAttrsList, activity);
-        Process process = findProcess(activity);
-        if (process != null) {
-          config.setProcessId(processMap.get(process.getId()));
-        }
-        updateMenus(config, false);
-        wkfModel.addWkfTaskConfigListItem(config);
+    for (FlowNode activity : activities) {
+      WkfTaskConfig config = updateTaskConfig(wkfModel, configMap, metaAttrsList, activity);
+      Process process = findProcess(activity);
+      if (process != null) {
+        config.setProcessId(processMap.get(process.getId()));
       }
+      updateMenus(config, false);
+      wkfModel.addWkfTaskConfigListItem(config);
     }
 
     for (String name : configMap.keySet()) {
@@ -106,7 +104,7 @@ public class WkfNodeService {
 
     WkfTaskConfig config;
 
-    if (configMap.containsKey(activity.getId())) {
+    if (configMap != null && configMap.containsKey(activity.getId())) {
       config = configMap.get(activity.getId());
       configMap.remove(activity.getId());
     } else {
@@ -135,7 +133,12 @@ public class WkfNodeService {
     }
 
     ExtensionElements extensionElements = activity.getExtensionElements();
-    if (extensionElements != null) {
+
+    if (metaAttrsList == null) {
+      metaAttrsList = new ArrayList<>();
+    }
+
+    if (extensionElements != null && extensionElements.getElements() != null) {
       for (ModelElementInstance modelElementInstance : extensionElements.getElements()) {
         metaAttrsList.addAll(
             metaAttrsService.createMetaAttrs(

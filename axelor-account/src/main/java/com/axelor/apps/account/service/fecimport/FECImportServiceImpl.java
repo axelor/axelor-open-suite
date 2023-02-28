@@ -103,8 +103,10 @@ public class FECImportServiceImpl implements FECImportService {
             .bind("status", status)
             .bind("fecImport", fecImport)
             .fetch();
-    for (ReconcileGroup reconcileGroup : reconcileGroups) {
-      letterReconcileGroup(reconcileGroup);
+    if (reconcileGroups != null) {
+      for (ReconcileGroup reconcileGroup : reconcileGroups) {
+        letterReconcileGroup(reconcileGroup);
+      }
     }
   }
 

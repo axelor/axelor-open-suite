@@ -29,6 +29,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -112,10 +113,11 @@ public class BatchTimesheetReminder extends BatchStrategy {
             .bind("companyId", batch.getHrBatch().getCompany().getId())
             .fetch();
 
-    employees.removeIf(
-        employee ->
-            hasRecentTimesheet(now, daysBeforeReminder, employee)
-                || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee));
+    ListUtils.emptyIfNull(employees)
+        .removeIf(
+            employee ->
+                hasRecentTimesheet(now, daysBeforeReminder, employee)
+                    || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee));
     return employees;
   }
 

@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,9 +72,11 @@ public class PurchaseOrderSupplierService {
   @Transactional(rollbackOn = {Exception.class})
   public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) throws AxelorException {
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+    if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 
-      this.generateSuppliersRequests(purchaseOrderLine);
+        this.generateSuppliersRequests(purchaseOrderLine);
+      }
     }
     poRepo.save(purchaseOrder);
   }
@@ -135,10 +138,14 @@ public class PurchaseOrderSupplierService {
     Map<Partner, List<PurchaseOrderLine>> purchaseOrderLinesBySupplierPartner =
         this.splitBySupplierPartner(purchaseOrder.getPurchaseOrderLineList());
 
-    for (Partner supplierPartner : purchaseOrderLinesBySupplierPartner.keySet()) {
+    if (purchaseOrderLinesBySupplierPartner != null) {
+      for (Partner supplierPartner : purchaseOrderLinesBySupplierPartner.keySet()) {
 
-      this.createPurchaseOrder(
-          supplierPartner, purchaseOrderLinesBySupplierPartner.get(supplierPartner), purchaseOrder);
+        this.createPurchaseOrder(
+            supplierPartner,
+            purchaseOrderLinesBySupplierPartner.get(supplierPartner),
+            purchaseOrder);
+      }
     }
 
     poRepo.save(purchaseOrder);
@@ -149,24 +156,26 @@ public class PurchaseOrderSupplierService {
 
     Map<Partner, List<PurchaseOrderLine>> purchaseOrderLinesBySupplierPartner = new HashMap<>();
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+    if (purchaseOrderLineList != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-      Partner supplierPartner = purchaseOrderLine.getSupplierPartner();
+        Partner supplierPartner = purchaseOrderLine.getSupplierPartner();
 
-      if (supplierPartner == null) {
-        throw new AxelorException(
-            purchaseOrderLine,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(SupplychainExceptionMessage.SO_PURCHASE_1),
-            purchaseOrderLine.getProductName());
+        if (supplierPartner == null) {
+          throw new AxelorException(
+              purchaseOrderLine,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(SupplychainExceptionMessage.SO_PURCHASE_1),
+              purchaseOrderLine.getProductName());
+        }
+
+        if (!purchaseOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
+          purchaseOrderLinesBySupplierPartner.put(
+              supplierPartner, new ArrayList<PurchaseOrderLine>());
+        }
+
+        purchaseOrderLinesBySupplierPartner.get(supplierPartner).add(purchaseOrderLine);
       }
-
-      if (!purchaseOrderLinesBySupplierPartner.containsKey(supplierPartner)) {
-        purchaseOrderLinesBySupplierPartner.put(
-            supplierPartner, new ArrayList<PurchaseOrderLine>());
-      }
-
-      purchaseOrderLinesBySupplierPartner.get(supplierPartner).add(purchaseOrderLine);
     }
 
     return purchaseOrderLinesBySupplierPartner;
@@ -203,10 +212,12 @@ public class PurchaseOrderSupplierService {
 
     purchaseOrder.setParentPurchaseOrder(parentPurchaseOrder);
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+    if (CollectionUtils.isNotEmpty(purchaseOrderLineList)) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-      purchaseOrder.addPurchaseOrderLineListItem(
-          this.createPurchaseOrderLine(purchaseOrder, purchaseOrderLine));
+        purchaseOrder.addPurchaseOrderLineListItem(
+            this.createPurchaseOrderLine(purchaseOrder, purchaseOrderLine));
+      }
     }
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);

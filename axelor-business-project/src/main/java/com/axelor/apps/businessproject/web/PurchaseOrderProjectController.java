@@ -34,7 +34,9 @@ public class PurchaseOrderProjectController {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       purchaseOrder = Beans.get(ProjectAnalyticMoveLineService.class).updateLines(purchaseOrder);
-      response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+      if (purchaseOrder.getPurchaseOrderLineList() != null) {
+        response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

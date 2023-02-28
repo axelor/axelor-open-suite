@@ -31,12 +31,14 @@ import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -82,7 +84,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
 
   @Override
   public void roundInvoiceTermPercentages(Move move) {
-    move.getMoveLineList().stream()
+    ListUtils.emptyIfNull(move.getMoveLineList()).stream()
         .filter(it -> CollectionUtils.isNotEmpty(it.getInvoiceTermList()))
         .forEach(
             it ->
@@ -93,7 +95,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   @Override
   public boolean updateInvoiceTerms(Move move) {
     List<InvoiceTerm> invoiceTermToUpdateList =
-        move.getMoveLineList().stream()
+        ListUtils.emptyIfNull(move.getMoveLineList()).stream()
             .filter(
                 it ->
                     it.getAmountRemaining().compareTo(it.getDebit().max(it.getCredit())) == 0
@@ -104,10 +106,11 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
             .filter(invoiceTermService::isNotReadonlyExceptPfp)
             .collect(Collectors.toList());
 
-    invoiceTermToUpdateList.forEach(it -> invoiceTermService.updateFromMoveHeader(move, it));
+    ListUtils.emptyIfNull(invoiceTermToUpdateList)
+        .forEach(it -> invoiceTermService.updateFromMoveHeader(move, it));
 
-    return invoiceTermToUpdateList.size()
-        == move.getMoveLineList().stream()
+    return ListUtils.size(invoiceTermToUpdateList)
+        == ListUtils.emptyIfNull(move.getMoveLineList()).stream()
             .map(MoveLine::getInvoiceTermList)
             .mapToLong(Collection::size)
             .sum();
@@ -125,9 +128,11 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   public void updateMoveLineDueDates(Move move) {
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      moveLine.setDueDate(
-          invoiceTermService.getDueDate(moveLine.getInvoiceTermList(), moveLine.getOriginDate()));
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        moveLine.setDueDate(
+            invoiceTermService.getDueDate(moveLine.getInvoiceTermList(), moveLine.getOriginDate()));
+      }
     }
   }
 
@@ -141,7 +146,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
 
   protected boolean isSingleTerm(Move move) {
     if (move.getPaymentCondition() == null
-        || move.getPaymentCondition().getPaymentConditionLineList().size() > 1) {
+        || ListUtils.size(move.getPaymentCondition().getPaymentConditionLineList()) > 1) {
       return false;
     }
 
@@ -151,9 +156,10 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
               .filter(it -> it.getAccount() != null && it.getAccount().getUseForPartnerBalance())
               .collect(Collectors.toList());
 
-      return moveLinesWithInvoiceTerms.size() <= 1
-          && (moveLinesWithInvoiceTerms.size() == 0
-              || moveLinesWithInvoiceTerms.get(0).getInvoiceTermList().size() <= 1);
+      return moveLinesWithInvoiceTerms != null
+          && moveLinesWithInvoiceTerms.size() <= 1
+          && (moveLinesWithInvoiceTerms.isEmpty()
+              || ListUtils.size(moveLinesWithInvoiceTerms.get(0).getInvoiceTermList()) <= 1);
     }
 
     return true;
@@ -198,7 +204,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   protected InvoiceTerm getSingleInvoiceTerm(Move move) {
-    return move.getMoveLineList().stream()
+    return ListUtils.emptyIfNull(move.getMoveLineList()).stream()
         .filter(it -> it.getAccount().getUseForPartnerBalance())
         .map(MoveLine::getInvoiceTermList)
         .flatMap(Collection::stream)
@@ -246,6 +252,9 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
               .map(PayVoucherElementToPay::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList());
+      if (paymentVoucherRefList == null) {
+        paymentVoucherRefList = new ArrayList<>();
+      }
       paymentVoucherRefList.addAll(
           payVoucherDueElementRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
               .bind("invoiceTermList", invoiceTermList).fetch().stream()

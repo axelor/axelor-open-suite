@@ -33,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.RoundingMode;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineService {
 
@@ -93,8 +94,10 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
                 employee.getId())
             .fetch();
 
-    for (LunchVoucherAdvance item : list) {
-      number += item.getNbrLunchVouchers() - item.getNbrLunchVouchersUsed();
+    if (CollectionUtils.isNotEmpty(list)) {
+      for (LunchVoucherAdvance item : list) {
+        number += item.getNbrLunchVouchers() - item.getNbrLunchVouchersUsed();
+      }
     }
 
     return number;

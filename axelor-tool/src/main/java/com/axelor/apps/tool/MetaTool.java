@@ -60,8 +60,10 @@ public class MetaTool {
     Map<String, String> typeToJsonTypeMap = createTypeToJsonTypeMap();
     // reverse the map
     Map<String, String> jsonTypeToTypeMap =
-        typeToJsonTypeMap.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        typeToJsonTypeMap == null
+            ? new HashMap<>()
+            : typeToJsonTypeMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
     String typeName = jsonTypeToTypeMap.get(nameType);
     if (typeName == null) {
       throw new AxelorException(

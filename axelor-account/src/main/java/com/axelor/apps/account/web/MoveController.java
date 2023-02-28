@@ -56,6 +56,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -106,7 +107,7 @@ public class MoveController {
       move =
           Beans.get(MoveViewHelperService.class)
               .updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(move);
-      response.setValue("moveLineList", move.getMoveLineList());
+      response.setValue("moveLineList", ListUtils.emptyIfNull(move.getMoveLineList()));
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -180,7 +181,9 @@ public class MoveController {
                   .getMapFromMoveWizardMassReverseForm(context);
 
           String reverseMoveIds =
-              Beans.get(MoveReverseService.class).massReverse(moveList, assistantMap).stream()
+              ListUtils.emptyIfNull(
+                      Beans.get(MoveReverseService.class).massReverse(moveList, assistantMap))
+                  .stream()
                   .map(Move::getId)
                   .map(Objects::toString)
                   .collect(Collectors.joining(","));
@@ -247,14 +250,16 @@ public class MoveController {
         if (!moveList.isEmpty()) {
           PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
           User user = AuthUtils.getUser();
-          for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
-            Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, user)) {
-              throw new AxelorException(
-                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                  String.format(
-                      I18n.get(AccountExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
-                      move.getReference()));
+          if (ObjectUtils.notEmpty(request.getContext().get("_ids"))) {
+            for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
+              Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
+              if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, user)) {
+                throw new AxelorException(
+                    TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                    String.format(
+                        I18n.get(AccountExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
+                        move.getReference()));
+              }
             }
           }
           Beans.get(MoveSimulateService.class).simulateMultiple(moveList);
@@ -335,9 +340,11 @@ public class MoveController {
                     MoveRepository.STATUS_CANCELED,
                     MoveRepository.STATUS_SIMULATED)
                 .fetch();
-        int moveNb = moveList.size();
 
         if (!moveList.isEmpty()) {
+
+          int moveNb = moveList.size();
+
           int errorNB = Beans.get(MoveRemoveService.class).deleteMultiple(moveList);
           flashMessage =
               errorNB > 0
@@ -419,7 +426,9 @@ public class MoveController {
 
     try {
       Map<String, Object> values = Beans.get(MoveComputeService.class).computeTotals(move);
-      response.setValues(values);
+      if (values != null) {
+        response.setValues(values);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -486,10 +495,13 @@ public class MoveController {
       }
       Move moveBD = Beans.get(MoveRepository.class).find(moveView.getId());
       List<String> moveLineReconciledAndRemovedNameList = new ArrayList<>();
-      for (MoveLine moveLineBD : moveBD.getMoveLineList()) {
-        if (!moveView.getMoveLineList().contains(moveLineBD)) {
-          if (moveLineBD.getReconcileGroup() != null) {
-            moveLineReconciledAndRemovedNameList.add(moveLineBD.getName());
+      if (moveBD.getMoveLineList() != null) {
+        for (MoveLine moveLineBD : moveBD.getMoveLineList()) {
+          if (moveView.getMoveLineList() != null
+              && !moveView.getMoveLineList().contains(moveLineBD)) {
+            if (moveLineBD.getReconcileGroup() != null) {
+              moveLineReconciledAndRemovedNameList.add(moveLineBD.getName());
+            }
           }
         }
       }
@@ -521,8 +533,9 @@ public class MoveController {
                 "moveLineList.axis" + i + "AnalyticAccount",
                 "hidden",
                 !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
+
             for (AnalyticAxisByCompany analyticAxisByCompany :
-                accountConfig.getAnalyticAxisByCompanyList()) {
+                ListUtils.emptyIfNull(accountConfig.getAnalyticAxisByCompanyList())) {
               if (analyticAxisByCompany.getSequence() + 1 == i) {
                 analyticAxis = analyticAxisByCompany.getAnalyticAxis();
               }
@@ -572,7 +585,9 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       Beans.get(MoveToolService.class).setOriginOnMoveLineList(move);
-      response.setValue("moveLineList", move.getMoveLineList());
+      if (move.getMoveLineList() != null) {
+        response.setValue("moveLineList", move.getMoveLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -582,7 +597,9 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       Beans.get(MoveToolService.class).setDescriptionOnMoveLineList(move);
-      response.setValue("moveLineList", move.getMoveLineList());
+      if (move.getMoveLineList() != null) {
+        response.setValue("moveLineList", move.getMoveLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -648,7 +665,9 @@ public class MoveController {
       if (moveComputeService.checkManageCutOffDates(move)) {
         moveComputeService.applyCutOffDates(move, cutOffStartDate, cutOffEndDate);
 
-        response.setValue("moveLineList", move.getMoveLineList());
+        if (move.getMoveLineList() != null) {
+          response.setValue("moveLineList", move.getMoveLineList());
+        }
       } else {
         response.setFlash(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
@@ -661,7 +680,9 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       move = Beans.get(MoveLineControlService.class).setMoveLineDates(move);
-      response.setValue("moveLineList", move.getMoveLineList());
+      if (move.getMoveLineList() != null) {
+        response.setValue("moveLineList", move.getMoveLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -671,7 +692,9 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       move = Beans.get(MoveLineControlService.class).setMoveLineOriginDates(move);
-      response.setValue("moveLineList", move.getMoveLineList());
+      if (move.getMoveLineList() != null) {
+        response.setValue("moveLineList", move.getMoveLineList());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -798,7 +821,7 @@ public class MoveController {
         Beans.get(MoveLineService.class)
             .updatePartner(move.getMoveLineList(), move.getPartner(), previousMove.getPartner());
 
-        response.setValue("moveLineList", move.getMoveLineList());
+        response.setValue("moveLineList", ListUtils.emptyIfNull(move.getMoveLineList()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

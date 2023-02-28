@@ -119,6 +119,9 @@ public class ProjectInvoicingAssistantBatchController {
     Batch batch = request.getContext().asType(Batch.class);
     batch = Beans.get(BatchRepository.class).find(batch.getId());
 
+    if (values == null) {
+      return;
+    }
     String ids =
         Beans.get(ProjectInvoicingAssistantBatchService.class)
             .getShowRecordIds(batch, values.get("field").toString());

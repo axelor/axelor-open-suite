@@ -50,6 +50,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
     implements TimesheetProjectService {
@@ -102,84 +103,88 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
     // Check if a consolidation by product and user must be done
     boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
 
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      Object[] tabInformations = new Object[6];
-      Product product = timesheetLine.getProduct();
-      tabInformations[0] = product;
-      tabInformations[1] = timesheetLine.getEmployee();
-      // Start date
-      tabInformations[2] = timesheetLine.getDate();
-      // End date, useful only for consolidation
-      tabInformations[3] = timesheetLine.getDate();
-      tabInformations[4] =
-          timesheetLine.getDurationForCustomer() != null
-              ? this.computeDurationForCustomer(timesheetLine)
-              : timesheetLine.getHoursDuration();
-      tabInformations[5] = timesheetLine.getProject();
+    if (CollectionUtils.isNotEmpty(timesheetLineList)) {
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        Object[] tabInformations = new Object[6];
+        tabInformations[0] = timesheetLine.getProduct();
+        tabInformations[1] = timesheetLine.getEmployee();
+        // Start date
+        tabInformations[2] = timesheetLine.getDate();
+        // End date, useful only for consolidation
+        tabInformations[3] = timesheetLine.getDate();
+        tabInformations[4] =
+            timesheetLine.getDurationForCustomer() != null
+                ? this.computeDurationForCustomer(timesheetLine)
+                : timesheetLine.getHoursDuration();
+        tabInformations[5] = timesheetLine.getProject();
 
-      String key = null;
-      if (consolidate) {
-        key =
-            (product != null ? product.getId() + "|" : "")
-                + timesheetLine.getEmployee().getId()
-                + "|"
-                + timesheetLine.getProject().getId();
-        if (timeSheetInformationsMap.containsKey(key)) {
-          tabInformations = timeSheetInformationsMap.get(key);
-          // Update date
-          if (timesheetLine.getDate().compareTo((LocalDate) tabInformations[2]) < 0) {
-            // If date is lower than start date then replace start date by this one
-            tabInformations[2] = timesheetLine.getDate();
-          } else if (timesheetLine.getDate().compareTo((LocalDate) tabInformations[3]) > 0) {
-            // If date is upper than end date then replace end date by this one
-            tabInformations[3] = timesheetLine.getDate();
+        String key = null;
+        if (consolidate) {
+          key =
+              timesheetLine.getProduct().getId()
+                  + "|"
+                  + timesheetLine.getEmployee().getId()
+                  + "|"
+                  + timesheetLine.getProject().getId();
+          if (timeSheetInformationsMap.containsKey(key)) {
+            tabInformations = timeSheetInformationsMap.get(key);
+            // Update date
+            if (timesheetLine.getDate().compareTo((LocalDate) tabInformations[2]) < 0) {
+              // If date is lower than start date then replace start date by this one
+              tabInformations[2] = timesheetLine.getDate();
+            } else if (timesheetLine.getDate().compareTo((LocalDate) tabInformations[3]) > 0) {
+              // If date is upper than end date then replace end date by this one
+              tabInformations[3] = timesheetLine.getDate();
+            }
+            tabInformations[4] =
+                ((BigDecimal) tabInformations[4])
+                    .add(
+                        timesheetLine.getDurationForCustomer() != null
+                            ? this.computeDurationForCustomer(timesheetLine)
+                            : timesheetLine.getHoursDuration());
+          } else {
+            timeSheetInformationsMap.put(key, tabInformations);
           }
-          tabInformations[4] =
-              ((BigDecimal) tabInformations[4])
-                  .add(
-                      timesheetLine.getDurationForCustomer() != null
-                          ? this.computeDurationForCustomer(timesheetLine)
-                          : timesheetLine.getHoursDuration());
         } else {
+          key = String.valueOf(timesheetLine.getId());
           timeSheetInformationsMap.put(key, tabInformations);
         }
-      } else {
-        key = String.valueOf(timesheetLine.getId());
-        timeSheetInformationsMap.put(key, tabInformations);
       }
     }
 
-    for (Object[] timesheetInformations : timeSheetInformationsMap.values()) {
+    if (timeSheetInformationsMap != null) {
+      for (Object[] timesheetInformations : timeSheetInformationsMap.values()) {
 
-      String strDate = null;
-      Product product = (Product) timesheetInformations[0];
-      Employee employee = (Employee) timesheetInformations[1];
-      LocalDate startDate = (LocalDate) timesheetInformations[2];
-      LocalDate endDate = (LocalDate) timesheetInformations[3];
-      BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
-      Project project = (Project) timesheetInformations[5];
-      PriceList priceList = project.getPriceList();
-      if (consolidate) {
-        if (startDate != null && endDate != null) {
-          strDate = startDate.format(ddmmFormat) + " - " + endDate.format(ddmmFormat);
+        String strDate = null;
+        Product product = (Product) timesheetInformations[0];
+        Employee employee = (Employee) timesheetInformations[1];
+        LocalDate startDate = (LocalDate) timesheetInformations[2];
+        LocalDate endDate = (LocalDate) timesheetInformations[3];
+        BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
+        Project project = (Project) timesheetInformations[5];
+        PriceList priceList = project.getPriceList();
+        if (consolidate) {
+          if (startDate != null && endDate != null) {
+            strDate = startDate.format(ddmmFormat) + " - " + endDate.format(ddmmFormat);
+          }
+        } else {
+          if (startDate != null) {
+            strDate = startDate.format(ddmmFormat);
+          }
         }
-      } else {
-        if (startDate != null) {
-          strDate = startDate.format(ddmmFormat);
-        }
+
+        invoiceLineList.addAll(
+            this.createInvoiceLine(
+                invoice,
+                product,
+                employee,
+                strDate,
+                hoursDuration,
+                priority * 100 + count,
+                priceList));
+        invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
+        count++;
       }
-
-      invoiceLineList.addAll(
-          this.createInvoiceLine(
-              invoice,
-              product,
-              employee,
-              strDate,
-              hoursDuration,
-              priority * 100 + count,
-              priceList));
-      invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
-      count++;
     }
 
     return invoiceLineList;

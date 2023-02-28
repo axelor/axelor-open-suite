@@ -46,6 +46,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -67,6 +68,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
@@ -115,17 +117,19 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     Invoice invoice;
     Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
     if (operationSelect == StockMoveRepository.INVOICE_PARTIALLY) {
-      for (Map<String, Object> map : stockMoveLineListContext) {
-        if (map.get("qtyToInvoice") != null) {
-          BigDecimal qtyToInvoiceItem = new BigDecimal(map.get("qtyToInvoice").toString());
-          BigDecimal remainingQty = new BigDecimal(map.get("remainingQty").toString());
-          if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
-            if (qtyToInvoiceItem.compareTo(remainingQty) > 0) {
-              qtyToInvoiceItem = remainingQty;
+      if (CollectionUtils.isNotEmpty(stockMoveLineListContext)) {
+        for (Map<String, Object> map : stockMoveLineListContext) {
+          if (map.get("qtyToInvoice") != null) {
+            BigDecimal qtyToInvoiceItem = new BigDecimal(map.get("qtyToInvoice").toString());
+            BigDecimal remainingQty = new BigDecimal(map.get("remainingQty").toString());
+            if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
+              if (qtyToInvoiceItem.compareTo(remainingQty) > 0) {
+                qtyToInvoiceItem = remainingQty;
+              }
+              Long stockMoveLineId = Long.parseLong(map.get("stockMoveLineId").toString());
+              StockMoveLine stockMoveLine = stockMoveLineRepository.find(stockMoveLineId);
+              qtyToInvoiceMap.put(stockMoveLine.getId(), qtyToInvoiceItem);
             }
-            Long stockMoveLineId = Long.parseLong(map.get("stockMoveLineId").toString());
-            StockMoveLine stockMoveLine = stockMoveLineRepository.find(stockMoveLineId);
-            qtyToInvoiceMap.put(stockMoveLine.getId(), qtyToInvoiceItem);
           }
         }
       }
@@ -396,23 +400,26 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     } else {
       stockMoveLineToInvoiceList = getConsolidatedStockMoveLineList(stockMoveLineList);
     }
-    for (StockMoveLine stockMoveLine : stockMoveLineToInvoiceList) {
 
-      InvoiceLine invoiceLineCreated;
-      Long id = stockMoveLine.getId();
-      if (qtyToInvoiceMap != null) {
-        invoiceLineCreated =
-            this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id));
-      } else {
-        invoiceLineCreated =
-            this.createInvoiceLine(
-                invoice,
-                stockMoveLine,
-                stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine)));
-      }
+    if (CollectionUtils.isNotEmpty(stockMoveLineToInvoiceList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineToInvoiceList) {
 
-      if (invoiceLineCreated != null) {
-        invoiceLineList.add(invoiceLineCreated);
+        InvoiceLine invoiceLineCreated;
+        Long id = stockMoveLine.getId();
+        if (qtyToInvoiceMap != null) {
+          invoiceLineCreated =
+              this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id));
+        } else {
+          invoiceLineCreated =
+              this.createInvoiceLine(
+                  invoice,
+                  stockMoveLine,
+                  stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine)));
+        }
+
+        if (invoiceLineCreated != null) {
+          invoiceLineList.add(invoiceLineCreated);
+        }
       }
     }
 
@@ -548,30 +555,34 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<StockMoveLine> resultList = new ArrayList<>();
 
     List<StockMoveLine> list;
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
 
-      if (stockMoveLine.getSaleOrderLine() != null) {
-        list = stockMoveLineSaleMap.get(stockMoveLine.getSaleOrderLine());
-        if (list == null) {
-          list = new ArrayList<>();
-          stockMoveLineSaleMap.put(stockMoveLine.getSaleOrderLine(), list);
+    if (CollectionUtils.isNotEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+
+        if (stockMoveLine.getSaleOrderLine() != null) {
+          list = stockMoveLineSaleMap.get(stockMoveLine.getSaleOrderLine());
+          if (list == null) {
+            list = new ArrayList<>();
+            stockMoveLineSaleMap.put(stockMoveLine.getSaleOrderLine(), list);
+          }
+          list.add(stockMoveLine);
+        } else if (stockMoveLine.getPurchaseOrderLine() != null) {
+          list = stockMoveLinePurchaseMap.get(stockMoveLine.getPurchaseOrderLine());
+          if (list == null) {
+            list = new ArrayList<>();
+            stockMoveLinePurchaseMap.put(stockMoveLine.getPurchaseOrderLine(), list);
+          }
+          list.add(stockMoveLine);
+        } else { // if the stock move line does not have a parent line (sale or purchase order line)
+          resultList.add(stockMoveLine);
         }
-        list.add(stockMoveLine);
-      } else if (stockMoveLine.getPurchaseOrderLine() != null) {
-        list = stockMoveLinePurchaseMap.get(stockMoveLine.getPurchaseOrderLine());
-        if (list == null) {
-          list = new ArrayList<>();
-          stockMoveLinePurchaseMap.put(stockMoveLine.getPurchaseOrderLine(), list);
-        }
-        list.add(stockMoveLine);
-      } else { // if the stock move line does not have a parent line (sale or purchase order line)
-        resultList.add(stockMoveLine);
       }
     }
 
     for (List<StockMoveLine> stockMoveLines : stockMoveLineSaleMap.values()) {
       resultList.add(stockMoveLineServiceSupplychain.getMergedStockMoveLine(stockMoveLines));
     }
+
     for (List<StockMoveLine> stockMoveLines : stockMoveLinePurchaseMap.values()) {
       resultList.add(stockMoveLineServiceSupplychain.getMergedStockMoveLine(stockMoveLines));
     }
@@ -583,23 +594,25 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       throws AxelorException {
     List<Map<String, Object>> stockMoveLines = new ArrayList<>();
 
-    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+    if (CollectionUtils.isNotEmpty(stockMove.getStockMoveLineList())) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
-      BigDecimal qty =
-          stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine));
-      if (qty.compareTo(BigDecimal.ZERO) != 0) {
-        Map<String, Object> stockMoveLineMap = new HashMap<>();
-        stockMoveLineMap.put(
-            "productCode",
-            stockMoveLine.getProduct() != null ? stockMoveLine.getProduct().getCode() : null);
-        stockMoveLineMap.put("productName", stockMoveLine.getProductName());
-        stockMoveLineMap.put("remainingQty", qty);
-        stockMoveLineMap.put("realQty", stockMoveLine.getRealQty());
-        stockMoveLineMap.put("qtyInvoiced", computeNonCanceledInvoiceQty(stockMoveLine));
-        stockMoveLineMap.put("qtyToInvoice", BigDecimal.ZERO);
-        stockMoveLineMap.put("invoiceAll", false);
-        stockMoveLineMap.put("stockMoveLineId", stockMoveLine.getId());
-        stockMoveLines.add(stockMoveLineMap);
+        BigDecimal qty =
+            stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine));
+        if (qty.compareTo(BigDecimal.ZERO) != 0) {
+          Map<String, Object> stockMoveLineMap = new HashMap<>();
+          stockMoveLineMap.put(
+              "productCode",
+              stockMoveLine.getProduct() != null ? stockMoveLine.getProduct().getCode() : null);
+          stockMoveLineMap.put("productName", stockMoveLine.getProductName());
+          stockMoveLineMap.put("remainingQty", qty);
+          stockMoveLineMap.put("realQty", stockMoveLine.getRealQty());
+          stockMoveLineMap.put("qtyInvoiced", computeNonCanceledInvoiceQty(stockMoveLine));
+          stockMoveLineMap.put("qtyToInvoice", BigDecimal.ZERO);
+          stockMoveLineMap.put("invoiceAll", false);
+          stockMoveLineMap.put("stockMoveLineId", stockMoveLine.getId());
+          stockMoveLines.add(stockMoveLineMap);
+        }
       }
     }
     return stockMoveLines;
@@ -631,11 +644,14 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             .bind("stockMoveLineId", stockMoveLine.getId())
             .fetch();
     BigDecimal nonCanceledInvoiceQty = BigDecimal.ZERO;
-    for (InvoiceLine invoiceLine : nonCanceledInvoiceLineList) {
-      if (isInvoiceRefundingStockMove(stockMoveLine.getStockMove(), invoiceLine.getInvoice())) {
-        nonCanceledInvoiceQty = nonCanceledInvoiceQty.subtract(invoiceLine.getQty());
-      } else {
-        nonCanceledInvoiceQty = nonCanceledInvoiceQty.add(invoiceLine.getQty());
+
+    if (CollectionUtils.isNotEmpty(nonCanceledInvoiceLineList)) {
+      for (InvoiceLine invoiceLine : nonCanceledInvoiceLineList) {
+        if (isInvoiceRefundingStockMove(stockMoveLine.getStockMove(), invoiceLine.getInvoice())) {
+          nonCanceledInvoiceQty = nonCanceledInvoiceQty.subtract(invoiceLine.getQty());
+        } else {
+          nonCanceledInvoiceQty = nonCanceledInvoiceQty.add(invoiceLine.getQty());
+        }
       }
     }
     return nonCanceledInvoiceQty;
@@ -681,6 +697,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   protected void setComputedBudgetLinesAmount(List<InvoiceLine> invoiceLineList) {
+    if (invoiceLineList == null) {
+      return;
+    }
     invoiceLineList.forEach(invoiceLine -> computeBudgetLineAmount(invoiceLineList, invoiceLine));
   }
 
@@ -709,7 +728,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   protected long countInvoiceLineWithSameProductAndBudget(
       Product product, List<InvoiceLine> invoiceLineList, Budget budget) {
-    return invoiceLineList.stream()
+    return ListUtils.emptyIfNull(invoiceLineList).stream()
         .filter(
             invoiceLine ->
                 product.equals(invoiceLine.getProduct()) && useSameBudget(budget, invoiceLine))

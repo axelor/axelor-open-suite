@@ -44,6 +44,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -125,22 +126,24 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     LocalDate fromDate = timesheetReport.getFromDate();
     LocalDate toDate = timesheetReport.getToDate();
 
-    for (Employee employee : employees) {
-      try {
-        worksHour = workedHour = BigDecimal.ZERO;
-        BigDecimal publicHolidays =
-            publicHolidayService.computePublicHolidayDays(
-                fromDate,
-                toDate,
-                employee.getWeeklyPlanning(),
-                employee.getPublicHolidayEventsPlanning());
-        worksHour = getTotalWeekWorksHours(employee, fromDate, toDate, publicHolidays);
-        workedHour = getTotalWeekWorkedHours(employee, fromDate, toDate, publicHolidays);
-        if (worksHour.compareTo(workedHour) != 0) {
-          employeeSet.add(employee);
+    if (CollectionUtils.isNotEmpty(employees)) {
+      for (Employee employee : employees) {
+        try {
+          worksHour = workedHour = BigDecimal.ZERO;
+          BigDecimal publicHolidays =
+              publicHolidayService.computePublicHolidayDays(
+                  fromDate,
+                  toDate,
+                  employee.getWeeklyPlanning(),
+                  employee.getPublicHolidayEventsPlanning());
+          worksHour = getTotalWeekWorksHours(employee, fromDate, toDate, publicHolidays);
+          workedHour = getTotalWeekWorkedHours(employee, fromDate, toDate, publicHolidays);
+          if (worksHour.compareTo(workedHour) != 0) {
+            employeeSet.add(employee);
+          }
+        } catch (Exception e) {
+          TraceBackService.trace(e);
         }
-      } catch (Exception e) {
-        TraceBackService.trace(e);
       }
     }
     return employeeSet;
@@ -189,50 +192,56 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         toDate = timesheetReport.getToDate();
       }
 
-      for (Employee employee : employees) {
-        missingHour = BigDecimal.ZERO;
-        extraHour = BigDecimal.ZERO;
+      if (CollectionUtils.isNotEmpty(employees)) {
+        for (Employee employee : employees) {
+          missingHour = BigDecimal.ZERO;
+          extraHour = BigDecimal.ZERO;
 
-        BigDecimal publicHolidays =
-            publicHolidayService.computePublicHolidayDays(
-                fromDate,
-                toDate,
-                employee.getWeeklyPlanning(),
-                employee.getPublicHolidayEventsPlanning());
+          BigDecimal publicHolidays =
+              publicHolidayService.computePublicHolidayDays(
+                  fromDate,
+                  toDate,
+                  employee.getWeeklyPlanning(),
+                  employee.getPublicHolidayEventsPlanning());
 
-        worksHour = getTotalWeekWorksHours(employee, fromDate, toDate, publicHolidays);
+          worksHour = getTotalWeekWorksHours(employee, fromDate, toDate, publicHolidays);
 
-        workedHour = getTotalWeekWorkedHours(employee, fromDate, toDate, publicHolidays);
-        if (worksHour.compareTo(workedHour) == 1) {
-          missingHour = worksHour.subtract(workedHour);
-        } else if (worksHour.compareTo(workedHour) == -1) {
-          extraHour = workedHour.subtract(worksHour);
+          workedHour = getTotalWeekWorkedHours(employee, fromDate, toDate, publicHolidays);
+          if (worksHour.compareTo(workedHour) == 1) {
+            missingHour = worksHour.subtract(workedHour);
+          } else if (worksHour.compareTo(workedHour) == -1) {
+            extraHour = workedHour.subtract(worksHour);
+          }
+
+          if (missingHour.compareTo(BigDecimal.ZERO) == 0
+              && extraHour.compareTo(BigDecimal.ZERO) == 0) {
+            continue;
+          }
+          Optional<TimesheetReminder> optReminder =
+              ListUtils.emptyIfNull(timesheetReminders).stream()
+                  .filter(
+                      reminder -> reminder.getEmployee().getId().compareTo(employee.getId()) == 0)
+                  .findFirst();
+
+          TimesheetReminder timesheetReminder = null;
+          if (optReminder.isPresent()) {
+            timesheetReminder = optReminder.get();
+            timesheetReminder.addTimesheetReminderLineListItem(
+                createTimesheetReminderLine(fromDate, toDate, worksHour, missingHour, extraHour));
+          } else {
+            List<TimesheetReminderLine> timesheetReminderLines = new ArrayList<>();
+            timesheetReminder = new TimesheetReminder();
+            timesheetReminder.setEmployee(employee);
+            timesheetReminder.setTimesheetReminderLineList(timesheetReminderLines);
+            timesheetReminder.addTimesheetReminderLineListItem(
+                createTimesheetReminderLine(fromDate, toDate, worksHour, missingHour, extraHour));
+            if (timesheetReminders == null) {
+              timesheetReminders = new ArrayList<>();
+            }
+            timesheetReminders.add(timesheetReminder);
+          }
+          timesheetReminderRepo.save(timesheetReminder);
         }
-
-        if (missingHour.compareTo(BigDecimal.ZERO) == 0
-            && extraHour.compareTo(BigDecimal.ZERO) == 0) {
-          continue;
-        }
-        Optional<TimesheetReminder> optReminder =
-            timesheetReminders.stream()
-                .filter(reminder -> reminder.getEmployee().getId().compareTo(employee.getId()) == 0)
-                .findFirst();
-
-        TimesheetReminder timesheetReminder = null;
-        if (optReminder.isPresent()) {
-          timesheetReminder = optReminder.get();
-          timesheetReminder.addTimesheetReminderLineListItem(
-              createTimesheetReminderLine(fromDate, toDate, worksHour, missingHour, extraHour));
-        } else {
-          List<TimesheetReminderLine> timesheetReminderLines = new ArrayList<>();
-          timesheetReminder = new TimesheetReminder();
-          timesheetReminder.setEmployee(employee);
-          timesheetReminder.setTimesheetReminderLineList(timesheetReminderLines);
-          timesheetReminder.addTimesheetReminderLineListItem(
-              createTimesheetReminderLine(fromDate, toDate, worksHour, missingHour, extraHour));
-          timesheetReminders.add(timesheetReminder);
-        }
-        timesheetReminderRepo.save(timesheetReminder);
       }
       fromDate = fromDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
     } while (toDate.until(timesheetReport.getToDate()).getDays() > 0);
@@ -242,15 +251,17 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       List<TimesheetReminder> timesheetReminders, Template reminderTemplate) {
 
     List<Message> messages = new ArrayList<>();
-    for (TimesheetReminder timesheetReminder : timesheetReminders) {
-      try {
-        Message message =
-            templateMessageService.generateMessage(timesheetReminder, reminderTemplate);
-        message = messageService.sendMessage(message);
-        timesheetReminder.setEmailSentDateT(LocalDateTime.now());
-        messages.add(message);
-      } catch (Exception e) {
-        TraceBackService.trace(e);
+    if (CollectionUtils.isNotEmpty(timesheetReminders)) {
+      for (TimesheetReminder timesheetReminder : timesheetReminders) {
+        try {
+          Message message =
+              templateMessageService.generateMessage(timesheetReminder, reminderTemplate);
+          message = messageService.sendMessage(message);
+          timesheetReminder.setEmailSentDateT(LocalDateTime.now());
+          messages.add(message);
+        } catch (Exception e) {
+          TraceBackService.trace(e);
+        }
       }
     }
 
@@ -288,44 +299,51 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
     List<Employee> employees = getEmployees(timesheetReport);
 
-    for (Employee employee : employees) {
-      BigDecimal dailyWorkingHours = employee.getDailyWorkHours();
-      WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
+    if (CollectionUtils.isNotEmpty(employees)) {
+      for (Employee employee : employees) {
+        BigDecimal dailyWorkingHours = employee.getDailyWorkHours();
+        WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 
-      Integer weekNumber = 1;
-      int lastDayIndex = -1;
-      int daysInWeek = 0;
-      try {
-        for (LocalDate date : daysRange) {
-          DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
-          if (dayPlanning == null) {
-            continue;
-          }
-          int dayIndex = date.get(weekFields.dayOfWeek()) - 1;
-          if (lastDayIndex < dayIndex) {
-            lastDayIndex = dayIndex;
-            if (weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date) != 0) {
-              daysInWeek++;
+        Integer weekNumber = 1;
+        int lastDayIndex = -1;
+        int daysInWeek = 0;
+        try {
+          if (CollectionUtils.isNotEmpty(daysRange)) {
+            for (LocalDate date : daysRange) {
+              DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
+              if (dayPlanning == null) {
+                continue;
+              }
+              int dayIndex = date.get(weekFields.dayOfWeek()) - 1;
+              if (lastDayIndex < dayIndex) {
+                lastDayIndex = dayIndex;
+                if (weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date) != 0) {
+                  daysInWeek++;
+                }
+              } else {
+                lastDayIndex = -1;
+                daysInWeek = 1;
+                weekNumber++;
+              }
+              BigDecimal weeklyWorkHours =
+                  daysInWeek <= 5
+                      ? employee
+                          .getWeeklyWorkHours()
+                          .multiply(BigDecimal.valueOf(daysInWeek / 5.00))
+                          .setScale(2, RoundingMode.HALF_UP)
+                      : employee.getWeeklyWorkHours();
+              Map<String, Object> map = getTimesheetMap(employee, date, dailyWorkingHours);
+              if (map == null) {
+                map = new HashMap<>();
+              }
+              map.put("weeklyWorkHours", weeklyWorkHours);
+              map.put("weekNumber", weekNumber.toString());
+              list.add(map);
             }
-          } else {
-            lastDayIndex = -1;
-            daysInWeek = 1;
-            weekNumber++;
           }
-          BigDecimal weeklyWorkHours =
-              daysInWeek <= 5
-                  ? employee
-                      .getWeeklyWorkHours()
-                      .multiply(BigDecimal.valueOf(daysInWeek / 5.00))
-                      .setScale(2, RoundingMode.HALF_UP)
-                  : employee.getWeeklyWorkHours();
-          Map<String, Object> map = getTimesheetMap(employee, date, dailyWorkingHours);
-          map.put("weeklyWorkHours", weeklyWorkHours);
-          map.put("weekNumber", weekNumber.toString());
-          list.add(map);
+        } catch (Exception e) {
+          System.out.println(e);
         }
-      } catch (Exception e) {
-        System.out.println(e);
       }
     }
     return list;
@@ -470,12 +488,14 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       Employee employee, LocalDate date, BigDecimal dailyWorkingHours) throws AxelorException {
     List<LeaveRequest> leavesList = leaveService.getLeaves(employee, date);
     BigDecimal totalLeaveHours = BigDecimal.ZERO;
-    for (LeaveRequest leave : leavesList) {
-      BigDecimal leaveHours = leaveService.computeDuration(leave, date, date);
-      if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
-        leaveHours = leaveHours.multiply(dailyWorkingHours);
+    if (CollectionUtils.isNotEmpty(leavesList)) {
+      for (LeaveRequest leave : leavesList) {
+        BigDecimal leaveHours = leaveService.computeDuration(leave, date, date);
+        if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+          leaveHours = leaveHours.multiply(dailyWorkingHours);
+        }
+        totalLeaveHours = totalLeaveHours.add(leaveHours);
       }
-      totalLeaveHours = totalLeaveHours.add(leaveHours);
     }
     return totalLeaveHours;
   }

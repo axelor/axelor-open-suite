@@ -28,6 +28,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -67,24 +68,26 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   public void generateTasks(ProjectTask projectTask, Frequency frequency) {
     List<LocalDate> taskDateList =
         frequencyService.getDates(frequency, projectTask.getTaskDate(), frequency.getEndDate());
+    if (taskDateList != null) {
+      taskDateList.removeIf(date -> date.equals(projectTask.getTaskDate()));
 
-    taskDateList.removeIf(date -> date.equals(projectTask.getTaskDate()));
+      // limit how many ProjectTask will be generated at once
+      Integer limitNumberTasksGenerated =
+          appBaseService.getAppBase().getLimitNumberTasksGenerated();
+      if (taskDateList.size() > limitNumberTasksGenerated) {
+        taskDateList = taskDateList.subList(0, limitNumberTasksGenerated);
+      }
 
-    // limit how many ProjectTask will be generated at once
-    Integer limitNumberTasksGenerated = appBaseService.getAppBase().getLimitNumberTasksGenerated();
-    if (taskDateList.size() > limitNumberTasksGenerated) {
-      taskDateList = taskDateList.subList(0, limitNumberTasksGenerated);
-    }
+      ProjectTask lastTask = projectTask;
+      for (LocalDate date : taskDateList) {
+        ProjectTask newProjectTask = projectTaskRepo.copy(projectTask, false);
+        setModuleFields(projectTask, date, newProjectTask);
+        projectTaskRepo.save(newProjectTask);
 
-    ProjectTask lastTask = projectTask;
-    for (LocalDate date : taskDateList) {
-      ProjectTask newProjectTask = projectTaskRepo.copy(projectTask, false);
-      setModuleFields(projectTask, date, newProjectTask);
-      projectTaskRepo.save(newProjectTask);
-
-      lastTask.setNextProjectTask(newProjectTask);
-      projectTaskRepo.save(lastTask);
-      lastTask = newProjectTask;
+        lastTask.setNextProjectTask(newProjectTask);
+        projectTaskRepo.save(lastTask);
+        lastTask = newProjectTask;
+      }
     }
   }
 
@@ -113,7 +116,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     nextProjectTask.setProjectTaskCategory(projectTask.getProjectTaskCategory());
     nextProjectTask.setProgressSelect(0);
 
-    projectTask.getMembersUserSet().forEach(nextProjectTask::addMembersUserSetItem);
+    SetUtils.emptyIfNull(projectTask.getMembersUserSet())
+        .forEach(nextProjectTask::addMembersUserSetItem);
 
     nextProjectTask.setParentTask(projectTask.getParentTask());
     nextProjectTask.setProduct(projectTask.getProduct());
@@ -133,8 +137,10 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     projectTask.setHasDateOrFrequencyChanged(false);
     projectTaskRepo.save(projectTask);
 
-    for (ProjectTask projectTaskToRemove : projectTaskList) {
-      projectTaskRepo.remove(projectTaskToRemove);
+    if (projectTaskList != null) {
+      for (ProjectTask projectTaskToRemove : projectTaskList) {
+        projectTaskRepo.remove(projectTaskToRemove);
+      }
     }
   }
 

@@ -28,6 +28,8 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.tool.collection.ListUtils;
+import com.axelor.apps.tool.collection.SetUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
@@ -120,7 +122,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     Filter userPermissionFilter = jpaSecurity.getFilter(JpaSecurity.CAN_READ, User.class);
 
     List<String> selectedWithoutNull = new ArrayList<String>(selected);
-    for (int i = 0; i < selected.size(); i++) {
+    for (int i = 0; i < ListUtils.size(selected); i++) {
       if (Strings.isNullOrEmpty(selected.get(i))) selectedWithoutNull.remove(i);
     }
 
@@ -166,7 +168,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
     final List<InternetAddress> addresses = new ArrayList<>();
     if (jpaSecurity.isPermitted(JpaSecurity.CAN_READ, User.class)) {
-      for (User user : query.fetch(maxResult)) {
+      for (User user : ListUtils.emptyIfNull(query.fetch(maxResult))) {
         try {
           if (user.getPartner() != null
               && user.getPartner().getEmailAddress() != null
@@ -223,7 +225,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     }
 
     if (jpaSecurity.isPermitted(JpaSecurity.CAN_READ, Partner.class)) {
-      for (Partner partner : query2.fetch(maxResult)) {
+      for (Partner partner : ListUtils.emptyIfNull(query2.fetch(maxResult))) {
         try {
           if (partner.getEmailAddress() != null
               && !Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
@@ -252,14 +254,14 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       }
     }
 
-    for (MailFollower follower : followers.findAll(message)) {
+    for (MailFollower follower : ListUtils.emptyIfNull(followers.findAll(message))) {
       if (follower.getArchived()) {
         continue;
       }
       User user = follower.getUser();
       if (user != null) {
         if (!(user.getReceiveEmails()
-            && user.getFollowedMetaModelSet().stream()
+            && SetUtils.emptyIfNull(user.getFollowedMetaModelSet()).stream()
                 .anyMatch(x -> x.getFullName().equals(entityName)))) {
           continue;
         } else {
@@ -310,7 +312,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     this.updateRecipientsTemplatesContext(recipients);
     this.setRecipientsFromTemplate(builder, recipients);
 
-    for (MetaAttachment attachment : messages.findAttachments(message)) {
+    for (MetaAttachment attachment : ListUtils.emptyIfNull(messages.findAttachments(message))) {
       final Path filePath = MetaFiles.getPath(attachment.getMetaFile());
       final File file = filePath.toFile();
       builder.attach(file.getName(), file.toString());
@@ -393,11 +395,15 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       if (MESSAGE_TYPE_NOTIFICATION.equals(message.getType())) {
         final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
         final Map<String, Object> details = messages.details(message);
-        final String jsonBody = details.containsKey("body") ? (String) details.get("body") : text;
-        final ObjectMapper mapper = Beans.get(ObjectMapper.class);
-        Map<String, Object> data =
-            mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
-        templatesContext.putAll(data);
+        if (details != null) {
+          final String jsonBody = details.containsKey("body") ? (String) details.get("body") : text;
+          final ObjectMapper mapper = Beans.get(ObjectMapper.class);
+          Map<String, Object> data =
+              mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
+          if (data != null) {
+            templatesContext.putAll(data);
+          }
+        }
       } else {
         templatesContext.put("comment", text);
       }
@@ -452,11 +458,11 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     String[] ccRcp = getRecipients(messageTemplate.getCcRecipients());
     String[] toRcp = getRecipients(messageTemplate.getToRecipients());
 
-    if (ccRcp.length == 0) {
+    if (ccRcp.length == 0 && recipients != null) {
       ccRcp = recipients.toArray(new String[0]);
     }
 
-    if (toRcp.length == 0) {
+    if (toRcp.length == 0 && recipients != null) {
       toRcp = recipients.toArray(new String[0]);
     }
 
@@ -466,7 +472,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   }
 
   void updateRecipientsTemplatesContext(Set<String> recipients) {
-    String contRecipients = String.join(", ", recipients);
+
+    String contRecipients = String.join(", ", SetUtils.emptyIfNull(recipients));
 
     if (templatesContext == null) {
       templatesContext = Maps.newHashMap();

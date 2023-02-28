@@ -33,6 +33,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -201,7 +202,7 @@ public class OperationOrderStockMoveService {
 
     // realize current stock move
     Optional<StockMove> stockMoveToRealize =
-        stockMoveList.stream()
+        ListUtils.emptyIfNull(stockMoveList).stream()
             .filter(
                 stockMove ->
                     stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
@@ -297,8 +298,7 @@ public class OperationOrderStockMoveService {
     stockMoveService.cancel(stockMove);
 
     // clear all lists from planned lines
-    operationOrder
-        .getConsumedStockMoveLineList()
+    ListUtils.emptyIfNull(operationOrder.getConsumedStockMoveLineList())
         .removeIf(
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
@@ -306,14 +306,15 @@ public class OperationOrderStockMoveService {
     stockMove.clearStockMoveLineList();
 
     // create a new list
-    for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
+    for (ProdProduct prodProduct :
+        ListUtils.emptyIfNull(operationOrder.getToConsumeProdProductList())) {
       BigDecimal qty =
           manufOrderStockMoveService.getFractionQty(
               operationOrder.getManufOrder(), prodProduct, qtyToUpdate);
       manufOrderStockMoveService._createStockMoveLine(
           prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
       // Update consumed StockMoveLineList with created stock move lines
-      stockMove.getStockMoveLineList().stream()
+      ListUtils.emptyIfNull(stockMove.getStockMoveLineList()).stream()
           .filter(
               stockMoveLine1 ->
                   !operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))

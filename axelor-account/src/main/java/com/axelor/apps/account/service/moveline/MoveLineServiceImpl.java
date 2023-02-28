@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.tool.collection.ListUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -163,17 +164,19 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     int i = 0;
 
-    for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
-      try {
-        moveLineLists = this.findMoveLineLists(moveLineLists);
-        this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
-      } catch (Exception e) {
-        TraceBackService.trace(e);
-        log.debug(e.getMessage());
-      } finally {
-        i++;
-        if (i % jpaLimit == 0) {
-          JPA.clear();
+    if (moveLineMap != null) {
+      for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
+        try {
+          moveLineLists = this.findMoveLineLists(moveLineLists);
+          this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
+        } catch (Exception e) {
+          TraceBackService.trace(e);
+          log.debug(e.getMessage());
+        } finally {
+          i++;
+          if (i % jpaLimit == 0) {
+            JPA.clear();
+          }
         }
       }
     }
@@ -181,15 +184,18 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   protected Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
-    List<MoveLine> fetchedDebitMoveLineList =
-        moveLineLists.getLeft().stream()
-            .map(moveLine -> moveLineRepository.find(moveLine.getId()))
-            .collect(Collectors.toList());
-    List<MoveLine> fetchedCreditMoveLineList =
-        moveLineLists.getRight().stream()
-            .map(moveLine -> moveLineRepository.find(moveLine.getId()))
-            .collect(Collectors.toList());
-    return Pair.of(fetchedDebitMoveLineList, fetchedCreditMoveLineList);
+    if (moveLineLists != null) {
+      List<MoveLine> fetchedDebitMoveLineList =
+          moveLineLists.getLeft().stream()
+              .map(moveLine -> moveLineRepository.find(moveLine.getId()))
+              .collect(Collectors.toList());
+      List<MoveLine> fetchedCreditMoveLineList =
+          moveLineLists.getRight().stream()
+              .map(moveLine -> moveLineRepository.find(moveLine.getId()))
+              .collect(Collectors.toList());
+      return Pair.of(fetchedDebitMoveLineList, fetchedCreditMoveLineList);
+    }
+    return null;
   }
 
   @Override
@@ -201,13 +207,15 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
 
-    for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
-      List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
-      List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
-      companyPartnerCreditMoveLineList.sort(byDate);
-      companyPartnerDebitMoveLineList.sort(byDate);
-      paymentService.useExcessPaymentOnMoveLinesDontThrow(
-          companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
+    if (moveLineMap != null) {
+      for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
+        List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
+        List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
+        ListUtils.emptyIfNull(companyPartnerCreditMoveLineList).sort(byDate);
+        ListUtils.emptyIfNull(companyPartnerDebitMoveLineList).sort(byDate);
+        paymentService.useExcessPaymentOnMoveLinesDontThrow(
+            companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
+      }
     }
   }
 
@@ -225,12 +233,14 @@ public class MoveLineServiceImpl implements MoveLineService {
       Comparator<MoveLine> byDate,
       PaymentService paymentService,
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
-    List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
-    List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
-    companyPartnerCreditMoveLineList.sort(byDate);
-    companyPartnerDebitMoveLineList.sort(byDate);
-    paymentService.useExcessPaymentOnMoveLinesDontThrow(
-        companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
+    if (moveLineLists != null) {
+      List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
+      List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
+      ListUtils.emptyIfNull(companyPartnerCreditMoveLineList).sort(byDate);
+      ListUtils.emptyIfNull(companyPartnerDebitMoveLineList).sort(byDate);
+      paymentService.useExcessPaymentOnMoveLinesDontThrow(
+          companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
+    }
   }
 
   protected void populateCredit(
@@ -249,27 +259,32 @@ public class MoveLineServiceImpl implements MoveLineService {
       Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList,
       boolean isCredit) {
-    for (MoveLine moveLine : reconciliableMoveLineList) {
+    if (reconciliableMoveLineList != null) {
+      for (MoveLine moveLine : reconciliableMoveLineList) {
 
-      Move move = moveLine.getMove();
+        Move move = moveLine.getMove();
 
-      List<Object> keys = new ArrayList<Object>();
+        List<Object> keys = new ArrayList<Object>();
 
-      keys.add(move.getCompany());
-      keys.add(moveLine.getAccount());
-      if (moveLine.getAccount().getUseForPartnerBalance()) {
-        keys.add(moveLine.getPartner());
+        keys.add(move.getCompany());
+        keys.add(moveLine.getAccount());
+        if (moveLine.getAccount().getUseForPartnerBalance()) {
+          keys.add(moveLine.getPartner());
+        }
+
+        if (moveLineMap != null) {
+          Pair<List<MoveLine>, List<MoveLine>> moveLineLists = moveLineMap.get(keys);
+
+          if (moveLineLists == null) {
+            moveLineLists = Pair.of(new ArrayList<>(), new ArrayList<>());
+            moveLineMap.put(keys, moveLineLists);
+
+            List<MoveLine> moveLineList =
+                isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();
+            moveLineList.add(moveLine);
+          }
+        }
       }
-
-      Pair<List<MoveLine>, List<MoveLine>> moveLineLists = moveLineMap.get(keys);
-
-      if (moveLineLists == null) {
-        moveLineLists = Pair.of(new ArrayList<>(), new ArrayList<>());
-        moveLineMap.put(keys, moveLineLists);
-      }
-
-      List<MoveLine> moveLineList = isCredit ? moveLineLists.getLeft() : moveLineLists.getRight();
-      moveLineList.add(moveLine);
     }
   }
 
@@ -399,16 +414,20 @@ public class MoveLineServiceImpl implements MoveLineService {
   public Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) {
     BatchAccountingCutOff batchAccountingCutOff = Beans.get(BatchAccountingCutOff.class);
 
-    batchAccountingCutOff.recordIdList = recordIdList;
+    if (recordIdList != null) {
+      batchAccountingCutOff.recordIdList = recordIdList;
+    }
     batchAccountingCutOff.run(Beans.get(AccountingBatchRepository.class).find(batchId));
 
     return batchAccountingCutOff.getBatch();
   }
 
   public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {
-    moveLineList.stream()
-        .filter(it -> Objects.equals(it.getPartner(), previousPartner))
-        .forEach(it -> it.setPartner(partner));
+    if (moveLineList != null) {
+      moveLineList.stream()
+          .filter(it -> Objects.equals(it.getPartner(), previousPartner))
+          .forEach(it -> it.setPartner(partner));
+    }
   }
 
   @Override

@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -108,8 +109,9 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
   protected void getMenusPerApp() {
 
     List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent is null").order("id").fetch();
-
-    processMenu(menus.iterator());
+    if (menus != null) {
+      processMenu(menus.iterator());
+    }
   }
 
   protected void processMenu(Iterator<MetaMenu> menuIter) {
@@ -133,7 +135,9 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
       }
     }
     List<MetaMenu> menus = metaMenuRepo.all().filter("self.parent = ?1", menu).order("id").fetch();
-    processMenu(menus.iterator());
+    if (menus != null) {
+      processMenu(menus.iterator());
+    }
     processMenu(menuIter);
   }
 
@@ -296,6 +300,10 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
 
     List<MetaModel> metaModels =
         metaModelRepo.all().filter("self.fullName not in ?1", objMenu.keySet()).fetch();
+
+    if (CollectionUtils.isEmpty(metaModels)) {
+      return;
+    }
 
     Iterator<MetaModel> modelIter = metaModels.iterator();
     String appMenu = objMenu.get(App.class.getName());
