@@ -466,6 +466,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 invoiceLine.getProductName());
 
         moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
+        List<AnalyticMoveLine> analyticMoveLineList =
+            new ArrayList<>(moveLine.getAnalyticMoveLineList());
         moveLine.clearAnalyticMoveLineList();
 
         if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
@@ -477,6 +479,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           }
         } else {
           moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+        }
+
+        if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+          moveLine.setAnalyticMoveLineList(analyticMoveLineList);
         }
 
         TaxLine taxLine = invoiceLine.getTaxLine();
