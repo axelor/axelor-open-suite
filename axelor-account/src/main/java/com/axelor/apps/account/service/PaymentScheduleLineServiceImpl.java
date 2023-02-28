@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,12 +36,12 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -132,12 +132,10 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     }
 
     log.debug(
-        "Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}",
-        new Object[] {
-          paymentScheduleLine.getScheduleLineSeq(),
-          paymentScheduleLine.getScheduleDate(),
-          paymentScheduleLine.getInTaxAmount()
-        });
+        "Creation of payment schedule line number {} for the date {} and amount {}",
+        paymentScheduleLine.getScheduleLineSeq(),
+        paymentScheduleLine.getScheduleDate(),
+        paymentScheduleLine.getInTaxAmount());
 
     return paymentScheduleLine;
   }
@@ -157,7 +155,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     BigDecimal inTaxAmount = paymentSchedule.getInTaxAmount();
 
     log.debug(
-        "Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})",
+        "Creation of lines for the payment schedule number {} (number of schedule : {}, amount : {})",
         new Object[] {paymentSchedule.getPaymentScheduleSeq(), nbrTerm, inTaxAmount});
 
     if (nbrTerm > 0 && inTaxAmount.compareTo(BigDecimal.ZERO) == 1) {
@@ -214,7 +212,8 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null);
+            null,
+            companyBankDetails);
 
     MoveLine creditMoveLine =
         moveLineCreateService.createMoveLine(

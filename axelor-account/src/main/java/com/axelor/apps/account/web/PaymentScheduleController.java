@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,9 +20,11 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.PaymentScheduleService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -31,9 +33,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -83,12 +83,15 @@ public class PaymentScheduleController {
         String num =
             Beans.get(SequenceService.class)
                 .getSequenceNumber(
-                    SequenceRepository.PAYMENT_SCHEDULE, paymentSchedule.getCompany());
+                    SequenceRepository.PAYMENT_SCHEDULE,
+                    paymentSchedule.getCompany(),
+                    PaymentSchedule.class,
+                    "paymentScheduleSeq");
 
         if (Strings.isNullOrEmpty(num)) {
           response.setError(
               String.format(
-                  I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_5),
+                  I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_5),
                   paymentSchedule.getCompany().getName()));
         } else {
           response.setValue("paymentScheduleSeq", num);

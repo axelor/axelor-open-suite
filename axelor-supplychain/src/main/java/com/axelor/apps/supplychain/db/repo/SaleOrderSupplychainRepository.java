@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,14 +17,14 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.studio.app.service.AppService;
 import java.math.BigDecimal;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
@@ -49,7 +49,6 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
         saleOrderLine.setDeliveredQty(null);
         saleOrderLine.setAmountInvoiced(null);
         saleOrderLine.setInvoiced(null);
-        saleOrderLine.setInvoicingDate(null);
         saleOrderLine.setIsInvoiceControlled(null);
         saleOrderLine.setReservedQty(BigDecimal.ZERO);
       }

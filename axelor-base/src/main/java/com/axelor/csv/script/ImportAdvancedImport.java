@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -123,7 +123,7 @@ public class ImportAdvancedImport {
   }
 
   @SuppressWarnings("unchecked")
-  private void addJsonObjectRecord(
+  protected void addJsonObjectRecord(
       Object bean, FileTab fileTab, String fieldName, Map<String, Object> values) {
 
     String field = Inflector.getInstance().camelize(fieldName, true) + "Set";

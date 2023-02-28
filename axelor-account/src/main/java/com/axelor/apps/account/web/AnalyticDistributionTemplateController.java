@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,9 +22,8 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -35,14 +34,10 @@ public class AnalyticDistributionTemplateController {
     try {
       AnalyticDistributionTemplate analyticDistributionTemplate =
           request.getContext().asType(AnalyticDistributionTemplate.class);
-      if (!Beans.get(AnalyticDistributionTemplateService.class)
-          .validateTemplatePercentages(analyticDistributionTemplate)) {
-        response.setError(
-            I18n.get(
-                "The configured distribution is incorrect, the sum of percentages for each axis must be equal to 100%"));
-      }
+      Beans.get(AnalyticDistributionTemplateService.class)
+          .validateTemplatePercentages(analyticDistributionTemplate);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

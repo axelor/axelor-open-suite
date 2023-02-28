@@ -1,0 +1,18 @@
+"importId";"name";"code";"bankJournal.importId";"invoiceLabel";"inOutSelect";"typeSelect";"canSelectInPaymentSession";"daysMarginOnPaySession";"accountingMethodSelect";"accountingTriggerSelect";"generateBankOrder";"generateMoveAutoFromBankOrder";"consoBankOrderLinePerPartner";"orderTypeSelect";"bankOrderExportFolderPath";"bankOrderFileFormat.name"
+1;"Other Cashing";"IN_OTH";13;"Other payment methods";1;1;;;;1;;;;;;
+2;"Direct Debit Cashing";"IN_DD";12;"Direct debit";1;2;"true";7;1;1;;;;;;
+3;"IPO Cashing";"IN_IPO";9;"IPO";1;3;;;;1;;;;;;
+4;"Cash Cashing";"IN_CSH";5;"Cash";1;5;;;;1;;;;;;
+5;"Credit Card Cashing";"IN_CC";7;"Credit card";1;6;;;;1;;;;;;
+6;"Cheque Cashing";"IN_CHQ";6;"Cheque";1;7;;;;1;;;;;;
+7;"Internet Cashing";"IN_WEB";8;"Internet";1;8;;;;1;;;;;;
+8;"Wire Transfer Cashing";"IN_WT";11;"Wire transfer";1;9;;7;1;1;;;;;;
+9;"IPO + Cheque Cashing";"IN_IPOC";10;"IPO + Cheque";1;4;;;;1;;;;;;
+10;"Direct Debit Payments";"OUT_DD";20;"Direct debit";2;2;"true";7;1;1;;;;;;
+11;"IPO Payments";"OUT_IPO";18;"IPO";2;3;;;;1;;;;;;
+12;"Cash Payments";"OUT_CSH";15;"Cash";2;5;;;;1;;;;;;
+13;"Credit Card Payments";"OUT_CC";17;"Credit card";2;6;;;;1;;;;;;
+14;"Cheque Payments";"OUT_CHQ";16;"Cheque";2;7;;;;1;;;;;;
+15;"Wire Transfer Payments";"OUT_WT";19;"Wire transfer";2;9;"true";7;1;1;;;;;;
+16;"Other Payments";"OUT_OTH";21;"Other payment methods";2;1;;;;1;;;;;;
+17;"Bill of Exchange Cashing";"ENC_LCR";13;"Other payment methods";1;10;;;;1;"true";"true";"true";8;"/tmp/";"pain.xxx.cfonb160.dco - LCR"

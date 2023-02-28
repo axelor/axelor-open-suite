@@ -1,0 +1,7 @@
+"importId";"name";"typeSelect";"label";"code";"elementSelect";"archived";"sequence";"statusSelect";"applicationFieldSelect"
+3;"MPR - Manufacturing proposal";1;"Manufacturing proposal";"MPR";8;;"2";;1
+5;"MOR - Manufacturing order";1;"Manufacturing order";"MOR";6;;"4";"3,4,5";1
+6;"NMP - Need / Manufacturing proposal";2;"Need / Manufacturing proposal";"NMP";9;;"5";;1
+10;"NMO - Need / Manufacturing order";2;"Need / Manufacturing order";"NMO";7;;"8";;1
+11;"NPDP - Need / PDP";2;"Need / PDP";"NPDP";12;;"2";;1
+12;"PPDP - PDP Proposal";1;"PDP Proposal";"PPDP";12;;"2";;2

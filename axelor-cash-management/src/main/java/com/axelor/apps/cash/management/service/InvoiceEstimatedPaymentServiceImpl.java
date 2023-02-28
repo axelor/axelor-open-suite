@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,19 +18,37 @@
 package com.axelor.apps.cash.management.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import java.time.LocalDate;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceEstimatedPaymentServiceImpl implements InvoiceEstimatedPaymentService {
 
   @Override
-  public LocalDate computeEstimatedPaymentDate(Invoice invoice) {
-    LocalDate estimatedPaymentDate = invoice.getDueDate();
-    if (estimatedPaymentDate != null
-        && invoice.getPartner() != null
-        && invoice.getPartner().getPaymentDelay() != null) {
-      estimatedPaymentDate =
-          estimatedPaymentDate.plusDays(invoice.getPartner().getPaymentDelay().intValue());
+  public Invoice computeEstimatedPaymentDate(Invoice invoice) {
+    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return invoice;
     }
-    return estimatedPaymentDate;
+    if (invoice.getPartner() != null && invoice.getPartner().getPaymentDelay() != null) {
+
+      int paymentDelay = invoice.getPartner().getPaymentDelay().intValue();
+
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (invoiceTerm.getEstimatedPaymentDate() == null) {
+          invoiceTerm.setEstimatedPaymentDate(invoiceTerm.getDueDate().plusDays(paymentDelay));
+        }
+      }
+    } else {
+      for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        if (invoiceTerm.getEstimatedPaymentDate() != null) {
+          continue;
+        }
+
+        LocalDate estimatedPaymentDate = invoiceTerm.getDueDate();
+
+        invoiceTerm.setEstimatedPaymentDate(estimatedPaymentDate);
+      }
+    }
+    return invoice;
   }
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid name="move-line-bank-reconciliation-grid" orderBy="date" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canDelete="false" canArchive="false" canNew="false">
     <button onClick="action-move-line-method-set-selected,save,reload" name="select"
       title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
-    <button onClick="action-move-line-method-set-selected,save,reload" name="select"
+    <button onClick="action-move-line-method-set-selected,save,reload" name="unselect"
       title="Select / Unselect" icon="fa-minus-circle" showIf="isSelectedBankReconciliation"/>
     <field name="postedNbr"/>
     <field name="name"/>
@@ -32,7 +32,10 @@
     <action name="action-move-line-debit-credit-validate"/>
     <action name="action-move-line-debit-credit-clean"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
+    <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
+    <action name="action-move-line-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action
       name="action-account-group-move-line-check-bank-reconcile-amount-debitcredit-on-change"/>
   </action-group>

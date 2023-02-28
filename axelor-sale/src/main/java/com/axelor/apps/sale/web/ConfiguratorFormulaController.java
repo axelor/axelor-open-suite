@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -43,7 +43,7 @@ public class ConfiguratorFormulaController {
         request.getContext().getParent().asType(ConfiguratorCreator.class);
     try {
       Beans.get(ConfiguratorFormulaService.class).checkFormula(configuratorFormula, creator);
-      response.setAlert(I18n.get(IExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING));
+      response.setAlert(I18n.get(SaleExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_WORKING));
     } catch (Exception e) {
       response.setError(e.getMessage());
     }

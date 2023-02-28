@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -11,8 +11,6 @@
 
     <many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User"
       title="Default signatory"/>
-    <boolean name="generateMoveOnBankOrderValidation"
-      title="Generate move when validating a bank order"/>
     <many-to-one name="internalBankToBankAccount"
       ref="com.axelor.apps.account.db.Account"
       title="Bank to bank account for internal order (unique company)"/>
@@ -55,7 +53,6 @@
       <field name="company" on="UPDATE"/>
 
       <field name="defaultSignatoryUser" on="UPDATE"/>
-      <field name="generateMoveOnBankOrderValidation" on="UPDATE"/>
       <field name="internalBankToBankAccount" on="UPDATE"/>
       <field name="externalBankToBankAccount" on="UPDATE"/>
 

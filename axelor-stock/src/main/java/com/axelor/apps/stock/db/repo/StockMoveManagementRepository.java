@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,12 +20,12 @@ package com.axelor.apps.stock.db.repo;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveToolService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -79,9 +79,11 @@ public class StockMoveManagementRepository extends StockMoveRepository {
   @Override
   public void remove(StockMove entity) {
     if (entity.getStatusSelect() == STATUS_PLANNED) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_PLANNED_NOT_DELETED));
+      throw new PersistenceException(
+          I18n.get(StockExceptionMessage.STOCK_MOVE_PLANNED_NOT_DELETED));
     } else if (entity.getStatusSelect() == STATUS_REALIZED) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_REALIZED_NOT_DELETED));
+      throw new PersistenceException(
+          I18n.get(StockExceptionMessage.STOCK_MOVE_REALIZED_NOT_DELETED));
     } else {
       if (entity.getStockMoveOrigin() != null) {
         entity.getStockMoveOrigin().setBackorderId(null);

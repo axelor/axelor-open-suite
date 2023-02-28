@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,19 +17,18 @@
  */
 package com.axelor.apps.crm.job;
 
-import com.axelor.apps.base.job.ThreadedJob;
+import com.axelor.apps.base.job.ThreadedBaseJob;
 import com.axelor.apps.base.job.UncheckedJobExecutionException;
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.service.batch.CrmBatchService;
-import com.axelor.inject.Beans;
 import org.quartz.JobExecutionContext;
 
-public class EventReminderJob extends ThreadedJob {
+public class EventReminderJob extends ThreadedBaseJob {
 
   @Override
   public void executeInThread(JobExecutionContext context) {
     try {
-      Beans.get(CrmBatchService.class).run(CrmBatchRepository.CODE_BATCH_EVENT_REMINDER);
+      executeBatch(CrmBatchService.class, CrmBatchRepository.CODE_BATCH_EVENT_REMINDER);
     } catch (Exception e) {
       throw new UncheckedJobExecutionException(e);
     }

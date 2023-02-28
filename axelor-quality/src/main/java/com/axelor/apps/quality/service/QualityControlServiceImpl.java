@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,7 @@
  */
 package com.axelor.apps.quality.service;
 
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.ControlPoint;
 import com.axelor.apps.quality.db.ControlPointModel;
 import com.axelor.apps.quality.db.QualityControl;
@@ -30,13 +29,13 @@ import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.db.repo.QualityCorrectiveActionRepository;
 import com.axelor.apps.quality.db.repo.QualityMeasuringPointRepository;
 import com.axelor.apps.quality.service.app.AppQualityService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class QualityControlServiceImpl implements QualityControlService {
@@ -128,8 +127,7 @@ public class QualityControlServiceImpl implements QualityControlService {
 
   @Override
   public void sendEmail(QualityControl qualityControl)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException, JSONException {
+      throws ClassNotFoundException, IOException, JSONException {
     Template template =
         Beans.get(AppQualityService.class).getAppQuality().getQualityControlTemplate();
 

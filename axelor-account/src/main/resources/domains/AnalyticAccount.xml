@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticAccount" lang="java">
+  <entity name="AnalyticAccount">
 
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true"/>
@@ -49,9 +49,12 @@
     <integer name="statusSelect" title="Status" selection="ianalytic.account.status.select"
       default="0"/>
 
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
     <unique-constraint columns="code,name,analyticAxis"/>
 
     <finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
+    <finder-method name="findByParent" using="parent" all="true"/>
 
     <extra-code>
       	<![CDATA[

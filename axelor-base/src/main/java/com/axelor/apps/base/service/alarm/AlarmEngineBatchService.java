@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,12 +20,13 @@ package com.axelor.apps.base.service.alarm;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.AlarmEngine;
 import com.axelor.apps.base.db.repo.AlarmRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -67,7 +68,7 @@ public class AlarmEngineBatchService extends AbstractBatch {
         TraceBackService.trace(
             new Exception(
                 String.format(
-                    I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_1), alarmEngine.getCode()),
+                    I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_1), alarmEngine.getCode()),
                 e),
             "",
             batch.getId());
@@ -83,12 +84,13 @@ public class AlarmEngineBatchService extends AbstractBatch {
   @Override
   protected void stop() {
 
-    String comment = I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_2) + "\n";
+    String comment = I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_2) + "\n";
     comment +=
         String.format(
-            "\t" + I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_3) + "\n", batch.getDone());
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_3) + "\n", batch.getDone());
     comment +=
-        String.format("\t" + I18n.get(IExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+        String.format(
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);
@@ -133,5 +135,9 @@ public class AlarmEngineBatchService extends AbstractBatch {
   private <T extends Model> boolean isAssociable(Field field, T t) {
 
     return field.getType().equals(EntityHelper.getEntityClass(t));
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_ALARM_ENGINE_BATCH);
   }
 }

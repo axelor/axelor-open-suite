@@ -1,0 +1,4 @@
+"importId";"codeSelect";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
+10;"productionOrder";"Ordre de production";1;4;"PDO";;1;0
+11;"manufOrder";"Ordre de fabrication";1;4;"MO";;1;0
+12;"rawMaterialRequirement";"Besoin matière";1;4;"RMR";;1;0

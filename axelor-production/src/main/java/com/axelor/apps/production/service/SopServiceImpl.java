@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Period;
@@ -36,7 +37,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -172,12 +172,12 @@ public class SopServiceImpl implements SopService {
       actualCurrency = currencyRepo.find(actualCurrency.getId());
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         LocalDate usedDate =
-            saleOrderLine.getDesiredDelivDate() != null
-                ? saleOrderLine.getDesiredDelivDate()
-                : saleOrderLine.getEstimatedDelivDate() != null
-                    ? saleOrderLine.getEstimatedDelivDate()
-                    : saleOrderLine.getSaleOrder().getDeliveryDate() != null
-                        ? saleOrderLine.getSaleOrder().getDeliveryDate()
+            saleOrderLine.getDesiredDeliveryDate() != null
+                ? saleOrderLine.getDesiredDeliveryDate()
+                : saleOrderLine.getEstimatedShippingDate() != null
+                    ? saleOrderLine.getEstimatedShippingDate()
+                    : saleOrderLine.getSaleOrder().getEstimatedShippingDate() != null
+                        ? saleOrderLine.getSaleOrder().getEstimatedShippingDate()
                         : saleOrderLine.getSaleOrder().getConfirmationDateTime().toLocalDate();
 
         if (usedDate.isAfter(fromDate) && usedDate.isBefore(toDate)) {

@@ -1,3 +1,0 @@
----
-title: "Sale order line : hide Delivered quantity field if parent is in draft or finalized"
-type: fix

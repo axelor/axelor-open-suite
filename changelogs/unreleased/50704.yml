@@ -1,3 +1,0 @@
----
-title: "Sale Order : Fixed a bug where clicking on the button 'compute lines with pricing scale' would not update the lines if they have not modified"
-type: fix

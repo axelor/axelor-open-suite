@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PriceListService;
@@ -33,7 +34,6 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
@@ -42,7 +42,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -104,7 +104,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[6];
-      tabInformations[0] = timesheetLine.getProduct();
+      Product product = timesheetLine.getProduct();
+      tabInformations[0] = product;
       tabInformations[1] = timesheetLine.getEmployee();
       // Start date
       tabInformations[2] = timesheetLine.getDate();
@@ -119,8 +120,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       String key = null;
       if (consolidate) {
         key =
-            timesheetLine.getProduct().getId()
-                + "|"
+            (product != null ? product.getId() + "|" : "")
                 + timesheetLine.getEmployee().getId()
                 + "|"
                 + timesheetLine.getProject().getId();

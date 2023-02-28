@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,11 +20,11 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -52,36 +52,49 @@ public class MoveCancelService {
 
     for (MoveLine moveLine : move.getMoveLineList()) {
 
+      if (moveLine.getReconcileGroup() != null) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MOVE_CANCEL_7));
+      }
+
       if (moveLine.getAccount().getUseForPartnerBalance()
           && moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_CANCEL_1));
+            I18n.get(AccountExceptionMessage.MOVE_CANCEL_1));
       }
     }
 
     if (move.getPeriod() == null
-        || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+        || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+        || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_CANCEL_2));
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_2));
     }
 
-    if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
+    if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+        || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_CANCEL_4));
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_5));
+    }
+
+    if (move.getStatusSelect() == MoveRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          move,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_6));
     }
 
     try {
 
-      if (move.getStatusSelect() == MoveRepository.STATUS_NEW
-          || accountConfigService
-              .getAccountConfig(move.getCompany())
-              .getAllowRemovalValidatedMove()) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_NEW) {
         moveRepository.remove(move);
       } else {
         move.setStatusSelect(MoveRepository.STATUS_CANCELED);
@@ -93,7 +106,7 @@ public class MoveCancelService {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MOVE_CANCEL_3));
+          I18n.get(AccountExceptionMessage.MOVE_CANCEL_3));
     }
   }
 }

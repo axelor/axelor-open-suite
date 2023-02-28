@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,18 +17,18 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.EmploymentContractService;
-import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.file.CsvTool;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -112,7 +112,8 @@ public class BatchEmploymentContractExport extends BatchStrategy {
 
     String comment =
         String.format(
-            I18n.get(IExceptionMessage.BATCH_EMPLOYMENT_CONTRACT_EXPORT_RECAP) + '\n', total);
+            I18n.get(HumanResourceExceptionMessage.BATCH_EMPLOYMENT_CONTRACT_EXPORT_RECAP) + '\n',
+            total);
 
     addComment(comment);
     super.stop();

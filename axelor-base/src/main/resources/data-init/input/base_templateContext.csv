@@ -1,0 +1,2 @@
+"importId";"name";"value"
+"1";"transientPassword";"eval: com.axelor.utils.StringTool.escapeHtml(com.axelor.db.JPA.find(com.axelor.auth.db.User.class, id).transientPassword)"

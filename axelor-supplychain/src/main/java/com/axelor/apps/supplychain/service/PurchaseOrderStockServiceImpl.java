@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,12 +18,14 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -46,15 +48,13 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -126,7 +126,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PO_MISSING_STOCK_LOCATION),
+          I18n.get(SupplychainExceptionMessage.PO_MISSING_STOCK_LOCATION),
           purchaseOrder.getPurchaseOrderSeq());
     }
 
@@ -208,7 +208,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.PURCHASE_ORDER_TRADING_NAME_MISSING));
+            I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_TRADING_NAME_MISSING));
       }
 
     } else {
@@ -292,7 +292,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     if (startLocation == null) {
       startLocation =
           partnerStockSettingsService.getDefaultExternalStockLocation(
-              purchaseOrder.getSupplierPartner(), company);
+              purchaseOrder.getSupplierPartner(), company, null);
     }
 
     if (startLocation == null) {
@@ -303,7 +303,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       throw new AxelorException(
           purchaseOrder,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PURCHASE_ORDER_1),
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_1),
           company.getName());
     }
 
@@ -322,10 +322,10 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         continue;
       }
 
-      LocalDate dateKey = purchaseOrderLine.getEstimatedDelivDate();
+      LocalDate dateKey = purchaseOrderLine.getEstimatedReceiptDate();
 
       if (dateKey == null) {
-        dateKey = purchaseOrderLine.getPurchaseOrder().getDeliveryDate();
+        dateKey = purchaseOrderLine.getPurchaseOrder().getEstimatedReceiptDate();
       }
 
       List<PurchaseOrderLine> purchaseOrderLineLists = purchaseOrderLinePerDateMap.get(dateKey);
@@ -548,7 +548,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     purchaseOrder.setReceiptState(computeReceiptState(purchaseOrder));
   }
 
-  private int computeReceiptState(PurchaseOrder purchaseOrder) throws AxelorException {
+  protected int computeReceiptState(PurchaseOrder purchaseOrder) throws AxelorException {
 
     if (purchaseOrder.getPurchaseOrderLineList() == null
         || purchaseOrder.getPurchaseOrderLineList().isEmpty()) {

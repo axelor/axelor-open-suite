@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,9 +17,10 @@
  */
 package com.axelor.apps.base.service.app;
 
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.studio.db.AppBase;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -30,6 +31,8 @@ public interface AppBaseService extends AppService {
   public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 
   public static final int DEFAULT_TRACKING_MONTHS_PERSISTENCE = 1;
+
+  public static final int COMPUTATION_SCALING = 20;
 
   public AppBase getAppBase();
 
@@ -52,16 +55,6 @@ public interface AppBaseService extends AppService {
    * @return
    */
   public ZonedDateTime getTodayDateTime(Company company);
-
-  /**
-   * This method is deprecated. Please use the
-   * com.axelor.apps.base.service.app.AppBaseService#getTodayDate(com.axelor.apps.base.db.Company)
-   * method instead.
-   *
-   * @return
-   */
-  @Deprecated
-  public LocalDate getTodayDate();
 
   /**
    * Retrieve the current date according to the timezone entered in the given company. Returns the

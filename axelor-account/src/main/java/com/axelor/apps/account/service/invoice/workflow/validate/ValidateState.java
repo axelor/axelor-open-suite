@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,18 +22,20 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
@@ -46,6 +48,7 @@ public class ValidateState extends WorkflowInvoice {
   protected InvoiceService invoiceService;
   protected AppAccountService appAccountService;
   protected BudgetService budgetService;
+  protected AccountingSituationService accountingSituationService;
 
   @Inject
   public ValidateState(
@@ -55,7 +58,8 @@ public class ValidateState extends WorkflowInvoice {
       AppBaseService appBaseService,
       InvoiceService invoiceService,
       AppAccountService appAccountService,
-      BudgetService budgetService) {
+      BudgetService budgetService,
+      AccountingSituationService accountingSituationService) {
     this.userService = userService;
     this.blockingService = blockingService;
     this.workflowValidationService = workflowValidationService;
@@ -63,6 +67,7 @@ public class ValidateState extends WorkflowInvoice {
     this.invoiceService = invoiceService;
     this.appAccountService = appAccountService;
     this.budgetService = budgetService;
+    this.accountingSituationService = accountingSituationService;
   }
 
   public void init(Invoice invoice) {
@@ -78,8 +83,8 @@ public class ValidateState extends WorkflowInvoice {
                 == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     if (invoice.getPaymentMode() != null) {
@@ -89,7 +94,7 @@ public class ValidateState extends WorkflowInvoice {
               && (invoice.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT))) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.INVOICE_VALIDATE_1));
+            I18n.get(AccountExceptionMessage.INVOICE_VALIDATE_1));
       }
     }
 
@@ -98,15 +103,14 @@ public class ValidateState extends WorkflowInvoice {
         != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
+          I18n.get(AccountExceptionMessage.INVOICE_VALIDATE_BLOCKING));
     }
 
     invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
     invoice.setValidatedByUser(userService.getUser());
     invoice.setValidatedDate(appBaseService.getTodayDate(invoice.getCompany()));
-    if (invoice.getPartnerAccount() == null) {
-      invoice.setPartnerAccount(invoiceService.getPartnerAccount(invoice));
-    }
+    setPartnerAccount();
+
     if (invoice.getJournal() == null) {
       invoice.setJournal(invoiceService.getJournal(invoice));
     }
@@ -123,7 +127,18 @@ public class ValidateState extends WorkflowInvoice {
     workflowValidationService.afterValidation(invoice);
   }
 
-  private void generateBudgetDistribution(Invoice invoice) {
+  protected void setPartnerAccount() throws AxelorException {
+    if (invoice.getPartnerAccount() == null) {
+      invoice.setPartnerAccount(accountingSituationService.getPartnerAccount(invoice, false));
+    }
+    if (invoice.getPartnerAccount() != null && !invoice.getPartnerAccount().getHasInvoiceTerm()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
+    }
+  }
+
+  protected void generateBudgetDistribution(Invoice invoice) {
     if (invoice.getInvoiceLineList() != null) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
         if (invoiceLine.getBudget() != null

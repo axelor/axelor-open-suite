@@ -1,0 +1,18 @@
+"importId";"name";"code";"bankJournal.importId";"invoiceLabel";"inOutSelect";"typeSelect";"canSelectInPaymentSession";"daysMarginOnPaySession";"accountingMethodSelect";"accountingTriggerSelect";"generateBankOrder";"generateMoveAutoFromBankOrder";"consoBankOrderLinePerPartner";"orderTypeSelect";"bankOrderExportFolderPath";"bankOrderFileFormat.name"
+1;"Enc. Autre";"ENC_OTH";13;"Autres moyens de paiement";1;1;;;;1;;;;;;
+2;"Enc. Prélèvement";"ENC_PRE";12;"Prélèvement";1;2;"true";7;1;1;;;;;;
+3;"Enc. TIP";"ENC_TIP";9;"TIP";1;3;;;;1;;;;;;
+4;"Enc. Espèces";"ENC_ESP";5;"Espèces";1;5;;;;1;;;;;;
+5;"Enc. Carte bancaire";"ENC_CB";7;"Carte bancaire";1;6;;;;1;;;;;;
+6;"Enc. Chèque";"ENC_CHQ";6;"Chèque";1;7;;;;1;;;;;;
+7;"Enc. Internet";"ENC_WEB";8;"Internet";1;8;;;;1;;;;;;
+8;"Enc. Virement";"ENC_VIR";11;"Virement";1;9;;7;1;1;;;;;;
+9;"Enc. TIP + Chèque";"ENC_TEC";10;"TIP + Chèque";1;4;;;;1;;;;;;
+10;"Dec. Prélèvement";"DEC_PRE";20;"Prélèvement";2;2;"true";7;1;1;;;;;;
+11;"Dec. TIP";"DEC_TIP";18;"TIP";2;3;;;;1;;;;;;
+12;"Dec. Espèces";"DEC_ESP";15;"Espèces";2;5;;;;1;;;;;;
+13;"Dec. Carte bancaire";"DEC_CB";17;"Carte bancaire";2;6;;;;1;;;;;;
+14;"Dec. Chèque";"DEC_CHQ";16;"Chèque";2;7;;;;1;;;;;;
+15;"Dec. Virement";"DEC_VIR";19;"Virement";2;9;"true";7;1;1;;;;;;
+16;"Dec. Autres";"DEC_OTH";21;"Autres moyens de paiement";2;1;;;;1;;;;;;
+17;"Enc. LCR Direct Banque";"ENC_LCR";13;"LCR";1;10;;;;1;"true";"true";"true";8;"/tmp/";"pain.xxx.cfonb160.dco - LCR"

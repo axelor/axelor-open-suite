@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.hr.web.lunch.voucher;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
@@ -28,7 +29,6 @@ import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -73,7 +73,7 @@ public class LunchVoucherMgtController {
       Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getPayPeriod());
       Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getLeavePeriod());
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -158,7 +158,7 @@ public class LunchVoucherMgtController {
     try {
       Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getPayPeriod());
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -167,7 +167,7 @@ public class LunchVoucherMgtController {
     try {
       Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getLeavePeriod());
     } catch (Exception e) {
-      response.setFlash(e.getMessage());
+      response.setInfo(e.getMessage());
     }
   }
 }

@@ -1,0 +1,2 @@
+deliveryNumberSeq;totalVolume;stockLocation_importId;carrierPartner_importId;totalGrossMass;forwarderPartner_importId;internalDeliveryComment;deliverToCustomerPartner_importId;tracking;customerAccountNumberToCarrier;isEmailSent;company_importId;importId;processInstanceId;collectionDate;totalNetMass;statusSelect;externalDeliveryComment;incoterm_importId;accountSelectionToCarrierSelect
+FL0001;8.000;;8000;5.000;88;;20;;;false;1;1;;2022-07-04;4.350;3;;;1

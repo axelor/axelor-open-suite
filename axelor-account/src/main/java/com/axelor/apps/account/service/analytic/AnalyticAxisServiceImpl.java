@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,8 @@ package com.axelor.apps.account.service.analytic;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AnalyticAxisServiceImpl implements AnalyticAxisService {
 
@@ -95,5 +97,22 @@ public class AnalyticAxisServiceImpl implements AnalyticAxisService {
         break;
     }
     return (long) 0;
+  }
+
+  @Override
+  public List<Integer> getSameAnalyticGroupingValues(
+      AnalyticAxis analyticAxis, String analyticGroupingChanged) {
+    int analyticGroupingChangedNumber =
+        Integer.parseInt(analyticGroupingChanged.split("analyticGrouping")[1]);
+    Long analyticGroupingChangedId =
+        this.getAnalyticGroupingId(analyticAxis, analyticGroupingChangedNumber);
+    List<Integer> sameAnalyticGroupingList = new ArrayList<>();
+    for (int i = 1; i <= 10 && analyticGroupingChangedId != 0; i++) {
+      if (i != analyticGroupingChangedNumber
+          && this.getAnalyticGroupingId(analyticAxis, i).equals(analyticGroupingChangedId)) {
+        sameAnalyticGroupingList.add(i);
+      }
+    }
+    return sameAnalyticGroupingList;
   }
 }

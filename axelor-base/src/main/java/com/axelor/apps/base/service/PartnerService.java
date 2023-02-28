@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.exception.AxelorException;
+import com.axelor.message.db.EmailAddress;
 import com.axelor.meta.CallMethod;
 import java.util.List;
 import java.util.Map;
@@ -62,11 +62,10 @@ public interface PartnerService {
 
   Map<String, String> getSocialNetworkUrl(String name, String firstName, Integer typeSelect);
 
-  List<Long> findPartnerMails(Partner partner);
+  @Deprecated
+  List<Long> findPartnerMails(Partner partner, int emailType);
 
-  List<Long> findContactMails(Partner partner);
-
-  List<Long> findMailsFromPartner(Partner partner);
+  List<Long> findMailsFromPartner(Partner partner, int emailType);
 
   void resetDefaultAddress(Partner partner, String addrTypeQuery);
 
@@ -151,13 +150,11 @@ public interface PartnerService {
 
   String computeCompanyStr(Partner partner);
 
-  String getPartnerDomain(Partner partner);
-
   String getTaxNbrFromRegistrationCode(Partner partner);
 
   String getNicFromRegistrationCode(Partner partner);
 
   String getSirenFromRegistrationCode(Partner partner);
 
-  List<Long> getPartnerIdsByType(String type);
+  boolean isRegistrationCodeValid(Partner partner);
 }

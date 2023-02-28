@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -88,6 +88,10 @@
   <selection name="sale.complementary.product.generation.type.select">
     <option value="1">Creation for the sale order</option>
     <option value="2">Creation for every sale order lines</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="sale.batch.batch.type.select">
+    <option value="800">Sale batch</option>
   </selection>
 
 </object-views>
