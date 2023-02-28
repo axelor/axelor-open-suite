@@ -2079,7 +2079,7 @@
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
     <error message="Incoterm must be filled"
       if="__config__.app.isApp('supplychain')
-          &amp;&amp; incoterm == null
+          &amp;&amp; (incoterm == null &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'})
           &amp;&amp; (
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
           || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code))"/>
