@@ -22,10 +22,10 @@
 <head>
 <title>Simple Leaflet Map</title>
 <meta charset="utf-8" />
-<link rel="stylesheet" href="../../../../../../src/main/webapp/leaflet/leaflet.css" />
+<link rel="stylesheet" href="../leaflet/leaflet.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-<script type="text/javascript" src="../../../../../../src/main/webapp/map/js/apphome.js"></script>
-<script src="../../../../../../src/main/webapp/leaflet/leaflet.js"></script>
+<script type="text/javascript" src="js/apphome.js"></script>
+<script src="../leaflet/leaflet.js"></script>
 </head>
 <body>
 
@@ -43,6 +43,11 @@
 			}
 			return (false);
 		}
+
+		function getPathname() {
+			var pathname = location.pathname.split('/');
+			return ('/' + pathname[1] + '/');
+		}
 	</script>
 
 	<script>
@@ -56,7 +61,7 @@
 		var bounds = new L.LatLngBounds();
 		var object = getQueryVariable("object");
 
-		var url = getAppHome() + "/ws/map/" + object;
+		var url = getAppHome() + getPathname() + "ws/map/" + object;
 		var id = getQueryVariable("id");
 		if (id) {
 			url += "/" + id;
