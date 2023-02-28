@@ -75,6 +75,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 @RequestScoped
 public class InvoiceTermServiceImpl implements InvoiceTermService {
@@ -1061,7 +1062,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     BigDecimal reconciledAmount =
         invoiceTermFromInvoice.getAmountRemaining().min(invoiceTermFromRefund.getAmountRemaining());
 
-    MoveLine creditMoveLine = null;
+    /*MoveLine creditMoveLine = null;
     MoveLine debitMoveLine = null;
     if (invoiceTermFromInvoice.getMoveLine().getMove().getFunctionalOriginSelect()
         == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
@@ -1080,19 +1081,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     updateInvoiceTermsAmounts(
         invoiceTermFromInvoice,
         reconciledAmount,
-        invoiceTermsReconcile,
+        // invoiceTermsReconcile,
+        null,
         invoiceTermFromRefund.getMoveLine().getMove());
     updateInvoiceTermsAmounts(
         invoiceTermFromRefund,
         reconciledAmount,
-        invoiceTermsReconcile,
-        invoiceTermFromInvoice.getMoveLine().getMove());
+        // invoiceTermsReconcile,
+        null,
+        invoiceTermFromInvoice.getMoveLine().getMove());*/
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
-      List<InvoiceTerm> invoiceTermList) throws AxelorException {
+      List<InvoiceTerm> invoiceTermList,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
+      throws AxelorException {
     List<Partner> partnerList = getPartnersFromInvoiceTermList(invoiceTermList);
 
     for (Partner partner : partnerList) {
@@ -1103,6 +1108,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           getInvoiceTermsRefundSortedByDueDateAndByPartner(invoiceTermList, partner);
       int invoiceCounter = 0;
       int refundCounter = 0;
+      BigDecimal reconciledAmount = BigDecimal.ZERO;
+      BigDecimal availableInvoiceAmount = BigDecimal.ZERO;
+      BigDecimal availableRefundAmount = BigDecimal.ZERO;
+
       InvoiceTerm invoiceTermFromInvoice = null;
       InvoiceTerm invoiceTermFromRefund = null;
       while (!ObjectUtils.isEmpty(invoiceTermFromRefundList)
@@ -1111,12 +1120,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           && refundCounter < invoiceTermFromRefundList.size()) {
         invoiceTermFromInvoice = invoiceTermFromInvoiceList.get(invoiceCounter);
         invoiceTermFromRefund = invoiceTermFromRefundList.get(refundCounter);
-        this.reconcileAndUpdateInvoiceTermsAmounts(invoiceTermFromInvoice, invoiceTermFromRefund);
-        if (invoiceTermFromInvoice.getAmountRemaining().signum() == 0) {
+        reconciledAmount =
+            invoiceTermFromInvoice
+                .getAmountRemaining()
+                .min(invoiceTermFromRefund.getAmountRemaining());
+
+        availableInvoiceAmount =
+            (BigDecimal.ZERO).compareTo(availableInvoiceAmount) == 1
+                ? invoiceTermFromInvoice.getAmountRemaining().subtract(reconciledAmount)
+                : availableInvoiceAmount.subtract(reconciledAmount);
+        availableRefundAmount =
+            (BigDecimal.ZERO).compareTo(availableRefundAmount) == 1
+                ? invoiceTermFromRefund.getAmountRemaining().subtract(reconciledAmount)
+                : availableRefundAmount.subtract(reconciledAmount);
+        if (invoiceTermFromInvoice.getAmountRemaining().subtract(reconciledAmount).signum() == 0) {
           invoiceTermFromInvoice.setIsPaid(true);
           invoiceCounter++;
         }
-        if (invoiceTermFromRefund.getAmountRemaining().signum() == 0) {
+        if (invoiceTermFromRefund.getAmountRemaining().subtract(reconciledAmount).signum() == 0) {
+          invoiceTermLinkWithRefundList.add(
+              Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
           invoiceTermFromRefund.setIsPaid(true);
           refundCounter++;
         }
@@ -1150,7 +1173,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         .collect(Collectors.toList());
   }
 
-  protected InvoiceTerm updateInvoiceTermsAmounts(
+  @Override
+  public InvoiceTerm updateInvoiceTermsAmounts(
       InvoiceTerm invoiceTerm, BigDecimal amount, Reconcile reconcile, Move move)
       throws AxelorException {
 

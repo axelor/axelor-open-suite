@@ -65,10 +65,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionValidateServiceImpl implements PaymentSessionValidateService {
   protected AppBaseService appBaseService;
@@ -193,7 +195,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public int processPaymentSession(PaymentSession paymentSession) throws AxelorException {
+  public int processPaymentSession(
+      PaymentSession paymentSession,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
+      throws AxelorException {
     Map<LocalDate, Map<Partner, List<Move>>> moveDateMap = new HashMap<>();
     Map<Move, BigDecimal> paymentAmountMap = new HashMap<>();
 
@@ -202,7 +207,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         paymentSession.getAccountingMethodSelect()
             == PaymentSessionRepository.ACCOUNTING_METHOD_GLOBAL;
 
-    this.processInvoiceTerms(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
+    this.processInvoiceTerms(
+        paymentSession,
+        moveDateMap,
+        paymentAmountMap,
+        invoiceTermLinkWithRefundList,
+        out,
+        isGlobal);
     this.postProcessPaymentSession(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
 
     return this.getMoveCount(moveDateMap, isGlobal);
@@ -226,6 +237,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       PaymentSession paymentSession,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
@@ -251,7 +263,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
           if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
             this.processInvoiceTerm(
-                paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, out, isGlobal);
+                paymentSession,
+                invoiceTerm,
+                moveDateMap,
+                paymentAmountMap,
+                invoiceTermLinkWithRefund,
+                out,
+                isGlobal);
           }
         } else {
           this.releaseInvoiceTerm(invoiceTerm);
@@ -274,6 +292,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
@@ -283,7 +302,13 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
         || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.generateMoveFromInvoiceTerm(
-          paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, out, isGlobal);
+          paymentSession,
+          invoiceTerm,
+          moveDateMap,
+          paymentAmountMap,
+          invoiceTermLinkWithRefundList,
+          out,
+          isGlobal);
     }
 
     return paymentSession;
@@ -319,6 +344,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
@@ -343,8 +369,67 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     Move move = this.getMove(paymentSession, partner, invoiceTerm, moveDateMap, paymentAmountMap);
 
+    BigDecimal reconciledAmount = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(invoiceTermLinkWithRefundList)) {
+      List<Pair<InvoiceTerm, BigDecimal>> invoiceTermByAmountList =
+          invoiceTermLinkWithRefundList.stream()
+              .filter(pair -> pair.getLeft().equals(invoiceTerm))
+              .map(pair -> pair.getRight())
+              .collect(Collectors.toList());
+      if (!CollectionUtils.isEmpty(invoiceTermByAmountList)) {
+        for (Pair<InvoiceTerm, BigDecimal> pair : invoiceTermByAmountList) {
+
+          MoveLine moveLine =
+              this.generateMoveLine(
+                  move,
+                  invoiceTerm.getMoveLine().getPartner(),
+                  pair.getLeft().getMoveLine().getAccount(),
+                  pair.getRight(),
+                  pair.getLeft().getMoveLine().getOrigin(),
+                  this.getMoveLineDescription(paymentSession),
+                  !out);
+          reconciledAmount = reconciledAmount.add(pair.getRight());
+
+          paymentAmountMap.replace(move, paymentAmountMap.get(move).subtract(pair.getRight()));
+
+          MoveLine creditMoveLine = null;
+          MoveLine debitMoveLine = null;
+          if (pair.getLeft().getMoveLine().getMove().getFunctionalOriginSelect()
+              == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+            creditMoveLine = moveLine;
+            debitMoveLine = pair.getLeft().getMoveLine();
+          } else if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+              == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
+            creditMoveLine = pair.getLeft().getMoveLine();
+            debitMoveLine = moveLine;
+          }
+          Reconcile invoiceTermsReconcile =
+              reconcileService.createReconcile(
+                  debitMoveLine, creditMoveLine, pair.getRight(), true);
+
+          reconcileService.confirmReconcile(invoiceTermsReconcile, false, false);
+
+          invoiceTermService.updateInvoiceTermsAmounts(
+              invoiceTerm,
+              pair.getRight(),
+              invoiceTermsReconcile,
+              pair.getLeft().getMoveLine().getMove());
+          invoiceTermService.updateInvoiceTermsAmounts(
+              pair.getLeft(),
+              pair.getRight(),
+              invoiceTermsReconcile,
+              invoiceTerm.getMoveLine().getMove());
+        }
+      }
+    }
+
     this.generateMoveLineFromInvoiceTerm(
-        paymentSession, invoiceTerm, move, invoiceTerm.getMoveLine().getOrigin(), out);
+        paymentSession,
+        invoiceTerm,
+        move,
+        invoiceTerm.getMoveLine().getOrigin(),
+        out,
+        reconciledAmount);
 
     if (invoiceTerm.getApplyFinancialDiscountOnPaymentSession()
         && (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
@@ -429,14 +514,19 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   protected Move generateMoveLineFromInvoiceTerm(
-      PaymentSession paymentSession, InvoiceTerm invoiceTerm, Move move, String origin, boolean out)
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      Move move,
+      String origin,
+      boolean out,
+      BigDecimal reconciliedAmount)
       throws AxelorException {
     MoveLine moveLine =
         this.generateMoveLine(
             move,
             invoiceTerm.getMoveLine().getPartner(),
             invoiceTerm.getMoveLine().getAccount(),
-            invoiceTerm.getPaymentAmount(),
+            invoiceTerm.getPaymentAmount().add(reconciliedAmount),
             origin,
             this.getMoveLineDescription(paymentSession),
             out);
@@ -583,6 +673,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     for (Partner partner : moveMap.keySet()) {
       for (Move move : moveMap.get(partner)) {
         amount = paymentAmountMap.get(move);
+        System.err.println(amount);
 
         this.generateCashMoveLine(
             move, partner, cashAccount, amount, this.getMoveLineDescription(paymentSession), out);
@@ -636,7 +727,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   @Transactional(rollbackOn = {Exception.class})
   protected InvoiceTerm releaseInvoiceTerm(InvoiceTerm invoiceTerm) {
     invoiceTerm.setPaymentSession(null);
-    invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
+    // invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
 
     return invoiceTermRepo.save(invoiceTerm);
   }
@@ -809,7 +900,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   @Override
-  public void reconciledInvoiceTermMoves(PaymentSession paymentSession) throws AxelorException {
+  public void reconciledInvoiceTermMoves(
+      PaymentSession paymentSession,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
+      throws AxelorException {
 
     TypedQuery<InvoiceTerm> invoiceTermQuery =
         JPA.em()
@@ -824,7 +918,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     if (!ObjectUtils.isEmpty(invoiceTermList)) {
       invoiceTermList =
-          invoiceTermService.reconcileMoveLineInvoiceTermsWithFullRollBack(invoiceTermList);
+          invoiceTermService.reconcileMoveLineInvoiceTermsWithFullRollBack(
+              invoiceTermList, invoiceTermLinkWithRefundList);
     }
   }
 
@@ -883,7 +978,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   @Override
   @Transactional(rollbackOn = {AxelorException.class})
   public StringBuilder processInvoiceTerms(PaymentSession paymentSession) throws AxelorException {
-    reconciledInvoiceTermMoves(paymentSession);
-    return generateFlashMessage(paymentSession, processPaymentSession(paymentSession));
+    List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund =
+        new ArrayList<>();
+    reconciledInvoiceTermMoves(paymentSession, invoiceTermLinkWithRefund);
+    return generateFlashMessage(
+        paymentSession, processPaymentSession(paymentSession, invoiceTermLinkWithRefund));
   }
 }
