@@ -37,6 +37,8 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +55,8 @@ public class ActionScriptBuilderService {
   private int varCount = 0;
 
   private boolean isCreate = false;
+
+  private boolean isObjToJson = false;
 
   @Inject private ActionBuilderLineRepository builderLineRepo;
 
@@ -199,9 +203,11 @@ public class ActionScriptBuilderService {
   }
 
   protected void addRootFunction(ActionBuilder builder, StringBuilder stb, int level) {
+    List<ActionBuilderLine> lines = builder.getLines();
+    boolean isJsonField = lines.stream().anyMatch(l -> l.getIsTargetJson());
 
     stb.append(format("function setVar0($$, $, _$){", level));
-    String bindings = addFieldsBinding("target", builder.getLines(), level + 1);
+    String bindings = addFieldsBinding("target", builder.getLines(), level + 1, isJsonField);
     stb.append(bindings);
     stb.append(format("return target;", level + 1));
     stb.append(format("}", level));
@@ -212,7 +218,8 @@ public class ActionScriptBuilderService {
     return "\n" + Strings.repeat(INDENT, level) + line;
   }
 
-  protected String addFieldsBinding(String target, List<ActionBuilderLine> lines, int level) {
+  protected String addFieldsBinding(
+      String target, List<ActionBuilderLine> lines, int level, boolean json) {
 
     StringBuilder stb = new StringBuilder();
 
@@ -226,6 +233,10 @@ public class ActionScriptBuilderService {
           }
           return 0;
         });
+
+    if (json) {
+      computeAttrsField(target, level, lines, stb);
+    }
 
     for (ActionBuilderLine line : lines) {
 
@@ -242,10 +253,13 @@ public class ActionScriptBuilderService {
       MetaJsonField jsonField = line.getMetaJsonField();
       MetaField metaField = line.getMetaField();
 
-      if (jsonField != null
+      if (line.getIsTargetJson()
+          && jsonField != null
           && (jsonField.getTargetJsonModel() != null || jsonField.getTargetModel() != null)) {
         value = addRelationalBinding(line, target, true);
-      } else if (metaField != null && metaField.getRelationship() != null) {
+      } else if (!line.getIsTargetJson()
+          && metaField != null
+          && metaField.getRelationship() != null) {
         value = addRelationalBinding(line, target, false);
       }
       // else {
@@ -265,14 +279,62 @@ public class ActionScriptBuilderService {
 
       String condition = line.getConditionText();
       if (condition != null) {
-        stb.append(
-            format("if(" + condition + "){" + target + "." + name + " = " + value + ";}", level));
+        if (jsonField != null && json) {
+          String attrsField = jsonField.getModelField();
+          stb.append(
+              format(
+                  "if(" + condition + "){" + attrsField + "." + name + " = " + value + ";}",
+                  level));
+
+        } else {
+          stb.append(
+              format("if(" + condition + "){" + target + "." + name + " = " + value + ";}", level));
+        }
       } else {
-        stb.append(format(target + "." + name + " = " + value + ";", level));
+        if (jsonField != null && json) {
+          String attrsField = jsonField.getModelField();
+          stb.append(format(attrsField + "." + name + " = " + value + ";", level));
+
+        } else {
+          stb.append(format(target + "." + name + " = " + value + ";", level));
+        }
       }
     }
 
+    if (json) {
+      Set<String> attrsFields = getAttrsFields(lines);
+      attrsFields.forEach(
+          attrsField -> {
+            stb.append(
+                format(
+                    target + "." + attrsField + " = JSON.stringify(" + attrsField + ");", level));
+          });
+    }
+
     return stb.toString();
+  }
+
+  protected void computeAttrsField(
+      String target, int level, List<ActionBuilderLine> lines, StringBuilder stb) {
+
+    Set<String> attrsFields = getAttrsFields(lines);
+    attrsFields.forEach(
+        attrsField -> {
+          stb.append(format("if (" + target + "." + attrsField + " == null) {", level));
+          stb.append(format(target + "." + attrsField + " = '{}';", level + 1));
+          stb.append(format("}", level));
+          stb.append(
+              format(
+                  "var " + attrsField + " = JSON.parse(" + target + "." + attrsField + ");",
+                  level));
+        });
+  }
+
+  protected Set<String> getAttrsFields(List<ActionBuilderLine> lines) {
+    return lines.stream()
+        .filter(l -> l.getIsTargetJson())
+        .map(l -> l.getMetaJsonField().getModelField())
+        .collect(Collectors.toSet());
   }
 
   protected String addRelationalBinding(ActionBuilderLine line, String target, boolean json) {
@@ -287,19 +349,19 @@ public class ActionScriptBuilderService {
 
     switch (type) {
       case "many-to-one":
-        subCode = addM2OBinding(line, true, true);
+        subCode = addM2OBinding(line, true, true, json);
         break;
       case "many-to-many":
-        subCode = addM2MBinding(line);
+        subCode = addM2MBinding(line, json);
         break;
       case "one-to-many":
-        subCode = addO2MBinding(line, target);
+        subCode = addO2MBinding(line, target, json);
         break;
       case "one-to-one":
-        subCode = addM2OBinding(line, true, true);
+        subCode = addM2OBinding(line, true, true, json);
         break;
       case "json-many-to-one":
-        subCode = addJsonM2OBinding(line, true, true);
+        subCode = addJsonM2OBinding(line, true, true, json);
         break;
       case "json-many-to-many":
         subCode = addJsonM2MBinding(line);
@@ -402,7 +464,26 @@ public class ActionScriptBuilderService {
     return sourceModel;
   }
 
-  protected String addM2OBinding(ActionBuilderLine line, boolean search, boolean filter) {
+  protected void addObjToJson() {
+    if (isObjToJson) {
+      return;
+    }
+    isObjToJson = true;
+    StringBuilder stb = new StringBuilder();
+    fbuilder.add(stb);
+    stb.append(format("", 1));
+    stb.append(format("function objToJson($){", 1));
+    stb.append(format("var obj = {};", 2));
+    stb.append(format("var map = com.axelor.db.mapper.Mapper.toMap($);", 2));
+    stb.append(format("map.forEach(function(key, value){", 2));
+    stb.append(format("obj[key] = value;", 3));
+    stb.append(format("});", 2));
+    stb.append(format("return obj;", 2));
+    stb.append(format("}", 1));
+  }
+
+  protected String addM2OBinding(
+      ActionBuilderLine line, boolean search, boolean filter, boolean json) {
 
     String fname = "setVar" + varCount;
     varCount += 1;
@@ -437,24 +518,31 @@ public class ActionScriptBuilderService {
       }
       stb.append(format("val = " + getQuery(tModel, line.getFilter(), false, false), 2));
     } else if (srcModel == null) {
-      stb.append(format("val = " + "$", 2));
+      stb.append(format("val = $;", 2));
     }
 
     List<ActionBuilderLine> lines = line.getSubLines();
     if (lines != null && !lines.isEmpty()) {
+      boolean isJsonField = lines.stream().anyMatch(l -> l.getIsTargetJson());
+
       stb.append(format("if (!val) {", 2));
       stb.append(format("val = new " + tModel + "();", 3));
       stb.append(format("}", 2));
-      stb.append(addFieldsBinding("val", lines, 2));
+      stb.append(addFieldsBinding("val", lines, 2, isJsonField));
       // stb.append(format("$em.persist(val);", 2));
     }
-    stb.append(format("return val;", 2));
+    if (json) {
+      addObjToJson();
+      stb.append(format("return objToJson(val);", 2));
+    } else {
+      stb.append(format("return val;", 2));
+    }
     stb.append(format("}", 1));
 
     return fname;
   }
 
-  protected String addM2MBinding(ActionBuilderLine line) {
+  protected String addM2MBinding(ActionBuilderLine line, boolean json) {
 
     String fname = "setVar" + varCount;
     varCount += 1;
@@ -462,7 +550,7 @@ public class ActionScriptBuilderService {
     fbuilder.add(stb);
     stb.append(format("", 1));
     stb.append(format("function " + fname + "($$, $, _$){", 1));
-    stb.append(format("var val  = new HashSet();", 2));
+    stb.append(format("var val = " + (json ? "[];" : "new HashSet();"), 2));
     if (line.getFilter() != null) {
       String model = getTargetModel(line);
       stb.append(format("var map = com.axelor.db.mapper.Mapper.toMap($$);", 2));
@@ -472,16 +560,16 @@ public class ActionScriptBuilderService {
 
     stb.append(format("if(!$){return val;}", 2));
     stb.append(format("$.forEach(function(v){", 2));
-    stb.append(format("v = " + addM2OBinding(line, true, false) + "($$, v, _$);", 3));
-    stb.append(format("val.add(v);", 3));
-    stb.append(format("})", 2));
+    stb.append(format("v = " + addM2OBinding(line, true, false, json) + "($$, v, _$);", 3));
+    stb.append(format(json ? "val.push(v);" : "val.add(v);", 3));
+    stb.append(format("});", 2));
     stb.append(format("return val;", 2));
     stb.append(format("}", 1));
 
     return fname;
   }
 
-  protected String addO2MBinding(ActionBuilderLine line, String target) {
+  protected String addO2MBinding(ActionBuilderLine line, String target, boolean json) {
 
     String fname = "setVar" + varCount;
     varCount += 1;
@@ -489,22 +577,23 @@ public class ActionScriptBuilderService {
     fbuilder.add(stb);
     stb.append(format("", 1));
     stb.append(format("function " + fname + "($$, $, _$){", 1));
-    stb.append(format("var val  = new ArrayList();", 2));
+    stb.append(format("var val = " + (json ? "[];" : "new ArrayList();"), 2));
     stb.append(format("if(!$){return val;}", 2));
     stb.append(format("$.forEach(function(v){", 2));
-    stb.append(format("var item = " + addM2OBinding(line, false, false) + "($$, v, _$);", 3));
+    stb.append(format("var item = " + addM2OBinding(line, false, false, json) + "($$, v, _$);", 3));
     if (isCreate && line.getMetaField() != null && line.getMetaField().getMappedBy() != null) {
       stb.append(format("item." + line.getMetaField().getMappedBy() + " = " + target, 3));
     }
-    stb.append(format("val.add(item);", 3));
-    stb.append(format("})", 2));
+    stb.append(format(json ? "val.push(item);" : "val.add(item);", 3));
+    stb.append(format("});", 2));
     stb.append(format("return val;", 2));
     stb.append(format("}", 1));
 
     return fname;
   }
 
-  protected String addJsonM2OBinding(ActionBuilderLine line, boolean search, boolean filter) {
+  protected String addJsonM2OBinding(
+      ActionBuilderLine line, boolean search, boolean filter, boolean json) {
 
     String fname = "setVar" + varCount;
     varCount += 1;
@@ -536,10 +625,15 @@ public class ActionScriptBuilderService {
       stb.append(format("else {", 2));
       stb.append(format("val = $json.create(val);", 3));
       stb.append(format("}", 2));
-      stb.append(addFieldsBinding("val", lines, 2));
+      stb.append(addFieldsBinding("val", lines, 2, false));
       stb.append(format("val = $json.save(val);", 2));
     }
-    stb.append(format("return val;", 2));
+    if (json) {
+      addObjToJson();
+      stb.append(format("return objToJson(val);", 2));
+    } else {
+      stb.append(format("return val;", 2));
+    }
     stb.append(format("}", 1));
 
     return fname;
@@ -553,7 +647,7 @@ public class ActionScriptBuilderService {
     fbuilder.add(stb);
     stb.append(format("", 1));
     stb.append(format("function " + fname + "($$, $, _$){", 1));
-    stb.append(format("var val  = new HashSet();", 2));
+    stb.append(format("var val = [];", 2));
     if (line.getFilter() != null) {
       String model = getTargetJsonModel(line);
       stb.append(format("val.addAll(" + getQuery(model, line.getFilter(), true, true) + ");", 2));
@@ -561,9 +655,9 @@ public class ActionScriptBuilderService {
     }
     stb.append(format("if(!$){return val;}", 2));
     stb.append(format("$.forEach(function(v){", 2));
-    stb.append(format("v = " + addJsonM2OBinding(line, true, false) + "($$, v, _$);", 3));
-    stb.append(format("val.add(v);", 3));
-    stb.append(format("})", 2));
+    stb.append(format("v = " + addJsonM2OBinding(line, true, false, true) + "($$, v, _$);", 3));
+    stb.append(format("val.push(v);", 3));
+    stb.append(format("});", 2));
     stb.append(format("return val;", 2));
     stb.append(format("}", 1));
 
@@ -578,12 +672,12 @@ public class ActionScriptBuilderService {
     fbuilder.add(stb);
     stb.append(format("", 1));
     stb.append(format("function " + fname + "($$, $, _$){", 1));
-    stb.append(format("var val  = new ArrayList();", 2));
+    stb.append(format("var val = [];", 2));
     stb.append(format("if(!$){return val;}", 2));
     stb.append(format("$.forEach(function(v){", 2));
-    stb.append(format("v = " + addJsonM2OBinding(line, false, false) + "($$, v, _$);", 3));
-    stb.append(format("val.add(v);", 3));
-    stb.append(format("})", 2));
+    stb.append(format("v = " + addJsonM2OBinding(line, false, false, true) + "($$, v, _$);", 3));
+    stb.append(format("val.push(v);", 3));
+    stb.append(format("});", 2));
     stb.append(format("return val;", 2));
     stb.append(format("}", 1));
 
