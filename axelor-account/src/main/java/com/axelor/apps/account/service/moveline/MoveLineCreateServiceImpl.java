@@ -466,6 +466,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 invoiceLine.getProductName());
 
         moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
+        moveLine.clearAnalyticMoveLineList();
+
         if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
           for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine analyticMoveLine =
