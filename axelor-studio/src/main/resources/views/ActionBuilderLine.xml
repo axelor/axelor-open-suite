@@ -86,7 +86,7 @@
       expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.jsonModel.id = ${__parent__.metaJsonField?.targetJsonModel?.id} &quot;"
       if="__parent__.isTargetJson &amp;&amp; __parent__._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
     <attribute name="domain" for="metaJsonField"
-      expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.model LIKE '%.${__parent__?.metaField.typeName}' &quot;"
+      expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.model LIKE '%.${__parent__?.metaField?.typeName}' &quot;"
       if="!__parent__.isTargetJson &amp;&amp; __parent__._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
   </action-attrs>
 
@@ -101,7 +101,7 @@
       expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.jsonModel.id = ${__parent__.valueJson?.targetJsonModel?.id} &quot;"
       if="__parent__.isSourceJson &amp;&amp; __parent__._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
     <attribute name="domain" for="valueJson"
-      expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.model LIKE '%.${__parent__?.valueField.typeName}' &quot;"
+      expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.model LIKE '%.${__parent__?.valueField?.typeName}' &quot;"
       if="!__parent__.isSourceJson &amp;&amp; __parent__._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
   </action-attrs>
 
