@@ -22,6 +22,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineHistoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
@@ -48,6 +49,8 @@ public class StockLocationLineController {
                           .orElse(null))
               .toLocalDateTime();
 
+      Beans.get(WeightedAveragePriceService.class)
+          .computeAvgPriceForProduct(stockLocationLine.getProduct());
       Beans.get(StockLocationLineHistoryService.class)
           .saveHistory(
               stockLocationLine,

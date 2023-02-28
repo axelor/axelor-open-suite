@@ -100,7 +100,7 @@ public class DmnServiceImpl implements DmnService {
     JpaRepository.of(EntityHelper.getEntityClass(model)).save(model);
   }
 
-  private void addValue(FullContext context, String field, Object value, Model model)
+  protected void addValue(FullContext context, String field, Object value, Model model)
       throws AxelorException {
 
     if (!field.contains(".")) {
@@ -129,7 +129,7 @@ public class DmnServiceImpl implements DmnService {
     log.debug("Relational value added: {}", context.get(fieldName));
   }
 
-  private Object processMetaField(
+  protected Object processMetaField(
       String fieldName, String subField, Object value, Class<Model> entityClass)
       throws AxelorException {
 
@@ -146,7 +146,7 @@ public class DmnServiceImpl implements DmnService {
     return findResult(value, subField, targetModel, isCollection, isSet);
   }
 
-  private Object processMetaModelJson(
+  protected Object processMetaModelJson(
       String fieldName, String subField, Object value, Class<Model> entityClass)
       throws AxelorException {
 
@@ -167,7 +167,7 @@ public class DmnServiceImpl implements DmnService {
     return processMetaJsonField(value, subField, jsonField);
   }
 
-  private Object processMetaModelJson(
+  protected Object processMetaModelJson(
       String fieldName, String subField, Object value, String jsonModel) throws AxelorException {
 
     MetaJsonField jsonField =
@@ -183,7 +183,7 @@ public class DmnServiceImpl implements DmnService {
     return processMetaJsonField(value, subField, jsonField);
   }
 
-  private Object processMetaJsonField(Object value, String subField, MetaJsonField jsonField)
+  protected Object processMetaJsonField(Object value, String subField, MetaJsonField jsonField)
       throws AxelorException {
 
     String type = jsonField.getType();
@@ -202,7 +202,7 @@ public class DmnServiceImpl implements DmnService {
     return findResult(value, subField, targetModel, isCollection, isSet);
   }
 
-  private Object findResult(
+  protected Object findResult(
       Object value, String subField, String targetModel, boolean isCollection, boolean isSet)
       throws AxelorException {
 
@@ -238,7 +238,7 @@ public class DmnServiceImpl implements DmnService {
     return WkfContextHelper.filterOne(targetModel, query, params).getTarget();
   }
 
-  private String getQuery(String subField, boolean collectionParameter) {
+  protected String getQuery(String subField, boolean collectionParameter) {
 
     String operator = "=";
     if (collectionParameter) {
@@ -249,7 +249,7 @@ public class DmnServiceImpl implements DmnService {
     return query;
   }
 
-  private Object getParameter(Object value) {
+  protected Object getParameter(Object value) {
 
     Object params = null;
     if (value instanceof String) {
@@ -344,7 +344,7 @@ public class DmnServiceImpl implements DmnService {
     return fields;
   }
 
-  private String mapToMetaModelFields(
+  protected String mapToMetaModelFields(
       List<String> fields,
       String modelName,
       String searchOperator,
@@ -391,7 +391,7 @@ public class DmnServiceImpl implements DmnService {
     return scriptBuilder.toString();
   }
 
-  private void addRelationalField(
+  protected void addRelationalField(
       String searchOperator,
       boolean multiple,
       StringBuilder scriptBuilder,
@@ -415,7 +415,7 @@ public class DmnServiceImpl implements DmnService {
     scriptBuilder.append("if(" + resultField + " != null) {" + varName + " = " + field + "}");
   }
 
-  private String mapToMetaCustomModelFields(
+  protected String mapToMetaCustomModelFields(
       List<String> fields,
       String modelName,
       String searchOperator,
@@ -443,7 +443,7 @@ public class DmnServiceImpl implements DmnService {
     return scriptBuilder.toString();
   }
 
-  private void addJsonField(
+  protected void addJsonField(
       String searchOperator,
       boolean multiple,
       String resultVar,

@@ -162,7 +162,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         .domain("self.parentTask = " + root.getId());
   }
 
-  private void updateTask(ProjectTask root, ProjectTask childTask, SaleOrderLine orderLine)
+  protected void updateTask(ProjectTask root, ProjectTask childTask, SaleOrderLine orderLine)
       throws AxelorException {
     childTask.setParentTask(root);
     childTask.setQuantity(orderLine.getQty());

@@ -68,7 +68,7 @@ public class QueryNode extends BaseTaskNode {
     return "\n" + target + " = " + codeBuilder.toString();
   }
 
-  private void addQuery(StringBuilder codeBuilder, String model) {
+  protected void addQuery(StringBuilder codeBuilder, String model) {
 
     String filter = getExpression();
 
@@ -97,7 +97,7 @@ public class QueryNode extends BaseTaskNode {
     }
   }
 
-  private void addDynamicQuery(StringBuilder codeBuilder, String model) {
+  protected void addDynamicQuery(StringBuilder codeBuilder, String model) {
 
     String filter = getExpression();
 

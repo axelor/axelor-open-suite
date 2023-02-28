@@ -57,7 +57,7 @@ public class WkfBamlService implements JavaDelegate {
     }
   }
 
-  private void executeBaml(DelegateExecution execution, BamlModel bamlModel) {
+  protected void executeBaml(DelegateExecution execution, BamlModel bamlModel) {
 
     Map<String, Object> context = createContext(execution);
 

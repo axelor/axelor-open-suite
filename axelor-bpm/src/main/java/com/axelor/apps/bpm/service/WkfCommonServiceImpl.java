@@ -203,7 +203,7 @@ public class WkfCommonServiceImpl implements WkfCommonService {
     return name;
   }
 
-  private String getModelName(Model model) {
+  protected String getModelName(Model model) {
 
     if (model instanceof MetaJsonRecord) {
       return ((MetaJsonRecord) model).getJsonModel();

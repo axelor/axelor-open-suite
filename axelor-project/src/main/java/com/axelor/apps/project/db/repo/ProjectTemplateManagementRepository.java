@@ -22,7 +22,7 @@ import com.google.common.base.Strings;
 
 public class ProjectTemplateManagementRepository extends ProjectTemplateRepository {
 
-  private void setProjectTemplateFullName(ProjectTemplate entity) {
+  protected void setProjectTemplateFullName(ProjectTemplate entity) {
     String projectCode = (Strings.isNullOrEmpty(entity.getCode())) ? "" : entity.getCode() + " - ";
     entity.setFullName(projectCode + entity.getName());
   }

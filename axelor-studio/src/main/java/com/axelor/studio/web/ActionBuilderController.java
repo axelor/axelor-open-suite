@@ -58,7 +58,7 @@ public class ActionBuilderController {
     }
   }
 
-  private void addActionBuilderView(
+  protected void addActionBuilderView(
       List<ActionBuilderView> views, String model, String type, boolean isJson, int sequence) {
 
     String viewName = model + "-" + type;
