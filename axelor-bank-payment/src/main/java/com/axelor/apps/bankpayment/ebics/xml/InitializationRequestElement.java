@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,8 +41,8 @@ import com.axelor.apps.account.ebics.schema.xmldsig.SignatureType;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;

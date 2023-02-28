@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,15 +17,14 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
-import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.repo.AddressRepository;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -33,17 +32,18 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Singleton;
 import com.qas.web_2005_02.AddressLineType;
 import com.qas.web_2005_02.PicklistEntryType;
@@ -77,7 +77,7 @@ public class AddressController {
         Beans.get(AddressService.class).check(appBase.getQasWsdlUrl())
             ? appBase.getQasWsdlUrl() + " " + I18n.get(BaseExceptionMessage.ADDRESS_1)
             : I18n.get(BaseExceptionMessage.ADDRESS_2);
-    response.setFlash(msg);
+    response.setInfo(msg);
   }
 
   public void validate(ActionRequest request, ActionResponse response) {
@@ -107,7 +107,7 @@ public class AddressController {
       response.setValue("certifiedOk", true);
       response.setValue("pickList", new ArrayList<QAPicklistType>());
       if (addL1 != null) {
-        response.setFlash("Ligne 1: " + addL1);
+        response.setInfo("Ligne 1: " + addL1);
       }
     } else if (verifyLevel != null
         && (verifyLevel.value().equals("Multiple")
@@ -148,7 +148,7 @@ public class AddressController {
 
     } else if (verifyLevel != null && verifyLevel.value().equals("None")) {
       LOG.debug("address None");
-      response.setFlash(I18n.get(BaseExceptionMessage.ADDRESS_3));
+      response.setInfo(I18n.get(BaseExceptionMessage.ADDRESS_3));
     }
   }
 
@@ -191,7 +191,7 @@ public class AddressController {
         response.setValue("certifiedOk", true);
       }
 
-    } else response.setFlash(I18n.get(BaseExceptionMessage.ADDRESS_4));
+    } else response.setInfo(I18n.get(BaseExceptionMessage.ADDRESS_4));
   }
 
   public void export(ActionRequest request, ActionResponse response)
@@ -226,7 +226,7 @@ public class AddressController {
         mapView.put("viewType", "html");
         response.setView(mapView);
       } else {
-        response.setFlash(
+        response.setInfo(
             String.format(I18n.get(BaseExceptionMessage.ADDRESS_5), address.getFullName()));
       }
       response.setReload(true);
@@ -248,12 +248,12 @@ public class AddressController {
       Company company =
           Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
       if (company == null) {
-        response.setFlash(I18n.get(BaseExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+        response.setInfo(I18n.get(BaseExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
         return;
       }
       Address departureAddress = company.getAddress();
       if (departureAddress == null) {
-        response.setFlash(I18n.get(BaseExceptionMessage.ADDRESS_7));
+        response.setInfo(I18n.get(BaseExceptionMessage.ADDRESS_7));
         return;
       }
 
@@ -262,7 +262,7 @@ public class AddressController {
           Beans.get(AddressService.class).getOrUpdateLatLong(departureAddress);
 
       if (!departureLatLong.isPresent()) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get(BaseExceptionMessage.ADDRESS_5), departureAddress.getFullName()));
         return;
@@ -274,7 +274,7 @@ public class AddressController {
           Beans.get(AddressService.class).getOrUpdateLatLong(arrivalAddress);
 
       if (!arrivalLatLong.isPresent()) {
-        response.setFlash(
+        response.setInfo(
             String.format(I18n.get(BaseExceptionMessage.ADDRESS_5), arrivalAddress.getFullName()));
         return;
       }

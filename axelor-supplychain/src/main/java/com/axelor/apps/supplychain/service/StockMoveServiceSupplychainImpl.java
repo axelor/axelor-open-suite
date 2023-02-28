@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,12 +21,13 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -44,19 +45,20 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -106,7 +108,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       ReservedQtyService reservedQtyService,
       ProductRepository productRepository,
       PartnerSupplychainService partnerSupplychainService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -114,7 +118,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         appBaseService,
         stockMoveRepository,
         partnerProductQualityRatingService,
-        productRepository);
+        productRepository,
+        partnerStockSettingsService,
+        stockConfigService);
     this.appSupplyChainService = appSupplyChainService;
     this.accountConfigService = accountConfigService;
     this.purchaseOrderRepo = purchaseOrderRepo;
@@ -241,8 +247,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void plan(StockMove stockMove) throws AxelorException {
     super.plan(stockMove);
 
-    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()
-        && appSupplyChainService.isApp("supplychain")) {
+    if (appSupplyChainService.isApp("supplychain")
+        && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       reservedQtyService.updateReservedQuantity(stockMove, StockMoveRepository.STATUS_PLANNED);
     }
   }
@@ -380,8 +386,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       throws AxelorException {
     StockMoveLine newStockMoveLine = super.copySplittedStockMoveLine(stockMoveLine);
 
-    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()
-        && appSupplyChainService.isApp("supplychain")) {
+    if (appSupplyChainService.isApp("supplychain")
+        && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       BigDecimal requestedReservedQty =
           stockMoveLine
               .getRequestedReservedQty()

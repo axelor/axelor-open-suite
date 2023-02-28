@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,18 +17,18 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ModelEmailLink;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppBase;
 
 public class ModelEmailLinkController {
 

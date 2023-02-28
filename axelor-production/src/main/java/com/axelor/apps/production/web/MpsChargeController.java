@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.MpsWeeklySchedule;
 import com.axelor.apps.production.report.IReport;
@@ -25,7 +26,6 @@ import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;

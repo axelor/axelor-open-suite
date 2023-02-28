@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,12 +19,12 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -47,10 +47,14 @@ public class DepositSlipAccountRepository extends DepositSlipRepository {
     }
   }
 
-  private void setDepositNumber(DepositSlip entity) throws AxelorException {
+  protected void setDepositNumber(DepositSlip entity) throws AxelorException {
     SequenceService sequenceService = Beans.get(SequenceService.class);
     String depositNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.DEPOSIT_SLIP, entity.getCompany());
+        sequenceService.getSequenceNumber(
+            SequenceRepository.DEPOSIT_SLIP,
+            entity.getCompany(),
+            DepositSlip.class,
+            "depositNumber");
 
     if (Strings.isNullOrEmpty(depositNumber)) {
       throw new AxelorException(

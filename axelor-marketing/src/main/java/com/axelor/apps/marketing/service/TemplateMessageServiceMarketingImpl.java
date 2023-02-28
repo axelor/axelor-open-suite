@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,15 +17,15 @@
  */
 package com.axelor.apps.marketing.service;
 
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
-import com.axelor.apps.message.db.EmailAccount;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.EmailAccount;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateContextService;
+import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;

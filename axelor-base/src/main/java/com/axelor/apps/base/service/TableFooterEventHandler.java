@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,7 +34,7 @@ import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.properties.TextAlignment;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -94,10 +94,10 @@ public class TableFooterEventHandler implements IEventHandler {
             pdfDoc.getDefaultPageSize().getBottom() - doc.getBottomMargin(),
             100,
             90);
-    new Canvas(canvas, pdfDoc, rect1).add(tableFooter);
+    new Canvas(canvas, rect1).add(tableFooter);
   }
 
-  private void setCellFooterTextAlignment(Cell cellFooter, String footerTextAlignment) {
+  protected void setCellFooterTextAlignment(Cell cellFooter, String footerTextAlignment) {
 
     switch (footerTextAlignment) {
       case "left":
@@ -114,7 +114,7 @@ public class TableFooterEventHandler implements IEventHandler {
     }
   }
 
-  private void setCellFooterFontColor(Cell cellFooter, String footerFontColor) {
+  protected void setCellFooterFontColor(Cell cellFooter, String footerFontColor) {
 
     switch (footerFontColor) {
       case "blue":

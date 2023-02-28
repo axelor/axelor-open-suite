@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,11 @@
  */
 package com.axelor.apps.businessproject.service.batch;
 
-import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
@@ -29,12 +30,11 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBusinessProject;
+import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     }
   }
 
-  private void updateTasks() {
+  protected void updateTasks() {
     QueryBuilder<ProjectTask> taskQueryBuilder =
         projectTaskBusinessProjectService.getTaskInvoicingFilter();
 
@@ -114,7 +114,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     }
   }
 
-  private void updateTaskToInvoice(
+  protected void updateTaskToInvoice(
       Map<String, Object> contextValues, AppBusinessProject appBusinessProject) {
 
     QueryBuilder<ProjectTask> taskQueryBuilder =
@@ -163,7 +163,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
         batch, updatedTaskList, "updatedTaskSet", contextValues);
   }
 
-  private void updateTimesheetLines(Map<String, Object> contextValues) {
+  protected void updateTimesheetLines(Map<String, Object> contextValues) {
 
     List<Object> updatedTimesheetLineList = new ArrayList<Object>();
 

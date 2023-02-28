@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,9 +22,9 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -80,18 +80,19 @@ public class AccountingReportDas2CheckServiceImpl implements AccountingReportDas
           && !partner.getTitleSelect().equals(PartnerRepository.PARTNER_TITLE_MS)) {
         errorList.add(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_WRONG_TITLE));
       }
-      if (partner.getFirstName() == null) {
+      if (Strings.isNullOrEmpty(partner.getFirstName())) {
         errorList.add(
             I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_FIRST_NAME_MISSING));
       }
-      if (partner.getEmailAddress() == null) {
+      if (partner.getEmailAddress() == null
+          || Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
         errorList.add(
             I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING));
       }
       if (Strings.isNullOrEmpty(partner.getFixedPhone())
           && Strings.isNullOrEmpty(partner.getMobilePhone())) {
         errorList.add(
-            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_EMAIL_MISSING));
+            I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_DAS2_CONTACT_PHONE_MISSING));
       }
     }
     return errorList;

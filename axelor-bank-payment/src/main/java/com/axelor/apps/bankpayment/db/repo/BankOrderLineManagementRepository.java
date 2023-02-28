@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
-import com.axelor.apps.tool.StringTool;
+import com.axelor.utils.StringTool;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;

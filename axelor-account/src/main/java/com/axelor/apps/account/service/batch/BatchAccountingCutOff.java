@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,13 +25,13 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -91,12 +91,15 @@ public class BatchAccountingCutOff extends BatchStrategy {
     while (!(moveList = moveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
 
       findBatch();
-      accountingBatchRepository.find(accountingBatch.getId());
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
+      company = accountingBatch.getCompany();
+      researchJournal = accountingBatch.getResearchJournal();
 
       for (Move move : moveList) {
         ++offset;
 
-        if (this._processMove(move, accountingBatch)) {
+        if (this._processMove(
+            moveRepo.find(move.getId()), accountingBatchRepository.find(accountingBatch.getId()))) {
           break;
         }
       }
@@ -115,7 +118,8 @@ public class BatchAccountingCutOff extends BatchStrategy {
             .collect(Collectors.toList());
 
     for (Move move : moveList) {
-      this._processMove(move, accountingBatch);
+      this._processMove(
+          moveRepo.find(move.getId()), accountingBatchRepository.find(accountingBatch.getId()));
     }
   }
 
@@ -130,6 +134,10 @@ public class BatchAccountingCutOff extends BatchStrategy {
       int cutOffMoveStatusSelect = accountingBatch.getCutOffMoveStatusSelect();
       boolean automaticReverse = accountingBatch.getAutomaticReverse();
       boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
+      String prefixOrigin =
+          accountingBatch.getPrefixOrigin() != null
+              ? accountingBatch.getPrefixOrigin()
+              : miscOpeJournal.getPrefixOrigin() != null ? miscOpeJournal.getPrefixOrigin() : "";
 
       List<Move> moveList =
           cutOffService.generateCutOffMovesFromMove(
@@ -142,7 +150,8 @@ public class BatchAccountingCutOff extends BatchStrategy {
               accountingCutOffTypeSelect,
               cutOffMoveStatusSelect,
               automaticReverse,
-              automaticReconcile);
+              automaticReconcile,
+              prefixOrigin);
 
       if (moveList != null && !moveList.isEmpty()) {
         updateAccountMove(move, true);

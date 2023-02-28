@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,9 +21,9 @@ import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.tool.file.FileTool;
-import com.axelor.exception.AxelorException;
+import com.axelor.utils.file.FileTool;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.File;

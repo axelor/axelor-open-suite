@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.businessproject.db.repo;
 
-import com.axelor.apps.base.db.AppBusinessProject;
-import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBusinessProject;
+import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;

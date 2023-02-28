@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -45,11 +46,11 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -57,6 +58,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -77,6 +79,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected ReconcileService reconcileService;
   protected AppAccountService appAccountService;
   protected AccountManagementAccountService accountManagementAccountService;
+  protected InvoicePaymentToolService invoicePaymentToolService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -89,7 +92,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
       AppAccountService appAccountService,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      InvoicePaymentToolService invoicePaymentToolService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -101,6 +105,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.reconcileService = reconcileService;
     this.appAccountService = appAccountService;
     this.accountManagementAccountService = accountManagementAccountService;
+    this.invoicePaymentToolService = invoicePaymentToolService;
   }
 
   /**
@@ -130,6 +135,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     setInvoicePaymentStatus(invoicePayment);
     createInvoicePaymentMove(invoicePayment);
+    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
 
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
@@ -238,16 +244,29 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             getOriginFromInvoicePayment(invoicePayment),
-            description);
+            description,
+            invoice.getCompanyBankDetails());
 
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());
 
-    move = this.fillMove(invoicePayment, move, customerAccount);
+    BigDecimal maxAmount;
+    if (CollectionUtils.isEmpty(invoiceMoveLines)) {
+      // using null value to indicate we do not use a maxAmount
+      maxAmount = null;
+    } else {
+      maxAmount =
+          invoiceMoveLines.stream()
+              .map(MoveLine::getAmountRemaining)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+    }
+
+    move = this.fillMove(invoicePayment, move, customerAccount, maxAmount);
     moveValidateService.accounting(move);
 
     for (MoveLine moveline : move.getMoveLineList()) {
-      if (moveline.getAccount() == customerAccount) {
+      if (customerAccount.equals(moveline.getAccount())) {
         customerMoveLine = moveline;
       }
     }
@@ -301,7 +320,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Move fillMove(InvoicePayment invoicePayment, Move move, Account customerAccount)
+  public Move fillMove(
+      InvoicePayment invoicePayment, Move move, Account customerAccount, BigDecimal maxAmount)
       throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
@@ -316,11 +336,22 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     boolean isFinancialDiscount = this.isFinancialDiscount(invoicePayment);
     int counter = 1;
     boolean financialDiscountVat =
-        invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
-            == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
+        invoicePayment.getFinancialDiscount() != null
+            && invoicePayment.getFinancialDiscount().getDiscountBaseSelect()
+                == FinancialDiscountRepository.DISCOUNT_BASE_VAT;
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    BigDecimal companyPaymentAmount =
+        invoicePayment.getInvoiceTermPaymentList().stream()
+            .map(InvoiceTermPayment::getCompanyPaidAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    if (maxAmount != null) {
+      companyPaymentAmount = companyPaymentAmount.min(maxAmount);
+    }
+    BigDecimal currencyRate = companyPaymentAmount.divide(paymentAmount, 5, RoundingMode.HALF_UP);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
@@ -328,9 +359,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             partner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
             paymentAmount,
+            companyPaymentAmount,
+            currencyRate,
             isDebitInvoice,
             paymentDate,
             null,
+            paymentDate,
             counter++,
             origin,
             move.getDescription()));
@@ -372,6 +406,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                   invoicePayment
                       .getFinancialDiscountAmount()
                       .add(invoicePayment.getFinancialDiscountTaxAmount()));
+      companyPaymentAmount = paymentAmount;
     }
 
     move.addMoveLineListItem(
@@ -380,9 +415,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             partner,
             customerAccount,
             paymentAmount,
+            companyPaymentAmount,
+            currencyRate,
             !isDebitInvoice,
             paymentDate,
             null,
+            paymentDate,
             counter++,
             origin,
             move.getDescription()));
@@ -393,10 +431,20 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         && financialDiscountVat
         && financialDiscountMoveLine != null
         && BigDecimal.ZERO.compareTo(invoicePayment.getFinancialDiscountTaxAmount()) != 0) {
-      int vatSytem = financialDiscountMoveLine.getAccount().getVatSystemSelect();
+
+      if (financialDiscountMoveLine.getAccount().getVatSystemSelect() == null
+          || financialDiscountMoveLine.getAccount().getVatSystemSelect() == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+            financialDiscountMoveLine.getAccount().getCode());
+      }
+
+      int vatSystem = financialDiscountMoveLine.getAccount().getVatSystemSelect();
+
       Account financialDiscountVATAccount =
           this.getFinancialDiscountVATAccount(
-              invoice, company, move.getJournal(), vatSytem, move.getFunctionalOriginSelect());
+              invoice, company, move.getJournal(), vatSystem, move.getFunctionalOriginSelect());
 
       if (financialDiscountVATAccount != null) {
         MoveLine financialDiscountVatMoveLine =
@@ -414,7 +462,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         financialDiscountVatMoveLine.setTaxLine(financialDiscountMoveLine.getTaxLine());
         financialDiscountVatMoveLine.setTaxRate(financialDiscountMoveLine.getTaxRate());
         financialDiscountVatMoveLine.setTaxCode(financialDiscountMoveLine.getTaxCode());
-        financialDiscountVatMoveLine.setVatSystemSelect(vatSytem);
+        financialDiscountVatMoveLine.setVatSystemSelect(vatSystem);
         move.addMoveLineListItem(financialDiscountVatMoveLine);
       }
     }
@@ -429,10 +477,11 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
   protected Account getFinancialDiscountAccount(Invoice invoice, Company company)
       throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     if (InvoiceToolService.isPurchase(invoice)) {
-      return accountConfigService.getAccountConfig(company).getPurchFinancialDiscountAccount();
+      return accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
     } else {
-      return accountConfigService.getAccountConfig(company).getSaleFinancialDiscountAccount();
+      return accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
     }
   }
 

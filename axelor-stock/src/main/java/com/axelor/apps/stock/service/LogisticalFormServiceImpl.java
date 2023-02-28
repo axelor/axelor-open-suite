@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,8 +18,10 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
@@ -34,18 +36,16 @@ import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.apps.tool.QueryBuilder;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.ContextEntity;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;

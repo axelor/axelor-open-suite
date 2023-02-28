@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+	id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
@@ -13,12 +15,10 @@ axelor {
 }
 
 dependencies {
-    api project(":modules:axelor-admin")
-	api project(":modules:axelor-message")
-
 	implementation libs.commons_lang3
 	implementation libs.commons_math3
 	implementation libs.commons_validator
+	implementation libs.commons_httpclient
 
 	implementation libs.ical4j
 	implementation libs.ical4j_extensions
@@ -38,4 +38,16 @@ dependencies {
 
 	implementation libs.pac4j_core
 	testImplementation libs.mockito
+
+	api libs.tika
+
+	if (file("../../axelor-studio").exists()) {
+		api project(":modules:axelor-studio")
+	}
+	else {
+		api "com.axelor.addons:axelor-studio:1.0.0-SNAPSHOT"
+	}
+	implementation libs.faker
+	api libs.opencsv
+	api libs.wslite
 }

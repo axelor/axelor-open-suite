@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -33,11 +34,11 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -74,6 +75,8 @@ public class VentilateState extends WorkflowInvoice {
 
   protected InvoiceTermService invoiceTermService;
 
+  protected AccountingSituationService accountingSituationService;
+
   @Inject
   public VentilateState(
       SequenceService sequenceService,
@@ -84,7 +87,8 @@ public class VentilateState extends WorkflowInvoice {
       WorkflowVentilationService workflowService,
       UserService userService,
       FixedAssetGenerationService fixedAssetGenerationService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      AccountingSituationService accountingSituationService) {
     this.sequenceService = sequenceService;
     this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
@@ -94,6 +98,7 @@ public class VentilateState extends WorkflowInvoice {
     this.userService = userService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.invoiceTermService = invoiceTermService;
+    this.accountingSituationService = accountingSituationService;
   }
 
   @Override
@@ -134,7 +139,7 @@ public class VentilateState extends WorkflowInvoice {
   protected void setPartnerAccount() throws AxelorException {
     // Partner account is actually set upon validation but we keep this for backward compatibility
     if (invoice.getPartnerAccount() == null) {
-      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice, false);
+      Account account = accountingSituationService.getPartnerAccount(invoice, false);
 
       if (account == null) {
         throw new AxelorException(
@@ -151,11 +156,7 @@ public class VentilateState extends WorkflowInvoice {
 
     Account partnerAccount = invoice.getPartnerAccount();
 
-    if (!partnerAccount.getHasInvoiceTerm()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
-    } else if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
+    if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
@@ -319,7 +320,9 @@ public class VentilateState extends WorkflowInvoice {
       this.checkInvoiceDate(sequence);
     }
 
-    invoice.setInvoiceId(sequenceService.getSequenceNumber(sequence, invoice.getInvoiceDate()));
+    invoice.setInvoiceId(
+        sequenceService.getSequenceNumber(
+            sequence, invoice.getInvoiceDate(), Invoice.class, "invoiceId"));
 
     if (invoice.getInvoiceId() != null) {
       return;

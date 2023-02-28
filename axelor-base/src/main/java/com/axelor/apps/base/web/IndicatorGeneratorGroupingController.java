@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.IndicatorGeneratorGrouping;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorGroupingRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.IndicatorGeneratorGroupingService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -42,7 +42,7 @@ public class IndicatorGeneratorGroupingController {
               Beans.get(IndicatorGeneratorGroupingRepository.class)
                   .find(indicatorGeneratorGrouping.getId()));
       response.setReload(true);
-      response.setFlash(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_3));
+      response.setInfo(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_3));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -59,7 +59,7 @@ public class IndicatorGeneratorGroupingController {
               Beans.get(IndicatorGeneratorGroupingRepository.class)
                   .find(indicatorGeneratorGrouping.getId()));
       response.setReload(true);
-      response.setFlash(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_GROUPING_4));
+      response.setInfo(I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_GROUPING_4));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

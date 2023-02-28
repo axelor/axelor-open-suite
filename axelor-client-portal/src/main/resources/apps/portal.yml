@@ -1,0 +1,15 @@
+---
+name: Portal
+code: portal
+typeSelect: standard
+installOrder: 27
+description: |
+   Portal configuration
+image: app-portal.png
+modules: 
+   axelor-client-portal
+dependsOn:
+   - supplychain
+   - project
+   - helpdesk
+sequence: 31

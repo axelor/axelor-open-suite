@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,14 +32,14 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConf
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -98,7 +98,7 @@ public class PaymentVoucherController {
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
 
       if (!generateAll) {
-        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
+        response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -137,7 +137,7 @@ public class PaymentVoucherController {
         if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {
           response.setError(
               I18n.get(
-                  "Some move amounts have been changed since the impuration. Please remake the imputation."));
+                  "Some move amounts have been changed since the imputation. Please remake the imputation."));
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);

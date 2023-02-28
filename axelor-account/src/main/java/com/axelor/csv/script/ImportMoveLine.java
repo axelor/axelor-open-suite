@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,10 +23,10 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -79,17 +79,17 @@ public class ImportMoveLine {
     Partner partner = getPartner(partnerId);
     if (partner != null) {
       moveLine.setPartnerSeq(partner.getPartnerSeq());
-      moveLine.setPartnerFullName(partner.getFullName());
+      moveLine.setPartnerFullName(partner.getSimpleFullName());
     } else {
       moveLine.setPartnerSeq((String) values.get("partnerSeq"));
-      moveLine.setPartnerFullName((String) values.get("partnerFullName"));
+      moveLine.setPartnerFullName((String) values.get("partnerSimpleFullName"));
     }
 
     moveLineRepository.save(moveLine);
     return moveLine;
   }
 
-  private Account getAccount(String accountId) {
+  protected Account getAccount(String accountId) {
     if (StringUtils.notBlank(accountId)) {
       Account account =
           accountRepository
@@ -102,7 +102,7 @@ public class ImportMoveLine {
     return null;
   }
 
-  private TaxLine getTaxLine(String taxLineId) {
+  protected TaxLine getTaxLine(String taxLineId) {
     if (StringUtils.notBlank(taxLineId)) {
       TaxLine taxLine =
           taxLineRepository
@@ -115,7 +115,7 @@ public class ImportMoveLine {
     return null;
   }
 
-  private Partner getPartner(String partnerId) {
+  protected Partner getPartner(String partnerId) {
     if (StringUtils.notBlank(partnerId)) {
       Partner partner =
           partnerRepository

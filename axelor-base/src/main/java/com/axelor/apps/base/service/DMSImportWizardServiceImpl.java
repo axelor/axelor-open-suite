@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -68,7 +68,7 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
     }
   }
 
-  private ZipInputStream validateZip(File file) throws AxelorException {
+  protected ZipInputStream validateZip(File file) throws AxelorException {
     try (AutoDetectReader autoDetectReader = new AutoDetectReader(new FileInputStream(file));
         ZipInputStream zis =
             new ZipInputStream(new FileInputStream(file), autoDetectReader.getCharset())) {
@@ -116,13 +116,13 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
     }
   }
 
-  private String getFileName(ZipEntry zipEntry) {
+  protected String getFileName(ZipEntry zipEntry) {
     String entryName = zipEntry.getName();
     String[] names = entryName.split(File.separator);
     return names[names.length - 1];
   }
 
-  private String getParentName(ZipEntry zipEntry, String fileName) {
+  protected String getParentName(ZipEntry zipEntry, String fileName) {
     String entryName = zipEntry.getName();
     return entryName.substring(0, entryName.lastIndexOf(File.separator + fileName) + 1);
   }

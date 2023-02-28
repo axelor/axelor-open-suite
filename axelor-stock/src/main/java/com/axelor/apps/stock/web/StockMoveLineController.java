@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -34,11 +36,9 @@ import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -109,7 +109,9 @@ public class StockMoveLineController {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
       Map<String, Object> newStockMoveLine = Mapper.toMap(new StockMoveLine());
+      newStockMoveLine.put("productName", stockMoveLine.getProductName());
       newStockMoveLine.put("qty", BigDecimal.ZERO);
+      newStockMoveLine.put("realQty", BigDecimal.ZERO);
       newStockMoveLine.put("id", stockMoveLine.getId());
       newStockMoveLine.put("version", stockMoveLine.getVersion());
       newStockMoveLine.put("lineTypeSelect", stockMoveLine.getLineTypeSelect());
@@ -224,9 +226,13 @@ public class StockMoveLineController {
         context.getParent() != null
             ? context.getParent().asType(StockMove.class)
             : stockMoveLine.getStockMove();
-    String domain =
-        Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
-    response.setAttr("product", "domain", domain);
+    try {
+      String domain =
+          Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
+      response.setAttr("product", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
@@ -297,23 +303,29 @@ public class StockMoveLineController {
       Context context = request.getContext();
       InternationalService internationalService = Beans.get(InternationalService.class);
       StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
-      StockMove stockMove =
-          context.getParent() != null
-              ? context.getParent().asType(StockMove.class)
-              : stockMoveLine.getStockMove();
-      Partner partner = stockMove.getPartner();
-      String userLanguage = AuthUtils.getUser().getLanguage();
-      String partnerLanguage = partner.getLanguage().getCode();
+      Context parentContext = context.getParent();
+      if (parentContext != null && parentContext.getContextClass().equals(StockMove.class)) {
+        StockMove stockMove = parentContext.asType(StockMove.class);
+        Partner partner = stockMove.getPartner();
+        String userLanguage = AuthUtils.getUser().getLanguage();
+        Product product = stockMoveLine.getProduct();
 
-      if (stockMoveLine.getProduct() != null) {
-        response.setValue(
-            "description",
-            internationalService.translate(
-                stockMoveLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-        response.setValue(
-            "productName",
-            internationalService.translate(
-                stockMoveLine.getProduct().getName(), userLanguage, partnerLanguage));
+        if (product != null) {
+          Map<String, String> translation =
+              internationalService.getProductDescriptionAndNameTranslation(
+                  product, partner, userLanguage);
+
+          String description = translation.get("description");
+          String productName = translation.get("productName");
+
+          if (description != null
+              && !description.isEmpty()
+              && productName != null
+              && !productName.isEmpty()) {
+            response.setValue("description", description);
+            response.setValue("productName", productName);
+          }
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

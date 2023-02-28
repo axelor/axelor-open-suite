@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,12 +21,12 @@ import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountChartRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -92,7 +92,8 @@ public class AccountChartService {
     }
   }
 
-  private File createConfigFile(InputStream inputStream) throws IOException, FileNotFoundException {
+  protected File createConfigFile(InputStream inputStream)
+      throws IOException, FileNotFoundException {
 
     File configFile = File.createTempFile("input-config", ".xml");
 

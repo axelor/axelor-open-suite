@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
 
   <grid model="com.axelor.apps.supplychain.db.DeclarationOfExchanges"
     title="Declarations of exchanges" name="declaration-of-exchanges-grid" orderBy="createdOn"
     onNew="action-declaration-of-exchanges-onnew">
     <field name="company" canEdit="false"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="country"
       domain="self IN (SELECT sl.address.addressL7Country FROM StockLocation sl WHERE sl.company = :company)"
       canEdit="false"/>
@@ -157,6 +157,6 @@
     model="com.axelor.apps.supplychain.db.DeclarationOfExchanges"
     title="Declaration of exchange filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

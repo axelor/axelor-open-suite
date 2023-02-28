@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -30,6 +31,7 @@ import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -50,8 +52,6 @@ import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -221,7 +221,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setCompany(company);
     purchaseOrder.setContactPartner(contactPartner);
     purchaseOrder.setCurrency(currency);
-    purchaseOrder.setDeliveryDate(deliveryDate);
+    purchaseOrder.setEstimatedReceiptDate(deliveryDate);
     purchaseOrder.setInternalReference(internalReference);
     purchaseOrder.setExternalReference(externalReference);
     purchaseOrder.setOrderDate(orderDate);
@@ -242,7 +242,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Override
   public String getSequence(Company company) throws AxelorException {
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_ORDER, company);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PURCHASE_ORDER, company, PurchaseOrder.class, "purchaseOrderSeq");
     if (seq == null) {
       throw new AxelorException(
           company,

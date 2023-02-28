@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,13 +33,13 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -313,14 +313,19 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     return invoiceTermPaymentList.stream()
         .filter(it -> it.getInvoiceTerm().getAmountRemainingAfterFinDiscount().signum() > 0)
         .map(
-            it ->
-                invoiceTermService
+            it -> {
+              try {
+                return invoiceTermService
                     .getFinancialDiscountTaxAmount(it.getInvoiceTerm())
                     .multiply(it.getPaidAmount())
                     .divide(
                         it.getInvoiceTerm().getAmountRemainingAfterFinDiscount(),
                         10,
-                        RoundingMode.HALF_UP))
+                        RoundingMode.HALF_UP);
+              } catch (Exception e) {
+                throw new RuntimeException(e);
+              }
+            })
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
         .setScale(2, RoundingMode.HALF_UP);
@@ -412,7 +417,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoicePayment.setFinancialDiscountTaxAmount(
         invoicePayment
             .getFinancialDiscountTotalAmount()
-            .multiply(taxRate)
+            .multiply(taxRate.divide(new BigDecimal(100)))
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     invoicePayment.setFinancialDiscountAmount(
         invoicePayment

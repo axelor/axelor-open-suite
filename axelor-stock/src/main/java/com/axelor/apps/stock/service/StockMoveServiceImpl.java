@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,32 +18,25 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.exception.AxelorMessageException;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.stock.db.FreightCarrierMode;
-import com.axelor.apps.stock.db.Incoterm;
-import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.ShipmentMode;
-import com.axelor.apps.stock.db.StockConfig;
-import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.*;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -51,12 +44,13 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -86,6 +80,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected ProductRepository productRepository;
   protected StockMoveToolService stockMoveToolService;
   protected StockMoveLineRepository stockMoveLineRepo;
+  protected PartnerStockSettingsService partnerStockSettingsService;
+  protected StockConfigService stockConfigService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -95,7 +91,9 @@ public class StockMoveServiceImpl implements StockMoveService {
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
       PartnerProductQualityRatingService partnerProductQualityRatingService,
-      ProductRepository productRepository) {
+      ProductRepository productRepository,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -103,6 +101,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.stockMoveRepo = stockMoveRepository;
     this.partnerProductQualityRatingService = partnerProductQualityRatingService;
     this.productRepository = productRepository;
+    this.partnerStockSettingsService = partnerStockSettingsService;
+    this.stockConfigService = stockConfigService;
   }
 
   /**
@@ -224,6 +224,58 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
+  public StockMove createStockMoveMobility(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      Company company,
+      Product product,
+      TrackingNumber trackNb,
+      BigDecimal movedQty,
+      Unit unit)
+      throws AxelorException {
+
+    StockMove stockMove = new StockMove();
+    stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
+    stockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
+    stockMove.setCompany(company);
+    stockMove.setFromStockLocation(fromStockLocation);
+    stockMove.setFromAddress(fromStockLocation.getAddress());
+    stockMove.setToStockLocation(toStockLocation);
+    stockMove.setToAddress(toStockLocation.getAddress());
+    stockMove.setNote(""); // comment to display on stock move
+    stockMove.setPickingOrderComments(""); // comment to display on picking order
+    stockMove.setRealDate(LocalDate.now());
+    stockMove.setEstimatedDate(LocalDate.now());
+    stockMoveRepo.save(stockMove);
+
+    StockMoveLine line = new StockMoveLine();
+    line.setStockMove(stockMove);
+    line.setProduct(product);
+    stockMoveLineService.setProductInfo(stockMove, line, company);
+    if (product.getTrackingNumberConfiguration() != null) {
+      line.setTrackingNumber(trackNb);
+    }
+    line.setQty(movedQty);
+    line.setRealQty(movedQty);
+    line.setUnitPriceUntaxed(product.getLastPurchasePrice());
+    line.setUnit(unit);
+    stockMoveLineRepo.save(line);
+    stockMoveLineService.setAvailableStatus(line);
+    stockMoveLineService.compute(line, stockMove);
+    stockMoveLineRepo.save(line);
+
+    ArrayList<StockMoveLine> stockMoveLineList = new ArrayList<>();
+    stockMoveLineList.add(line);
+    stockMove.setStockMoveLineList(stockMoveLineList);
+    stockMoveRepo.save(stockMove);
+
+    this.validate(stockMove);
+
+    return stockMove;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(StockMove stockMove) throws AxelorException {
 
     this.plan(stockMove);
@@ -340,7 +392,8 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param initialStatus the initial status of the stock move.
    * @throws AxelorException
    */
-  protected void updateLocations(
+  @Override
+  public void updateLocations(
       StockMove stockMove,
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
@@ -498,7 +551,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param stockMove
    * @throws AxelorException
    */
-  private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
+  protected void checkOngoingInventory(StockMove stockMove) throws AxelorException {
     List<StockLocation> stockLocationList = new ArrayList<>();
 
     if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
@@ -547,7 +600,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
   }
 
-  private void resetMasses(StockMove stockMove) {
+  protected void resetMasses(StockMove stockMove) {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
 
     if (stockMoveLineList == null) {
@@ -1037,7 +1090,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     return stock;
   }
 
-  private Double getStock(Long locationId, Long productId, LocalDate date) {
+  protected Double getStock(Long locationId, Long productId, LocalDate date) {
 
     List<StockMoveLine> inLines =
         stockMoveLineRepo
@@ -1354,5 +1407,63 @@ public class StockMoveServiceImpl implements StockMoveService {
         }
       }
     }
+  }
+
+  @Override
+  public StockLocation getFromStockLocation(StockMove stockMove) throws AxelorException {
+    StockLocation fromStockLocation = null;
+    Company company = stockMove.getCompany();
+    if (stockMove == null || company == null) {
+      return null;
+    }
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      fromStockLocation =
+          partnerStockSettingsService.getDefaultExternalStockLocation(
+              stockMove.getPartner(), company, null);
+
+      if (fromStockLocation == null) {
+        fromStockLocation = stockConfigService.getSupplierVirtualStockLocation(stockConfig);
+      }
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      fromStockLocation =
+          partnerStockSettingsService.getDefaultStockLocation(
+              stockMove.getPartner(), company, null);
+
+      if (fromStockLocation == null) {
+        fromStockLocation = stockConfigService.getPickupDefaultStockLocation(stockConfig);
+      }
+    }
+    return fromStockLocation;
+  }
+
+  @Override
+  public StockLocation getToStockLocation(StockMove stockMove) throws AxelorException {
+    StockLocation toStockLocation = null;
+    Company company = stockMove.getCompany();
+    if (stockMove == null || company == null) {
+      return null;
+    }
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      toStockLocation =
+          partnerStockSettingsService.getDefaultStockLocation(
+              stockMove.getPartner(), company, null);
+
+      if (toStockLocation == null) {
+        toStockLocation = stockConfigService.getReceiptDefaultStockLocation(stockConfig);
+      }
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      toStockLocation =
+          partnerStockSettingsService.getDefaultExternalStockLocation(
+              stockMove.getPartner(), company, null);
+
+      if (toStockLocation == null) {
+        toStockLocation = stockConfigService.getCustomerVirtualStockLocation(stockConfig);
+      }
+    }
+    return toStockLocation;
   }
 }

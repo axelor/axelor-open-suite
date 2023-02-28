@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
   <grid name="pay-voucher-due-element-grid" title="Invoices to pay"
     model="com.axelor.apps.account.db.PayVoucherDueElement" orderBy="invoiceTerm.dueDate">
     <field name="invoiceTerm.dueDate"/>
     <field name="moveLine" width="135" form-view="move-line-form" grid-view="move-line-grid"/>
-    <field name="moveLine.move.invoice" width="120"/>
+    <field name="moveLine.origin" width="120"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="applyFinancialDiscount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
@@ -19,7 +19,7 @@
     <panel name="mainPanel">
       <field name="sequence"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-      <field name="moveLine.move.invoice" grid-view="invoice-grid" form-view="invoice-form"/>
+      <field name="moveLine.origin"/>
       <field name="invoiceTerm" form-view="invoice-term-form"
         grid-view="invoice-term-move-line-invoice-grid"/>
       <field name="invoiceTerm.dueDate"/>

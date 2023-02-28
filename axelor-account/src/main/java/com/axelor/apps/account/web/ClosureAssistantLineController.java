@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountType;
@@ -10,10 +27,10 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.ClosureAssistantLineService;
 import com.axelor.apps.account.service.ClosureAssistantService;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -123,7 +140,7 @@ public class ClosureAssistantLineController {
       AccountService accountService = Beans.get(AccountService.class);
       BigDecimal income =
           accountService.computeBalance(
-              incomeType, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
+              incomeType, year, AccountService.BALANCE_TYPE_CREDIT_BALANCE);
       BigDecimal charge =
           accountService.computeBalance(
               chargeType, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
@@ -133,6 +150,9 @@ public class ClosureAssistantLineController {
       response.setAttr("income", "value", income);
       response.setAttr("charge", "value", charge);
       response.setAttr("profit", "value", profit);
+      if (profit.signum() < 0) {
+        response.setAttr("profit", "title", I18n.get("Loss"));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

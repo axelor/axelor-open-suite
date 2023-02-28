@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,15 +26,15 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -175,7 +175,12 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    */
   @Override
   public String getPaymentScheduleSequence(Company company) throws AxelorException {
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PAYMENT_SCHEDULE, company);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PAYMENT_SCHEDULE,
+            company,
+            PaymentSchedule.class,
+            "paymentScheduleSeq");
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

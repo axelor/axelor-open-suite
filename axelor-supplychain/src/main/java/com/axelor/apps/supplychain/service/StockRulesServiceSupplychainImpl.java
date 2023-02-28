@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,16 +17,14 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -42,16 +40,17 @@ import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
@@ -189,12 +188,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
     if (template != null) {
       try {
         templateMessageService.generateAndSendMessage(stockRules, template);
-      } catch (ClassNotFoundException
-          | InstantiationException
-          | IllegalAccessException
-          | MessagingException
-          | IOException
-          | JSONException e) {
+      } catch (ClassNotFoundException | IOException | JSONException e) {
         throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
       }
     }
@@ -206,7 +200,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
    * @param product
    * @return
    */
-  private BigDecimal getDefaultSupplierMinQty(Product product) {
+  protected BigDecimal getDefaultSupplierMinQty(Product product) {
     Partner defaultSupplierPartner = product.getDefaultSupplierPartner();
     if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
       List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,24 +18,24 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.tool.ModelTool;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.ModelTool;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;

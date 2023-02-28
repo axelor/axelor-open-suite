@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Job costing";"business-project";17;"Job costing";"app-business-project.png";"axelor-business-project";"project,employee,supplychain";12

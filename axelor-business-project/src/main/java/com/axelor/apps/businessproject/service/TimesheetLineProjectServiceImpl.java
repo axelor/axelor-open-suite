@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -34,11 +35,10 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.utils.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -136,16 +136,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
 
   @Transactional
   public TimesheetLine setTimesheet(TimesheetLine timesheetLine) throws AxelorException {
-    Timesheet timesheet =
-        timesheetRepo
-            .all()
-            .filter(
-                "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
-                timesheetLine.getEmployee(),
-                timesheetLine.getProject().getCompany(),
-                timesheetLine.getDate())
-            .order("id")
-            .fetchOne();
+    Timesheet timesheet = getTimesheetQuery(timesheetLine).order("id").fetchOne();
     if (timesheet == null) {
       Timesheet lastTimesheet =
           timesheetRepo
@@ -210,5 +201,16 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
       }
       JPA.clear();
     }
+  }
+
+  @Override
+  public Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine) {
+    return timesheetRepo
+        .all()
+        .filter(
+            "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
+            timesheetLine.getEmployee(),
+            timesheetLine.getProject().getCompany(),
+            timesheetLine.getDate());
   }
 }

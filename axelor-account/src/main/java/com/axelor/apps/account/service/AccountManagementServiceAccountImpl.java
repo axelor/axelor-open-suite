@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,17 +25,19 @@ import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
@@ -48,10 +50,15 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AccountConfigService accountConfigService;
+
   @Inject
   public AccountManagementServiceAccountImpl(
-      FiscalPositionService fiscalPositionService, TaxService taxService) {
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService,
+      AccountConfigService accountConfigService) {
     super(fiscalPositionService, taxService);
+    this.accountConfigService = accountConfigService;
   }
 
   /**
@@ -152,9 +159,9 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @throws AxelorException
    */
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Product product, Company company) {
+      Product product, Company company, boolean isPurchase) throws AxelorException {
 
-    return getAnalyticDistributionTemplate(product, company, CONFIG_OBJECT_PRODUCT);
+    return getAnalyticDistributionTemplate(product, company, CONFIG_OBJECT_PRODUCT, isPurchase);
   }
 
   /**
@@ -169,7 +176,8 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @throws AxelorException
    */
   protected AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Product product, Company company, int configObject) {
+      Product product, Company company, int configObject, boolean isPurchase)
+      throws AxelorException {
 
     AccountManagement accountManagement = this.getAccountManagement(product, company, configObject);
 
@@ -179,8 +187,23 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       analyticDistributionTemplate = accountManagement.getAnalyticDistributionTemplate();
     }
 
+    if (accountManagement != null && analyticDistributionTemplate == null) {
+      Account account =
+          isPurchase ? accountManagement.getPurchaseAccount() : accountManagement.getSaleAccount();
+
+      if (account != null
+          && account.getAnalyticDistributionAuthorized()
+          && accountConfigService
+                  .getAccountConfig(account.getCompany())
+                  .getAnalyticDistributionTypeSelect()
+              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+        analyticDistributionTemplate = account.getAnalyticDistributionTemplate();
+      }
+    }
+
     if (analyticDistributionTemplate == null && configObject == CONFIG_OBJECT_PRODUCT) {
-      return getAnalyticDistributionTemplate(product, company, CONFIG_OBJECT_PRODUCT_FAMILY);
+      return getAnalyticDistributionTemplate(
+          product, company, CONFIG_OBJECT_PRODUCT_FAMILY, isPurchase);
     }
 
     return analyticDistributionTemplate;
@@ -326,9 +349,6 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
                     .ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
           }
         }
-
-        return account;
-
       } else if (isFixedAssets) {
         if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
           account = accountManagement.getPurchFixedAssetsTaxVatSystem1Account();

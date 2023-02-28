@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -28,7 +29,6 @@ import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -239,7 +239,7 @@ public class ProjectedStockController {
     response.setData(dataList);
   }
 
-  private LocalDate addInterElementForProjectedStockChart(
+  protected LocalDate addInterElementForProjectedStockChart(
       List<Map<String, Object>> dataList, MrpLine lastMrpLine, LocalDate mrpDate, MrpLine mrpLine) {
     while (mrpDate.isBefore(mrpLine.getMaturityDate())) {
       mrpDate = mrpDate.plusDays(1);

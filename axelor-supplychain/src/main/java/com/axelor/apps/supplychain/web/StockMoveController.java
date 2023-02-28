@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
@@ -27,7 +28,6 @@ import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -40,7 +40,7 @@ public class StockMoveController {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       if (stockMove.getPickingIsEdited() && !stockMove.getAvailabilityRequest()) {
         response.setValue("availabilityRequest", true);
-        response.setFlash(
+        response.setInfo(
             I18n.get(SupplychainExceptionMessage.STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE));
         return;
       }
@@ -88,7 +88,7 @@ public class StockMoveController {
         && Beans.get(StockMoveServiceSupplychain.class)
             .isAllocatedStockMoveLineRemoved(stockMove)) {
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
-      response.setFlash(
+      response.setInfo(
           I18n.get(SupplychainExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
     }
   }

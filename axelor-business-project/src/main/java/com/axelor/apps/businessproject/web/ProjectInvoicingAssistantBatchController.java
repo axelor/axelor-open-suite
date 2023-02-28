@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,13 +20,13 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.service.batch.ProjectInvoicingAssistantBatchService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -53,7 +53,7 @@ public class ProjectInvoicingAssistantBatchController {
           controllerCallableTool.runInSeparateThread(
               projectInvoicingAssistantBatchService, response);
       if (batch != null) {
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -112,7 +112,7 @@ public class ProjectInvoicingAssistantBatchController {
     }
   }
 
-  private void showRecords(
+  protected void showRecords(
       ActionRequest request, ActionResponse response, Map<String, Object> values)
       throws ClassNotFoundException {
 

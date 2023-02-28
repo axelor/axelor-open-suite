@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="EbicsUser" lang="java">
+  <entity name="EbicsUser">
 
     <string name="securityMedium" title="Security medium" default="0000"/>
     <string name="name" title="Name" required="true"/>
@@ -13,7 +13,7 @@
     <string name="userId" title="User id" max="35" required="true"/>
     <string name="nextOrderId" title="Next order id" readonly="true"/>
 
-    <string name="password" title="Password" password="true"/>
+    <string name="password" title="Password" password="true" encrypted="true"/>
 
     <integer name="userTypeSelect" title="User type"
       selection="bankpayment.ebics.user.user.type.select"/>

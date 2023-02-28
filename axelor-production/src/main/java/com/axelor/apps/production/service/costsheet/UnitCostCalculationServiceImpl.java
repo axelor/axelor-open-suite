@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,15 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
@@ -33,21 +36,18 @@ import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.StringTool;
+import com.axelor.utils.file.CsvTool;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -269,7 +269,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
             ? CostSheetService.ORIGIN_BULK_UNIT_COST_CALCULATION
             : CostSheetService.ORIGIN_BILL_OF_MATERIAL;
 
-    BillOfMaterial billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+    BillOfMaterial billOfMaterial = billOfMaterialService.getBOM(product, company);
 
     CostSheet costSheet =
         costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
@@ -601,7 +601,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public Company getSingleCompany(UnitCostCalculation unitCostCalculation) {
     Company company = null;
-    if (this.hasDefaultBOMSelected() && unitCostCalculation.getCompanySet().size() == 1) {
+    if (unitCostCalculation.getCompanySet().size() == 1) {
       Iterator<Company> companyIterator = unitCostCalculation.getCompanySet().iterator();
       company = companyIterator.next();
     }

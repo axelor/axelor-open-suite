@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,9 +21,9 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -58,6 +58,13 @@ public class MoveSequenceService {
           I18n.get(AccountExceptionMessage.MOVE_5),
           journal.getName());
     }
-    move.setReference(sequenceService.getSequenceNumber(journal.getSequence(), move.getDate()));
+
+    if (!sequenceService.isEmptyOrDraftSequenceNumber(move.getReference())) {
+      return;
+    }
+
+    move.setReference(
+        sequenceService.getSequenceNumber(
+            journal.getSequence(), move.getDate(), Move.class, "reference"));
   }
 }

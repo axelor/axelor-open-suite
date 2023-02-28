@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,20 +34,21 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.file.CsvTool;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -218,7 +219,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getSaleExportNumber(Company company) throws AxelorException {
 
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.SALES_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.SALES_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -232,9 +234,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   public String getRefundExportNumber(Company company) throws AxelorException {
-
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.REFUND_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.REFUND_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -250,7 +252,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getTreasuryExportNumber(Company company) throws AxelorException {
 
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.TREASURY_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.TREASURY_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -266,7 +269,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getPurchaseExportNumber(Company company) throws AxelorException {
 
     String exportNumber =
-        sequenceService.getSequenceNumber(SequenceRepository.PURCHASE_INTERFACE, company);
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PURCHASE_INTERFACE, company, Move.class, "exportNumber");
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -426,7 +430,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                   ? partner.getName()
                   : "";
         }
-        items[8] = moveLine.getOrigin();
+        String origin = moveLine.getOrigin();
+        items[8] = Strings.isNullOrEmpty(origin) ? "NA" : origin;
         if (moveLine.getOriginDate() != null) {
           items[9] =
               moveLine.getOriginDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));

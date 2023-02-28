@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,7 +52,7 @@ public class BankDetailsController {
         Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
       } catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
         if (request.getAction().endsWith("onchange")) {
-          response.setFlash(I18n.get(BaseExceptionMessage.BANK_DETAILS_1));
+          response.setInfo(I18n.get(BaseExceptionMessage.BANK_DETAILS_1));
         }
         response.setAttr("invalidIbanText", "hidden", false);
       } finally {

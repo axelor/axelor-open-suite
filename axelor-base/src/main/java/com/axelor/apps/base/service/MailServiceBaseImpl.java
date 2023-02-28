@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,11 +23,7 @@ import com.axelor.apps.base.db.MailTemplateAssociation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.EmailAccount;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.db.repo.TemplateRepository;
-import com.axelor.apps.message.service.MailServiceMessageImpl;
-import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
@@ -35,7 +31,6 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailException;
@@ -45,6 +40,12 @@ import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.mail.db.repo.MailMessageRepository;
+import com.axelor.message.db.EmailAccount;
+import com.axelor.message.db.Template;
+import com.axelor.message.db.repo.TemplateRepository;
+import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailServiceMessageImpl;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.rpc.filter.Filter;
@@ -83,6 +84,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MailServiceBaseImpl extends MailServiceMessageImpl {
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private ExecutorService executor = Executors.newCachedThreadPool();
@@ -92,7 +94,13 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected Templates templates;
   protected static final String RECIPIENTS_SPLIT_REGEX = "\\s*(;|,|\\|)\\s*|\\s+";
 
-  @Inject AppBaseService appBaseService;
+  protected final AppBaseService appBaseService;
+
+  @Inject
+  public MailServiceBaseImpl(MailAccountService mailAccountService, AppBaseService appBaseService) {
+    super(mailAccountService);
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public Model resolve(String email) {
@@ -148,8 +156,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Query<User> query = Query.of(User.class);
 
     if (!isBlank(filter)) {
-      if (userPermissionFilter != null) {
-        query.filter(filter, userPermissionFilter.getParams());
+      if (userPermissionFilter != null && userPermissionFilter.getParams() != null) {
+        query.filter(filter, userPermissionFilter.getParams().toArray());
       } else {
         query.filter(filter);
       }
@@ -206,8 +214,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Query<Partner> query2 = Query.of(Partner.class);
 
     if (!isBlank(filter2)) {
-      if (partnerPermissionFilter != null) {
-        query2.filter(filter2, partnerPermissionFilter.getParams());
+      if (partnerPermissionFilter != null && partnerPermissionFilter.getParams() != null) {
+        query2.filter(filter2, partnerPermissionFilter.getParams().toArray());
       } else {
         query2.filter(filter2);
       }
@@ -458,6 +466,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   void updateRecipientsTemplatesContext(Set<String> recipients) {
     String contRecipients = String.join(", ", recipients);
 
+    if (templatesContext == null) {
+      templatesContext = Maps.newHashMap();
+    }
     // Creating 2 same keys as it could be useful for a future update
     templatesContext.put("toRecipients", contRecipients);
     templatesContext.put("ccRecipients", contRecipients);

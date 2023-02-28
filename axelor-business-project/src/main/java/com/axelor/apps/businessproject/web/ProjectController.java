@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,9 +18,11 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
@@ -30,8 +32,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -67,7 +67,7 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
     if (project.getId() != null) {
       response.setView(
-          ActionView.define("Purchase Order")
+          ActionView.define(I18n.get("Purchase Order"))
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-form")
               .add("grid", "purchase-order-quotation-grid")
@@ -116,7 +116,7 @@ public class ProjectController {
     project = Beans.get(ProjectRepository.class).find(project.getId());
 
     response.setView(
-        ActionView.define("Invoice Buisness Project")
+        ActionView.define(I18n.get("Invoice Business Project"))
             .model(InvoicingProject.class.getName())
             .add("form", "invoicing-project-form")
             .param("forceEdit", "true")

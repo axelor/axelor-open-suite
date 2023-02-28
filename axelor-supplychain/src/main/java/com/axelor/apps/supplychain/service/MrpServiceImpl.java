@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -26,11 +27,12 @@ import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.service.MailMessageService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -62,16 +64,14 @@ import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.message.service.MailMessageService;
+import com.axelor.utils.StringTool;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -397,6 +397,13 @@ public class MrpServiceImpl implements MrpService {
         && mrpLine.getEstimatedDeliveryMrpLine() != null) {
       return false;
     }
+
+    if ((mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER
+            || mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER)
+        && !firstPass) {
+      return false;
+    }
+
     boolean isProposalElement = this.isProposalElement(mrpLineType);
 
     BigDecimal minQty = mrpLine.getMinQty();
@@ -786,13 +793,13 @@ public class MrpServiceImpl implements MrpService {
 
     PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 
-    LocalDate maturityDate = purchaseOrderLine.getEstimatedDelivDate();
+    LocalDate maturityDate = purchaseOrderLine.getEstimatedReceiptDate();
 
     if (maturityDate == null) {
-      maturityDate = purchaseOrder.getDeliveryDate();
+      maturityDate = purchaseOrder.getEstimatedReceiptDate();
     }
     if (maturityDate == null) {
-      maturityDate = purchaseOrderLine.getDesiredDelivDate();
+      maturityDate = purchaseOrderLine.getDesiredReceiptDate();
     }
     maturityDate = this.computeMaturityDate(maturityDate, purchaseOrderMrpLineType);
 
@@ -950,13 +957,13 @@ public class MrpServiceImpl implements MrpService {
       return;
     }
 
-    LocalDate maturityDate = saleOrderLine.getEstimatedDelivDate();
+    LocalDate maturityDate = saleOrderLine.getEstimatedShippingDate();
 
     if (maturityDate == null) {
-      maturityDate = saleOrder.getDeliveryDate();
+      maturityDate = saleOrder.getEstimatedShippingDate();
     }
     if (maturityDate == null) {
-      maturityDate = saleOrderLine.getDesiredDelivDate();
+      maturityDate = saleOrderLine.getDesiredDeliveryDate();
     }
     maturityDate = this.computeMaturityDate(maturityDate, saleOrderMrpLineType);
 
@@ -1503,28 +1510,91 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void generateProposals(Mrp mrp, boolean isProposalPerSupplier) throws AxelorException {
+  public void generateSelectedProposals(Mrp mrp, boolean isProposalPerSupplier)
+      throws AxelorException {
 
     Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
     Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier = new HashMap<>();
-    List<MrpLine> mrpLineList =
-        mrpLineRepository
-            .all()
-            .filter("self.mrp.id = ?1 AND self.proposalToProcess = true", mrp.getId())
-            .order("maturityDate")
-            .fetch();
+    List<MrpLine> mrpLineList;
 
+    if (getSelectedMrpLines(mrp).count() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.MRP_GENERATE_PROPOSAL_NO_LINE_SELECTED));
+    }
+
+    while (!(mrpLineList = getSelectedMrpLines(mrp).fetch(1)).isEmpty()) {
+      mrp = mrpRepository.find(mrp.getId());
+      generateProposals(
+          isProposalPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLineList);
+      JPA.clear();
+    }
+  }
+
+  protected Query<MrpLine> getSelectedMrpLines(Mrp mrp) {
+    return mrpLineRepository
+        .all()
+        .filter(
+            "self.mrp.id = ?1 AND self.proposalToProcess = true AND self.proposalGenerated = false",
+            mrp.getId())
+        .order("maturityDate");
+  }
+
+  @Override
+  public void generateAllProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException {
+    Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
+    Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier = new HashMap<>();
+    List<MrpLine> mrpLineList;
+
+    if (getAllMrpLines(mrp).count() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.MRP_GENERATE_PROPOSAL_NO_POSSIBLE_LINE));
+    }
+
+    while (!(mrpLineList = getAllMrpLines(mrp).fetch(1)).isEmpty()) {
+      mrp = mrpRepository.find(mrp.getId());
+      generateProposals(
+          isProposalsPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLineList);
+      JPA.clear();
+    }
+  }
+
+  protected Query<MrpLine> getAllMrpLines(Mrp mrp) {
+    return mrpLineRepository
+        .all()
+        .filter(
+            "self.mrp.id = :mrpId AND self.proposalGenerated = false AND self.mrpLineType.elementSelect in (:purchaseProposal, :manufProposal)")
+        .bind("mrpId", mrp.getId())
+        .bind("purchaseProposal", MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL)
+        .bind("manufProposal", MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL)
+        .order("maturityDate");
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void generateProposals(
+      boolean isProposalPerSupplier,
+      Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
+      Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
+      List<MrpLine> mrpLineList)
+      throws AxelorException {
     for (MrpLine mrpLine : mrpLineList) {
-
       if (!mrpLine.getProposalGenerated()) {
-        mrpLineService.generateProposal(
-            mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalPerSupplier);
-
-        mrpLine.setProposalToProcess(false);
-        mrpLineRepository.save(mrpLine);
+        generateProposal(isProposalPerSupplier, purchaseOrders, purchaseOrdersPerSupplier, mrpLine);
       }
     }
+  }
+
+  protected void generateProposal(
+      boolean isProposalPerSupplier,
+      Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
+      Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
+      MrpLine mrpLine)
+      throws AxelorException {
+    mrpLineService.generateProposal(
+        mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalPerSupplier);
+    mrpLine.setProposalToProcess(false);
+    mrpLineRepository.save(mrpLine);
   }
 
   @Override
