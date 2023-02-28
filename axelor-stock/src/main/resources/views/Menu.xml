@@ -3,14 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="stock-root" title="Stock management" order="-85"
+  <menuitem name="stock-root" title="Stock management" order="-700"
     if="__config__.app.isApp('stock')" icon="fa-cubes" icon-background="#b6473f"/>
 
 
-  <menuitem title="Stock moves" name="stock-root-stock-moves" parent="stock-root"/>
+  <menuitem title="Stock moves" name="stock-root-stock-moves" parent="stock-root"
+    order="100"/>
 
   <menuitem name="stock-root-custdeliveries" parent="stock-root-stock-moves"
-    title="Customer deliveries" action="stock.root.custdeliveries" order="5"/>
+    title="Customer deliveries" action="stock.root.custdeliveries" order="100"/>
 
   <action-view name="stock.root.custdeliveries" title="Customer deliveries"
     model="com.axelor.apps.stock.db.StockMove">
@@ -25,7 +26,7 @@
   </action-view>
 
   <menuitem name="stock-root-custreturns" parent="stock-root-stock-moves"
-    title="Customer returns" action="stock.root.custreturns" order="6"/>
+    title="Customer returns" action="stock.root.custreturns" order="200"/>
 
   <action-view name="stock.root.custreturns" title="Customer returns"
     model="com.axelor.apps.stock.db.StockMove">
@@ -40,7 +41,7 @@
   </action-view>
 
   <menuitem name="stock-root-suparrivals" parent="stock-root-stock-moves"
-    title="Supplier arrivals" action="stock.root.suparrivals" order="10"/>
+    title="Supplier arrivals" action="stock.root.suparrivals" order="400"/>
 
   <action-view name="stock.root.suparrivals" title="Supplier arrivals"
     model="com.axelor.apps.stock.db.StockMove">
@@ -56,7 +57,7 @@
   </action-view>
 
   <menuitem name="stock-root-supreturns" parent="stock-root-stock-moves"
-    title="Supplier returns" action="stock.root.supreturns" order="11"/>
+    title="Supplier returns" action="stock.root.supreturns" order="500"/>
 
   <action-view name="stock.root.supreturns" title="Supplier returns"
     model="com.axelor.apps.stock.db.StockMove">
@@ -72,7 +73,7 @@
   </action-view>
 
   <menuitem name="stock-root-internal" parent="stock-root-stock-moves"
-    title="Internal Stock Moves" action="stock.root.internal" order="15"/>
+    title="Internal Stock Moves" action="stock.root.internal" order="600"/>
 
   <action-view name="stock.root.internal" title="Internal Stock Moves"
     model="com.axelor.apps.stock.db.StockMove">
@@ -86,7 +87,7 @@
   </action-view>
 
   <menuitem name="stock-root-custshipprep" parent="stock-root-stock-moves"
-    title="Cust. Shipment to prepare" action="stock.root.custshipprep" order="31"
+    title="Cust. Shipment to prepare" action="stock.root.custshipprep" order="700"
     if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
 
   <action-view name="stock.root.custshipprep" title="Cust. Shipment to prepare"
@@ -104,7 +105,7 @@
 
 
   <menuitem name="stock-root-search" parent="stock-root" title="Tracking Number Search"
-    action="stock.root.search" order="17"/>
+    action="stock.root.search" order="300"/>
 
   <action-view name="stock.root.search" title="Search">
     <view name="tracking-number-search" type="search"/>
@@ -112,10 +113,10 @@
 
   <!-- MUST BE DELETED -->
 
-  <menuitem name="stock-root-planned" parent="stock-root" title="Forecasts" order="20"/>
+  <menuitem name="stock-root-planned" parent="stock-root" title="Forecasts" order="400"/>
 
   <menuitem name="stock-root-incoming-production" parent="stock-root-planned"
-    title="Production needs" action="stock.root.incoming.production"/>
+    title="Production needs" action="stock.root.incoming.production" order="100"/>
 
   <action-view name="stock.root.incoming.production" title="Production needs"
     model="com.axelor.apps.stock.db.StockMove">
@@ -130,7 +131,7 @@
   </action-view>
 
   <menuitem name="stock-root-outcoming-production" parent="stock-root-planned"
-    title="Production forecasts" action="stock.root.outcoming.production"/>
+    title="Production forecasts" action="stock.root.outcoming.production" order="200"/>
 
   <action-view name="stock.root.outcoming.production" title="Production forecasts"
     model="com.axelor.apps.stock.db.StockMove">
@@ -145,7 +146,7 @@
   </action-view>
 
   <menuitem name="stock-root-incoming-supplier" parent="stock-root-planned"
-    title="Supplier deliveries" action="stock.root.incoming.supplier"/>
+    title="Supplier deliveries" action="stock.root.incoming.supplier" order="300"/>
 
   <action-view name="stock.root.incoming.supplier" title="Supplier deliveries"
     model="com.axelor.apps.stock.db.StockMove">
@@ -162,7 +163,7 @@
   </action-view>
 
   <menuitem name="stock-root-outcoming-supplier" parent="stock-root-planned"
-    title="Supplier returns" action="stock.root.outcoming.supplier"/>
+    title="Supplier returns" action="stock.root.outcoming.supplier" order="400"/>
 
   <action-view name="stock.root.outcoming.supplier" title="Supplier returns"
     model="com.axelor.apps.stock.db.StockMove">
@@ -179,7 +180,7 @@
   </action-view>
 
   <menuitem name="stock-root-outcoming-client" parent="stock-root-planned"
-    title="Customer deliveries" action="stock.root.outcoming.client"/>
+    title="Customer deliveries" action="stock.root.outcoming.client" order="500"/>
 
   <action-view name="stock.root.outcoming.client" title="Customer deliveries"
     model="com.axelor.apps.stock.db.StockMove">
@@ -195,7 +196,7 @@
   </action-view>
 
   <menuitem name="stock-root-incoming-client" parent="stock-root-planned"
-    title="Customer returns" action="stock.root.incoming.client"/>
+    title="Customer returns" action="stock.root.incoming.client" order="600"/>
 
   <action-view name="stock.root.incoming.client" title="Customer returns"
     model="com.axelor.apps.stock.db.StockMove">
@@ -213,7 +214,7 @@
   <!-- END MUST BE DELETED -->
 
   <menuitem name="stock-root-inventories" parent="stock-root" title="Inventories"
-    action="stock.root.inventories.draft" order="25"/>
+    action="stock.root.inventories.draft" order="500"/>
 
   <action-view name="stock.root.inventories.draft" title="Inventories"
     model="com.axelor.apps.stock.db.Inventory">
@@ -224,7 +225,7 @@
   </action-view>
 
   <menuitem name="stock-root-all-line" parent="stock-root-stock-moves"
-    title="Stock move lines" action="stock.root.all.line" order="30"/>
+    title="Stock move lines" action="stock.root.all.line" order="800"/>
 
   <action-view name="stock.root.all.line" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine">
@@ -235,14 +236,14 @@
   </action-view>
 
   <menuitem name="stock-root-stock-per-day" parent="stock-root" title="Stock Availability"
-    action="stock.root.stock.per.day" order="32"/>
+    action="stock.root.stock.per.day" order="700"/>
 
   <action-view name="stock.root.stock.per.day" title="Stock availability"
     model="com.axelor.utils.db.Wizard">
     <view type="form" name="stock-move-wizard-stock-per-day"/>
   </action-view>
 
-  <menuitem name="stock-root-products" parent="stock-root" order="38" title="Products"
+  <menuitem name="stock-root-products" parent="stock-root" order="800" title="Products"
     action="stock.root.products"/>
 
   <action-view name="stock.root.products" title="Products"
@@ -257,7 +258,7 @@
   </action-view>
 
   <menuitem name="stock-root-stock-location" parent="stock-root" title="Stock Locations"
-    action="stock.root.stock.location" order="41"/>
+    action="stock.root.stock.location" order="1100"/>
 
   <action-view name="stock.root.stock.location" title="Stock Locations"
     model="com.axelor.apps.stock.db.StockLocation">
@@ -267,7 +268,7 @@
   </action-view>
 
   <menuitem name="stock-root-stock-location-tree" parent="stock-root"
-    title="Stock Location Tree" action="stock.root.stock.location.tree" order="42"/>
+    title="Stock Location Tree" action="stock.root.stock.location.tree" order="1200"/>
 
   <action-view name="stock.root.stock.location.tree" title="Stock Location Tree"
     model="com.axelor.apps.stock.db.StockLocation">
@@ -275,7 +276,7 @@
   </action-view>
 
   <menuitem name="stock-root-stock-correction" parent="stock-root"
-    title="Stock Corrections" action="stock.root.stock.correction" order="43"/>
+    title="Stock Corrections" action="stock.root.stock.correction" order="1300"/>
 
   <action-view name="stock.root.stock.correction" title="Stock Corrections"
     model="com.axelor.apps.stock.db.StockCorrection">
@@ -283,7 +284,7 @@
     <view type="form" name="stock-correction-form"/>
   </action-view>
 
-  <menuitem name="stock-root-abc-analysis" title="ABC analysis" order="27"
+  <menuitem name="stock-root-abc-analysis" title="ABC analysis" order="600"
     action="stock.root.abc.analysis" parent="stock-root"/>
 
   <action-view name="stock.root.abc.analysis" title="ABC analysis"
@@ -294,14 +295,14 @@
     <context name="_type" expr="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl"/>
   </action-view>
 
-  <menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45"
+  <menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="1400"
     icon="fa-bar-chart"/>
 
-  <menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="50"
+  <menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="1500"
     icon="fa-cog"/>
 
   <menuitem name="stock-root-incoterm" parent="stock-root-conf" title="Incoterms"
-    action="stock.root.incoterm"/>
+    action="stock.root.incoterm" order="100"/>
 
   <action-view name="stock.root.incoterm" title="Incoterms"
     model="com.axelor.apps.stock.db.Incoterm">
@@ -310,7 +311,7 @@
   </action-view>
 
   <menuitem name="stock-root-conf-stock-rules" parent="stock-root-conf" title="Stock rules"
-    action="stock.root.conf.stock.rules"/>
+    action="stock.root.conf.stock.rules" order="200"/>
 
   <action-view name="stock.root.conf.stock.rules" title="Stock rules"
     model="com.axelor.apps.stock.db.StockRules">
@@ -320,7 +321,7 @@
   </action-view>
 
   <menuitem name="stock-root-conf-stock-tracking-numbers" parent="stock-root-conf"
-    title="Tracking Numbers" action="stock.root.conf.stock.tracking.numbers"/>
+    title="Tracking Numbers" action="stock.root.conf.stock.tracking.numbers" order="300"/>
 
   <action-view name="stock.root.conf.stock.tracking.numbers" title="Tracking Numbers"
     model="com.axelor.apps.stock.db.TrackingNumber">
@@ -330,7 +331,7 @@
   </action-view>
 
   <menuitem name="stock-root-conf-freight-carrier" parent="stock-root-conf"
-    title="Freight Carrier" action="stock.root.conf.freight.carrier"/>
+    title="Freight Carrier" action="stock.root.conf.freight.carrier" order="400"/>
 
   <action-view name="stock.root.conf.freight.carrier" title="Freight Carrier"
     model="com.axelor.apps.base.db.Partner">
@@ -344,7 +345,7 @@
   </action-view>
 
   <menuitem name="stock-root-conf-freight-carrier-mode" parent="stock-root-conf"
-    title="Freight carrier modes" action="stock.root.conf.freight.carrier.mode"/>
+    title="Freight carrier modes" action="stock.root.conf.freight.carrier.mode" order="500"/>
 
   <action-view name="stock.root.conf.freight.carrier.mode" title="Freight carrier modes"
     model="com.axelor.apps.stock.db.FreightCarrierMode">
@@ -353,7 +354,7 @@
   </action-view>
 
   <menuitem name="stock-root-conf-shipment-mode" parent="stock-root-conf"
-    title="Shipment Mode" action="stock.root.conf.shipment.mode"/>
+    title="Shipment Mode" action="stock.root.conf.shipment.mode" order="600"/>
 
   <action-view name="stock.root.conf.shipment.mode" title="Shipment Mode"
     model="com.axelor.apps.stock.db.ShipmentMode">
@@ -362,7 +363,8 @@
   </action-view>
 
   <menuitem name="stock-root-conf-tracking-number-config" parent="stock-root-conf"
-    title="Tracking number configuration" action="stock.root.conf.tracking.number.config"/>
+    title="Tracking number configuration" action="stock.root.conf.tracking.number.config"
+    order="700"/>
 
   <action-view name="stock.root.conf.tracking.number.config"
     title="Tracking number configuration"
@@ -372,7 +374,8 @@
   </action-view>
 
   <menuitem name="stock-root-conf-customs-code-nomenclature" parent="stock-root-conf"
-    title="Customs code nomenclature:all" action="stock.root.conf.customs.code.nomenclature"/>
+    title="Customs code nomenclature:all" action="stock.root.conf.customs.code.nomenclature"
+    order="800"/>
 
   <action-view name="stock.root.conf.customs.code.nomenclature"
     title="Customs code nomenclature:all" model="com.axelor.apps.stock.db.CustomsCodeNomenclature">
@@ -384,7 +387,7 @@
 
 
   <menuitem name="admin-root-batch-stock" parent="admin-root-batch" title="Stock batches"
-    action="admin.root.batch.stock"/>
+    action="admin.root.batch.stock" order="1000"/>
 
   <action-view name="admin.root.batch.stock" title="Stock batches"
     model="com.axelor.apps.stock.db.StockBatch">
@@ -393,7 +396,7 @@
   </action-view>
 
   <menuitem name="menu-stock-dashboard-1" parent="stock-root-report" title="General"
-    action="stock.dashboard.one.view"/>
+    action="stock.dashboard.one.view" order="100"/>
 
   <action-view name="stock.dashboard.one.view" title="General Stock Details">
     <view type="dashboard" name="stock.dashboard.one"/>
@@ -401,14 +404,14 @@
   </action-view>
 
   <menuitem name="menu-stock-dashboard-2" parent="stock-root-report" title="Deliveries"
-    action="stock.dashboard.two.view"/>
+    action="stock.dashboard.two.view" order="200"/>
 
   <action-view name="stock.dashboard.two.view" title="Deliveries Details">
     <view type="dashboard" name="stock.dashboard.two"/>
   </action-view>
 
   <menuitem title="Logistical forms" name="stock-root-logistical-forms" parent="stock-root"
-    action="stock.root.logistical.forms" order="39"/>
+    action="stock.root.logistical.forms" order="900"/>
 
   <action-view name="stock.root.logistical.forms" title="Logistical forms"
     model="com.axelor.apps.stock.db.LogisticalForm">
@@ -418,7 +421,7 @@
   </action-view>
 
   <menuitem name="stock-root-conf-cancel-reason" title="Cancel reason"
-    parent="stock-root-conf" action="action.stock.view.cancel.reason"/>
+    parent="stock-root-conf" action="action.stock.view.cancel.reason" order="900"/>
 
   <action-view name="action.stock.view.cancel.reason" title="Cancel reason"
     model="com.axelor.apps.base.db.CancelReason">
@@ -430,7 +433,7 @@
   </action-view>
 
   <menuitem name="stock-root-conf-stock-correction-reason" title="Stock Correction Reason"
-    parent="stock-root-conf" action="stock.root.conf.stock.correction.reason"/>
+    parent="stock-root-conf" action="stock.root.conf.stock.correction.reason" order="1000"/>
 
   <action-view name="stock.root.conf.stock.correction.reason"
     title="Stock Correction Reason" model="com.axelor.apps.stock.db.StockCorrectionReason">
