@@ -20,7 +20,6 @@
       grid-view="payment-mode-grid" onChange="action-move-line-group-payment-mode-onchange"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
-      readonlyIf="amountPaid &gt; 0"
       onChange="action-account-move-line-account-group-on-change-mass-entry"/>
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
@@ -34,10 +33,10 @@
       requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
     <field name="debit"
       onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
-      width="90" readonlyIf="amountPaid &gt; 0"/>
+      width="90"/>
     <field name="credit"
       onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
-      width="90" readonlyIf="amountPaid &gt; 0"/>
+      width="90"/>
     <field name="currencyRate" onChange="action-move-line-group-currency-amount-rate-onchange"
       readonlyIf="!isOtherCurrency"/>
     <field name="currencyAmount"
@@ -55,9 +54,9 @@
       readonlyIf="pfpValidateStatusSelect != 1"
       onSelect="action-move-line-method-domain-pfp-validator-user-on-select" onChange=""
       canEdit="false"/>
-    <field name="partner.bankDetails"/>
-    <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1"/>
-    <field name="move.statusSelect"/>
+    <field name="movePartnerBankDetails"/>
+    <field name="vatSystemSelect"/>
+    <field name="moveStatusSelect"/>
     <field name="move.technicalOriginSelect" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
@@ -128,9 +127,9 @@
     <attribute for="cutOffStartDate" name="readonly" expr="eval: inputAction == 2"/>
     <attribute for="cutOffEndDate" name="readonly" expr="eval: inputAction == 2"/>
     <attribute for="pfpValidatorUser" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="partner.bankDetails" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="movePartnerBankDetails" name="readonly" expr="eval: inputAction == 2"/>
     <attribute for="vatSystemSelect" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="move.statusSelect" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="moveStatusSelect" name="readonly" expr="eval: inputAction == 2"/>
   </action-attrs>
 
   <action-attrs name="action-move-line-attrs-set-not-required-account">
@@ -151,6 +150,7 @@
     <field name="dueDate" expr="eval: __parent__?.date"/>
     <field name="originDate" expr="eval: __parent__?.originDate"/>
     <field name="origin" expr="eval: __parent__?.origin"/>
+    <field name="moveStatusSelect" expr="eval: __parent__?.statusSelect"/>
   </action-record>
 
   <action-record name="action-move-line-record-compute-temporaryMoveNumber"

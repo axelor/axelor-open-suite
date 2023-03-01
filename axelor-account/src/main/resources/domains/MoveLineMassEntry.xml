@@ -10,10 +10,17 @@
     <many-to-one name="moveMassEntry" ref="Move" title="Move mass entry"
       initParam="true"/>
     <integer name="temporaryMoveNumber" title="Move N°"/>
+    <integer name="inputAction" title="Input action"
+      selection="iaccount.move.input.action.select"/>
     <many-to-one name="movePaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment Mode"/>
     <many-to-one name="movePaymentCondition" title="Payment condition"
       ref="com.axelor.apps.account.db.PaymentCondition"/>
+    <string name="moveDescription" title="Move Description" initParam="true"/>
+    <integer name="moveStatusSelect" title="Status" default="1" readonly="true"
+      selection="iaccount.move.status.select"/>
+    <many-to-one name="movePartnerBankDetails" title="Bank details"
+      ref="com.axelor.apps.base.db.BankDetails"/>
 
   </entity>
 

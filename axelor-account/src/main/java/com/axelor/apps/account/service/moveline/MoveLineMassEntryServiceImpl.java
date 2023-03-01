@@ -64,12 +64,14 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       Move move, MoveLine moveLine, Integer tempMoveNumber) {
     MoveLineMassEntry moveLineMassEntry = new MoveLineMassEntry();
     if (move != null && moveLine != null) {
-      // TODO move inputAction from MoveLine to MoveLineMassEntry entity
       moveLineMassEntry.setInputAction(1);
       moveLineMassEntry.setMovePaymentMode(move.getPaymentMode());
       moveLineMassEntry.setMovePaymentCondition(move.getPaymentCondition());
       moveLineMassEntry.setTemporaryMoveNumber(tempMoveNumber);
       moveLineMassEntry.setMoveMassEntry(move);
+      moveLineMassEntry.setMoveDescription(move.getDescription());
+      moveLineMassEntry.setMovePartnerBankDetails(move.getPartnerBankDetails());
+      moveLineMassEntry.setMoveStatusSelect(move.getStatusSelect());
 
       moveLineMassEntry.setMove(move);
       moveLineMassEntry.setPartner(moveLine.getPartner());
@@ -83,6 +85,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       moveLineMassEntry.setCredit(moveLine.getCredit());
       moveLineMassEntry.setDescription(moveLine.getDescription());
       moveLineMassEntry.setOrigin(moveLine.getOrigin());
+      moveLineMassEntry.setOriginDate(moveLine.getOriginDate());
       moveLineMassEntry.setTaxLine(moveLine.getTaxLine());
       moveLineMassEntry.setTaxLineBeforeReverse(moveLine.getTaxLineBeforeReverse());
       moveLineMassEntry.setCurrencyAmount(moveLine.getCurrencyAmount());
