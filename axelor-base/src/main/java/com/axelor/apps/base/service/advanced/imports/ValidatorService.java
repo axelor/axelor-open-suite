@@ -125,7 +125,7 @@ public class ValidatorService {
     return validate(reader, advancedImport);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public boolean validate(DataReaderService reader, AdvancedImport advancedImport)
       throws IOException, ClassNotFoundException, AxelorException {
 
@@ -764,7 +764,7 @@ public class ValidatorService {
     writer.newLine();
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void createCustomObjectSet(String modelName, String targetModelName, int sequence) {
 
     String simpleModelName = StringUtils.substringAfterLast(targetModelName, ".");
@@ -799,7 +799,7 @@ public class ValidatorService {
     metaJsonFieldRepo.save(jsonField);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void createCustomButton(String modelName, String targetModelName, int sequence) {
 
     String simpleModelName = StringUtils.substringAfterLast(targetModelName, ".");
