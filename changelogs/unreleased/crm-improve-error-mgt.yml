@@ -1,0 +1,3 @@
+---
+title: "CRM: fixed an issue in some processes where an error would create inconsistencies."
+type: fix
