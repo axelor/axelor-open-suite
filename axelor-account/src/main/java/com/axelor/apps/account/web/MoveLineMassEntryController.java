@@ -23,7 +23,9 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.*;
+import com.axelor.apps.account.service.moveline.MoveLineMassEntryService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -39,17 +41,31 @@ public class MoveLineMassEntryController {
 
   public void exceptionCounterpart(ActionRequest request, ActionResponse response) {
     try {
-      Context parentContext = request.getContext().getParent();
-      if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
-        Move move = parentContext.asType(Move.class);
+      Move move = request.getContext().asType(Move.class);
+      List<MoveLineMassEntry> moveLineMassEntryList = new ArrayList<>();
+
+      if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
         MoveLineMassEntry lastMoveLineMassEntry =
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
-        move.setPaymentMode(
-            lastMoveLineMassEntry != null && lastMoveLineMassEntry.getMovePaymentMode() != null
-                ? lastMoveLineMassEntry.getMovePaymentMode()
-                : null);
+        if (lastMoveLineMassEntry.getInputAction() != null
+            && lastMoveLineMassEntry.getInputAction() == 2) {
+          move.getMoveLineMassEntryList()
+              .forEach(
+                  moveLineMassEntry -> {
+                    if (Objects.equals(
+                            moveLineMassEntry.getTemporaryMoveNumber(),
+                            lastMoveLineMassEntry.getTemporaryMoveNumber())
+                        && moveLineMassEntry.getInputAction() != 2) {
+                      moveLineMassEntryList.add(moveLineMassEntry);
+                    }
+                  });
 
-        Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
+          if (ObjectUtils.notEmpty(moveLineMassEntryList)) {
+            Beans.get(MoveToolService.class)
+                .exceptionOnGenerateCounterpart(
+                    move.getJournal(), moveLineMassEntryList.get(0).getMovePaymentMode());
+          }
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -57,36 +73,54 @@ public class MoveLineMassEntryController {
   }
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response) {
-    // TODO Not used
+    // TODO Need to create a service to clear the code inside this method
     try {
-      System.out.println("autoTaxLineGenerate");
+      Move move = request.getContext().asType(Move.class);
+      boolean firstLine = true;
+      List<MoveLine> moveLineList = new ArrayList<>();
 
-      Context parentContext = request.getContext().getParent();
-      MoveLine counterPartMoveLine = request.getContext().asType(MoveLine.class);
+      if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
+        MoveLineMassEntry lastMoveLineMassEntry =
+            move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
+        if (lastMoveLineMassEntry.getInputAction() != null
+            && lastMoveLineMassEntry.getInputAction() == 2) {
+          for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+            if (Objects.equals(
+                    moveLineMassEntry.getTemporaryMoveNumber(),
+                    lastMoveLineMassEntry.getTemporaryMoveNumber())
+                && moveLineMassEntry.getInputAction() == 1) {
+              if (firstLine) {
+                move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
+                move.setPaymentCondition(moveLineMassEntry.getMovePaymentCondition());
+                move.setPartner(moveLineMassEntry.getPartner());
+                firstLine = false;
+              }
+              moveLineMassEntry.setMove(move);
+              moveLineList.add(moveLineMassEntry);
+            }
+          }
 
-      if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
-        Move move = parentContext.asType(Move.class);
-        Move moveCounterPartToGenerate = move;
-        List<MoveLine> moveLineList = new ArrayList<>();
-        move.getMoveLineList()
-            .forEach(
-                moveLine -> {
-                  if (Objects.equals(moveLine.getCounter(), counterPartMoveLine.getCounter())) {
-                    moveLineList.add(moveLine);
-                  }
-                });
-        moveCounterPartToGenerate.setMoveLineList(moveLineList);
+          move.setMoveLineList(moveLineList);
 
-        if (moveCounterPartToGenerate.getMoveLineList() != null
-            && !moveCounterPartToGenerate.getMoveLineList().isEmpty()
-            && (moveCounterPartToGenerate.getStatusSelect().equals(MoveRepository.STATUS_NEW)
-                || moveCounterPartToGenerate
-                    .getStatusSelect()
-                    .equals(MoveRepository.STATUS_SIMULATED))) {
-          Beans.get(MoveLineTaxService.class).autoTaxLineGenerate(moveCounterPartToGenerate);
-
-          if (request.getContext().get("_source").equals("autoTaxLineGenerateBtn")) {
-            response.setReload(true);
+          if (move.getMoveLineList() != null
+              && ObjectUtils.notEmpty(move.getMoveLineList())
+              && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+                  || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
+            Beans.get(MoveLineTaxService.class).autoTaxLineGenerate(move);
+            move.getMoveLineMassEntryList()
+                .removeIf(
+                    moveLineMassEntry ->
+                        Objects.equals(
+                            moveLineMassEntry.getTemporaryMoveNumber(),
+                            lastMoveLineMassEntry.getTemporaryMoveNumber()));
+            move.setMoveLineMassEntryList(
+                Beans.get(MoveLineMassEntryService.class)
+                    .convertMoveLinesIntoMoveLineMassEntry(
+                        move,
+                        move.getMoveLineList(),
+                        lastMoveLineMassEntry.getTemporaryMoveNumber()));
+            move.clearMoveLineList();
+            response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
           }
         }
       }

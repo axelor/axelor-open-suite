@@ -13,7 +13,7 @@
     <field name="date" onChange="account-move-line-group-date-onchange-mass-entry"/>
     <field name="originDate" onChange=""/>
     <field name="origin" onChange=""/>
-    <field name="move.description" onChange="" readonly="false"/>
+    <field name="moveDescription" onChange="" readonly="false"/>
     <field name="movePaymentCondition" readonly="false" form-view="payment-condition-form"
       grid-view="payment-condition-grid" onChange=""/>
     <field name="movePaymentMode" readonly="false" form-view="payment-mode-form"
@@ -105,10 +105,37 @@
 
   <action-group name="action-move-line-group-input-action-onchange">
     <action name="action-move-line-record-increment-temporaryMoveNumber"/>
-    <action name="action-move-line-method-exception-counterpart" if="inputAction == 2"/>
-    <action name="action-move-line-method-automatic-taxline-generation" if="inputAction == 2"/>
-    <action name="action-move-line-method-generate-counterpart" if="inputAction == 2"/>
+    <action name="action-move-line-attrs-set-not-required-account" if="inputAction == 2"/>
+    <action name="action-move-line-attrs-set-all-fields-required"/>
   </action-group>
+
+  <action-attrs name="action-move-line-attrs-set-all-fields-required">
+    <attribute for="date" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="originDate" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="origin" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="moveDescription" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="movePaymentCondition" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="movePaymentMode" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="account" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="taxLine" name="readonly"
+      expr="eval: inputAction == 2 &amp;&amp; !account?.isTaxAuthorizedOnMoveLine"/>
+    <attribute for="partner" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="description" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="debit" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="credit" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="currencyRate" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="currencyAmount" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="cutOffStartDate" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="cutOffEndDate" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="pfpValidatorUser" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="partner.bankDetails" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="vatSystemSelect" name="readonly" expr="eval: inputAction == 2"/>
+    <attribute for="move.statusSelect" name="readonly" expr="eval: inputAction == 2"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-line-attrs-set-not-required-account">
+    <attribute for="account" name="required" expr="false"/>
+  </action-attrs>
 
   <action-record name="action-move-line-record-reset-partner-details-mass-entry"
     model="com.axelor.apps.account.db.MoveLine">
