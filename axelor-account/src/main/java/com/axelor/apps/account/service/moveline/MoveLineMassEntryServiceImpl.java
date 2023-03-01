@@ -25,6 +25,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,18 @@ import org.slf4j.LoggerFactory;
 public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Override
+  public void clearMoveLineMassEntryListAndAddNewLines(Move move, Integer temporaryMoveNumber) {
+    move.getMoveLineMassEntryList()
+        .removeIf(
+            moveLineMassEntry ->
+                Objects.equals(moveLineMassEntry.getTemporaryMoveNumber(), temporaryMoveNumber));
+    move.getMoveLineMassEntryList()
+        .addAll(
+            this.convertMoveLinesIntoMoveLineMassEntry(
+                move, move.getMoveLineList(), temporaryMoveNumber));
+  }
 
   @Override
   public List<MoveLineMassEntry> convertMoveLinesIntoMoveLineMassEntry(
@@ -66,6 +79,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       moveLineMassEntry.setCutOffStartDate(moveLine.getCutOffStartDate());
       moveLineMassEntry.setCounter(moveLine.getCounter());
       moveLineMassEntry.setDescription(moveLine.getDescription());
+      moveLineMassEntry.setInputAction(1);
       // TODO ajouter tous les autres champs
     }
 

@@ -25,6 +25,8 @@ import java.util.List;
 /** Interface of service to create {@link MoveLineMassEntry} */
 public interface MoveLineMassEntryService {
 
+  void clearMoveLineMassEntryListAndAddNewLines(Move move, Integer temporaryMoveNumber);
+
   List<MoveLineMassEntry> convertMoveLinesIntoMoveLineMassEntry(
       Move move, List<MoveLine> moveLines, Integer temporaryMoveNumber);
 

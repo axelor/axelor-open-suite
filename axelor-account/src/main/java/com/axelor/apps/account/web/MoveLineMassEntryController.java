@@ -58,6 +58,7 @@ public class MoveLineMassEntryController {
     // TODO Need to be split inside a service
     try {
       Move move = request.getContext().asType(Move.class);
+      MoveLineMassEntryService moveLineMassEntryService = Beans.get(MoveLineMassEntryService.class);
       List<MoveLine> moveLineList = new ArrayList<>();
       boolean firstLine = true;
 
@@ -83,18 +84,8 @@ public class MoveLineMassEntryController {
             }
           }
           move.setMoveLineList(moveLineList);
-          move.getMoveLineMassEntryList()
-              .removeIf(
-                  moveLineMassEntry ->
-                      Objects.equals(
-                          moveLineMassEntry.getTemporaryMoveNumber(),
-                          lastMoveLineMassEntry.getTemporaryMoveNumber()));
-          move.setMoveLineMassEntryList(
-              Beans.get(MoveLineMassEntryService.class)
-                  .convertMoveLinesIntoMoveLineMassEntry(
-                      move,
-                      move.getMoveLineList(),
-                      lastMoveLineMassEntry.getTemporaryMoveNumber()));
+          moveLineMassEntryService.clearMoveLineMassEntryListAndAddNewLines(
+              move, lastMoveLineMassEntry.getTemporaryMoveNumber());
           response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
 
           if (ObjectUtils.notEmpty(moveLineList)) {
@@ -106,12 +97,8 @@ public class MoveLineMassEntryController {
               Beans.get(MoveCounterPartService.class)
                   .generateCounterpartMoveLine(move, this.extractDueDate(request));
             }
-            move.setMoveLineMassEntryList(
-                Beans.get(MoveLineMassEntryService.class)
-                    .convertMoveLinesIntoMoveLineMassEntry(
-                        move,
-                        move.getMoveLineList(),
-                        lastMoveLineMassEntry.getTemporaryMoveNumber()));
+            moveLineMassEntryService.clearMoveLineMassEntryListAndAddNewLines(
+                move, lastMoveLineMassEntry.getTemporaryMoveNumber());
             response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
           }
         }
