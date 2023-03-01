@@ -125,7 +125,7 @@ public class PeriodServiceImpl implements PeriodService {
     this.updateClosePeriod(period);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   protected void updateClosePeriod(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
     period.setClosureDateTime(LocalDateTime.now());
