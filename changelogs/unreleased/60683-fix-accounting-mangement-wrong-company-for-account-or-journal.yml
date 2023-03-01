@@ -1,0 +1,4 @@
+---
+title : "ACCOUNTING MANAGEMENT: corrected wrong company for account or journal by putting company on read only if accounts or journals are already filled"
+type : fix
+

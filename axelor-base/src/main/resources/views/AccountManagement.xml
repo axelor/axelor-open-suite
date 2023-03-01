@@ -59,7 +59,8 @@
           onChange="action-account-management-group-type-select-onchange" hidden="true"/>
         <field name="company" widget="SuggestBox"
           onChange="action-group-account-account-management-onchange-common"
-          form-view="company-form" grid-view="company-grid" canEdit="false"/>
+          form-view="company-form" grid-view="company-grid" canEdit="false"
+          readonlyIf="purchaseAccount || fixedAssetCategory || purchFixedAssetsAccount || saleAccount || purchaseAccount || purchFixedAssetsAccount || saleAccount || purchVatRegulationAccount || saleVatRegulationAccount || globalAccountingCashAccount || journal || cashAccount || sequence || allowedFinDiscountTaxVatSystem1Account || allowedFinDiscountTaxVatSystem2Account || obtainedFinDiscountTaxVatSystem1Account || obtainedFinDiscountTaxVatSystem2Account"/>
         <field name="product" canEdit="false" hidden="true" form-view="product-form"
           grid-view="product-grid" domain="self.dtype = 'Product'"
           requiredIf="typeSelect==1 &amp;&amp; !productFamily"/>
