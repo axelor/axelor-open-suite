@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="Expense" cacheable="true">
+  <entity name="Expense">
 
     <string name="expenseSeq" title="Expense N°" readonly="true"/>
 

@@ -5,7 +5,7 @@
 
   <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
 
-  <entity name="MobileConfig">
+  <entity name="MobileConfig" cacheable="true">
     <string name="sequence" selection="mobilesettings.mobile.config.sequence.select"
       required="true" unique="true" readonly="true" title="App"/>
     <boolean name="isAppEnable" title="Enable app" default="false"

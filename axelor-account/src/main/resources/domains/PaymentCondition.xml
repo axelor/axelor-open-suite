@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentCondition" cacheable="true">
+  <entity name="PaymentCondition">
 
     <string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true" unique="true"/>

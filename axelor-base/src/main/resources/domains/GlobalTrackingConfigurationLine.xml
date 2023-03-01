@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="GlobalTrackingConfigurationLine" cacheable="true">
+  <entity name="GlobalTrackingConfigurationLine">
 
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" required="true"/>
     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" required="true"/>

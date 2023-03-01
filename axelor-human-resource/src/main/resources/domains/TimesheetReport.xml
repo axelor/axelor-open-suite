@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="TimesheetReport" cacheable="true">
+  <entity name="TimesheetReport">
 
     <date name="fromDate" title="From Date"/>
     <date name="toDate" title="To Date"/>

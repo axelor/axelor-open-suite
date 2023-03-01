@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="EconomicArea">
+  <entity name="EconomicArea" cacheable="true">
     <string name="code" unique="true"/>
     <string name="name" unique="true" translatable="true"/>
     <one-to-many name="countryList" ref="com.axelor.apps.base.db.Country"

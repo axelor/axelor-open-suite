@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PrintTemplateLine">
+  <entity name="PrintTemplateLine" cacheable="true">
 
     <string name="title" title="Title" namecolumn="true" large="true"/>
     <string name="content" title="Content" large="true"/>

@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppCrm">
+  <entity name="AppCrm" cacheable="true">
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <integer name="assignableUsers" title="Assignable Users"

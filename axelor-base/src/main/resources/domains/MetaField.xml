@@ -5,7 +5,7 @@
 
   <module name="meta" package="com.axelor.meta.db"/>
 
-  <entity name="MetaField" table="META_FIELD" cacheable="true">
+  <entity name="MetaField" table="META_FIELD">
     <string name="label" title="Label" translatable="true"/>
 
     <finder-method name="findByModel" using="name, metaModel" cacheable="true"/>

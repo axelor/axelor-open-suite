@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="PrintTemplate">
+  <entity name="PrintTemplate" cacheable="true">
 
     <string name="name" title="Name" namecolumn="true"/>
     <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>

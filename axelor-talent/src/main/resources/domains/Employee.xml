@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="Employee" cacheable="true">
+  <entity name="Employee">
     <many-to-many name="trainingSkillSet" ref="com.axelor.apps.talent.db.Skill"
       title="Training skills"/>
     <many-to-many name="experienceSkillSet" ref="com.axelor.apps.talent.db.Skill"

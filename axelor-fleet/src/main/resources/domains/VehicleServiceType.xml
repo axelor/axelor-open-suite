@@ -5,7 +5,7 @@
 
   <module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-  <entity name="VehicleServiceType" cacheable="true">
+  <entity name="VehicleServiceType">
     <string name="name" title="Name" required="true"/>
   </entity>
 

@@ -5,7 +5,7 @@
 
   <module name="mail" package="com.axelor.mail.db"/>
 
-  <entity name="MailMessage" table="MAIL_MESSAGE" cacheable="true" repository="none">
+  <entity name="MailMessage" table="MAIL_MESSAGE" repository="none">
 
     <string name="relatedName" title="Related document name" large="true"/>
 

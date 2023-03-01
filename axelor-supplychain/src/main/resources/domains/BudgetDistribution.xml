@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="BudgetDistribution" cacheable="true">
+  <entity name="BudgetDistribution">
 
     <many-to-one name="purchaseOrderLine"
       ref="com.axelor.apps.purchase.db.PurchaseOrderLine"/>

@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="MpsWeeklySchedule" cacheable="true">
+  <entity name="MpsWeeklySchedule">
 
     <string name="code" title="Code" unique="true"/>
     <string name="label" title="Label" namecolumn="true"/>

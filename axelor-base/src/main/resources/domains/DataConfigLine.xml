@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="DataConfigLine" cacheable="true">
+  <entity name="DataConfigLine">
 
     <![CDATA[
       This object stores the configuration lines for export of data.

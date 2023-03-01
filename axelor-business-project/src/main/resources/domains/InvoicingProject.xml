@@ -5,7 +5,7 @@
 
   <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
-  <entity name="InvoicingProject" cacheable="true">
+  <entity name="InvoicingProject">
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project"
       title="Business project"/>
