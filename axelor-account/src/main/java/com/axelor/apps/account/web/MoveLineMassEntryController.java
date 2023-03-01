@@ -32,6 +32,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,51 +40,33 @@ import java.util.Objects;
 @Singleton
 public class MoveLineMassEntryController {
 
-  public void exceptionCounterpart(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      List<MoveLineMassEntry> moveLineMassEntryList = new ArrayList<>();
+  private LocalDate extractDueDate(ActionRequest request) {
+    if (!request.getContext().containsKey("dueDate")
+        || request.getContext().get("dueDate") == null) {
+      return null;
+    }
 
-      if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-        MoveLineMassEntry lastMoveLineMassEntry =
-            move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
-        if (lastMoveLineMassEntry.getInputAction() != null
-            && lastMoveLineMassEntry.getInputAction() == 2) {
-          move.getMoveLineMassEntryList()
-              .forEach(
-                  moveLineMassEntry -> {
-                    if (Objects.equals(
-                            moveLineMassEntry.getTemporaryMoveNumber(),
-                            lastMoveLineMassEntry.getTemporaryMoveNumber())
-                        && moveLineMassEntry.getInputAction() != 2) {
-                      moveLineMassEntryList.add(moveLineMassEntry);
-                    }
-                  });
-
-          if (ObjectUtils.notEmpty(moveLineMassEntryList)) {
-            Beans.get(MoveToolService.class)
-                .exceptionOnGenerateCounterpart(
-                    move.getJournal(), moveLineMassEntryList.get(0).getMovePaymentMode());
-          }
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    Object dueDateObj = request.getContext().get("dueDate");
+    if (dueDateObj.getClass() == LocalDate.class) {
+      return (LocalDate) dueDateObj;
+    } else {
+      return LocalDate.parse((String) dueDateObj);
     }
   }
 
-  public void autoTaxLineGenerate(ActionRequest request, ActionResponse response) {
-    // TODO Need to create a service to clear the code inside this method
+  public void generateTaxLineAndCounterpart(ActionRequest request, ActionResponse response) {
+    // TODO Need to be split inside a service
     try {
       Move move = request.getContext().asType(Move.class);
-      boolean firstLine = true;
       List<MoveLine> moveLineList = new ArrayList<>();
+      boolean firstLine = true;
 
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
         MoveLineMassEntry lastMoveLineMassEntry =
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
         if (lastMoveLineMassEntry.getInputAction() != null
             && lastMoveLineMassEntry.getInputAction() == 2) {
+
           for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
             if (Objects.equals(
                     moveLineMassEntry.getTemporaryMoveNumber(),
@@ -99,40 +82,40 @@ public class MoveLineMassEntryController {
               moveLineList.add(moveLineMassEntry);
             }
           }
-
           move.setMoveLineList(moveLineList);
+          move.getMoveLineMassEntryList()
+              .removeIf(
+                  moveLineMassEntry ->
+                      Objects.equals(
+                          moveLineMassEntry.getTemporaryMoveNumber(),
+                          lastMoveLineMassEntry.getTemporaryMoveNumber()));
+          move.setMoveLineMassEntryList(
+              Beans.get(MoveLineMassEntryService.class)
+                  .convertMoveLinesIntoMoveLineMassEntry(
+                      move,
+                      move.getMoveLineList(),
+                      lastMoveLineMassEntry.getTemporaryMoveNumber()));
+          response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
 
-          if (move.getMoveLineList() != null
-              && ObjectUtils.notEmpty(move.getMoveLineList())
-              && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
-                  || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
-            Beans.get(MoveLineTaxService.class).autoTaxLineGenerate(move);
-            move.getMoveLineMassEntryList()
-                .removeIf(
-                    moveLineMassEntry ->
-                        Objects.equals(
-                            moveLineMassEntry.getTemporaryMoveNumber(),
-                            lastMoveLineMassEntry.getTemporaryMoveNumber()));
+          if (ObjectUtils.notEmpty(moveLineList)) {
+            Beans.get(MoveToolService.class)
+                .exceptionOnGenerateCounterpart(move.getJournal(), move.getPaymentMode());
+            if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+                || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
+              Beans.get(MoveLineTaxService.class).autoTaxLineGenerate(move);
+              Beans.get(MoveCounterPartService.class)
+                  .generateCounterpartMoveLine(move, this.extractDueDate(request));
+            }
             move.setMoveLineMassEntryList(
                 Beans.get(MoveLineMassEntryService.class)
                     .convertMoveLinesIntoMoveLineMassEntry(
                         move,
                         move.getMoveLineList(),
                         lastMoveLineMassEntry.getTemporaryMoveNumber()));
-            move.clearMoveLineList();
             response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
           }
         }
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void generateCounterpart(ActionRequest request, ActionResponse response) {
-    // TODO Not used
-    try {
-      System.out.println("generateCounterpart");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
