@@ -17,14 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.InvoiceTermPayment;
-import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -616,12 +609,18 @@ public class MoveToolServiceImpl implements MoveToolService {
 
   @Override
   public void exceptionOnGenerateCounterpart(Move move) throws AxelorException {
-    if (move.getPaymentMode() == null
-        && (move.getJournal()
+    this.exceptionOnGenerateCounterpart(move.getJournal(), move.getPaymentMode());
+  }
+
+  @Override
+  public void exceptionOnGenerateCounterpart(Journal journal, PaymentMode paymentMode)
+      throws AxelorException {
+    if (paymentMode == null
+        && (journal
                 .getJournalType()
                 .getTechnicalTypeSelect()
                 .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
-            || move.getJournal()
+            || journal
                 .getJournalType()
                 .getTechnicalTypeSelect()
                 .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER))) {
