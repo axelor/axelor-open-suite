@@ -254,7 +254,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     }
 
     moveLineList.addAll(newMap.values());
-    moveRepository.save(move);
+    // TODO Need to be removed by AOS
+    // moveRepository.save(move);
   }
 
   protected boolean isGenerateMoveLineForAutoTax(String accountType) {
