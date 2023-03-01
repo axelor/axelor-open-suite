@@ -90,6 +90,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       moveLineMassEntry.setTaxLineBeforeReverse(moveLine.getTaxLineBeforeReverse());
       moveLineMassEntry.setCurrencyAmount(moveLine.getCurrencyAmount());
       moveLineMassEntry.setCurrencyRate(moveLine.getCurrencyRate());
+      moveLineMassEntry.setSourceTaxLine(moveLine.getSourceTaxLine());
 
       // TODO Add new fields added on MoveLineMassEntry
       // TODO Add nedded fields from MoveLine
