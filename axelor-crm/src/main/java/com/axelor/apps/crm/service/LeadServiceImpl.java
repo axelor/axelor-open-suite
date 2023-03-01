@@ -291,7 +291,7 @@ public class LeadServiceImpl implements LeadService {
     lead.setIsRecycled(true);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void loseLead(Lead lead, LostReason lostReason) throws AxelorException {
     List<Integer> authorizedStatus = new ArrayList<>();
     authorizedStatus.add(LeadRepository.LEAD_STATUS_NEW);
