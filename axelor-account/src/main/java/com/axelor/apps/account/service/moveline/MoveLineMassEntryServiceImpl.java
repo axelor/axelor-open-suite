@@ -64,23 +64,32 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       Move move, MoveLine moveLine, Integer tempMoveNumber) {
     MoveLineMassEntry moveLineMassEntry = new MoveLineMassEntry();
     if (move != null && moveLine != null) {
-      moveLineMassEntry.setMove(move);
+      // TODO move inputAction from MoveLine to MoveLineMassEntry entity
+      moveLineMassEntry.setInputAction(1);
       moveLineMassEntry.setMovePaymentMode(move.getPaymentMode());
       moveLineMassEntry.setMovePaymentCondition(move.getPaymentCondition());
-      moveLineMassEntry.setDebit(moveLine.getDebit());
-      moveLineMassEntry.setCredit(moveLine.getCredit());
       moveLineMassEntry.setTemporaryMoveNumber(tempMoveNumber);
       moveLineMassEntry.setMoveMassEntry(move);
+
+      moveLineMassEntry.setMove(move);
       moveLineMassEntry.setPartner(moveLine.getPartner());
       moveLineMassEntry.setAccount(moveLine.getAccount());
       moveLineMassEntry.setDate(moveLine.getDate());
       moveLineMassEntry.setDueDate(moveLine.getDueDate());
-      moveLineMassEntry.setCutOffEndDate(moveLine.getCutOffEndDate());
       moveLineMassEntry.setCutOffStartDate(moveLine.getCutOffStartDate());
+      moveLineMassEntry.setCutOffEndDate(moveLine.getCutOffEndDate());
       moveLineMassEntry.setCounter(moveLine.getCounter());
+      moveLineMassEntry.setDebit(moveLine.getDebit());
+      moveLineMassEntry.setCredit(moveLine.getCredit());
       moveLineMassEntry.setDescription(moveLine.getDescription());
-      moveLineMassEntry.setInputAction(1);
-      // TODO ajouter tous les autres champs
+      moveLineMassEntry.setOrigin(moveLine.getOrigin());
+      moveLineMassEntry.setTaxLine(moveLine.getTaxLine());
+      moveLineMassEntry.setTaxLineBeforeReverse(moveLine.getTaxLineBeforeReverse());
+      moveLineMassEntry.setCurrencyAmount(moveLine.getCurrencyAmount());
+      moveLineMassEntry.setCurrencyRate(moveLine.getCurrencyRate());
+
+      // TODO Add new fields added on MoveLineMassEntry
+      // TODO Add nedded fields from MoveLine
     }
 
     return moveLineMassEntry;
