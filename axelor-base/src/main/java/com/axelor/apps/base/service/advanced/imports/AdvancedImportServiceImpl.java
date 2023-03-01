@@ -108,7 +108,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return this.process(reader, advancedImport);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public boolean process(DataReaderService reader, AdvancedImport advancedImport)
       throws AxelorException, ClassNotFoundException {
 
@@ -294,7 +294,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void applyWithoutConfig(
       String[] row, int line, List<FileField> fileFieldList, FileTab fileTab, boolean isHeader)
       throws AxelorException {
@@ -364,7 +364,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void readFields(
       String value,
       int index,
@@ -714,7 +714,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return isResetValue;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   private void resetPropertyValue(Class<? extends Model> klass, List<Object> recordList)
       throws ClassNotFoundException {
 
@@ -784,7 +784,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void removeRecord(
       FileTab fileTab,
       Class<? extends Model> modelKlass,
@@ -833,7 +833,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void removeSubRecords(Class<? extends Model> klass, JsonContext jsonContext)
       throws ClassNotFoundException {
 
