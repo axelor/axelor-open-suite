@@ -167,7 +167,7 @@ public class SequenceService {
    * @param refDate
    * @return
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
     Sequence seq =
         JPA.em()

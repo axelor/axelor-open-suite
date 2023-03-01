@@ -80,7 +80,7 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createDmsTree(ZipInputStream zipInputStream, ZipFile zipfile) throws IOException {
     ZipEntry zipEntry = zipInputStream.getNextEntry();
     Map<String, DMSFile> dmsMap = new HashMap<>();
