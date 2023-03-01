@@ -389,7 +389,7 @@
       <panel-related name="moveLineMassEntryListPanel" field="moveLineMassEntryList"
         editable="true" colSpan="12" height="20" canNew="true" canRemove="true"
         grid-view="move-line-mass-entry-move-grid" form-view="move-line-move-form"
-        onChange="action-move-group-move-line-list-onchange"/>
+        onChange="action-move-group-move-line-mass-entry-list-onchange"/>
     </panel>
     <panel name="hiddenPanel" hidden="true">
     </panel>
@@ -748,6 +748,13 @@
     <action name="action-account-move-method-compute-totals"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+  </action-group>
+
+  <action-group name="action-move-group-move-line-mass-entry-list-onchange">
+    <action name="action-move-group-move-line-list-onchange"/>
+    <action name="action-move-line-method-exception-counterpart"/>
+    <action name="action-move-line-method-automatic-taxline-generation"/>
+    <action name="action-move-line-method-generate-counterpart"/>
   </action-group>
 
   <action-group name="action-move-group-payment-condition-onchange">
