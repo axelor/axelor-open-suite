@@ -170,8 +170,6 @@
 
 
     <!-- Invoice page -->
-    <boolean name="allowCancelVentilatedInvoice"
-      title="Allow cancelation of ventilated invoice"/>
     <boolean name="generateMoveForInvoicePayment"
       title="Generate move for payment on invoice" default="true"/>
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"
@@ -443,7 +441,6 @@
       <field name="irrecoverableStandardRateTax" on="UPDATE"/>
 
 
-      <field name="allowCancelVentilatedInvoice" on="UPDATE"/>
       <field name="generateMoveForInvoicePayment" on="UPDATE"/>
       <field name="generateMoveForAdvancePayment" on="UPDATE"/>
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>

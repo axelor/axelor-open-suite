@@ -736,7 +736,6 @@
 "Allocate per partner",,,
 "Allocated amount",,,
 "Allow accounting daybook?",,,
-"Allow cancelation of ventilated invoice",,,
 "Allow payments greater than due amount",,,
 "Allowed Financial discount account on deliveries/invoice",,,
 "Allowed Financial discount account on payments",,,
