@@ -127,7 +127,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     return timesheetLine;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   @Override
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine) {
     timesheetLine = getDefaultToInvoice(timesheetLine);

@@ -117,7 +117,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void reset(ForecastRecap forecastRecap) {
     forecastRecap.clearForecastRecapLineList();
     forecastRecap.setCurrentBalance(forecastRecap.getStartingBalance());
@@ -156,7 +156,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void finish(ForecastRecap forecastRecap) {
     this.computeForecastRecapLineBalance(forecastRecap);
     forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
@@ -876,7 +876,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void createForecastRecapLine(
       LocalDate date,
       int type,

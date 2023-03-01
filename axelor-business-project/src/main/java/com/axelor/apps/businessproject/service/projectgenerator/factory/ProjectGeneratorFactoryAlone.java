@@ -44,7 +44,7 @@ public class ProjectGeneratorFactoryAlone implements ProjectGeneratorFactory {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);

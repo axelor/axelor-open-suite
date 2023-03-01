@@ -100,7 +100,7 @@ public class PurchaseOrderLineProjectController {
    * @param request
    * @param response
    */
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
     PurchaseOrderLineRepository purchaseOrderLineRepository =
         Beans.get(PurchaseOrderLineRepository.class);
