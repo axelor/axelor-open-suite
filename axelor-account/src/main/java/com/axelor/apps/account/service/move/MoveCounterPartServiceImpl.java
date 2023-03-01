@@ -79,7 +79,8 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(
         counterPartMoveLine, singleTermDueDate, true);
 
-    moveRepository.save(move);
+    // TODO Need to be removed by AOS
+    // moveRepository.save(move);
   }
 
   @Override
