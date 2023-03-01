@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.base.db.Company;
-import com.axelor.common.ObjectUtils;
 import com.google.common.base.Joiner;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -126,7 +125,7 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
                 + ")";
       }
 
-      if (ObjectUtils.notEmpty(account)) {
+      if (account != null) {
         List<AnalyticAccount> analyticAccountList =
             accountAnalyticRulesRepository.findAnalyticAccountByAccounts(account);
         if (CollectionUtils.isNotEmpty(analyticAccountList)) {
