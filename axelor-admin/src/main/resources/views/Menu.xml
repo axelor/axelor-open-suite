@@ -78,14 +78,14 @@
     <domain>self.restoreDate != null</domain>
   </action-view>
 
-  <menuitem name="admin-root-anonymizer" title="Anonymizer" parent="admin-root-maintenance"
-    order="12"/>
+  <menuitem name="admin-root-anonymizer" title="Pseudonymization"
+    parent="admin-root-maintenance" order="12"/>
 
-  <menuitem name="admin-root-anonymizer-template" title="Anonymizer templates"
+  <menuitem name="admin-root-anonymizer-template" title="Pseudonymization templates"
     action="action.admin.root.view.anonymizer" parent="admin-root-anonymizer"/>
 
-  <action-view name="action.admin.root.view.anonymizer" title="Anonymizer templates"
-    model="com.axelor.apps.base.db.Anonymizer">
+  <action-view name="action.admin.root.view.anonymizer"
+    title="Pseudonymization templates" model="com.axelor.apps.base.db.Anonymizer">
     <view type="grid" name="anonymizer-grid"/>
     <view type="form" name="anonymizer-form"/>
   </action-view>

@@ -5,10 +5,10 @@
 
   <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
   <entity name="GDPRErasureLog" lang="java">
-    <many-to-one name="modelLog" ref="com.axelor.meta.db.MetaModel" title="Model Log"/>
+    <many-to-one name="modelLog" ref="com.axelor.meta.db.MetaModel" title="Model log"/>
     <integer name="numberOfrecords" title="Number of records"/>
-    <many-to-one name="gdprErasureResponse"
-      ref="com.axelor.apps.gdpr.db.GDPRErasureResponse" title="Erasure Response"/>
+    <many-to-one name="gdprResponse" ref="com.axelor.apps.gdpr.db.GDPRResponse"
+      title="Response"/>
   </entity>
 
 </domain-models>

@@ -207,7 +207,7 @@ public class PartnerController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  private String getTimezone(User user) {
+  protected String getTimezone(User user) {
     if (user == null || user.getActiveCompany() == null) {
       return null;
     }
@@ -244,6 +244,7 @@ public class PartnerController {
     }
   }
 
+  @Deprecated
   public void findReceivedMails(ActionRequest request, ActionResponse response) {
     try {
       this.findMails(request, response, MessageRepository.TYPE_RECEIVED);

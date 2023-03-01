@@ -62,6 +62,7 @@ public interface PartnerService {
 
   Map<String, String> getSocialNetworkUrl(String name, String firstName, Integer typeSelect);
 
+  @Deprecated
   List<Long> findPartnerMails(Partner partner, int emailType);
 
   List<Long> findMailsFromPartner(Partner partner, int emailType);

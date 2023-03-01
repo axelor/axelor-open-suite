@@ -681,7 +681,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 			FixedAsset.first_service_date >= AccountingReport.date_from
 			AND FixedAsset.first_service_date <= AccountingReport.date_to
 			AND ((FixedAsset.status_select = 2 OR FixedAsset.status_select = 3)
-			or(FixedAsset.status_select = 4 and FixedAsset.disposal_date > AccountingReport.date_to))
+			or(FixedAsset.status_select = 4 and (FixedAsset.disposal_date > AccountingReport.date_to OR (
+                SELECT COUNT(*)
+                FROM account_fixed_asset_line  AS FixedAssetLine
+                WHERE
+                FixedAssetLine.type_select = 1
+                AND FixedAssetLine.fixed_asset = FixedAsset.id
+			) = 1)))
 		THEN FixedAsset.gross_value
 		ELSE 0
 	END) AS value_b,

@@ -709,7 +709,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         .fetch();
   }
 
-  private BigDecimal getAmountVentilated(
+  protected BigDecimal getAmountVentilated(
       SaleOrder saleOrder,
       Long currentInvoiceId,
       boolean excludeCurrentInvoice,
@@ -755,7 +755,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice mergeInvoice(
       List<Invoice> invoiceList,
       Company company,

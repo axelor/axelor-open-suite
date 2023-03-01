@@ -730,7 +730,7 @@
         <viewer depends="$percentToleranceForWapChange,$productsWithError">
 	   <![CDATA[
               <h5 class="text-left">
-                <span x-translate>This stock move will have a huge impact (more than </span> {{record.$percentToleranceForWapChange}}<span x-translate>%) on the wap Price of </span> {{record.$productsWithError}}. <span x-translate> Do you want to proceed?</span>
+                <span x-translate>This stock move will have a huge impact (more than </span> {{record.$percentToleranceForWapChange}}<span x-translate>%) on the WAP of </span> {{record.$productsWithError}}. <span x-translate> Do you want to proceed?</span>
              </h5>
            ]]>
         </viewer>

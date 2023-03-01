@@ -129,14 +129,13 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
       AnalyticMoveLineRepository analyticMoveLineRepository =
           Beans.get(AnalyticMoveLineRepository.class);
+      newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
       List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
       if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
         for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
           analyticMoveLineList.add(analyticMoveLineRepository.copy(analyticMoveLine, true));
         }
       } else if (moveLine.getAnalyticDistributionTemplate() != null) {
-        newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
-
         analyticMoveLineList =
             Beans.get(AnalyticMoveLineService.class)
                 .generateLines(

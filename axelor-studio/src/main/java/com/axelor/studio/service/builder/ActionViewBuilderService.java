@@ -66,7 +66,7 @@ public class ActionViewBuilderService {
         builder.getName(), "action-view", xml.toString(), model, builder.getXmlId());
   }
 
-  private void appendParams(List<ActionBuilderLine> params, StringBuilder xml) {
+  protected void appendParams(List<ActionBuilderLine> params, StringBuilder xml) {
 
     if (params == null) {
       return;
@@ -78,7 +78,7 @@ public class ActionViewBuilderService {
     }
   }
 
-  private void appendContext(ActionBuilder builder, StringBuilder xml) {
+  protected void appendContext(ActionBuilder builder, StringBuilder xml) {
     boolean addJsonCtx = true;
     if (builder.getLines() != null) {
       for (ActionBuilderLine context : builder.getLines()) {
@@ -105,7 +105,7 @@ public class ActionViewBuilderService {
     }
   }
 
-  private void appendDomain(String domain, Boolean isJson, StringBuilder xml) {
+  protected void appendDomain(String domain, Boolean isJson, StringBuilder xml) {
 
     if (isJson) {
       String jsonDomain = "self.jsonModel = :jsonModel";
@@ -121,7 +121,7 @@ public class ActionViewBuilderService {
     }
   }
 
-  private void appendViews(List<ActionBuilderView> views, StringBuilder xml) {
+  protected void appendViews(List<ActionBuilderView> views, StringBuilder xml) {
 
     views.sort((action1, action2) -> action1.getSequence().compareTo(action2.getSequence()));
     for (ActionBuilderView view : views) {
@@ -135,7 +135,7 @@ public class ActionViewBuilderService {
     }
   }
 
-  private String appendBasic(ActionBuilder builder, StringBuilder xml) {
+  protected String appendBasic(ActionBuilder builder, StringBuilder xml) {
 
     xml.append("<action-view name=\"" + builder.getName() + "\" ");
     xml.append("title=\"" + builder.getTitle() + "\" ");

@@ -44,7 +44,8 @@
         onChange="action-project-planning-time-record-end-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
       <field name="product" canEdit="false"
         onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox"
-        form-view="product-form" grid-view="product-grid" required="true"/>
+        form-view="product-form" grid-view="product-grid" required="true"
+        title="ProjectPlanningTime.Activity"/>
       <field name="isIncludeInTurnoverForecast"/>
       <field name="description" colSpan="12" widget="html"/>
     </panel>
