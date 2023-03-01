@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -277,9 +278,6 @@ public interface InvoiceTermService {
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
       throws AxelorException;
 
-  void reconcileAndUpdateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund) throws AxelorException;
-
   List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList);
 
   boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm);
@@ -317,6 +315,11 @@ public interface InvoiceTermService {
   boolean isMultiCurrency(InvoiceTerm invoiceTerm);
 
   InvoiceTerm updateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTerm, BigDecimal amount, Reconcile reconcile, Move move)
+      InvoiceTerm invoiceTerm,
+      BigDecimal amount,
+      Reconcile reconcile,
+      Move move,
+      PaymentSession paymentSession,
+      boolean isRefund)
       throws AxelorException;
 }
