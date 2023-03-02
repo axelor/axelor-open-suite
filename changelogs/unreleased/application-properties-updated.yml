@@ -1,0 +1,7 @@
+---
+title: "Webapp: application.properties renamed and completed."
+type: change
+description: |
+  - application.properties is now renamed axelor-config.properties.
+  - See [AOP documentation](https://docs.axelor.com/adk/latest/migrations/migration-6.0.html#configurations-naming) for parameter changes related to AOP.
+  - The parameters provided by AOS were not changed, except that in our example axelor-config.properties, aos.api.enable is now true.
