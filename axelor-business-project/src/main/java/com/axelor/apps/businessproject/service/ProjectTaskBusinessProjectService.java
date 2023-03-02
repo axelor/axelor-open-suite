@@ -50,14 +50,14 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   List<InvoiceLine> createInvoiceLine(Invoice invoice, ProjectTask projectTask, int priority)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   ProjectTask updateTaskFinancialInfo(ProjectTask projectTask) throws AxelorException;
 
   QueryBuilder<ProjectTask> getTaskInvoicingFilter();
 
   void taskInvoicing(Project project, AppBusinessProject appBusinessProject);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   ProjectTask updateTaskToInvoice(ProjectTask projectTask, AppBusinessProject appBusinessProject);
 
   ProjectTask resetProjectTaskValues(ProjectTask projectTask);

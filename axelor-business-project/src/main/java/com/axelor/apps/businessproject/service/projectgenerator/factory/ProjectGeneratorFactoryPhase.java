@@ -67,7 +67,7 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
       throws AxelorException {
     List<Project> projects = new ArrayList<>();
