@@ -1,5 +1,6 @@
 plugins {
 	id 'com.axelor.app'
+	id "com.github.node-gradle.node"
 }
 
 apply from: "../libs.gradle"
@@ -21,3 +22,58 @@ dependencies {
 	implementation libs.commons_lang3
 	implementation libs.commons_collections4
 }
+
+node {
+    version = '16.18.1'
+    yarnVersion = '1.22.19'
+    download = true
+    distBaseUrl = null
+    nodeModulesDir = file('src/main/axelor-react-timesheet')
+}
+
+task buildFront(type: YarnTask) {
+    group = 'axelor'
+    description = 'Build Front-end'
+
+    outputs.dir('src/main/axelor-react-timesheet/dist')
+    inputs.files('src/main/axelor-react-timesheet/package.json', 'src/main/axelor-react-timesheet/yarn.lock')
+    inputs.dir('src/main/axelor-react-timesheet/src')
+    inputs.dir('src/main/axelor-react-timesheet/public')
+    inputs.dir(fileTree("src/main/axelor-react-timesheet/.yarn"))
+
+	dependsOn 'installFrontDeps'
+    args = ["run", "build"]
+}
+
+task installFrontDeps(type: YarnTask) {
+    group = 'axelor'
+    description = 'Install Front-end dependencies'
+
+    args = ['install']
+}
+
+task copyWebapp(type: Copy) {
+	destinationDir = file(rootProject.buildDir)
+	into("webapp/hr/axelor-react-timesheet") {
+		from "build/webapp/axelor-react-timesheet"
+	}
+}
+
+
+task copyReactWebapp(type: Copy) {
+	from file("src/main/axelor-react-timesheet/build")
+	into file("build/webapp/axelor-react-timesheet")
+	
+	dependsOn buildFront
+}
+
+clean {
+    delete "src/main/axelor-react-timesheet/.yarn/cache",
+     "src/main/axelor-react-timesheet/.yarn/unplugged",
+      "src/main/axelor-react-timesheet/.yarn/install-state.gz",
+       "src/main/axelor-react-timesheet/dist",
+        "src/main/axelor-react-timesheet/node_modules"
+}
+
+build.dependsOn copyWebapp
+copyWebapp.dependsOn copyReactWebapp
