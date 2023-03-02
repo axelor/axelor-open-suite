@@ -362,7 +362,7 @@ public class MailAccountServiceImpl implements MailAccountService {
     return message;
   }
 
-  private EmailAddress getEmailAddress(InternetAddress address) {
+  protected EmailAddress getEmailAddress(InternetAddress address) {
 
     EmailAddress emailAddress = null;
     emailAddress = emailAddressRepo.findByAddress(address.getAddress());
@@ -392,7 +392,7 @@ public class MailAccountServiceImpl implements MailAccountService {
     return addressSet;
   }
 
-  private void addAttachments(Message message, List<DataSource> attachments) {
+  protected void addAttachments(Message message, List<DataSource> attachments) {
 
     if (attachments == null) {
       return;

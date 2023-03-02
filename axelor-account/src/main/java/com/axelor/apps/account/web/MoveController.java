@@ -447,7 +447,9 @@ public class MoveController {
     Move move = request.getContext().asType(Move.class);
     if (move != null) {
       try {
-        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(move.getCompany(), move.getJournal());
         response.setAttr("partner", "domain", domain);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -833,7 +835,7 @@ public class MoveController {
     }
   }
 
-  private LocalDate extractDueDate(ActionRequest request) {
+  protected LocalDate extractDueDate(ActionRequest request) {
     if (!request.getContext().containsKey("dueDate")
         || request.getContext().get("dueDate") == null) {
       return null;

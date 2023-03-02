@@ -172,7 +172,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
         FixedAssetLineRepository.STATUS_PLANNED);
   }
 
-  private FixedAssetLine extractLineWithType(List<FixedAssetLine> fixedAssetLineList, int type) {
+  protected FixedAssetLine extractLineWithType(List<FixedAssetLine> fixedAssetLineList, int type) {
     if (fixedAssetLineList != null) {
       return fixedAssetLineList.stream()
           .filter(fixedAssetLine -> fixedAssetLine.getTypeSelect() == type)

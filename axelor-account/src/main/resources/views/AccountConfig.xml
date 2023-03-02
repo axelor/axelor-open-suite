@@ -25,7 +25,7 @@
       <field name="accountCodeNbrCharSelect" colSpan="3" showIf="hasAccountCodeFixedNbrChar"
         readonlyIf="hasChartImported"/>
       <button name="installTemplateBtn" title="Import a chart"
-        readonlyIf="hasChartImported || company == null || accountChart == null || accountCodeNbrCharSelect == 0"
+        readonlyIf="hasChartImported || company == null || accountChart == null || (hasAccountCodeFixedNbrChar &amp;&amp; (accountCodeNbrCharSelect == 0 || accountCodeNbrCharSelect == null))"
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
@@ -207,7 +207,6 @@
       </panel>
 
       <panel title="Invoicing" name="invoicingPanel">
-        <field name="allowCancelVentilatedInvoice" widget="boolean-switch"/>
         <field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
         <field name="invoiceInAtiSelect"/>
         <field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>

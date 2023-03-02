@@ -151,7 +151,7 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
     return wkfContext;
   }
 
-  private LocalDate getDeadLineDate(String deadLineFieldPath, FullContext wkfContext) {
+  protected LocalDate getDeadLineDate(String deadLineFieldPath, FullContext wkfContext) {
 
     LocalDate date = null;
     if (deadLineFieldPath.equals("today")) {
@@ -184,7 +184,7 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
     return user;
   }
 
-  private String getUserPath(WkfTaskConfig wkfTaskConfig, String processDefinitionId) {
+  protected String getUserPath(WkfTaskConfig wkfTaskConfig, String processDefinitionId) {
 
     String userPath = wkfTaskConfig.getUserPath();
     if (userPath == null) {
