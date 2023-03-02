@@ -175,6 +175,11 @@
       method="generateTaxLineAndCounterpart"/>
   </action-method>
 
+  <action-method name="action-move-line-method-verify-mass-entry-move-balance">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="verifyMassEntryMoveBalance"/>
+  </action-method>
+
   <action-attrs name="action-move-line-attrs-set-readonly-first-move-line">
     <attribute for="inputAction" name="readonly" expr="false"/>
     <attribute for="temporaryMoveNumber" name="focus" expr="true"/>

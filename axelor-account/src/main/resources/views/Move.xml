@@ -381,7 +381,7 @@
           onClick="" colSpan="12" showIf="true"/>
       </panel>
 
-      <panel name="HiddenPanel" hidden="true">
+      <panel name="hiddenPanel" hidden="true">
         <field name="$journalTechnicalTypeSelect" type="integer"/>
       </panel>
     </panel>
@@ -392,8 +392,6 @@
         grid-view="move-line-mass-entry-move-grid" form-view="move-line-move-form"
         onChange="action-move-group-move-line-mass-entry-list-onchange"
         hideIf="companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1"/>
-    </panel>
-    <panel name="hiddenPanel" hidden="true">
     </panel>
   </form>
 
@@ -632,6 +630,7 @@
     <action name="action-move-attrs-manage-bank-details"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action name="action-move-method-fill-company-bank-details"/>
     <action name="action-move-method-verify-company-bank-details"/>
   </action-group>
 
@@ -767,6 +766,7 @@
   <action-group name="action-move-group-move-line-mass-entry-list-onchange">
     <action name="action-move-group-move-line-list-onchange"/>
     <action name="action-move-line-method-generate-taxline-and-counterpart"/>
+    <action name="action-move-line-method-verify-mass-entry-move-balance"/>
   </action-group>
 
   <action-group name="action-move-group-payment-condition-onchange">

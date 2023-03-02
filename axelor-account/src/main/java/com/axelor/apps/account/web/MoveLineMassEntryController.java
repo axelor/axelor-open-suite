@@ -32,7 +32,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -114,23 +113,38 @@ public class MoveLineMassEntryController {
     }
   }
 
-  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Move move = request.getContext().asType(Move.class);
-    PaymentMode paymentMode = move.getPaymentMode();
-    Company company = move.getCompany();
-    Partner partner = move.getPartner();
-    if (company == null) {
-      response.setValue("companyBankDetails", null);
-      return;
+  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      PaymentMode paymentMode = move.getPaymentMode();
+      Company company = move.getCompany();
+      Partner partner = move.getPartner();
+      if (company == null) {
+        response.setValue("companyBankDetails", null);
+        return;
+      }
+      if (partner != null) {
+        partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      }
+      BankDetails defaultBankDetails =
+          Beans.get(BankDetailsService.class)
+              .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
+      response.setValue("companyBankDetails", defaultBankDetails);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    if (partner != null) {
-      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+  }
+
+  public void verifyMassEntryMoveBalance(ActionRequest request, ActionResponse response) {
+    try {
+      System.out.println("verifyMassEntryMoveBalance");
+      // TODO
+      // check balance of the last Move of last MoveLineMassEntry
+      // if MoveLineMassEntry debit/credit balance comparison is 0 then make +1 to the
+      // temporaryMoveNumber
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    BankDetails defaultBankDetails =
-        Beans.get(BankDetailsService.class)
-            .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
-    response.setValue("companyBankDetails", defaultBankDetails);
   }
 
   public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
