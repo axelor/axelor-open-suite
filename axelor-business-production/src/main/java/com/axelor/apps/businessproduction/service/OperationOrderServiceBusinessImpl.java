@@ -74,7 +74,7 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(
       ManufOrder manufOrder,
       int priority,

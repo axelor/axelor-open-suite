@@ -522,7 +522,7 @@ public class InvoicingProjectService {
     return invoicingProject.getProject().getCompany().getTimezone();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
     if (project == null) {
       return null;
