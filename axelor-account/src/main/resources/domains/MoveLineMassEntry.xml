@@ -7,7 +7,7 @@
 
   <entity name="MoveLineMassEntry" lang="java" extends="MoveLine">
 
-    <many-to-one name="moveMassEntry" ref="Move" title="Move mass entry"
+    <many-to-one name="moveMassEntry" ref="Move" title="Mass entry move"
       initParam="true"/>
     <integer name="temporaryMoveNumber" title="Move N°"/>
     <integer name="inputAction" title="Input action"

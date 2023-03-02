@@ -536,9 +536,9 @@
   </selection>
 
   <selection name='iaccount.move.input.action.select'>
-    <option value='1'>Ligne</option>
-    <option value='2'>Contrepartie</option>
-    <option value='3'>Ecriture</option>
+    <option value='1'>Line</option>
+    <option value='2'>Counterpart</option>
+    <option value='3'>Move</option>
   </selection>
 
   <selection name="account.year.period.duration.select">

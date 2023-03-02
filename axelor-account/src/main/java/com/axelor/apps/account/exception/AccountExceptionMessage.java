@@ -1089,6 +1089,12 @@ public final class AccountExceptionMessage {
       "Bank details are missing for partner %s." /*)*/;
 
   /*
+   * Company
+   */
+  public static final String COMPANY_BANK_DETAILS_MISSING = /*$$(*/
+      "Bank details are missing for company %s." /*)*/;
+
+  /*
    * Invoice printing
    */
   public static final String INVOICE_MISSING_PRINTING_SETTINGS = /*$$(*/
