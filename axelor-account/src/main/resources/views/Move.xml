@@ -725,7 +725,15 @@
     <action name="action-move-method-set-moveline-dates"/>
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
-    <action name="action-account-move-group-onsave"/>
+    <!-- Save() removed with the ticket 60213 -->
+    <action name="action-move-method-check-dates"/>
+    <action name="action-move-method-check-period-permissions"/>
+    <action name="action-move-method-check-remove-lines"/>
+    <action name="action-move-method-update-partner" if="id != null"/>
+    <action name="action-move-method-update-invoice-terms"/>
+    <action name="action-move-method-round-invoice-term-percentages" if="id != null"/>
+    <action name="action-move-method-update-due-date"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-move-group-journal-on-change">
@@ -774,7 +782,15 @@
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-move-attrs-payment-condition-change"/>
-    <action name="action-account-move-group-onsave"/>
+    <!-- Save() removed with the ticket 59819 -->
+    <action name="action-move-method-check-dates"/>
+    <action name="action-move-method-check-period-permissions"/>
+    <action name="action-move-method-check-remove-lines"/>
+    <action name="action-move-method-update-partner" if="id != null"/>
+    <action name="action-move-method-update-invoice-terms"/>
+    <action name="action-move-method-round-invoice-term-percentages" if="id != null"/>
+    <action name="action-move-method-update-due-date"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-move-group-check-term-in-payment">
