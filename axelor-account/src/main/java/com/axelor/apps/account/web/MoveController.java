@@ -917,4 +917,23 @@ public class MoveController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void verifyCompanyBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move != null
+          && move.getIsMassEntry()
+          && move.getCompanyBankDetails() == null
+          && move.getJournal() != null
+          && (move.getJournal().getJournalType().getTechnicalTypeSelect() == 1
+              || move.getJournal().getJournalType().getTechnicalTypeSelect() == 2)) {
+        response.setError(
+            String.format(
+                I18n.get(AccountExceptionMessage.COMPANY_BANK_DETAILS_MISSING),
+                move.getCompany().getName()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

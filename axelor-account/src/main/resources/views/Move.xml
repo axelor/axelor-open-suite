@@ -364,7 +364,7 @@
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-move-group-journal-on-change" colSpan="6"/>
           <field name="currency"
-            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
+            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3 || (companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1)"
             colSpan="6" onChange="action-move-record-set-currency-code" required="true"/>
           <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="6"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
@@ -382,6 +382,7 @@
       </panel>
 
       <panel name="HiddenPanel" hidden="true">
+        <field name="$journalTechnicalTypeSelect" type="integer"/>
       </panel>
     </panel>
 
@@ -389,7 +390,8 @@
       <panel-related name="moveLineMassEntryListPanel" field="moveLineMassEntryList"
         editable="true" colSpan="12" height="20" canNew="true" canRemove="true"
         grid-view="move-line-mass-entry-move-grid" form-view="move-line-move-form"
-        onChange="action-move-group-move-line-mass-entry-list-onchange"/>
+        onChange="action-move-group-move-line-mass-entry-list-onchange"
+        hideIf="companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1"/>
     </panel>
     <panel name="hiddenPanel" hidden="true">
     </panel>
@@ -630,6 +632,7 @@
     <action name="action-move-attrs-manage-bank-details"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action name="action-move-method-verify-company-bank-details"/>
   </action-group>
 
   <action-group name="action-account-move-group-onload">
@@ -712,6 +715,7 @@
     <action name="action-move-method-fill-company-bank-details"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="default-move-record-currency"/>
+    <action name="action-move-method-verify-company-bank-details"/>
   </action-group>
 
   <action-group name="action-group-move-date-onchange">
@@ -733,6 +737,7 @@
     <action name="action-move-record-set-payment-mode"/>
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
+    <action name="action-move-method-verify-company-bank-details"/>
   </action-group>
 
   <action-group name="action-move-group-partner-onchange">
@@ -1220,5 +1225,9 @@
 
   <action-method name="action-move-method-verify-is-mass-entry">
     <call class="com.axelor.apps.account.web.MoveController" method="verifyIsMassEntryMove"/>
+  </action-method>
+
+  <action-method name="action-move-method-verify-company-bank-details">
+    <call class="com.axelor.apps.account.web.MoveController" method="verifyCompanyBankDetails"/>
   </action-method>
 </object-views>
