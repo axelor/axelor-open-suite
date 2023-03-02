@@ -64,16 +64,15 @@
   </grid>
 
   <action-group name="action-account-move-line-onnew-mass-entry-group">
-    <action name="action-move-line-record-get-move-informations-mass-entry"/>
-    <action name="action-move-line-method-get-account-informations"/>
     <action name="action-move-line-record-compute-temporaryMoveNumber"/>
+    <action name="action-move-line-mass-entry-method-get-first-move-line-informtations"/>
+    <action name="action-move-line-method-get-account-informations"/>
     <action name="action-move-line-attrs-set-readonly-first-move-line"
       if="eval: __parent__?.moveLineMassEntryList != null &amp;&amp; __parent__?.moveLineMassEntryList.size() != 0"/>
     <action name="action-move-line-attrs-set-hidden-cut-off"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
-    <action name="action-move-line-record-get-first-move-line-informations"/>
     <action name="action-move-line-method-get-creditdebit-balance"/>
     <action name="action-move-line-attrs-hidden-reconcileLists"/>
     <action name="action-move-line-record-set-partner"/>
@@ -143,15 +142,11 @@
       expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
   </action-record>
 
-  <action-record name="action-move-line-record-get-move-informations-mass-entry"
-    model="com.axelor.apps.account.db.MoveLineMassEntry">
-    <field name="partner" expr="eval: __parent__?.partner"/>
-    <field name="date" expr="eval: __parent__?.date"/>
-    <field name="dueDate" expr="eval: __parent__?.date"/>
-    <field name="originDate" expr="eval: __parent__?.originDate"/>
-    <field name="origin" expr="eval: __parent__?.origin"/>
-    <field name="moveStatusSelect" expr="eval: __parent__?.statusSelect"/>
-  </action-record>
+  <action-method
+    name="action-move-line-mass-entry-method-get-first-move-line-informtations">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="getFirstMoveLineMassEntryInformations"/>
+  </action-method>
 
   <action-record name="action-move-line-record-compute-temporaryMoveNumber"
     model="com.axelor.apps.account.db.MoveLine">

@@ -82,6 +82,7 @@ public class MoveLineMassEntryController {
               if (firstLine) {
                 move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
                 move.setPaymentCondition(moveLineMassEntry.getMovePaymentCondition());
+                move.setDate(moveLineMassEntry.getDate());
                 firstLine = false;
               }
               moveLineMassEntry.setMove(move);
@@ -142,6 +143,54 @@ public class MoveLineMassEntryController {
       // check balance of the last Move of last MoveLineMassEntry
       // if MoveLineMassEntry debit/credit balance comparison is 0 then make +1 to the
       // temporaryMoveNumber
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getFirstMoveLineMassEntryInformations(
+      ActionRequest request, ActionResponse response) {
+    try {
+      System.out.println("getFirstMoveLineMassEntryInformations");
+
+      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+      Context parentContext = request.getContext().getParent();
+      MoveLineMassEntry lastMoveLineMassEntry = null;
+
+      if (moveLineMassEntry != null
+          && parentContext != null
+          && Move.class.equals(parentContext.getContextClass())) {
+        Move move = parentContext.asType(Move.class);
+        if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
+          for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
+            if (moveLine
+                .getTemporaryMoveNumber()
+                .equals(moveLineMassEntry.getTemporaryMoveNumber())) {
+              lastMoveLineMassEntry = moveLine;
+              break;
+            }
+          }
+
+          if (lastMoveLineMassEntry != null) {
+            response.setValue("partner", lastMoveLineMassEntry.getPartner());
+            response.setValue("date", lastMoveLineMassEntry.getDate());
+            response.setValue("dueDate", lastMoveLineMassEntry.getDueDate());
+            response.setValue("originDate", lastMoveLineMassEntry.getOriginDate());
+            response.setValue("origin", lastMoveLineMassEntry.getOrigin());
+            response.setValue("moveStatusSelect", lastMoveLineMassEntry.getMoveStatusSelect());
+            response.setValue("interbankCodeLine", lastMoveLineMassEntry.getInterbankCodeLine());
+            response.setValue("moveDescription", lastMoveLineMassEntry.getMoveDescription());
+            response.setValue("description", lastMoveLineMassEntry.getDescription());
+            response.setValue(
+                "exportedDirectDebitOk", lastMoveLineMassEntry.getExportedDirectDebitOk());
+            response.setValue(
+                "movePaymentCondition", lastMoveLineMassEntry.getMovePaymentCondition());
+            response.setValue(
+                "movePaymentCondition", lastMoveLineMassEntry.getMovePaymentCondition());
+            response.setValue("movePaymentMode", lastMoveLineMassEntry.getMovePaymentMode());
+          }
+        }
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
