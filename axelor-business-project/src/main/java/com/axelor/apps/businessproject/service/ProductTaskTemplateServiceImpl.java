@@ -49,7 +49,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<TeamTask> convert(
       List<? extends TaskTemplate> templates,
       Project project,

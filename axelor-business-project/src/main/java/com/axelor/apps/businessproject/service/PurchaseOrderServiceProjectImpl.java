@@ -57,7 +57,7 @@ public class PurchaseOrderServiceProjectImpl extends PurchaseOrderServiceSupplyc
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.cancelPurchaseOrder(purchaseOrder);
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {

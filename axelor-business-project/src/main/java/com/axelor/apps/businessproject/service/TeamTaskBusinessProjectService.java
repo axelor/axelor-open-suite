@@ -51,7 +51,7 @@ public interface TeamTaskBusinessProjectService extends TeamTaskProjectService {
 
   TeamTask computeDefaultInformation(TeamTask teamTask) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   TeamTask updateTask(TeamTask teamTask, AppBusinessProject appBusinessProject)
       throws AxelorException;
 
