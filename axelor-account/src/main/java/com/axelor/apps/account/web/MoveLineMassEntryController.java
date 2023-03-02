@@ -76,7 +76,6 @@ public class MoveLineMassEntryController {
               if (firstLine) {
                 move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
                 move.setPaymentCondition(moveLineMassEntry.getMovePaymentCondition());
-                move.setPartner(moveLineMassEntry.getPartner());
                 firstLine = false;
               }
               moveLineMassEntry.setMove(move);
