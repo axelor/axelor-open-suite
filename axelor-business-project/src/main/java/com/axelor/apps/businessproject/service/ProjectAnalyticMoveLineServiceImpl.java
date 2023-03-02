@@ -36,7 +36,7 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public PurchaseOrder updateLines(PurchaseOrder purchaseOrder) {
     for (PurchaseOrderLine orderLine : purchaseOrder.getPurchaseOrderLineList()) {
       orderLine.setProject(purchaseOrder.getProject());
@@ -49,7 +49,7 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public SaleOrder updateLines(SaleOrder saleOrder) {
     for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
       orderLine.setProject(saleOrder.getProject());
