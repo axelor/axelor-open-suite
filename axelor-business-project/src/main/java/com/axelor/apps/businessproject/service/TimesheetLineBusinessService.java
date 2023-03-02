@@ -20,14 +20,13 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.tool.QueryBuilder;
-import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 
 public interface TimesheetLineBusinessService {
 
   TimesheetLine getDefaultToInvoice(TimesheetLine timesheetLine);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine);
 
   public TimesheetLine setTimesheet(TimesheetLine timesheetLine);

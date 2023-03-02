@@ -159,7 +159,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     }
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Invoice updateLines(Invoice invoice) {
     AnalyticMoveLineRepository analyticMoveLineRepository =
         Beans.get(AnalyticMoveLineRepository.class);

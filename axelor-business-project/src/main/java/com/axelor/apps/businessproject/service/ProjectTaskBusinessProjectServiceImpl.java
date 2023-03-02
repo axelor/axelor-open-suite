@@ -285,7 +285,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     nextProjectTask.setCustomerReferral(projectTask.getCustomerReferral());
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public ProjectTask updateTaskFinancialInfo(ProjectTask projectTask) throws AxelorException {
     Product product = projectTask.getProduct();
@@ -328,7 +328,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return projectTaskRepo.save(projectTask);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Override
   public ProjectTask updateTaskToInvoice(
       ProjectTask projectTask, AppBusinessProject appBusinessProject) {

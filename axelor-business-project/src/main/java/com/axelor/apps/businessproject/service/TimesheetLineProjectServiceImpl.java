@@ -133,7 +133,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     return timesheetLineRepo.save(timesheetLine);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public TimesheetLine setTimesheet(TimesheetLine timesheetLine) {
     Timesheet timesheet =
         timesheetRepo
