@@ -46,7 +46,7 @@
 "Indicate which date should be verified. If one of the date is after the retention date, the data will not be archived.","Indiquer quelle date devrait être vérifiée. Si une des dates est supérieure à la date de rétention, la donnée ne sera pas archivée.",,
 "JPQL filter to add to the query","Filtre JPQL à ajouter à la requête",,
 "Key","Clé",,
-"Label","Etiquette",,
+"Label","Libellé",,
 "Last name","Nom",,
 "Lead","Piste",,
 "Mapping",,,

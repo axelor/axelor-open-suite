@@ -198,7 +198,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     return false;
   }
 
-  private boolean checkRoles(Set<Role> roles, AccountConfig accountConfig) {
+  protected boolean checkRoles(Set<Role> roles, AccountConfig accountConfig) {
     return roles.stream().anyMatch(it -> accountConfig.getClosureAuthorizedRoleList().contains(it));
   }
 

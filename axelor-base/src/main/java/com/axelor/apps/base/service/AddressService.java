@@ -93,6 +93,7 @@ public interface AddressService {
    * @param address
    * @return the string field corresponding to the given address.
    */
+  @CallMethod
   String computeAddressStr(Address address);
 
   /**

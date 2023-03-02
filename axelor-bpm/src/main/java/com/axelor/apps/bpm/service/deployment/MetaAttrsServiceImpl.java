@@ -169,7 +169,7 @@ public class MetaAttrsServiceImpl implements MetaAttrsService {
     return metaAttrsList;
   }
 
-  private String getModel(String value) {
+  protected String getModel(String value) {
 
     MetaModel metaModel = metaModelRepository.findByName(value);
 
@@ -180,7 +180,7 @@ public class MetaAttrsServiceImpl implements MetaAttrsService {
     return value;
   }
 
-  private MetaAttrs findMetaAttrs(MetaAttrs metaAttrs, Long wkfModelId) {
+  protected MetaAttrs findMetaAttrs(MetaAttrs metaAttrs, Long wkfModelId) {
 
     MetaAttrs savedAttrs =
         metaAttrsRepository

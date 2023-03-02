@@ -42,23 +42,16 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowServiceImpl {
 
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   protected SaleOrderStockService saleOrderStockService;
   protected SaleOrderPurchaseService saleOrderPurchaseService;
-  protected AppSupplychain appSupplychain;
+  protected AppSupplychainService appSupplychainService;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected PartnerSupplychainService partnerSupplychainService;
-
   protected SaleConfigService saleConfigService;
-
   protected SaleOrderCheckAnalyticService saleOrderCheckAnalyticService;
 
   @Inject
@@ -87,7 +80,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
         saleOrderLineService);
     this.saleOrderStockService = saleOrderStockService;
     this.saleOrderPurchaseService = saleOrderPurchaseService;
-    this.appSupplychain = appSupplychainService.getAppSupplychain();
+    this.appSupplychainService = appSupplychainService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
     this.saleConfigService = saleConfigService;
@@ -98,7 +91,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   @Transactional(rollbackOn = {Exception.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       super.confirmSaleOrder(saleOrder);
       return;
     }
@@ -116,6 +109,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     }
 
     super.confirmSaleOrder(saleOrder);
+
+    AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
 
     if (appSupplychain.getPurchaseOrderGenerationAuto()) {
       saleOrderPurchaseService.createPurchaseOrders(saleOrder);
@@ -137,7 +132,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       throws AxelorException {
     super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return;
     }
     try {
@@ -153,14 +148,15 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       ignore = {BlockedSaleOrderException.class})
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       super.finalizeQuotation(saleOrder);
       return;
     }
 
     accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
     super.finalizeQuotation(saleOrder);
-    int intercoSaleCreatingStatus = appSupplychain.getIntercoSaleCreatingStatusSelect();
+    int intercoSaleCreatingStatus =
+        appSupplychainService.getAppSupplychain().getIntercoSaleCreatingStatusSelect();
     if (saleOrder.getInterco()
         && intercoSaleCreatingStatus == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
       Beans.get(IntercoService.class).generateIntercoPurchaseFromSale(saleOrder);
@@ -191,7 +187,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       super.completeSaleOrder(saleOrder);
       return;
     }

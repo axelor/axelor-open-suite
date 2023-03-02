@@ -197,7 +197,7 @@ public class MapperValue {
     }
   }
 
-  private void mapSelf(StringBuilder stb) {
+  protected void mapSelf(StringBuilder stb) {
 
     stb.append(getSelectedScript());
   }

@@ -212,7 +212,7 @@ public class ReportSettings {
         .addParam("Password", appSettings.get("db.default.password"));
   }
 
-  private ReportSettings addAttachmentPath() {
+  protected ReportSettings addAttachmentPath() {
 
     String attachmentPath = null;
     try {

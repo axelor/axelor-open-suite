@@ -123,7 +123,7 @@ public class KeyStoreManager {
    * @throws GeneralSecurityException
    * @throws IOException
    */
-  private void load(String path) throws GeneralSecurityException, IOException {
+  protected void load(String path) throws GeneralSecurityException, IOException {
     if (path.equals("")) {
       this.keyStore.load(null, null);
     } else {
