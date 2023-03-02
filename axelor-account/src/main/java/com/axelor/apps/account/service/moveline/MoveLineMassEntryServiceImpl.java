@@ -24,6 +24,8 @@ import com.axelor.common.ObjectUtils;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -44,6 +46,19 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
         .addAll(
             this.convertMoveLinesIntoMoveLineMassEntry(
                 move, move.getMoveLineList(), temporaryMoveNumber));
+    sortMoveLinesMassEntryByTemporaryNumber(move);
+  }
+
+  @Override
+  public void sortMoveLinesMassEntryByTemporaryNumber(Move move) {
+    Collections.sort(
+        move.getMoveLineMassEntryList(),
+        new Comparator<MoveLineMassEntry>() {
+          @Override
+          public int compare(MoveLineMassEntry o1, MoveLineMassEntry o2) {
+            return o1.getTemporaryMoveNumber() - o2.getTemporaryMoveNumber();
+          }
+        });
   }
 
   @Override

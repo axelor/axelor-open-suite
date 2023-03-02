@@ -27,6 +27,8 @@ public interface MoveLineMassEntryService {
 
   void clearMoveLineMassEntryListAndAddNewLines(Move move, Integer temporaryMoveNumber);
 
+  void sortMoveLinesMassEntryByTemporaryNumber(Move move);
+
   List<MoveLineMassEntry> convertMoveLinesIntoMoveLineMassEntry(
       Move move, List<MoveLine> moveLines, Integer temporaryMoveNumber);
 
