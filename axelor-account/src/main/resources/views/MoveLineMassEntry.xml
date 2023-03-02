@@ -6,7 +6,7 @@
   <grid name="move-line-mass-entry-move-grid"
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
     onNew="action-account-move-line-onnew-mass-entry-group">
-    <field name="temporaryMoveNumber" width="50" readonly="true"/>
+    <field name="temporaryMoveNumber" width="50"/>
     <field name="inputAction" selection="iaccount.move.input.action.select"
       onChange="action-move-line-group-input-action-onchange" readonly="true" required="true"
       width="50"/>
@@ -177,7 +177,7 @@
 
   <action-attrs name="action-move-line-attrs-set-readonly-first-move-line">
     <attribute for="inputAction" name="readonly" expr="false"/>
-    <attribute for="inputAction" name="focus" expr="true"/>
+    <attribute for="temporaryMoveNumber" name="focus" expr="true"/>
   </action-attrs>
 
   <action-group name="account-move-line-group-date-onchange-mass-entry">
