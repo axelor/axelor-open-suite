@@ -1,0 +1,3 @@
+---
+title: "BPM Editor: fix impossibility to save bpm process with subprocesses."
+type: fix
