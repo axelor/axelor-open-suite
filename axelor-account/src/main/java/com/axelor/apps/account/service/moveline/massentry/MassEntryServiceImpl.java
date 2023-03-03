@@ -29,6 +29,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,5 +116,23 @@ public class MassEntryServiceImpl implements MassEntryService {
       }
     }
     return moveLineMassEntry;
+  }
+
+  public void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry) {
+    moveLineMassEntry.setOrigin(null);
+    moveLineMassEntry.setOriginDate(null);
+    moveLineMassEntry.setPartner(null);
+    moveLineMassEntry.setMoveDescription(null);
+    moveLineMassEntry.setMovePaymentCondition(null);
+    moveLineMassEntry.setMovePaymentMode(null);
+    moveLineMassEntry.setAccount(null);
+    moveLineMassEntry.setTaxLine(null);
+    moveLineMassEntry.setDescription(null);
+    moveLineMassEntry.setDebit(BigDecimal.ZERO);
+    moveLineMassEntry.setCredit(BigDecimal.ZERO);
+    moveLineMassEntry.setCurrencyRate(BigDecimal.ONE);
+    moveLineMassEntry.setCurrencyAmount(BigDecimal.ZERO);
+    moveLineMassEntry.setMoveStatusSelect(null);
+    moveLineMassEntry.setVatSystemSelect(0);
   }
 }

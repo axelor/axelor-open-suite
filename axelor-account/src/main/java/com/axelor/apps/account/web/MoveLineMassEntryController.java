@@ -20,7 +20,6 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
-import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
 import com.axelor.common.ObjectUtils;
@@ -122,7 +121,7 @@ public class MoveLineMassEntryController {
           && Move.class.equals(parentContext.getContextClass())
           && moveLineMassEntry != null) {
         Move move = parentContext.asType(Move.class);
-        Beans.get(MoveLineMassEntryRepository.class).resetMoveLineMassEntry(moveLineMassEntry);
+        Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLineMassEntry);
         moveLineMassEntry.setInputAction(1);
         moveLineMassEntry.setTemporaryMoveNumber(
             move.getMoveLineMassEntryList().stream()

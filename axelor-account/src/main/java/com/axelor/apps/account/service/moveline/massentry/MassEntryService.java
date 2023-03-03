@@ -32,4 +32,6 @@ public interface MassEntryService {
 
   public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
       List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry);
+
+  public void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry);
 }

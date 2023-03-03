@@ -199,7 +199,8 @@
   </action-method>
 
   <action-method name="action-move-line-mass-entry-method-reset-fields">
-    <call class="com.axelor.apps.account.web.MoveLineMassEntryController" method="resetMoveLineMassEntry"/>
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="resetMoveLineMassEntry"/>
   </action-method>
 
 </object-views>
