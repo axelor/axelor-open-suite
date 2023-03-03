@@ -137,7 +137,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void setDMSFile(JobApplication jobApplication) {
     if (jobApplication.getResume() == null) {
       DMSFile toDelete = dmsFileRepo.find(jobApplication.getResumeId());
