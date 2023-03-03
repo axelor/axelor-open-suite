@@ -72,7 +72,8 @@ clean {
      "src/main/axelor-react-timesheet/.yarn/unplugged",
       "src/main/axelor-react-timesheet/.yarn/install-state.gz",
        "src/main/axelor-react-timesheet/dist",
-        "src/main/axelor-react-timesheet/node_modules"
+        "src/main/axelor-react-timesheet/node_modules",
+        "src/main/axelor-react-timesheet/build"
 }
 
 build.dependsOn copyWebapp
