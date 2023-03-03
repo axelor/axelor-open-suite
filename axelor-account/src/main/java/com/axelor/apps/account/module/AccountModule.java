@@ -285,14 +285,14 @@ import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
-import com.axelor.apps.account.service.moveline.MoveLineMassEntryService;
-import com.axelor.apps.account.service.moveline.MoveLineMassEntryServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.MoveLineToolServiceImpl;
+import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
+import com.axelor.apps.account.service.moveline.massentry.MassEntryServiceImpl;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -671,6 +671,6 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceProductStatementService.class).to(InvoiceProductStatementServiceImpl.class);
 
-    bind(MoveLineMassEntryService.class).to(MoveLineMassEntryServiceImpl.class);
+    bind(MassEntryService.class).to(MassEntryServiceImpl.class);
   }
 }

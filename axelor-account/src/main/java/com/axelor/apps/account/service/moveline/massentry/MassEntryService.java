@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.moveline;
+package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import java.util.List;
 
 /** Interface of service to create {@link MoveLineMassEntry} */
-public interface MoveLineMassEntryService {
+public interface MassEntryService {
 
   void clearMoveLineMassEntryListAndAddNewLines(Move move, Integer temporaryMoveNumber);
 

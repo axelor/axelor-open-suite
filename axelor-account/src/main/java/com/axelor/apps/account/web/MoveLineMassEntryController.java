@@ -24,8 +24,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.apps.account.service.moveline.MoveLineMassEntryService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -59,7 +59,7 @@ public class MoveLineMassEntryController {
     // TODO Need to be split inside a service
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveLineMassEntryService moveLineMassEntryService = Beans.get(MoveLineMassEntryService.class);
+      MassEntryService moveLineMassEntryService = Beans.get(MassEntryService.class);
       List<MoveLine> moveLineList = new ArrayList<>();
       boolean firstLine = true;
 
@@ -123,12 +123,10 @@ public class MoveLineMassEntryController {
 
   public void getFirstMoveLineMassEntryInformations(
       ActionRequest request, ActionResponse response) {
+    // TODO Need to be split inside a service
     try {
-      System.out.println("getFirstMoveLineMassEntryInformations");
-
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
-      MoveLineMassEntry lastMoveLineMassEntry = null;
 
       if (moveLineMassEntry != null
           && parentContext != null
@@ -139,29 +137,22 @@ public class MoveLineMassEntryController {
             if (moveLine
                 .getTemporaryMoveNumber()
                 .equals(moveLineMassEntry.getTemporaryMoveNumber())) {
-              lastMoveLineMassEntry = moveLine;
+              moveLineMassEntry.setPartner(moveLine.getPartner());
+              moveLineMassEntry.setDate(moveLine.getDate());
+              moveLineMassEntry.setDueDate(moveLine.getDueDate());
+              moveLineMassEntry.setOriginDate(moveLine.getOriginDate());
+              moveLineMassEntry.setOrigin(moveLine.getOrigin());
+              moveLineMassEntry.setMoveStatusSelect(moveLine.getMoveStatusSelect());
+              moveLineMassEntry.setInterbankCodeLine(moveLine.getInterbankCodeLine());
+              moveLineMassEntry.setMoveDescription(moveLine.getMoveDescription());
+              moveLineMassEntry.setDescription(moveLine.getDescription());
+              moveLineMassEntry.setExportedDirectDebitOk(moveLine.getExportedDirectDebitOk());
+              moveLineMassEntry.setMovePaymentCondition(moveLine.getMovePaymentCondition());
+              moveLineMassEntry.setMovePaymentMode(moveLine.getMovePaymentMode());
               break;
             }
           }
-
-          if (lastMoveLineMassEntry != null) {
-            response.setValue("partner", lastMoveLineMassEntry.getPartner());
-            response.setValue("date", lastMoveLineMassEntry.getDate());
-            response.setValue("dueDate", lastMoveLineMassEntry.getDueDate());
-            response.setValue("originDate", lastMoveLineMassEntry.getOriginDate());
-            response.setValue("origin", lastMoveLineMassEntry.getOrigin());
-            response.setValue("moveStatusSelect", lastMoveLineMassEntry.getMoveStatusSelect());
-            response.setValue("interbankCodeLine", lastMoveLineMassEntry.getInterbankCodeLine());
-            response.setValue("moveDescription", lastMoveLineMassEntry.getMoveDescription());
-            response.setValue("description", lastMoveLineMassEntry.getDescription());
-            response.setValue(
-                "exportedDirectDebitOk", lastMoveLineMassEntry.getExportedDirectDebitOk());
-            response.setValue(
-                "movePaymentCondition", lastMoveLineMassEntry.getMovePaymentCondition());
-            response.setValue(
-                "movePaymentCondition", lastMoveLineMassEntry.getMovePaymentCondition());
-            response.setValue("movePaymentMode", lastMoveLineMassEntry.getMovePaymentMode());
-          }
+          response.setValues(moveLineMassEntry);
         }
       }
     } catch (Exception e) {

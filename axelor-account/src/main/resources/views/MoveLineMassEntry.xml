@@ -149,6 +149,7 @@
     <field name="inputAction" expr="1"/>
     <field name="origin" expr="eval: null"/>
     <field name="originDate" expr="eval: null"/>
+    <field name="partner" expr="eval: null"/>
     <field name="moveDescription" expr="eval: null"/>
     <field name="movePaymentCondition" expr="eval: null"/>
     <field name="movePaymentMode" expr="eval: null"/>
