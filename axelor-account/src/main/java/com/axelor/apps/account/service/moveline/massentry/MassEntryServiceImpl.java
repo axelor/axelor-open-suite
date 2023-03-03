@@ -20,12 +20,17 @@ package com.axelor.apps.account.service.moveline.massentry;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.move.MoveCounterPartService;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -36,81 +41,79 @@ public class MassEntryServiceImpl implements MassEntryService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Override
-  public void clearMoveLineMassEntryListAndAddNewLines(Move move, Integer temporaryMoveNumber) {
-    move.getMoveLineMassEntryList()
-        .removeIf(
-            moveLineMassEntry ->
-                Objects.equals(moveLineMassEntry.getTemporaryMoveNumber(), temporaryMoveNumber));
-    move.getMoveLineMassEntryList()
-        .addAll(
-            this.convertMoveLinesIntoMoveLineMassEntry(
-                move, move.getMoveLineList(), temporaryMoveNumber));
-    sortMoveLinesMassEntryByTemporaryNumber(move);
+  protected MassEntryToolService massEntryToolService;
+  protected MoveToolService moveToolService;
+  protected MoveLineTaxService moveLineTaxService;
+  protected MoveCounterPartService moveCounterPartService;
+
+  @Inject
+  public MassEntryServiceImpl(
+      MassEntryToolService massEntryToolService,
+      MoveToolService moveToolService,
+      MoveLineTaxService moveLineTaxService,
+      MoveCounterPartService moveCounterPartService) {
+    this.massEntryToolService = massEntryToolService;
+    this.moveToolService = moveToolService;
+    this.moveLineTaxService = moveLineTaxService;
+    this.moveCounterPartService = moveCounterPartService;
   }
 
-  @Override
-  public void sortMoveLinesMassEntryByTemporaryNumber(Move move) {
-    Collections.sort(
-        move.getMoveLineMassEntryList(),
-        new Comparator<MoveLineMassEntry>() {
-          @Override
-          public int compare(MoveLineMassEntry o1, MoveLineMassEntry o2) {
-            return o1.getTemporaryMoveNumber() - o2.getTemporaryMoveNumber();
-          }
-        });
-  }
+  public void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
+    List<MoveLine> moveLineList = new ArrayList<>();
+    boolean firstLine = true;
 
-  @Override
-  public List<MoveLineMassEntry> convertMoveLinesIntoMoveLineMassEntry(
-      Move move, List<MoveLine> moveLines, Integer temporaryMoveNumber) {
-    List<MoveLineMassEntry> moveLineMassEntryList = new ArrayList<>();
-    if (move != null && ObjectUtils.notEmpty(moveLines)) {
-      for (MoveLine moveLine : moveLines) {
-        moveLineMassEntryList.add(
-            this.convertMoveLineIntoMoveLineMassEntry(move, moveLine, temporaryMoveNumber));
+    for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+      if (Objects.equals(moveLineMassEntry.getTemporaryMoveNumber(), temporaryMoveNumber)
+          && moveLineMassEntry.getInputAction() == 1) {
+        if (firstLine) {
+          move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
+          move.setPaymentCondition(moveLineMassEntry.getMovePaymentCondition());
+          move.setDate(moveLineMassEntry.getDate());
+
+          // TODO Need to be seen, to enable multiPartners in a Move and remove this line
+          move.setPartner(moveLineMassEntry.getPartner());
+          firstLine = false;
+        }
+        moveLineMassEntry.setMove(move);
+        moveLineList.add(moveLineMassEntry);
       }
     }
-    return moveLineMassEntryList;
+    move.setMoveLineList(moveLineList);
+    massEntryToolService.clearMoveLineMassEntryListAndAddNewLines(move, temporaryMoveNumber);
   }
 
-  @Override
-  public MoveLineMassEntry convertMoveLineIntoMoveLineMassEntry(
-      Move move, MoveLine moveLine, Integer tempMoveNumber) {
-    MoveLineMassEntry moveLineMassEntry = new MoveLineMassEntry();
-    if (move != null && moveLine != null) {
-      moveLineMassEntry.setInputAction(1);
-      moveLineMassEntry.setMovePaymentMode(move.getPaymentMode());
-      moveLineMassEntry.setMovePaymentCondition(move.getPaymentCondition());
-      moveLineMassEntry.setTemporaryMoveNumber(tempMoveNumber);
-      moveLineMassEntry.setMoveMassEntry(move);
-      moveLineMassEntry.setMoveDescription(move.getDescription());
-      moveLineMassEntry.setMovePartnerBankDetails(move.getPartnerBankDetails());
-      moveLineMassEntry.setMoveStatusSelect(move.getStatusSelect());
-
-      moveLineMassEntry.setMove(move);
-      moveLineMassEntry.setPartner(moveLine.getPartner());
-      moveLineMassEntry.setAccount(moveLine.getAccount());
-      moveLineMassEntry.setDate(moveLine.getDate());
-      moveLineMassEntry.setDueDate(moveLine.getDueDate());
-      moveLineMassEntry.setCutOffStartDate(moveLine.getCutOffStartDate());
-      moveLineMassEntry.setCutOffEndDate(moveLine.getCutOffEndDate());
-      moveLineMassEntry.setCounter(moveLine.getCounter());
-      moveLineMassEntry.setDebit(moveLine.getDebit());
-      moveLineMassEntry.setCredit(moveLine.getCredit());
-      moveLineMassEntry.setDescription(moveLine.getDescription());
-      moveLineMassEntry.setOrigin(moveLine.getOrigin());
-      moveLineMassEntry.setOriginDate(moveLine.getOriginDate());
-      moveLineMassEntry.setTaxLine(moveLine.getTaxLine());
-      moveLineMassEntry.setTaxLineBeforeReverse(moveLine.getTaxLineBeforeReverse());
-      moveLineMassEntry.setCurrencyAmount(moveLine.getCurrencyAmount());
-      moveLineMassEntry.setCurrencyRate(moveLine.getCurrencyRate());
-      moveLineMassEntry.setSourceTaxLine(moveLine.getSourceTaxLine());
-
-      // TODO Add new fields added on MoveLineMassEntry
-      // TODO Add nedded fields from MoveLine
+  public void generateTaxLineAndCounterpart(
+      Move move, LocalDate dueDate, Integer temporaryMoveNumber) throws AxelorException {
+    if (ObjectUtils.notEmpty(move.getMoveLineList())) {
+      moveToolService.exceptionOnGenerateCounterpart(move.getJournal(), move.getPaymentMode());
+      if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+          || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
+        moveLineTaxService.autoTaxLineGenerate(move);
+        moveCounterPartService.generateCounterpartMoveLine(move, dueDate);
+      }
+      massEntryToolService.clearMoveLineMassEntryListAndAddNewLines(move, temporaryMoveNumber);
     }
+  }
 
+  public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
+      List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry) {
+    for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
+      if (moveLine.getTemporaryMoveNumber().equals(moveLineMassEntry.getTemporaryMoveNumber())) {
+        moveLineMassEntry.setPartner(moveLine.getPartner());
+        moveLineMassEntry.setDate(moveLine.getDate());
+        moveLineMassEntry.setDueDate(moveLine.getDueDate());
+        moveLineMassEntry.setOriginDate(moveLine.getOriginDate());
+        moveLineMassEntry.setOrigin(moveLine.getOrigin());
+        moveLineMassEntry.setMoveStatusSelect(moveLine.getMoveStatusSelect());
+        moveLineMassEntry.setInterbankCodeLine(moveLine.getInterbankCodeLine());
+        moveLineMassEntry.setMoveDescription(moveLine.getMoveDescription());
+        moveLineMassEntry.setDescription(moveLine.getDescription());
+        moveLineMassEntry.setExportedDirectDebitOk(moveLine.getExportedDirectDebitOk());
+        moveLineMassEntry.setMovePaymentCondition(moveLine.getMovePaymentCondition());
+        moveLineMassEntry.setMovePaymentMode(moveLine.getMovePaymentMode());
+        break;
+      }
+    }
     return moveLineMassEntry;
   }
 }

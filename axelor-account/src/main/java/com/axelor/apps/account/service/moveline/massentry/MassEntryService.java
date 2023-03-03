@@ -18,20 +18,18 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.exception.AxelorException;
+import java.time.LocalDate;
 import java.util.List;
 
-/** Interface of service to create {@link MoveLineMassEntry} */
 public interface MassEntryService {
 
-  void clearMoveLineMassEntryListAndAddNewLines(Move move, Integer temporaryMoveNumber);
+  public void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber);
 
-  void sortMoveLinesMassEntryByTemporaryNumber(Move move);
+  public void generateTaxLineAndCounterpart(
+      Move move, LocalDate dueDate, Integer temporaryMoveNumber) throws AxelorException;
 
-  List<MoveLineMassEntry> convertMoveLinesIntoMoveLineMassEntry(
-      Move move, List<MoveLine> moveLines, Integer temporaryMoveNumber);
-
-  MoveLineMassEntry convertMoveLineIntoMoveLineMassEntry(
-      Move move, MoveLine moveLine, Integer temporaryMoveNumber);
+  public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
+      List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry);
 }

@@ -20,11 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveCounterPartService;
-import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
@@ -34,9 +30,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Singleton
 public class MoveLineMassEntryController {
@@ -56,52 +49,21 @@ public class MoveLineMassEntryController {
   }
 
   public void generateTaxLineAndCounterpart(ActionRequest request, ActionResponse response) {
-    // TODO Need to be split inside a service
     try {
       Move move = request.getContext().asType(Move.class);
-      MassEntryService moveLineMassEntryService = Beans.get(MassEntryService.class);
-      List<MoveLine> moveLineList = new ArrayList<>();
-      boolean firstLine = true;
+      MassEntryService massEntryService = Beans.get(MassEntryService.class);
 
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
         MoveLineMassEntry lastMoveLineMassEntry =
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
         if (lastMoveLineMassEntry.getInputAction() != null
             && lastMoveLineMassEntry.getInputAction() == 2) {
-
-          for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
-            if (Objects.equals(
-                    moveLineMassEntry.getTemporaryMoveNumber(),
-                    lastMoveLineMassEntry.getTemporaryMoveNumber())
-                && moveLineMassEntry.getInputAction() == 1) {
-              if (firstLine) {
-                move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
-                move.setPaymentCondition(moveLineMassEntry.getMovePaymentCondition());
-                move.setDate(moveLineMassEntry.getDate());
-                firstLine = false;
-              }
-              moveLineMassEntry.setMove(move);
-              moveLineList.add(moveLineMassEntry);
-            }
-          }
-          move.setMoveLineList(moveLineList);
-          moveLineMassEntryService.clearMoveLineMassEntryListAndAddNewLines(
+          massEntryService.fillMoveLineListWithMoveLineMassEntryList(
               move, lastMoveLineMassEntry.getTemporaryMoveNumber());
           response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
-
-          if (ObjectUtils.notEmpty(moveLineList)) {
-            Beans.get(MoveToolService.class)
-                .exceptionOnGenerateCounterpart(move.getJournal(), move.getPaymentMode());
-            if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
-                || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
-              Beans.get(MoveLineTaxService.class).autoTaxLineGenerate(move);
-              Beans.get(MoveCounterPartService.class)
-                  .generateCounterpartMoveLine(move, this.extractDueDate(request));
-            }
-            moveLineMassEntryService.clearMoveLineMassEntryListAndAddNewLines(
-                move, lastMoveLineMassEntry.getTemporaryMoveNumber());
-            response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
-          }
+          massEntryService.generateTaxLineAndCounterpart(
+              move, this.extractDueDate(request), lastMoveLineMassEntry.getTemporaryMoveNumber());
+          response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
         }
       }
     } catch (Exception e) {
@@ -123,7 +85,6 @@ public class MoveLineMassEntryController {
 
   public void getFirstMoveLineMassEntryInformations(
       ActionRequest request, ActionResponse response) {
-    // TODO Need to be split inside a service
     try {
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
@@ -133,26 +94,10 @@ public class MoveLineMassEntryController {
           && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);
         if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-          for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-            if (moveLine
-                .getTemporaryMoveNumber()
-                .equals(moveLineMassEntry.getTemporaryMoveNumber())) {
-              moveLineMassEntry.setPartner(moveLine.getPartner());
-              moveLineMassEntry.setDate(moveLine.getDate());
-              moveLineMassEntry.setDueDate(moveLine.getDueDate());
-              moveLineMassEntry.setOriginDate(moveLine.getOriginDate());
-              moveLineMassEntry.setOrigin(moveLine.getOrigin());
-              moveLineMassEntry.setMoveStatusSelect(moveLine.getMoveStatusSelect());
-              moveLineMassEntry.setInterbankCodeLine(moveLine.getInterbankCodeLine());
-              moveLineMassEntry.setMoveDescription(moveLine.getMoveDescription());
-              moveLineMassEntry.setDescription(moveLine.getDescription());
-              moveLineMassEntry.setExportedDirectDebitOk(moveLine.getExportedDirectDebitOk());
-              moveLineMassEntry.setMovePaymentCondition(moveLine.getMovePaymentCondition());
-              moveLineMassEntry.setMovePaymentMode(moveLine.getMovePaymentMode());
-              break;
-            }
-          }
-          response.setValues(moveLineMassEntry);
+          response.setValues(
+              Beans.get(MassEntryService.class)
+                  .getFirstMoveLineMassEntryInformations(
+                      move.getMoveLineMassEntryList(), moveLineMassEntry));
         }
       }
     } catch (Exception e) {
