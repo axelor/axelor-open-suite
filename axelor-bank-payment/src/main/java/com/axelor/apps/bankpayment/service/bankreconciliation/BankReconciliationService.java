@@ -303,7 +303,7 @@ public class BankReconciliationService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateMove(
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
       throws AxelorException {
@@ -895,7 +895,7 @@ public class BankReconciliationService {
     return params;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconciliateAccordingToQueries(BankReconciliation bankReconciliation)
       throws AxelorException {
     List<BankStatementQuery> bankStatementQueries =
@@ -1267,7 +1267,7 @@ public class BankReconciliationService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
     BankReconciliationLine bankReconciliationLine;

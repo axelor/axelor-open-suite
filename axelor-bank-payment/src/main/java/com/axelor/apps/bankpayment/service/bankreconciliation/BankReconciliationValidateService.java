@@ -188,12 +188,11 @@ public class BankReconciliationValidateService {
     bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void validateMultipleBankReconciles(
       BankReconciliation bankReconciliation,
       BankReconciliationLine bankReconciliationLine,
-      List<HashMap<String, Object>> moveLinesToReconcileContext)
-      throws AxelorException {
+      List<HashMap<String, Object>> moveLinesToReconcileContext) {
 
     LocalDate effectDate = bankReconciliationLine.getEffectDate();
     String name = bankReconciliationLine.getName();
