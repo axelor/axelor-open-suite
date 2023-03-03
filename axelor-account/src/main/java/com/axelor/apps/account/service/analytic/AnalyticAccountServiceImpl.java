@@ -118,10 +118,13 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
       } else {
         domain +=
             "in ("
-                + accountConfigRepository.findByCompany(analyticDistributionTemplate.getCompany())
-                    .getAnalyticAxisByCompanyList().stream()
-                    .map(it -> it.getAnalyticAxis().getId().toString())
-                    .collect(Collectors.toList())
+                + Joiner.on(",")
+                    .join(
+                        accountConfigRepository
+                            .findByCompany(analyticDistributionTemplate.getCompany())
+                            .getAnalyticAxisByCompanyList().stream()
+                            .map(it -> it.getAnalyticAxis().getId().toString())
+                            .collect(Collectors.toList()))
                 + ")";
       }
 
