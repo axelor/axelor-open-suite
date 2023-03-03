@@ -857,9 +857,8 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
-      throws AxelorException {
+  @Transactional
+  public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason) {
     return getLeaveReasonToJustify(employee, leaveReason)
         .orElseGet(() -> createLeaveReasonToJustify(employee, leaveReason));
   }
