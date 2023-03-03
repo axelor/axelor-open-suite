@@ -69,7 +69,7 @@ public class MoveServiceBankPaymentImpl extends MoveServiceImpl {
         accountConfigService);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
     Move newMove = super.generateReverse(move, assistantMap);
 
