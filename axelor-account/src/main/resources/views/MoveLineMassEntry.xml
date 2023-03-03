@@ -66,7 +66,6 @@
 
   <!-- Action group -->
   <action-group name="action-account-move-line-mass-entry-onnew-group">
-    <action name="action-move-line-mass-entry-record-compute-temporary-move-number"/>
     <action name="action-move-line-mass-entry-method-get-first-move-line-informtations"/>
     <action name="action-move-line-method-get-account-informations"/>
     <action name="action-move-line-mass-entry-attrs-set-readonly-first-move-line"
@@ -104,7 +103,7 @@
   </action-group>
 
   <action-group name="action-move-line-mass-entry-group-input-action-onchange">
-    <action name="action-move-line-mass-entry-record-reset-fields" if="inputAction == 3"/>
+    <action name="action-move-line-mass-entry-method-reset-fields" if="inputAction == 3"/>
     <action name="action-move-line-mass-entry-attrs-set-not-required-account"
       if="inputAction == 2"/>
     <action name="action-move-line-mass-entry-attrs-set-all-fields-required"/>
@@ -129,39 +128,6 @@
     <field name="partnerFullName,partnerSeq,partnerId" expr="eval: null" if="!partner"/>
     <field name="bankDetails"
       expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
-  </action-record>
-
-  <action-record
-    name="action-move-line-mass-entry-record-compute-temporary-move-number"
-    model="com.axelor.apps.account.db.MoveLineMassEntry">
-    <field name="temporaryMoveNumber"
-      expr="eval: __parent__?.moveLineMassEntryList?.max { it.temporaryMoveNumber }?.temporaryMoveNumber"/>
-    <field name="temporaryMoveNumber" expr="1"
-      if="eval: __parent__?.moveLineMassEntryList.size() == 0"/>
-    <field name="inputAction" expr="1"/>
-  </action-record>
-
-  <!-- Need to add more fields if we had fields on moveLineMassEntry grid -->
-  <action-record name="action-move-line-mass-entry-record-reset-fields"
-    model="com.axelor.apps.account.db.MoveLineMassEntry">
-    <field name="temporaryMoveNumber"
-      expr="eval: __parent__?.moveLineMassEntryList?.max { it.temporaryMoveNumber }?.temporaryMoveNumber + 1"/>
-    <field name="inputAction" expr="1"/>
-    <field name="origin" expr="eval: null"/>
-    <field name="originDate" expr="eval: null"/>
-    <field name="partner" expr="eval: null"/>
-    <field name="moveDescription" expr="eval: null"/>
-    <field name="movePaymentCondition" expr="eval: null"/>
-    <field name="movePaymentMode" expr="eval: null"/>
-    <field name="account" expr="eval: null"/>
-    <field name="taxeLine" expr="eval: null"/>
-    <field name="description" expr="eval: null"/>
-    <field name="debit" expr="0"/>
-    <field name="credit" expr="0"/>
-    <field name="currencyRate" expr="1"/>
-    <field name="currencyAmount" expr="0"/>
-    <field name="moveStatusSelect" expr="eval: null"/>
-    <field name="vatSystemSelect" expr="eval: null"/>
   </action-record>
 
   <!-- Action attrs -->
@@ -230,6 +196,10 @@
     name="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
       method="setPfpValidatorUserDomain"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-reset-fields">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController" method="resetMoveLineMassEntry"/>
   </action-method>
 
 </object-views>

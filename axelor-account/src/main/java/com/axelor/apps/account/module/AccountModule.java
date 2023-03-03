@@ -50,6 +50,8 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalManagementRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineManagementRepository;
+import com.axelor.apps.account.db.repo.MoveLineMassEntryManagementRepository;
+import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -676,5 +678,7 @@ public class AccountModule extends AxelorModule {
     bind(MassEntryService.class).to(MassEntryServiceImpl.class);
 
     bind(MassEntryToolService.class).to(MassEntryToolServiceImpl.class);
+
+    bind(MoveLineMassEntryRepository.class).to(MoveLineMassEntryManagementRepository.class);
   }
 }
