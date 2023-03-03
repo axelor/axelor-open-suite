@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.common.ObjectUtils;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -92,5 +93,10 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
     }
 
     return moveLineMassEntry;
+  }
+
+  public void checkAndReplaceDateInAllMoveLineMassEntry(
+      List<MoveLineMassEntry> moveLineMassEntryList, LocalDate newDate) {
+    // TODO add check for date and propagate this date on other moveLineMassEntry lines
   }
 }

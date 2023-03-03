@@ -109,9 +109,10 @@
     <action name="action-move-line-mass-entry-attrs-set-all-fields-required"/>
   </action-group>
 
-  <!-- Check if action-move-line-mass-entry-group-date-onchange -->
+  <!-- Check if action-move-line-mass-entry-group-date-onchange is useless -->
   <action-group name="action-move-line-mass-entry-group-date-onchange">
     <action name="account-move-line-record-date-onchange"/>
+    <action name="action-move-line-mass-entry-method-on-change-common-fields"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-validate-check-date-in-period"/>
   </action-group>
@@ -131,6 +132,8 @@
   </action-record>
 
   <!-- Action attrs -->
+  <!-- Check if action-move-line-mass-entry-record-reset-partner-details can be made in MoveLineMassEntryController
+    method -->
   <action-attrs name="action-move-line-mass-entry-attrs-set-all-fields-required">
     <attribute for="date" name="readonly" expr="eval: inputAction == 2"/>
     <attribute for="originDate" name="readonly" expr="eval: inputAction == 2"/>
@@ -201,6 +204,11 @@
   <action-method name="action-move-line-mass-entry-method-reset-fields">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
       method="resetMoveLineMassEntry"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-on-change-common-fields">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="propagateFieldsChangeOnMoveLineMassEntry"/>
   </action-method>
 
 </object-views>

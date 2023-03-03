@@ -135,4 +135,10 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLineMassEntry.setMoveStatusSelect(null);
     moveLineMassEntry.setVatSystemSelect(0);
   }
+
+  public void propagateFieldsChangeOnMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, Move move) {
+    massEntryToolService.checkAndReplaceDateInAllMoveLineMassEntry(
+        move.getMoveLineMassEntryList(), moveLineMassEntry.getDate());
+  }
 }

@@ -34,4 +34,7 @@ public interface MassEntryService {
       List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry);
 
   public void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry);
+
+  public void propagateFieldsChangeOnMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, Move move);
 }

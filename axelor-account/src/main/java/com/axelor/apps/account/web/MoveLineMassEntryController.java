@@ -123,15 +123,37 @@ public class MoveLineMassEntryController {
         Move move = parentContext.asType(Move.class);
         Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLineMassEntry);
         moveLineMassEntry.setInputAction(1);
-        moveLineMassEntry.setTemporaryMoveNumber(
-            move.getMoveLineMassEntryList().stream()
-                    .max(
-                        (o1, o2) -> o1.getReimbursementStatusSelect() - o2.getTemporaryMoveNumber())
-                    .get()
-                    .getTemporaryMoveNumber()
-                + 1);
+        move.getMoveLineMassEntryList().stream()
+            .max((o1, o2) -> o1.getReimbursementStatusSelect() - o2.getTemporaryMoveNumber())
+            .ifPresent(
+                result ->
+                    moveLineMassEntry.setTemporaryMoveNumber(result.getTemporaryMoveNumber() + 1));
         response.setValues(moveLineMassEntry);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void propagateFieldsChangeOnMoveLineMassEntry(
+      ActionRequest request, ActionResponse response) {
+    try {
+      // TODO Not fonctional/tested at this time
+      System.out.println("propagateFieldsChangeOnMoveLineMassEntry");
+
+      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+      Context parentContext = request.getContext().getParent();
+
+      if (moveLineMassEntry != null
+          && parentContext != null
+          && Move.class.equals(parentContext.getContextClass())) {
+        Move move = parentContext.asType(Move.class);
+        Beans.get(MassEntryService.class)
+            .propagateFieldsChangeOnMoveLineMassEntry(moveLineMassEntry, move);
+        response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
+        response.setValues(moveLineMassEntry);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
