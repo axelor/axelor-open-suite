@@ -183,7 +183,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
     }
   }
 
-  @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected Message generateAndSendMessage(Employee employee)
       throws MessagingException, IOException, AxelorException {
 

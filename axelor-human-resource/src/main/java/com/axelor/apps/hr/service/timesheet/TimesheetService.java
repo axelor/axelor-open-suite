@@ -29,7 +29,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -39,7 +38,6 @@ import javax.mail.MessagingException;
 
 public interface TimesheetService {
 
-  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException;
 
   public Message sendConfirmationEmail(Timesheet timesheet)
@@ -58,7 +56,6 @@ public interface TimesheetService {
    */
   public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void validate(Timesheet timesheet) throws AxelorException;
 
   public Message sendValidationEmail(Timesheet timesheet)
@@ -69,7 +66,6 @@ public interface TimesheetService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void refuse(Timesheet timesheet) throws AxelorException;
 
   public Message sendRefusalEmail(Timesheet timesheet)
@@ -127,7 +123,6 @@ public interface TimesheetService {
       PriceList priceList)
       throws AxelorException;
 
-  @Transactional
   public void computeTimeSpent(Timesheet timesheet);
 
   public BigDecimal computeSubTimeSpent(Project project);
@@ -158,7 +153,6 @@ public interface TimesheetService {
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException;
 
   public void prefillLines(Timesheet timesheet) throws AxelorException;
