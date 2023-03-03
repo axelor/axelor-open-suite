@@ -203,7 +203,7 @@ public class BatchBillOfExchange extends AbstractBatch {
    * @param move
    * @param accountConfig
    */
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updateInvoice(Invoice invoice, Move move, AccountConfig accountConfig) {
 
     Invoice invoiceToSave = invoiceRepository.find(invoice.getId());

@@ -399,7 +399,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     markAsSent(bankOrder);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void markAsSent(BankOrder bankOrder) {
     bankOrder.setHasBeenSentToBank(true);
   }
