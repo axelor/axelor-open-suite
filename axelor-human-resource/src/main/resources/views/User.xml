@@ -14,7 +14,7 @@
       <field name="expiresOn"
         validIf="!expiresOn || (!activateOn &amp;&amp; expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
       <field name="$generateRandomPassword" hidden="true"/>
-      <button name="okBtn" title="OK" onClick="action-employee-view-create-user"/>
+      <button name="okBtn" title="OK" onClick="validate,action-employee-view-create-user"/>
     </panel>
   </form>
 
