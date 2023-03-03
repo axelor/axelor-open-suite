@@ -77,7 +77,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     timer.setDuration(secondes);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public TimesheetLine generateTimesheetLine(TSTimer timer) {
 
     BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());
