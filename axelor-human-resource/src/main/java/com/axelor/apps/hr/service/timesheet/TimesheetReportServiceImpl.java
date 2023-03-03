@@ -148,7 +148,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return userSet;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<Message> sendReminders(TimesheetReport timesheetReport) throws AxelorException {
 
     Template reminderTemplate =

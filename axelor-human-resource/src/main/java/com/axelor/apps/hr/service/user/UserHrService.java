@@ -21,14 +21,11 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
-import com.google.inject.persist.Transactional;
 
 public interface UserHrService {
 
-  @Transactional
   public void createEmployee(User user);
 
-  @Transactional
   public Company getPayCompany(User user);
 
   @CallMethod
