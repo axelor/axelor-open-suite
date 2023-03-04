@@ -46,17 +46,20 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MoveToolService moveToolService;
   protected MoveLineTaxService moveLineTaxService;
   protected MoveCounterPartService moveCounterPartService;
+  protected MassEntryVerificationService massEntryVerificationService;
 
   @Inject
   public MassEntryServiceImpl(
       MassEntryToolService massEntryToolService,
       MoveToolService moveToolService,
       MoveLineTaxService moveLineTaxService,
-      MoveCounterPartService moveCounterPartService) {
+      MoveCounterPartService moveCounterPartService,
+      MassEntryVerificationService massEntryVerificationService) {
     this.massEntryToolService = massEntryToolService;
     this.moveToolService = moveToolService;
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
+    this.massEntryVerificationService = massEntryVerificationService;
   }
 
   public void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
@@ -136,9 +139,15 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLineMassEntry.setVatSystemSelect(0);
   }
 
-  public void propagateFieldsChangeOnMoveLineMassEntry(
+  public void verifyFieldsChangeOnMoveLineMassEntry(
       MoveLineMassEntry moveLineMassEntry, Move move) {
-    massEntryToolService.checkAndReplaceDateInAllMoveLineMassEntry(
-        move.getMoveLineMassEntryList(), moveLineMassEntry.getDate());
+    for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
+      if (Objects.equals(
+          moveLine.getTemporaryMoveNumber(), moveLineMassEntry.getTemporaryMoveNumber())) {
+        massEntryVerificationService.checkAndReplaceDateInMoveLineMassEntry(
+            moveLine, moveLineMassEntry.getDate());
+        // TODO add other verification method
+      }
+    }
   }
 }

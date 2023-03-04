@@ -30,6 +30,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
+import java.util.List;
 
 @Singleton
 public class MoveLineMassEntryController {
@@ -46,6 +47,18 @@ public class MoveLineMassEntryController {
     } else {
       return LocalDate.parse((String) dueDateObj);
     }
+  }
+
+  private Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList) {
+    int max = 0;
+
+    for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
+      if (moveLine.getTemporaryMoveNumber() > max) {
+        max = moveLine.getTemporaryMoveNumber();
+      }
+    }
+
+    return max;
   }
 
   public void generateTaxLineAndCounterpart(ActionRequest request, ActionResponse response) {
@@ -93,14 +106,17 @@ public class MoveLineMassEntryController {
           && parentContext != null
           && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);
-        moveLineMassEntry.setTemporaryMoveNumber(1);
-        moveLineMassEntry.setInputAction(1);
-        if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-          move.getMoveLineMassEntryList().stream()
-              .max((o1, o2) -> o1.getReimbursementStatusSelect() - o2.getTemporaryMoveNumber())
-              .ifPresent(
-                  result ->
-                      moveLineMassEntry.setTemporaryMoveNumber(result.getTemporaryMoveNumber()));
+
+        if (move != null) {
+          moveLineMassEntry.setInputAction(1);
+          if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
+            if (moveLineMassEntry.getTemporaryMoveNumber() == 0) {
+              moveLineMassEntry.setTemporaryMoveNumber(
+                  getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()));
+            }
+          } else {
+            moveLineMassEntry.setTemporaryMoveNumber(1);
+          }
           response.setValues(
               Beans.get(MassEntryService.class)
                   .getFirstMoveLineMassEntryInformations(
@@ -123,11 +139,8 @@ public class MoveLineMassEntryController {
         Move move = parentContext.asType(Move.class);
         Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLineMassEntry);
         moveLineMassEntry.setInputAction(1);
-        move.getMoveLineMassEntryList().stream()
-            .max((o1, o2) -> o1.getReimbursementStatusSelect() - o2.getTemporaryMoveNumber())
-            .ifPresent(
-                result ->
-                    moveLineMassEntry.setTemporaryMoveNumber(result.getTemporaryMoveNumber() + 1));
+        moveLineMassEntry.setTemporaryMoveNumber(
+            getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()) + 1);
         response.setValues(moveLineMassEntry);
       }
     } catch (Exception e) {
@@ -135,11 +148,12 @@ public class MoveLineMassEntryController {
     }
   }
 
-  public void propagateFieldsChangeOnMoveLineMassEntry(
+  public void verifyFieldsChangeOnMoveLineMassEntry(
       ActionRequest request, ActionResponse response) {
     try {
-      // TODO Not fonctional/tested at this time
-      System.out.println("propagateFieldsChangeOnMoveLineMassEntry");
+      // TODO Not fonctional at this time
+      // the
+      System.out.println("verirfyFieldsChangeOnMoveLineMassEntry");
 
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
@@ -149,7 +163,7 @@ public class MoveLineMassEntryController {
           && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);
         Beans.get(MassEntryService.class)
-            .propagateFieldsChangeOnMoveLineMassEntry(moveLineMassEntry, move);
+            .verifyFieldsChangeOnMoveLineMassEntry(moveLineMassEntry, move);
         response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
         response.setValues(moveLineMassEntry);
       }

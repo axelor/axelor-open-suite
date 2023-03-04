@@ -6,7 +6,8 @@
   <grid name="move-line-mass-entry-move-grid"
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
     onNew="action-account-move-line-mass-entry-onnew-group">
-    <field name="temporaryMoveNumber" width="50"/>
+    <field name="temporaryMoveNumber" width="50"
+      onChange="action-move-line-mass-entry-method-get-first-move-line-informtations"/>
     <field name="inputAction" selection="iaccount.move.input.action.select"
       onChange="action-move-line-mass-entry-group-input-action-onchange" readonly="true"
       required="true" width="50"/>
@@ -208,7 +209,7 @@
 
   <action-method name="action-move-line-mass-entry-method-on-change-common-fields">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="propagateFieldsChangeOnMoveLineMassEntry"/>
+      method="verifyFieldsChangeOnMoveLineMassEntry"/>
   </action-method>
 
 </object-views>
