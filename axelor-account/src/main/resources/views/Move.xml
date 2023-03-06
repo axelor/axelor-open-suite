@@ -108,7 +108,8 @@
           <field name="paymentMode" colSpan="3"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
             form-view="payment-mode-form" grid-view="payment-mode-grid"
-            onChange="action-move-group-payment-mode-onchange"/>
+            onChange="action-move-group-payment-mode-onchange"
+            onSelect="action-move-attrs-set-domain-payment-mode"/>
           <spacer/>
           <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4"
             form-view="payment-condition-form" grid-view="payment-condition-grid"
@@ -287,19 +288,17 @@
     <panel-tabs name="mainPanelTab">
       <panel name="relatedToPanel" title="Related to" readonly="true" itemSpan="4">
         <field name="invoice" domain="self.company = :company AND self.statusSelect = 3"
-          form-view="invoice-form" readonlyIf="$validatePeriod" grid-view="invoice-grid"
-          canNew="false"/>
+          form-view="invoice-form" grid-view="invoice-grid" canNew="false"/>
         <field name="stockMove" grid-view="stock-move-grid" form-view="stock-move-form"
           canNew="false" canEdit="false" if-module="axelor-supplychain"/>
         <field name="cutOffOriginMove" grid-view="move-grid" form-view="move-form"
           canNew="false" canEdit="false" if="__config__.app.getApp('account').manageCutOffPeriod"/>
-        <field name="paymentVoucher" readonlyIf="$validatePeriod"
-          domain="self.company = :company" canNew="false" form-view="payment-voucher-form"
-          grid-view="payment-voucher-grid"/>
+        <field name="paymentVoucher" domain="self.company = :company" canNew="false"
+          form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
         <field name="paymentSession" readonly="true" form-view="payment-session-form"
           grid-view="payment-session-grid"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
-          onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
+          canNew="false" canView="false"/>
         <panel-dashlet name="relatedCutOffMovesPanel" title="Related cut off moves"
           colSpan="12" action="action-move-view-related-cut-off-moves"
           showIf="$isThereRelatedCutOffMoves"
@@ -379,7 +378,8 @@
           <field if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             name="tradingName" canNew="false" onSelect="action-move-set-trading-name-domain"
             form-view="trading-name-form" grid-view="trading-name-grid"/>
-          <field name="paymentMode" colSpan="3"/>
+          <field name="paymentMode" colSpan="3"
+            onSelect="action-move-attrs-set-domain-payment-mode"/>
           <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
