@@ -319,11 +319,9 @@
           showIf="accountingOk" grid-view="accounting-report-grid"/>
       </panel>
 
-      <panel name="currencyPanel" title="Currencies" readonlyIf="$validatePeriod">
-        <field name="currency"
-          readonlyIf="moveLineList != null &amp;&amp; moveLineList.length != 0" required="true"
-          onChange="action-move-record-set-currency-code"/>
-        <field name="companyCurrency" readonly="true"/>
+      <panel name="currencyPanel" title="Currencies" readonly="true">
+        <field name="currency"/>
+        <field name="companyCurrency"/>
         <field name="currencyCode" hidden="true"/>
         <field name="$companyCurrencyCodeIso" hidden="true"/>
       </panel>
