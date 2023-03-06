@@ -205,19 +205,21 @@
           hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch"/>
         <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
-        <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
-          onClick="action-move-account-group-simulate" colSpan="12"
-          showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"/>
-        <button name="accountingBtn" title="Accounting.toAccount"
-          readonlyIf="$validatePeriod" onClick="action-account-move-group-accounting-click"
-          colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
-        <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
-          readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
-          colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
-        <button
-          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
-          name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
-          onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
+        <panel name="actionPanel" readonlyIf="$validatePeriod" itemSpan="12" colSpan="12">
+          <button name="simulateBtn" title="Simulate"
+            onClick="action-move-account-group-simulate" colSpan="12"
+            showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"/>
+          <button name="accountingBtn" title="Accounting.toAccount"
+            onClick="action-account-move-group-accounting-click" colSpan="12"
+            hideIf="statusSelect == 3 || statusSelect == 4"/>
+          <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
+            onClick="action-account-move-group-generate-tax-lines" colSpan="12"
+            showIf="statusSelect == 1 || statusSelect == 5"/>
+          <button
+            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+            name="counterpartGenerateBtn" title="Generate counterpart"
+            onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
+        </panel>
       </panel>
     </panel>
 
@@ -425,19 +427,21 @@
 	                ]]></viewer>
         </field>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
-        <button name="accountingBtn" title="Accounting.toAccount"
-          readonlyIf="$validatePeriod" onClick="action-account-move-group-accounting-click"
-          colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
-        <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
-          onClick="action-move-account-group-simulate" colSpan="12"
-          showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
-        <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
-          readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
-          colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
-        <button
-          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
-          name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
-          onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
+        <panel name="actionPanel" readonlyIf="$validatePeriod" itemSpan="12" colSpan="12">
+          <button name="accountingBtn" title="Accounting.toAccount"
+            onClick="action-account-move-group-accounting-click" colSpan="12"
+            hideIf="statusSelect == 3 || statusSelect == 4"/>
+          <button name="simulateBtn" title="Simulate"
+            onClick="action-move-account-group-simulate" colSpan="12"
+            showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
+          <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
+            onClick="action-account-move-group-generate-tax-lines" colSpan="12"
+            showIf="statusSelect == 1 || statusSelect == 5"/>
+          <button
+            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+            name="counterpartGenerateBtn" title="Generate counterpart"
+            onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
+        </panel>
         <field name="$validatePeriod" hidden="true" type="boolean"/>
       </panel>
     </panel>
