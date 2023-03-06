@@ -441,7 +441,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException {
     if (projectTask.getSaleOrderLine() != null || projectTask.getInvoiceLine() != null) {
