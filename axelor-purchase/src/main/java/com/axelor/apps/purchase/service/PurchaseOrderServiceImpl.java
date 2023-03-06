@@ -129,18 +129,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
    * @throws AxelorException
    */
   @Override
-  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (purchaseOrderLineList == null) {
+      return;
+    }
 
     logger.debug(
         "Populate an invoice => purchase order lines: {} ",
-        new Object[] {purchaseOrder.getPurchaseOrderLineList().size()});
+        new Object[] {purchaseOrderLineList.size()});
 
     // create Tva lines
     purchaseOrder
         .getPurchaseOrderLineTaxList()
         .addAll(
             purchaseOrderLineVatService.createsPurchaseOrderLineTax(
-                purchaseOrder, purchaseOrder.getPurchaseOrderLineList()));
+                purchaseOrder, purchaseOrderLineList));
   }
 
   /**
