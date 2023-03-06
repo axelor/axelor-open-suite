@@ -26,6 +26,7 @@
 
 
 		public static final int FORECAST_GENERATOR_WEEKLY = 7;
+		public static final int FORECAST_GENERATOR_FORTNIGHTLY = 14;
 
 
 	]]></extra-code>
