@@ -44,8 +44,10 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -133,6 +135,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       for (MoveLine debitMoveLine : debitMoveLines) {
         debitRemaining.put(debitMoveLine, debitMoveLine.getAmountRemaining());
       }
+      Set<MoveLine> moveLineReconciledSet = new HashSet<>();
       for (MoveLine creditMoveLine : creditMoveLines) {
         BigDecimal creditRemaining = creditMoveLine.getAmountRemaining();
         for (MoveLine debitMoveLine : debitMoveLines) {
@@ -186,6 +189,8 @@ public class BatchAutoMoveLettering extends BatchStrategy {
               reconcile(debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
               creditRemaining = nextCreditRemaining;
               debitRemaining.replace(debitMoveLine, nextDebitRemaining);
+              moveLineReconciledSet.add(debitMoveLine);
+              moveLineReconciledSet.add(creditMoveLine);
             } catch (Exception e) {
               TraceBackService.trace(
                   new Exception(
@@ -206,6 +211,9 @@ public class BatchAutoMoveLettering extends BatchStrategy {
             }
           }
         }
+      }
+      for (MoveLine moveLine : moveLineReconciledSet) {
+        incrementDone();
       }
     }
   }
@@ -246,9 +254,10 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     // End gestion du passage en 580
 
     if (reconcile != null) {
+      ReconcileGroup reconcileGroup =
+          reconcileGroupService.findOrMergeGroup(reconcile).orElse(null);
       if (accountingBatch.getIsProposal()) {
-        ReconcileGroup reconcileGroup =
-            reconcileGroupService.findOrMergeGroup(reconcile).orElse(null);
+
         if (reconcileGroup == null) {
           reconcileGroup = reconcileGroupService.createReconcileGroup(accountingBatch.getCompany());
           reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PROPOSAL);
@@ -259,8 +268,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
         reconcileList.add(reconcile);
         reconcileGroupService.addToReconcileGroup(reconcileGroup, reconcile);
       } else {
-        ReconcileGroup reconcileGroup =
-            reconcileGroupService.findOrMergeGroup(reconcile).orElse(null);
         reconcileService.confirmReconcile(reconcile, true, true);
         reconcileGroupService.removeDraftReconciles(reconcileGroup);
       }
@@ -268,8 +275,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       creditMoveLine.addBatchSetItem(batch);
       moveLineRepository.save(debitMoveLine);
       moveLineRepository.save(creditMoveLine);
-      incrementDone();
-      incrementDone();
 
       LOG.debug("Reconcile : {}", reconcile);
     }
