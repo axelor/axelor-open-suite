@@ -319,6 +319,13 @@ public class DateTool {
     return (d1.isAfter(d2)) ? d1 : d2;
   }
 
+  public static LocalDate max(LocalDate d1, LocalDate d2) {
+    if (d1 == null && d2 == null) return null;
+    if (d1 == null) return d2;
+    if (d2 == null) return d1;
+    return (d1.isAfter(d2)) ? d1 : d2;
+  }
+
   public static ZonedDateTime getTodayDateTime(String timeZone) {
     return StringUtils.notBlank(timeZone)
         ? ZonedDateTime.now(ZoneId.of(timeZone))
