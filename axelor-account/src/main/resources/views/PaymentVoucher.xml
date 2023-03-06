@@ -85,7 +85,7 @@
           <field name="valueForCollectionAccount" title="Value for collection" hidden="true"
             hideIf="bankEntryGenWithoutValEntryCollectionOk"/>
           <field name="depositBankDetails"
-            requiredIf="!bankEntryGenWithoutValEntryCollectionOk"
+            requiredIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"
             hideIf="bankEntryGenWithoutValEntryCollectionOk"
             domain="self.active = true AND self.company = :company"/>
         </panel>
