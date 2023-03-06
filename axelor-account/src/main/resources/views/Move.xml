@@ -766,6 +766,7 @@
 
   <action-group name="action-move-group-move-line-mass-entry-list-onchange">
     <action name="action-move-group-move-line-list-onchange"/>
+    <action name="action-move-line-mass-entry-method-on-change-common-fields"/>
     <action name="action-move-line-mass-entry-method-generate-taxline-and-counterpart"/>
     <action name="action-move-line-mass-entry-method-verify-mass-entry-move-balance"/>
   </action-group>

@@ -93,4 +93,17 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
 
     return moveLineMassEntry;
   }
+
+  @Override
+  public List<MoveLineMassEntry> getEditedMoveLineMassEntry(
+      List<MoveLineMassEntry> moveLineMassEntryList) {
+    List<MoveLineMassEntry> resultList = new ArrayList<>();
+
+    for (MoveLineMassEntry moveLineMassEntry : moveLineMassEntryList) {
+      if (moveLineMassEntry.getIsEdited()) {
+        resultList.add(moveLineMassEntry);
+      }
+    }
+    return resultList;
+  }
 }

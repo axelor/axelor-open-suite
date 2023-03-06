@@ -16,4 +16,6 @@ public interface MassEntryToolService {
 
   MoveLineMassEntry convertMoveLineIntoMoveLineMassEntry(
       Move move, MoveLine moveLine, Integer temporaryMoveNumber);
+
+  List<MoveLineMassEntry> getEditedMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList);
 }

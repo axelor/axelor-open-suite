@@ -113,7 +113,7 @@
   <!-- Check if action-move-line-mass-entry-group-date-onchange is useless -->
   <action-group name="action-move-line-mass-entry-group-date-onchange">
     <action name="account-move-line-record-date-onchange"/>
-    <action name="action-move-line-mass-entry-method-on-change-common-fields"/>
+    <action name="action-move-line-mass-entry-record-set-is-edited"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-validate-check-date-in-period"/>
   </action-group>
@@ -130,6 +130,11 @@
     <field name="partnerFullName,partnerSeq,partnerId" expr="eval: null" if="!partner"/>
     <field name="bankDetails"
       expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
+  </action-record>
+
+  <action-record name="action-move-line-mass-entry-record-set-is-edited"
+    model="com.axelor.apps.account.db.MoveLineMassEntry">
+    <field name="isEdited" expr="true"/>
   </action-record>
 
   <!-- Action attrs -->

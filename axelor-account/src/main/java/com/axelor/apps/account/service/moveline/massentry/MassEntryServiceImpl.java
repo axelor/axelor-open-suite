@@ -139,14 +139,22 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLineMassEntry.setVatSystemSelect(0);
   }
 
-  public void verifyFieldsChangeOnMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, Move move) {
-    for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-      if (Objects.equals(
-          moveLine.getTemporaryMoveNumber(), moveLineMassEntry.getTemporaryMoveNumber())) {
-        massEntryVerificationService.checkAndReplaceDateInMoveLineMassEntry(
-            moveLine, moveLineMassEntry.getDate());
-        // TODO add other verification method
+  public void verifyFieldsChangeOnMoveLineMassEntry(Move move) {
+    List<MoveLineMassEntry> moveLineMassEntryList =
+        massEntryToolService.getEditedMoveLineMassEntry(move.getMoveLineMassEntryList());
+
+    if (ObjectUtils.notEmpty(moveLineMassEntryList)) {
+      for (MoveLineMassEntry moveLineEdited : moveLineMassEntryList) {
+        for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
+          if (Objects.equals(
+              moveLine.getTemporaryMoveNumber(), moveLineEdited.getTemporaryMoveNumber())) {
+            massEntryVerificationService.checkAndReplaceDateInMoveLineMassEntry(
+                moveLine, moveLineEdited.getDate());
+            // TODO add other verification method
+
+            moveLine.setIsEdited(false);
+          }
+        }
       }
     }
   }

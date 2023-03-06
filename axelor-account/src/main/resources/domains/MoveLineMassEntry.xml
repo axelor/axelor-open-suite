@@ -21,6 +21,7 @@
       selection="iaccount.move.status.select"/>
     <many-to-one name="movePartnerBankDetails" title="Bank details"
       ref="com.axelor.apps.base.db.BankDetails"/>
+    <boolean name="isEdited" default="false"/>
 
   </entity>
 

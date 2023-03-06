@@ -35,5 +35,5 @@ public interface MassEntryService {
 
   public void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry);
 
-  public void verifyFieldsChangeOnMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry, Move move);
+  public void verifyFieldsChangeOnMoveLineMassEntry(Move move);
 }

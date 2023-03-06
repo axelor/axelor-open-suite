@@ -151,23 +151,12 @@ public class MoveLineMassEntryController {
   public void verifyFieldsChangeOnMoveLineMassEntry(
       ActionRequest request, ActionResponse response) {
     try {
-      // TODO Not fonctional at this time
-      // the
-      System.out.println("verirfyFieldsChangeOnMoveLineMassEntry");
+      Move move = request.getContext().asType(Move.class);
 
-      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
-      Context parentContext = request.getContext().getParent();
-
-      if (moveLineMassEntry != null
-          && parentContext != null
-          && Move.class.equals(parentContext.getContextClass())) {
-        Move move = parentContext.asType(Move.class);
-        Beans.get(MassEntryService.class)
-            .verifyFieldsChangeOnMoveLineMassEntry(moveLineMassEntry, move);
-        response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
-        response.setValues(moveLineMassEntry);
+      if (move != null) {
+        Beans.get(MassEntryService.class).verifyFieldsChangeOnMoveLineMassEntry(move);
+        response.setValues(move);
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
