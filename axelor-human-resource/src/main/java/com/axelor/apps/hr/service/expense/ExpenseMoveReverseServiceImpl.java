@@ -65,7 +65,6 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
         moveRepository,
         moveLineCreateService,
         extractContextMoveService,
-        cancelFactory,
         invoicePaymentRepository,
         invoicePaymentCancelService,
         bankReconciliationService,
