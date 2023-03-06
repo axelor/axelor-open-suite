@@ -464,9 +464,9 @@
     <option value="2">Modification</option>
   </selection>
 
-  <selection id="base.object.data.config.model.select"
-    name="object.data.config.model.select">
+  <selection name="object.data.config.model.select">
     <option value="com.axelor.apps.base.db.Partner">Partner</option>
+    <option value="com.axelor.auth.db.User">User</option>
   </selection>
 
   <selection name="base.user.form.step.select">
@@ -476,16 +476,6 @@
     <option value="3">Employee</option>
     <option value="4">Activation</option>
     <option value="5">Complete</option>
-  </selection>
-
-  <selection name="select.language" id="base.language.select">
-    <option value="de">German Beta</option>
-    <option value="es">Spanish Beta</option>
-    <option value="pt">Portuguese Beta</option>
-    <option value="it">Italian Beta</option>
-    <option value="nl">Dutch Beta</option>
-    <option value="pl">Polish Beta</option>
-    <option value="ru">Russian Beta</option>
   </selection>
 
   <selection name="frequency.base.type.select">
@@ -678,47 +668,6 @@
     <option value="1">Advanced import</option>
   </selection>
 
-  <selection name="permission.assistant.type.select">
-    <option value="1">Groups</option>
-    <option value="2">Roles</option>
-  </selection>
-
-  <selection name="object.data.config.model.select">
-    <option value="com.axelor.auth.db.User">User</option>
-  </selection>
-
-  <selection name="object.data.export.format.select">
-    <option value="csv">CSV</option>
-    <option value="xlsx">Excel</option>
-  </selection>
-
-  <selection name="data.config.line.type.select">
-    <option value="0">Path</option>
-    <option value="1">Query</option>
-  </selection>
-
-  <selection name="data.config.line.reset.path.select">
-    <option value="0">None</option>
-    <option value="1">Replace</option>
-    <option value="2">Delete</option>
-  </selection>
-
-  <selection name="data.backup.status.select">
-    <option value="0">Draft</option>
-    <option value="1">In Progress</option>
-    <option value="2">Backup Created</option>
-    <option value="3">Backup Restored</option>
-    <option value="4">Backup Restore Error</option>
-    <option value="5">Error</option>
-  </selection>
-
-  <selection name="global.tracking.log.type.select">
-    <option value="1">CREATE</option>
-    <option value="3">UPDATE</option>
-    <option value="4">DELETE</option>
-    <option value="5">EXPORT</option>
-  </selection>
-
   <selection name='trace.back.type.select'>
     <option value='0'>Technical anomaly</option>
     <option value='1'>Functional anomaly</option>
@@ -735,10 +684,6 @@
   <selection name="permission.assistant.type.select">
     <option value="1">Groups</option>
     <option value="2">Roles</option>
-  </selection>
-
-  <selection name="object.data.config.model.select">
-    <option value="com.axelor.auth.db.User">User</option>
   </selection>
 
   <selection name="object.data.export.format.select">

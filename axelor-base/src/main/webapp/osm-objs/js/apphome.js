@@ -15,15 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.projectdms.exception;
-
-/**
- * @author axelor
- * @deprecated Replaced by {@link ProjectDmsExceptionMessage}
- */
-@Deprecated
-public interface IExceptionMessage {
-
-  static final String LOCKED_BY_USER_EMAIL_NOT_CONFIGURED = /*$$(*/
-      "Locked by user %s has not configured email address" /*)*/;
-}
+ function getAppHome () {
+	return location.protocol + '//' + location.host + location.pathname.substring(0, location.pathname.search(/\/map\/.*/));
+ }

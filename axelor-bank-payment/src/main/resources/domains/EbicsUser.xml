@@ -13,7 +13,7 @@
     <string name="userId" title="User id" max="35" required="true"/>
     <string name="nextOrderId" title="Next order id" readonly="true"/>
 
-    <string name="password" title="Password" password="true"/>
+    <string name="password" title="Password" password="true" encrypted="true"/>
 
     <integer name="userTypeSelect" title="User type"
       selection="bankpayment.ebics.user.user.type.select"/>
