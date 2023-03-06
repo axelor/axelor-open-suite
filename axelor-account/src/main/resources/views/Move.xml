@@ -76,7 +76,9 @@
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-move-group-journal-on-change" colSpan="3"/>
-          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
+          <field name="functionalOriginSelect"
+            readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2 &amp;&amp; statusSelect != 5"
+            colSpan="3"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
           <panel name="datePanel" showFrame="false" colSpan="12" itemSpan="3">
             <field name="period" form-view="period-form" grid-view="period-grid"
