@@ -202,10 +202,8 @@
       </panel>
       <panel name="autoMoveLetteringConfigPanel" title="Auto move lettering configuration"
         hideIf="actionSelect != 27" colSpan="12">
-        <field name="startDate" requiredIf="actionSelect == 27"
-          onChange="action-accounting-batch-condition-reconcile-dates"/>
-        <field name="endDate" requiredIf="actionSelect == 27"
-          onChange="action-accounting-batch-condition-reconcile-dates"/>
+        <field name="startDate" requiredIf="actionSelect == 27"/>
+        <field name="endDate" requiredIf="actionSelect == 27"/>
         <field name="fromAccount" requiredIf="actionSelect == 27 &amp;&amp; toAccount == null"
           domain="self.statusSelect = 1 AND self.reconcileOk IS true AND self.company = :company"/>
         <field name="toAccount" requiredIf="actionSelect == 27 &amp;&amp; fromAccount == null"
@@ -345,6 +343,7 @@
   </action-group>
 
   <action-group name="action-accounting-batch-group-auto-move-lettering">
+    <action name="action-accounting-batch-validate-reconcile-dates"/>
     <action name="save"/>
     <action name="action-accounting-batch-method-auto-move-lettering"/>
   </action-group>
@@ -524,11 +523,9 @@
       if="(!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; cutOffMoveStatusSelect == 5) || (!miscOpeJournal?.allowAccountingDaybook &amp;&amp; cutOffMoveStatusSelect == 2)"/>
   </action-validate>
 
-  <action-condition name="action-accounting-batch-condition-reconcile-dates">
-    <check field="endDate"
-      if="startDate != null &amp;&amp; endDate != null &amp;&amp; endDate &lt; startDate"
-      error="End date cannot be inferior to start date"/>
-  </action-condition>
+  <action-validate name="action-accounting-batch-validate-reconcile-dates">
+    <error if="startDate &gt; endDate" message="End date cannot be inferior to start date"/>
+  </action-validate>
 
 
   <!-- ACTION ATTRS -->

@@ -167,45 +167,4 @@ public class BatchAccountController {
       TraceBackService.trace(response, e);
     }
   }
-
-  public void validateReconcileGroup(ActionRequest request, ActionResponse response) {
-    try {
-      ReconcileGroupRepository reconcileGroupRepo = Beans.get(ReconcileGroupRepository.class);
-      ReconcileGroup reconcileGroup =
-          reconcileGroupRepo.find(
-              request.getContext().asType(MoveLine.class).getReconcileGroup().getId());
-
-      if (reconcileGroup != null && reconcileGroup.getIsProposal()) {
-        try {
-          ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
-          reconcileGroupService.letter(reconcileGroup);
-          reconcileGroup = reconcileGroupRepo.find(reconcileGroup.getId());
-          reconcileGroup.setIsProposal(false);
-          reconcileGroupService.removeDraftReconciles(reconcileGroup);
-          reconcileGroupService.updateStatus(reconcileGroup);
-        } catch (AxelorException e) {
-          TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-        }
-      }
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void cancelReconcileGroup(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
-      MoveLine moveLine =
-          moveLineRepository.find(request.getContext().asType(MoveLine.class).getId());
-
-      if (moveLine != null) {
-        ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
-        reconcileGroupService.cancelProposal(moveLine.getReconcileGroup());
-      }
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 }
