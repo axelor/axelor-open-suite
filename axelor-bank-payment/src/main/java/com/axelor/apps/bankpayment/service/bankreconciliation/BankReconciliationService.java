@@ -1215,7 +1215,7 @@ public class BankReconciliationService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
     BankReconciliationLine bankReconciliationLine;
