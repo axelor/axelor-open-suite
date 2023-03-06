@@ -20,10 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReconcileGroupService;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -76,9 +73,10 @@ public class ReconcileGroupController {
       Context context = request.getContext();
       ReconcileGroup reconcileGroup;
 
-      boolean isReconcileGroupForm = ReconcileGroup.class.equals(request.getContext().getContextClass());
+      boolean isReconcileGroupForm =
+          ReconcileGroup.class.equals(request.getContext().getContextClass());
 
-      if(isReconcileGroupForm) {
+      if (isReconcileGroupForm) {
         reconcileGroup = context.asType(ReconcileGroup.class);
       } else {
         reconcileGroup = context.asType(MoveLine.class).getReconcileGroup();
@@ -95,8 +93,8 @@ public class ReconcileGroupController {
         reconcileGroupService.removeDraftReconciles(reconcileGroup);
         reconcileGroupService.updateStatus(reconcileGroup);
       }
-      
-        response.setReload(true);
+
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -107,9 +105,10 @@ public class ReconcileGroupController {
       Context context = request.getContext();
       ReconcileGroup reconcileGroup;
 
-      boolean isReconcileGroupForm = ReconcileGroup.class.equals(request.getContext().getContextClass());
+      boolean isReconcileGroupForm =
+          ReconcileGroup.class.equals(request.getContext().getContextClass());
 
-      if(isReconcileGroupForm) {
+      if (isReconcileGroupForm) {
         reconcileGroup = context.asType(ReconcileGroup.class);
       } else {
         reconcileGroup = context.asType(MoveLine.class).getReconcileGroup();
@@ -123,13 +122,13 @@ public class ReconcileGroupController {
 
         reconcileGroupService.cancelProposal(reconcileGroup);
       }
-      if(isReconcileGroupForm) {
+      if (isReconcileGroupForm) {
         response.setView(
-                ActionView.define(I18n.get("Reconcile groups"))
-                        .model(ReconcileGroup.class.getName())
-                        .add("grid", "reconcile-group-grid")
-                        .add("form", "reconcile-group-form")
-                        .map());
+            ActionView.define(I18n.get("Reconcile groups"))
+                .model(ReconcileGroup.class.getName())
+                .add("grid", "reconcile-group-grid")
+                .add("form", "reconcile-group-form")
+                .map());
       } else {
         response.setReload(true);
       }
