@@ -77,7 +77,8 @@
           hidden="true"/>
       </panel>
       <field name="product.procurementMethodSelect" hidden="true"/>
-      <field name="alert" showIf="orderAlertSelect != 1" colSpan="3" hidden="true"/>
+      <field name="alert" showIf="orderAlertSelect != 1 &amp;&amp; useCaseSelect != 1"
+        colSpan="3" hidden="true"/>
       <panel name="commentPanel" title="Comments" colSpan="12">
         <field name="comments" showTitle="false" colSpan="12"/>
       </panel>
