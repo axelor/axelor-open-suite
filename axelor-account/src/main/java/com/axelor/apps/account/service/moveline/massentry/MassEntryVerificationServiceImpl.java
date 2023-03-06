@@ -8,10 +8,29 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MassEntryVerificationServiceImpl implements MassEntryVerificationService {
+
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected PeriodService periodService;
+  protected MoveLineToolService moveLineToolService;
+
+  @Inject
+  public MassEntryVerificationServiceImpl(
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      PeriodService periodService,
+      MoveLineToolService moveLineToolService) {
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.periodService = periodService;
+    this.moveLineToolService = moveLineToolService;
+  }
 
   public void checkAndReplaceDateInMoveLineMassEntry(
       MoveLineMassEntry moveLineMassEntry, LocalDate newDate, Move move) throws AxelorException {
@@ -19,19 +38,19 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       moveLineMassEntry.setDate(newDate);
       moveLineMassEntry.setOriginDate(newDate);
 
-      if (Beans.get(MoveLineComputeAnalyticService.class).checkManageAnalytic(move.getCompany())) {
+      if (moveLineComputeAnalyticService.checkManageAnalytic(move.getCompany())) {
         moveLineMassEntry.setAnalyticMoveLineList(
-            Beans.get(MoveLineComputeAnalyticService.class)
+            moveLineComputeAnalyticService
                 .computeAnalyticDistribution(moveLineMassEntry)
                 .getAnalyticMoveLineList());
         Period period = null;
         if (move.getDate() != null && move.getCompany() != null) {
           period =
-              Beans.get(PeriodService.class)
-                  .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
+              periodService.getActivePeriod(
+                  move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
           move.setPeriod(period);
         }
-        Beans.get(MoveLineToolService.class).checkDateInPeriod(move, moveLineMassEntry);
+        moveLineToolService.checkDateInPeriod(move, moveLineMassEntry);
       }
     }
   }
