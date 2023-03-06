@@ -35,5 +35,5 @@ public interface MassEntryService {
 
   public void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry);
 
-  public void verifyFieldsChangeOnMoveLineMassEntry(Move move);
+  public void verifyFieldsChangeOnMoveLineMassEntry(Move move) throws AxelorException;
 }

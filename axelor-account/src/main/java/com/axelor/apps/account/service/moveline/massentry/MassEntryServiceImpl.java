@@ -139,7 +139,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLineMassEntry.setVatSystemSelect(0);
   }
 
-  public void verifyFieldsChangeOnMoveLineMassEntry(Move move) {
+  public void verifyFieldsChangeOnMoveLineMassEntry(Move move) throws AxelorException {
     List<MoveLineMassEntry> moveLineMassEntryList =
         massEntryToolService.getEditedMoveLineMassEntry(move.getMoveLineMassEntryList());
 
@@ -148,8 +148,9 @@ public class MassEntryServiceImpl implements MassEntryService {
         for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
           if (Objects.equals(
               moveLine.getTemporaryMoveNumber(), moveLineEdited.getTemporaryMoveNumber())) {
+            move.setDate(moveLineEdited.getDate());
             massEntryVerificationService.checkAndReplaceDateInMoveLineMassEntry(
-                moveLine, moveLineEdited.getDate());
+                moveLine, moveLineEdited.getDate(), move);
             // TODO add other verification method
 
             moveLine.setIsEdited(false);

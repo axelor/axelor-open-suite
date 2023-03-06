@@ -12,8 +12,8 @@
       onChange="action-move-line-mass-entry-group-input-action-onchange" readonly="true"
       required="true" width="50"/>
     <field name="date" onChange="action-move-line-mass-entry-group-date-onchange"/>
-    <field name="originDate" onChange=""/>
-    <field name="origin" onChange=""/>
+    <field name="originDate"/>
+    <field name="origin" requiredIf="originDate != null"/>
     <field name="moveDescription" onChange="" readonly="false"/>
     <field name="movePaymentCondition" readonly="false" form-view="payment-condition-form"
       grid-view="payment-condition-grid" onChange=""/>
