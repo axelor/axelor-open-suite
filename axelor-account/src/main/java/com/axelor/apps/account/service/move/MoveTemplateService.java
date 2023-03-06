@@ -259,7 +259,6 @@ public class MoveTemplateService {
             moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
-
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
@@ -374,7 +373,6 @@ public class MoveTemplateService {
             moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
-
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
