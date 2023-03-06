@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
-import com.axelor.apps.marketing.exception.IExceptionMessage;
+import com.axelor.apps.marketing.exception.MarketingExceptionMessage;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageService;
@@ -169,7 +169,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     StringBuilder builder = new StringBuilder();
-    builder.append(I18n.get(IExceptionMessage.EMAIL_ERROR1));
+    builder.append(I18n.get(MarketingExceptionMessage.EMAIL_ERROR1));
     builder.append("\n");
     if (!errorPartners.isEmpty()) {
       builder.append(I18n.get("Partners") + ":\n");

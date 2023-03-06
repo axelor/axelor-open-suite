@@ -72,23 +72,22 @@
       <bpmn2:incoming>Flow_0c3of3z</bpmn2:incoming>
       <bpmn2:outgoing>Flow_0nr4fzr</bpmn2:outgoing>
     </bpmn2:userTask>
-    <bpmn2:scriptTask id="Activity_0p4dmno" name="Deadline 3 days" scriptFormat="axelor">
+    <bpmn2:scriptTask id="Activity_0p4dmno" name="Deadline 3 days" scriptFormat="axelor" camunda:scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;expression&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;LocalDateTime.now().plusDays(3)&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;Ticket&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:false,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">
       <bpmn2:incoming>Flow_15b6syx</bpmn2:incoming>
       <bpmn2:outgoing>Flow_08ew3mp</bpmn2:outgoing>
-      <bpmn2:script>ticket.deadlineDateT = LocalDateTime.now().plusDays(3)
-</bpmn2:script>
+      <bpmn2:script>ticket.deadlineDateT = LocalDateTime.now().plusDays(3)</bpmn2:script>
     </bpmn2:scriptTask>
-    <bpmn2:scriptTask id="Activity_17n4m5o" name="Deadline 1 week" scriptFormat="axelor">
+    <bpmn2:scriptTask id="Activity_17n4m5o" name="Deadline 1 week" scriptFormat="axelor" camunda:scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;expression&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;LocalDateTime.now().plusWeeks(1)&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;Ticket&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:false,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">
       <bpmn2:incoming>Flow_0r7zq0k</bpmn2:incoming>
       <bpmn2:outgoing>Flow_03mbv19</bpmn2:outgoing>
       <bpmn2:script>ticket.deadlineDateT = LocalDateTime.now().plusWeeks(1)</bpmn2:script>
     </bpmn2:scriptTask>
-    <bpmn2:scriptTask id="Activity_061lxrj" name="Deadline 2 week" scriptFormat="axelor">
+    <bpmn2:scriptTask id="Activity_061lxrj" name="Deadline 2 week" scriptFormat="axelor" camunda:scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;expression&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;LocalDateTime.now().plusWeeks(2)&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;Ticket&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:false,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">
       <bpmn2:incoming>Flow_1omygcq</bpmn2:incoming>
       <bpmn2:outgoing>Flow_1w9ci2f</bpmn2:outgoing>
       <bpmn2:script>ticket.deadlineDateT = LocalDateTime.now().plusWeeks(2)</bpmn2:script>
     </bpmn2:scriptTask>
-    <bpmn2:scriptTask id="Activity_1hwb68p" name="Deadline 1 month" scriptFormat="axelor">
+    <bpmn2:scriptTask id="Activity_1hwb68p" name="Deadline 1 month" scriptFormat="axelor" camunda:scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;deadlineDateT&#34;,&#34;type&#34;:&#34;DATETIME&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;expression&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;LocalDateTime.now().plusMonths(1)&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;Ticket&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:false,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">
       <bpmn2:incoming>Flow_0rnxl1m</bpmn2:incoming>
       <bpmn2:outgoing>Flow_0p69col</bpmn2:outgoing>
       <bpmn2:script>ticket.deadlineDateT = LocalDateTime.now().plusMonths(1)</bpmn2:script>

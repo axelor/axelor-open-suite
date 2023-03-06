@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,7 +44,7 @@ public class SaleBatchController {
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Batch batch = Beans.get(SaleBatchService.class).run((String) request.getContext().get("code"));
-    Map<String, Object> mapData = new HashMap<String, Object>();
+    Map<String, Object> mapData = new HashMap<>();
     mapData.put("anomaly", batch.getAnomaly());
     response.setData(mapData);
   }

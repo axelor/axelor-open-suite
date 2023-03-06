@@ -31,7 +31,7 @@
 
   <menuitem name="all-payroll-preparation" parent="hr-root-emp-mgt"
     title="Payroll Preparations" action="payroll.preparation.all"
-    if="__config__.app.getApp('employee').getPayrollPreparation()"/>
+    if="__config__.app.getApp('employee')?.getPayrollPreparation()"/>
 
   <action-view name="payroll.preparation.all" title="Payroll Preparations"
     model="com.axelor.apps.hr.db.PayrollPreparation">
@@ -42,7 +42,7 @@
 
   <menuitem name="all-lunch-voucher-mgt" parent="hr-root-emp-mgt"
     title="Lunch Voucher Management" action="lunch.voucher.mgt.all"
-    if="__config__.app.getApp('employee').getLunchVoucher()"/>
+    if="__config__.app.getApp('employee')?.getLunchVoucher()"/>
 
   <action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management"
     model="com.axelor.apps.hr.db.LunchVoucherMgt">
@@ -53,7 +53,7 @@
 
   <menuitem name="hr-employee-bonus-mgt" parent="hr-root-emp-mgt"
     title="Employee bonus mgt" action="employee.bonus.mgt.all"
-    if="__config__.app.getApp('employee').getEmployeeBonus()"/>
+    if="__config__.app.getApp('employee')?.getEmployeeBonus()"/>
 
   <action-view name="employee.bonus.mgt.all" title="Employee bonus mgt"
     model="com.axelor.apps.hr.db.EmployeeBonusMgt">
@@ -104,7 +104,7 @@
 
   <menuitem name="hr-employee-bonus-type" parent="hr-root-emp-mgt-conf"
     title="Employee bonus type" action="employee.bonus.type.all"
-    if="__config__.app.getApp('employee').getEmployeeBonus()"/>
+    if="__config__.app.getApp('employee')?.getEmployeeBonus()"/>
 
   <action-view name="employee.bonus.type.all" title="Employee bonus type"
     model="com.axelor.apps.hr.db.EmployeeBonusType">
@@ -300,8 +300,9 @@
     <view name="leave-request-grid" type="grid"/>
     <view name="leave-request-form" type="form"/>
     <view-param name="search-filters" value="leave-request-filters"/>
-    <domain>self.user = :user_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
-    <context name="user_id" expr="eval:__user__"/>
+    <domain>self.employee.user.id = :user_id AND self.toJustifyLeaveReason =
+      :to_justify_leave_reason</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
     <context name="to_justify_leave_reason" expr="eval: false"/>
   </action-view>
 
@@ -335,8 +336,9 @@
     <view name="leave-request-form" type="form"/>
     <view name="leave-request-validate-grid" type="grid"/>
     <view-param name="search-filters" value="leave-request-filters"/>
-    <domain>self.user = :user_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
-    <context name="user_id" expr="eval:__user__"/>
+    <domain>self.employee.user.id = :user_id AND self.toJustifyLeaveReason =
+      :to_justify_leave_reason</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
     <context name="to_justify_leave_reason" expr="eval: true"/>
   </action-view>
 
@@ -381,8 +383,8 @@
     <view name="expense-grid" type="grid"/>
     <view name="expense-form" type="form"/>
     <view-param name="search-filters" value="expense-filters"/>
-    <domain>self.user = :user_id</domain>
-    <context name="user_id" expr="eval:__user__"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
     <context name="_payCompany"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
   </action-view>
@@ -484,14 +486,14 @@
     <view name="my-timesheets-grid" type="grid"/>
     <view name="timesheet-form" type="form"/>
     <view-param name="search-filters" value="timesheet-filters"/>
-    <domain>self.user = :user_id</domain>
-    <context name="user_id" expr="eval:__user__"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
 
   <menuitem name="validate-timesheet" parent="timesheet-root"
     title="Timesheets to Validate" action="timesheet.validate" order="3" tag-style="default"
     tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateMenuTag()"
-    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getNeedValidation()"/>
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getNeedValidation()"/>
 
   <action-method name="timesheet.validate">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
@@ -508,7 +510,7 @@
 
   <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root"
     action="time.sheet.timer"
-    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"
     order="5"/>
 
   <action-method name="time.sheet.timer">
@@ -555,8 +557,8 @@
     <view name="extra-hours-grid" type="grid"/>
     <view name="extra-hours-form" type="form"/>
     <view-param name="search-filters" value="extra-hours-filters"/>
-    <domain>self.user = :user_id</domain>
-    <context name="user_id" expr="eval:__user__"/>
+    <domain>self.employee.user.id = :user_id</domain>
+    <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
 
   <menuitem name="validate-extra-hours" parent="extra-hours-root"
@@ -620,9 +622,9 @@
   </action-view>
 
   <menuitem name="menu-hr-user-dashboard" parent="hr-report-root"
-    title="Human Resources User" action="hr.user.dashboard.view"/>
+    title="Human Resources Employee" action="hr.user.dashboard.view"/>
 
-  <action-view name="hr.user.dashboard.view" title="Human Resources User">
+  <action-view name="hr.user.dashboard.view" title="Human Resources Employee">
     <view type="dashboard" name="hr.user.dashboard.sample"/>
   </action-view>
 

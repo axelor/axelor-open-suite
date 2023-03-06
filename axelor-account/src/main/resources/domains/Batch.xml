@@ -7,6 +7,10 @@
 
   <entity name="Batch" lang="java" sequential="true">
 
+    <date name="moveDate" title="Move date"/>
+    <integer name="accountingCutOffTypeSelect" title="Type"
+      selection="accounting.batch.accounting.cut.off.type.select"/>
+
     <!-- NOT DISPLAY -->
     <many-to-one name="invoiceBatch" ref="com.axelor.apps.account.db.InvoiceBatch"/>
     <many-to-one name="accountingBatch" ref="com.axelor.apps.account.db.AccountingBatch"/>

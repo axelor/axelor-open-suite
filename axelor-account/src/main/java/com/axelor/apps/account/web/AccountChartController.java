@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountChartRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountChartService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -52,10 +52,10 @@ public class AccountChartController {
 
     if (accountList.isEmpty()) {
       if (Beans.get(AccountChartService.class).installAccountChart(act, company, accountConfig))
-        response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_1));
-      else response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_2));
+        response.setFlash(I18n.get(AccountExceptionMessage.ACCOUNT_CHART_1));
+      else response.setFlash(I18n.get(AccountExceptionMessage.ACCOUNT_CHART_2));
       response.setReload(true);
 
-    } else response.setFlash(I18n.get(IExceptionMessage.ACCOUNT_CHART_3));
+    } else response.setFlash(I18n.get(AccountExceptionMessage.ACCOUNT_CHART_3));
   }
 }

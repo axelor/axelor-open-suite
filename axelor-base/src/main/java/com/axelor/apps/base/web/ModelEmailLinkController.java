@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.ModelEmailLink;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
@@ -46,7 +46,7 @@ public class ModelEmailLinkController {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
-                I18n.get(IExceptionMessage.INVALID_FIELD),
+                I18n.get(BaseExceptionMessage.INVALID_FIELD),
                 modelEmailLink.getEmailField(),
                 modelEmailLink.getMetaModel().getName()));
       }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -189,14 +189,14 @@ public class FECImporter extends Importer {
       if (move != null) {
         String csvReference = extractCSVMoveReference(move.getReference());
 
-        if (move.getValidationDate() != null) {
+        if (move.getAccountingDate() != null) {
           move.setReference(String.format("%s", csvReference));
         } else {
           move.setReference(String.format("#%s", move.getId().toString()));
         }
 
         if (fecImport.getValidGeneratedMove()) {
-          moveValidateService.validate(move);
+          moveValidateService.accounting(move);
         } else {
           return moveRepository.save(move);
         }

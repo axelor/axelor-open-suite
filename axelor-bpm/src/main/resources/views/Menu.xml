@@ -11,6 +11,7 @@
   <action-view name="action.wkf.bpm.manager" title="BPM Manager"
     model="com.axelor.apps.base.db.Wizard">
     <view type="form" name="bpm-manager-dashboard-form"/>
+    <context name="_user_id" expr="eval:__user__.id"/>
   </action-view>
 
   <menuitem title="BPM Config" name="menu-wkf-root" parent="app-builder-root" order="21"/>

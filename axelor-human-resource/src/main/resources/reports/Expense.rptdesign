@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202071616</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -182,13 +182,6 @@
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_width</text-property>
                     <text-property name="heading">logo_width</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">pdf_header</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">pdf_header</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">pdf_header</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">user_name</property>
@@ -400,109 +393,126 @@
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">user_name</property>
                     <property name="nativeName">user_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">payment_period_name</property>
                     <property name="nativeName">payment_period_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">total_amount</property>
                     <property name="nativeName">total_amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">validated_user_name</property>
                     <property name="nativeName">validated_user_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">validation_date</property>
                     <property name="nativeName">validation_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">advance_amount</property>
                     <property name="nativeName">advance_amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">withdrawn_cash</property>
                     <property name="nativeName">withdrawn_cash</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">personal_expense_amount</property>
                     <property name="nativeName">personal_expense_amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">company_cb_select</property>
                     <property name="nativeName">company_cb_select</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">multiple_users</property>
                     <property name="nativeName">multiple_users</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">sent_date</property>
                     <property name="nativeName">sent_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">payment_amount</property>
                     <property name="nativeName">payment_amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT Expense.id, 
 	MetaFile.file_path AS logo_path,
 	Company.height as logo_height,
 	Company.width as logo_width,
-	AuthUser.full_name AS user_name,
+	Emp.name AS user_name,
 	PaymentPeriod.name AS payment_period_name, 
 	Expense.in_tax_total AS total_amount, 
 	ValidatedUser.full_name AS validated_user_name,
@@ -516,7 +526,7 @@
 	Currency.code AS currency,
 	Expense.payment_amount
 FROM hr_expense AS Expense
-LEFT JOIN auth_user AS AuthUser ON (Expense.user_id = AuthUser.id)
+LEFT JOIN hr_employee AS Emp ON (Emp.id = Expense.employee)
 LEFT JOIN base_company AS Company ON (Expense.company = Company.id)
 LEFT JOIN base_currency AS Currency ON Company.currency = Currency.id
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
@@ -524,11 +534,7 @@ LEFT JOIN base_period AS PaymentPeriod ON (Expense.period = PaymentPeriod.id)
 LEFT JOIN auth_user AS ValidatedUser ON (Expense.validated_by = ValidatedUser.id)
 LEFT JOIN meta_select AS selection ON selection.name = 'hr.expense.company.cb.payment'
 LEFT JOIN meta_select_item AS select_item ON (select_item.value = CAST( Expense.company_cb_select AS text ) AND select_item.select_id = selection.id)
-WHERE Expense.id = ?
-
-
-
-]]></xml-property>
+WHERE Expense.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

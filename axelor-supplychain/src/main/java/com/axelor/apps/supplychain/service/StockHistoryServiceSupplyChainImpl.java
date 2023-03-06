@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,8 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockHistoryLineManagementRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -32,8 +34,14 @@ public class StockHistoryServiceSupplyChainImpl extends StockHistoryServiceImpl 
   @Inject
   public StockHistoryServiceSupplyChainImpl(
       StockMoveLineRepository stockMoveLineRepository,
-      UnitConversionService unitConversionService) {
-    super(stockMoveLineRepository, unitConversionService);
+      UnitConversionService unitConversionService,
+      StockLocationRepository stockLocationRepository,
+      StockHistoryLineManagementRepository stockHistoryLineRepository) {
+    super(
+        stockMoveLineRepository,
+        unitConversionService,
+        stockLocationRepository,
+        stockHistoryLineRepository);
   }
 
   @Override
@@ -54,7 +62,8 @@ public class StockHistoryServiceSupplyChainImpl extends StockHistoryServiceImpl 
               stockMoveLine.getRealQty(),
               stockMoveLine.getRealQty().scale(),
               stockMoveLine.getProduct());
-      if (stockMoveLine.getSaleOrderLine().getSaleOrder().getOneoffSale()) {
+      if (stockMoveLine.getSaleOrderLine() != null
+          && stockMoveLine.getSaleOrderLine().getSaleOrder().getOneoffSale()) {
         sumOneoffSaleOutQtyPeriod = sumOneoffSaleOutQtyPeriod.add(qtyConverted);
       } else {
         sumOutQtyPeriod = sumOutQtyPeriod.add(qtyConverted);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,6 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
@@ -53,7 +52,7 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void updateBlockedAccount(Partner partner) throws AxelorException {
-    List<Invoice> partnerInvoice = new ArrayList<Invoice>();
+    List<Invoice> partnerInvoice;
     int FETCH_LIMIT = 10;
     int offset = 0;
     Query<Invoice> query =
@@ -93,7 +92,7 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
       return true;
     }
     if (partner.getParentPartner() != null) {
-      return isBlockedPartnerOrParent(partner);
+      return isBlockedPartnerOrParent(partner.getParentPartner());
     }
     return false;
   }

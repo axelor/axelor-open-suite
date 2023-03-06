@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 public interface MoveReverseService {
@@ -33,4 +34,7 @@ public interface MoveReverseService {
       throws AxelorException;
 
   Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException;
+
+  List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
+      throws AxelorException;
 }

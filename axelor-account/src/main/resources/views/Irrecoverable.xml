@@ -8,7 +8,7 @@
     <field name="name" width="120"/>
     <field name="dateTime"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -115,7 +115,7 @@
   <search-filters name="irrecoverable-filters"
     model="com.axelor.apps.account.db.Irrecoverable" title="Irrecoverable filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

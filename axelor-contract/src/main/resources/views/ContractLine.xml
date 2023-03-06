@@ -9,16 +9,16 @@
     <hilite if="isConsumptionLine" background="primary"/>
     <field name="productName"/>
     <field name="qty"/>
+    <field name="isConsumptionLine"/>
     <field name="price"/>
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
-    <field name="isConsumptionLine" hidden="true"/>
   </grid>
 
   <form name="contract-line-form" title="Contract line"
     model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-hide-consumption-line"
-    onLoad="action-contract-line-attrs-hide-consumption-line">
+    onNew="action-contract-line-attrs-hide-consumption-line,action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-hide-consumption-line,action-contract-line-attrs-scale-and-precision">
 
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -41,7 +41,7 @@
         <field name="contractVersion" hidden="true"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics"
-        if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
@@ -87,6 +87,13 @@
     <call class="com.axelor.apps.contract.web.ContractLineController" method="computeTotal"/>
   </action-method>
 
+  <action-attrs name="action-contract-line-attrs-scale-and-precision">
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="price"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+  </action-attrs>
+
   <grid name="additional-contract-line-grid" title="Additional benefit lines"
     model="com.axelor.apps.contract.db.ContractLine">
     <hilite if="isInvoiced" background="success"/>
@@ -96,10 +103,16 @@
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
     <field name="isInvoiced" hidden="true"/>
+    <field name="invoiceId" type="string" title="Invoice N°"/>
+    <field name="subscriptionFromDate" type="date" title="From"/>
+    <field name="subscriptionToDate" type="date" title="To"/>
+    <field name="statusSelect" type="string" title="Status"/>
   </grid>
 
   <form name="additional-contract-line-form" title="Additional benefit"
-    model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced">
+    model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced"
+    onNew="action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-scale-and-precision">
 
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -119,7 +132,7 @@
         <field name="description" colSpan="12" widget="html"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics"
-        if="__config__.app.getApp('account').getManageAnalyticAccounting()"
+        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
@@ -145,7 +158,9 @@
   </grid>
 
   <form name="contract-line-form-for-template" title="Contract Line"
-    model="com.axelor.apps.contract.db.ContractLine">
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
@@ -168,7 +183,9 @@
   </grid>
 
   <form name="additional-contract-line-form-for-template" title="Additional benefit"
-    model="com.axelor.apps.contract.db.ContractLine">
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-attrs-scale-and-precision"
+    onLoad="action-contract-line-attrs-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>

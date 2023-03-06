@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -31,8 +30,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class PurchaseOrderLineController {
 
-  public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
@@ -43,8 +41,8 @@ public class PurchaseOrderLineController {
     }
   }
 
-  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
     purchaseOrderLine =

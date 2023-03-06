@@ -73,4 +73,15 @@
       method="createShipmentCostLine"/>
   </action-method>
 
+  <action-method
+    name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="updateBudgetDistributionAmountAvailable"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-get-from-stock-location">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="getFromStockLocation"/>
+  </action-method>
+
 </object-views>

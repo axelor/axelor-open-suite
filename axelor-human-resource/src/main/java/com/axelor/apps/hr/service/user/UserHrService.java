@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.hr.service.user;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
@@ -32,5 +33,5 @@ public interface UserHrService {
   public Company getPayCompany(User user);
 
   @CallMethod
-  public Product getTimesheetProduct(User user);
+  public Product getTimesheetProduct(Employee employee);
 }

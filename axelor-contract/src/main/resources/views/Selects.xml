@@ -63,5 +63,8 @@
     <option value="com.axelor.apps.contract.batch.service.BatchContractService">com.axelor.apps.contract.batch.service.BatchContractService</option>
   </selection>
 
+  <selection name="batch.batch.type.select" id="contract.batch.batch.type.select">
+    <option value="500">Contract batch</option>
+  </selection>
 
 </object-views>

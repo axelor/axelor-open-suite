@@ -40,7 +40,7 @@
       <field name="machineTool" domain="self.machine = :machine"
         showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"
         form-view="machine-tool-form" grid-view="machine-tool-grid"
-        if="__config__.app.getApp('production').getEnableToolManagement()"/>
+        if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="defaultMachineSettingsPanel" title="Machine settings" readonlyIf="!machine"

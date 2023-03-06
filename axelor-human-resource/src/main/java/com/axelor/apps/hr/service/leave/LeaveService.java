@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -110,7 +110,7 @@ public interface LeaveService {
    * @param date
    * @return
    */
-  public boolean isLeaveDay(User user, LocalDate date);
+  public boolean isLeaveDay(Employee employee, LocalDate date);
 
   /**
    * Gets the leaves for the given user for the given date.
@@ -119,7 +119,7 @@ public interface LeaveService {
    * @param date
    * @return
    */
-  public List<LeaveRequest> getLeaves(User user, LocalDate date);
+  public List<LeaveRequest> getLeaves(Employee employee, LocalDate date);
 
   /**
    * Get the LeaveLine associated with the leaveRequest
@@ -135,4 +135,6 @@ public interface LeaveService {
    * @param leaveLine
    */
   void updateDaysToValidate(LeaveLine leaveLine);
+
+  String getLeaveCalendarDomain(User user);
 }

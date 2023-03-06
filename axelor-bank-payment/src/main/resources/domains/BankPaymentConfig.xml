@@ -11,8 +11,6 @@
 
     <many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User"
       title="Default signatory"/>
-    <boolean name="generateMoveOnBankOrderValidation"
-      title="Generate move when validating a bank order"/>
     <many-to-one name="internalBankToBankAccount"
       ref="com.axelor.apps.account.db.Account"
       title="Bank to bank account for internal order (unique company)"/>
@@ -28,6 +26,8 @@
       title="International credit transfers"/>
     <many-to-one name="intDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence"
       title="International direct debits"/>
+    <many-to-one ref="com.axelor.apps.base.db.Sequence" name="billOfExchangeSequence"
+      title="Bill of exchanges"/>
 
     <many-to-one name="intTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence"
       title="International treasury transfers"/>
@@ -53,7 +53,6 @@
       <field name="company" on="UPDATE"/>
 
       <field name="defaultSignatoryUser" on="UPDATE"/>
-      <field name="generateMoveOnBankOrderValidation" on="UPDATE"/>
       <field name="internalBankToBankAccount" on="UPDATE"/>
       <field name="externalBankToBankAccount" on="UPDATE"/>
 

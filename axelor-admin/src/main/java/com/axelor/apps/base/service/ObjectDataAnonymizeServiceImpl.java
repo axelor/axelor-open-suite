@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.DataConfigLine;
 import com.axelor.apps.base.db.ObjectDataConfig;
 import com.axelor.apps.base.db.repo.DataConfigLineRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessages;
+import com.axelor.apps.base.exceptions.AdminExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
@@ -89,7 +89,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     }
   }
 
-  private String getPath(DataConfigLine line) throws AxelorException {
+  protected String getPath(DataConfigLine line) throws AxelorException {
 
     String metaModelName = line.getMetaModel().getName();
 
@@ -100,7 +100,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
           throw new AxelorException(
               line,
               TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessages.EMPTY_RELATIONAL_FIELD_IN_DATA_CONFIG_LINE),
+              I18n.get(AdminExceptionMessage.EMPTY_RELATIONAL_FIELD_IN_DATA_CONFIG_LINE),
               metaModelName);
         }
         return metaFieldPath.getName();
@@ -111,7 +111,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
           throw new AxelorException(
               line,
               TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(IExceptionMessages.EMPTY_QUERY_IN_DATA_CONFIG_LINE),
+              I18n.get(AdminExceptionMessage.EMPTY_QUERY_IN_DATA_CONFIG_LINE),
               metaModelName);
         }
         return query;
@@ -153,7 +153,7 @@ public class ObjectDataAnonymizeServiceImpl implements ObjectDataAnonymizeServic
     if (object == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessages.OBJECT_DATA_REPLACE_MISSING),
+          I18n.get(AdminExceptionMessage.OBJECT_DATA_REPLACE_MISSING),
           recordValue);
     }
     for (Model model : data) {

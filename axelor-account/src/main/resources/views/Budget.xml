@@ -8,7 +8,7 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="inChargeUser"/>
     <field name="totalAmountExpected" aggregate="sum"/>
     <field name="statusSelect"/>
@@ -80,7 +80,6 @@
     </panel>
     <panel name="configuration" title="Configuration" canCollapse="true" sidebar="true"
       collapseIf="true" readonlyIf="statusSelect == 2">
-      <field name="checkAvailableBudget" widget="boolean-switch"/>
     </panel>
   </form>
 
@@ -105,8 +104,6 @@
     model="com.axelor.apps.account.db.Budget">
     <field name="company" expr="eval:__user__.activeCompany"/>
     <field name="inChargeUser" expr="eval: __user__"/>
-    <field name="checkAvailableBudget"
-      expr="eval: __config__.app.getApp('budget')?.checkAvailableBudget"/>
   </action-record>
 
   <action-method name="action-budget-method-compute-total-amount">
@@ -182,7 +179,7 @@
   <search-filters name="budget-filters" model="com.axelor.apps.account.db.Budget"
     title="Budget filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="totalAmountCommitted" hidden="true" if="!__config__.app.isApp('supplychain')"/>
   </search-filters>
 

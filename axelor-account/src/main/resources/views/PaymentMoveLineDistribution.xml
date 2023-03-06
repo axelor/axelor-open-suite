@@ -13,7 +13,7 @@
     <field name="moveLine.date"/>
     <field name="moveLine.account.code" title="Account" form-view="account-form"
       grid-view="account-grid"/>
-    <field name="moveLine.serviceType" form-view="service-type-form"
+    <field name="moveLine.account.serviceType" form-view="service-type-form"
       grid-view="service-type-grid"/>
     <field name="operationDate"/>
     <field name="inTaxProratedAmount"/>
@@ -23,7 +23,8 @@
 
 
   <grid name="payment-move-line-distribution-das2-grid" title="Payment move lines distribution"
-    model="com.axelor.apps.account.db.PaymentMoveLineDistribution" groupBy="partner">
+    model="com.axelor.apps.account.db.PaymentMoveLineDistribution" groupBy="partner"
+    orderBy="partner">
     <hilite color="danger" if="excludeFromDas2Report"/>
     <field name="excludeFromDas2Report" hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -32,7 +33,7 @@
     <field name="moveLine.date"/>
     <field name="moveLine.account.code" title="Account" form-view="account-form"
       grid-view="account-grid"/>
-    <field name="moveLine.serviceType" form-view="service-type-form"
+    <field name="moveLine.account.serviceType" form-view="service-type-form"
       grid-view="service-type-grid"/>
     <field name="operationDate"/>
     <field name="inTaxProratedAmount" aggregate="sum"/>

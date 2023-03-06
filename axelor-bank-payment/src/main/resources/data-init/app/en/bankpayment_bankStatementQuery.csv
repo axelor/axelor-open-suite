@@ -1,0 +1,19 @@
+"importId";"name";"ruleTypeSelect";"query";"confidenceIndex";"sequence"
+10;"Description containing & Code 01 (Bank cheque issued)";0;"description?.contains(%s) && operationInterbankCodeLine?.code.equals('01')";;
+11;"Description containing";0;"description?.contains(%s)";;
+12;"Description starting with an";0;"description?.startsWith(%s)";;
+13;"Description ending with an";0;"description?.endsWith(%s)";;
+20;"Origin containing";0;"origin?.contains(%s)";;
+21;"Origin starting with an";0;"origin?.startsWith(%s)";;
+22;"Origin ending with an";0;"origin?.endsWith(%s)";;
+30;"Reference containing";0;"reference?.contains(%s)";;
+31;"Reference starting with an";0;"reference?.startsWith(%s)";;
+32;"Reference ending with an";0;"reference?.endsWith(%s)";;
+40;"Origin and amount equal";1;"moveLine?.origin.equals(origin) && moveLine?.debit.equals(credit) && moveLine?.credit.equals(debit)";1;1
+41;"Equal amount, payment mode and dates";1;"moveLine?.move?.paymentMode.equals(paymentMode) && moveLine?.debit.equals(credit) && moveLine?.credit.equals(debit) && (moveLine?.date?.equals(operationDate) || moveLine?.date?.equals(valueDate) || moveLine?.dueDate?.equals(operationDate) || moveLine?.dueDate?.equals(valueDate))";1;2
+42;"Equal amount and dates";1;"moveLine?.debit.equals(credit) && moveLine?.credit.equals(debit) && (moveLine?.date?.equals(operationDate) || moveLine?.date?.equals(valueDate) || moveLine?.dueDate?.equals(operationDate) || moveLine?.dueDate?.equals(valueDate))";1;3
+43;"Equal amount and date within ranges";1;"moveLine?.debit.equals(credit) && moveLine?.credit.equals(debit) && ((moveLine?.dueDate <= valueDate?.plusDays(%date) && moveLine?.dueDate >=valueDate?.minusDays(%date)) || (moveLine?.date <= valueDate?.plusDays(%date) && moveLine?.date >=valueDate?.minusDays(%date)) || (moveLine?.dueDate <= operationDate?.plusDays(%date) && moveLine?.dueDate >=operationDate?.minusDays(%date)) || (moveLine?.date <= operationDate?.plusDays(%date) && moveLine?.date >=operationDate?.minusDays(%date)))";1;4
+44;"Amount and mode of payment equal and date within the ranges";1;"moveLine?.move?.paymentMode.equals(paymentMode) && moveLine?.debit.equals(credit) && moveLine?.credit.equals(debit) && ((moveLine?.dueDate <= valueDate?.plusDays(%date) && moveLine?.dueDate >=valueDate?.minusDays(%date)) || (moveLine?.date <= valueDate?.plusDays(%date) && moveLine?.date >=valueDate?.minusDays(%date)) || (moveLine?.dueDate <= operationDate?.plusDays(%date) && moveLine?.dueDate >=operationDate?.minusDays(%date)) || (moveLine?.date <= operationDate?.plusDays(%date) && moveLine?.date >=operationDate?.minusDays(%date)))";1;5
+45;"Equal amount and date within ranges";1;"moveLine?.debit.equals(credit) && moveLine?.credit.equals(debit) && ((moveLine?.dueDate <= valueDate?.plusDays(%date) && moveLine?.dueDate >=valueDate?.minusDays(%date)) || (moveLine?.date <= valueDate?.plusDays(%date) && moveLine?.date >=valueDate?.minusDays(%date)) || (moveLine?.dueDate <= operationDate?.plusDays(%date) && moveLine?.dueDate >=operationDate?.minusDays(%date)) || (moveLine?.date <= operationDate?.plusDays(%date) && moveLine?.date >=operationDate?.minusDays(%date)))";2;6
+46;"Equal amount";1;"moveLine?.debit.equals(credit) && moveLine?.credit.equals(debit)";2;7
+47;"Amount and date within ranges";1;"moveLine?.debit >= credit * %amt- && moveLine?.debit <= credit * %amt+ && moveLine?.credit >= debit * %amt- && moveLine?.credit <= debit * %amt+ && ((moveLine?.dueDate <= valueDate?.plusDays(%date) && moveLine?.dueDate >=valueDate?.minusDays(%date)) || (moveLine?.date <= valueDate?.plusDays(%date) && moveLine?.date >=valueDate?.minusDays(%date)) || (moveLine?.dueDate <= operationDate?.plusDays(%date) && moveLine?.dueDate >=operationDate?.minusDays(%date)) || (moveLine?.date <= operationDate?.plusDays(%date) && moveLine?.date >=operationDate?.minusDays(%date)))";3;8

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -292,7 +292,9 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     String partnerName = "";
     if (emailAddress.getPartner() != null) {
       partnerName =
-          new String(emailAddress.getPartner().getName().getBytes(), StandardCharsets.ISO_8859_1);
+          new String(
+              emailAddress.getPartner().getSimpleFullName().getBytes(),
+              StandardCharsets.ISO_8859_1);
     }
 
     return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";

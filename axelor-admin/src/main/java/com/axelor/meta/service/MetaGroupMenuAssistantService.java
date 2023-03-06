@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -95,18 +95,18 @@ public class MetaGroupMenuAssistantService {
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private String getFileName(MetaGroupMenuAssistant groupMenuAssistant) {
+  protected String getFileName(MetaGroupMenuAssistant groupMenuAssistant) {
 
     String userCode = groupMenuAssistant.getCreatedBy().getCode();
     String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
     return "GroupMenu" + "-" + userCode + "-" + dateString + ".csv";
   }
 
-  private void setBundle(Locale locale) {
+  protected void setBundle(Locale locale) {
     bundle = I18n.getBundle(locale);
   }
 
-  private ResourceBundle getBundle() {
+  protected ResourceBundle getBundle() {
     if (bundle == null) {
       bundle = I18n.getBundle(AppFilter.getLocale());
     }
@@ -192,7 +192,7 @@ public class MetaGroupMenuAssistantService {
     return groupList.toArray(new String[groupList.size()]);
   }
 
-  private void addMenuRows(MetaGroupMenuAssistant groupMenuAssistant, List<String[]> rows) {
+  protected void addMenuRows(MetaGroupMenuAssistant groupMenuAssistant, List<String[]> rows) {
     String[] groupRow = rows.get(0);
     rows.remove(0);
     Set<String> names = new HashSet<>();
@@ -227,7 +227,7 @@ public class MetaGroupMenuAssistantService {
     rows.add(0, groupRow);
   }
 
-  private void addGroupAccess(List<String[]> rows) {
+  protected void addGroupAccess(List<String[]> rows) {
 
     ListIterator<String[]> rowIter = rows.listIterator();
 
@@ -343,7 +343,7 @@ public class MetaGroupMenuAssistantService {
     }
   }
 
-  private void importMenus(
+  protected void importMenus(
       String[] row, String[] groupRow, Map<String, Object> groupMap, Group admin) {
 
     List<MetaMenu> menus =

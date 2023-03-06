@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,7 @@ import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.team.db.Team;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
@@ -82,6 +83,13 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
       String userPath = getUserPath(wkfTaskConfig, execution.getProcessDefinitionId());
       if (userPath != null) {
         teamTask.setAssignedTo(getUser(userPath, wkfContext));
+      }
+      String teamPath = wkfTaskConfig.getTeamPath();
+      if (teamPath != null) {
+        FullContext teamCtx = (FullContext) wkfService.evalExpression(wkfContext, teamPath);
+        if (teamCtx != null) {
+          teamTask.setTeam((Team) teamCtx.getTarget());
+        }
       }
 
       String url =
@@ -143,7 +151,7 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
     return wkfContext;
   }
 
-  private LocalDate getDeadLineDate(String deadLineFieldPath, FullContext wkfContext) {
+  protected LocalDate getDeadLineDate(String deadLineFieldPath, FullContext wkfContext) {
 
     LocalDate date = null;
     if (deadLineFieldPath.equals("today")) {
@@ -176,7 +184,7 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
     return user;
   }
 
-  private String getUserPath(WkfTaskConfig wkfTaskConfig, String processDefinitionId) {
+  protected String getUserPath(WkfTaskConfig wkfTaskConfig, String processDefinitionId) {
 
     String userPath = wkfTaskConfig.getUserPath();
     if (userPath == null) {

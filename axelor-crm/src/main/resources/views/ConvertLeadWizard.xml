@@ -13,6 +13,21 @@
         onClick="action-convert-lead-validate-confirm-validate-lead,action-lead-method-convert-lead"/>
     </toolbar>
     <panel name="mainPanel">
+      <field name="$isCreateOpportunity" type="boolean" title="Create opportunity"
+        colSpan="12"/>
+      <panel name="opportunityDetailsPanel" colSpan="12" hidden="true"
+        showIf="$isCreateOpportunity" title="Opportunity information">
+        <field name="$opportunity" showTitle="false" colSpan="12" canSelect="false"
+          x-show-icons="false" target="com.axelor.apps.crm.db.Opportunity" type="many-to-one">
+          <editor x-show-titles="false"
+            onNew="action-convert-lead-wizard-method-default-opportunity">
+            <field name="name"/>
+            <field name="source"/>
+            <field name="amount"/>
+            <field name="user"/>
+          </editor>
+        </field>
+      </panel>
       <field name="$leadToPartnerSelect" title="Convert lead into partner" required="true"
         type="integer" selection="crm.convert.lead.wizard.lead.to.partner.select"
         onChange="action-convert-lead-attrs-lead-to-contact-select-reset"/>
@@ -65,11 +80,14 @@
           </panel>
 
           <panel name="informationPanel" title="Information" colSpan="12">
-            <field name="isProspect" showTitle="true" colSpan="4"
+            <field name="isProspect" showTitle="true" colSpan="3"
               onChange="action-partner-attrs-unset-customer"/>
-            <field name="isCustomer" showTitle="true" colSpan="4"
+            <field name="isCustomer" showTitle="true" colSpan="3"
               onChange="action-partner-attrs-unset-prospect"/>
-            <field name="isSupplier" showTitle="true" colSpan="4"/>
+            <field name="isSupplier" showTitle="true" colSpan="3"/>
+            <field name="leadScoringSelect" showIf="isProspect" widget="ImageSelect"
+              x-labels="false" colSpan="3" showTitle="true"/>
+            <field name="agency"/>
           </panel>
 
           <panel name="generalContactDetailsPanel" title="General contact details"
@@ -106,12 +124,13 @@
             <field name="industrySector" colSpan="4" widget="SuggestBox"/>
             <field name="department" colSpan="4" form-view="department-form"
               grid-view="department-grid"/>
-            <field name="nbrEmployees" colSpan="4"/>
             <field name="registrationCode" colSpan="4"/>
-            <spacer colSpan="4"/>
+            <field name="source" hidden="false" colSpan="4"/>
             <field name="taxNbr" colSpan="4" showTitle="true"/>
             <field name="saleTurnover" colSpan="4" showTitle="true"/>
-            <field name="source" hidden="true"/>
+            <field name="isKeyAccount" colSpan="4" showTitle="true"/>
+            <field name="sizeSelect" colSpan="4" showTitle="true"/>
+            <field name="isNurturing" colSpan="4" showTitle="true"/>
           </panel>
           <panel name="settingsPanel" title="Settings" colSpan="12">
             <field name="language" colSpan="6" canEdit="false"/>
@@ -119,7 +138,7 @@
               <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
                 hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
               <field name="team" canEdit="false" colSpan="6" form-view="team-form"
-                grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"
+                grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"
                 hideIf="isEmployee"/>
             </panel>
           </panel>
@@ -145,7 +164,6 @@
           <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
           <field name="mobilePhone" widget="phone"/>
           <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
-          <field name="fax" widget="phone"/>
           <field name="user"/>
           <field name="team"/>
         </editor>
@@ -163,6 +181,11 @@
         widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
     </panel>
   </form>
+
+  <action-method name="action-convert-lead-wizard-method-default-opportunity">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="setOpportunityDeafults"/>
+  </action-method>
 
   <action-validate name="action-convert-lead-validate-confirm-validate-lead">
     <alert message="Are you sure you want to convert the lead?"/>

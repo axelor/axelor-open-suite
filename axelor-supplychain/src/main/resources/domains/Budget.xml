@@ -7,8 +7,9 @@
 
   <entity name="Budget" lang="java" cacheable="true">
 
-    <decimal name="totalAmountCommitted" title="Committed total amount" precision="20"
-      scale="2"/>
+    <decimal name="totalAmountCommitted" title="Committed amount"
+      help="Represents the sum of purchase orders of status requested, validated or finished and that don't have a invoiced invoice."
+      precision="20" scale="2"/>
 
   </entity>
 

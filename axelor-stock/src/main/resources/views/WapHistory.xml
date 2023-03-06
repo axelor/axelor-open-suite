@@ -18,9 +18,7 @@
       <field name="wap"/>
       <field name="qty"/>
       <field name="unit"/>
-      <field name="origin" colSpan="12" showIf="!stockMoveLine"/>
-      <field name="stockMoveLine.stockMove" title="Origin" colSpan="12" showIf="stockMoveLine"
-        form-view="stock-move-form" grid-view="stock-move-grid"/>
+      <field name="origin" colSpan="12"/>
     </panel>
   </form>
 

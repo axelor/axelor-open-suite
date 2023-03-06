@@ -7,15 +7,15 @@
     model="com.axelor.apps.account.db.Invoice" extension="true">
     <extend target="//field[@name='paymentCondition']">
       <attribute name="onChange"
-        value="action-invoice-record-due-date,action-invoice-method-estimated-payment-date"/>
+        value="action-cash-management-group-payment-condition-onchange"/>
     </extend>
     <extend target="//field[@name='originDate']">
       <attribute name="onChange"
-        value="action-invoice-record-due-date,action-invoice-method-estimated-payment-date"/>
+        value="action-cash-management-group-payment-condition-onchange"/>
     </extend>
     <extend target="//field[@name='invoiceDate']">
       <attribute name="onChange"
-        value="action-invoice-record-due-date,action-invoice-method-estimated-payment-date"/>
+        value="action-cash-management-group-payment-condition-onchange"/>
     </extend>
     <extend target="//field[@name='dueDate']">
       <attribute name="onChange" value="action-invoice-method-estimated-payment-date"/>
@@ -30,7 +30,7 @@
     model="com.axelor.apps.account.db.Invoice" extension="true">
     <extend target="//field[@name='invoiceDate']">
       <attribute name="onChange"
-        value="action-invoice-record-due-date,action-invoice-method-estimated-payment-date"/>
+        value="action-cash-management-group-payment-condition-onchange"/>
     </extend>
     <extend target="//field[@name='dueDate']">
       <attribute name="onChange" value="action-invoice-method-estimated-payment-date"/>
@@ -47,8 +47,12 @@
   </action-method>
 
   <action-group name="action-group-cash-management-invoice-partner-onchange">
-    <action name="action-group-account-invoice-partner-onchange"/>
-    <action name="action-method-invoice-address-str"/>
+    <action name="action-invoice-group-partner-onchange"/>
+    <action name="action-invoice-method-estimated-payment-date"/>
+  </action-group>
+
+  <action-group name="action-cash-management-group-payment-condition-onchange">
+    <action name="action-invoice-group-payment-condition-onchange"/>
     <action name="action-invoice-method-estimated-payment-date"/>
   </action-group>
 

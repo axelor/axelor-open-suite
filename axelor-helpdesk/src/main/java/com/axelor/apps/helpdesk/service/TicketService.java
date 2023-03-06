@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,11 +18,12 @@
 package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface TicketService {
 
-  public void computeSeq(Ticket ticket);
+  public void computeSeq(Ticket ticket) throws AxelorException;
 
   public void computeSLA(Ticket ticket);
 

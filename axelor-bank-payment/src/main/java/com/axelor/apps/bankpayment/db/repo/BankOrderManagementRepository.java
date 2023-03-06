@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,8 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -60,6 +61,13 @@ public class BankOrderManagementRepository extends BankOrderRepository {
     copy.setSendingDateTime(null);
     copy.setBankOrderSeq(null);
 
+    for (BankOrderLine bankOrderLine : copy.getBankOrderLineList()) {
+      bankOrderLine.setSenderMove(null);
+      bankOrderLine.setReceiverMove(null);
+      bankOrderLine.setRejectMove(null);
+    }
+    copy.setAreMovesGenerated(false);
+
     return copy;
   }
 
@@ -70,6 +78,6 @@ public class BankOrderManagementRepository extends BankOrderRepository {
       super.remove(entity);
       return;
     }
-    throw new PersistenceException(I18n.get(IExceptionMessage.BANK_ORDER_CANNOT_REMOVE));
+    throw new PersistenceException(I18n.get(BankPaymentExceptionMessage.BANK_ORDER_CANNOT_REMOVE));
   }
 }

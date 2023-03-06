@@ -7,8 +7,8 @@
 
   <entity name="Pack" lang="java">
 
-    <string name="code" title="Code" unique="true"/>
-    <string name="name" title="Name"/>
+    <string name="code" title="Code" unique="true" required="true"/>
+    <string name="name" title="Name" required="true"/>
     <boolean name="isShowTotal" title="Show total"/>
     <boolean name="isHideUnitAmounts" title="Hide unit amounts"/>
     <boolean name="doNotDisplayHeaderAndEndPack"

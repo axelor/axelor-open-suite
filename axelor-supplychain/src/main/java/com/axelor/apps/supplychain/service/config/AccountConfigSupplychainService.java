@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,11 +20,13 @@ package com.axelor.apps.supplychain.service.config;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.servlet.RequestScoped;
 
+@RequestScoped
 public class AccountConfigSupplychainService extends AccountConfigService {
 
   public Account getForecastedInvCustAccount(AccountConfig accountConfig) throws AxelorException {
@@ -32,7 +34,7 @@ public class AccountConfigSupplychainService extends AccountConfigService {
       throw new AxelorException(
           accountConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.FORECASTED_INVOICE_CUSTOMER_ACCOUNT),
+          I18n.get(SupplychainExceptionMessage.FORECASTED_INVOICE_CUSTOMER_ACCOUNT),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getForecastedInvCustAccount();
@@ -43,7 +45,7 @@ public class AccountConfigSupplychainService extends AccountConfigService {
       throw new AxelorException(
           accountConfig,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.FORECASTED_INVOICE_SUPPLIER_ACCOUNT),
+          I18n.get(SupplychainExceptionMessage.FORECASTED_INVOICE_SUPPLIER_ACCOUNT),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getForecastedInvSuppAccount();

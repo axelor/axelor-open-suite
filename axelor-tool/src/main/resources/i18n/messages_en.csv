@@ -1,5 +1,6 @@
 "key","message","comment","context"
 "An error occurs while opening the connection. Please verify the following URL : %s.",,,
+"AOS API calls are disabled, please contact your administrator. The property aos.api.enable is false in application.properties.",,,
 "Can not opening the connection to a empty URL.",,,
 "Cannot find record #%s",,,
 "Meta json field type %s could not be converted to a meta field type.",,,

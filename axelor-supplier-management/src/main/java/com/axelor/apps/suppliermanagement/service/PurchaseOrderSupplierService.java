@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,9 +33,9 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
-import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -66,8 +66,10 @@ public class PurchaseOrderSupplierService {
 
   @Inject protected PurchaseOrderRepository poRepo;
 
+  @Inject protected SupplierCatalogService supplierCatalogService;
+
   @Transactional
-  public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) {
+  public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) throws AxelorException {
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 
@@ -83,15 +85,17 @@ public class PurchaseOrderSupplierService {
    * format below.
    *
    * @param purchaseOrderLine
+   * @throws AxelorException
    */
   @Transactional
-  public void generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine) {
+  public void generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine)
+      throws AxelorException {
     this.generateSuppliersRequests(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
   }
 
   @Transactional
   public void generateSuppliersRequests(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 
     if (purchaseOrder == null) {
       return;
@@ -111,7 +115,9 @@ public class PurchaseOrderSupplierService {
                 .getBlocking(supplierPartner, company, BlockingRepository.PURCHASE_BLOCKING);
         if (blocking == null) {
           purchaseOrderLine.addPurchaseOrderSupplierLineListItem(
-              purchaseOrderSupplierLineService.create(supplierPartner, supplierCatalog.getPrice()));
+              purchaseOrderSupplierLineService.create(
+                  supplierPartner,
+                  supplierCatalogService.getPurchasePrice(supplierCatalog, company)));
         }
       }
     }
@@ -151,7 +157,7 @@ public class PurchaseOrderSupplierService {
         throw new AxelorException(
             purchaseOrderLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.SO_PURCHASE_1),
+            I18n.get(SupplychainExceptionMessage.SO_PURCHASE_1),
             purchaseOrderLine.getProductName());
       }
 
@@ -174,7 +180,7 @@ public class PurchaseOrderSupplierService {
       throws AxelorException {
 
     LOG.debug(
-        "Création d'une commande fournisseur depuis le devis fournisseur : {} et le fournisseur : {}",
+        "Creation of a purchase order from : {} and the supplier : {}",
         parentPurchaseOrder.getPurchaseOrderSeq(),
         supplierPartner.getFullName());
 
@@ -187,8 +193,8 @@ public class PurchaseOrderSupplierService {
             null,
             parentPurchaseOrder.getPurchaseOrderSeq(),
             parentPurchaseOrder.getExternalReference(),
-            Beans.get(StockLocationService.class)
-                .getDefaultReceiptStockLocation(parentPurchaseOrder.getCompany()),
+            Beans.get(PurchaseOrderSupplychainService.class)
+                .getStockLocation(supplierPartner, parentPurchaseOrder.getCompany()),
             Beans.get(AppBaseService.class).getTodayDate(parentPurchaseOrder.getCompany()),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
@@ -215,7 +221,7 @@ public class PurchaseOrderSupplierService {
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 
     LOG.debug(
-        "Création d'une ligne de commande fournisseur pour le produit : {}",
+        "Creation of a purchase order line for the product : {}",
         purchaseOrderLine.getProductName());
 
     return purchaseOrderLineService.createPurchaseOrderLine(

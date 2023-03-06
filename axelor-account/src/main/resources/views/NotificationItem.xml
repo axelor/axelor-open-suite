@@ -21,7 +21,7 @@
         canEdit="false"/>
       <field name="amountPaid"/>
       <field name="typeSelect"/>
-      <field name="move" readonly="true"/>
+      <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
     </panel>
   </form>
 

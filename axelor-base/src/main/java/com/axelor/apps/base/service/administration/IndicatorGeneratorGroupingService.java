@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.administration;
 import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.IndicatorGeneratorGrouping;
 import com.axelor.apps.base.db.repo.IndicatorGeneratorGroupingRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
@@ -81,13 +81,13 @@ public class IndicatorGeneratorGroupingService {
     if (indicatorGeneratorGrouping.getPath() == null
         || indicatorGeneratorGrouping.getPath().isEmpty()) {
 
-      log += "\n" + I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_1);
+      log += "\n" + I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_GROUPING_1);
     }
 
     if (indicatorGeneratorGrouping.getCode() == null
         || indicatorGeneratorGrouping.getCode().isEmpty()) {
 
-      log += "\n" + I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_2);
+      log += "\n" + I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_GROUPING_2);
     }
 
     List<String[]> resultList = new ArrayList<String[]>();
@@ -114,7 +114,7 @@ public class IndicatorGeneratorGroupingService {
           null,
           resultList);
     } catch (IOException e) {
-      log += I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_3);
+      log += I18n.get(BaseExceptionMessage.INDICATOR_GENERATOR_GROUPING_3);
     }
 
     if (!log.isEmpty() && log.length() != 0) {

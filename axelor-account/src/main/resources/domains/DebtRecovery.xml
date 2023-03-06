@@ -39,6 +39,9 @@
       title="Trading Name"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <date name="respiteDateBeforeAccountBlocking" title="Respite date before account blocking"/>
+    <many-to-many name="invoiceTermDebtRecoverySet"
+      ref="com.axelor.apps.account.db.InvoiceTerm"
+      title="Invoice term concerned by the debt recovery"/>
 
     <string name="name" namecolumn="true" search="referenceDate,id" title="Name">
 	   	<![CDATA[

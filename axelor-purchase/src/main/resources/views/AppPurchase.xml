@@ -42,7 +42,7 @@
   <action-attrs name="action-purchase-attrs-set-hidden"
     model="com.axelor.apps.base.db.AppPurchase">
     <attribute name="hidden" for="enablePurchasesProductByTradName"
-      expr="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      expr="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-attrs>
 
 </object-views>

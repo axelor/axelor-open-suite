@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,8 +18,13 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface MoveComputeService {
   Map<String, Object> computeTotals(Move move);
+
+  boolean checkManageCutOffDates(Move move);
+
+  void applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 }

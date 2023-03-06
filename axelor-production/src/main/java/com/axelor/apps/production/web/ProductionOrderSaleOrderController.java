@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,7 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.ProductionOrder;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -67,7 +67,7 @@ public class ProductionOrderSaleOrderController {
                 .domain("self.id in (" + Joiner.on(",").join(productionOrderIdList) + ")")
                 .map());
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
+        response.setFlash(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
       }
 
     } catch (Exception e) {

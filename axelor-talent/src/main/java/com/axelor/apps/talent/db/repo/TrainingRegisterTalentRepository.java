@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.talent.db.Training;
 import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
-import com.axelor.apps.talent.exception.IExceptionMessage;
+import com.axelor.apps.talent.exception.TalentExceptionMessage;
 import com.axelor.apps.talent.service.TrainingRegisterService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -39,7 +39,7 @@ public class TrainingRegisterTalentRepository extends TrainingRegisterRepository
   public TrainingRegister save(TrainingRegister trainingRegister) {
 
     if (trainingRegister.getFromDate().isAfter(trainingRegister.getToDate())) {
-      throw new ValidationException(I18n.get(IExceptionMessage.INVALID_DATE_RANGE));
+      throw new ValidationException(I18n.get(TalentExceptionMessage.INVALID_DATE_RANGE));
     }
 
     TrainingSession trainingSession = trainingRegister.getTrainingSession();
@@ -47,7 +47,7 @@ public class TrainingRegisterTalentRepository extends TrainingRegisterRepository
         && (trainingSession.getFromDate().isAfter(trainingRegister.getFromDate())
             || trainingSession.getToDate().isBefore(trainingRegister.getToDate()))) {
 
-      throw new ValidationException(I18n.get(IExceptionMessage.INVALID_TR_DATE));
+      throw new ValidationException(I18n.get(TalentExceptionMessage.INVALID_TR_DATE));
     }
 
     trainingRegister.setFullName(trainingRegisterService.computeFullName(trainingRegister));

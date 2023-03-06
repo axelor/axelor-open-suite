@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,11 +19,14 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface InvoicePaymentToolService {
@@ -32,6 +35,8 @@ public interface InvoicePaymentToolService {
   public void updateAmountPaid(Invoice invoice) throws AxelorException;
 
   void updateHasPendingPayments(Invoice invoice);
+
+  public void updatePaymentProgress(Invoice invoice);
 
   /**
    * @param company company from the invoice
@@ -55,5 +60,14 @@ public interface InvoicePaymentToolService {
 
   public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
 
+  BigDecimal getPayableAmount(
+      List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange);
+
+  void computeFinancialDiscount(InvoicePayment invoicePayment);
+
+  BigDecimal getMassPaymentAmount(List<Long> invoiceIdList, LocalDate date);
+
   boolean applyFinancialDiscount(InvoicePayment invoicePayment);
+
+  void computeFromInvoiceTermPayments(InvoicePayment invoicePayment);
 }

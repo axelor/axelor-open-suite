@@ -24,6 +24,20 @@
     <decimal name="remainingAmountAfterPayment" title="Remaining to pay after cashing"
       readonly="true"/>
 
+    <many-to-one name="invoiceTerm" title="Invoice term"
+      ref="com.axelor.apps.account.db.InvoiceTerm"/>
+
+    <boolean name="applyFinancialDiscount" title="Apply financial discount ?"
+      readonly="true"/>
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <date name="financialDiscountDeadlineDate" title="Fin. discount deadline date"/>
+    <decimal name="financialDiscountAmount" title="Fin. discount amount"/>
+    <decimal name="financialDiscountTaxAmount" title="Fin. discount tax"/>
+    <decimal name="financialDiscountTotalAmount"
+      title="payvoucher.financialDiscountTotalAmount"/>
+    <decimal name="totalAmountWithFinancialDiscount"
+      title="Total amount with financial discount"/>
   </entity>
 
 </domain-models>

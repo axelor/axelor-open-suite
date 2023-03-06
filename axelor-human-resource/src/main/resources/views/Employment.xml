@@ -20,7 +20,7 @@
       <field name="experienceDuration" showIf="collectiveAgreement.code == 'HCR'"/>
       <field name="exportCode"/>
       <field name="csp"/>
-      <field name="isAllCompanies" readonlyIf="companySet.length > 0"/>
+      <field name="isAllCompanies" readonlyIf="companySet &amp;&amp; companySet.length > 0"/>
       <field name="companySet" widget="TagSelect" readonlyIf="isAllCompanies"/>
     </panel>
     <panel-related field="qualificationSet" form-view="qualification-form"

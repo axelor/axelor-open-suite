@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -36,7 +36,7 @@ public class MrpForecastServiceImpl implements MrpForecastService {
         || mrpForecast.getStatusSelect() != MrpForecastRepository.STATUS_DRAFT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MRP_FORECAST_CONFIRM_WRONG_STATUS));
+          I18n.get(SupplychainExceptionMessage.MRP_FORECAST_CONFIRM_WRONG_STATUS));
     }
     mrpForecast.setStatusSelect(MrpForecastRepository.STATUS_CONFIRMED);
   }
@@ -51,7 +51,7 @@ public class MrpForecastServiceImpl implements MrpForecastService {
         || !authorizedStatus.contains(mrpForecast.getStatusSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MRP_FORECAST_CANCEL_WRONG_STATUS));
+          I18n.get(SupplychainExceptionMessage.MRP_FORECAST_CANCEL_WRONG_STATUS));
     }
     mrpForecast.setStatusSelect(MrpForecastRepository.STATUS_CANCELLED);
   }

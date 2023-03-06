@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.auth.db.User;
@@ -49,7 +49,7 @@ import javax.validation.ValidationException;
 @Singleton
 public class UserController {
   protected static final Map<String, String> UNIQUE_MESSAGES =
-      ImmutableMap.of("code", IExceptionMessage.USER_CODE_ALREADY_EXISTS);
+      ImmutableMap.of("code", BaseExceptionMessage.USER_CODE_ALREADY_EXISTS);
 
   public void setUserPartner(ActionRequest request, ActionResponse response) {
     try {
@@ -127,7 +127,7 @@ public class UserController {
     try {
       List<Long> userIds = (List<Long>) request.getContext().get("_ids");
       if (ObjectUtils.isEmpty(userIds)) {
-        response.setError(I18n.get(IExceptionMessage.RECORD_NONE_SELECTED));
+        response.setError(I18n.get(BaseExceptionMessage.RECORD_NONE_SELECTED));
         return;
       }
 

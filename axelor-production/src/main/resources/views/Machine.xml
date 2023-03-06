@@ -48,7 +48,7 @@
       <field name="endingDuration" widget="duration" x-big="true" x-seconds="true"/>
     </panel>
     <panel-related field="machineToolLineList" name="machineToolLineListPanel"
-      if="__config__.app.getApp('production').getEnableToolManagement()" showIf="code || name"
+      if="__config__.app.getApp('production')?.getEnableToolManagement()" showIf="code || name"
       form-view="machine-tool-form" grid-view="machine-tool-machine-grid"/>
     <panel name="descriptionPanel" title="Description">
       <field name="description" colSpan="12" showTitle="false"/>

@@ -9,4 +9,15 @@
     <option value="3">Terminated</option>
   </selection>
 
+  <selection name="chart.wkf.bpm.manager.type.select">
+    <option value="lateTask">Late tasks</option>
+    <option value="nonLateTask">Not late tasks</option>
+  </selection>
+
+  <selection name="chart.wkf.bpm.manager.unit.select">
+    <option value="minutes">Minutes</option>
+    <option value="hours">Hours</option>
+    <option value="days">Days</option>
+  </selection>
+
 </object-views>

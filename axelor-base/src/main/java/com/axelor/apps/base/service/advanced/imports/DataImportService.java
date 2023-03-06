@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,14 +19,14 @@ package com.axelor.apps.base.service.advanced.imports;
 
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileTab;
+import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
 import java.util.Map;
 
 public interface DataImportService {
 
-  public MetaFile importData(AdvancedImport advanceImport)
+  public ImportHistory importData(AdvancedImport advanceImport)
       throws IOException, AxelorException, ClassNotFoundException;
 
   public Map<String, Object> createJsonContext(FileTab fileTab);

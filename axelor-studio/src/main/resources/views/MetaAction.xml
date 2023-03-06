@@ -29,7 +29,7 @@
       <insert position="before">
         <panel name="actionAppBuilderPanel">
           <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"
-            if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+            if="__config__.app.getApp('bpm')?.getEnableAppBuilder()"/>
           <field name="isCustom" hidden="true"/>
         </panel>
       </insert>

@@ -52,6 +52,15 @@
     <many-to-one ref="com.axelor.apps.account.db.FinancialDiscount"
       name="financialDiscount" title="Financial discount"
       help="Field allowing to make this partner profit a discount and define its parameters"/>
+    <integer name="payNoticeSendingMethodSelect" title="Sending method of payment notices"
+      selection="partner.payment.notice.sending.method.select" default="1"/>
+
+    <extra-code>
+      <![CDATA[
+		  public static final int PAYMENT_NOTICE_NONE = 0;
+		  public static final int PAYMENT_NOTICE_EMAIL = 1;
+	   ]]>
+    </extra-code>
 
     <track>
       <field name="inPaymentMode" on="UPDATE"/>

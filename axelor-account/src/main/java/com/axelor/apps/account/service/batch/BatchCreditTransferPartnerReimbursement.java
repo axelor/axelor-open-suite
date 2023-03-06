@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,11 +22,12 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -94,20 +95,20 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
+    sb.append(I18n.get(AccountExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
     sb.append(
         String.format(
             I18n.get(
-                    IExceptionMessage.BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_SINGULAR,
-                    IExceptionMessage.BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL,
+                    AccountExceptionMessage.BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_SINGULAR,
+                    AccountExceptionMessage.BATCH_CREDIT_TRANSFER_REIMBURSEMENT_DONE_PLURAL,
                     batch.getDone())
                 + " ",
             batch.getDone()));
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
     addComment(sb.toString());
@@ -133,8 +134,8 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
                     + "AND self.amountRemaining > 0 AND self.credit > 0 "
                     + "AND self.move.partner = ?3 AND self.move.company = ?4 "
                     + "AND self.reimbursementStatusSelect = ?5",
-                MoveRepository.STATUS_VALIDATED,
                 MoveRepository.STATUS_ACCOUNTED,
+                MoveRepository.STATUS_DAYBOOK,
                 partner,
                 company,
                 MoveLineRepository.REIMBURSEMENT_STATUS_NULL)

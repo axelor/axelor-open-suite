@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,14 +19,17 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class MoveLineManagementRepository extends MoveLineRepository {
@@ -37,7 +40,7 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
+            I18n.get(AccountExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getMove().getReference());
       } catch (AxelorException e) {
         throw new PersistenceException(e.getMessage(), e);
@@ -45,6 +48,14 @@ public class MoveLineManagementRepository extends MoveLineRepository {
     } else {
       super.remove(entity);
     }
+  }
+
+  @Override
+  public MoveLine copy(MoveLine entity, boolean deep) {
+    MoveLine copy = super.copy(entity, deep);
+
+    copy.setPostedNbr(null);
+    return copy;
   }
 
   @Override
@@ -64,5 +75,24 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
     return super.save(entity);
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    try {
+      if (context.containsKey("_cutOffPreview") && (boolean) context.get("_cutOffPreview")) {
+        long id = (long) json.get("id");
+        MoveLine moveLine = this.find(id);
+        LocalDate moveDate = LocalDate.parse((String) context.get("_moveDate"));
+
+        json.put(
+            "$cutOffProrataAmount",
+            Beans.get(MoveLineService.class).getCutOffProrataAmount(moveLine, moveDate));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+
+    return super.populate(json, context);
   }
 }

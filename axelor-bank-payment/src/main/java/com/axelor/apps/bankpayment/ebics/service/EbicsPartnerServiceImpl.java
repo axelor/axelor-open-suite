@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,7 @@ import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.tool.date.DateTool;
@@ -193,7 +193,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(IExceptionMessage.EBICS_PARTNER_BANK_DETAILS_WARNING),
+              I18n.get(BankPaymentExceptionMessage.EBICS_PARTNER_BANK_DETAILS_WARNING),
               "<ul>"
                   + Joiner.on("").join(Iterables.transform(bankDetailsWithoutCurrency, addLi))
                   + "<ul>"),

@@ -44,4 +44,23 @@
     <series key="amount" type="bar"/>
   </chart>
 
+  <chart name="chart.forecast.in.out.total" title="Forecasts in out total"
+    onInit="action-chart-attrs-show-search-fields">
+    <dataset type="jpql"><![CDATA[
+
+		SELECT self.amount as amount,
+		MONTH(self.estimatedDate) as month
+		FROM
+			ForecastRecapLine AS self
+		INNER JOIN self.forecastRecap AS recap ON recap.isReport = true
+		WHERE self.estimatedDate is not null
+		AND (:bankDetails is null OR :bankDetails MEMBER OF recap.bankDetailsSet)
+		AND (recap.userRecap = :_user OR :_user is null)
+		AND self.estimatedDate BETWEEN :fromDate AND :toDate
+
+	   ]]></dataset>
+    <category key="month" type="month" title="Month"/>
+    <series key="amount" type="bar" title="Amount" aggregate="sum"/>
+  </chart>
+
 </object-views>

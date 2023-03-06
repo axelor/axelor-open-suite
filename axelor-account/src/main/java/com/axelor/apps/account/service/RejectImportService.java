@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -56,7 +56,7 @@ public class RejectImportService {
 
   public String getDestFilename(String src, String dest) {
     // chemin du fichier de destination :
-    log.debug("Chemin de destination : {}", dest);
+    log.debug("Destination path : {}", dest);
     String newDest = ((dest).split("\\."))[0];
     String timeString = appAccountService.getTodayDateTime().toString();
     timeString = timeString.replace("-", "");
@@ -72,7 +72,7 @@ public class RejectImportService {
       newDest += src.split("\\.")[1];
     }
 
-    log.debug("Chemin de destination généré : {}", newDest);
+    log.debug("Destination path generated : {}", newDest);
 
     return newDest;
   }

@@ -61,5 +61,13 @@
     <view type="form" name="forecast-recap-line-type-form"/>
   </action-view>
 
+  <menuitem name="menu-cash-management-dashboard-1" parent="forecast-root"
+    title="Cash Management Dashboard" action="cash.management.dashboard.1.view"/>
+
+  <action-view name="cash.management.dashboard.1.view" title="Cash Management Dashboard"
+    model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="forecast-dashboard-form"/>
+    <context name="_userId" expr="eval: 0"/>
+  </action-view>
 
 </object-views>

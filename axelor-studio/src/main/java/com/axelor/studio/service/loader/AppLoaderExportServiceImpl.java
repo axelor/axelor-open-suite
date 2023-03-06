@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.collections.CollectionUtils;
@@ -81,7 +82,10 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
         "dashboard-builder",
         "dashlet-builder",
         "chart-builder",
-        "selection-builder"
+        "selection-builder",
+        "ws-connector",
+        "ws-request",
+        "ws-authenticator"
       };
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -199,7 +203,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     fout.close();
   }
 
-  private XMLInput createInput(AppDataLoader dataLoader, boolean relationalInput)
+  protected XMLInput createInput(AppDataLoader dataLoader, boolean relationalInput)
       throws ClassNotFoundException {
 
     XMLInput xmlInput;
@@ -242,7 +246,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return xmlInput;
   }
 
-  private String getBindNodeName(String root) {
+  protected String getBindNodeName(String root) {
     return root.substring(0, root.length() - 1);
   }
 
@@ -338,7 +342,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     }
   }
 
-  private void fixTargetName(Map<String, Object> jsonFieldMap) {
+  protected void fixTargetName(Map<String, Object> jsonFieldMap) {
 
     // NOTE: Issue in AOP, it always return name as targetname for custom model.
     for (String field : jsonFieldMap.keySet()) {
@@ -359,13 +363,16 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
   protected FileWriter createHeader(String dasherizeModel, File dataFile) throws IOException {
 
-    FileWriter fileWriter = new FileWriter(dataFile);
-    fileWriter.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-    fileWriter.write(
-        "<"
-            + dasherizeModel
-            + "s xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-            + "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n\n");
+    FileWriter fileWriter = null;
+    try (FileWriter fileWriterObject = new FileWriter(dataFile)) {
+      fileWriter = fileWriterObject;
+      fileWriter.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+      fileWriter.write(
+          "<"
+              + dasherizeModel
+              + "s xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+              + "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\n\n");
+    }
 
     return fileWriter;
   }
@@ -454,7 +461,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return value;
   }
 
-  private String getTargetName(Map<String, Object> fieldAttrs) {
+  protected String getTargetName(Map<String, Object> fieldAttrs) {
 
     String targetName = (String) fieldAttrs.get("targetName");
     if (Strings.isNullOrEmpty(targetName)) {
@@ -508,13 +515,13 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
 
     File zipFile = MetaFiles.createTempFile("app-", ".zip").toFile();
 
-    ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile));
-    for (File file : exportDir.listFiles()) {
-      ZipEntry zipEntry = new ZipEntry(file.getName());
-      zipOut.putNextEntry(zipEntry);
-      Files.copy(file, zipOut);
+    try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(zipFile))) {
+      for (File file : exportDir.listFiles()) {
+        ZipEntry zipEntry = new ZipEntry(file.getName());
+        zipOut.putNextEntry(zipEntry);
+        Files.copy(file, zipOut);
+      }
     }
-    zipOut.close();
 
     return zipFile;
   }
@@ -534,9 +541,11 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
       if (file.length() == 0) {
         file.delete();
       } else {
-        long lines = java.nio.file.Files.lines(file.toPath()).count();
-        if (lines == 1) {
-          file.delete();
+        try (Stream<String> fileStream = java.nio.file.Files.lines(file.toPath())) {
+          long lines = fileStream.count();
+          if (lines == 1) {
+            file.delete();
+          }
         }
       }
     }
@@ -604,7 +613,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return fieldBindings;
   }
 
-  private XMLBind createDummyFieldBinding(String name) {
+  protected XMLBind createDummyFieldBinding(String name) {
 
     XMLBind dummyBind = new XMLBind();
     dummyBind.setNode(name);
@@ -613,7 +622,8 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return dummyBind;
   }
 
-  private void addRelationalMetaFieldBind(Mapper modelMapper, MetaField field, XMLBind fieldBind) {
+  protected void addRelationalMetaFieldBind(
+      Mapper modelMapper, MetaField field, XMLBind fieldBind) {
 
     Property property = modelMapper.getProperty(field.getName());
     if (property.isCollection()) {
@@ -692,7 +702,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return fieldBindings;
   }
 
-  private void addRelationaJsonFieldBind(
+  protected void addRelationaJsonFieldBind(
       MetaJsonField jsonField, Map<String, Object> fieldAttrs, XMLBind xmlBind) {
 
     String jsonFunction = "json_extract_text";

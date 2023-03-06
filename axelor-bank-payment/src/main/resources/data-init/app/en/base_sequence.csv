@@ -5,3 +5,4 @@
 166;"bankOrder";"International Direct Debits";1;4;"IDD%YY%FM";;1;1
 167;"bankOrder";"International Treasury Transfers";1;4;"ITT%YY%FM";;1;1
 168;"bankOrder";"SEPA Treasury Transfers";1;4;"STT%YY%FM";;1;1
+220;"bankOrder";"Bill of Exchange";1;4;"OBLCR%YY";;1;1

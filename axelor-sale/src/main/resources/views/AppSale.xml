@@ -27,6 +27,7 @@
       <field name="enablePricingScale" widget="boolean-switch"/>
       <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
         showIf="enablePricingScale"/>
+      <field name="considerZeroCost" widget="boolean-switch"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generateSaleConfigurationsBtn" colSpan="4"
@@ -56,7 +57,7 @@
   <action-attrs name="action-sale-attrs-set-hidden"
     model="com.axelor.apps.base.db.AppSale">
     <attribute name="hidden" for="enableSalesProductByTradName"
-      expr="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+      expr="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-attrs>
 
 </object-views>

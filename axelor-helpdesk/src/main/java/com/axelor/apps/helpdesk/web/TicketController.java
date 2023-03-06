@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
-import com.axelor.apps.helpdesk.exceptions.IExceptionMessage;
+import com.axelor.apps.helpdesk.exceptions.HelpdeskExceptionMessage;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TimerTicketService;
 import com.axelor.apps.tool.date.DateTool;
@@ -56,7 +56,7 @@ public class TicketController {
       List<?> ids = (List<?>) request.getContext().get("_ids");
 
       if (id == null && ids == null) {
-        response.setAlert(I18n.get(IExceptionMessage.SELECT_TICKETS));
+        response.setAlert(I18n.get(HelpdeskExceptionMessage.SELECT_TICKETS));
       } else {
         Beans.get(TicketService.class).assignToMeTicket(id, ids);
         response.setReload(true);

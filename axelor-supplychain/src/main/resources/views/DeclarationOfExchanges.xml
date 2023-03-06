@@ -7,7 +7,7 @@
     title="Declarations of exchanges" name="declaration-of-exchanges-grid" orderBy="createdOn"
     onNew="action-declaration-of-exchanges-onnew">
     <field name="company" canEdit="false"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="country"
       domain="self IN (SELECT sl.address.addressL7Country FROM StockLocation sl WHERE sl.company = :company)"
       canEdit="false"/>
@@ -157,6 +157,6 @@
     model="com.axelor.apps.supplychain.db.DeclarationOfExchanges"
     title="Declaration of exchange filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

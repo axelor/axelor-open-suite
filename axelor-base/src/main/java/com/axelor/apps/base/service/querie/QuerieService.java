@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.querie;
 
 import com.axelor.apps.base.db.Querie;
 import com.axelor.apps.base.db.repo.QuerieRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -56,7 +56,7 @@ public class QuerieService {
     if (filter == null || filter.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.QUERIE_1),
+          I18n.get(BaseExceptionMessage.QUERIE_1),
           querie.getId());
     }
 
@@ -72,7 +72,7 @@ public class QuerieService {
       throw new AxelorException(
           e.getCause(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.QUERIE_2),
+          I18n.get(BaseExceptionMessage.QUERIE_2),
           querie.getId());
     }
 

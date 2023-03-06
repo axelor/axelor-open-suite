@@ -197,14 +197,17 @@
     model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date = :__datetime__ AND self.user = :__user__</domain>
+    <domain>self.date = :__date__ AND self.employee.id = :_empId</domain>
+    <context name="_empId" expr="eval: __user__.employee?.id"/>
   </action-view>
 
   <action-view name="action-project-db-my-upcomming-planning"
     title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date &gt; :__datetime__ AND self.user = :__user__</domain>
+    <domain>self.date &gt; :__date__ AND self.employee.id = :_empId</domain>
+    <context name="_empId" expr="eval: __user__.employee?.id"/>
+
   </action-view>
 
   <action-view name="action-project-dashboard-view-open-gantt" title="Gantt"

@@ -42,7 +42,7 @@
           showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
       </panel>
       <panel name="workshopStockLocationPanel" title="Workshop"
-        if="__config__.app.getApp('production').getManageWorkshop()">
+        if="__config__.app.getApp('production')?.getManageWorkshop()">
         <field name="defWorkshopStockLocationAsFormula" colSpan="6"/>
         <field name="workshopStockLocation" colSpan="12"
           showIf="!defWorkshopStockLocationAsFormula"

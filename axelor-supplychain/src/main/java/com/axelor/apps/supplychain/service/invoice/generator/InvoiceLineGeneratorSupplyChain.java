@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,18 @@
  */
 package com.axelor.apps.supplychain.service.invoice.generator;
 
-import com.axelor.apps.account.db.*;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.FixedAssetCategory;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
@@ -41,6 +48,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 /** Classe de création de ligne de facture abstraite. */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
@@ -49,7 +57,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected PurchaseOrderLine purchaseOrderLine;
   protected StockMoveLine stockMoveLine;
 
-  protected AppBaseService appBaseService;
   protected UnitConversionService unitConversionService;
 
   @Inject
@@ -184,7 +191,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       return invoiceLine;
     }
 
-    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    InvoiceLineAnalyticService invoiceLineAnalyticService =
+        Beans.get(InvoiceLineAnalyticService.class);
 
     this.assignOriginElements(invoiceLine);
 
@@ -204,10 +212,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             invoiceLine.setAnalyticDistributionTemplate(
                 saleOrderLine.getAnalyticDistributionTemplate());
             this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
-            analyticMoveLineList = invoiceLineService.computeAnalyticDistribution(invoiceLine);
+            analyticMoveLineList =
+                invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
           } else {
             analyticMoveLineList =
-                invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+                invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
             analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
           }
           break;
@@ -223,10 +232,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         invoiceLine.setAnalyticDistributionTemplate(
             purchaseOrderLine.getAnalyticDistributionTemplate());
         this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
-        analyticMoveLineList = invoiceLineService.computeAnalyticDistribution(invoiceLine);
+        analyticMoveLineList = invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
       } else {
         analyticMoveLineList =
-            invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+            invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
         analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
       }
 
@@ -266,8 +275,15 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setInTaxPrice(inTaxPrice);
 
       analyticMoveLineList =
-          invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+          invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
       analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+    }
+
+    if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+        analyticMoveLine.setPurchaseOrderLine(invoiceLine.getPurchaseOrderLine());
+        analyticMoveLine.setSaleOrderLine(invoiceLine.getSaleOrderLine());
+      }
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
@@ -313,7 +329,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         invoiceLine.setOutgoingStockMove(stockMove);
       }
     }
-
     if (saleOrderLine != null) {
       invoiceLine.setSaleOrderLine(saleOrderLine);
     }
@@ -334,7 +349,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       AnalyticMoveLine analyticMoveLine =
           Beans.get(AnalyticMoveLineRepository.class).copy(originalAnalyticMoveLine, false);
 
-      analyticMoveLine.setTypeSelect(AnalyticMoveLineMngtRepository.STATUS_FORECAST_INVOICE);
+      analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 
       invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }

@@ -21,9 +21,6 @@
     <integer name="durationTypeSelect" title="Duration type"
       selection="crm.eventReminder.duration.type.select"/>
 
-    <many-to-many name="targetConfigurationSet"
-      ref="com.axelor.apps.crm.db.TargetConfiguration" title="Targets configurations"/>
-
     <extra-code><![CDATA[
 
 	   	//ACTION SELECT

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,23 +65,17 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
     if ("dev".equals(applicationMode)) {
       User user = AuthUtils.getUser();
-      if (user != null && user.getToday() != null) {
-        todayDateTime = user.getToday();
+      if (user != null && user.getTodayDateT() != null) {
+        todayDateTime = user.getTodayDateT();
       } else {
         AppBase appBase = getAppBase();
-        if (appBase != null && appBase.getToday() != null) {
-          return appBase.getToday();
+        if (appBase != null && appBase.getTodayDateT() != null) {
+          return appBase.getTodayDateT();
         }
       }
     }
 
     return todayDateTime;
-  }
-
-  @Override
-  public LocalDate getTodayDate() {
-
-    return getTodayDateTime().toLocalDate();
   }
 
   @Override

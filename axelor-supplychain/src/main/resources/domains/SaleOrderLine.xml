@@ -10,8 +10,6 @@
     <integer name="saleSupplySelect" title="Supply method"
       selection="product.sale.supply.select"/>
 
-    <date name="invoicingDate" title="Invoicing Date"/>
-
     <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
 
 

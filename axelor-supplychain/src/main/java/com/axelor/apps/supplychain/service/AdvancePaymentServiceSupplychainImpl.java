@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,12 +34,13 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -69,8 +70,6 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Inject protected InvoicePaymentRepository invoicePaymentRepository;
 
-  @Inject protected AdvancePaymentRepository advancePaymentRepository;
-
   @Inject protected MoveCancelService moveCancelService;
 
   @Inject protected AppSupplychainService appSupplychainService;
@@ -96,13 +95,16 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(AdvancePayment advancePayment) throws AxelorException {
-
-    moveCancelService.cancel(advancePayment.getMove());
+    Move move = advancePayment.getMove();
+    if (move.getStatusSelect() == MoveRepository.STATUS_NEW) {
+      advancePayment.setMove(null);
+    }
+    moveCancelService.cancel(move);
     advancePayment.setStatusSelect(AdvancePaymentRepository.STATUS_CANCELED);
     advancePaymentRepository.save(advancePayment);
   }
 
-  public void createInvoicePayments(Invoice invoice, SaleOrder saleOrder) throws AxelorException {
+  public void createInvoicePayments(Invoice invoice, SaleOrder saleOrder) {
     if (saleOrder.getAdvancePaymentList() == null || saleOrder.getAdvancePaymentList().isEmpty()) {
       return;
     }
@@ -150,8 +152,8 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.SALE_ORDER_BANK_DETAILS_MISSING),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_BANK_DETAILS_MISSING),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName(),
           saleOrder.getSaleOrderSeq());
@@ -171,7 +173,8 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null);
+            null,
+            bankDetails);
 
     BigDecimal amountConverted =
         currencyService.getAmountCurrencyConvertedAtDate(
@@ -206,7 +209,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
             origin,
             null));
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     advancePayment.setMove(move);
     advancePaymentRepository.save(advancePayment);
@@ -216,7 +219,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createInvoicePayment(
-      AdvancePayment advancePayment, Invoice invoice, BigDecimal amount) throws AxelorException {
+      AdvancePayment advancePayment, Invoice invoice, BigDecimal amount) {
 
     log.debug("Creating InvoicePayment from SaleOrder AdvancePayment");
     InvoicePayment invoicePayment = new InvoicePayment();

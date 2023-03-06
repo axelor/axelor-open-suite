@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -105,13 +105,13 @@ public class ImportAccountingReportConfigLine {
     return configLine;
   }
 
-  private boolean compareCodes(String code1, String code2) {
+  protected boolean compareCodes(String code1, String code2) {
     code1 = removeZeros(code1);
     code2 = removeZeros(code2);
     return code1.equals(code2);
   }
 
-  private String removeZeros(String code) {
+  protected String removeZeros(String code) {
     StringBuffer sb = new StringBuffer(code);
     sb.reverse();
     code = sb.toString();

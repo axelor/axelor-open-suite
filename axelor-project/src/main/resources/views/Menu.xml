@@ -20,6 +20,14 @@
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjects"/>
   </action-method>
 
+  <menuitem name="project-all-tree" parent="menu-project-root" order="13"
+    title="Projects tree" action="project.all.tree"/>
+  <action-view name="project.all.tree" title="Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="tree" name="project-tree"/>
+    <view-param name="forceTitle" value="true"/>
+  </action-view>
+
   <menuitem name="project-task-all" parent="menu-project-root" order="15" title="Tasks"
     action="project.task.all"/>
   <action-method name="project.task.all">
@@ -126,7 +134,7 @@
 
   <menuitem name="project-resource-booking" title="Resource bookings" order="35"
     parent="menu-project-root" action="project.resource.booking"
-    if="__config__.app.getApp('project').getResourceManagement()"/>
+    if="__config__.app.getApp('project')?.getResourceManagement()"/>
   <action-view name="project.resource.booking" title="Resource bookings"
     model="com.axelor.apps.project.db.ResourceBooking">
     <view type="grid" name="resource-booking-grid"/>
@@ -196,7 +204,7 @@
 
   <menuitem name="project-resource-type" parent="project-configurations"
     title="Resource types" action="project.resource.types"
-    if="__config__.app.getApp('project').getResourceManagement()"/>
+    if="__config__.app.getApp('project')?.getResourceManagement()"/>
   <action-view name="project.resource.types" title="Resource types"
     model="com.axelor.apps.project.db.ResourceType">
     <view type="grid" name="resource-type-grid"/>
@@ -205,7 +213,7 @@
 
   <menuitem name="project-resource" title="Project.Resource" order="32"
     parent="project-configurations" action="project.resource"
-    if="__config__.app.getApp('project').getResourceManagement()"/>
+    if="__config__.app.getApp('project')?.getResourceManagement()"/>
   <action-view name="project.resource" title="Resources"
     model="com.axelor.apps.project.db.Resource">
     <view type="grid" name="resource-grid"/>

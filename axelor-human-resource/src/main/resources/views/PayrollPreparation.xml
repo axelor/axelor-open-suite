@@ -7,7 +7,7 @@
     model="com.axelor.apps.hr.db.PayrollPreparation">
     <field name="employee"/>
     <field name="company" grid-view="company-grid" form-view="company-form"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="period" grid-view="period-hr-grid" form-view="period-hr-form" canEdit="false"
       canView="false"/>
     <field name="exported"/>
@@ -142,7 +142,7 @@
   <search-filters name="payroll-preparation-filters"
     model="com.axelor.apps.hr.db.PayrollPreparation" title="Payroll preparation filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

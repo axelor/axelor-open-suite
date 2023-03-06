@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,14 +29,20 @@ import com.axelor.apps.bpm.listener.WkfRequestListener;
 import com.axelor.apps.bpm.mapper.BpmMapperScriptGeneratorServiceImpl;
 import com.axelor.apps.bpm.service.AppLoaderExportBpmServiceImpl;
 import com.axelor.apps.bpm.service.AppLoaderImportBpmServiceImpl;
-import com.axelor.apps.bpm.service.BpmDashboardService;
-import com.axelor.apps.bpm.service.BpmDashboardServiceImpl;
 import com.axelor.apps.bpm.service.WkfCommonService;
 import com.axelor.apps.bpm.service.WkfCommonServiceImpl;
 import com.axelor.apps.bpm.service.WkfDisplayService;
 import com.axelor.apps.bpm.service.WkfDisplayServiceImpl;
 import com.axelor.apps.bpm.service.WkfModelService;
 import com.axelor.apps.bpm.service.WkfModelServiceImpl;
+import com.axelor.apps.bpm.service.dashboard.BpmManagerDashboardService;
+import com.axelor.apps.bpm.service.dashboard.BpmManagerDashboardServiceImpl;
+import com.axelor.apps.bpm.service.dashboard.BpmManagerDashboardTaskService;
+import com.axelor.apps.bpm.service.dashboard.BpmManagerDashboardTaskServiceImpl;
+import com.axelor.apps.bpm.service.dashboard.BpmManagerDashboardUserService;
+import com.axelor.apps.bpm.service.dashboard.BpmManagerDashboardUserServiceImpl;
+import com.axelor.apps.bpm.service.dashboard.WkfDashboardService;
+import com.axelor.apps.bpm.service.dashboard.WkfDashboardServiceImpl;
 import com.axelor.apps.bpm.service.deployment.BpmDeploymentService;
 import com.axelor.apps.bpm.service.deployment.BpmDeploymentServiceImpl;
 import com.axelor.apps.bpm.service.deployment.MetaAttrsService;
@@ -87,7 +93,10 @@ public class BpmModule extends AxelorModule {
     bind(DmnImportService.class).to(DmnImportServiceImpl.class);
     bind(MapperScriptGeneratorServiceImpl.class).to(BpmMapperScriptGeneratorServiceImpl.class);
     bind(AppLoaderExportServiceImpl.class).to(AppLoaderExportBpmServiceImpl.class);
-    bind(BpmDashboardService.class).to(BpmDashboardServiceImpl.class);
+    bind(WkfDashboardService.class).to(WkfDashboardServiceImpl.class);
+    bind(BpmManagerDashboardService.class).to(BpmManagerDashboardServiceImpl.class);
+    bind(BpmManagerDashboardUserService.class).to(BpmManagerDashboardUserServiceImpl.class);
+    bind(BpmManagerDashboardTaskService.class).to(BpmManagerDashboardTaskServiceImpl.class);
     bind(AppLoaderImportServiceImpl.class).to(AppLoaderImportBpmServiceImpl.class);
     bind(ServerStartListener.class);
   }

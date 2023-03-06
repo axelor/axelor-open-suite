@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,18 +35,6 @@ public interface MoveLineExportService {
   public AccountingReport createAccountingReport(
       Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate)
       throws AxelorException;
-
-  public void exportMoveLineTypeSelect1006(AccountingReport mlr, boolean replay)
-      throws AxelorException, IOException;
-
-  public void exportMoveLineTypeSelect1007(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException;
-
-  public void exportMoveLineTypeSelect1008(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException;
-
-  public void exportMoveLineTypeSelect1009(AccountingReport accountingReport, boolean replay)
-      throws AxelorException, IOException;
 
   /**
    * Export general balance to CSV file.

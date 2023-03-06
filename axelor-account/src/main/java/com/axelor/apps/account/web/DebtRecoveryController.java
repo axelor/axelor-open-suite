@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryActionService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryService;
@@ -48,7 +48,7 @@ public class DebtRecoveryController {
       if (debtRecoveryService.getAccountingSituation(debtRecovery) == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.DEBT_RECOVERY_1));
+            I18n.get(AccountExceptionMessage.DEBT_RECOVERY_1));
       }
       debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
       Beans.get(DebtRecoveryActionService.class).runManualAction(debtRecovery);
@@ -72,7 +72,7 @@ public class DebtRecoveryController {
         response.setFlash(batch.getComments());
       } else {
         response.setError(
-            I18n.get(IExceptionMessage.BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING));
+            I18n.get(AccountExceptionMessage.BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT_MISSING));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

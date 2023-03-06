@@ -7,7 +7,7 @@
 
   <entity name="AnalyticAxis" lang="java">
 
-    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true" unique="true"/>
     <integer name="nbrOfAnalyticGrouping" title="Nbr. of Analytic Grouping" default="0"
       required="true" selection="account.general.analytic.grouping.value.grouping"

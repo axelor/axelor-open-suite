@@ -18,11 +18,9 @@
 17;"Grand livre analytique";2001;1;1
 18;"Export FEC -> Administration";1000;2;1
 19;"Export FEC -> Logiciel comptable";1001;2;1
-20;"Export vente -> Logiciel comptable";1006;2;1
-21;"Export avoir -> Logiciel comptable";1007;2;1
-22;"Export trésorerie -> Logiciel comptable";1008;2;1
-23;"Export achat -> Logiciel comptable";1009;2;1
 24;"Export balance générale -> Logiciel comptable";1010;2;1
 25;"Etat préparatoire DADS";19;1;1
 26;"Vérification déclaration DADS";20;1;1
 27;"Export N4DS";1011;2;1
+28;"Etat préparatoire DGI 2054";21;1;1
+29;"Etat préparatoire DGI 2055";22;1;1

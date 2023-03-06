@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
@@ -128,9 +129,7 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
     super.checkErrors(fieldErrors, result);
     if (getCommonFields(result).getCommonProject() == null
         && getChecks(result).isExistProjectDiff()) {
-      fieldErrors.add(
-          I18n.get(
-              com.axelor.apps.account.exception.IExceptionMessage.INVOICE_MERGE_ERROR_PROJECT));
+      fieldErrors.add(I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_PROJECT));
     }
   }
 

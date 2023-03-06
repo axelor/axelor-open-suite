@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -59,4 +59,13 @@ public interface ProductCategoryService {
    */
   List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
       throws AxelorException;
+
+  /**
+   * Get the growth coefficient of product category. If the coeff is equal to the default value (1),
+   * the method will get growth coeff of parentProductCategory.
+   *
+   * @param productCategory
+   * @return growth coefficient
+   */
+  BigDecimal getGrowthCoeff(ProductCategory productCategory);
 }

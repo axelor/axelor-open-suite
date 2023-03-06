@@ -17,6 +17,9 @@
       <field name="sequence" requiredIf="ruleTypeSelect == 1" showIf="ruleTypeSelect == 1"/>
       <field name="confidenceIndex" requiredIf="ruleTypeSelect == 1"
         showIf="ruleTypeSelect == 1"/>
+      <label
+        title="To use the generated move in the formula, you can use the variable 'generatedMove'"
+        css="text-info label-bold" colSpan="12" showIf="ruleTypeSelect == 3"/>
       <field name="query" widget="code-editor" x-code-syntax="groovy" x-code-theme="groovy"
         colSpan="12"/>
     </panel>

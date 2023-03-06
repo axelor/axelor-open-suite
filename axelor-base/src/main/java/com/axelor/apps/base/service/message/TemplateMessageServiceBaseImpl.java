@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.message;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateContextService;
@@ -168,7 +168,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     return birtTemplateFileLink;
   }
 
-  private ReportSettings generateTemplate(
+  protected ReportSettings generateTemplate(
       TemplateMaker maker,
       Templates templates,
       Map<String, Object> templatesContext,
@@ -203,7 +203,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
         throw new AxelorException(
             e.getCause(),
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
+            I18n.get(BaseExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
       }
     }
 
@@ -211,7 +211,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     return reportSettings;
   }
 
-  private Object convertValue(String type, String value) throws BirtException {
+  protected Object convertValue(String type, String value) throws BirtException {
 
     if (DesignChoiceConstants.PARAM_TYPE_BOOLEAN.equals(type)) {
       return DataTypeUtil.toBoolean(value);

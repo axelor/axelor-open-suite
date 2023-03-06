@@ -101,7 +101,7 @@
     <field name="priceDiscounted" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="metaFile" hidden="true"
-      if="!__config__.app.getApp('project').isEnableSignature"/>
+      if="!__config__.app.getApp('project')?.isEnableSignature"/>
     <field name="totalRealHrs" hidden="true" if="!__config__.app.isApp('timesheet')"/>
   </search-filters>
 

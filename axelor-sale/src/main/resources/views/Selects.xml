@@ -90,4 +90,8 @@
     <option value="2">Creation for every sale order lines</option>
   </selection>
 
+  <selection name="batch.batch.type.select" id="sale.batch.batch.type.select">
+    <option value="800">Sale batch</option>
+  </selection>
+
 </object-views>

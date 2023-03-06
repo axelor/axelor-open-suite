@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface InvoiceServiceSupplychain {
 
@@ -44,4 +45,6 @@ public interface InvoiceServiceSupplychain {
    * @throws AxelorException
    */
   public Invoice updateProductQtyWithPackHeaderQty(Invoice invoice) throws AxelorException;
+
+  public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice);
 }

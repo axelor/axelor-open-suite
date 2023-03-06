@@ -24,7 +24,7 @@
       <field name="measuringTypeSelect"/>
       <field name="measuringNote" widget="ImageSelect" x-labels="false" hidden="true"
         showIf="measuringTypeSelect == 1"/>
-      <field name="coefficient"/>
+      <field name="coefficient" min="1"/>
       <field name="compliant" colSpan="3" widget="boolean-switch" hidden="true"
         showIf="measuringTypeSelect == 2"
         onChange="action-measuring-point-attrs-on-compliant-change"/>
@@ -50,7 +50,7 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="measuringTypeSelect"/>
-      <field name="coefficient"/>
+      <field name="coefficient" min="1"/>
     </panel>
   </form>
 

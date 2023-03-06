@@ -5,7 +5,7 @@
 
   <grid name="forecast-generator-grid" title="Forecast Assistants"
     model="com.axelor.apps.cash.management.db.ForecastGenerator">
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="bankDetails"/>
     <field name="typeSelect"/>
     <field name="amount" aggregate="sum"/>
@@ -78,6 +78,6 @@
   <search-filters name="forecast-generator-filters"
     model="com.axelor.apps.cash.management.db.ForecastGenerator" title="Forecast Assistant filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

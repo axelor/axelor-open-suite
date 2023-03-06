@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,13 +18,13 @@
 package com.axelor.apps.hr.web.timesheet;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetReport;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.timesheet.TimesheetReportService;
 import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -67,15 +67,15 @@ public class TimesheetReportController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  public void fillTimesheetReportReminderUsers(ActionRequest request, ActionResponse response) {
+  public void fillTimesheetReportReminderEmployees(ActionRequest request, ActionResponse response) {
     TimesheetReport timesheetReport = request.getContext().asType(TimesheetReport.class);
-    Set<User> reminderUserSet =
-        Beans.get(TimesheetReportService.class).getUserToBeReminded(timesheetReport);
-    if (!ObjectUtils.isEmpty(reminderUserSet)) {
-      response.setValue("reminderUserSet", reminderUserSet);
+    Set<Employee> reminderEmployeeSet =
+        Beans.get(TimesheetReportService.class).getEmployeeToBeReminded(timesheetReport);
+    if (!ObjectUtils.isEmpty(reminderEmployeeSet)) {
+      response.setValue("reminderEmployeeSet", reminderEmployeeSet);
     } else {
-      response.setValue("reminderUserSet", null);
-      response.setNotify(I18n.get(ITranslation.TS_REPORT_FILL_NO_USER));
+      response.setValue("reminderEmployeeSet", null);
+      response.setNotify(I18n.get(ITranslation.TS_REPORT_FILL_NO_EMPLOYEE));
     }
   }
 
@@ -83,7 +83,7 @@ public class TimesheetReportController {
       throws AxelorException {
     TimesheetReport timesheetReport = request.getContext().asType(TimesheetReport.class);
 
-    if (ObjectUtils.isEmpty(timesheetReport.getReminderUserSet())) {
+    if (ObjectUtils.isEmpty(timesheetReport.getReminderEmployeeSet())) {
       return;
     }
 

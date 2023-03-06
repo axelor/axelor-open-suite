@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -88,8 +88,9 @@ public class BankReconciliationValidateService {
             && bankReconciliationLine.getAccount() != null) {
           this.validate(bankReconciliationLine);
         } else if (bankReconciliationLine.getMoveLine() != null) {
+          bankReconciliationLine.setIsPosted(true);
           bankReconciliationLineService.checkAmount(bankReconciliationLine);
-          updateBankReconciledAmounts(bankReconciliationLine);
+          bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
         }
       }
     }
@@ -143,7 +144,8 @@ public class BankReconciliationValidateService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            description);
+            description,
+            bankReconciliation.getBankDetails());
 
     MoveLine partnerMoveLine =
         moveLineCreateService.createMoveLine(
@@ -177,31 +179,13 @@ public class BankReconciliationValidateService {
 
     moveRepository.save(move);
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, cashMoveLine);
 
     bankReconciliationLine.setIsPosted(true);
 
-    updateBankReconciledAmounts(bankReconciliationLine);
-  }
-
-  protected void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine) {
-
-    bankReconciliationLine.setIsPosted(true);
-
-    BigDecimal bankReconciledAmount =
-        bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit());
-
-    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
-    if (bankStatementLine != null) {
-      bankStatementLine.setAmountRemainToReconcile(
-          bankStatementLine.getAmountRemainToReconcile().subtract(bankReconciledAmount));
-    }
-
-    MoveLine moveLine = bankReconciliationLine.getMoveLine();
-
-    moveLine.setBankReconciledAmount(bankReconciledAmount);
+    bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -221,6 +205,9 @@ public class BankReconciliationValidateService {
     boolean firstLine = true;
 
     if ((moveLinesToReconcileContext != null && !moveLinesToReconcileContext.isEmpty())) {
+      boolean isUnderCorrection =
+          bankReconciliation.getStatusSelect()
+              == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
       for (HashMap<String, Object> moveLineToReconcile : moveLinesToReconcileContext) {
 
         if (bankStatementAmountRemaining.compareTo(BigDecimal.ZERO) != 1) {
@@ -231,15 +218,24 @@ public class BankReconciliationValidateService {
             moveLineRepository.find(((Integer) moveLineToReconcile.get("id")).longValue());
         BigDecimal debit;
         BigDecimal credit;
+
         if (isDebit) {
+          BigDecimal amountMoveLine =
+              BankReconciliationToolService.isForeignCurrency(bankReconciliation)
+                  ? moveLine.getCurrencyAmount()
+                  : moveLine.getCredit();
           debit =
-              (moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()))
+              (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
                   .min(bankStatementAmountRemaining);
           credit = BigDecimal.ZERO;
         } else {
+          BigDecimal amountMoveLine =
+              BankReconciliationToolService.isForeignCurrency(bankReconciliation)
+                  ? moveLine.getCurrencyAmount()
+                  : moveLine.getDebit();
           debit = BigDecimal.ZERO;
           credit =
-              (moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()))
+              (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
                   .min(bankStatementAmountRemaining);
         }
 
@@ -253,11 +249,15 @@ public class BankReconciliationValidateService {
           bankReconciliationLine.setMoveLine(moveLine);
           firstLine = false;
         } else {
-          bankReconciliation.addBankReconciliationLineListItem(
+          bankReconciliationLine =
               bankReconciliationLineService.createBankReconciliationLine(
-                  effectDate, debit, credit, name, reference, bankStatementLine, moveLine));
+                  effectDate, debit, credit, name, reference, bankStatementLine, moveLine);
+          bankReconciliation.addBankReconciliationLineListItem(bankReconciliationLine);
         }
-
+        if (isUnderCorrection) {
+          bankReconciliationLine.setIsPosted(true);
+          bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
+        }
         bankStatementAmountRemaining = bankStatementAmountRemaining.subtract(debit.add(credit));
       }
 
@@ -272,9 +272,10 @@ public class BankReconciliationValidateService {
           credit = bankStatementAmountRemaining;
         }
 
-        bankReconciliation.addBankReconciliationLineListItem(
+        bankReconciliationLine =
             bankReconciliationLineService.createBankReconciliationLine(
-                effectDate, debit, credit, name, reference, bankStatementLine, null));
+                effectDate, debit, credit, name, reference, bankStatementLine, null);
+        bankReconciliation.addBankReconciliationLineListItem(bankReconciliationLine);
       }
 
       bankReconciliationRepository.save(bankReconciliation);

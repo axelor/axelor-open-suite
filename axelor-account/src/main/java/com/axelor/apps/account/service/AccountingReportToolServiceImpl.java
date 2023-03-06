@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,10 +35,10 @@ public class AccountingReportToolServiceImpl implements AccountingReportToolServ
     return accountingReportRepository
             .all()
             .filter(
-                "self.id != ?1 AND self.reportType.typeSelect = ?2 "
+                "self.id != ?1 AND self.reportType = ?2 "
                     + "AND self.dateFrom <= ?3 AND self.dateTo >= ?4 AND self.statusSelect = 1",
                 accountingReport.getId(),
-                accountingReport.getReportType().getTypeSelect(),
+                accountingReport.getReportType(),
                 accountingReport.getDateFrom(),
                 accountingReport.getDateTo())
             .count()

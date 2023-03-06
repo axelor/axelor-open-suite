@@ -9,6 +9,19 @@
     <panel-include view="mrp-form"/>
   </form>
 
+  <grid name="mrp-manuf-order-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP">
+    <hilite if="statusSelect == 1" strong="true" color="warning"/>
+    <hilite if="statusSelect == 2" strong="true" color="success"/>
+    <field name="mrpSeq" title="MPS number"/>
+    <field name="createdOn"/>
+    <field name="createdBy"/>
+    <field name="stockLocation" form-view="stock-location-form"
+      grid-view="stock-location-grid" colSpan="6"/>
+    <field name="stockLocation.company"/>
+    <field name="endDate" colSpan="6"/>
+    <field name="statusSelect"/>
+  </grid>
+
   <action-record name="action-mrp-manuf-order-record-onnew"
     model="com.axelor.apps.supplychain.db.Mrp">
     <field name="mrpTypeSelect" expr="eval:2"/>
@@ -19,6 +32,23 @@
     <field name="period" expr="eval: null"/>
   </action-record>
 
+  <action-view name="action-mrp-view-mrp-line" id="production-action-mrp-view-mrp-line"
+    title="Results" model="com.axelor.apps.supplychain.db.MrpLine">
+    <view type="grid" name="mrp-line-grid"/>
+    <view type="form" name="mrp-line-form"/>
+    <view-param name="limit" value="200"/>
+    <domain>
+      (self.mrp.displayProductWithoutProposal = true AND self.mrp.id = :_mrpId)
+      OR
+      (self.mrp.displayProductWithoutProposal = false AND self.mrp.id = :_mrpId AND self.product.id
+      IN (select m.product from MrpLine as m
+      where m.mrp.id = :_mrpId AND m.mrpLineType.elementSelect
+      in (:_proposalElementSelect)))
+    </domain>
+    <context name="_mrpId" expr="eval: __this__.id"/>
+    <context name="_proposalElementSelect"
+      expr="eval: [__repo__(MrpLineType).ELEMENT_MASTER_PRODUCTION_SCHEDULING,__repo__(MrpLineType).ELEMENT_PURCHASE_PROPOSAL,__repo__(MrpLineType).ELEMENT_MANUFACTURING_PROPOSAL,__repo__(MrpLineType).ELEMENT_MANUFACTURING_PROPOSAL_NEED]"/>
+  </action-view>
 </object-views>
 
 

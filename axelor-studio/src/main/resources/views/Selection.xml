@@ -886,4 +886,28 @@
     <option value="yellow">yellow</option>
   </selection>
 
+  <selection name="studio.ws.request.type">
+    <option value="GET">GET</option>
+    <option value="POST">POST</option>
+    <option value="DELETE">DELETE</option>
+    <option value="PUT">PUT</option>
+    <option value="PATCH">PATCH</option>
+  </selection>
+
+  <selection name="studio.ws.request.payload.type">
+    <option value="form">Form</option>
+    <option value="json">Json</option>
+    <option value="xml">Xml</option>
+    <option value="text">Text</option>
+    <option value="file">File Path</option>
+    <option value="file-link">File Link</option>
+    <option value="file-text">File text</option>
+    <option value="stream">Stream</option>
+  </selection>
+
+  <selection name="studio.ws.authenticator.auth.type">
+    <option value="basic">Basic</option>
+    <option value="oauth2">OAuth 2</option>
+  </selection>
+
 </object-views>
