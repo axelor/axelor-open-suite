@@ -143,7 +143,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
     return toInvoiceCount;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Override
   public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
 
