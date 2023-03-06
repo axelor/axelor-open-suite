@@ -60,6 +60,9 @@ public class ForecastService {
       if (forecastGenerator.getPeriodicitySelect()
           == ForecastGeneratorRepository.FORECAST_GENERATOR_WEEKLY) {
         itDate = fromDate.plusWeeks(++count);
+      } else if (forecastGenerator.getPeriodicitySelect()
+          == ForecastGeneratorRepository.FORECAST_GENERATOR_FORTNIGHTLY) {
+        itDate = fromDate.plusWeeks(++count * 2);
       } else {
         itDate = fromDate.plusMonths(++count * forecastGenerator.getPeriodicitySelect());
       }
