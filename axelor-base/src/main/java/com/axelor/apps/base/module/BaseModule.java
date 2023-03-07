@@ -198,7 +198,9 @@ import com.axelor.report.ReportGenerator;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matchers;
+import java.lang.reflect.Method;
 
 public class BaseModule extends AxelorModule {
 
@@ -208,6 +210,16 @@ public class BaseModule extends AxelorModule {
         Matchers.any(),
         Matchers.annotatedWith(HandleExceptionResponse.class),
         new HandleExceptionResponseImpl());
+
+    bindInterceptor(
+        Matchers.inSubpackage("com.axelor.apps"),
+        new AbstractMatcher<>() {
+          @Override
+          public boolean matches(Method method) {
+            return method.getDeclaringClass().getSimpleName().toLowerCase().contains("controller");
+          }
+        },
+        new ControllerMethodInterceptor());
 
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
