@@ -61,7 +61,7 @@ public class PurchaseOrderWorkflowServiceProjectImpl
         appAccountService,
         budgetSupplychainService,
         purchaseOrderSupplychainService,
-            purchaseOrderBudgetService);
+        purchaseOrderBudgetService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
