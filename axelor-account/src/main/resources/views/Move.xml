@@ -567,7 +567,6 @@
     <action name="action-move-record-journal"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-method-get-period"/>
-    <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
@@ -584,7 +583,6 @@
 
   <action-group name="action-account-move-group-onload">
     <action name="action-move-attrs-set-company-currency-code-iso"/>
-    <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-account-move-method-compute-totals"/>
@@ -829,13 +827,6 @@
       expr="eval: &quot; self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company = :company)  &quot;"/>
   </action-attrs>
 
-  <action-attrs name="action-move-attrs-adjusting-move">
-    <attribute for="adjustingMove" name="readonly" expr="eval: period?.statusSelect != 3"
-      if="eval: statusSelect &lt; 3"/>
-    <attribute for="adjustingMove" name="readonly" expr="true"
-      if="eval: statusSelect &gt; 2"/>
-  </action-attrs>
-
   <action-attrs name="action-move-attrs-hide-move-line-name-in-draft-status">
     <attribute name="hidden" for="moveLineList.counter"
       expr="eval: statusSelect == null || statusSelect == 1"/>
@@ -1009,12 +1000,6 @@
   <action-method name="action-move-method-update-due-date">
     <call class="com.axelor.apps.account.web.MoveController" method="updateDueDate"/>
   </action-method>
-
-  <action-record name="action-record-initialize-permission-validation-move"
-    model="com.axelor.apps.account.db.Move">
-    <field name="$validatePeriod"
-      expr="call:com.axelor.apps.account.service.PeriodServiceAccount:isAuthorizedToAccountOnPeriod(__this__.period,__user__)"/>
-  </action-record>
 
   <action-attrs name="action-move-attrs-check-period-and-status"
     model="com.axelor.apps.account.db.Move">
