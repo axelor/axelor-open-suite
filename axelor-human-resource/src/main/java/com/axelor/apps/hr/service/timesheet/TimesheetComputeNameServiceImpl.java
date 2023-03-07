@@ -30,8 +30,8 @@ public class TimesheetComputeNameServiceImpl implements TimesheetComputeNameServ
         timesheet.getEmployee(), timesheet.getFromDate(), timesheet.getToDate());
   }
 
-  public static String computeTimesheetFullname(
-      Employee employee, LocalDate fromDate, LocalDate toDate) {
+  @Override
+  public String computeTimesheetFullname(Employee employee, LocalDate fromDate, LocalDate toDate) {
     DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     if (employee != null && employee.getName() != null && fromDate != null && toDate != null) {
