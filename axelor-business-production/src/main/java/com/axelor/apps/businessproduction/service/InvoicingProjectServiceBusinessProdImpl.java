@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.production.db.ManufOrder;
