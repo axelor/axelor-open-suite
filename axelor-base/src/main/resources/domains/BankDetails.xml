@@ -32,7 +32,7 @@
             if(bank != null) {
                 bankFullName = bank.getFullName();
             }
-            return com.axelor.apps.base.service.BankDetailsServiceImpl.computeBankDetailsFullName
+            return Beans.get(BankDetailsFullNameComputeService.class).computeBankDetailsFullName
             (code, label, iban, bankFullName);
         ]]>
     </string>
@@ -40,6 +40,13 @@
     <finder-method name="findDefaultByPartner" using="partner"
       filter="self.partner = :partner AND self.isDefault = TRUE"/>
     <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
+
+    <extra-imports>
+      <![CDATA[
+      import com.axelor.inject.Beans;
+      import com.axelor.apps.base.service.BankDetailsFullNameComputeService;
+      ]]>
+    </extra-imports>
 
     <track>
       <field name="partner" on="UPDATE"/>
