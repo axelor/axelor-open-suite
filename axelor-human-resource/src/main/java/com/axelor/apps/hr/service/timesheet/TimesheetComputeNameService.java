@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
+import java.time.LocalDate;
 
 public interface TimesheetComputeNameService {
 
   String computeTimesheetFullname(Timesheet timesheet);
+
+  String computeTimesheetFullname(Employee employee, LocalDate fromDate, LocalDate toDate);
 }
