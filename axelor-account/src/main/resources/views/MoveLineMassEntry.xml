@@ -12,9 +12,14 @@
       onChange="action-move-line-mass-entry-group-input-action-onchange" readonly="true"
       required="true" width="50"/>
     <field name="date" onChange="action-move-line-mass-entry-group-date-onchange"/>
-    <field name="originDate"/>
-    <field name="origin" requiredIf="originDate != null"/>
-    <field name="moveDescription" onChange="" readonly="false"/>
+    <field name="originDate" onChange="action-move-line-mass-entry-onchange-origin-date"/>
+    <field name="origin" onChange="action-move-line-mass-entry-record-set-is-edited"/>
+    <field name="moveDescription" onChange="action-move-line-mass-entry-record-set-is-edited"
+      readonly="false" required="true"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      onSelect="action-account-move-line-partner-group"
+      onChange="action-move-line-mass-entry-record-reset-partner-details" width="120"
+      canEdit="false" readonly="false"/>
     <field name="movePaymentCondition" readonly="false" form-view="payment-condition-form"
       grid-view="payment-condition-grid" onChange=""/>
     <field name="movePaymentMode" readonly="false" form-view="payment-mode-form"
@@ -27,10 +32,6 @@
       requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
-    <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-account-move-line-partner-group"
-      onChange="action-move-line-mass-entry-record-reset-partner-details" width="120"
-      canEdit="false" readonly="false"/>
     <field name="description"
       requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
     <field name="debit"
@@ -113,6 +114,7 @@
   <!-- Check if action-move-line-mass-entry-group-date-onchange is useless -->
   <action-group name="action-move-line-mass-entry-group-date-onchange">
     <action name="account-move-line-record-date-onchange"/>
+    <action name="action-move-line-mass-entry-set-origin-required"/>
     <action name="action-move-line-mass-entry-record-set-is-edited"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-validate-check-date-in-period"/>
@@ -121,6 +123,11 @@
   <!-- Check if action-move-line-mass-entry-group-payment-mode-onchange is useless -->
   <action-group name="action-move-line-mass-entry-group-payment-mode-onchange">
     <action name="action-move-method-fill-company-bank-detail"/>
+  </action-group>
+
+  <action-group name="action-move-line-mass-entry-onchange-origin-date">
+    <action name="action-move-line-mass-entry-set-origin-required"/>
+    <action name="action-move-line-mass-entry-record-set-is-edited"/>
   </action-group>
 
   <!-- Action record -->
@@ -179,6 +186,11 @@
       expr="eval: !account?.manageCutOffPeriod"/>
     <attribute for="cutOffEndDate" name="readonly"
       expr="eval: !account?.manageCutOffPeriod"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-line-mass-entry-set-origin-required">
+    <attribute for="origin" name="required"
+      expr="eval: [1,2,3].contains(__parent__.journal.journalType.technicalTypeSelect) &amp;&amp; originDate != null"/>
   </action-attrs>
 
   <!-- Action method -->

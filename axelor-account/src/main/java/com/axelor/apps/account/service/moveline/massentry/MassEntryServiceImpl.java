@@ -151,6 +151,18 @@ public class MassEntryServiceImpl implements MassEntryService {
             move.setDate(moveLineEdited.getDate());
             massEntryVerificationService.checkAndReplaceDateInMoveLineMassEntry(
                 moveLine, moveLineEdited.getDate(), move);
+            massEntryVerificationService.checkAndReplaceOriginDateInMoveLineMassEntry(
+                moveLine, moveLineEdited.getOriginDate(), move);
+            massEntryVerificationService.checkAndReplaceOriginInMoveLineMassEntry(
+                moveLine,
+                moveLineEdited.getOrigin() != null ? moveLineEdited.getOrigin() : "",
+                move);
+            massEntryVerificationService.checkAndReplaceMoveDescriptionInMoveLineMassEntry(
+                moveLine,
+                moveLineEdited.getMoveDescription() != null
+                    ? moveLineEdited.getMoveDescription()
+                    : "",
+                move);
             // TODO add other verification method
 
             moveLine.setIsEdited(false);

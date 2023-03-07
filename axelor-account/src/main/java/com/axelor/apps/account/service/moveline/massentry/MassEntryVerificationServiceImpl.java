@@ -36,7 +36,6 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveLineMassEntry moveLineMassEntry, LocalDate newDate, Move move) throws AxelorException {
     if (!moveLineMassEntry.getDate().equals(newDate)) {
       moveLineMassEntry.setDate(newDate);
-      moveLineMassEntry.setOriginDate(newDate);
 
       if (moveLineComputeAnalyticService.checkManageAnalytic(move.getCompany())) {
         moveLineMassEntry.setAnalyticMoveLineList(
@@ -52,6 +51,27 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         }
         moveLineToolService.checkDateInPeriod(move, moveLineMassEntry);
       }
+    }
+  }
+
+  public void checkAndReplaceOriginDateInMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, LocalDate newDate, Move move) {
+    if (!moveLineMassEntry.getOriginDate().equals(newDate)) {
+      moveLineMassEntry.setOriginDate(newDate);
+    }
+  }
+
+  public void checkAndReplaceOriginInMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, String newOrigin, Move move) {
+    if (!newOrigin.equals(moveLineMassEntry.getOrigin())) {
+      moveLineMassEntry.setOrigin(newOrigin);
+    }
+  }
+
+  public void checkAndReplaceMoveDescriptionInMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, String newMoveDescription, Move move) {
+    if (!newMoveDescription.equals(moveLineMassEntry.getMoveDescription())) {
+      moveLineMassEntry.setMoveDescription(newMoveDescription);
     }
   }
 }
