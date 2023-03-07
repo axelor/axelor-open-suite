@@ -259,6 +259,10 @@ public class MoveTemplateService {
             moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
+<<<<<<< HEAD
+=======
+
+>>>>>>> RM#60957: correction
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
@@ -373,6 +377,10 @@ public class MoveTemplateService {
             moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
+<<<<<<< HEAD
+=======
+
+>>>>>>> RM#60957: correction
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
