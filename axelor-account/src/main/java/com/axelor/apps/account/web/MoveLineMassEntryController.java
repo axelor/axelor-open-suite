@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
+import com.axelor.apps.account.service.moveline.massentry.MassEntryToolService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -157,6 +158,55 @@ public class MoveLineMassEntryController {
         Beans.get(MassEntryService.class).verifyFieldsChangeOnMoveLineMassEntry(move);
         response.setValues(move);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void changePartnerOnMoveLineMassEntry(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+      Context parentContext = request.getContext().getParent();
+
+      if (moveLineMassEntry != null
+          && parentContext != null
+          && Move.class.equals(parentContext.getContextClass())) {
+        if (moveLineMassEntry.getPartner() == null) {
+          moveLineMassEntry.setPartnerId(null);
+          moveLineMassEntry.setPartnerSeq(null);
+          moveLineMassEntry.setPartnerFullName(null);
+          moveLineMassEntry.setMovePartnerBankDetails(null);
+
+        } else {
+          Move move = parentContext.asType(Move.class);
+
+          if (move != null && move.getJournal() != null) {
+            Beans.get(MassEntryToolService.class)
+                .setPaymentModeOnMoveLineMassEntry(
+                    moveLineMassEntry, move.getJournal().getJournalType().getTechnicalTypeSelect());
+
+            moveLineMassEntry.setMovePaymentCondition(null);
+            if (move.getJournal().getJournalType().getTechnicalTypeSelect() != 4) {
+              moveLineMassEntry.setMovePaymentCondition(
+                  moveLineMassEntry.getPartner().getPaymentCondition());
+            }
+          }
+
+          moveLineMassEntry.setMovePartnerBankDetails(
+              moveLineMassEntry.getPartner().getBankDetailsList().stream()
+                      .anyMatch(it -> it.getIsDefault() && it.getActive())
+                  ? moveLineMassEntry.getPartner().getBankDetailsList().stream()
+                      .filter(it -> it.getIsDefault() && it.getActive())
+                      .findFirst()
+                      .get()
+                  : null);
+          moveLineMassEntry.setCurrencyCode(
+              moveLineMassEntry.getPartner().getCurrency() != null
+                  ? moveLineMassEntry.getPartner().getCurrency().getCodeISO()
+                  : null);
+        }
+      }
+      response.setValues(moveLineMassEntry);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

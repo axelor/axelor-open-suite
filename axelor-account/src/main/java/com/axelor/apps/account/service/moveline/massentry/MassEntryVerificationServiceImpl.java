@@ -2,6 +2,7 @@ package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Period;
@@ -55,23 +56,30 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   }
 
   public void checkAndReplaceOriginDateInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, LocalDate newDate, Move move) {
+      MoveLineMassEntry moveLineMassEntry, LocalDate newDate) {
     if (!moveLineMassEntry.getOriginDate().equals(newDate)) {
       moveLineMassEntry.setOriginDate(newDate);
     }
   }
 
   public void checkAndReplaceOriginInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, String newOrigin, Move move) {
+      MoveLineMassEntry moveLineMassEntry, String newOrigin) {
     if (!newOrigin.equals(moveLineMassEntry.getOrigin())) {
       moveLineMassEntry.setOrigin(newOrigin);
     }
   }
 
   public void checkAndReplaceMoveDescriptionInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, String newMoveDescription, Move move) {
+      MoveLineMassEntry moveLineMassEntry, String newMoveDescription) {
     if (!newMoveDescription.equals(moveLineMassEntry.getMoveDescription())) {
       moveLineMassEntry.setMoveDescription(newMoveDescription);
+    }
+  }
+
+  public void checkAndReplaceMovePaymentModeInMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, PaymentMode newMovePaymentMode) {
+    if (!newMovePaymentMode.equals(moveLineMassEntry.getMovePaymentMode())) {
+      moveLineMassEntry.setMovePaymentMode(newMovePaymentMode);
     }
   }
 }

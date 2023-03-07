@@ -104,6 +104,9 @@ public class MassEntryServiceImpl implements MassEntryService {
     for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
       if (moveLine.getTemporaryMoveNumber().equals(moveLineMassEntry.getTemporaryMoveNumber())) {
         moveLineMassEntry.setPartner(moveLine.getPartner());
+        moveLineMassEntry.setPartnerId(moveLine.getPartnerId());
+        moveLineMassEntry.setPartnerSeq(moveLine.getPartnerSeq());
+        moveLineMassEntry.setPartnerFullName(moveLine.getPartnerFullName());
         moveLineMassEntry.setDate(moveLine.getDate());
         moveLineMassEntry.setDueDate(moveLine.getDueDate());
         moveLineMassEntry.setOriginDate(moveLine.getOriginDate());
@@ -115,6 +118,7 @@ public class MassEntryServiceImpl implements MassEntryService {
         moveLineMassEntry.setExportedDirectDebitOk(moveLine.getExportedDirectDebitOk());
         moveLineMassEntry.setMovePaymentCondition(moveLine.getMovePaymentCondition());
         moveLineMassEntry.setMovePaymentMode(moveLine.getMovePaymentMode());
+        moveLineMassEntry.setMovePartnerBankDetails(moveLine.getMovePartnerBankDetails());
         break;
       }
     }
@@ -125,9 +129,13 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLineMassEntry.setOrigin(null);
     moveLineMassEntry.setOriginDate(null);
     moveLineMassEntry.setPartner(null);
+    moveLineMassEntry.setPartnerId(null);
+    moveLineMassEntry.setPartnerSeq(null);
+    moveLineMassEntry.setPartnerFullName(null);
     moveLineMassEntry.setMoveDescription(null);
     moveLineMassEntry.setMovePaymentCondition(null);
     moveLineMassEntry.setMovePaymentMode(null);
+    moveLineMassEntry.setMovePartnerBankDetails(null);
     moveLineMassEntry.setAccount(null);
     moveLineMassEntry.setTaxLine(null);
     moveLineMassEntry.setDescription(null);
@@ -152,17 +160,19 @@ public class MassEntryServiceImpl implements MassEntryService {
             massEntryVerificationService.checkAndReplaceDateInMoveLineMassEntry(
                 moveLine, moveLineEdited.getDate(), move);
             massEntryVerificationService.checkAndReplaceOriginDateInMoveLineMassEntry(
-                moveLine, moveLineEdited.getOriginDate(), move);
+                moveLine, moveLineEdited.getOriginDate());
             massEntryVerificationService.checkAndReplaceOriginInMoveLineMassEntry(
-                moveLine,
-                moveLineEdited.getOrigin() != null ? moveLineEdited.getOrigin() : "",
-                move);
+                moveLine, moveLineEdited.getOrigin() != null ? moveLineEdited.getOrigin() : "");
             massEntryVerificationService.checkAndReplaceMoveDescriptionInMoveLineMassEntry(
                 moveLine,
                 moveLineEdited.getMoveDescription() != null
                     ? moveLineEdited.getMoveDescription()
-                    : "",
-                move);
+                    : "");
+            if (!moveLineEdited.getAccount().getHasInvoiceTerm()) {
+              massEntryVerificationService.checkAndReplaceMovePaymentModeInMoveLineMassEntry(
+                  moveLine, moveLineEdited.getMovePaymentMode());
+            }
+
             // TODO add other verification method
 
             moveLine.setIsEdited(false);

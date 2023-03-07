@@ -106,4 +106,20 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
     }
     return resultList;
   }
+
+  @Override
+  public void setPaymentModeOnMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, Integer technicalTypeSelect) {
+    switch (technicalTypeSelect) {
+      case 1:
+        moveLineMassEntry.setMovePaymentMode(moveLineMassEntry.getPartner().getOutPaymentMode());
+        break;
+      case 2:
+        moveLineMassEntry.setMovePaymentMode(moveLineMassEntry.getPartner().getInPaymentMode());
+        break;
+      default:
+        moveLineMassEntry.setMovePaymentMode(null);
+        break;
+    }
+  }
 }

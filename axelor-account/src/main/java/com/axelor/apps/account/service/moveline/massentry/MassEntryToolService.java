@@ -18,4 +18,7 @@ public interface MassEntryToolService {
       Move move, MoveLine moveLine, Integer temporaryMoveNumber);
 
   List<MoveLineMassEntry> getEditedMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList);
+
+  void setPaymentModeOnMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, Integer technicalTypeSelect);
 }

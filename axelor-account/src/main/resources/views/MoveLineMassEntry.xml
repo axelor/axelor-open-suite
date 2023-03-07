@@ -18,13 +18,12 @@
       readonly="false" required="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-account-move-line-partner-group"
-      onChange="action-move-line-mass-entry-record-reset-partner-details" width="120"
-      canEdit="false" readonly="false"/>
-    <field name="movePaymentCondition" readonly="false" form-view="payment-condition-form"
-      grid-view="payment-condition-grid" onChange=""/>
+      onChange="action-move-line-mass-entry-method-on-change-partner" width="120" canEdit="false"
+      readonly="false"/>
+    <field name="movePaymentCondition" readonly="true" form-view="payment-condition-form"
+      grid-view="payment-condition-grid"/>
     <field name="movePaymentMode" readonly="false" form-view="payment-mode-form"
-      grid-view="payment-mode-grid"
-      onChange="action-move-line-mass-entry-group-payment-mode-onchange"/>
+      grid-view="payment-mode-grid" onChange="action-move-line-mass-entry-record-set-is-edited"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
       onChange="action-account-move-line-mass-entry-account-group-on-change"/>
@@ -120,32 +119,19 @@
     <action name="action-move-line-validate-check-date-in-period"/>
   </action-group>
 
-  <!-- Check if action-move-line-mass-entry-group-payment-mode-onchange is useless -->
-  <action-group name="action-move-line-mass-entry-group-payment-mode-onchange">
-    <action name="action-move-method-fill-company-bank-detail"/>
-  </action-group>
-
   <action-group name="action-move-line-mass-entry-onchange-origin-date">
     <action name="action-move-line-mass-entry-set-origin-required"/>
     <action name="action-move-line-mass-entry-record-set-is-edited"/>
   </action-group>
 
   <!-- Action record -->
-  <!-- Check if action-move-line-mass-entry-record-reset-partner-details is useless -->
-  <action-record name="action-move-line-mass-entry-record-reset-partner-details"
-    model="com.axelor.apps.account.db.MoveLineMassEntry">
-    <field name="partnerFullName,partnerSeq,partnerId" expr="eval: null" if="!partner"/>
-    <field name="bankDetails"
-      expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
-  </action-record>
-
   <action-record name="action-move-line-mass-entry-record-set-is-edited"
     model="com.axelor.apps.account.db.MoveLineMassEntry">
     <field name="isEdited" expr="true"/>
   </action-record>
 
   <!-- Action attrs -->
-  <!-- Check if action-move-line-mass-entry-record-reset-partner-details can be made in MoveLineMassEntryController
+  <!-- Check if action-move-line-mass-entry-attrs-set-all-fields-required can be made in MoveLineMassEntryController
     method -->
   <action-attrs name="action-move-line-mass-entry-attrs-set-all-fields-required">
     <attribute for="date" name="readonly" expr="eval: inputAction == 2"/>
@@ -227,6 +213,11 @@
   <action-method name="action-move-line-mass-entry-method-on-change-common-fields">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
       method="verifyFieldsChangeOnMoveLineMassEntry"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-on-change-partner">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="changePartnerOnMoveLineMassEntry"/>
   </action-method>
 
 </object-views>
