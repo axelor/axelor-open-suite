@@ -161,20 +161,27 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setTaxTotal(BigDecimal.ZERO);
     purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      purchaseOrder.setExTaxTotal(
-          purchaseOrder.getExTaxTotal().add(purchaseOrderLine.getExTaxTotal()));
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    List<PurchaseOrderLineTax> purchaseOrderLineTaxList =
+        purchaseOrder.getPurchaseOrderLineTaxList();
+    if (purchaseOrderLineList != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        purchaseOrder.setExTaxTotal(
+            purchaseOrder.getExTaxTotal().add(purchaseOrderLine.getExTaxTotal()));
 
-      // In the company accounting currency
-      purchaseOrder.setCompanyExTaxTotal(
-          purchaseOrder.getCompanyExTaxTotal().add(purchaseOrderLine.getCompanyExTaxTotal()));
+        // In the company accounting currency
+        purchaseOrder.setCompanyExTaxTotal(
+            purchaseOrder.getCompanyExTaxTotal().add(purchaseOrderLine.getCompanyExTaxTotal()));
+      }
     }
 
-    for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
+    if (purchaseOrderLineTaxList != null) {
+      for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrderLineTaxList) {
 
-      // In the purchase order currency
-      purchaseOrder.setTaxTotal(
-          purchaseOrder.getTaxTotal().add(purchaseOrderLineVat.getTaxTotal()));
+        // In the purchase order currency
+        purchaseOrder.setTaxTotal(
+            purchaseOrder.getTaxTotal().add(purchaseOrderLineVat.getTaxTotal()));
+      }
     }
 
     purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add(purchaseOrder.getTaxTotal()));
