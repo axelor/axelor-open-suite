@@ -654,7 +654,7 @@
         readonlyIf="!saleOrderLineList || !saleOrderLineList.length > 0" colSpan="12"
         onClick="save, action-supplychain-sale-order-create-stock-move"/>
       <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
-        colSpan="12" onClick="save,action-sale-group-confirmed"
+        colSpan="12" onClick="action-sale-group-confirmed"
         readonlyIf="advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)"/>
       <button name="invoiceAdvancePaymentBtn" title="Invoice an advance payment"
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"
@@ -1444,12 +1444,14 @@
     <action name="action-sale-order-attrs-set-required"/>
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
+    <action name="action-sale-order-attrs-incoterm-required"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
+    <action name="action-sale-order-validate-check-on-confirm"/>
+    <action name="save"/>
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
-    <action name="action-sale-order-validate-check-on-confirm"/>
     <action name="action-sale-order-method-confirm"/>
     <action name="action-sale-order-method-notify-stock-move-created"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
@@ -1468,6 +1470,7 @@
     <action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"
       if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
     <action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2} != null"/>
+    <action name="action-sale-order-attrs-incoterm-required"/>
   </action-group>
 
   <action-group name="action-sale-order-group-client-partner-change">
@@ -2090,7 +2093,7 @@
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
     <error message="Incoterm must be filled"
       if="__config__.app.isApp('supplychain')
-          &amp;&amp; incoterm == null
+          &amp;&amp; (incoterm == null &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'})
           &amp;&amp; (
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
           || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code))"/>
@@ -2215,5 +2218,14 @@
     <field name="stockLocation"
       expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : stockLocation"/>
   </action-record>
+
+  <action-attrs name="action-sale-order-attrs-incoterm-required">
+    <attribute for="incoterm" name="required"
+      expr="eval: __config__.app.isApp('supplychain')
+          &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'}
+          &amp;&amp; (
+          (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
+          || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
+  </action-attrs>
 
 </object-views>
