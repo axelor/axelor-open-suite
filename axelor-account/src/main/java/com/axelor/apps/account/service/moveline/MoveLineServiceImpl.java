@@ -325,9 +325,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
-    if (moveDate == null
-        || moveLine.getCutOffStartDate() == null
-        || moveLine.getCutOffEndDate() == null) {
+    if (moveDate == null || !moveLineToolService.isCutOffActive(moveLine)) {
       return BigDecimal.ZERO;
     }
     BigDecimal daysProrata =
@@ -371,9 +369,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
-    if (moveDate != null
-        && moveLine.getCutOffStartDate() != null
-        && moveLine.getCutOffEndDate() != null) {
+    if (moveDate != null && moveLineToolService.isCutOffActive(moveLine)) {
       BigDecimal daysProrata =
           BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
       BigDecimal daysTotal =

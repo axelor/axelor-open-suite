@@ -43,6 +43,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
@@ -97,6 +98,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
       MoveToolService moveToolService,
+      MoveLineToolService moveLineToolService,
       AccountManagementAccountService accountManagementAccountService,
       TaxAccountService taxAccountService,
       AppAccountService appAccountService,
@@ -120,6 +122,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     super(
         moveCreateService,
         moveToolService,
+        moveLineToolService,
         accountManagementAccountService,
         taxAccountService,
         appAccountService,

@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -42,6 +43,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.Query;
 
@@ -321,7 +323,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     return moveLine == null
         || moveLine.getAccount() == null
         || !moveLine.getAccount().getManageCutOffPeriod()
-        || (moveLine.getCutOffStartDate() != null && moveLine.getCutOffEndDate() != null);
+        || this.isCutOffActive(moveLine);
   }
 
   @Override
@@ -381,5 +383,18 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       update.setParameter("startDate", LocalDate.parse(startDate));
     }
     update.executeUpdate();
+  }
+
+  @Override
+  public boolean isCutOffActive(MoveLine moveLine) {
+    List<Integer> functionalOriginList =
+        Arrays.asList(
+            MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
+            MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE,
+            MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF);
+
+    return moveLine.getCutOffStartDate() != null
+        && moveLine.getCutOffEndDate() != null
+        && !functionalOriginList.contains(moveLine.getMove().getFunctionalOriginSelect());
   }
 }
