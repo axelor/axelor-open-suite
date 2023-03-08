@@ -20,13 +20,12 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 
 public class UserServiceAccountImpl extends UserServiceImpl {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public int changePfpValidator(User pfpValidatorUser, User newPfpValidatorUser) {
 
     return Beans.get(AccountingSituationRepository.class)

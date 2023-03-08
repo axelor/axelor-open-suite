@@ -244,7 +244,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails) {
     InvoicePayment invoicePayment =
         createInvoicePayment(

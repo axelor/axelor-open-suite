@@ -269,8 +269,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Override
   @Transactional
   public void createAnalyticOnMoveLine(
-      AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine)
-      throws AxelorException {
+      AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine) {
     if (analyticDistributionTemplate != null
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);

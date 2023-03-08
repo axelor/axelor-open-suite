@@ -461,7 +461,7 @@ public class DebtRecoveryService {
     return null; // if no debtRecovery has been found for the specified tradingName
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public DebtRecovery createDebtRecovery(
       AccountingSituation accountingSituation, TradingName tradingName) {
     DebtRecovery debtRecovery = new DebtRecovery();

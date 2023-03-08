@@ -35,7 +35,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
@@ -313,7 +312,6 @@ public class AccountCustomerService {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public void flagPartners(List<Partner> partnerList, Company company) throws AxelorException {
     for (Partner partner : partnerList) {
       AccountingSituation accountingSituation =
@@ -329,7 +327,6 @@ public class AccountCustomerService {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public AccountingSituation updateAccountingSituationCustomerAccount(
       AccountingSituation accountingSituation,
       boolean updateCustAccount,
