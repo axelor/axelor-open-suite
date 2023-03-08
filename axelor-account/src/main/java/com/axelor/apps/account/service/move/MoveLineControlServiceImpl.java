@@ -99,9 +99,9 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
   @Override
   public void validateMoveLine(MoveLine moveLine) throws AxelorException {
-    if ((moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0
+    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0
         && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0
-        && moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) == 0)) {
+        && moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) == 0) {
       throw new AxelorException(
           moveLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -112,29 +112,39 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
       Invoice invoiceAttached = invoiceTermList.get(0).getInvoice();
+      BigDecimal total = moveLine.getCredit().max(moveLine.getDebit());
+
       if (invoiceAttached != null) {
         invoiceTermList = invoiceAttached.getInvoiceTermList();
+        total = invoiceAttached.getInTaxTotal();
       }
-      if (invoiceAttached != null
-          && invoiceTermList.stream()
-                  .map(
-                      it ->
-                          invoiceTermService.computeCustomizedPercentageUnscaled(
-                              it.getAmount(), invoiceAttached.getInTaxTotal()))
-                  .reduce(BigDecimal.ZERO, BigDecimal::add)
-                  .compareTo(new BigDecimal(100))
-              != 0) {
-        throw new AxelorException(
-            moveLine,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE),
-            moveLine.getAccount().getCode());
-      } else {
+
+      if (this.compareInvoiceTermAmountSumToTotal(invoiceTermList, total)) {
         this.checkTotal(invoiceTermList, invoiceAttached, moveLine, false);
         this.checkTotal(invoiceTermList, invoiceAttached, moveLine, true);
+
+        if (this.compareInvoiceTermAmountSumToTotal(invoiceTermList, total)) {
+          throw new AxelorException(
+              moveLine,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_PERCENTAGE),
+              moveLine.getAccount().getCode());
+        }
       }
+
+      invoiceTermService.recomputeInvoiceTermsPercentage(invoiceTermList, total);
     }
+
     controlAccountingAccount(moveLine);
+  }
+
+  protected boolean compareInvoiceTermAmountSumToTotal(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    return invoiceTermList.stream()
+            .map(InvoiceTerm::getAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .compareTo(total)
+        != 0;
   }
 
   protected void checkTotal(
