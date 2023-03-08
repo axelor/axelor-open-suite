@@ -121,7 +121,7 @@ public class MassEntryServiceImpl implements MassEntryService {
         moveLineMassEntry.setMoveStatusSelect(moveLine.getMoveStatusSelect());
         moveLineMassEntry.setInterbankCodeLine(moveLine.getInterbankCodeLine());
         moveLineMassEntry.setMoveDescription(moveLine.getMoveDescription());
-        moveLineMassEntry.setDescription(moveLine.getDescription());
+        moveLineMassEntry.setDescription(moveLine.getMoveDescription());
         moveLineMassEntry.setExportedDirectDebitOk(moveLine.getExportedDirectDebitOk());
         moveLineMassEntry.setMovePaymentCondition(moveLine.getMovePaymentCondition());
         moveLineMassEntry.setMovePaymentMode(moveLine.getMovePaymentMode());

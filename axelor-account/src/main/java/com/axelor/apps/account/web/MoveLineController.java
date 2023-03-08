@@ -409,7 +409,8 @@ public class MoveLineController {
       }
       if (moveLine.getAccount() != null
           && move.getPartner() != null
-          && moveLine.getAccount().getUseForPartnerBalance()) {
+          && moveLine.getAccount().getUseForPartnerBalance()
+          && !move.getIsMassEntry()) {
         readonly = true;
       }
       response.setAttr("partner", "readonly", readonly);

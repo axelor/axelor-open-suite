@@ -74,7 +74,6 @@
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
     <action name="action-move-line-method-get-creditdebit-balance"/>
     <action name="action-move-line-attrs-hidden-reconcileLists"/>
-    <action name="action-move-line-record-set-partner"/>
     <action name="action-move-line-method-set-is-other-currency"/>
     <action name="action-move-line-method-set-currencyRate"/>
     <action name="action-move-line-record-set-currencyAmount"/>
@@ -91,13 +90,12 @@
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-record-set-cut-off-generated-false"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
-    <action name="action-account-move-line-method-set-partner-readonly"/>
     <action name="action-move-line-method-refresh-account-informations"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
     <action name="action-move-line-method-change-account-set-default-distribution-template"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
-    <action name="action-move-line-record-set-partner"/>
     <action name="action-move-line-method-generate-invoice-terms"/>
+    <action name="action-move-line-attrs-set-debit-credit-focus"/>
   </action-group>
 
   <action-group name="action-move-line-mass-entry-group-input-action-onchange">
@@ -174,6 +172,13 @@
   <action-attrs name="action-move-line-mass-entry-set-origin-required">
     <attribute for="origin" name="required"
       expr="eval: [1,2,3].contains(__parent__.journal.journalType.technicalTypeSelect) &amp;&amp; originDate != null"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-line-attrs-set-debit-credit-focus">
+    <attribute for="debit" name="focus" expr="true"
+      if="eval: account?.commonPosition == 2 || account?.commonPosition == 0"/>
+    <attribute for="credit" name="focus" expr="true"
+      if="eval: account?.commonPosition == 1"/>
   </action-attrs>
 
   <!-- Action method -->
