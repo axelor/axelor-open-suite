@@ -7,7 +7,7 @@
 
   <entity name="ShipmentMode" sequential="true" lang="java">
     <string name="name" title="Shipment Mode"/>
-    <one-to-many name="freightCarrierMode" title="Freight Carrier Mode"
+    <one-to-many name="freightCarrierMode" title="Freight carrier mode"
       ref="com.axelor.apps.stock.db.FreightCarrierMode" mappedBy="shipmentMode"/>
   </entity>
 
