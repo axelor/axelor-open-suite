@@ -64,7 +64,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generateCounterpartMoveLine(Move move) throws AxelorException {
     MoveLine counterPartMoveLine = createCounterpartMoveLine(move);
     if (counterPartMoveLine == null) {

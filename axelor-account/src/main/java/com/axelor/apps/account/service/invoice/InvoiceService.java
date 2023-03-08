@@ -37,7 +37,6 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -126,7 +125,6 @@ public interface InvoiceService {
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException;
 
   /**
@@ -135,7 +133,6 @@ public interface InvoiceService {
    *
    * @param invoice Une facture
    */
-  @Transactional
   public void usherProcess(Invoice invoice);
 
   String checkNotImputedRefunds(Invoice invoice) throws AxelorException;
@@ -149,7 +146,6 @@ public interface InvoiceService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException;
 
   public void setDraftSequence(Invoice invoice) throws AxelorException;
@@ -317,7 +313,6 @@ public interface InvoiceService {
 
   public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 

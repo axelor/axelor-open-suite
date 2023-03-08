@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -41,7 +40,6 @@ public interface AccountingReportService {
 
   public String addParams(String paramQuery);
 
-  @Transactional
   public void setSequence(AccountingReport accountingReport, String sequence);
 
   public String getSequence(AccountingReport accountingReport) throws AxelorException;
@@ -50,7 +48,6 @@ public interface AccountingReportService {
 
   public Account getAccount(AccountingReport accountingReport);
 
-  @Transactional
   public void setStatus(AccountingReport accountingReport);
 
   /**

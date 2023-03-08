@@ -172,7 +172,7 @@ public class PaymentServiceImpl implements PaymentService {
    * @param creditTotalRemaining
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   private void createReconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,

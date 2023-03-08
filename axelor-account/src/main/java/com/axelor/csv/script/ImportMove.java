@@ -67,7 +67,7 @@ public class ImportMove {
 
   private String lastImportDate;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Object importFECMove(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
@@ -239,8 +239,8 @@ public class ImportMove {
     }
   }
 
-  @Transactional(rollbackOn = Exception.class)
-  public Object validateMove(Object bean, Map<String, Object> values) throws AxelorException {
+  @Transactional
+  public Object validateMove(Object bean, Map<String, Object> values) {
     assert bean instanceof Move;
     Move move = (Move) bean;
     try {
