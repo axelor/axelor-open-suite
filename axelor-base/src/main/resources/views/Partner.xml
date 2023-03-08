@@ -549,7 +549,7 @@
         </panel>
       </panel>
       <panel name="carrierPanel" title="Carrier" showIf="isCarrier">
-        <field name="freightCarrierModeList" title="Freight Carrier Mode"
+        <field name="freightCarrierModeList"
           form-view="freight-carrier-mode-freight-carrier-form"
           grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12"/>
       </panel>
@@ -563,8 +563,7 @@
           title="Shipment Mode"/>
         <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"
           onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form"
-          grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null"
-          title="Freight Carrier Mode"/>
+          grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null"/>
         <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid"
           title="Freight Carrier" readonly="true"/>
         <field name="isIspmRequired" hidden="true" showIf="isCustomer || isProspect"/>
