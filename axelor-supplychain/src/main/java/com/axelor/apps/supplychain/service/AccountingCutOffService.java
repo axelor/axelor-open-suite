@@ -24,7 +24,6 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,7 +36,6 @@ public interface AccountingCutOffService {
       Integer limit,
       Integer offset);
 
-  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCutOffMoves(
       StockMove stockMove,
       LocalDate moveDate,

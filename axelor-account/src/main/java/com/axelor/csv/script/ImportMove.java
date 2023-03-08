@@ -51,7 +51,7 @@ public class ImportMove {
   @Inject private MoveRepository moveRepository;
   @Inject private MoveLineRepository moveLineRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importFECMove(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;

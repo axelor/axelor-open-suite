@@ -21,20 +21,17 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface ReconcileService {
 
-  @Transactional
   public Reconcile createReconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       BigDecimal amount,
       boolean canBeZeroBalanceOk);
 
-  @Transactional(rollbackOn = {Exception.class})
   public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments)
       throws AxelorException;
 
@@ -51,10 +48,8 @@ public interface ReconcileService {
       boolean updateInvoicePayments)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void canBeZeroBalance(Reconcile reconcile) throws AxelorException;
 
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException;

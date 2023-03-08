@@ -380,7 +380,7 @@ public class DebtRecoveryService {
     return accountingSituation.getDebtRecovery();
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public DebtRecovery createDebtRecovery(AccountingSituation accountingSituation) {
     DebtRecovery debtRecovery = new DebtRecovery();
     debtRecovery.setAccountingSituation(accountingSituation);

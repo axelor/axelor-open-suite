@@ -856,7 +856,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);

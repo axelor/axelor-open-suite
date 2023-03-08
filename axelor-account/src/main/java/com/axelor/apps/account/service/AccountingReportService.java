@@ -35,7 +35,6 @@ public interface AccountingReportService {
 
   public String addParams(String paramQuery);
 
-  @Transactional
   public void setSequence(AccountingReport accountingReport, String sequence);
 
   public String getSequence(AccountingReport accountingReport) throws AxelorException;
@@ -44,7 +43,6 @@ public interface AccountingReportService {
 
   public Account getAccount(AccountingReport accountingReport);
 
-  @Transactional
   public void setStatus(AccountingReport accountingReport);
 
   /** @param accountingReport */
