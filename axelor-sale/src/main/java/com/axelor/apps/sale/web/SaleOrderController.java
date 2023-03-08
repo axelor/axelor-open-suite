@@ -552,7 +552,9 @@ public class SaleOrderController {
           Beans.get(SaleOrderDomainService.class).getPartnerBaseDomain(saleOrder.getCompany());
 
       if (!(saleOrderLineList == null || saleOrderLineList.isEmpty())) {
-        domain = Beans.get(PricedOrderDomainService.class).getPartnerDomain(saleOrder, domain);
+        domain =
+            Beans.get(PricedOrderDomainService.class)
+                .getPartnerDomain(saleOrder, domain, PriceListRepository.TYPE_SALE);
       }
 
       response.setAttr("clientPartner", "domain", domain);

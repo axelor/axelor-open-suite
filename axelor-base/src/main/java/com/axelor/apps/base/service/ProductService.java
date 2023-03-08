@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 
 public interface ProductService {
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateProductPrice(Product product) throws AxelorException;
 
   public String getSequence(Product product) throws AxelorException;
@@ -37,7 +37,7 @@ public interface ProductService {
 
   public boolean hasActivePriceList(Product product);
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateProductVariants(Product productModel) throws AxelorException;
 
   public Product createProduct(Product productModel, ProductVariant productVariant, int seq)
