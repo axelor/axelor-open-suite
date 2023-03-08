@@ -47,7 +47,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
@@ -919,9 +918,10 @@ public class InvoiceController {
           Beans.get(InvoiceDomainService.class)
               .getPartnerBaseDomain(company, invoice, invoiceTypeSelect);
 
-      if ((!(invoiceLineList == null || invoiceLineList.isEmpty()))
-          && (invoiceTypeSelect == PriceListRepository.TYPE_SALE)) {
-        domain = Beans.get(PricedOrderDomainService.class).getPartnerDomain(invoice, domain);
+      if (!(invoiceLineList == null || invoiceLineList.isEmpty())) {
+        domain =
+            Beans.get(PricedOrderDomainService.class)
+                .getPartnerDomain(invoice, domain, invoiceTypeSelect);
       }
 
       response.setAttr("partner", "domain", domain);

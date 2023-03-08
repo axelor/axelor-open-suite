@@ -457,6 +457,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         invoicePayment =
             Optional.of(reconcile)
                 .map(Reconcile::getInvoicePayment)
+                .filter(invPayment -> invoice.equals(invPayment.getInvoice()))
                 .orElse(this.getExistingInvoicePayment(invoice, otherMove));
       }
 

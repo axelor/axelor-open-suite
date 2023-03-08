@@ -311,4 +311,7 @@ public interface InvoiceTermService {
 
   @CallMethod
   boolean isMultiCurrency(InvoiceTerm invoiceTerm);
+
+  List<InvoiceTerm> recomputeInvoiceTermsPercentage(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total);
 }
