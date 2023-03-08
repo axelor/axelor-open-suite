@@ -361,6 +361,10 @@
   <action-record name="action-record-accounting-batch-journal-onchange"
     model="com.axelor.apps.account.db.AccountingBatch">
     <field name="cutOffMoveStatusSelect" expr="eval: null"/>
+    <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_SIMULATED"
+      if="miscOpeJournal?.authorizeSimulatedMove"/>
+    <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_DAYBOOK"
+      if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook"/>
   </action-record>
 
   <!-- ACTION METHOD -->
