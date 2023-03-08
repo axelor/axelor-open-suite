@@ -1479,6 +1479,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return !Objects.equals(this.getCurrency(invoiceTerm), this.getCompanyCurrency(invoiceTerm));
   }
 
+  @Override
   public List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total) {
     InvoiceTerm lastInvoiceTerm = invoiceTermList.remove(invoiceTermList.size() - 1);
