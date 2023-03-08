@@ -59,7 +59,7 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PayVoucherDueElement updateDueElementWithFinancialDiscount(
       PayVoucherDueElement payVoucherDueElement, PaymentVoucher paymentVoucher)
       throws AxelorException {

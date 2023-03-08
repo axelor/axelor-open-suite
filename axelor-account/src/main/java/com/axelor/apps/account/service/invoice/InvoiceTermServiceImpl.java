@@ -1260,7 +1260,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total) {
     boolean isSubtract = true;
 

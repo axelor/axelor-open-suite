@@ -74,7 +74,7 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public FixedAsset generateAndComputeLines(
       FixedAsset fixedAsset, FixedAssetRepository fixedAssetRepository) throws AxelorException {
     if (isImported(fixedAsset)) {
