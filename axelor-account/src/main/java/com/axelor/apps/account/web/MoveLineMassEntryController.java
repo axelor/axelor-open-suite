@@ -21,9 +21,11 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryToolService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -32,6 +34,7 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.lang3.ArrayUtils;
 
 @Singleton
 public class MoveLineMassEntryController {
@@ -66,22 +69,28 @@ public class MoveLineMassEntryController {
     try {
       Move move = request.getContext().asType(Move.class);
       MassEntryService massEntryService = Beans.get(MassEntryService.class);
+      int[] technicalTypeSelectArray = {1, 2, 4};
 
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
         MoveLineMassEntry lastMoveLineMassEntry =
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
-        if (lastMoveLineMassEntry.getInputAction() != null
-            && lastMoveLineMassEntry.getInputAction() == 2) {
+        if ((lastMoveLineMassEntry.getInputAction() != null
+                && lastMoveLineMassEntry.getInputAction() == 2)
+            || ArrayUtils.contains(
+                technicalTypeSelectArray,
+                move.getJournal().getJournalType().getTechnicalTypeSelect())) {
           massEntryService.fillMoveLineListWithMoveLineMassEntryList(
               move, lastMoveLineMassEntry.getTemporaryMoveNumber());
-          response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
+          response.setValues(move);
+
+          Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
           massEntryService.generateTaxLineAndCounterpart(
               move, this.extractDueDate(request), lastMoveLineMassEntry.getTemporaryMoveNumber());
-          response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
+          response.setValues(move);
         }
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -185,11 +194,16 @@ public class MoveLineMassEntryController {
                 .setPaymentModeOnMoveLineMassEntry(
                     moveLineMassEntry, move.getJournal().getJournalType().getTechnicalTypeSelect());
 
+            move.setPartner(moveLineMassEntry.getPartner());
+            move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
+
             moveLineMassEntry.setMovePaymentCondition(null);
             if (move.getJournal().getJournalType().getTechnicalTypeSelect() != 4) {
               moveLineMassEntry.setMovePaymentCondition(
                   moveLineMassEntry.getPartner().getPaymentCondition());
             }
+
+            Beans.get(MassEntryService.class).loadAccountInformation(move, moveLineMassEntry);
           }
 
           moveLineMassEntry.setMovePartnerBankDetails(

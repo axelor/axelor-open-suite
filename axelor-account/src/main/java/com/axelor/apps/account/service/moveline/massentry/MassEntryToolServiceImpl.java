@@ -18,14 +18,21 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
 
   @Override
   public void clearMoveLineMassEntryListAndAddNewLines(Move move, Integer temporaryMoveNumber) {
-    move.getMoveLineMassEntryList()
-        .removeIf(
-            moveLineMassEntry ->
-                Objects.equals(moveLineMassEntry.getTemporaryMoveNumber(), temporaryMoveNumber));
-    move.getMoveLineMassEntryList()
-        .addAll(
-            convertMoveLinesIntoMoveLineMassEntry(
-                move, move.getMoveLineList(), temporaryMoveNumber));
+    List<MoveLineMassEntry> moveLineMassEntryList =
+        new ArrayList<>(move.getMoveLineMassEntryList());
+    for (MoveLineMassEntry moveLineMassEntry : moveLineMassEntryList) {
+      if (Objects.equals(moveLineMassEntry.getTemporaryMoveNumber(), temporaryMoveNumber)) {
+        move.getMoveLineMassEntryList().remove(moveLineMassEntry);
+      }
+    }
+
+    moveLineMassEntryList =
+        convertMoveLinesIntoMoveLineMassEntry(move, move.getMoveLineList(), temporaryMoveNumber);
+    if (moveLineMassEntryList.size() > 0) {
+      for (MoveLineMassEntry moveLineMassEntry : moveLineMassEntryList) {
+        move.getMoveLineMassEntryList().add(moveLineMassEntry);
+      }
+    }
     sortMoveLinesMassEntryByTemporaryNumber(move);
   }
 

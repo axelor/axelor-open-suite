@@ -17,11 +17,14 @@
  */
 package com.axelor.apps.account.service.moveline.massentry;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
+import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.common.ObjectUtils;
@@ -47,6 +50,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MoveLineTaxService moveLineTaxService;
   protected MoveCounterPartService moveCounterPartService;
   protected MassEntryVerificationService massEntryVerificationService;
+  protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
 
   @Inject
   public MassEntryServiceImpl(
@@ -54,12 +58,14 @@ public class MassEntryServiceImpl implements MassEntryService {
       MoveToolService moveToolService,
       MoveLineTaxService moveLineTaxService,
       MoveCounterPartService moveCounterPartService,
-      MassEntryVerificationService massEntryVerificationService) {
+      MassEntryVerificationService massEntryVerificationService,
+      MoveLoadDefaultConfigService moveLoadDefaultConfigService) {
     this.massEntryToolService = massEntryToolService;
     this.moveToolService = moveToolService;
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryVerificationService = massEntryVerificationService;
+    this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
   }
 
   public void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
@@ -73,6 +79,8 @@ public class MassEntryServiceImpl implements MassEntryService {
           move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
           move.setPaymentCondition(moveLineMassEntry.getMovePaymentCondition());
           move.setDate(moveLineMassEntry.getDate());
+          move.setDescription(moveLineMassEntry.getMoveDescription());
+          move.setPartnerBankDetails(moveLineMassEntry.getMovePartnerBankDetails());
 
           // TODO Need to be seen, to enable multiPartners in a Move and remove this line
           move.setPartner(moveLineMassEntry.getPartner());
@@ -89,7 +97,6 @@ public class MassEntryServiceImpl implements MassEntryService {
   public void generateTaxLineAndCounterpart(
       Move move, LocalDate dueDate, Integer temporaryMoveNumber) throws AxelorException {
     if (ObjectUtils.notEmpty(move.getMoveLineList())) {
-      moveToolService.exceptionOnGenerateCounterpart(move.getJournal(), move.getPaymentMode());
       if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
           || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
         moveLineTaxService.autoTaxLineGenerate(move);
@@ -168,7 +175,8 @@ public class MassEntryServiceImpl implements MassEntryService {
                 moveLineEdited.getMoveDescription() != null
                     ? moveLineEdited.getMoveDescription()
                     : "");
-            if (!moveLineEdited.getAccount().getHasInvoiceTerm()) {
+            if (!moveLineEdited.getAccount().getHasInvoiceTerm()
+                && moveLineEdited.getMovePaymentMode() != null) {
               massEntryVerificationService.checkAndReplaceMovePaymentModeInMoveLineMassEntry(
                   moveLine, moveLineEdited.getMovePaymentMode());
             }
@@ -180,5 +188,24 @@ public class MassEntryServiceImpl implements MassEntryService {
         }
       }
     }
+  }
+
+  public void loadAccountInformation(Move move, MoveLineMassEntry moveLineMassEntry)
+      throws AxelorException {
+    Account accountingAccount =
+        moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
+
+    if (accountingAccount != null) {
+      moveLineMassEntry.setAccount(accountingAccount);
+
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          accountingAccount.getAnalyticDistributionTemplate();
+      if (accountingAccount.getAnalyticDistributionAuthorized()
+          && analyticDistributionTemplate != null) {
+        moveLineMassEntry.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+      }
+    }
+    moveLineMassEntry.setTaxLine(
+        moveLoadDefaultConfigService.getTaxLine(move, moveLineMassEntry, accountingAccount));
   }
 }

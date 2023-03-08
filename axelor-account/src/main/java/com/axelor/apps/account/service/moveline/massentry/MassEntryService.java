@@ -25,15 +25,18 @@ import java.util.List;
 
 public interface MassEntryService {
 
-  public void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber);
+  void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber);
 
-  public void generateTaxLineAndCounterpart(
-      Move move, LocalDate dueDate, Integer temporaryMoveNumber) throws AxelorException;
+  void generateTaxLineAndCounterpart(Move move, LocalDate dueDate, Integer temporaryMoveNumber)
+      throws AxelorException;
 
-  public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
+  MoveLineMassEntry getFirstMoveLineMassEntryInformations(
       List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry);
 
-  public void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry);
+  void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry);
 
-  public void verifyFieldsChangeOnMoveLineMassEntry(Move move) throws AxelorException;
+  void verifyFieldsChangeOnMoveLineMassEntry(Move move) throws AxelorException;
+
+  void loadAccountInformation(Move move, MoveLineMassEntry moveLineMassEntry)
+      throws AxelorException;
 }

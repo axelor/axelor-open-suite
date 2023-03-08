@@ -59,10 +59,7 @@
     <field name="movePartnerBankDetails"/>
     <field name="vatSystemSelect"/>
     <field name="moveStatusSelect"/>
-    <field name="move.technicalOriginSelect" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
-    <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
-    <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
   </grid>
 
   <!-- Action group -->
