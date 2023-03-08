@@ -850,7 +850,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return this.query;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public AccountingReport createAccountingExportFromReport(
       AccountingReport accountingReport, int exportTypeSelect, boolean isComplementary)

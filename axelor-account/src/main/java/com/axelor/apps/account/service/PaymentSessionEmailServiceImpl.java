@@ -152,7 +152,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
   @Transactional(rollbackOn = {Exception.class})
   protected Message createEmail(PaymentSession paymentSession, Partner partner)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, JSONException {
+          AxelorException, IOException {
     paymentSession.setPartnerForEmail(partner);
     paymentSessionRepo.save(paymentSession);
 

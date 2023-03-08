@@ -266,7 +266,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected Move generateImpairementAccountMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
@@ -851,7 +851,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     fixedAssetRepo.save(fixedAsset);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void simulate(FixedAssetLine fixedAssetLine) throws AxelorException {
     Objects.requireNonNull(fixedAssetLine);
