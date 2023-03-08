@@ -83,7 +83,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void realize(
       FixedAssetDerogatoryLine fixedAssetDerogatoryLine, boolean isBatch, boolean generateMove)
       throws AxelorException {
@@ -281,7 +281,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     return moveRepo.save(move);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void simulate(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) throws AxelorException {
     Objects.requireNonNull(fixedAssetDerogatoryLine);

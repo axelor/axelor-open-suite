@@ -85,7 +85,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     this.moveLineCreateService = moveLineCreateService;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCloseAnnualAccount(
       Year year,
       Account account,

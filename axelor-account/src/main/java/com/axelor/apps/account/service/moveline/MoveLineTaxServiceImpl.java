@@ -124,8 +124,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException {
+  @Transactional
+  public MoveLine computeTaxAmount(MoveLine moveLine) {
     moveLine.setTaxAmount(BigDecimal.ZERO);
     if (!ObjectUtils.isEmpty(moveLine.getTaxPaymentMoveLineList())) {
       for (TaxPaymentMoveLine taxPaymentMoveLine : moveLine.getTaxPaymentMoveLineList()) {

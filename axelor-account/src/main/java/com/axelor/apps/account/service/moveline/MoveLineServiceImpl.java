@@ -250,7 +250,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
     if (moveLine.getIsSelectedBankReconciliation() != null) {
       moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
@@ -261,7 +261,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
     String posted = moveLine.getPostedNbr();
     List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));

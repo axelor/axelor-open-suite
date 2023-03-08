@@ -283,14 +283,14 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
       throws AxelorException {
     return this.createInvoicePayment(invoice, companyBankDetails, null);
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createInvoicePayment(
       Invoice invoice, BankDetails companyBankDetails, LocalDate paymentDate)
       throws AxelorException {

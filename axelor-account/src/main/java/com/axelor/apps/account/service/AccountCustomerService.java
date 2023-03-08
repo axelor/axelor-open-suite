@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -93,10 +92,8 @@ public interface AccountCustomerService {
       boolean updateDueDebtRecoveryCustAccount)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void flagPartners(List<Partner> partnerList, Company company) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public AccountingSituation updateAccountingSituationCustomerAccount(
       AccountingSituation accountingSituation,
       boolean updateCustAccount,
