@@ -1,3 +1,37 @@
+## [6.3.13] (2023-03-09)
+
+#### Changes
+
+* Debt recovery method line: add demo data email messages for B2C and B2B reminder recovery methods.
+
+#### Fixed
+
+* Sale order: incoterm is not required anymore if it contains only services
+* Account Config: fixed account chart data so imported accounts are now active.
+* Invoice: when the PFP feature was disabled, fixed an issue where the menu "supplier invoices to pay" was not displaying any invoices.
+* Employee: in the user creation wizard, prevent validation when login is empty or if the activation and expiration dates are inconsistent.
+* Base: fixed an issue in some processes where an error would create inconsistencies.
+* Accounting report 2054: Gross value amount of a fixed asset bought and disposed in the same year must appear in columns B and C.
+* Project task: fixed an issue where setting project task category would not update invoicing type.
+* Mail message: use tracking subject instead of template subject when adding followers or posting comments.
+* Accounting report: fixed error preventing analytic balance printing when the currency was not filled.
+* Business: fixed an issue in some processes where an error would create inconsistencies.
+* Batch form: close the popup to show the invoice list when the user is clicking the "show invoice" button.
+* Logistical Form: filter stock moves on company on logistical forms.
+* CRM: fixed an issue in some processes where an error would create inconsistencies.
+* Stock rules: alert checkbox is no longer displayed when use case is set to 'MRP'.
+* Fixed asset: warning message translated in FR when trying to realize a line with IFRS depreciation plan.
+* Fixed asset: fix typos in french translation.
+* Freight carrier mode: fix typo in french translation.
+* Invoice: fixed an issue preventing to change the partner with existing invoice lines.
+* Sale order: allow to select direct order stock locations from the company as the sale order stock location.
+* Project: fixed the display of description in Kanban view.
+* HR Batch: fixed error making the batch process crash when using batch with a scheduler.
+* Configurator: in the help panel for writing groovy scripts, fix external link so it is opened on a new tab by default.
+* Invoice: does not block the advance payment invoice validation if an account is not selected on the invoice.
+* Accounting report: it is no longer required to fill the year to generate DAS 2 reports.
+* Invoice: printing a report will open the correct one even if another report have the same file name.
+
 ## [6.3.12] (2023-02-24)
 
 #### Fixed
@@ -491,6 +525,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.13]: https://github.com/axelor/axelor-open-suite/compare/v6.3.12...v6.3.13
 [6.3.12]: https://github.com/axelor/axelor-open-suite/compare/v6.3.11...v6.3.12
 [6.3.11]: https://github.com/axelor/axelor-open-suite/compare/v6.3.10...v6.3.11
 [6.3.10]: https://github.com/axelor/axelor-open-suite/compare/v6.3.9...v6.3.10
