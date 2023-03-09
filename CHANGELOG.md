@@ -1,3 +1,20 @@
+## [5.4.37] (2023-03-09)
+
+#### Fixed
+
+* Employee: in the user creation wizard, prevent validation when login is empty or if the activation and expiration dates are inconsistent.
+* Base: fixed an issue in some processes where an error would create inconsistencies.
+* Accounting report: fixed error preventing analytic balance printing when the currency was not filled.
+* Business: fixed an issue in some processes where an error would create inconsistencies.
+* Batch form: close the popup to show the invoice list when the user is clicking the "show invoice" button.
+* CRM: fixed an issue in some processes where an error would create inconsistencies.
+* Stock rules: alert checkbox is no longer displayed when use case is set to 'MRP'.
+* Freight carrier mode: fix typo in french translation.
+* Sale order: allow to select direct order stock locations from the company as the sale order stock location.
+* Project: fixed the display of description in Kanban view.
+* Invoice: does not block the advance payment invoice validation if an account is not selected on the invoice.
+* Invoice: printing a report will open the correct one even if another report have the same file name.
+
 ## [5.4.36] (2023-02-24)
 
 #### Fixed
@@ -852,6 +869,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.37]: https://github.com/axelor/axelor-open-suite/compare/v5.4.36...v5.4.37
 [5.4.36]: https://github.com/axelor/axelor-open-suite/compare/v5.4.35...v5.4.36
 [5.4.35]: https://github.com/axelor/axelor-open-suite/compare/v5.4.34...v5.4.35
 [5.4.34]: https://github.com/axelor/axelor-open-suite/compare/v5.4.33...v5.4.34
