@@ -365,7 +365,9 @@
             onChange="action-move-group-journal-on-change" colSpan="6"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3 || (companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1)"
-            colSpan="6" onChange="action-move-record-set-currency-code" required="true"/>
+            colSpan="6"
+            onChange="action-move-record-set-currency-code,action-move-attrs-set-hidden-and-required-fields"
+            required="true"/>
           <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="6"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
         </panel>
@@ -982,6 +984,8 @@
       expr="eval: ![1,2,3,4].contains(journal?.journalType?.technicalTypeSelect)"/>
     <attribute name="required" for="moveLineMassEntryList.movePaymentCondition"
       expr="eval: [1,2,3,4].contains(journal?.journalType?.technicalTypeSelect)"/>
+    <attribute name="hidden" for="moveLineMassEntryList.currencyRate"
+      expr="eval: company.currency == currency"/>
   </action-attrs>
 
   <!-- ACTION METHOD -->

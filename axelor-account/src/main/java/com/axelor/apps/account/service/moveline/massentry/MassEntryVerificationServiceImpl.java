@@ -11,6 +11,7 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +81,13 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveLineMassEntry moveLineMassEntry, PaymentMode newMovePaymentMode) {
     if (!newMovePaymentMode.equals(moveLineMassEntry.getMovePaymentMode())) {
       moveLineMassEntry.setMovePaymentMode(newMovePaymentMode);
+    }
+  }
+
+  public void checkAndReplaceCurrencyRateModeInMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, BigDecimal newCurrencyRate) {
+    if (!newCurrencyRate.equals(moveLineMassEntry.getCurrencyRate())) {
+      moveLineMassEntry.setCurrencyRate(newCurrencyRate);
     }
   }
 }

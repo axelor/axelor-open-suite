@@ -20,21 +20,27 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryToolService;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import org.apache.commons.lang3.ArrayUtils;
+import java.util.Objects;
 
 @Singleton
 public class MoveLineMassEntryController {
@@ -69,16 +75,12 @@ public class MoveLineMassEntryController {
     try {
       Move move = request.getContext().asType(Move.class);
       MassEntryService massEntryService = Beans.get(MassEntryService.class);
-      int[] technicalTypeSelectArray = {1, 2, 4};
 
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
         MoveLineMassEntry lastMoveLineMassEntry =
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
-        if ((lastMoveLineMassEntry.getInputAction() != null
-                && lastMoveLineMassEntry.getInputAction() == 2)
-            || ArrayUtils.contains(
-                technicalTypeSelectArray,
-                move.getJournal().getJournalType().getTechnicalTypeSelect())) {
+        if (lastMoveLineMassEntry.getInputAction() != null
+            && lastMoveLineMassEntry.getInputAction() == 2) {
           massEntryService.fillMoveLineListWithMoveLineMassEntryList(
               move, lastMoveLineMassEntry.getTemporaryMoveNumber());
           response.setValues(move);
@@ -109,6 +111,7 @@ public class MoveLineMassEntryController {
   public void getFirstMoveLineMassEntryInformations(
       ActionRequest request, ActionResponse response) {
     try {
+      // TODO OK
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
 
@@ -131,6 +134,12 @@ public class MoveLineMassEntryController {
               Beans.get(MassEntryService.class)
                   .getFirstMoveLineMassEntryInformations(
                       move.getMoveLineMassEntryList(), moveLineMassEntry));
+
+          if (move.getMoveLineMassEntryList() != null
+              && move.getMoveLineMassEntryList().size() != 0) {
+            response.setAttr("inputAction", "readonly", false);
+            response.setAttr("temporaryMoveNumber", "focus", true);
+          }
         }
       }
     } catch (Exception e) {
@@ -138,20 +147,37 @@ public class MoveLineMassEntryController {
     }
   }
 
-  public void resetMoveLineMassEntry(ActionRequest request, ActionResponse response) {
+  public void setAttrsAndFieldsOnInputActionChanges(
+      ActionRequest request, ActionResponse response) {
     try {
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
+      MassEntryService massEntryService = Beans.get(MassEntryService.class);
+      boolean isCounterpartLine = false;
 
       if (parentContext != null
           && Move.class.equals(parentContext.getContextClass())
-          && moveLineMassEntry != null) {
+          && moveLineMassEntry != null
+          && moveLineMassEntry.getInputAction() != null) {
         Move move = parentContext.asType(Move.class);
-        Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLineMassEntry);
-        moveLineMassEntry.setInputAction(1);
-        moveLineMassEntry.setTemporaryMoveNumber(
-            getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()) + 1);
-        response.setValues(moveLineMassEntry);
+
+        switch (moveLineMassEntry.getInputAction()) {
+          case 2:
+            isCounterpartLine = true;
+            break;
+          case 3:
+            massEntryService.resetMoveLineMassEntry(moveLineMassEntry);
+            moveLineMassEntry.setInputAction(1);
+            moveLineMassEntry.setTemporaryMoveNumber(
+                getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()) + 1);
+            response.setValues(moveLineMassEntry);
+            break;
+          default:
+            break;
+        }
+        response.setAttrs(
+            massEntryService.setAttrsInputActionOnChange(
+                isCounterpartLine, moveLineMassEntry.getAccount()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -238,6 +264,72 @@ public class MoveLineMassEntryController {
           "domain",
           Beans.get(InvoiceTermService.class)
               .getPfpValidatorUserDomain(moveLine.getPartner(), move.getCompany()));
+    }
+  }
+
+  public void computeCurrentRate(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+      Context parentContext = request.getContext().getParent();
+      BigDecimal currencyRate = BigDecimal.ONE;
+
+      if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
+        Move move = parentContext.asType(Move.class);
+        Currency currency = move.getCurrency();
+        Currency companyCurrency = move.getCompanyCurrency();
+        if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
+          if (move.getMoveLineMassEntryList().size() == 0) {
+            if (moveLineMassEntry.getOriginDate() != null) {
+              currencyRate =
+                  Beans.get(CurrencyService.class)
+                      .getCurrencyConversionRate(
+                          currency, companyCurrency, moveLineMassEntry.getOriginDate());
+            } else {
+              currencyRate =
+                  Beans.get(CurrencyService.class)
+                      .getCurrencyConversionRate(currency, companyCurrency);
+            }
+          } else {
+            if (move.getMoveLineMassEntryList().stream()
+                .anyMatch(
+                    moveLineMassEntry1 ->
+                        Objects.equals(
+                            moveLineMassEntry1.getTemporaryMoveNumber(),
+                            moveLineMassEntry.getTemporaryMoveNumber()))) {
+              currencyRate =
+                  move.getMoveLineMassEntryList().stream()
+                      .filter(
+                          moveLineMassEntry1 ->
+                              Objects.equals(
+                                  moveLineMassEntry1.getTemporaryMoveNumber(),
+                                  moveLineMassEntry.getTemporaryMoveNumber()))
+                      .findFirst()
+                      .get()
+                      .getCurrencyRate();
+            }
+          }
+        }
+      }
+      response.setValue("currencyRate", currencyRate);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDescriptionOnMassEntryLines(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+      Context parentContext = request.getContext().getParent();
+
+      if (moveLineMassEntry.getMoveDescription() == null) {
+        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_DESCRIPTION));
+      } else {
+        // TODO Set description on MoveLineMassEntry when whe change move description
+        // Beans.get(MoveToolService.class).setDescriptionOnMoveLineList(move);
+        // response.setValue("moveLineList", move.getMoveLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

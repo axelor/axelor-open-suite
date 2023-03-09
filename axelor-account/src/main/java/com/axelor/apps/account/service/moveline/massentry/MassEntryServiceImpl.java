@@ -35,7 +35,9 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,6 +182,8 @@ public class MassEntryServiceImpl implements MassEntryService {
               massEntryVerificationService.checkAndReplaceMovePaymentModeInMoveLineMassEntry(
                   moveLine, moveLineEdited.getMovePaymentMode());
             }
+            massEntryVerificationService.checkAndReplaceCurrencyRateModeInMoveLineMassEntry(
+                moveLine, moveLineEdited.getCurrencyRate());
 
             // TODO add other verification method
 
@@ -207,5 +211,43 @@ public class MassEntryServiceImpl implements MassEntryService {
     }
     moveLineMassEntry.setTaxLine(
         moveLoadDefaultConfigService.getTaxLine(move, moveLineMassEntry, accountingAccount));
+  }
+
+  public Map<String, Map<String, Object>> setAttrsInputActionOnChange(
+      boolean isCounterPartLine, Account account) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    Map<String, Object> readonlyMap = new HashMap<>();
+    Map<String, Object> requiredMap = new HashMap<>();
+    Map<String, Object> taxLineMap = new HashMap<>();
+
+    readonlyMap.put("readonly", isCounterPartLine);
+    requiredMap.put("readonly", isCounterPartLine);
+    requiredMap.put("required", !isCounterPartLine);
+    taxLineMap.put(
+        "readonly",
+        isCounterPartLine && account != null && !account.getIsTaxAuthorizedOnMoveLine());
+
+    attrsMap.put("date", readonlyMap);
+    attrsMap.put("originDate", readonlyMap);
+    attrsMap.put("origin", readonlyMap);
+    attrsMap.put("moveDescription", readonlyMap);
+    attrsMap.put("movePaymentCondition", readonlyMap);
+    attrsMap.put("movePaymentMode", readonlyMap);
+    attrsMap.put("account", requiredMap);
+    attrsMap.put("taxLine", taxLineMap);
+    attrsMap.put("partner", readonlyMap);
+    attrsMap.put("description", readonlyMap);
+    attrsMap.put("debit", readonlyMap);
+    attrsMap.put("credit", readonlyMap);
+    attrsMap.put("currencyRate", readonlyMap);
+    attrsMap.put("currencyAmount", readonlyMap);
+    attrsMap.put("cutOffStartDate", readonlyMap);
+    attrsMap.put("cutOffEndDate", readonlyMap);
+    attrsMap.put("pfpValidatorUser", readonlyMap);
+    attrsMap.put("movePartnerBankDetails", readonlyMap);
+    attrsMap.put("vatSystemSelect", readonlyMap);
+    attrsMap.put("moveStatusSelect", readonlyMap);
+
+    return attrsMap;
   }
 }

@@ -5,44 +5,46 @@
 
   <grid name="move-line-mass-entry-move-grid"
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
-    onNew="action-account-move-line-mass-entry-onnew-group">
+    onNew="action-account-move-line-onnew-group">
     <field name="temporaryMoveNumber" width="50"
-      onChange="action-move-line-mass-entry-method-get-first-move-line-informtations"/>
+      onChange="action-move-line-mass-entry-method-get-first-move-line-informations"/>
     <field name="inputAction" selection="iaccount.move.input.action.select"
-      onChange="action-move-line-mass-entry-group-input-action-onchange" readonly="true"
+      onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
       required="true" width="50"/>
-    <field name="date" onChange="action-move-line-mass-entry-group-date-onchange"/>
+    <field name="date" onChange="account-move-line-group-date-onchange"/>
     <field name="originDate" onChange="action-move-line-mass-entry-onchange-origin-date"/>
     <field name="origin" onChange="action-move-line-mass-entry-record-set-is-edited"/>
-    <field name="moveDescription" onChange="action-move-line-mass-entry-record-set-is-edited"
-      readonly="false" required="true"/>
+    <field name="moveDescription"
+      onChange="action-account-move-line-mass-entry-group-set-description-on-lines" readonly="false"
+      required="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-account-move-line-partner-group"
       onChange="action-move-line-mass-entry-method-on-change-partner" width="120" canEdit="false"
       readonly="false"/>
-    <field name="movePaymentCondition" readonly="true" form-view="payment-condition-form"
+    <field name="movePaymentCondition" form-view="payment-condition-form"
       grid-view="payment-condition-grid"/>
     <field name="movePaymentMode" readonly="false" form-view="payment-mode-form"
       grid-view="payment-mode-grid" onChange="action-move-line-mass-entry-record-set-is-edited"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
-      onChange="action-account-move-line-mass-entry-account-group-on-change"/>
+      onChange="action-account-move-line-account-group-on-change"/>
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
-    <field name="description"
-      requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
     <field name="debit"
       onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
       width="90"/>
     <field name="credit"
       onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
       width="90"/>
-    <field name="currencyRate" onChange="action-move-line-group-currency-amount-rate-onchange"
+    <field name="currencyRate"
+      onChange="action-move-line-group-currency-amount-rate-onchange,action-move-line-mass-entry-record-set-is-edited"
       readonlyIf="!isOtherCurrency"/>
     <field name="currencyAmount"
       onChange="action-move-line-group-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"/>
+    <field name="description"
+      requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
     <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
       validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
       onChange="action-move-line-record-set-cut-off-generated-false"
@@ -63,60 +65,17 @@
   </grid>
 
   <!-- Action group -->
-  <action-group name="action-account-move-line-mass-entry-onnew-group">
-    <action name="action-move-line-mass-entry-method-get-first-move-line-informtations"/>
-    <action name="action-move-line-method-get-account-informations"/>
-    <action name="action-move-line-mass-entry-attrs-set-readonly-first-move-line"
-      if="eval: __parent__?.moveLineMassEntryList != null &amp;&amp; __parent__?.moveLineMassEntryList.size() != 0"/>
-    <action name="action-move-line-mass-entry-attrs-set-hidden-cut-off"/>
-    <action name="action-move-line-method-compute-analytic-distribution"/>
-    <action name="action-move-line-method-hide-axis-analytic-account"/>
-    <action name="action-move-line-group-analytic-distribution-template-onchange"/>
-    <action name="action-move-line-method-get-creditdebit-balance"/>
-    <action name="action-move-line-attrs-hidden-reconcileLists"/>
-    <action name="action-move-line-method-set-is-other-currency"/>
-    <action name="action-move-line-method-set-currencyRate"/>
-    <action name="action-move-line-record-set-currencyAmount"/>
-    <action name="action-move-line-method-description-required"/>
-    <action name="action-move-line-record-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-move-line-method-compute-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-  </action-group>
-
-  <action-group name="action-account-move-line-mass-entry-account-group-on-change">
-    <action name="action-move-line-mass-entry-attrs-set-hidden-cut-off"/>
-    <action name="action-move-line-record-set-cut-off-dates"
-      if="__config__.app.getApp('account').manageCutOffPeriod"/>
-    <action name="action-move-line-record-set-cut-off-generated-false"/>
-    <action name="action-move-line-method-compute-analytic-distribution"/>
-    <action name="action-move-line-method-refresh-account-informations"/>
-    <action name="action-move-line-method-hide-axis-analytic-account"/>
-    <action name="action-move-line-method-change-account-set-default-distribution-template"/>
-    <action name="action-move-line-group-analytic-distribution-template-onchange"/>
-    <action name="action-move-line-method-generate-invoice-terms"/>
-    <action name="action-move-line-attrs-set-debit-credit-focus"/>
-  </action-group>
-
-  <action-group name="action-move-line-mass-entry-group-input-action-onchange">
-    <action name="action-move-line-mass-entry-method-reset-fields" if="inputAction == 3"/>
-    <action name="action-move-line-mass-entry-attrs-set-not-required-account"
-      if="inputAction == 2"/>
-    <action name="action-move-line-mass-entry-attrs-set-all-fields-required"/>
-  </action-group>
-
-  <!-- Check if action-move-line-mass-entry-group-date-onchange is useless -->
-  <action-group name="action-move-line-mass-entry-group-date-onchange">
-    <action name="account-move-line-record-date-onchange"/>
-    <action name="action-move-line-mass-entry-set-origin-required"/>
-    <action name="action-move-line-mass-entry-record-set-is-edited"/>
-    <action name="action-move-line-method-compute-analytic-distribution"/>
-    <action name="action-move-line-validate-check-date-in-period"/>
-  </action-group>
-
   <action-group name="action-move-line-mass-entry-onchange-origin-date">
     <action name="action-move-line-mass-entry-set-origin-required"/>
+    <action name="action-move-line-mass-entry-method-set-currencyRate"/>
     <action name="action-move-line-mass-entry-record-set-is-edited"/>
+  </action-group>
+
+  <!-- Check if action-account-move-line-mass-entry-group-set-description-on-lines can be made in controller -->
+  <action-group
+    name="action-account-move-line-mass-entry-group-set-description-on-lines">
+    <action name="action-move-line-mass-entry-record-set-is-edited"/>
+    <action name="action-account-move-line-mass-entry-method-set-description-on-lines"/>
   </action-group>
 
   <!-- Action record -->
@@ -126,42 +85,6 @@
   </action-record>
 
   <!-- Action attrs -->
-  <!-- Check if action-move-line-mass-entry-attrs-set-all-fields-required can be made in MoveLineMassEntryController
-    method -->
-  <action-attrs name="action-move-line-mass-entry-attrs-set-all-fields-required">
-    <attribute for="date" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="originDate" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="origin" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="moveDescription" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="movePaymentCondition" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="movePaymentMode" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="account" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="taxLine" name="readonly"
-      expr="eval: inputAction == 2 &amp;&amp; !account?.isTaxAuthorizedOnMoveLine"/>
-    <attribute for="partner" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="description" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="debit" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="credit" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="currencyRate" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="currencyAmount" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="cutOffStartDate" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="cutOffEndDate" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="pfpValidatorUser" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="movePartnerBankDetails" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="vatSystemSelect" name="readonly" expr="eval: inputAction == 2"/>
-    <attribute for="moveStatusSelect" name="readonly" expr="eval: inputAction == 2"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-line-mass-entry-attrs-set-not-required-account">
-    <attribute for="account" name="required" expr="false"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-line-mass-entry-attrs-set-readonly-first-move-line">
-    <attribute for="inputAction" name="readonly" expr="false"/>
-    <attribute for="temporaryMoveNumber" name="focus" expr="true"/>
-  </action-attrs>
-
-  <!-- Check if action-move-line-mass-entry-attrs-set-hidden-cut-off is useless -->
   <action-attrs name="action-move-line-mass-entry-attrs-set-hidden-cut-off">
     <attribute for="cutOffStartDate" name="readonly"
       expr="eval: !account?.manageCutOffPeriod"/>
@@ -183,7 +106,7 @@
 
   <!-- Action method -->
   <action-method
-    name="action-move-line-mass-entry-method-get-first-move-line-informtations">
+    name="action-move-line-mass-entry-method-get-first-move-line-informations">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
       method="getFirstMoveLineMassEntryInformations"/>
   </action-method>
@@ -207,11 +130,6 @@
       method="setPfpValidatorUserDomain"/>
   </action-method>
 
-  <action-method name="action-move-line-mass-entry-method-reset-fields">
-    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="resetMoveLineMassEntry"/>
-  </action-method>
-
   <action-method name="action-move-line-mass-entry-method-on-change-common-fields">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
       method="verifyFieldsChangeOnMoveLineMassEntry"/>
@@ -220,6 +138,23 @@
   <action-method name="action-move-line-mass-entry-method-on-change-partner">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
       method="changePartnerOnMoveLineMassEntry"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-set-currencyRate"
+    model="com.axelor.apps.account.db.MoveLine">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="computeCurrentRate"/>
+  </action-method>
+
+  <action-method
+    name="action-account-move-line-mass-entry-method-set-description-on-lines">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="setDescriptionOnMassEntryLines"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-input-action-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="setAttrsAndFieldsOnInputActionChanges"/>
   </action-method>
 
 </object-views>
