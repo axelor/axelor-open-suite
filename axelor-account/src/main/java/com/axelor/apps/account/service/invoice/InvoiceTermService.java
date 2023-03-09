@@ -322,4 +322,7 @@ public interface InvoiceTermService {
       PaymentSession paymentSession,
       boolean isRefund)
       throws AxelorException;
+
+  List<InvoiceTerm> recomputeInvoiceTermsPercentage(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total);
 }

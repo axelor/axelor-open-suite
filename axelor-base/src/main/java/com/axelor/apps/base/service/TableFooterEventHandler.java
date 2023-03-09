@@ -97,7 +97,7 @@ public class TableFooterEventHandler implements IEventHandler {
     new Canvas(canvas, pdfDoc, rect1).add(tableFooter);
   }
 
-  private void setCellFooterTextAlignment(Cell cellFooter, String footerTextAlignment) {
+  protected void setCellFooterTextAlignment(Cell cellFooter, String footerTextAlignment) {
 
     switch (footerTextAlignment) {
       case "left":
@@ -114,7 +114,7 @@ public class TableFooterEventHandler implements IEventHandler {
     }
   }
 
-  private void setCellFooterFontColor(Cell cellFooter, String footerFontColor) {
+  protected void setCellFooterFontColor(Cell cellFooter, String footerFontColor) {
 
     switch (footerFontColor) {
       case "blue":

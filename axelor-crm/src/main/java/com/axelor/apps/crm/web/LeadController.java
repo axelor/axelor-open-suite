@@ -109,7 +109,7 @@ public class LeadController {
     }
   }
 
-  private String getTimezone(Lead lead) {
+  protected String getTimezone(Lead lead) {
     if (lead.getUser() == null || lead.getUser().getActiveCompany() == null) {
       return null;
     }

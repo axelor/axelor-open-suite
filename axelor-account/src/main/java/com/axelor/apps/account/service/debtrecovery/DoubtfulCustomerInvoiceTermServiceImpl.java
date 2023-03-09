@@ -117,7 +117,7 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
           copyOnOldMoveLine.setAmountRemaining(remainingAmount);
           copyOnOldMoveLine.setPercentage(newPercentage);
           invoiceTermToAddToInvoicePartnerMoveLine.add(copyOnOldMoveLine);
-          invoice.addInvoiceTermListItem(copyOnOldMoveLine);
+          invoiceTermToAdd.add(copyOnOldMoveLine);
           invoiceTermToRemove.add(copyOnOldMoveLine);
           // Update current invoice term
           invoiceTerm.setAmount(amount.subtract(remainingAmount));

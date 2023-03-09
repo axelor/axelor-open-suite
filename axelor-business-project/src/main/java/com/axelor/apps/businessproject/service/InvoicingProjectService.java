@@ -529,7 +529,7 @@ public class InvoicingProjectService {
     reportSettings.toAttach(invoicingProject).generate();
   }
 
-  private String getTimezone(InvoicingProject invoicingProject) {
+  protected String getTimezone(InvoicingProject invoicingProject) {
     if (invoicingProject.getProject() == null
         || invoicingProject.getProject().getCompany() == null) {
       return null;
@@ -537,7 +537,7 @@ public class InvoicingProjectService {
     return invoicingProject.getProject().getCompany().getTimezone();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
     if (project == null) {
       return null;

@@ -105,7 +105,7 @@ public class Splitter {
    * space in compressed, encrypted and base64-coded form MUST be segmented before transmission,
    * irrespective of the transfer direction (upload/download).
    */
-  private void segmentation() {
+  protected void segmentation() {
 
     numSegments = content.length / 1048576; // (1024 * 1024)
 

@@ -29,6 +29,11 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingBatchService extends AbstractBatchService {
 
@@ -199,5 +204,19 @@ public class AccountingBatchService extends AbstractBatchService {
       return accountingBatch;
     }
     return null;
+  }
+
+  public boolean checkIfAnomalyInBatch(AccountingBatch accountingBatch) {
+    if (!CollectionUtils.isEmpty(accountingBatch.getBatchList())) {
+      List<Batch> batchList =
+          new ArrayList<>(accountingBatch.getBatchList())
+              .stream()
+                  .sorted(Comparator.comparing(Batch::getStartDate))
+                  .collect(Collectors.toList());
+      if (batchList.get(batchList.size() - 1).getAnomaly() > 0) {
+        return true;
+      }
+    }
+    return false;
   }
 }

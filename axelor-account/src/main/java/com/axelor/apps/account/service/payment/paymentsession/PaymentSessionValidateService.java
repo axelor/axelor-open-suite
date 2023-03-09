@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -53,4 +54,6 @@ public interface PaymentSessionValidateService {
 
   public boolean containsCompensativeInvoiceTerm(
       List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession);
+
+  public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm);
 }
