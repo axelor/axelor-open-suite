@@ -1,3 +1,23 @@
+## [6.1.33] (2023-03-09)
+
+#### Fixed
+
+* Employee: in the user creation wizard, prevent validation when login is empty or if the activation and expiration dates are inconsistent.
+* Base: fixed an issue in some processes where an error would create inconsistencies.
+* Mail message: use tracking subject instead of template subject when adding followers or posting comments.
+* Accounting report: fixed error preventing analytic balance printing when the currency was not filled.
+* Business: fixed an issue in some processes where an error would create inconsistencies.
+* Batch form: close the popup to show the invoice list when the user is clicking the "show invoice" button.
+* CRM: fixed an issue in some processes where an error would create inconsistencies.
+* Stock rules: alert checkbox is no longer displayed when use case is set to 'MRP'.
+* Freight carrier mode: fix typo in french translation.
+* Sale order: allow to select direct order stock locations from the company as the sale order stock location.
+* Project: fixed the display of description in Kanban view.
+* HR Batch: fixed error making the batch process crash when using batch with a scheduler.
+* Configurator: in the help panel for writing groovy scripts, fix external link so it is opened on a new tab by default.
+* Invoice: does not block the advance payment invoice validation if an account is not selected on the invoice.
+* Invoice: printing a report will open the correct one even if another report have the same file name.
+
 ## [6.1.32] (2023-02-24)
 
 #### Fixed
@@ -994,6 +1014,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.33]: https://github.com/axelor/axelor-open-suite/compare/v6.1.32...v6.1.33
 [6.1.32]: https://github.com/axelor/axelor-open-suite/compare/v6.1.31...v6.1.32
 [6.1.31]: https://github.com/axelor/axelor-open-suite/compare/v6.1.30...v6.1.31
 [6.1.30]: https://github.com/axelor/axelor-open-suite/compare/v6.1.29...v6.1.30
