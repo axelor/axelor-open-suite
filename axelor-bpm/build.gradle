@@ -13,7 +13,7 @@ axelor {
 }
 
 license {
-        exclude "**/src/main/webapp/wkf-editor/token-assets/font-awesome/**"
+  exclude "**/token-assets/**"
 }
 
 test {
