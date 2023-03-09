@@ -530,8 +530,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       newPrice =
           unitConversionService.convert(
-              stockMoveLineUnit,
               stockLocationLineUnit,
+              stockMoveLineUnit,
               newPrice,
               newPrice.scale(),
               stockMoveLine.getProduct());
