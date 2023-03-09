@@ -1,3 +1,57 @@
+## [6.4.8] (2023-03-09)
+
+#### Changes
+
+* Debt recovery method line: add demo data email messages for B2C and B2B reminder recovery methods.
+
+#### Fixed
+
+* Analytic account: fixed demo data so analytic account imported are link to the company.
+* Move: fixed error on move company change that happened if the journal was not filled in company configuration.
+* Analytic/Move line: forbid move line validation if all the axis are not filled.
+* Accounting Batch: prevent general ledger generation when an anomaly is thrown during the batch execution.
+* BPM Editor: fix impossibility to save bpm process with subprocesses.
+* Accounting Batch: fix technical error when we launch doubtful customer accounting batch that prevented the batch execution.
+* Sale order: incoterm is not required anymore if it contains only services
+* Account Config: fixed account chart data so imported accounts are now active.
+* Move line: enabled VAT System modification when its a simulated move.
+* Invoice: when the PFP feature was disabled, fixed an issue where the menu "supplier invoices to pay" was not displaying any invoices.
+* Employee: in the user creation wizard, prevent validation when login is empty or if the activation and expiration dates are inconsistent.
+* Invoice: fixed an error where invoice term percentage computation was blocking ventilation.
+* Move/InvoiceTerm: removed possibility to add new invoiceTerm from grid.
+* Base: fixed an issue in some processes where an error would create inconsistencies.
+* Purchase order: fixed an error occurring when selecting a supplier partner.
+* Accounting report 2054: Gross value amount of a fixed asset bought and disposed in the same year must appear in columns B and C.
+* Demo data: update year and period date to have the next year present in demo data.
+* Project task: fixed an issue where setting project task category would not update invoicing type.
+* Mail message: use tracking subject instead of template subject when adding followers or posting comments.
+* Accounting report: fixed error preventing analytic balance printing when the currency was not filled.
+* Account config: fixed an issue where clicking "import chart button" was not possible until the field "Account code nbr. char" was filled.
+* Business: fixed an issue in some processes where an error would create inconsistencies.
+* Batch form: close the popup to show the invoice list when the user is clicking the "show invoice" button.
+* Invoice: ventilating an invoice refund correctly now correctly creates an invoice payment.
+* Logistical Form: filter stock moves on company on logistical forms.
+* CRM: fixed an issue in some processes where an error would create inconsistencies.
+* Stock rules: alert checkbox is no longer displayed when use case is set to 'MRP'.
+* Fixed asset: warning message translated in FR when trying to realize a line with IFRS depreciation plan.
+* Fixed asset: fix typos in french translation.
+* Fixed asset: fixed an issue where 'Generate a fixed asset from this line' box disappeared after selecting a fixed asset category.
+* Freight carrier mode: fix typo in french translation.
+* Invoice: fixed an issue preventing to change the partner with existing invoice lines.
+* Sale order: allow to select direct order stock locations from the company as the sale order stock location.
+* Project: fixed the display of description in Kanban view.
+* HR Batch: fixed error making the batch process crash when using batch with a scheduler.
+* Configurator: in the help panel for writing groovy scripts, fix external link so it is opened on a new tab by default.
+* Invoice: remove the possibility to cancel a ventilated invoice.
+
+Cancelling a ventilated invoice is not possible anymore. 
+Reversing a move linked to an invoice does not cancel this invoice anymore.
+Remove the config allowing to cancel ventilated invoice.
+
+* Invoice: does not block the advance payment invoice validation if an account is not selected on the invoice.
+* Accounting report: it is no longer required to fill the year to generate DAS 2 reports.
+* Invoice: printing a report will open the correct one even if another report have the same file name.
+
 ## [6.4.7] (2023-02-24)
 
 #### Fixed
@@ -472,6 +526,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.8]: https://github.com/axelor/axelor-open-suite/compare/v6.4.7...v6.4.8
 [6.4.7]: https://github.com/axelor/axelor-open-suite/compare/v6.4.6...v6.4.7
 [6.4.6]: https://github.com/axelor/axelor-open-suite/compare/v6.4.5...v6.4.6
 [6.4.5]: https://github.com/axelor/axelor-open-suite/compare/v6.4.4...v6.4.5
