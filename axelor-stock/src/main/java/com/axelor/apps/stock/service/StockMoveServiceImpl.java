@@ -804,7 +804,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       newStockMove.setCarrierPartner(stockMove.getPartner().getCarrierPartner());
     }
     newStockMove.setReversionOriginStockMove(stockMove);
-    newStockMove.setFromAddressStr(stockMove.getFromAddressStr());
+    newStockMove.setFromAddressStr(stockMove.getToAddressStr());
     newStockMove.setNote(stockMove.getNote());
     newStockMove.setNumOfPackages(stockMove.getNumOfPackages());
     newStockMove.setNumOfPalettes(stockMove.getNumOfPalettes());
