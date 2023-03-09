@@ -1,3 +1,27 @@
+## [6.2.21] (2023-03-09)
+
+#### Fixed
+
+* Invoice: when the PFP feature was disabled, fixed an issue where the menu "supplier invoices to pay" was not displaying any invoices.
+* Employee: in the user creation wizard, prevent validation when login is empty or if the activation and expiration dates are inconsistent.
+* Base: fixed an issue in some processes where an error would create inconsistencies.
+* Project task: fixed an issue where setting project task category would not update invoicing type.
+* Mail message: use tracking subject instead of template subject when adding followers or posting comments.
+* Accounting report: fixed error preventing analytic balance printing when the currency was not filled.
+* Business: fixed an issue in some processes where an error would create inconsistencies.
+* Batch form: close the popup to show the invoice list when the user is clicking the "show invoice" button.
+* Logistical Form: filter stock moves on company on logistical forms.
+* CRM: fixed an issue in some processes where an error would create inconsistencies.
+* Stock rules: alert checkbox is no longer displayed when use case is set to 'MRP'.
+* Freight carrier mode: fix typo in french translation.
+* Sale order: allow to select direct order stock locations from the company as the sale order stock location.
+* Project: fixed the display of description in Kanban view.
+* HR Batch: fixed error making the batch process crash when using batch with a scheduler.
+* Configurator: in the help panel for writing groovy scripts, fix external link so it is opened on a new tab by default.
+* Invoice: does not block the advance payment invoice validation if an account is not selected on the invoice.
+* Accounting report: it is no longer required to fill the year to generate DAS 2 reports.
+* Invoice: printing a report will open the correct one even if another report have the same file name.
+
 ## [6.2.20] (2023-02-24)
 
 #### Fixed
@@ -909,6 +933,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.21]: https://github.com/axelor/axelor-open-suite/compare/v6.2.20...v6.2.21
 [6.2.20]: https://github.com/axelor/axelor-open-suite/compare/v6.2.19...v6.2.20
 [6.2.19]: https://github.com/axelor/axelor-open-suite/compare/v6.2.18...v6.2.19
 [6.2.18]: https://github.com/axelor/axelor-open-suite/compare/v6.2.17...v6.2.18
