@@ -464,7 +464,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       LocalDate startDate,
       LocalDate endDate) {
     Pair<LocalDate, LocalDate> dates =
-        this.getDates(accountingReport, groupColumn, column, startDate, endDate);
+        this.getDates(accountingReport, groupColumn, column, line, startDate, endDate);
 
     return this.buildMoveLineQuery(
         accountingReport,
@@ -482,6 +482,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReport accountingReport,
       AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
       LocalDate startDate,
       LocalDate endDate) {
     Pair<LocalDate, LocalDate> dates;
@@ -494,7 +495,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       dates = Pair.of(startDate, endDate);
     }
 
-    if (column.getBalanceBeforePeriod()
+    if (line.getBalanceBeforePeriod()
+        || column.getBalanceBeforePeriod()
         || (groupColumn != null && groupColumn.getBalanceBeforePeriod())) {
       dates = Pair.of(LocalDate.of(1900, 1, 1), dates.getLeft().minusDays(1));
     }
