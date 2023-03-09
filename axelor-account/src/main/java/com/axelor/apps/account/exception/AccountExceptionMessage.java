@@ -1526,4 +1526,7 @@ public final class AccountExceptionMessage {
 
   public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
       "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
+
+  public static final String COMPENSATION_ON_SESSION_BY_INVOICE_TERM = /*$$(*/
+      "Compensation is not allowed on payment session accounted by invoice term, please unselect them" /*)*/;
 }

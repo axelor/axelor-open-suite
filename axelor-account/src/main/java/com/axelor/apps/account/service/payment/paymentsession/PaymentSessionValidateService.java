@@ -50,4 +50,7 @@ public interface PaymentSessionValidateService {
   boolean isEmpty(PaymentSession paymentSession);
 
   public List<InvoiceTerm> getInvoiceTermsWithInActiveBankDetails(PaymentSession paymentSession);
+
+  public boolean containsCompensativeInvoiceTerm(
+      List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession);
 }

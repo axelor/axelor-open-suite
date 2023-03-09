@@ -1078,35 +1078,35 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       InvoiceTerm invoiceTermFromInvoice = null;
       InvoiceTerm invoiceTermFromRefund = null;
+
       while (!ObjectUtils.isEmpty(invoiceTermFromRefundList)
           && !ObjectUtils.isEmpty(invoiceTermFromInvoiceList)
           && invoiceCounter < invoiceTermFromInvoiceList.size()
           && refundCounter < invoiceTermFromRefundList.size()) {
         invoiceTermFromInvoice = invoiceTermFromInvoiceList.get(invoiceCounter);
         invoiceTermFromRefund = invoiceTermFromRefundList.get(refundCounter);
-        reconciledAmount =
-            invoiceTermFromInvoice
-                .getAmountRemaining()
-                .min(invoiceTermFromRefund.getAmountRemaining());
 
-        availableInvoiceAmount =
-            (BigDecimal.ZERO).compareTo(availableInvoiceAmount) == 0
-                ? invoiceTermFromInvoice.getAmountRemaining().subtract(reconciledAmount)
-                : availableInvoiceAmount.subtract(reconciledAmount);
-        availableRefundAmount =
-            (BigDecimal.ZERO).compareTo(availableRefundAmount) == 0
-                ? invoiceTermFromRefund.getAmountRemaining().subtract(reconciledAmount)
-                : availableRefundAmount.subtract(reconciledAmount);
-        if (invoiceTermFromInvoice.getAmountRemaining().subtract(reconciledAmount).signum() == 0) {
-          invoiceTermFromInvoice.setIsPaid(true);
-          invoiceCounter++;
+        if ((BigDecimal.ZERO).compareTo(availableInvoiceAmount) == 0) {
+          availableInvoiceAmount = invoiceTermFromInvoice.getAmountRemaining();
         }
-        if (invoiceTermFromRefund.getAmountRemaining().subtract(reconciledAmount).signum() == 0) {
+        if ((BigDecimal.ZERO).compareTo(availableRefundAmount) == 0) {
+          availableRefundAmount = invoiceTermFromRefund.getAmountRemaining();
+        }
+
+        reconciledAmount = availableInvoiceAmount.min(availableRefundAmount);
+
+        if (availableInvoiceAmount.subtract(reconciledAmount).signum() == 0) {
+          invoiceTermLinkWithRefundList.add(
+              Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
+          invoiceCounter++;
+        } else if (availableRefundAmount.subtract(reconciledAmount).signum() == 0) {
           invoiceTermLinkWithRefundList.add(
               Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
           invoiceTermFromRefund.setIsPaid(true);
           refundCounter++;
         }
+        availableInvoiceAmount = availableInvoiceAmount.subtract(reconciledAmount);
+        availableRefundAmount = availableRefundAmount.subtract(reconciledAmount);
       }
     }
     return invoiceTermList;

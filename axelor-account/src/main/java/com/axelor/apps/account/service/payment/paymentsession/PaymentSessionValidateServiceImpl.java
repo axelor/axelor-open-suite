@@ -494,11 +494,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             this.getMoveLineDescription(paymentSession),
             out);
 
+    moveLine.setAmountPaid(reconciliedAmount);
+
     this.reconcile(paymentSession, invoiceTerm, moveLine);
 
     return move;
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected MoveLine generateMoveLine(
       Move move,
       Partner partner,
@@ -688,8 +691,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   @Transactional(rollbackOn = {Exception.class})
   protected InvoiceTerm releaseInvoiceTerm(InvoiceTerm invoiceTerm) {
-    invoiceTerm.setIsSelectedOnPaymentSession(false);
+    if (!invoiceTerm.getIsSelectedOnPaymentSession()) {
+      invoiceTerm.setPaymentSession(null);
+    }
 
+    invoiceTerm.setIsSelectedOnPaymentSession(false);
     return invoiceTermRepo.save(invoiceTerm);
   }
 
@@ -878,6 +884,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     List<InvoiceTerm> invoiceTermList = invoiceTermQuery.getResultList();
 
     if (!ObjectUtils.isEmpty(invoiceTermList)) {
+
+      if (paymentSession.getAccountingMethodSelect()
+              == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM
+          && containsCompensativeInvoiceTerm(invoiceTermList, paymentSession)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.COMPENSATION_ON_SESSION_BY_INVOICE_TERM));
+      }
       invoiceTermList =
           invoiceTermService.reconcileMoveLineInvoiceTermsWithFullRollBack(
               invoiceTermList, invoiceTermLinkWithRefundList);
@@ -956,15 +970,36 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
 
-    MoveLine moveLine =
-        this.generateMoveLine(
-            move,
-            invoiceTerm.getMoveLine().getPartner(),
-            pair.getLeft().getMoveLine().getAccount(),
-            pair.getRight(),
-            pair.getLeft().getMoveLine().getOrigin(),
-            this.getMoveLineDescription(paymentSession),
-            !out);
+    MoveLine moveLine = null;
+
+    if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
+      moveLine =
+          move.getMoveLineList().stream()
+              .filter(ml -> ml.getOrigin().equals(pair.getLeft().getMoveLine().getOrigin()))
+              .findFirst()
+              .orElse(null);
+    }
+
+    if (moveLine != null) {
+      if (out) {
+        moveLine.setCredit(moveLine.getCredit().add(pair.getRight()));
+      } else {
+        moveLine.setDebit(moveLine.getDebit().add(pair.getRight()));
+      }
+
+      moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(pair.getRight()));
+
+    } else {
+      moveLine =
+          this.generateMoveLine(
+              move,
+              invoiceTerm.getMoveLine().getPartner(),
+              pair.getLeft().getMoveLine().getAccount(),
+              pair.getRight(),
+              pair.getLeft().getMoveLine().getOrigin(),
+              this.getMoveLineDescription(paymentSession),
+              !out);
+    }
 
     paymentAmountMap.replace(move, paymentAmountMap.get(move).subtract(pair.getRight()));
 
@@ -998,5 +1033,27 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         invoiceTerm.getMoveLine().getMove(),
         paymentSession,
         true);
+  }
+
+  @Override
+  public boolean containsCompensativeInvoiceTerm(
+      List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession) {
+    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+      if (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER) {
+        return invoiceTermList.stream()
+            .anyMatch(
+                invoiceTerm ->
+                    invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                        == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE);
+      } else if (paymentSession.getPartnerTypeSelect()
+          == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER) {
+        return invoiceTermList.stream()
+            .anyMatch(
+                invoiceTerm ->
+                    invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                        == MoveRepository.FUNCTIONAL_ORIGIN_SALE);
+      }
+    }
+    return false;
   }
 }
