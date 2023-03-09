@@ -467,7 +467,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
         moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
         List<AnalyticMoveLine> analyticMoveLineList =
-            new ArrayList<>(moveLine.getAnalyticMoveLineList());
+            CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                ? new ArrayList<>()
+                : new ArrayList<>(moveLine.getAnalyticMoveLineList());
         moveLine.clearAnalyticMoveLineList();
 
         if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
