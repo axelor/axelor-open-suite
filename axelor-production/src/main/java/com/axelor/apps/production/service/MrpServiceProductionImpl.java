@@ -598,16 +598,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     String procurementMethodSelect =
         (String)
             productCompanyService.get(
-                product, "procurementMethodSelect", mrp.getStockLocation().getCompany());
-
-    // If procurementMethodSelect is null of productCompany
-    if (StringUtils.isEmpty(procurementMethodSelect)) {
-      procurementMethodSelect = product.getProcurementMethodSelect();
-    }
+                product, "procurementMethodSelect", company);
 
     boolean purchasable =
         (boolean)
-            productCompanyService.get(product, "purchasable", mrp.getStockLocation().getCompany());
+            productCompanyService.get(product, "purchasable", company);
 
     if (billOfMaterial != null
         && mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP
