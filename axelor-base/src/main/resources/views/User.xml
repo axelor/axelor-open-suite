@@ -23,8 +23,7 @@
 
   <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User"
     onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-method,action-user-check-company,action-attrs-select-in-step-status-select,action-user-attrs-set-pfp-validator-panel-show"
-    onSave="com.axelor.apps.base.web.UserController:validate"
-    onLoad="action-user-attrs,action-user-apply-applicaton-mode,action-attrs-select-in-step-status-select,action-user-attrs-set-pfp-validator-panel-show">
+    onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-group-onload">
     <panel name="stepUserPanel" showIf="[0,1,2,3,4].indexOf(stepStatusSelect) > -1">
       <panel name="stepStatusPanel" colSpan="12">
         <field name="stepStatusSelect" showTitle="false" widget="NavSelect" colSpan="12"
@@ -44,7 +43,7 @@
         <field name="name" placeholder="user name" onChange="action-condition-user-validName"
           validIf="name.length >= 2"/>
         <field name="code" placeholder="login name" onChange="action-condition-user-validCode"
-          validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admin'"/>
+          validIf="code.length >= 2"/>
         <field name="group" placeholder="user group"/>
         <field name="email" widget="Email"
           showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
@@ -93,7 +92,6 @@
               <field name="fullName" readonly="true"/>
               <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
               <field name="mobilePhone" widget="phone"/>
-              <field name="fax" widget="phone"/>
               <field name="emailAddress" form-view="email-address-simple-form"
                 canNew="!emailAddress" canSelect="false" canRemove="false"
                 placeholder="Email address"/>
@@ -162,7 +160,7 @@
         <field name="name" placeholder="user name" onChange="action-condition-user-validName"
           validIf="name.length >= 2"/>
         <field name="code" placeholder="login name" onChange="action-condition-user-validCode"
-          validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admin'"/>
+          validIf="code.length >= 2"/>
         <field name="group" placeholder="user group"/>
         <field name="email" widget="Email"
           showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
@@ -239,7 +237,6 @@
             <field name="fullName" readonly="true"/>
             <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
             <field name="mobilePhone" widget="phone"/>
-            <field name="fax" widget="phone"/>
             <field name="emailAddress" form-view="email-address-simple-form"
               canNew="!emailAddress" canSelect="false" canRemove="false" placeholder="Email address"/>
           </editor>
@@ -412,6 +409,8 @@
     <attribute name="value" for="$generateRandomPassword" expr="false"/>
     <attribute name="title" for="passwordPatternDescriptionLabel"
       expr="call: com.axelor.apps.base.service.user.UserService:getPasswordPatternDescription()"/>
+    <attribute name="readonly" for="code"
+      expr="eval: id &amp;&amp; (code == 'admin' || code == __user__.code)"/>
   </action-attrs>
 
   <action-attrs name="action-attrs-select-in-step-status-select">
@@ -477,6 +476,13 @@
   <action-group name="action-user-generate-random-password">
     <action name="action-attrs-user-generate-random-password"/>
     <action name="action-method-user-generate-random-password" if="generateRandomPassword"/>
+  </action-group>
+
+  <action-group name="action-user-group-onload">
+    <action name="action-user-attrs"/>
+    <action name="action-user-apply-applicaton-mode"/>
+    <action name="action-attrs-select-in-step-status-select"/>
+    <action name="action-user-attrs-set-pfp-validator-panel-show"/>
   </action-group>
 
   <action-attrs name="action-attrs-user-generate-random-password">

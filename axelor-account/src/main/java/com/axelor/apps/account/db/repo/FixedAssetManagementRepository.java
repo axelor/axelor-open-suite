@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -74,7 +74,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     }
   }
 
-  private boolean isSerialNumberUniqueForCompany(FixedAsset fixedAsset) {
+  protected boolean isSerialNumberUniqueForCompany(FixedAsset fixedAsset) {
     Boolean isUnique =
         all()
                 .filter("self.company = :company AND self.serialNumber = :serialNumber")
@@ -86,7 +86,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     return isUnique;
   }
 
-  private void generateBarcode(FixedAsset fixedAsset) {
+  protected void generateBarcode(FixedAsset fixedAsset) {
     BarcodeTypeConfig barcodeTypeConfig;
 
     AppAccount appAccount = appAcccountService.getAppAccount();
@@ -111,7 +111,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
     }
   }
 
-  private void computeReference(FixedAsset fixedAsset) {
+  protected void computeReference(FixedAsset fixedAsset) {
     try {
 
       if (fixedAsset.getId() != null && Strings.isNullOrEmpty(fixedAsset.getReference())) {

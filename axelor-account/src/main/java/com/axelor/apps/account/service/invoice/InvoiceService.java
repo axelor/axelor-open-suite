@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
@@ -48,17 +47,6 @@ import org.apache.commons.lang3.tuple.Pair;
 public interface InvoiceService {
 
   public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
-
-  /**
-   * Fetches suitable account for partner bound to the invoice, depending in the partner and the
-   * type of invoice, and if holdback.
-   *
-   * @param invoice Invoice to fetch the partner account for
-   * @return null if the invoice does not contains enough information to determine the partner
-   *     account.
-   * @throws AxelorException
-   */
-  Account getPartnerAccount(Invoice invoice, boolean isHoldback) throws AxelorException;
 
   /**
    * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
@@ -321,6 +309,8 @@ public interface InvoiceService {
 
   @CallMethod
   LocalDate getFinancialDiscountDeadlineDate(Invoice invoice, FinancialDiscount financialDiscount);
+
+  boolean checkInvoiceLinesAnalyticDistribution(Invoice invoice);
 
   boolean checkInvoiceLinesCutOffDates(Invoice invoice);
 

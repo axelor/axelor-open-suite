@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -172,7 +172,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
     processQuery(queryBuilder);
   }
 
-  private void processQuery(QueryBuilder<PaymentScheduleLine> queryBuilder) {
+  protected void processQuery(QueryBuilder<PaymentScheduleLine> queryBuilder) {
     Query<PaymentScheduleLine> query = queryBuilder.build();
 
     List<PaymentScheduleLine> paymentScheduleLineList;

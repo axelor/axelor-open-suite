@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.tool;
+
+import static com.axelor.apps.tool.MetaJsonFieldType.BOOLEAN;
+import static com.axelor.apps.tool.MetaJsonFieldType.DATE;
+import static com.axelor.apps.tool.MetaJsonFieldType.DATETIME;
+import static com.axelor.apps.tool.MetaJsonFieldType.DECIMAL;
+import static com.axelor.apps.tool.MetaJsonFieldType.INTEGER;
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_MANY_TO_ONE;
+import static com.axelor.apps.tool.MetaJsonFieldType.JSON_ONE_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.LONG;
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_ONE;
+import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.STRING;
+import static com.axelor.apps.tool.MetaJsonFieldType.TIME;
 
 import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.exception.AxelorException;
@@ -80,20 +95,20 @@ public class MetaTool {
 
   private static Map<String, String> createTypeToJsonTypeMap() {
     Map<String, String> typeToJsonTypeMap = new HashMap<>();
-    typeToJsonTypeMap.put("String", "string");
-    typeToJsonTypeMap.put("Integer", "integer");
-    typeToJsonTypeMap.put("Long", "long");
-    typeToJsonTypeMap.put("BigDecimal", "decimal");
-    typeToJsonTypeMap.put("Boolean", "boolean");
-    typeToJsonTypeMap.put("LocalDateTime", "datetime");
-    typeToJsonTypeMap.put("LocalDate", "date");
-    typeToJsonTypeMap.put("LocalTime", "time");
-    typeToJsonTypeMap.put("ManyToOne", "many-to-one");
-    typeToJsonTypeMap.put("ManyToMany", "many-to-many");
-    typeToJsonTypeMap.put("OneToMany", "one-to-many");
-    typeToJsonTypeMap.put("Custom-ManyToOne", "json-many-to-one");
-    typeToJsonTypeMap.put("Custom-ManyToMany", "json-many-to-many");
-    typeToJsonTypeMap.put("Custom-OneToMany", "json-one-to-many");
+    typeToJsonTypeMap.put("String", STRING);
+    typeToJsonTypeMap.put("Integer", INTEGER);
+    typeToJsonTypeMap.put("Long", LONG);
+    typeToJsonTypeMap.put("BigDecimal", DECIMAL);
+    typeToJsonTypeMap.put("Boolean", BOOLEAN);
+    typeToJsonTypeMap.put("LocalDateTime", DATETIME);
+    typeToJsonTypeMap.put("LocalDate", DATE);
+    typeToJsonTypeMap.put("LocalTime", TIME);
+    typeToJsonTypeMap.put("ManyToOne", MANY_TO_ONE);
+    typeToJsonTypeMap.put("ManyToMany", MANY_TO_MANY);
+    typeToJsonTypeMap.put("OneToMany", ONE_TO_MANY);
+    typeToJsonTypeMap.put("Custom-ManyToOne", JSON_MANY_TO_ONE);
+    typeToJsonTypeMap.put("Custom-ManyToMany", JSON_MANY_TO_MANY);
+    typeToJsonTypeMap.put("Custom-OneToMany", JSON_ONE_TO_MANY);
     return typeToJsonTypeMap;
   }
 

@@ -166,8 +166,8 @@
       <field name="refusedBy" canEdit="false" hidden="true" form-view="user-form"
         grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
       <field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
-      <field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12"
-        readonly="true"/>
+      <field name="groundForRefusal" hidden="true"
+        showIf="statusSelect == 5 || groundForRefusal != null" colSpan="12" readonly="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList"
@@ -180,7 +180,7 @@
         form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
         onChange="action-expense-group-expense-line-on-change"/>
       <panel-related name="employeeAdvanceUsageListPanel"
-        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length"
+        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length > 0"
         field="employeeAdvanceUsageList" title="Employee advance list" readonly="false"
         canNew="false" canSelect="false" canEdit="true" editable="true"
         form-view="employee-advance-usage-expense-form"
@@ -375,7 +375,8 @@
   </action-attrs>
 
   <action-validate name="action-expense-validate-period">
-    <error message="Period is closed" if="period?.statusSelect == 2"/>
+    <error message="Period is closed"
+      if="period?.statusSelect == 2 || period?.statusSelect == 5"/>
   </action-validate>
 
   <action-view name="action-expense-refusal-popup-form" title="Ground for refusal"

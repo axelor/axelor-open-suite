@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -175,7 +175,7 @@ public class SyncContactService {
     updateSyncContact(id, syncContactHistoric);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Deprecated
   public void updateSyncContact(Long id, SyncContactHistoric syncContactHistoric) {
     SyncContact syncContact;
@@ -194,7 +194,7 @@ public class SyncContactService {
     syncContactRepo.save(syncContact);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Deprecated
   public Partner importContact(Person googlePerson, Boolean updateContactField)
       throws AxelorException {
@@ -424,7 +424,7 @@ public class SyncContactService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Partner updatePartner(Person googlePerson, Partner partner, Boolean updateContactField) {
     Boolean toUpdate =
         updateContactField

@@ -128,13 +128,15 @@ purchaseReq.file = $ctx.filterOne('File','self.name = ?1',dmnRes?.file)?.getTarg
           <camunda:script scriptFormat="axelor" scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;statusSelect&#34;,&#34;type&#34;:&#34;string&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;requested&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;PurchaseReq&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:true,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">purchaseReq.statusSelect = 'requested'</camunda:script>
         </camunda:executionListener>
         <camunda:properties>
-          <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
+		  <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelLabel" value="Demande d'achat" />
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-PurchaseReq-form" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Demander" />
           <camunda:property name="item" value="requestBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Demander" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_0g38ix5</bpmn2:incoming>
@@ -157,11 +159,13 @@ purchaseReq.budget = budget.getTarget()</camunda:script>
         <camunda:properties>
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelLabel" value="Demande d'achat" />
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-PurchaseReq-form" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Créer budget" />
           <camunda:property name="item" value="createBudgetBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Créer budget" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_0pa8q8d</bpmn2:incoming>
@@ -177,10 +181,12 @@ purchaseReq.budget = budget.getTarget()</camunda:script>
         <camunda:properties>
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelLabel" value="Demande d'achat" />
           <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="itemType" value="string" />
+          <camunda:property name="itemLabel" value="Eligible ?" />
           <camunda:property name="item" value="eligible" />
           <camunda:property name="readonly" value="false" />
-          <camunda:property name="itemLabel" value="Eligible ?" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_0srt9t7</bpmn2:incoming>
@@ -196,11 +202,13 @@ purchaseReq.budget = budget.getTarget()</camunda:script>
         <camunda:properties>
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelLabel" value="Demande d'achat" />
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-PurchaseReq-form" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Mettre en attente" />
           <camunda:property name="item" value="putOnHoldBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Mettre en attente" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_1lq8acw</bpmn2:incoming>
@@ -219,19 +227,24 @@ purchaseReq.budget = budget.getTarget()</camunda:script>
         <camunda:properties>
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelLabel" value="Demande d'achat" />
           <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="itemType" value="panel" />
+          <camunda:property name="itemLabel" value="3- Rens. budgétaire" />
           <camunda:property name="item" value="panelTab3" />
           <camunda:property name="active" value="true" />
-          <camunda:property name="itemLabel" value="3- Rens. budgétaire" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Suivant" />
           <camunda:property name="item" value="nextBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Suivant" />
+          <camunda:property name="itemType" value="many-to-one" />
+          <camunda:property name="itemLabel" value="Budget" />
           <camunda:property name="item" value="budget" />
           <camunda:property name="readonly" value="false" />
-          <camunda:property name="itemLabel" value="Budget" />
+          <camunda:property name="itemType" value="string" />
+          <camunda:property name="itemLabel" value="Budget existant" />
           <camunda:property name="item" value="existingBudgetSelect" />
           <camunda:property name="readonly" value="false" />
-          <camunda:property name="itemLabel" value="Budget existant" />
         </camunda:properties>
         <camunda:executionListener event="start">
           <camunda:script scriptFormat="axelor" scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;statusSelect&#34;,&#34;type&#34;:&#34;string&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;budgeting&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;PurchaseReq&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:true,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">purchaseReq.statusSelect = 'budgeting'</camunda:script>
@@ -246,16 +259,20 @@ purchaseReq.budget = budget.getTarget()</camunda:script>
         <camunda:properties>
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelLabel" value="Demande d'achat" />
           <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="itemType" value="panel" />
+          <camunda:property name="itemLabel" value="2- Produit" />
           <camunda:property name="item" value="panelTab2" />
           <camunda:property name="active" value="true" />
-          <camunda:property name="itemLabel" value="2- Produit" />
+		  <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Suivant" />
           <camunda:property name="item" value="nextBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Suivant" />
+          <camunda:property name="itemType" value="panel" />
+          <camunda:property name="itemLabel" value="2- Produit" />
           <camunda:property name="item" value="panelTab2" />
           <camunda:property name="readonly" value="false" />
-          <camunda:property name="itemLabel" value="2- Produit" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_0vv86i2</bpmn2:incoming>
@@ -266,16 +283,22 @@ purchaseReq.budget = budget.getTarget()</camunda:script>
         <camunda:properties>
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelLabel" value="Demande d'achat" />
           <camunda:property name="modelType" value="metaJsonModel" />
+          <camunda:property name="view" value="custom-model-PurchaseReq-form" />
+          <camunda:property name="viewLabel" value="Demande d'achat" />
+          <camunda:property name="itemType" value="panel" />
+          <camunda:property name="itemLabel" value="1- Rens. administratifs" />
           <camunda:property name="item" value="panelTab1" />
           <camunda:property name="active" value="true" />
-          <camunda:property name="itemLabel" value="1- Rens. administratifs" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Suivant" />
           <camunda:property name="item" value="nextBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Suivant" />
+          <camunda:property name="itemType" value="panel" />
+          <camunda:property name="itemLabel" value="1- Rens. administratifs" />
           <camunda:property name="item" value="panelTab1" />
           <camunda:property name="readonly" value="false" />
-          <camunda:property name="itemLabel" value="1- Rens. administratifs" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_1r9lf6b</bpmn2:incoming>
@@ -296,11 +319,13 @@ purchaseReq.budget = budget.getTarget()</camunda:script>
         <camunda:properties>
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PurchaseReq" />
+          <camunda:property name="modelLabel" value="Demande d'achat" />
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-PurchaseReq-form" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Créer devis" />
           <camunda:property name="item" value="createQuotationBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Créer devis" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_0x2e0hq</bpmn2:incoming>
@@ -357,9 +382,10 @@ return $ctx.save(rec)</bpmn2:script>
           <camunda:property name="modelName" value="PurchaseOrder" />
           <camunda:property name="modelType" value="metaModel" />
           <camunda:property name="view" value="purchase-order-form" />
+          <camunda:property name="itemType" value="boolean" />
+          <camunda:property name="itemLabel" value="Validation direction" />
           <camunda:property name="item" value="directorValidation" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Validation direction" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_1ioxfs2</bpmn2:incoming>
@@ -372,9 +398,10 @@ return $ctx.save(rec)</bpmn2:script>
           <camunda:property name="modelName" value="PurchaseOrder" />
           <camunda:property name="modelType" value="metaModel" />
           <camunda:property name="view" value="purchase-order-form" />
+          <camunda:property name="itemType" value="boolean" />
+          <camunda:property name="itemLabel" value="Validation acheteur" />
           <camunda:property name="item" value="buyerValidation" />
           <camunda:property name="readonly" value="false" />
-          <camunda:property name="itemLabel" value="Validation acheteur" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_19tlxt8</bpmn2:incoming>
@@ -387,9 +414,10 @@ return $ctx.save(rec)</bpmn2:script>
           <camunda:property name="modelName" value="PurchaseOrder" />
           <camunda:property name="modelType" value="metaModel" />
           <camunda:property name="view" value="purchase-order-form" />
+          <camunda:property name="itemType" value="boolean" />
+          <camunda:property name="itemLabel" value="Validation Responsable" />
           <camunda:property name="item" value="managerValidation" />
           <camunda:property name="readonly" value="false" />
-          <camunda:property name="itemLabel" value="Validation Responsable" />
         </camunda:properties>
       </bpmn2:extensionElements>
       <bpmn2:incoming>Flow_0w2fn0v</bpmn2:incoming>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -201,7 +202,7 @@ public class InvoiceLineController {
                               invoiceLine,
                               invoiceLine.getTaxLine(),
                               InvoiceToolService.isPurchase(invoice)));
-
+      discounts.remove("price");
       for (Entry<String, Object> entry : discounts.entrySet()) {
         response.setValue(entry.getKey(), entry.getValue());
       }
@@ -623,6 +624,32 @@ public class InvoiceLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
+    try {
+      AccountService accountService = Beans.get(AccountService.class);
+
+      if (Invoice.class.equals(request.getContext().getContextClass())) {
+        Invoice invoice = request.getContext().asType(Invoice.class);
+        if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
+          for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+            if (invoiceLine != null && invoiceLine.getAccount() != null) {
+              accountService.checkAnalyticAxis(
+                  invoiceLine.getAccount(), invoiceLine.getAnalyticDistributionTemplate());
+            }
+          }
+        }
+      } else {
+        InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+        if (invoiceLine != null && invoiceLine.getAccount() != null) {
+          accountService.checkAnalyticAxis(
+              invoiceLine.getAccount(), invoiceLine.getAnalyticDistributionTemplate());
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

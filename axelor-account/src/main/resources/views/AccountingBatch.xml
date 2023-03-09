@@ -13,7 +13,7 @@
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
-  <form onNew="action-accounting-batch-record-on-new" name="accounting-batch-form"
+  <form onNew="action-accounting-batch-group-on-new" name="accounting-batch-form"
     title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch"
     onLoad="action-accounting-batch-group-on-load">
     <panel name="mainPanel">
@@ -143,6 +143,7 @@
           domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'equity' OR self.accountType.technicalTypeSelect = 'provision' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation' OR self.accountType.technicalTypeSelect = 'currentAsset' OR self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable' OR self.accountType.technicalTypeSelect = 'tax' OR self.accountType.technicalTypeSelect = 'cash')"
           showIf="openYear"/>
         <field name="generateResultMove" showIf="openYear"/>
+        <field name="includeSpecialAccounts" showIf="openYear &amp;&amp; generateResultMove"/>
         <field name="resultMoveDescription" showIf="generateResultMove"/>
         <field name="generateGeneralLedger" showIf="openYear"/>
         <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
@@ -270,6 +271,11 @@
     <action name="action-accounting-batch-method-action-fixed-asset-lines-realize"/>
   </action-group>
 
+  <action-group name="action-accounting-batch-group-on-new">
+    <action name="action-accounting-batch-record-on-new"/>
+    <action name="action-attrs-accounting-batch-hide-trading-name-set"/>
+  </action-group>
+
   <action-group name="action-accounting-batch-group-on-load">
     <action name="action-attrs-accounting-batch-hide-trading-name-set"/>
     <action name="action-accounting-batch-attrs-show-label"/>
@@ -278,6 +284,7 @@
 
   <action-group name="action-accounting-batch-group-accounting-cut-off">
     <action name="save"/>
+    <action name="action-accounting-batch-validate-cut-off-move-status"/>
     <action name="action-accounting-batch-view-preview-move-lines-to-process"
       if="previewRecordsToProcess"/>
     <action name="action-accounting-batch-validate-twice-in-a-month"
@@ -444,6 +451,11 @@
       if="eval: !updateAllRealizedFixedAssetLines &amp;&amp; startDate &gt; endDate"/>
   </action-validate>
 
+  <action-validate name="action-accounting-batch-validate-cut-off-move-status">
+    <error
+      message="The selected cut off move status is incompatible with this misc. operation journal"
+      if="(!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; cutOffMoveStatusSelect == 5) || (!miscOpeJournal?.allowAccountingDaybook &amp;&amp; cutOffMoveStatusSelect == 2)"/>
+  </action-validate>
 
   <!-- ACTION ATTRS -->
 

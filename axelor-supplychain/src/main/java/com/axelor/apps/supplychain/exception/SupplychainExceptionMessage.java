@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -174,6 +174,12 @@ public final class SupplychainExceptionMessage {
       "Could not find MRP with sequence %s." /*)*/;
 
   public static final String MRP_SCHEDULER_SEQ_MISSING = /*$$(*/ "MRP sequence is missing." /*)*/;
+
+  public static final String MRP_GENERATE_PROPOSAL_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least one line to generate a proposal." /*)*/;
+
+  public static final String MRP_GENERATE_PROPOSAL_NO_POSSIBLE_LINE = /*$$(*/
+      "No proposal can be generated from these lines." /*)*/;
 
   //  Mrp Forecast
   public static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/

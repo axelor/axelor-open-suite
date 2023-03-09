@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -68,7 +68,7 @@ public class QueryNode extends BaseTaskNode {
     return "\n" + target + " = " + codeBuilder.toString();
   }
 
-  private void addQuery(StringBuilder codeBuilder, String model) {
+  protected void addQuery(StringBuilder codeBuilder, String model) {
 
     String filter = getExpression();
 
@@ -97,7 +97,7 @@ public class QueryNode extends BaseTaskNode {
     }
   }
 
-  private void addDynamicQuery(StringBuilder codeBuilder, String model) {
+  protected void addDynamicQuery(StringBuilder codeBuilder, String model) {
 
     String filter = getExpression();
 

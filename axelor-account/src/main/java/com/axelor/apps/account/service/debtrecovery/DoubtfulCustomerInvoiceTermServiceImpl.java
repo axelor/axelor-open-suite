@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -117,7 +117,7 @@ public class DoubtfulCustomerInvoiceTermServiceImpl implements DoubtfulCustomerI
           copyOnOldMoveLine.setAmountRemaining(remainingAmount);
           copyOnOldMoveLine.setPercentage(newPercentage);
           invoiceTermToAddToInvoicePartnerMoveLine.add(copyOnOldMoveLine);
-          invoice.addInvoiceTermListItem(copyOnOldMoveLine);
+          invoiceTermToAdd.add(copyOnOldMoveLine);
           invoiceTermToRemove.add(copyOnOldMoveLine);
           // Update current invoice term
           invoiceTerm.setAmount(amount.subtract(remainingAmount));

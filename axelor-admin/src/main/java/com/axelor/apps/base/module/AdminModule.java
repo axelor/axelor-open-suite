@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,6 +34,8 @@ import com.axelor.apps.base.service.app.AnonymizeService;
 import com.axelor.apps.base.service.app.AnonymizeServiceImpl;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.app.AppServiceImpl;
+import com.axelor.apps.base.service.app.DataBackupAnonymizeService;
+import com.axelor.apps.base.service.app.DataBackupAnonymizeServiceImpl;
 import com.axelor.apps.base.service.app.DataBackupService;
 import com.axelor.apps.base.service.app.DataBackupServiceImpl;
 import com.axelor.apps.base.service.app.FakerService;
@@ -54,5 +56,6 @@ public class AdminModule extends AxelorModule {
     bind(AnonymizeService.class).to(AnonymizeServiceImpl.class);
     bind(FakerService.class).to(FakerServiceImpl.class);
     bind(DataBackupRepository.class).to(DataBackupManagementRepository.class);
+    bind(DataBackupAnonymizeService.class).to(DataBackupAnonymizeServiceImpl.class);
   }
 }

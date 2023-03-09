@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.service.configurator;
+
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
@@ -56,8 +59,8 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
           I18n.get(SaleExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
     } else if (!Beans.get(ConfiguratorService.class)
             .areCompatible(wantedTypeName, getCalculatedClassName(result))
-        && !wantedTypeName.equals("one-to-many")
-        && !wantedTypeName.equals("many-to-many")) {
+        && !wantedTypeName.equals(ONE_TO_MANY)
+        && !wantedTypeName.equals(MANY_TO_MANY)) {
       throw new AxelorException(
           formula,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

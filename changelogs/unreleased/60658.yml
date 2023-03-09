@@ -1,0 +1,3 @@
+---
+title : "Move/Invoice/PurchaseOrder/SaleOrder : Hide analytic panel when isn't managed on the selected company"
+type: fix

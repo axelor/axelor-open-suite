@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -158,7 +158,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
     return activityIds;
   }
 
-  private void getActivityPassCount(String instanceId, Map<String, Integer> activityCountMap) {
+  protected void getActivityPassCount(String instanceId, Map<String, Integer> activityCountMap) {
 
     HistoryService historyService = engineService.getEngine().getHistoryService();
     if (instanceId == null) {
@@ -277,7 +277,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
     return statusList;
   }
 
-  private boolean isValidDisplayModel(String klassName, WkfInstance wkfInstance) {
+  protected boolean isValidDisplayModel(String klassName, WkfInstance wkfInstance) {
 
     WkfProcess wkfProcess = wkfInstance.getWkfProcess();
 
@@ -291,7 +291,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
     return false;
   }
 
-  private boolean containsModel(String models, String klassName) {
+  protected boolean containsModel(String models, String klassName) {
 
     if (models != null) {
       for (String model : models.split(",")) {
@@ -304,7 +304,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
     return false;
   }
 
-  private void addActiveNodes(
+  protected void addActiveNodes(
       List<Map<String, Object>> statusList, WkfInstance wkfInstance, String klassName) {
 
     HistoryService historyService = engineService.getEngine().getHistoryService();
@@ -367,7 +367,7 @@ public class WkfDisplayServiceImpl implements WkfDisplayService {
     }
   }
 
-  private boolean isValidNode(String activityId, WkfProcess wkfProcess, String klassName) {
+  protected boolean isValidNode(String activityId, WkfProcess wkfProcess, String klassName) {
 
     WkfTaskConfig wkfTaskConfig =
         wkfTaskConfigRepository

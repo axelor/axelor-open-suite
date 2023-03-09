@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,15 +40,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class BankStatementLineAFB120Service extends BankStatementLineService {
-  protected BankPaymentBankStatementLineAFB120Repository
-      bankPaymentBankStatementLineAFB120Repository;
 
   @Inject
   public BankStatementLineAFB120Service(
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository) {
     super(bankPaymentBankStatementLineAFB120Repository);
-    this.bankPaymentBankStatementLineAFB120Repository =
-        bankPaymentBankStatementLineAFB120Repository;
   }
 
   public BankStatementLineAFB120 createBankStatementLine(

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -178,7 +178,7 @@ public class MrpLineServiceImpl implements MrpLineService {
                   company,
                   null,
                   supplierPartner.getCurrency(),
-                  maturityDate,
+                  null,
                   this.getPurchaseOrderOrigin(mrpLine),
                   null,
                   stockLocation,
@@ -222,7 +222,11 @@ public class MrpLineServiceImpl implements MrpLineService {
     PurchaseOrderLine poLine =
         purchaseOrderLineService.createPurchaseOrderLine(
             purchaseOrder, product, null, null, qty, unit);
-    poLine.setDesiredDelivDate(maturityDate);
+    poLine.setDesiredReceiptDate(maturityDate);
+    if (mrpLine.getEstimatedDeliveryMrpLine() != null) {
+      poLine.setDesiredReceiptDate(mrpLine.getEstimatedDeliveryMrpLine().getMaturityDate());
+    }
+    poLine.setEstimatedReceiptDate(poLine.getDesiredReceiptDate());
     purchaseOrder.addPurchaseOrderLineListItem(poLine);
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);

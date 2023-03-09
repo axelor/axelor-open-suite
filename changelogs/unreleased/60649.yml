@@ -1,0 +1,3 @@
+---
+title : "Invoice : Fix an error where invoice term percentage computation was blocking ventilation"
+type: fix

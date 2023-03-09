@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,10 +79,13 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
         exTaxTotal =
             exTaxTotal.add(
-                stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()));
+                stockMoveLine
+                    .getRealQty()
+                    .multiply(stockMoveLine.getUnitPriceUntaxed())
+                    .setScale(2, RoundingMode.HALF_UP));
       }
     }
-    return exTaxTotal.setScale(2, RoundingMode.HALF_UP);
+    return exTaxTotal;
   }
 
   /**

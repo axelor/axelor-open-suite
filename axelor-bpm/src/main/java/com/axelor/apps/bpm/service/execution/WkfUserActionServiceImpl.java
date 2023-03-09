@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -151,7 +151,7 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
     return wkfContext;
   }
 
-  private LocalDate getDeadLineDate(String deadLineFieldPath, FullContext wkfContext) {
+  protected LocalDate getDeadLineDate(String deadLineFieldPath, FullContext wkfContext) {
 
     LocalDate date = null;
     if (deadLineFieldPath.equals("today")) {
@@ -184,7 +184,7 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
     return user;
   }
 
-  private String getUserPath(WkfTaskConfig wkfTaskConfig, String processDefinitionId) {
+  protected String getUserPath(WkfTaskConfig wkfTaskConfig, String processDefinitionId) {
 
     String userPath = wkfTaskConfig.getUserPath();
     if (userPath == null) {
