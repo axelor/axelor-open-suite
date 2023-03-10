@@ -23,9 +23,9 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.PaymentSessionCancelService;
-import com.axelor.apps.account.service.PaymentSessionValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -508,7 +508,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
   }
 
-  private void setNbOfLines(BankOrder bankOrder) {
+  protected void setNbOfLines(BankOrder bankOrder) {
 
     if (bankOrder.getBankOrderLineList() == null) {
       return;
@@ -819,7 +819,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     resetBankDetails(bankOrder);
   }
 
-  private void resetPartners(BankOrder bankOrder) {
+  protected void resetPartners(BankOrder bankOrder) {
     if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
       for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
         bankOrderLine.setPartner(null);
@@ -858,7 +858,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
   }
 
-  private void resetBankDetails(BankOrder bankOrder) {
+  protected void resetBankDetails(BankOrder bankOrder) {
     for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
       if (bankOrderLine.getReceiverBankDetails() == null) {
         continue;

@@ -222,11 +222,11 @@ public class MrpLineServiceImpl implements MrpLineService {
     PurchaseOrderLine poLine =
         purchaseOrderLineService.createPurchaseOrderLine(
             purchaseOrder, product, null, null, qty, unit);
-    poLine.setDesiredDelivDate(maturityDate);
+    poLine.setDesiredReceiptDate(maturityDate);
     if (mrpLine.getEstimatedDeliveryMrpLine() != null) {
-      poLine.setDesiredDelivDate(mrpLine.getEstimatedDeliveryMrpLine().getMaturityDate());
+      poLine.setDesiredReceiptDate(mrpLine.getEstimatedDeliveryMrpLine().getMaturityDate());
     }
-    poLine.setEstimatedDelivDate(poLine.getDesiredDelivDate());
+    poLine.setEstimatedReceiptDate(poLine.getDesiredReceiptDate());
     purchaseOrder.addPurchaseOrderLineListItem(poLine);
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);

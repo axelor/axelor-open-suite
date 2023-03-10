@@ -117,7 +117,7 @@ public class SendMailQueueService extends JpaSupport {
     log.debug("Mail executor stopped.");
   }
 
-  private Message findMessage(Long messageId) {
+  protected Message findMessage(Long messageId) {
     Message foundMessage;
     final long startTime = System.currentTimeMillis();
 
@@ -133,7 +133,7 @@ public class SendMailQueueService extends JpaSupport {
     return foundMessage;
   }
 
-  private void sleep() {
+  protected void sleep() {
     try {
       Thread.sleep(ENTITY_FIND_INTERVAL);
     } catch (InterruptedException e) {

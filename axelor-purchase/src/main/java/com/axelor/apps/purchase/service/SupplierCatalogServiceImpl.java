@@ -108,7 +108,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
                 .getAmountCurrencyConvertedAtDate(
                     supplierCatalog.getSupplierPartner().getCurrency(),
                     currency,
-                    supplierCatalog.getPrice(),
+                    getPurchasePrice(supplierCatalog, company),
                     date)
                 .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
         info.put("productName", supplierCatalog.getProductSupplierName());
@@ -196,7 +196,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
     SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
 
     if (supplierCatalog != null) {
-      purchasePrice = supplierCatalog.getPrice();
+      purchasePrice = getPurchasePrice(supplierCatalog, company);
       purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
     } else {
       if (product != null) {
@@ -216,6 +216,17 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
     return currencyService
         .getAmountCurrencyConvertedAtDate(purchaseCurrency, currency, price, localDate)
         .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public BigDecimal getPurchasePrice(SupplierCatalog supplierCatalog, Company company)
+      throws AxelorException {
+    if (!supplierCatalog.getIsTakingProductPurchasePrice() && supplierCatalog.getPrice() != null) {
+      return supplierCatalog.getPrice();
+    }
+
+    return (BigDecimal)
+        productCompanyService.get(supplierCatalog.getProduct(), "purchasePrice", company);
   }
 
   @Override

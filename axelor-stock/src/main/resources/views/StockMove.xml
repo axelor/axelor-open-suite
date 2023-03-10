@@ -723,6 +723,28 @@
     </panel>
   </form>
 
+  <form name="popup-stock-move-check-wap-form" title="Stock move"
+    model="com.axelor.apps.stock.db.StockMove" onLoad="action-stock-move-record-wap-on-load">
+    <panel name="mainPanel">
+      <field name="$msg" showTitle="false" colSpan="12" readonly="true">
+        <viewer depends="$percentToleranceForWapChange,$productsWithError">
+	   <![CDATA[
+              <h5 class="text-left">
+                <span x-translate>This stock move will have a huge impact (more than </span> {{record.$percentToleranceForWapChange}}<span x-translate>%) on the WAP of </span> {{record.$productsWithError}}. <span x-translate> Do you want to proceed?</span>
+             </h5>
+           ]]>
+        </viewer>
+      </field>
+      <button name="confirmBtn" title="Confirm"
+        onClick="save,action-stock-move-group-realize,close" icon="fa-check" colOffset="3"
+        colSpan="3"/>
+      <button name="cancelBtn" title="Cancel" onClick="close" icon="fa-times"
+        css="btn-danger" colSpan="3"/>
+      <field name="$percentToleranceForWapChange" type="integer" hidden="true"/>
+      <field name="$productsWithError" type="string" hidden="true"/>
+    </panel>
+  </form>
+
   <action-record name="action-stock-move-popup-backorder-record-set-backorder"
     model="com.axelor.apps.stock.db.StockMove">
     <field name="isWithBackorder" expr="true"/>
@@ -879,11 +901,16 @@
     <action name="action-stock-move-check-stock-move-line-real-qty"/>
     <action name="action-stock-move-validate-shipment-informations"
       if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !isReversion"/>
+    <action name="action-stock-move-method-check-wap"/>
+    <action name="action-stock-move-group-realize" if="isValidWAP"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-stock-move-group-realize">
     <action name="action-stock-move-method-manage-backorder"
       if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
     <action name="action-stock-move-method-realize"
       if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} || isWithBackorder"/>
-    <action name="save"/>
   </action-group>
 
   <action-method name="action-stock-move-method-manage-backorder">
@@ -1491,6 +1518,16 @@
 
   <action-method name="action-stock-move-method-get-to-stock-location">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="getToStockLocation"/>
+  </action-method>
+
+  <action-record name="action-stock-move-record-wap-on-load"
+    model="com.axelor.apps.stock.db.StockMove">
+    <field name="$percentToleranceForWapChange" expr="eval: _percentToleranceForWapChange"/>
+    <field name="$productsWithError" expr="eval: _productsWithErrorStr"/>
+  </action-record>
+
+  <action-method name="action-stock-move-method-check-wap">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="checkWap"/>
   </action-method>
 
 </object-views>

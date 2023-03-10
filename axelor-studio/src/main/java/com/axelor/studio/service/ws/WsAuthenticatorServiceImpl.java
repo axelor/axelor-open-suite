@@ -96,7 +96,7 @@ public class WsAuthenticatorServiceImpl implements WsAuthenticatorService {
     return url;
   }
 
-  private String getRedirectUrl() {
+  protected String getRedirectUrl() {
 
     String redirectUrl = AppSettings.get().getBaseURL();
 

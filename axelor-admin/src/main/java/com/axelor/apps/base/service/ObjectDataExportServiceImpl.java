@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -225,7 +225,7 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
     return dataList;
   }
 
-  private MetaFile writeCSV(Map<String, List<String[]>> data) throws IOException {
+  protected MetaFile writeCSV(Map<String, List<String[]>> data) throws IOException {
 
     File zipFile = MetaFiles.createTempFile("Data", ".zip").toFile();
     try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zipFile))) {
@@ -245,7 +245,7 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
     return metaFiles.upload(zipFile);
   }
 
-  private MetaFile writeExcel(Map<String, List<String[]>> data) throws IOException {
+  protected MetaFile writeExcel(Map<String, List<String[]>> data) throws IOException {
 
     XSSFWorkbook workBook = new XSSFWorkbook();
 

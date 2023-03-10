@@ -71,8 +71,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Inject protected AppBaseService appBaseService;
 
-  @Inject protected PurchaseProductService productService;
-
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
 
   @Inject protected AppPurchaseService appPurchaseService;
@@ -475,7 +473,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
     purchaseOrderLine.setPurchaseOrder(purchaseOrder);
 
-    purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
+    purchaseOrderLine.setEstimatedReceiptDate(purchaseOrder.getEstimatedReceiptDate());
 
     if (product != null) {
       purchaseOrderLine.setProduct(product);

@@ -17,7 +17,7 @@
  */
 package com.axelor.studio.service;
 
-import com.axelor.common.Inflector;
+import com.axelor.apps.tool.ModelTool;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.studio.service.builder.SelectionBuilderService;
@@ -65,9 +65,7 @@ public class JsonFieldService {
 
   @CallMethod
   public String checkName(String name, boolean isFieldName) {
-    if (name == null) return "";
-    name = name.replaceAll("[^a-zA-Z0-9 ]", "");
-    return Inflector.getInstance().camelize(name, isFieldName);
+    return ModelTool.normalizeKeyword(name, isFieldName);
   }
 
   public String getSelectionName(MetaJsonField metaJsonField) {

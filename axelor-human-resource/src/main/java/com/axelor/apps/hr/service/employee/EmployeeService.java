@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.employee;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -40,4 +41,6 @@ public interface EmployeeService extends UserService {
   /** Generates a new {@link DPAE} for given {@link Employee} and returns its id. */
   @Transactional(rollbackOn = {Exception.class})
   Long generateNewDPAE(Employee employee) throws AxelorException;
+
+  public User getUser(Employee employee) throws AxelorException;
 }

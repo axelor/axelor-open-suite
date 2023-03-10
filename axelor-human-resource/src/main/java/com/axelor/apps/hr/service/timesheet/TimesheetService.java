@@ -109,8 +109,6 @@ public interface TimesheetService {
       Product product)
       throws AxelorException;
 
-  public LocalDate getFromPeriodDate();
-
   public Timesheet getCurrentTimesheet();
 
   public Timesheet getCurrentOrCreateTimesheet() throws AxelorException;
@@ -139,8 +137,6 @@ public interface TimesheetService {
   public void computeParentTimeSpent(Project project);
 
   public BigDecimal computeTimeSpent(Project project);
-
-  public String computeFullName(Timesheet timesheet);
 
   public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
 

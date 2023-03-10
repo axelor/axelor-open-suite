@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
 @RequestScoped
 public class MoveValidateServiceImpl implements MoveValidateService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
+  protected int jpaLimit = 20;
   protected MoveLineControlService moveLineControlService;
   protected MoveLineToolService moveLineToolService;
   protected AccountConfigService accountConfigService;
@@ -404,7 +404,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveInvoiceTermService.updateMoveLineDueDates(move);
 
     this.completeMoveLines(move);
-    this.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    this.setMoveLineAccountingDate(move, dayBookMode);
+    this.freezeFieldsOnMoveLines(move);
     this.updateValidateStatus(move, dayBookMode);
 
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
@@ -415,6 +416,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     if (updateCustomerAccount) {
       moveCustAccountService.updateCustomerAccount(move);
+    }
+  }
+
+  protected void setMoveLineAccountingDate(Move move, boolean daybook) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK || !daybook) {
+        moveLine.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
+      }
     }
   }
 
@@ -513,7 +522,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     List<Partner> partnerList = new ArrayList<>();
     partnerList.addAll(partnerSet);
 
-    this.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    this.freezeFieldsOnMoveLines(move);
     moveRepository.save(move);
 
     moveCustAccountService.updateCustomerAccount(partnerList, move.getCompany());
@@ -550,7 +559,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
    * @param move
    */
   @Override
-  public void freezeAccountAndPartnerFieldsOnMoveLines(Move move) {
+  public void freezeFieldsOnMoveLines(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
 
       Account account = moveLine.getAccount();
@@ -570,7 +579,22 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLine.setTaxRate(moveLine.getTaxLine().getValue());
         moveLine.setTaxCode(moveLine.getTaxLine().getTax().getCode());
       }
+
+      setMoveLineFixedInformation(move, moveLine);
     }
+  }
+
+  protected void setMoveLineFixedInformation(Move move, MoveLine moveLine) {
+    Company company = move.getCompany();
+    Journal journal = move.getJournal();
+    moveLine.setCompanyCode(company.getCode());
+    moveLine.setCompanyName(company.getName());
+    moveLine.setJournalCode(journal.getCode());
+    moveLine.setJournalName(journal.getName());
+    moveLine.setFiscalYearCode(move.getPeriod().getYear().getCode());
+    moveLine.setCurrencyCode(move.getCurrencyCode());
+    moveLine.setCompanyCurrencyCode(company.getCurrency().getCode());
+    moveLine.setAdjustingMove(move.getAdjustingMove());
   }
 
   @Override
@@ -602,7 +626,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         }
         errors = errors.concat(move.getReference());
       } finally {
-        if (++i % 20 == 0) {
+        if (++i % jpaLimit == 0) {
           JPA.clear();
         }
       }

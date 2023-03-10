@@ -27,5 +27,5 @@ public interface PricedOrderDomainService {
    * @param domain
    * @return
    */
-  String getPartnerDomain(PricedOrder pricedOrder, String domain);
+  String getPartnerDomain(PricedOrder pricedOrder, String domain, int invoiceTypeSelect);
 }

@@ -29,7 +29,7 @@ import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -55,6 +55,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   protected PartnerRepository partnerRepo;
   protected SaleOrderRepository saleOrderRepo;
   protected AppSaleService appSaleService;
+  protected AppCrmService appCrmService;
   protected UserService userService;
   protected SaleOrderLineService saleOrderLineService;
 
@@ -64,6 +65,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
+      AppCrmService appCrmService,
       UserService userService,
       SaleOrderLineService saleOrderLineService) {
 
@@ -71,6 +73,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     this.partnerRepo = partnerRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
+    this.appCrmService = appCrmService;
     this.userService = userService;
     this.saleOrderLineService = saleOrderLineService;
   }
@@ -180,6 +183,12 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
       this.saveSaleOrderPDFAsAttachment(saleOrder);
     }
+
+    Opportunity opportunity = saleOrder.getOpportunity();
+    if (opportunity != null) {
+      opportunity.setOpportunityStatus(appCrmService.getSalesPropositionStatus());
+    }
+
     saleOrderRepo.save(saleOrder);
   }
 
@@ -204,9 +213,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
     if (appSaleService.getAppSale().getCloseOpportunityUponSaleOrderConfirmation()) {
       Opportunity opportunity = saleOrder.getOpportunity();
-
       if (opportunity != null) {
-        opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_CLOSED_WON);
+        opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
       }
     }
 
