@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.payment.paymentsession;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -278,11 +279,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.bankDetails IS NOT NULL "
             + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     if (company != null
-        && accountConfigService.getAccountConfig(company) != null
-        && accountConfigService
-            .getAccountConfig(company)
-            .getRetrieveDaybookMovesInPaymentSession()) {
+        && accountConfig != null
+        && accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
       generalCondition += " AND self.moveLine.move.statusSelect != 2 ";
     }
 
