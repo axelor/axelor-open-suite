@@ -32,6 +32,7 @@ var deltan2 = {};
 var deltaPercentagen1 = {};
 var deltaPercentagen2 = {};
 var temp = {};]]></method>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
@@ -174,7 +175,7 @@ var temp = {};]]></method>
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData"/>               
+            <structure name="cachedMetaData"/>
             <method name="onFetch"><![CDATA[var value;
 var valuen1;
 var valuen2;
@@ -205,27 +206,27 @@ if (row["rule_type"] == 2) {
 	rules[row["rule_code"]] = value;
 	rulesn1[row["rule_code"]] = valuen1;
 	rulesn2[row["rule_code"]] = valuen2;
-	
-	
+
+
 } else if (row["rule_type"] == 3)  {
 	rules[row["rule_code"]] = eval(row["rule"]);
-	rulesn1[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn1')); 
+	rulesn1[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn1'));
 	rulesn2[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn2'));
-	
+
 }
 
 deltan1[row["rule_code"]] = rules[row["rule_code"]] - rulesn1[row["rule_code"]];
 deltan2[row["rule_code"]] = rules[row["rule_code"]] - rulesn2[row["rule_code"]];
 
 if (rules[row["rule_code"]] == 0) {
-	
+
 	if (rulesn1[row["rule_code"]] == 0) {
 		deltaPercentagen1[row["rule_code"]] = 0;
 	}
 	else {
 		deltaPercentagen1[row["rule_code"]] = 100;
 	}
-		
+
 	if (rulesn2[row["rule_code"]] == 0) {
 		deltaPercentagen2[row["rule_code"]] = 0;
 	}
@@ -281,12 +282,12 @@ LEFT JOIN account_accounting_report_config_line_account_set as AccountSet
 ON AccountSet.account_accounting_report_config_line = ConfigLine.id
 
 LEFT JOIN account_account as Account
-ON Account.id = AccountSet.account_set 
+ON Account.id = AccountSet.account_set
 OR Account.account_type = AccountType.id
 OR Account.code SIMILAR TO ConfigLine.account_code
 
 LEFT JOIN account_move_line as MoveLine
-ON MoveLine.account = Account.id 
+ON MoveLine.account = Account.id
 
 LEFT JOIN account_move as Move
 ON MoveLine.move = Move.id
@@ -295,7 +296,7 @@ LEFT JOIN account_analytic_account as AnalyticAccount
 ON AnalyticAccount.id = AnalyticAccountSet.analytic_account_set
 OR AnalyticAccount.code LIKE ConfigLine.analytic_account_code
 
-LEFT JOIN account_analytic_move_line as AnalyticMoveLine 
+LEFT JOIN account_analytic_move_line as AnalyticMoveLine
 ON (AnalyticMoveLine.move_line = MoveLine.id)
 
 LEFT JOIN base_period as Period
@@ -316,7 +317,7 @@ WHERE Report.id = ?
 	AND (MoveLine.id 	     IS NULL OR (
 		Report.currency	  = Move.company_currency
 		AND Report.company = Move.company
-		AND Move.ignore_in_accounting_ok IN ('false', null) 
+		AND Move.ignore_in_accounting_ok IN ('false', null)
 		AND (Move.status_select IN (2, 3) OR (Move.status_select = 5 AND Report.display_simulated_move))
 	))
 	AND (AnalyticAccountSet.analytic_account_set is NULL
@@ -344,9 +345,9 @@ FROM MoveLineQuery
 GROUP BY MoveLineQuery.sequence, MoveLineQuery.type, MoveLineQuery.rule_label, MoveLineQuery.rule_code, MoveLineQuery.rule_type,MoveLineQuery.result,MoveLineQuery.hidden,MoveLineQuery.rule,MoveLineQuery.show_provision_title
 
 Order by MoveLineQuery.sequence
-	
-	
-	
+
+
+
 	]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ReportDS" id="5439">
@@ -2084,7 +2085,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {
     }
     else if (isNaN(rules[row["rule_code"]])) {
     	0
@@ -2115,7 +2116,7 @@ if (row["type"] != 3) {
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {
     }
     else if (isNaN(rulesn1[row["rule_code"]])) {
     	0
@@ -2123,7 +2124,7 @@ if (row["type"] != 3) {
     else {
 		rulesn1[row["rule_code"]]
 	}
-}	
+}
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
@@ -2146,7 +2147,7 @@ if (row["type"] != 3) {
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {
     }
     else if (isNaN(deltan1[row["rule_code"]])) {
     	0
@@ -2154,7 +2155,7 @@ if (row["type"] != 3) {
     else {
 		deltan1[row["rule_code"]]
 	}
-}	
+}
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
@@ -2177,7 +2178,7 @@ if (row["type"] != 3) {
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00'%'{RoundingMode=HALF_UP}">
 if (row["type"] != 3) {
- if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+ if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {
     }
  else if (isNaN(deltaPercentagen1[row["rule_code"]])) {
  	0
@@ -2208,7 +2209,7 @@ if (row["type"] != 3) {
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {
     }
     else if (isNaN(rulesn2[row["rule_code"]])) {
     	0
@@ -2216,7 +2217,7 @@ if (row["type"] != 3) {
     else {
 		rulesn2[row["rule_code"]]
 	}
-}	
+}
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
@@ -2239,7 +2240,7 @@ if (row["type"] != 3) {
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {
     }
     else if (isNaN(deltan2[row["rule_code"]])) {
     	0
@@ -2247,7 +2248,7 @@ if (row["type"] != 3) {
     else {
 		deltan2[row["rule_code"]]
 	}
-}	
+}
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
@@ -2270,7 +2271,7 @@ if (row["type"] != 3) {
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00'%'{RoundingMode=HALF_UP}">
 if (row["type"] != 3) {
- if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+ if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {
     }
  else if (isNaN(deltaPercentagen2[row["rule_code"]])) {
  	0

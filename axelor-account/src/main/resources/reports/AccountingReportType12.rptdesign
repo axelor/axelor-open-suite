@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -69,6 +69,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -480,12 +481,12 @@ left outer join public.account_accounting_situation as CompanyAccountingSituatio
 left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
-where (AccountingReport.currency = Move.company_currency) 
+where (AccountingReport.currency = Move.company_currency)
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
 AND MoveLine.tax_line is not null
-AND ((((AccountType.technical_type_select not like 'tax' 
+AND ((((AccountType.technical_type_select not like 'tax'
 		and ((Move.functional_origin_select = 3 
 				and (CompanyAccountingSituation.vat_system_select = 2 
 						or (CompanyAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1)))
@@ -499,7 +500,7 @@ AND ((((AccountType.technical_type_select not like 'tax'
 			or  (Move.functional_origin_select = 4 
 				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
 						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1))))))
-	or (Move.functional_origin_select IN (3,4) and MoveLinePartner.id IS NULL and Account.vat_system_select = 1 )) 
+	or (Move.functional_origin_select IN (3,4) and MoveLinePartner.id IS NULL and Account.vat_system_select = 1 ))
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
@@ -646,7 +647,7 @@ order by Move.id, MoveLine.date_val ASC, MoveLine.name ASC;]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name,AccountingReport.date_from,AccountingReport.date_to,
 AcYear.name as year_name, AccountingReport.publication_date_time as "ReportDateEdition",
-Currency.code as currency 
+Currency.code as currency
 from public.account_accounting_report as AccountingReport 
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join public.base_year as AcYear on (AccountingReport.year = AcYear.id)
@@ -868,13 +869,13 @@ left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
 where 
-(AccountingReport.currency = Move.company_currency) 
+(AccountingReport.currency = Move.company_currency)
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move)) 
 AND MoveLine.tax_line is not null
-AND ((((AccountType.technical_type_select not like 'tax' 
+AND ((((AccountType.technical_type_select not like 'tax'
 		and ((Move.functional_origin_select = 3 
 				and (CompanyAccountingSituation.vat_system_select = 2 
 						or (CompanyAccountingSituation.vat_system_select = 1 and Account.vat_system_select = 1)))
@@ -888,7 +889,7 @@ AND ((((AccountType.technical_type_select not like 'tax'
 			or  (Move.functional_origin_select = 4 
 				and (MoveLinePartnerAccountingSituation.vat_system_select = 2 
 						or (MoveLinePartnerAccountingSituation.vat_system_select = 1 and MoveLine.vat_system_select = 1)))))) 
-		or (Move.functional_origin_select IN (3,4) and MoveLinePartner.id IS NULL and Account.vat_system_select = 1 )) 
+		or (Move.functional_origin_select IN (3,4) and MoveLinePartner.id IS NULL and Account.vat_system_select = 1 ))
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
