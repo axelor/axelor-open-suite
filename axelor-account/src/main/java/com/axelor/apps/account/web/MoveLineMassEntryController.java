@@ -29,23 +29,10 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 
 @Singleton
 public class MoveLineMassEntryController {
-
-  private Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList) {
-    int max = 0;
-
-    for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
-      if (moveLine.getTemporaryMoveNumber() > max) {
-        max = moveLine.getTemporaryMoveNumber();
-      }
-    }
-
-    return max;
-  }
 
   public void verifyMassEntryMoveBalance(ActionRequest request, ActionResponse response) {
     try {
@@ -64,6 +51,7 @@ public class MoveLineMassEntryController {
     try {
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
+      MassEntryService massEntryService = Beans.get(MassEntryService.class);
 
       if (moveLineMassEntry != null
           && parentContext != null
@@ -75,15 +63,14 @@ public class MoveLineMassEntryController {
           if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
             if (moveLineMassEntry.getTemporaryMoveNumber() == 0) {
               moveLineMassEntry.setTemporaryMoveNumber(
-                  getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()));
+                  massEntryService.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()));
             }
           } else {
             moveLineMassEntry.setTemporaryMoveNumber(1);
           }
           response.setValues(
-              Beans.get(MassEntryService.class)
-                  .getFirstMoveLineMassEntryInformations(
-                      move.getMoveLineMassEntryList(), moveLineMassEntry));
+              massEntryService.getFirstMoveLineMassEntryInformations(
+                  move.getMoveLineMassEntryList(), moveLineMassEntry));
 
           if (move.getMoveLineMassEntryList() != null
               && move.getMoveLineMassEntryList().size() != 0) {
@@ -119,7 +106,7 @@ public class MoveLineMassEntryController {
             massEntryService.resetMoveLineMassEntry(moveLineMassEntry);
             moveLineMassEntry.setInputAction(1);
             moveLineMassEntry.setTemporaryMoveNumber(
-                getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()) + 1);
+                massEntryService.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()) + 1);
             response.setValues(moveLineMassEntry);
             break;
           default:

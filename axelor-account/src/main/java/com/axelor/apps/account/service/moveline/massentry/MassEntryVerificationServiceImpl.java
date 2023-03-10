@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,10 +93,32 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
   }
 
-  public void checkAndReplaceCurrencyRateModeInMoveLineMassEntry(
+  public void checkAndReplaceCurrencyRateInMoveLineMassEntry(
       MoveLineMassEntry moveLineMassEntry, BigDecimal newCurrencyRate) {
     if (!newCurrencyRate.equals(moveLineMassEntry.getCurrencyRate())) {
       moveLineMassEntry.setCurrencyRate(newCurrencyRate);
     }
+  }
+
+  public void checkDateInAllMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList) {
+    // TODO add control for MoveDate
+    // need to verify if one line have a different date
+    // need to verify if period is not closed or exist
+  }
+
+  public void checkCurrencyRateInAllMoveLineMassEntry(
+      List<MoveLineMassEntry> moveLineMassEntryList) {
+    // TODO add control for currencyRate
+    // need to verify if currencyRate is not 0,00
+  }
+
+  public void checkOriginDateInAllMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList) {
+    // TODO add control for OriginDate
+    // need to verify if one line on same temporaryMoveNumber have a different originDate
+  }
+
+  public void checkOriginInAllMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList) {
+    // TODO add control for Origin
+    // need to verify if we have duplicates Origin on same Journal/Period/Partner
   }
 }

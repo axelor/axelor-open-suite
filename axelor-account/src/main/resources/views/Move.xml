@@ -352,12 +352,11 @@
     onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="controlMassEntryMoves" title="Control moves consistency"
-        onClick="action-move-method-control-mass-entry-moves" colSpan="12" readonly="false"
-        showIf="true"/>
-      <button name="validateMassEntryMoves" title="Validate" readonly="true"
-        onClick="action-move-method-validate-mass-entry-moves" colSpan="12" showIf="true"/>
-      <button name="showMassEntryMoves" title="Show moves" readonly="true"
-        onClick="action-move-method-show-mass-entry-moves" colSpan="12" showIf="true"/>
+        onClick="action-move-method-control-mass-entry-moves" colSpan="12" hidden="false"/>
+      <button name="validateMassEntryMoves" title="Validate" hidden="true"
+        onClick="action-move-method-validate-mass-entry-moves" colSpan="12"/>
+      <button name="showMassEntryMoves" title="Show moves" hidden="true"
+        onClick="action-move-method-show-mass-entry-moves" colSpan="12"/>
     </toolbar>
 
     <panel name="mainPanel" colSpan="12">
@@ -374,11 +373,10 @@
             onChange="action-move-group-journal-on-change" colSpan="6"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3 || (companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1)"
-            colSpan="6"
-            onChange="action-move-record-set-currency-code,action-move-attrs-set-hidden-and-required-fields"
-            required="true"/>
+            colSpan="6" onChange="action-move-currency-onchange" required="true"/>
           <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="6"
-            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
+            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"
+            onChange="action-move-attrs-set-hidden-mass-entry-buttons"/>
         </panel>
       </panel>
 
@@ -718,6 +716,7 @@
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="default-move-record-currency"/>
     <action name="action-move-method-verify-company-bank-details"/>
+    <action name="action-move-attrs-set-hidden-mass-entry-buttons" if="isMassEntry"/>
   </action-group>
 
   <action-group name="action-group-move-date-onchange">
@@ -749,6 +748,7 @@
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
     <action name="action-move-method-verify-company-bank-details"/>
+    <action name="action-move-attrs-set-hidden-mass-entry-buttons" if="isMassEntry"/>
   </action-group>
 
   <action-group name="action-move-group-partner-onchange">
@@ -1277,4 +1277,16 @@
     <call class="com.axelor.apps.account.web.MassEntryMoveController"
       method="showMassEntryMoves"/>
   </action-method>
+
+  <action-attrs name="action-move-attrs-set-hidden-mass-entry-buttons">
+    <attribute for="controlMassEntryMoves" name="hidden" expr="false"/>
+    <attribute for="validateMassEntryMoves" name="hidden" expr="true"/>
+    <attribute for="showMassEntryMoves" name="hidden" expr="true"/>
+  </action-attrs>
+
+  <action-group name="action-move-currency-onchange">
+    <action name="action-move-record-set-currency-code"/>
+    <action name="action-move-attrs-set-hidden-and-required-fields"/>
+    <action name="action-move-attrs-set-hidden-mass-entry-buttons"/>
+  </action-group>
 </object-views>

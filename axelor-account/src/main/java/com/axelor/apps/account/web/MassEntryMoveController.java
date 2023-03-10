@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
 import com.axelor.common.ObjectUtils;
@@ -69,6 +70,9 @@ public class MassEntryMoveController {
               move, this.extractDueDate(request), lastMoveLineMassEntry.getTemporaryMoveNumber());
         }
         response.setValues(move);
+        response.setAttr("controlMassEntryMoves", "hidden", false);
+        response.setAttr("validateMassEntryMoves", "hidden", true);
+        response.setAttr("showMassEntryMoves", "hidden", true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -78,6 +82,19 @@ public class MassEntryMoveController {
   public void controlMassEntryMoves(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
+      String message;
+
+      if (move != null) {
+        message = Beans.get(MassEntryService.class).checkMassEntryMoveGeneration(move);
+        if (ObjectUtils.isEmpty(message)) {
+          response.setAttr("controlMassEntryMoves", "hidden", true);
+          response.setAttr("validateMassEntryMoves", "hidden", false);
+          response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL);
+        } else {
+          response.setError(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_ERROR + message);
+          // TODO set "message" in field to be displayed for user
+        }
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -86,6 +103,9 @@ public class MassEntryMoveController {
   public void validateMassEntryMoves(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
+
+      response.setAttr("validateMassEntryMoves", "hidden", true);
+      response.setAttr("showMassEntryMoves", "hidden", false);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

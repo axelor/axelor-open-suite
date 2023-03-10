@@ -190,7 +190,7 @@ public class MassEntryServiceImpl implements MassEntryService {
               massEntryVerificationService.checkAndReplaceMovePaymentModeInMoveLineMassEntry(
                   moveLine, moveLineEdited.getMovePaymentMode());
             }
-            massEntryVerificationService.checkAndReplaceCurrencyRateModeInMoveLineMassEntry(
+            massEntryVerificationService.checkAndReplaceCurrencyRateInMoveLineMassEntry(
                 moveLine, moveLineEdited.getCurrencyRate());
 
             // TODO add other verification method
@@ -324,5 +324,66 @@ public class MassEntryServiceImpl implements MassEntryService {
         moveLineMassEntry.getPartner().getCurrency() != null
             ? moveLineMassEntry.getPartner().getCurrency().getCodeISO()
             : null);
+  }
+
+  public String checkMassEntryMoveGeneration(Move move) {
+    String errorMessageList = " Raté Hassane, les contrôles ne sont pas encore fini !";
+    int numberOfDifferentMovesToCheck = 0;
+    List<Move> moveList = new ArrayList<>();
+    Move moveToCheck;
+
+    numberOfDifferentMovesToCheck = this.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList());
+
+    for (int i = 1; i <= numberOfDifferentMovesToCheck; i++) {
+      moveToCheck = new Move();
+      for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+        if (moveLineMassEntry.getTemporaryMoveNumber() == i) {
+          moveToCheck.addMoveLineMassEntryListItem(moveLineMassEntry);
+        }
+      }
+      moveList.add(moveToCheck);
+    }
+
+    for (Move moveListElement : moveList) {
+      // TODO retrieve Map<> from check method to get the position of each line where we need to
+      // change
+      massEntryVerificationService.checkDateInAllMoveLineMassEntry(
+          moveListElement.getMoveLineMassEntryList());
+
+      massEntryVerificationService.checkOriginDateInAllMoveLineMassEntry(
+          moveListElement.getMoveLineMassEntryList());
+
+      massEntryVerificationService.checkOriginInAllMoveLineMassEntry(
+          moveListElement.getMoveLineMassEntryList());
+
+      massEntryVerificationService.checkCurrencyRateInAllMoveLineMassEntry(
+          moveListElement.getMoveLineMassEntryList());
+
+      // TODO add control for Partner
+      // need to be checked with CDP
+
+      // TODO add control for AnalyticDistributionTemplate
+      // need to be checked after addition on grid
+
+      // TODO add control for AnalyticAccount
+      // need to be checked after addition on grid
+
+      // TODO add control for AnalyticDistributionLine
+      // need to be checked after addition on grid
+    }
+
+    return errorMessageList;
+  }
+
+  public Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList) {
+    int max = 0;
+
+    for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
+      if (moveLine.getTemporaryMoveNumber() > max) {
+        max = moveLine.getTemporaryMoveNumber();
+      }
+    }
+
+    return max;
   }
 }

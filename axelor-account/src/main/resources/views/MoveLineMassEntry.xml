@@ -135,11 +135,4 @@
       method="verifyMassEntryMoveBalance"/>
   </action-method>
 
-  <!-- Check if action-move-line-mass-entry-method-domain-pfp-validator-user-on-select is useless -->
-  <action-method
-    name="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select">
-    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="setPfpValidatorUserDomain"/>
-  </action-method>
-
 </object-views>

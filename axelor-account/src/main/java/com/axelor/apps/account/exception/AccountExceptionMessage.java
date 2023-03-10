@@ -1056,6 +1056,13 @@ public final class AccountExceptionMessage {
   public static final String MOVE_TEMPLATE_3 = /*$$(*/ "Generated moves" /*)*/;
   public static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
 
+  /** Mass entry move controller */
+  public static final String MASS_ENTRY_MOVE_CONTROL_ERROR = /*$$(*/
+      "Error during moves control" /*)*/;
+
+  public static final String MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL = /*$$(*/
+      "Moves control process successfully" /*)*/;
+
   public static final String MOVE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the move lines that have an account Cut off management" /*)*/;
 
