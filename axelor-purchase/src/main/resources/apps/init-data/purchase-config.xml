@@ -13,9 +13,4 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
-  <input file="studio_appPurchase.csv" separator=";" type="com.axelor.studio.db.AppPurchase"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
 </csv-inputs>

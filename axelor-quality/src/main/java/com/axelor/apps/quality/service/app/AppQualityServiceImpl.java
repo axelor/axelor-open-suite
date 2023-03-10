@@ -19,6 +19,7 @@ package com.axelor.apps.quality.service.app;
 
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppQuality;
 import com.axelor.studio.db.repo.AppQualityRepository;
@@ -34,8 +35,9 @@ public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQual
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
       AppQualityRepository appQualityRepo) {
-    super(appRepo, metaFiles, appVersionService);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo);
     this.appQualityRepo = appQualityRepo;
   }
 

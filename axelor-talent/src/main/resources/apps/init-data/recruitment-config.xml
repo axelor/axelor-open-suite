@@ -14,11 +14,6 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
-  <input file="studio_appRecruitment.csv" separator=";"
-    type="com.axelor.studio.db.AppRecruitment" search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
   <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind to="language" search="self.code = :languageCode"/>
