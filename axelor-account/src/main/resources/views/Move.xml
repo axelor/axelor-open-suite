@@ -983,6 +983,8 @@
       expr="eval: [1,2,3,4].contains(journal?.journalType?.technicalTypeSelect)"/>
     <attribute name="hidden" for="moveLineMassEntryList.currencyRate"
       expr="eval: company.currency == currency"/>
+    <attribute name="hidden" for="moveLineMassEntryList.currencyAmount"
+      expr="eval: company.currency == currency"/>
   </action-attrs>
 
   <!-- ACTION METHOD -->

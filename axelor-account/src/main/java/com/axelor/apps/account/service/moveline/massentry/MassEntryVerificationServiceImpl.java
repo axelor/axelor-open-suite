@@ -73,7 +73,15 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   public void checkAndReplaceMoveDescriptionInMoveLineMassEntry(
       MoveLineMassEntry moveLineMassEntry, String newMoveDescription) {
     if (!newMoveDescription.equals(moveLineMassEntry.getMoveDescription())) {
+      this.checkAndReplaceDescriptionInMoveLineMassEntry(moveLineMassEntry, newMoveDescription);
       moveLineMassEntry.setMoveDescription(newMoveDescription);
+    }
+  }
+
+  public void checkAndReplaceDescriptionInMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, String newDescription) {
+    if (moveLineMassEntry.getMoveDescription().equals(moveLineMassEntry.getDescription())) {
+      moveLineMassEntry.setDescription(newDescription);
     }
   }
 

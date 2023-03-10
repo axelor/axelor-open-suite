@@ -21,6 +21,9 @@ public interface MassEntryVerificationService {
   void checkAndReplaceMoveDescriptionInMoveLineMassEntry(
       MoveLineMassEntry moveLineMassEntry, String newMoveDescription);
 
+  void checkAndReplaceDescriptionInMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry, String newDescription);
+
   void checkAndReplaceMovePaymentModeInMoveLineMassEntry(
       MoveLineMassEntry moveLineMassEntry, PaymentMode newMovePaymentMode);
 

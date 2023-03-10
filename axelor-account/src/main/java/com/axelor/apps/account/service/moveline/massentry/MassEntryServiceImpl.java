@@ -88,6 +88,8 @@ public class MassEntryServiceImpl implements MassEntryService {
           move.setDate(moveLineMassEntry.getDate());
           move.setDescription(moveLineMassEntry.getMoveDescription());
           move.setPartnerBankDetails(moveLineMassEntry.getMovePartnerBankDetails());
+          move.setOrigin(moveLineMassEntry.getOrigin());
+          move.setOriginDate(moveLineMassEntry.getOriginDate());
 
           // TODO Need to be seen, to enable multiPartners in a Move and remove this line
           move.setPartner(moveLineMassEntry.getPartner());

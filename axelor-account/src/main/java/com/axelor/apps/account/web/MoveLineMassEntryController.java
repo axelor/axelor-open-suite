@@ -18,17 +18,13 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -208,21 +204,6 @@ public class MoveLineMassEntryController {
     }
   }
 
-  public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
-    // TODO Not used
-    Context parentContext = request.getContext().getParent();
-    MoveLine moveLine = request.getContext().asType(MoveLine.class);
-
-    if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
-      Move move = parentContext.asType(Move.class);
-      response.setAttr(
-          "pfpValidatorUser",
-          "domain",
-          Beans.get(InvoiceTermService.class)
-              .getPfpValidatorUserDomain(moveLine.getPartner(), move.getCompany()));
-    }
-  }
-
   public void computeCurrentRate(ActionRequest request, ActionResponse response) {
     try {
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
@@ -252,24 +233,6 @@ public class MoveLineMassEntryController {
       response.setAttr("origin", "required", isOriginRequired);
       response.setValue("isEdited", true);
     } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setDescriptionOnMassEntryLines(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
-      Context parentContext = request.getContext().getParent();
-
-      if (moveLineMassEntry.getMoveDescription() == null) {
-        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_DESCRIPTION));
-      } else {
-        // TODO Set description on MoveLineMassEntry when whe change move description
-        // Beans.get(MoveToolService.class).setDescriptionOnMoveLineList(move);
-        // response.setValue("moveLineList", move.getMoveLineList());
-        response.setValue("isEdited", true);
-      }
-    } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
