@@ -70,7 +70,7 @@
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             onChange="action-group-move-company-onchange" form-view="company-form"
-            grid-view="company-grid" colSpan="2"/>
+            grid-view="company-grid" colSpan="3"/>
           <field name="tradingName"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
@@ -78,13 +78,14 @@
             onSelect="action-move-set-trading-name-domain" colSpan="3"/>
           <field name="companyBankDetails" canEdit="false" colSpan="3"
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
-            form-view="bank-details-form" grid-view="bank-details-grid"/>
+            form-view="bank-details-form" grid-view="bank-details-grid"
+            if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
-            onChange="action-move-group-journal-on-change" colSpan="2"/>
+            onChange="action-move-group-journal-on-change" colSpan="3"/>
           <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="2"
-            showTitle="false"
+            showTitle="false" placeholder="Functional origin"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
           <panel name="datePanel" showFrame="false" colSpan="12" itemSpan="3">
             <field name="period" form-view="period-form" grid-view="period-grid"
@@ -118,9 +119,14 @@
             onSelect="action-move-attrs-bank-details-from-partner-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
             onChange="action-move-attrs-header-change"/>
+          <field name="companyBankDetails" canEdit="false" colSpan="3"
+            onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
+            form-view="bank-details-form" grid-view="bank-details-grid"
+            if="!__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
-          <field name="description" colSpan="6" widget="text" height="1" readonlyIf="$validatePeriod"
+          <field name="description" colSpan="6" widget="text" height="1"
+            readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-description-on-lines"/>
           <field name="origin" colSpan="3" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-origin" requiredIf="journal.hasRequiredOrigin"/>
@@ -235,8 +241,7 @@
                         ]]>
           </viewer>
         </field>
-        <field name="$totalLines" title="Total lines" type="integer" colSpan="1"
-          readonly="true">
+        <field name="$totalLines" title="Total" type="integer" colSpan="1" readonly="true">
           <viewer>
             <![CDATA[
 						<h3>{{$fmt('$totalLines')}}</h3>
