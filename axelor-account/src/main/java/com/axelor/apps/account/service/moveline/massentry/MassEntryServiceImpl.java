@@ -27,6 +27,8 @@ import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -53,6 +55,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MoveCounterPartService moveCounterPartService;
   protected MassEntryVerificationService massEntryVerificationService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
+  protected CurrencyService currencyService;
 
   @Inject
   public MassEntryServiceImpl(
@@ -61,13 +64,15 @@ public class MassEntryServiceImpl implements MassEntryService {
       MoveLineTaxService moveLineTaxService,
       MoveCounterPartService moveCounterPartService,
       MassEntryVerificationService massEntryVerificationService,
-      MoveLoadDefaultConfigService moveLoadDefaultConfigService) {
+      MoveLoadDefaultConfigService moveLoadDefaultConfigService,
+      CurrencyService currencyService) {
     this.massEntryToolService = massEntryToolService;
     this.moveToolService = moveToolService;
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
+    this.currencyService = currencyService;
   }
 
   public void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
@@ -250,5 +255,72 @@ public class MassEntryServiceImpl implements MassEntryService {
     attrsMap.put("moveStatusSelect", readonlyMap);
 
     return attrsMap;
+  }
+
+  public BigDecimal computeCurrentRate(
+      BigDecimal currencyRate, Move move, Integer temporaryMoveNumber, LocalDate originDate)
+      throws AxelorException {
+    Currency currency = move.getCurrency();
+    Currency companyCurrency = move.getCompanyCurrency();
+
+    if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
+      if (move.getMoveLineMassEntryList().size() == 0) {
+        if (originDate != null) {
+          currencyRate =
+              currencyService.getCurrencyConversionRate(currency, companyCurrency, originDate);
+        } else {
+          currencyRate = currencyService.getCurrencyConversionRate(currency, companyCurrency);
+        }
+      } else {
+        if (move.getMoveLineMassEntryList().stream()
+            .anyMatch(
+                moveLineMassEntry1 ->
+                    Objects.equals(
+                        moveLineMassEntry1.getTemporaryMoveNumber(), temporaryMoveNumber))) {
+          currencyRate =
+              move.getMoveLineMassEntryList().stream()
+                  .filter(
+                      moveLineMassEntry1 ->
+                          Objects.equals(
+                              moveLineMassEntry1.getTemporaryMoveNumber(), temporaryMoveNumber))
+                  .findFirst()
+                  .get()
+                  .getCurrencyRate();
+        }
+      }
+    }
+    return currencyRate;
+  }
+
+  public void setPartnerAndBankDetails(Move move, MoveLineMassEntry moveLineMassEntry)
+      throws AxelorException {
+    if (move != null && move.getJournal() != null) {
+      massEntryToolService.setPaymentModeOnMoveLineMassEntry(
+          moveLineMassEntry, move.getJournal().getJournalType().getTechnicalTypeSelect());
+
+      move.setPartner(moveLineMassEntry.getPartner());
+      move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
+
+      moveLineMassEntry.setMovePaymentCondition(null);
+      if (move.getJournal().getJournalType().getTechnicalTypeSelect() != 4) {
+        moveLineMassEntry.setMovePaymentCondition(
+            moveLineMassEntry.getPartner().getPaymentCondition());
+      }
+
+      this.loadAccountInformation(move, moveLineMassEntry);
+    }
+
+    moveLineMassEntry.setMovePartnerBankDetails(
+        moveLineMassEntry.getPartner().getBankDetailsList().stream()
+                .anyMatch(it -> it.getIsDefault() && it.getActive())
+            ? moveLineMassEntry.getPartner().getBankDetailsList().stream()
+                .filter(it -> it.getIsDefault() && it.getActive())
+                .findFirst()
+                .get()
+            : null);
+    moveLineMassEntry.setCurrencyCode(
+        moveLineMassEntry.getPartner().getCurrency() != null
+            ? moveLineMassEntry.getPartner().getCurrency().getCodeISO()
+            : null);
   }
 }

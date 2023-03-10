@@ -24,9 +24,6 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
-import com.axelor.apps.account.service.moveline.massentry.MassEntryToolService;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -40,7 +37,6 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import org.apache.commons.lang3.ArrayUtils;
 
 @Singleton
@@ -203,36 +199,7 @@ public class MoveLineMassEntryController {
 
         } else {
           Move move = parentContext.asType(Move.class);
-
-          if (move != null && move.getJournal() != null) {
-            Beans.get(MassEntryToolService.class)
-                .setPaymentModeOnMoveLineMassEntry(
-                    moveLineMassEntry, move.getJournal().getJournalType().getTechnicalTypeSelect());
-
-            move.setPartner(moveLineMassEntry.getPartner());
-            move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
-
-            moveLineMassEntry.setMovePaymentCondition(null);
-            if (move.getJournal().getJournalType().getTechnicalTypeSelect() != 4) {
-              moveLineMassEntry.setMovePaymentCondition(
-                  moveLineMassEntry.getPartner().getPaymentCondition());
-            }
-
-            Beans.get(MassEntryService.class).loadAccountInformation(move, moveLineMassEntry);
-          }
-
-          moveLineMassEntry.setMovePartnerBankDetails(
-              moveLineMassEntry.getPartner().getBankDetailsList().stream()
-                      .anyMatch(it -> it.getIsDefault() && it.getActive())
-                  ? moveLineMassEntry.getPartner().getBankDetailsList().stream()
-                      .filter(it -> it.getIsDefault() && it.getActive())
-                      .findFirst()
-                      .get()
-                  : null);
-          moveLineMassEntry.setCurrencyCode(
-              moveLineMassEntry.getPartner().getCurrency() != null
-                  ? moveLineMassEntry.getPartner().getCurrency().getCodeISO()
-                  : null);
+          Beans.get(MassEntryService.class).setPartnerAndBankDetails(move, moveLineMassEntry);
         }
       }
       response.setValues(moveLineMassEntry);
@@ -266,40 +233,13 @@ public class MoveLineMassEntryController {
 
       if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);
-        Currency currency = move.getCurrency();
-        Currency companyCurrency = move.getCompanyCurrency();
-        if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-          if (move.getMoveLineMassEntryList().size() == 0) {
-            if (moveLineMassEntry.getOriginDate() != null) {
-              currencyRate =
-                  Beans.get(CurrencyService.class)
-                      .getCurrencyConversionRate(
-                          currency, companyCurrency, moveLineMassEntry.getOriginDate());
-            } else {
-              currencyRate =
-                  Beans.get(CurrencyService.class)
-                      .getCurrencyConversionRate(currency, companyCurrency);
-            }
-          } else {
-            if (move.getMoveLineMassEntryList().stream()
-                .anyMatch(
-                    moveLineMassEntry1 ->
-                        Objects.equals(
-                            moveLineMassEntry1.getTemporaryMoveNumber(),
-                            moveLineMassEntry.getTemporaryMoveNumber()))) {
-              currencyRate =
-                  move.getMoveLineMassEntryList().stream()
-                      .filter(
-                          moveLineMassEntry1 ->
-                              Objects.equals(
-                                  moveLineMassEntry1.getTemporaryMoveNumber(),
-                                  moveLineMassEntry.getTemporaryMoveNumber()))
-                      .findFirst()
-                      .get()
-                      .getCurrencyRate();
-            }
-          }
-        }
+        currencyRate =
+            Beans.get(MassEntryService.class)
+                .computeCurrentRate(
+                    currencyRate,
+                    move,
+                    moveLineMassEntry.getTemporaryMoveNumber(),
+                    moveLineMassEntry.getOriginDate());
 
         if (moveLineMassEntry.getOriginDate() != null
             && ArrayUtils.contains(
