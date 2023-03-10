@@ -108,7 +108,7 @@
 
   <action-method
     name="action-move-line-mass-entry-method-verify-fields-and-generate-taxline-and-counterpart">
-    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
       method="verifyFieldsAndGenerateTaxLineAndCounterpart"/>
   </action-method>
 

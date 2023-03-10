@@ -350,6 +350,15 @@
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
     onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
     onSave="action-account-move-group-onsave">
+    <toolbar>
+      <button name="controlMassEntryMoves" title="Control moves consistency"
+        onClick="action-move-method-control-mass-entry-moves" colSpan="12" readonly="false"
+        showIf="true"/>
+      <button name="validateMassEntryMoves" title="Validate" readonly="true"
+        onClick="action-move-method-validate-mass-entry-moves" colSpan="12" showIf="true"/>
+      <button name="showMassEntryMoves" title="Show moves" readonly="true"
+        onClick="action-move-method-show-mass-entry-moves" colSpan="12" showIf="true"/>
+    </toolbar>
 
     <panel name="mainPanel" colSpan="12">
       <panel name="moveDetailsPanel" colSpan="9">
@@ -371,16 +380,6 @@
           <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="6"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
         </panel>
-      </panel>
-
-      <panel name="otherDetailsPanel" colSpan="3"
-        readonlyIf="statusSelect == 3 &amp;&amp; !validatePeriod">
-        <button name="controlMove" title="Control moves consistency" onClick="" colSpan="12"
-          showIf="true"/>
-        <button name="validate" title="Validate" readonlyIf="$validatePeriod" onClick=""
-          colSpan="12" hideIf="false"/>
-        <button name="showMoveLines" title="Show move lines" readonlyIf="$validatePeriod"
-          onClick="" colSpan="12" showIf="true"/>
       </panel>
 
       <panel name="hiddenPanel" hidden="true">
@@ -1262,5 +1261,20 @@
 
   <action-method name="action-move-method-verify-company-bank-details">
     <call class="com.axelor.apps.account.web.MoveController" method="verifyCompanyBankDetails"/>
+  </action-method>
+
+  <action-method name="action-move-method-control-mass-entry-moves">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
+      method="controlMassEntryMoves"/>
+  </action-method>
+
+  <action-method name="action-move-method-validate-mass-entry-moves">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
+      method="validateMassEntryMoves"/>
+  </action-method>
+
+  <action-method name="action-move-method-show-mass-entry-moves">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
+      method="showMassEntryMoves"/>
   </action-method>
 </object-views>
