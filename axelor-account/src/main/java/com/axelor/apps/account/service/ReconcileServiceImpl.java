@@ -354,10 +354,14 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice debitInvoice = invoiceRepository.findByMove(debitMove);
     if (debitInvoice == null) {
       debitInvoice = invoiceRepository.findByOldMove(debitMove);
+      debitInvoice =
+          debitInvoice != null ? (debitInvoice.getLcrAccounted() ? debitInvoice : null) : null;
     }
     Invoice creditInvoice = invoiceRepository.findByMove(creditMove);
     if (creditInvoice == null) {
       creditInvoice = invoiceRepository.findByOldMove(creditMove);
+      creditInvoice =
+          creditInvoice != null ? (creditInvoice.getLcrAccounted() ? creditInvoice : null) : null;
     }
     BigDecimal amount = reconcile.getAmount();
 
