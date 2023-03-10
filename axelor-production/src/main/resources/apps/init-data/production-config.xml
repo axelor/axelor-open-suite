@@ -19,9 +19,4 @@
       eval="applicationFieldSelect?.empty ? 1 : applicationFieldSelect"/>
   </input>
 
-  <input file="studio_appProduction.csv" separator=";"
-    type="com.axelor.studio.db.AppProduction" search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
 </csv-inputs>

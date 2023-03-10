@@ -18,16 +18,6 @@
     <bind to="app" column="code" search="self.code = :code"/>
   </input>
 
-  <input file="studio_appInvoice.csv" separator=";" type="com.axelor.studio.db.AppInvoice"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
-  <input file="studio_appBudget.csv" separator=";" type="com.axelor.studio.db.AppBudget"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
   <input file="account_accountingReportType.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType">
     <bind to="name" column="name"/>
