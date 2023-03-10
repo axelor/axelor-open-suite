@@ -41,6 +41,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.lang3.ArrayUtils;
 
 @Singleton
 public class MoveLineMassEntryController {
@@ -71,12 +72,15 @@ public class MoveLineMassEntryController {
     return max;
   }
 
-  public void generateTaxLineAndCounterpart(ActionRequest request, ActionResponse response) {
+  public void verifyFieldsAndGenerateTaxLineAndCounterpart(
+      ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
       MassEntryService massEntryService = Beans.get(MassEntryService.class);
 
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
+        Beans.get(MassEntryService.class).verifyFieldsChangeOnMoveLineMassEntry(move);
+
         MoveLineMassEntry lastMoveLineMassEntry =
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
         if (lastMoveLineMassEntry.getInputAction() != null
@@ -88,8 +92,8 @@ public class MoveLineMassEntryController {
           Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
           massEntryService.generateTaxLineAndCounterpart(
               move, this.extractDueDate(request), lastMoveLineMassEntry.getTemporaryMoveNumber());
-          response.setValues(move);
         }
+        response.setValues(move);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -111,7 +115,6 @@ public class MoveLineMassEntryController {
   public void getFirstMoveLineMassEntryInformations(
       ActionRequest request, ActionResponse response) {
     try {
-      // TODO OK
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
 
@@ -178,20 +181,6 @@ public class MoveLineMassEntryController {
         response.setAttrs(
             massEntryService.setAttrsInputActionOnChange(
                 isCounterpartLine, moveLineMassEntry.getAccount()));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void verifyFieldsChangeOnMoveLineMassEntry(
-      ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      if (move != null) {
-        Beans.get(MassEntryService.class).verifyFieldsChangeOnMoveLineMassEntry(move);
-        response.setValues(move);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -272,6 +261,8 @@ public class MoveLineMassEntryController {
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
       BigDecimal currencyRate = BigDecimal.ONE;
+      boolean isOriginRequired = false;
+      int[] technicalTypeSelectArray = {1, 2, 3};
 
       if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);
@@ -309,8 +300,17 @@ public class MoveLineMassEntryController {
             }
           }
         }
+
+        if (moveLineMassEntry.getOriginDate() != null
+            && ArrayUtils.contains(
+                technicalTypeSelectArray,
+                move.getJournal().getJournalType().getTechnicalTypeSelect())) {
+          isOriginRequired = true;
+        }
       }
       response.setValue("currencyRate", currencyRate);
+      response.setAttr("origin", "required", isOriginRequired);
+      response.setValue("isEdited", true);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
@@ -327,6 +327,7 @@ public class MoveLineMassEntryController {
         // TODO Set description on MoveLineMassEntry when whe change move description
         // Beans.get(MoveToolService.class).setDescriptionOnMoveLineList(move);
         // response.setValue("moveLineList", move.getMoveLineList());
+        response.setValue("isEdited", true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

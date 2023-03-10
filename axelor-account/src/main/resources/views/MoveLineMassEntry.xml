@@ -12,11 +12,11 @@
       onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
       required="true" width="50"/>
     <field name="date" onChange="account-move-line-group-date-onchange"/>
-    <field name="originDate" onChange="action-move-line-mass-entry-onchange-origin-date"/>
+    <field name="originDate" onChange="action-move-line-mass-entry-method-set-currencyRate"/>
     <field name="origin" onChange="action-move-line-mass-entry-record-set-is-edited"/>
     <field name="moveDescription"
-      onChange="action-account-move-line-mass-entry-group-set-description-on-lines" readonly="false"
-      required="true"/>
+      onChange="action-account-move-line-mass-entry-method-set-description-on-lines"
+      readonly="false" required="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-account-move-line-partner-group"
       onChange="action-move-line-mass-entry-method-on-change-partner" width="120" canEdit="false"
@@ -65,18 +65,6 @@
   </grid>
 
   <!-- Action group -->
-  <action-group name="action-move-line-mass-entry-onchange-origin-date">
-    <action name="action-move-line-mass-entry-set-origin-required"/>
-    <action name="action-move-line-mass-entry-method-set-currencyRate"/>
-    <action name="action-move-line-mass-entry-record-set-is-edited"/>
-  </action-group>
-
-  <!-- Check if action-account-move-line-mass-entry-group-set-description-on-lines can be made in controller -->
-  <action-group
-    name="action-account-move-line-mass-entry-group-set-description-on-lines">
-    <action name="action-move-line-mass-entry-record-set-is-edited"/>
-    <action name="action-account-move-line-mass-entry-method-set-description-on-lines"/>
-  </action-group>
 
   <!-- Action record -->
   <action-record name="action-move-line-mass-entry-record-set-is-edited"
@@ -90,11 +78,6 @@
       expr="eval: !account?.manageCutOffPeriod"/>
     <attribute for="cutOffEndDate" name="readonly"
       expr="eval: !account?.manageCutOffPeriod"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-line-mass-entry-set-origin-required">
-    <attribute for="origin" name="required"
-      expr="eval: [1,2,3].contains(__parent__.journal.journalType.technicalTypeSelect) &amp;&amp; originDate != null"/>
   </action-attrs>
 
   <action-attrs name="action-move-line-attrs-set-debit-credit-focus">
@@ -112,27 +95,9 @@
   </action-method>
 
   <action-method
-    name="action-move-line-mass-entry-method-generate-taxline-and-counterpart">
+    name="action-move-line-mass-entry-method-verify-fields-and-generate-taxline-and-counterpart">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="generateTaxLineAndCounterpart"/>
-  </action-method>
-
-  <action-method
-    name="action-move-line-mass-entry-method-verify-mass-entry-move-balance">
-    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="verifyMassEntryMoveBalance"/>
-  </action-method>
-
-  <!-- Check if action-move-line-mass-entry-method-domain-pfp-validator-user-on-select is useless -->
-  <action-method
-    name="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select">
-    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="setPfpValidatorUserDomain"/>
-  </action-method>
-
-  <action-method name="action-move-line-mass-entry-method-on-change-common-fields">
-    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="verifyFieldsChangeOnMoveLineMassEntry"/>
+      method="verifyFieldsAndGenerateTaxLineAndCounterpart"/>
   </action-method>
 
   <action-method name="action-move-line-mass-entry-method-on-change-partner">
@@ -155,6 +120,20 @@
   <action-method name="action-move-line-mass-entry-method-input-action-onchange">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
       method="setAttrsAndFieldsOnInputActionChanges"/>
+  </action-method>
+
+  <!-- Need to be dev and used -->
+  <action-method
+    name="action-move-line-mass-entry-method-verify-mass-entry-move-balance">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="verifyMassEntryMoveBalance"/>
+  </action-method>
+
+  <!-- Check if action-move-line-mass-entry-method-domain-pfp-validator-user-on-select is useless -->
+  <action-method
+    name="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="setPfpValidatorUserDomain"/>
   </action-method>
 
 </object-views>

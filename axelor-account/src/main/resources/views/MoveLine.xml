@@ -942,7 +942,7 @@
 
   <action-group name="account-move-line-group-date-onchange">
     <action name="account-move-line-record-date-onchange"/>
-    <action name="action-move-line-mass-entry-onchange-origin-date"
+    <action name="action-move-line-mass-entry-method-set-currencyRate"
       if="__parent__.isMassEntry"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-validate-check-date-in-period"/>

@@ -58,7 +58,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
   public void checkAndReplaceOriginDateInMoveLineMassEntry(
       MoveLineMassEntry moveLineMassEntry, LocalDate newDate) {
-    if (newDate != null && !moveLineMassEntry.getOriginDate().equals(newDate)) {
+    if (newDate != null && !newDate.equals(moveLineMassEntry.getOriginDate())) {
       moveLineMassEntry.setOriginDate(newDate);
     }
   }

@@ -177,7 +177,8 @@ public class MassEntryServiceImpl implements MassEntryService {
                 moveLineEdited.getMoveDescription() != null
                     ? moveLineEdited.getMoveDescription()
                     : "");
-            if (!moveLineEdited.getAccount().getHasInvoiceTerm()
+            if (moveLineEdited.getAccount() != null
+                && !moveLineEdited.getAccount().getHasInvoiceTerm()
                 && moveLineEdited.getMovePaymentMode() != null) {
               massEntryVerificationService.checkAndReplaceMovePaymentModeInMoveLineMassEntry(
                   moveLine, moveLineEdited.getMovePaymentMode());
