@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
@@ -120,7 +121,8 @@ public class AccountController {
               .getAccountConfig(account.getCompany())
               .getManageAnalyticAccounting()
           || account.getAccountType() == null
-          || "view".equals(account.getAccountType().getTechnicalTypeSelect())) {
+          || AccountTypeRepository.TYPE_VIEW.equals(
+              account.getAccountType().getTechnicalTypeSelect())) {
         response.setAttr("analyticSettingsPanel", "hidden", true);
       }
     } catch (Exception e) {
