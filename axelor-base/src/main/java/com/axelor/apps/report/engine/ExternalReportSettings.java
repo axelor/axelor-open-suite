@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -95,7 +95,7 @@ public class ExternalReportSettings extends ReportSettings {
     return this.url;
   }
 
-  private String computeParam(String param) throws UnsupportedEncodingException {
+  protected String computeParam(String param) throws UnsupportedEncodingException {
     Object paramValue = params.get(param);
     if (paramValue != null) {
       return "&" + param + "=" + URLEncoder.encode(paramValue.toString(), "UTF-8");
@@ -104,7 +104,7 @@ public class ExternalReportSettings extends ReportSettings {
     }
   }
 
-  private ReportSettings addAxelorReportPath(String rptdesign) {
+  protected ReportSettings addAxelorReportPath(String rptdesign) {
 
     AppSettings appsSettings = AppSettings.get();
 

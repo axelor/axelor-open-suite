@@ -1,6 +1,0 @@
----
-title: "MRP: fix an infinite loop issue"
-type: fix
-description: |
-  An infinite loop occurred when for a product, the available stock was less than the minimum quantity of its stock rule
-  and this product was used in a purchase order.

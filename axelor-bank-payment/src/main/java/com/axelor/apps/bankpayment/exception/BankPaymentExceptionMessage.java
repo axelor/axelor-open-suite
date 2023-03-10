@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -281,6 +281,9 @@ public final class BankPaymentExceptionMessage {
       "Selected bank reconciliation is validated and can not be deleted" /*)*/;
   public static final String BANK_RECONCILIATION_CANNOT_DELETE_UNDER_CORRECTION = /*$$(*/
       "Selected bank reconciliation is under correction and can not be deleted" /*)*/;
+
+  public static final String BANK_RECONCILIATION_NO_DISTRIBUTION_GENERATED_MOVE_LINE = /*$$(*/
+      "The analytic distribution is required in the move lines for account %s but no template has been set in the account configuration" /*)*/;
 
   /** Bank Statement Query */
   public static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/

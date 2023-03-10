@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -78,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
   @Inject private MetaFiles metaFiles;
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateProductPrice(Product product) throws AxelorException {
 
     this.updateSalePrice(product, null);
@@ -193,7 +193,7 @@ public class ProductServiceImpl implements ProductService {
     }
   }
 
-  private void updateSalePriceOfVariant(Product product) throws AxelorException {
+  protected void updateSalePriceOfVariant(Product product) throws AxelorException {
 
     List<? extends Product> productVariantList =
         productRepo
@@ -221,7 +221,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateProductVariants(Product productModel) throws AxelorException {
 
     List<ProductVariant> productVariantList =

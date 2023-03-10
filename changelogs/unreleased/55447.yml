@@ -1,3 +1,0 @@
----
-title: "Fixed asset : Fix wrong depreciation value computation in fixed asset line till the depreciation date for both linear and degressive depreciation plan"
-type: fix

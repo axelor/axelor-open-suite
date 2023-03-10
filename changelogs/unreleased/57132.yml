@@ -1,3 +1,0 @@
----
-title: "Analytic distribution : make analytic distribution required on invoice lines given the account configuration, check added on analytic move line to ensure a total of 100% by axis."
-type: fix

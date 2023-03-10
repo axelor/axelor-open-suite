@@ -17,3 +17,7 @@
 "16";"UE_U_D";"Input Intracom. VAT (P) rate UR";"22"
 "17";"UE_X_D";"VAT Exempted Intracom. (P)";"23"
 "18";"IMP_X_D";"VAT Exempted (P) Import";"24"
+"19";"UE_N_D_REV";"Input Reverse Intracom. VAT (P) rate N";"25"
+"20";"UE_R1_D_REV";"Input Reverse Intracom. VAT (P) rate R 10%";"26"
+"21";"UE_R2_D_REV";"Input Reverse Intracom. VAT (P) rate R 5.5%";"27"
+"22";"UE_U_D_REV";"Input Reverse Intracom. VAT (P) rate UR";"28"

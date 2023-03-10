@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -64,7 +64,7 @@ public class ConvertDemoDataFileServiceImpl implements ConvertDemoDataFileServic
     return metaFile;
   }
 
-  private File createZIPFromExcel(File excelFile)
+  protected File createZIPFromExcel(File excelFile)
       throws IOException, ParseException, AxelorException {
 
     Workbook workBook = new XSSFWorkbook(new FileInputStream(excelFile));
@@ -99,7 +99,7 @@ public class ConvertDemoDataFileServiceImpl implements ConvertDemoDataFileServic
     return zipFile;
   }
 
-  private void writeToZip(File csvFile, ZipOutputStream zos) throws IOException {
+  protected void writeToZip(File csvFile, ZipOutputStream zos) throws IOException {
     try (FileInputStream fis = new FileInputStream(csvFile)) {
       zos.putNextEntry(new ZipEntry(csvFile.getName()));
       byte[] buffer = new byte[1024];
@@ -112,7 +112,7 @@ public class ConvertDemoDataFileServiceImpl implements ConvertDemoDataFileServic
     }
   }
 
-  private String getFileNameFromSheet(Sheet sheet) throws AxelorException {
+  protected String getFileNameFromSheet(Sheet sheet) throws AxelorException {
     String fileName = "";
     Row fileNameRow = sheet.getRow(1);
     if (fileNameRow != null) {

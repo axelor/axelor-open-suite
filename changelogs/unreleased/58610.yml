@@ -1,6 +1,0 @@
----
-title: "MRP: fix generation proposal menu for more clarity."
-type: fix
-description: |
-  Generate proposal menu item now opens a wizard with 2 buttons:
-  One for generating all possible proposals, one for generating proposals of only selected lines.

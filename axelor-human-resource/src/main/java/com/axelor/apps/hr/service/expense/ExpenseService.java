@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -87,8 +87,9 @@ public interface ExpenseService {
    * @param expense
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
-  public void cancelPayment(Expense expense) throws AxelorException;
+  void cancelPayment(Expense expense) throws AxelorException;
+
+  void resetExpensePaymentAfterCancellation(Expense expense);
 
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException;

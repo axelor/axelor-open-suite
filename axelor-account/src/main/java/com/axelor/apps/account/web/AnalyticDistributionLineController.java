@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,13 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.base.db.Company;
@@ -115,6 +118,37 @@ public class AnalyticDistributionLineController {
           "domain",
           Beans.get(AnalyticMoveLineService.class)
               .getAnalyticAxisDomain(analyticMoveLine, company));
+    }
+  }
+
+  public void setAnalyticAccountDomain(ActionRequest request, ActionResponse response) {
+    try {
+      AnalyticDistributionLine analyticDistributionLine =
+          request.getContext().asType(AnalyticDistributionLine.class);
+      Context parentContext = request.getContext().getParent();
+      Context grandParentContext = null;
+      Account account = null;
+
+      if (parentContext != null
+          && AnalyticDistributionTemplate.class.equals(parentContext.getContextClass())) {
+        AnalyticDistributionTemplate analyticDistributionTemplate =
+            parentContext.asType(AnalyticDistributionTemplate.class);
+
+        grandParentContext = parentContext.getParent();
+        if (grandParentContext != null
+            && Account.class.equals(grandParentContext.getContextClass())) {
+          account = grandParentContext.asType(Account.class);
+        }
+        String domain =
+            Beans.get(AnalyticAccountService.class)
+                .getAnalyticAccountDomain(
+                    analyticDistributionTemplate, analyticDistributionLine, account);
+
+        response.setAttr("analyticAccount", "domain", domain);
+        response.setAttr("analyticAccountSet", "domain", domain);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

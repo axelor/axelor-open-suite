@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -77,7 +77,7 @@ public class TemplateService {
     }
   }
 
-  private void validTarget(String target, MetaModel metaModel) throws ClassNotFoundException {
+  protected void validTarget(String target, MetaModel metaModel) throws ClassNotFoundException {
     Iterator<String> iter = Splitter.on(".").split(target).iterator();
     Property p = Mapper.of(Class.forName(metaModel.getFullName())).getProperty(iter.next());
     while (iter.hasNext() && p != null) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -89,7 +89,7 @@ public class ImportMoveLine {
     return moveLine;
   }
 
-  private Account getAccount(String accountId) {
+  protected Account getAccount(String accountId) {
     if (StringUtils.notBlank(accountId)) {
       Account account =
           accountRepository
@@ -102,7 +102,7 @@ public class ImportMoveLine {
     return null;
   }
 
-  private TaxLine getTaxLine(String taxLineId) {
+  protected TaxLine getTaxLine(String taxLineId) {
     if (StringUtils.notBlank(taxLineId)) {
       TaxLine taxLine =
           taxLineRepository
@@ -115,7 +115,7 @@ public class ImportMoveLine {
     return null;
   }
 
-  private Partner getPartner(String partnerId) {
+  protected Partner getPartner(String partnerId) {
     if (StringUtils.notBlank(partnerId)) {
       Partner partner =
           partnerRepository

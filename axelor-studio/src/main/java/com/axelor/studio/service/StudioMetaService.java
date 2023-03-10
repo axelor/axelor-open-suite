@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -287,7 +287,7 @@ public class StudioMetaService {
     metaMenuRepo.remove(metaMenu);
   }
 
-  private Integer getPriority(String object, String name) {
+  protected Integer getPriority(String object, String name) {
     String query =
         String.format("SELECT MAX(obj.priority) FROM %s obj WHERE obj.name = :name", object);
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -216,7 +216,12 @@ public class AccountingBatchController {
       AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
       if (accountingBatch != null && accountingBatch.getGenerateGeneralLedger()) {
 
+        if (Beans.get(AccountingBatchService.class).checkIfAnomalyInBatch(accountingBatch)) {
+          return;
+        }
+
         AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
+
         AccountingReport accountingReport =
             Beans.get(BatchPrintAccountingReportService.class)
                 .createAccountingReportFromBatch(accountingBatch);

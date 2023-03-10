@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -255,7 +256,9 @@ public class MoveLineController {
     Move move = request.getContext().getParent().asType(Move.class);
     try {
       if (move != null) {
-        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(move.getCompany(), move.getJournal());
         response.setAttr("partner", "domain", domain);
       }
     } catch (Exception e) {
@@ -480,7 +483,12 @@ public class MoveLineController {
   public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+
+      Move move = moveLine.getMove();
+      if (move == null) {
+        move = request.getContext().getParent().asType(Move.class);
+      }
+
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
         response.setAttr(
@@ -773,7 +781,7 @@ public class MoveLineController {
     }
   }
 
-  private LocalDate extractDueDate(ActionRequest request) {
+  protected LocalDate extractDueDate(ActionRequest request) {
     Context parentContext = request.getContext().getParent();
 
     if (parentContext == null) {
@@ -816,6 +824,32 @@ public class MoveLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
+    try {
+      AccountService accountService = Beans.get(AccountService.class);
+
+      if (Move.class.equals(request.getContext().getContextClass())) {
+        Move move = request.getContext().asType(Move.class);
+        if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+          for (MoveLine moveLine : move.getMoveLineList()) {
+            if (moveLine != null && moveLine.getAccount() != null) {
+              accountService.checkAnalyticAxis(
+                  moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+            }
+          }
+        }
+      } else {
+        MoveLine moveLine = request.getContext().asType(MoveLine.class);
+        if (moveLine != null && moveLine.getAccount() != null) {
+          accountService.checkAnalyticAxis(
+              moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

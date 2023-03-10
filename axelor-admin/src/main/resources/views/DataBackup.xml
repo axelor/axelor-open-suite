@@ -16,19 +16,16 @@
     <panel name="mainPanel" large="true">
       <panel name="userPanel" colSpan="9">
         <field name="statusSelect" readonly="true" widget="NavSelect" selection-in="[0,1,2,5]"
-          colSpan="12"/>
+          colSpan="12" showTitle="false"/>
         <field name="fetchLimit" widget="Integer" required="true" min="1" colSpan="4"/>
         <field name="checkAllErrorFirst" widget="boolean-switch" colSpan="2"/>
         <field name="isRelativeDate" widget="boolean-switch"
           onChange="action-data-backup-attrs-onchange-relativedate" colSpan="2"/>
-        <field name="anonymizeData" widget="boolean-switch" colSpan="2"/>
         <field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"
           colSpan="2"/>
         <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="2"/>
-        <panel-related field="dataBackupConfigAnonymizeLineList"
-          grid-view="data-backup-config-anonymize-line-grid"
-          form-view="data-backup-config-anonymize-line-form" showIf="anonymizeData" hidden="true"
-          groupBy="metaModel"/>
+        <field name="anonymizer" colSpan="4" canRemove="true"/>
+        <field name="anonymizer.anonymizerLineList" showIf="anonymizer != null"/>
 
       </panel>
       <panel name="actionPanel" colSpan="3" itemSpan="12" sidebar="true">

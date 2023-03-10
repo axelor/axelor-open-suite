@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -74,7 +74,7 @@ public class JobPositionServiceImpl implements JobPositionService {
     updateLastEmailId(message);
   }
 
-  private void createApplication(JobPosition position, Message message) {
+  protected void createApplication(JobPosition position, Message message) {
 
     JobApplication application = new JobApplication();
 
@@ -113,7 +113,7 @@ public class JobPositionServiceImpl implements JobPositionService {
     appRecruitmentRepo.save(appRecruitment);
   }
 
-  private void copyAttachments(JobApplication application, Message message) throws IOException {
+  protected void copyAttachments(JobApplication application, Message message) throws IOException {
 
     List<MetaAttachment> attachments =
         metaAttachmentRepo

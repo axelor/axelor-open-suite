@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -529,7 +529,7 @@ public class InvoicingProjectService {
     reportSettings.toAttach(invoicingProject).generate();
   }
 
-  private String getTimezone(InvoicingProject invoicingProject) {
+  protected String getTimezone(InvoicingProject invoicingProject) {
     if (invoicingProject.getProject() == null
         || invoicingProject.getProject().getCompany() == null) {
       return null;
@@ -537,7 +537,7 @@ public class InvoicingProjectService {
     return invoicingProject.getProject().getCompany().getTimezone();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
     if (project == null) {
       return null;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -215,7 +215,7 @@ public class FixedAssetController {
                     "fixed asset validated", "fixed assets validated", validatedFixedAssets));
         response.setReload(true);
       } else {
-        response.setFlash(I18n.get("Please select something to validate"));
+        response.setFlash(I18n.get("Please select at least one fixed asset to validate"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

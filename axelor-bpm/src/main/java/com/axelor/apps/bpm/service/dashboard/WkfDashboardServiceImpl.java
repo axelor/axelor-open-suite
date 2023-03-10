@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -80,7 +80,7 @@ public class WkfDashboardServiceImpl implements WkfDashboardService {
     return query.getResultList();
   }
 
-  private Query createCommonRecordQuery(String tableName, String condition, String status) {
+  protected Query createCommonRecordQuery(String tableName, String condition, String status) {
 
     StringBuilder queryBuilder = new StringBuilder();
 

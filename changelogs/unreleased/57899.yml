@@ -1,3 +1,0 @@
----
-title: "MRP : Fixed NPE that could happen if a operation order had a null planned start date"
-type: fix

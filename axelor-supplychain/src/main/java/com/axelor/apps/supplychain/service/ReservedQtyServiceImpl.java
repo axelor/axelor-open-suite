@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -870,7 +870,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   }
 
   /** Convert but with null check. Return start value if one unit is null. */
-  private BigDecimal convertUnitWithProduct(
+  protected BigDecimal convertUnitWithProduct(
       Unit startUnit, Unit endUnit, BigDecimal qtyToConvert, Product product)
       throws AxelorException {
     if (startUnit != null && !startUnit.equals(endUnit)) {

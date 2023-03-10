@@ -325,6 +325,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">ref</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">ref</text-property>
+                    <text-property name="heading">ref</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -388,6 +394,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">10</property>
                         <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -464,6 +475,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">ref</property>
+                    <property name="nativeName">ref</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 	Company.name as company_name,
@@ -475,7 +493,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	AcYear.name as year_name, 
 	MetaFile.file_path as logo_path,
 	Period.name as period_name, 
-	Currency.code as currency
+	Currency.code as currency,
+	AccountingReport.ref
 	
 from public.account_accounting_report as AccountingReport
 
@@ -1522,6 +1541,12 @@ ORDER BY Account.code
                             <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
+                        <structure>
+                            <property name="name">accountingReport.ref</property>
+                            <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
                     </list-property>
                     <column id="4732">
                         <property name="width">1.6in</property>
@@ -1570,6 +1595,9 @@ ORDER BY Account.code
                         <cell id="4636">
                             <property name="textAlign">center</property>
                             <property name="verticalAlign">middle</property>
+                            <data id="5915">
+                                <property name="resultSetColumn">accountingReport.ref</property>
+                            </data>
                         </cell>
                         <cell id="4637">
                             <property name="verticalAlign">middle</property>

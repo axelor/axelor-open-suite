@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -48,7 +48,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -276,11 +275,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             newSoLine = new SaleOrderLine();
             newSoLine.setProduct(compProductSelected.getProduct());
             newSoLine.setSaleOrder(saleOrder);
-            newSoLine.setQty(
-                originSoLine
-                    .getQty()
-                    .multiply(compProductSelected.getQty())
-                    .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+            newSoLine.setQty(compProductSelected.getQty());
 
             saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
             saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
@@ -291,11 +286,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             saleOrderLineList.add(targetIndex, newSoLine);
           }
         } else {
-          newSoLine.setQty(
-              originSoLine
-                  .getQty()
-                  .multiply(compProductSelected.getQty())
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+          newSoLine.setQty(compProductSelected.getQty());
 
           saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
           saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);

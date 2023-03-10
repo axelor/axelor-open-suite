@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -1477,5 +1477,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public boolean isMultiCurrency(InvoiceTerm invoiceTerm) {
     return !Objects.equals(this.getCurrency(invoiceTerm), this.getCompanyCurrency(invoiceTerm));
+  }
+
+  @Override
+  public List<InvoiceTerm> recomputeInvoiceTermsPercentage(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    InvoiceTerm lastInvoiceTerm = invoiceTermList.remove(invoiceTermList.size() - 1);
+    BigDecimal percentageTotal = BigDecimal.ZERO;
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      BigDecimal percentage = this.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+
+      invoiceTerm.setPercentage(percentage);
+      percentageTotal = percentageTotal.add(percentage);
+    }
+
+    lastInvoiceTerm.setPercentage(BigDecimal.valueOf(100).subtract(percentageTotal));
+    invoiceTermList.add(lastInvoiceTerm);
+
+    return invoiceTermList;
   }
 }

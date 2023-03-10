@@ -259,6 +259,7 @@
     <option value="2">Permanently Closed</option>
     <option value="3">Adjusting</option>
     <option value="4">Temporarily Closed</option>
+    <option value="5">Closure in progress</option>
   </selection>
 
   <selection name="company.partner.category.select">

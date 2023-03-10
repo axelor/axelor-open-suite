@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,7 +44,7 @@ public class CompanyServiceImpl implements CompanyService {
    * @param company the company on which we count the number of active bank details
    * @return the number of active bank details
    */
-  private int countActiveBankDetails(Company company) {
+  protected int countActiveBankDetails(Company company) {
     int count = 0;
     List<BankDetails> bankDetailsList = company.getBankDetailsList();
 

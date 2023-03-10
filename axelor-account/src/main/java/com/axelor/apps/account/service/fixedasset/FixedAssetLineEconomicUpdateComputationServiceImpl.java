@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -179,10 +179,10 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     return false;
   }
 
-  private void prepareRecomputation(FixedAsset fixedAsset) throws AxelorException {
+  protected void prepareRecomputation(FixedAsset fixedAsset) throws AxelorException {
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
     if (fixedAsset.getCorrectedAccountingValue() == null
-        || fixedAsset.getCorrectedAccountingValue().signum() <= 0) {
+        || fixedAsset.getCorrectedAccountingValue().signum() == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           "You can not call this implementation without a corrected accounting value");
@@ -213,7 +213,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     this.canGenerateLines = true;
   }
 
-  private void clearPlannedFixedAssetLineListExcept(
+  protected void clearPlannedFixedAssetLineListExcept(
       List<FixedAssetLine> fixedAssetLineList, FixedAssetLine firstPlannedFixedAssetLine) {
     // We remove all fixedAssetLine that are not realized but we keep first planned line.
     List<FixedAssetLine> linesToRemove =
@@ -231,15 +231,17 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     fixedAssetLineService.clear(linesToRemove);
   }
 
-  private void recomputeFirstPlannedLine(
+  protected void recomputeFirstPlannedLine(
       List<FixedAssetLine> fixedAssetLineList,
       FixedAssetLine firstPlannedFixedAssetLine,
       BigDecimal correctedAccountingValue) {
     firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
-    firstPlannedFixedAssetLine.setImpairmentValue(
+    BigDecimal impairmentValue =
         firstPlannedFixedAssetLine
             .getAccountingValue()
-            .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue()));
+            .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue());
+    firstPlannedFixedAssetLine.setImpairmentValue(impairmentValue);
+    BigDecimal depreciation = firstPlannedFixedAssetLine.getDepreciation();
     Optional<FixedAssetLine> previousLastRealizedFAL =
         fixedAssetLineService.findNewestFixedAssetLine(
             fixedAssetLineList, FixedAssetLineRepository.STATUS_REALIZED, 0);
@@ -248,13 +250,11 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
           previousLastRealizedFAL
               .get()
               .getCumulativeDepreciation()
-              .add(firstPlannedFixedAssetLine.getDepreciation())
-              .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
+              .add(depreciation)
+              .add(impairmentValue));
     } else {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
-          BigDecimal.ZERO
-              .add(firstPlannedFixedAssetLine.getDepreciation())
-              .add(firstPlannedFixedAssetLine.getImpairmentValue().abs()));
+          BigDecimal.ZERO.add(depreciation).add(impairmentValue));
     }
   }
 

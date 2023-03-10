@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,7 +40,7 @@ public class BpmManagerDashboardController {
     this.showProcess(0, response);
   }
 
-  private void showProcess(int offset, ActionResponse response) {
+  protected void showProcess(int offset, ActionResponse response) {
     response.setValues(Beans.get(BpmManagerDashboardService.class).showProcess(offset));
   }
 
@@ -52,7 +52,7 @@ public class BpmManagerDashboardController {
     this.showProcess(this.getOffset(request, true), response);
   }
 
-  private int getOffset(ActionRequest request, boolean isNext) {
+  protected int getOffset(ActionRequest request, boolean isNext) {
     if (isNext) {
       return (int) request.getContext().get("offset") + BpmManagerDashboardServiceImpl.FETCH_LIMIT;
     } else {
@@ -72,7 +72,7 @@ public class BpmManagerDashboardController {
     this.getChartData(request, response, WkfDashboardCommonService.TASK_BY_PROCESS);
   }
 
-  private void getChartData(ActionRequest request, ActionResponse response, String type) {
+  protected void getChartData(ActionRequest request, ActionResponse response, String type) {
     Context context = request.getContext();
     WkfModel wkfModel = this.getWkfModel(context);
 
@@ -88,7 +88,7 @@ public class BpmManagerDashboardController {
   }
 
   @SuppressWarnings("rawtypes")
-  private WkfModel getWkfModel(Map<String, Object> context) {
+  protected WkfModel getWkfModel(Map<String, Object> context) {
     Long wkfModelId = Long.valueOf(((Map) context.get("wkfModel")).get("id").toString());
     return Beans.get(WkfModelRepository.class).find(wkfModelId);
   }
@@ -144,7 +144,7 @@ public class BpmManagerDashboardController {
   }
 
   @SuppressWarnings({"unchecked"})
-  private void showAssignedRecords(ActionRequest request, ActionResponse response, String type) {
+  protected void showAssignedRecords(ActionRequest request, ActionResponse response, String type) {
     Map<String, Object> context = request.getRawContext();
     WkfModel wkfModel = this.getWkfModel(context);
 

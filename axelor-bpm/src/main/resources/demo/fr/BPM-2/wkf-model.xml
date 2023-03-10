@@ -74,11 +74,13 @@ return $ctx.save(rec)</camunda:script>
           <camunda:property name="buttons" value="payPizzaBtn" />
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="HungryPizza" />
+          <camunda:property name="modelLabel" value="Hungry Pizza" />
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-HungryPizza-form" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Pay Pizza" />
           <camunda:property name="item" value="payPizzaBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Pay Pizza" />
         </camunda:properties>
         <camunda:executionListener event="end">
           <camunda:script scriptFormat="axelor" scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;statusSelect&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;4&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;HungryPizza&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:true,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">hungryPizza.statusSelect = 4</camunda:script>
@@ -94,11 +96,13 @@ return $ctx.save(rec)</camunda:script>
           <camunda:property name="buttons" value="eatPizzaBtn" />
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="HungryPizza" />
+          <camunda:property name="modelLabel" value="Hungry Pizza" />
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-HungryPizza-form" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Eat pizza" />
           <camunda:property name="item" value="eatPizzaBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Eat pizza" />
         </camunda:properties>
         <camunda:executionListener event="end">
           <camunda:script scriptFormat="axelor" scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;statusSelect&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;5&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;HungryPizza&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:true,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">hungryPizza.statusSelect = 5</camunda:script>
@@ -150,11 +154,13 @@ return $ctx.save(rec)</bpmn2:script>
           <camunda:property name="buttons" value="orderPizzaBtn" />
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="HungryPizza" />
+          <camunda:property name="modelLabel" value="Hungry Pizza" />
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-HungryPizza-form" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Order pizza" />
           <camunda:property name="item" value="orderPizzaBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Order pizza" />
         </camunda:properties>
         <camunda:executionListener event="end">
           <camunda:script scriptFormat="axelor" scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;statusSelect&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;3&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;HungryPizza&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:true,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">hungryPizza.statusSelect = 3</camunda:script>
@@ -204,11 +210,13 @@ return $ctx.save(rec)</bpmn2:script>
           <camunda:property name="buttons" value="bakePizzaBtn" />
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PizzaOrder" />
+          <camunda:property name="modelLabel" value="Pizza order" />
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-PizzaOrder-form" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Bake the pizza" />
           <camunda:property name="item" value="bakePizzaBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Bake the pizza" />
         </camunda:properties>
         <camunda:executionListener event="end">
           <camunda:script scriptFormat="axelor" scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;statusSelect&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;2&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;PizzaOrder&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:true,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">pizzaOrder.statusSelect = 2</camunda:script>
@@ -242,11 +250,13 @@ return $ctx.save(rec)</camunda:script>
           <camunda:property name="buttons" value="receivePaymentBtn" />
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PizzaOrder" />
+          <camunda:property name="modelLabel" value="Pizza order" />
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-PizzaOrder-form" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Receive Payment" />
           <camunda:property name="item" value="receivePaymentBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Receive Payment" />
         </camunda:properties>
         <camunda:executionListener event="end">
           <camunda:script scriptFormat="axelor" scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;statusSelect&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;4&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;PizzaOrder&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:true,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">pizzaOrder.statusSelect = 4</camunda:script>
@@ -262,11 +272,13 @@ return $ctx.save(rec)</camunda:script>
           <camunda:property name="buttons" value="deliverPizzaBtn" />
           <camunda:property name="model" value="com.axelor.meta.db.MetaJsonRecord" />
           <camunda:property name="modelName" value="PizzaOrder" />
+          <camunda:property name="modelLabel" value="Pizza order" />
           <camunda:property name="modelType" value="metaJsonModel" />
           <camunda:property name="view" value="custom-model-PizzaOrder-form" />
+          <camunda:property name="itemType" value="button" />
+          <camunda:property name="itemLabel" value="Deliver pizza" />
           <camunda:property name="item" value="deliverPizzaBtn" />
           <camunda:property name="hidden" value="false" />
-          <camunda:property name="itemLabel" value="Deliver pizza" />
         </camunda:properties>
         <camunda:executionListener event="end">
           <camunda:script scriptFormat="axelor" scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;statusSelect&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;none&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;3&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[]}}],&#34;targetModel&#34;:&#34;PizzaOrder&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:false,&#34;savedRecord&#34;:false,&#34;save&#34;:false,&#34;isJson&#34;:true,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">pizzaOrder.statusSelect = 3</camunda:script>

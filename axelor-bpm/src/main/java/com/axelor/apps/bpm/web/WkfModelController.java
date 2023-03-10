@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -271,7 +271,7 @@ public class WkfModelController {
   }
 
   @SuppressWarnings("unchecked")
-  private void openRecordView(
+  protected void openRecordView(
       ActionRequest request,
       ActionResponse response,
       String statusKey,
@@ -352,7 +352,7 @@ public class WkfModelController {
     }
   }
 
-  private ActionViewBuilder viewNewRecord(String modelName, boolean isMetaModel) {
+  protected ActionViewBuilder viewNewRecord(String modelName, boolean isMetaModel) {
     ActionViewBuilder actionViewBuilder = null;
     if (isMetaModel) {
       MetaModel metaModel = Beans.get(MetaModelRepository.class).findByName(modelName);
