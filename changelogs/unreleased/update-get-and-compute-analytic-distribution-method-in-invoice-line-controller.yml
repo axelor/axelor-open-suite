@@ -1,0 +1,3 @@
+---
+title: "INVOICE LINE - update method getAndComputeAnalyticDistribution to meet java best practices"
+type: fix
