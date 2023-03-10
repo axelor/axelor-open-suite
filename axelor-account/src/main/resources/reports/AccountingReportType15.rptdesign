@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806071708</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -81,6 +81,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -424,15 +425,15 @@ Account.name as accountName,
 Tax.code as taxCode,
 FiscalPosition.code as fiscalPositionCode,
 Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.detail_payment_amount else
-	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else 
+	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else
 			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 0
 			end
 		end
 	end
 end as baseCredit,
 Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.tax_amount else
-	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else 
+	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else
 		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else
 			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else 0
 			end
@@ -440,7 +441,7 @@ Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 
 	end
 end as taxCredit,
 Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
-	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.detail_payment_amount else 
+	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.detail_payment_amount else
 		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount else
 			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount else 0
 			end
@@ -448,7 +449,7 @@ Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
 	end
 end as baseDebit,
 Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
-	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.tax_amount else 
+	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.tax_amount else
 		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount else
 			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount else 0
 			end
@@ -467,7 +468,7 @@ LEFT JOIN Public.account_fiscal_position as FiscalPosition on (TaxPaymentMoveLin
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
-AND Tax.type_select = 1	
+AND Tax.type_select = 1
 AND AccountingReport.currency = Move.company_currency
 AND TaxPaymentMoveLine.date_val >= AccountingReport.date_from
 AND TaxPaymentMoveLine.date_val <= AccountingReport.date_to
@@ -888,15 +889,15 @@ Tax.name as taxName,
 FiscalPosition.code as fiscalPositionCode,
 TaxPaymentMoveLine.tax_rate as taxPaymentMoveLineTaxRate,
 SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.detail_payment_amount else
-	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else 
+	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else
 			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.detail_payment_amount else 0
 			end
 		end
 	end
 end) as baseCredit,
 SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debit > 0 then - TaxPaymentMoveLine.tax_amount else
-	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else 
+	Case when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount else
 		Case when TaxPaymentMoveLine.functional_origin_select = 4 then 0 else
 			Case when MoveLine.credit > 0 then TaxPaymentMoveLine.tax_amount  else 0
 			end
@@ -904,15 +905,15 @@ SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 AND MoveLine.debi
 	end
 end) as taxCredit,
 SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
-	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.detail_payment_amount else 
-		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount else 
+	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.detail_payment_amount else
+		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount else
 			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.detail_payment_amount  else 0
 			end
 		end
 	end
 end) as baseDebit,
 SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
-	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.tax_amount else 
+	Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.credit > 0 then - TaxPaymentMoveLine.tax_amount else
 		Case when TaxPaymentMoveLine.functional_origin_select = 4 AND MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount else
 			Case when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount  else 0
 			end
@@ -920,7 +921,7 @@ SUM(Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
 	end
 end) as taxDebit
 
-FROM public.account_accounting_report as AccountingReport 
+FROM public.account_accounting_report as AccountingReport
 CROSS JOIN public.account_move_line as MoveLine
 LEFT JOIN public.account_account as Account on (MoveLine.account = Account.id)
 LEFT JOIN public.account_account_type as AccountType on (Account.account_type = AccountType.id)
@@ -932,7 +933,7 @@ LEFT JOIN public.account_fiscal_position as FiscalPosition on (TaxPaymentMoveLin
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2)
-AND Tax.type_select = 1	
+AND Tax.type_select = 1
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val >= AccountingReport.date_from
 AND MoveLine.date_val <= AccountingReport.date_to
