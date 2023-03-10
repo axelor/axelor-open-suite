@@ -131,17 +131,25 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       where.add(userPermissionFilter.getQuery());
     }
 
-    where.add(
-        "((self.partner is not null AND self.partner.emailAddress is not null) OR (self.email is not null))");
+    String partnerEmailCondition =
+        "self.partner is not null AND self.partner.emailAddress is not null";
+
+    if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
+      partnerEmailCondition =
+          String.format(
+              "%s AND self.partner.emailAddress.address not in (:selected)", partnerEmailCondition);
+      params.put("selected", selectedWithoutNull);
+    }
+
+    String mainEmailCondition =
+        String.format("((%s) OR (self.email is not null))", partnerEmailCondition);
+
+    where.add(mainEmailCondition);
 
     if (!isBlank(matching)) {
       where.add(
           "(LOWER(self.partner.emailAddress.address) like LOWER(:email) OR LOWER(self.partner.fullName) like LOWER(:email) OR LOWER(self.email) like LOWER(:email) OR LOWER(self.name) like LOWER(:email))");
       params.put("email", "%" + matching + "%");
-    }
-    if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
-      where.add("self.partner.emailAddress.address not in (:selected)");
-      params.put("selected", selectedWithoutNull);
     }
 
     final String filter = Joiner.on(" AND ").join(where);
