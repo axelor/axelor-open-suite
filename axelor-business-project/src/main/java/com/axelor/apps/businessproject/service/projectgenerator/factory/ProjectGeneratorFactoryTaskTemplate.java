@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -82,7 +82,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
       throws AxelorException {
     List<ProjectTask> tasks = new ArrayList<>();
@@ -154,7 +154,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
     }
-    return ActionView.define("Tasks")
+    return ActionView.define(I18n.get("Tasks"))
         .model(ProjectTask.class.getName())
         .add("grid", "project-task-grid")
         .add("form", "project-task-form")
@@ -162,7 +162,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         .domain("self.parentTask = " + root.getId());
   }
 
-  private void updateTask(ProjectTask root, ProjectTask childTask, SaleOrderLine orderLine)
+  protected void updateTask(ProjectTask root, ProjectTask childTask, SaleOrderLine orderLine)
       throws AxelorException {
     childTask.setParentTask(root);
     childTask.setQuantity(orderLine.getQty());

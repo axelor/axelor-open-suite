@@ -102,10 +102,15 @@
     <boolean name="displayOrderReferenceAndOrderDate"
       title="Display order reference and order date" default="true"/>
 
+    <integer name="percentToleranceForWapChange" title="Tolerance on WAP changes (%)"
+      min="0" nullable="true"/>
+
     <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
 		public static final int VALUATION_TYPE_ACCOUNTING_VALUE = 2;
 		public static final int VALUATION_TYPE_SALE_VALUE = 3;
+		public static final int VALUATION_TYPE_PURCHASE_VALUE = 4;
+		public static final int VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE = 5;
 	]]></extra-code>
 
     <track>

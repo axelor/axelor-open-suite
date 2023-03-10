@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.talent.service;
 
 import com.axelor.apps.base.db.Duration;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.repo.EventRepository;
@@ -75,7 +76,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
   protected Event generateMeeting(TrainingRegister trainingRegister) {
 
     Event event = new Event();
-    event.setTypeSelect(EventRepository.TYPE_MEETING);
+    event.setTypeSelect(ICalendarEventRepository.TYPE_MEETING);
     event.setStartDateTime(trainingRegister.getFromDate());
     event.setEndDateTime(trainingRegister.getToDate());
     event.setSubject(trainingRegister.getTraining().getName());

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -572,9 +572,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     Invoice refund = new RefundInvoice(invoice).generate();
     if (refund.getInvoiceLineList() != null) {
       for (InvoiceLine invoiceLine : refund.getInvoiceLineList()) {
-        invoiceLine.setPrice(invoiceLine.getPrice().negate());
-        invoiceLine.setPriceDiscounted(invoiceLine.getPriceDiscounted().negate());
-        invoiceLine.setInTaxPrice(invoiceLine.getInTaxPrice().negate());
+        invoiceLine.setQty(invoiceLine.getQty().negate());
+        invoiceLine.setOldQty(invoiceLine.getOldQty().negate());
         invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
         invoiceLine.setInTaxTotal(invoiceLine.getInTaxTotal().negate());
         invoiceLine.setCompanyExTaxTotal(invoiceLine.getCompanyExTaxTotal().negate());
@@ -891,11 +890,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    * @param invoiceLine
    */
   protected void negateInvoiceLinePrice(InvoiceLine invoiceLine) {
-    // price
-    invoiceLine.setPrice(invoiceLine.getPrice().negate());
-    invoiceLine.setPriceDiscounted(invoiceLine.getPriceDiscounted().negate());
-    invoiceLine.setInTaxPrice(invoiceLine.getInTaxPrice().negate());
-    invoiceLine.setDiscountAmount(invoiceLine.getDiscountAmount().negate());
+
+    invoiceLine.setQty(invoiceLine.getQty().negate());
+    invoiceLine.setOldQty(invoiceLine.getOldQty().negate());
 
     // totals
     invoiceLine.setInTaxTotal(invoiceLine.getInTaxTotal().negate());

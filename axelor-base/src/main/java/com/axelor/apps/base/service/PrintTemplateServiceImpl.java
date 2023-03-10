@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -84,7 +84,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
 
   @SuppressWarnings("unchecked")
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Print generatePrint(Long objectId, PrintTemplate printTemplate)
       throws AxelorException, IOException, ClassNotFoundException {
     MetaModel metaModel = printTemplate.getMetaModel();
@@ -185,7 +185,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     return print;
   }
 
-  private void processPrintTemplateLineList(
+  protected void processPrintTemplateLineList(
       List<PrintTemplateLine> templateLineList,
       Print print,
       PrintLine parent,
@@ -276,7 +276,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
   }
 
-  private void addSequencesInContext(TemplateMaker maker, int level, int seq, PrintLine parent) {
+  protected void addSequencesInContext(TemplateMaker maker, int level, int seq, PrintLine parent) {
     maker.addInContext(TEMPLATE_CONTEXT_SEQUENCE_KEY_PREFIX + level, seq);
     if (ObjectUtils.notEmpty(parent)) {
       addSequencesInContext(maker, level - 1, parent.getSequence(), parent.getParent());

@@ -22,8 +22,9 @@
       <panel name="configurationPanel" title="Configuration" colSpan="12">
         <field name="defaultPartnerLanguage"/>
         <field name="enableTradingNamesManagement" widget="boolean-switch"/>
-        <field name="activateSendingEmail" widget="boolean-switch" colSpan="3"/>
-        <field name="emailAccountByUser" widget="boolean-switch" colSpan="3"/>
+        <field name="activateSendingEmail" widget="boolean-switch" colSpan="4"/>
+        <field name="emailAccountByUser" widget="boolean-switch" colSpan="4"/>
+        <field name="emailAccountByCompany" widget="boolean-switch" colSpan="4"/>
         <field name="nbDecimalDigitForTaxRate"/>
         <field name="productInAtiSelect"/>
         <field name="nbDecimalDigitForUnitPrice" colSpan="3"/>
@@ -135,7 +136,7 @@
         <button name="updateCurrencyConversionBtn"
           title="Update &amp; Historize conversion rate"
           onClick="save,action-base-method-update-currency-conversion"
-          readonlyIf="!currencyConversionLineList"/>
+          readonlyIf="!(currencyConversionLineList &amp;&amp; currencyConversionLineList.length > 0)"/>
         <field name="currencyConversionLineList" colSpan="12"
           grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
       </panel>

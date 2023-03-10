@@ -16,8 +16,7 @@
       help="Last day included of the period in which moveLines will be retrieved"/>
     <integer name="processSelect" title="Process" required="true"
       selection="account.move.line.query.process.select" default="0"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
-      required="true"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="account" ref="Account" required="true" title="Accounting.Account"/>
     <one-to-many ref="MoveLineQueryLine" name="moveLineQueryLineList"
       title="Move lines to process" mappedBy="moveLineQuery"/>

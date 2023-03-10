@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -510,6 +510,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     List<String> domainList = new ArrayList<>();
 
+    domainList.add("self.company = :company");
     domainList.add("self.partner = :deliverToCustomerPartner");
     domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
     domainList.add(

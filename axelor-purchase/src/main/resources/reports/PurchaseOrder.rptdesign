@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -260,11 +260,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <text-property name="heading">logo_width</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">delivery_date</property>
-                    <property name="alias">delivery_date</property>
+                    <property name="columnName">estimated_receipt_date</property>
+                    <property name="alias">estimated_receipt_date</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">delivery_date</text-property>
-                    <text-property name="heading">delivery_date</text-property>
+                    <text-property name="displayName">estimated_receipt_date</text-property>
+                    <text-property name="heading">estimated_receipt_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">order_date</property>
@@ -677,7 +677,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">delivery_date</property>
+                        <property name="name">estimated_receipt_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
@@ -986,8 +986,8 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">delivery_date</property>
-                    <property name="nativeName">delivery_date</property>
+                    <property name="name">estimated_receipt_date</property>
+                    <property name="nativeName">estimated_receipt_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
@@ -1368,7 +1368,7 @@ PurchaseOrder.id as purchase_id,
 coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
 Company.height as logo_height,
 Company.width as logo_width,
-PurchaseOrder.delivery_date,
+PurchaseOrder.estimated_receipt_date,
 PurchaseOrder.order_date, 
 PurchaseOrder.status_select,
 Partner.partner_seq as "SupplierCode",
@@ -1474,7 +1474,7 @@ where PurchaseOrder.id = ?]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>delivery_date</design:name>
+              <design:name>estimated_receipt_date</design:name>
               <design:position>2</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
@@ -1482,11 +1482,11 @@ where PurchaseOrder.id = ?]]></xml-property>
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>delivery_date</design:displayName>
+              <design:displayName>estimated_receipt_date</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>delivery_date</design:label>
+            <design:label>estimated_receipt_date</design:label>
             <design:formattingHints>
               <design:displaySize>13</design:displaySize>
             </design:formattingHints>
@@ -1697,7 +1697,7 @@ where PurchaseOrder.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">20</property>
-                        <property name="name">desired_deliv_date</property>
+                        <property name="name">desired_receipt_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
@@ -1825,8 +1825,8 @@ where PurchaseOrder.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
-                    <property name="name">desired_deliv_date</property>
-                    <property name="nativeName">desired_deliv_date</property>
+                    <property name="name">desired_receipt_date</property>
+                    <property name="nativeName">desired_receipt_date</property>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
@@ -1857,10 +1857,10 @@ SELECT
     POL.product_code,
     POL.product_standard,
     POL.supplier_product_code,
-    POL.product_name as supplier_product_name,
+    POL.supplier_product_name as supplier_product_name,
     POL."productCategory",
     POL.purchase_line_id,
-    POL.desired_deliv_date,
+    POL.desired_receipt_date,
     POL."UnitCode"
 FROM POL
 LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
@@ -1894,7 +1894,7 @@ SELECT
     POL.product_category_name as supplier_product_name,
     POL."productCategory",
     MIN(POL.purchase_line_id),
-    MIN(POL.desired_deliv_date),
+    MIN(POL.desired_receipt_date),
     POL."UnitCode"
 FROM POL
 LEFT JOIN base_product_category as ProductCategory on (POL."productCategory" = ProductCategory.id)
@@ -1934,7 +1934,7 @@ SELECT
         ELSE AppBase.regroup_products_label_services END as "productName",
     null as "productCategory",
     MIN(POL.purchase_line_id),
-    MIN(POL.desired_deliv_date),
+    MIN(POL.desired_receipt_date),
     POL."UnitCode"
 FROM POL
 LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
@@ -1987,7 +1987,7 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
             <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS purchase_order_line_proc(bigint);
 CREATE OR REPLACE FUNCTION purchase_order_line_proc(purchaseorderId bigint)
 RETURNS table(product_code varchar, product_name varchar, purchase_id bigint, purchase_line_id bigint, supplier_product_code varchar, supplier_product_name varchar,
-    product_category_name varchar, description text, qty numeric, "productType" varchar, desired_deliv_date date, sequence int, "UnitCode" varchar, "UnitPrice" numeric,
+    product_category_name varchar, description text, qty numeric, "productType" varchar, desired_receipt_date date, sequence int, "UnitCode" varchar, "UnitPrice" numeric,
 "totalDiscountAmount" numeric, ex_tax_total numeric, in_tax_total numeric, in_ati boolean, product_category_code varchar, "productCategory" bigint, "isTitleLine" boolean, "TaxValue" numeric, product_standard varchar) as
 $func$
 BEGIN
@@ -2006,7 +2006,7 @@ SELECT
     PurchaseOrderLine.description,
     PurchaseOrderLine.qty,
     Product.product_type_select as "productType",
-    PurchaseOrderLine.desired_deliv_date,
+    PurchaseOrderLine.desired_receipt_date,
     PurchaseOrderLine.sequence,
     Unit.label_to_printing as "UnitCode",
     (CASE WHEN PurchaseOrder.in_ati
@@ -2049,7 +2049,7 @@ SELECT
     PurchaseOrderLine.description,
     PurchaseOrderLine.qty,
     Product.product_type_select as "productType",
-    PurchaseOrderLine.desired_deliv_date,
+    PurchaseOrderLine.desired_receipt_date,
     PurchaseOrderLine.sequence,
     Unit.label_to_printing as "UnitCode",
     (CASE WHEN PurchaseOrder.in_ati
@@ -2531,9 +2531,9 @@ from base_app_base]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">delivery_date</property>
+                    <property name="name">estimated_receipt_date</property>
                     <text-property name="displayName">DeliveryDate</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["delivery_date"]</expression>
+                    <expression name="expression" type="javascript">dataSetRow["estimated_receipt_date"]</expression>
                     <property name="dataType">date</property>
                     <property name="allowExport">true</property>
                 </structure>
@@ -2879,7 +2879,7 @@ from base_app_base]]></xml-property>
                 <structure>
                     <property name="name">Column Binding</property>
                     <text-property name="displayName">DeliveryDate</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["delivery_date"]</expression>
+                    <expression name="expression" type="javascript">dataSetRow["estimated_receipt_date"]</expression>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
@@ -3247,7 +3247,7 @@ from base_app_base]]></xml-property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["delivery_date"] == null</expression>
+                                                <expression name="valueExpr" type="javascript">row["estimated_receipt_date"] == null</expression>
                                             </structure>
                                         </list-property>
                                         <cell id="3653">
@@ -3259,7 +3259,7 @@ from base_app_base]]></xml-property>
                                                     <structure>
                                                         <property name="paramName">param_1</property>
                                                         <simple-property-list name="expression">
-                                                            <value type="javascript">'PurchaseOrder.deliveryDate'</value>
+                                                            <value type="javascript">'PurchaseOrder.estimatedReceiptDate'</value>
                                                         </simple-property-list>
                                                     </structure>
                                                 </list-property>
@@ -3286,7 +3286,7 @@ from base_app_base]]></xml-property>
                                                     <property name="pattern">Short Date</property>
                                                 </structure>
                                                 <property name="display">inline</property>
-                                                <property name="resultSetColumn">delivery_date</property>
+                                                <property name="resultSetColumn">estimated_receipt_date</property>
                                             </data>
                                         </cell>
                                     </row>
@@ -3531,7 +3531,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                     <structure>
                                                         <property name="paramName">param_1</property>
                                                         <simple-property-list name="expression">
-                                                            <value type="javascript">'PurchaseOrder.deliveryDate'</value>
+                                                            <value type="javascript">'PurchaseOrder.estimatedReceiptDate'</value>
                                                         </simple-property-list>
                                                     </structure>
                                                 </list-property>
@@ -4111,7 +4111,7 @@ row["first_name"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["delivery_date"] == null</expression>
+                                                <expression name="valueExpr" type="javascript">row["estimated_receipt_date"] == null</expression>
                                             </structure>
                                         </list-property>
                                         <cell id="4668">
@@ -4123,7 +4123,7 @@ row["first_name"]
                                                     <structure>
                                                         <property name="paramName">param_1</property>
                                                         <simple-property-list name="expression">
-                                                            <value type="javascript">'PurchaseOrder.deliveryDate'</value>
+                                                            <value type="javascript">'PurchaseOrder.estimatedReceiptDate'</value>
                                                         </simple-property-list>
                                                     </structure>
                                                 </list-property>
@@ -4150,7 +4150,7 @@ row["first_name"]
                                                     <property name="pattern">Short Date</property>
                                                 </structure>
                                                 <property name="display">inline</property>
-                                                <property name="resultSetColumn">delivery_date</property>
+                                                <property name="resultSetColumn">estimated_receipt_date</property>
                                             </data>
                                         </cell>
                                     </row>
@@ -4395,7 +4395,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                     <structure>
                                                         <property name="paramName">param_1</property>
                                                         <simple-property-list name="expression">
-                                                            <value type="javascript">'PurchaseOrder.deliveryDate'</value>
+                                                            <value type="javascript">'PurchaseOrder.estimatedReceiptDate'</value>
                                                         </simple-property-list>
                                                     </structure>
                                                 </list-property>
@@ -5083,9 +5083,9 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">desired_deliv_date</property>
-                                <text-property name="displayName">desired_deliv_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["desired_deliv_date"]</expression>
+                                <property name="name">desired_receipt_date</property>
+                                <text-property name="displayName">desired_receipt_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["desired_receipt_date"]</expression>
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
@@ -6251,7 +6251,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'PurchaseOrder.desiredDelivDate'</value>
+                                                    <value type="javascript">'PurchaseOrder.desiredReceiptDate'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6438,7 +6438,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'value:'+row["product_name"]</value>
+                                                    <value type="javascript">'value:'+row["supplier_product_name"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -6994,9 +6994,9 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">delivery_date</property>
-                                                <text-property name="displayName">delivery_date</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["delivery_date"]</expression>
+                                                <property name="name">estimated_receipt_date</property>
+                                                <text-property name="displayName">estimated_receipt_date</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["estimated_receipt_date"]</expression>
                                                 <property name="dataType">date</property>
                                             </structure>
                                             <structure>
@@ -7223,9 +7223,9 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">delivery_date</property>
-                                                <text-property name="displayName">delivery_date</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["delivery_date"]</expression>
+                                                <property name="name">estimated_receipt_date</property>
+                                                <text-property name="displayName">estimated_receipt_date</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["estimated_receipt_date"]</expression>
                                                 <property name="dataType">date</property>
                                             </structure>
                                             <structure>
@@ -7420,7 +7420,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                             <property name="pattern">Short Date</property>
                                         </structure>
                                         <property name="textAlign">left</property>
-                                        <property name="resultSetColumn">desired_deliv_date</property>
+                                        <property name="resultSetColumn">desired_receipt_date</property>
                                     </data>
                                 </cell>
                             </row>

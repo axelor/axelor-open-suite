@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,7 @@ public class MainActivityListener {
 
   @PrePersist
   @PreUpdate
-  private void computeFullName(MainActivity mainActivity) throws AxelorException {
+  protected void computeFullName(MainActivity mainActivity) throws AxelorException {
     if (mainActivity != null) {
       mainActivity.setFullName(mainActivity.getCode() + " - " + mainActivity.getShortName());
     }

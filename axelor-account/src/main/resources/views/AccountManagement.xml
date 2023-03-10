@@ -56,10 +56,12 @@
 
   <grid name="account-management-editable-grid" title="Account management list"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
-    groupBy="company,bankDetails">
+    groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management">
     <field name="company"/>
     <field name="bankDetails"/>
-    <field name="journal" domain="self.statusSelect = 1"/>
+    <field name="journal"
+      domain="self.statusSelect = 1 AND (:company IS NULL OR self.company = :company)"
+      onChange="action-account-management-fill-company"/>
     <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"/>
     <field name="paymentMode"/>
   </grid>
@@ -136,7 +138,6 @@
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
       </insert>
-      <attribute name="hideIf" value="tax != null"/>
     </extend>
   </form>
 
@@ -183,5 +184,15 @@
     <attribute for="bankDetails" name="value" expr="eval: company?.defaultBankDetails"
       if="company?.defaultBankDetails?.active"/>
   </action-attrs>
+
+  <action-record name="action-account-management-fill-company"
+    model="com.axelor.apps.account.db.AccountManagement">
+    <field name="company" expr="eval: journal.company" if="journal != null"/>
+  </action-record>
+
+  <action-record name="action-record-account-management-new-account-management"
+    model="com.axelor.apps.account.db.AccountManagement">
+    <field name="typeSelect" expr="eval: 3"/>
+  </action-record>
 
 </object-views>

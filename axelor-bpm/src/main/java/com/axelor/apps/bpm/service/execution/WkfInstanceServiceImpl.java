@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import com.axelor.apps.bpm.service.init.ProcessEngineService;
 import com.axelor.apps.tool.context.FullContext;
 import com.axelor.apps.tool.context.FullContextHelper;
 import com.axelor.db.EntityHelper;
+import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -171,7 +172,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     return wkfInstanceRepository.save(instance);
   }
 
-  private void addRelatedProcessInstanceId(Model model) throws AxelorException {
+  protected void addRelatedProcessInstanceId(Model model) throws AxelorException {
 
     WkfProcessConfig wkfProcessConfig = wkfService.findCurrentProcessConfig(model);
 
@@ -193,7 +194,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     }
   }
 
-  private boolean addRelatedInstance(Model model, WkfProcessConfig wkfProcessConfig)
+  protected boolean addRelatedInstance(Model model, WkfProcessConfig wkfProcessConfig)
       throws AxelorException {
 
     log.debug(
@@ -222,7 +223,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     }
   }
 
-  private ProcessInstance findProcessInstance(
+  protected ProcessInstance findProcessInstance(
       String processInstanceId, RuntimeService runTimeService) {
 
     ProcessInstance processInstance =
@@ -285,6 +286,18 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
   }
 
   @Override
+  public boolean isActiveModelTask(Model model, String taskId) {
+
+    if (model == null || taskId == null) {
+      return false;
+    }
+
+    Model savedModel = JPA.find(EntityHelper.getEntityClass(model), model.getId());
+
+    return isActiveTask(savedModel.getProcessInstanceId(), taskId);
+  }
+
+  @Override
   public boolean isActivatedTask(String processInstanceId, String taskId) {
 
     if (processInstanceId == null || taskId == null) {
@@ -301,6 +314,18 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
             .count();
 
     return tasks > 0;
+  }
+
+  @Override
+  public boolean isActivatedModelTask(Model model, String taskId) {
+
+    if (model == null || taskId == null) {
+      return false;
+    }
+
+    Model savedModel = JPA.find(EntityHelper.getEntityClass(model), model.getId());
+
+    return isActivatedTask(savedModel.getProcessInstanceId(), taskId);
   }
 
   @Override
@@ -554,7 +579,7 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     }
   }
 
-  private void addChildProcessInstanceId(
+  protected void addChildProcessInstanceId(
       String processInstanceId, FullContext modelCtx, Map<String, Object> ctxMap) {
 
     RuntimeService runtimeService = engineService.getEngine().getRuntimeService();

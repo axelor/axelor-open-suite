@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -190,7 +190,7 @@ public class DuplicateObjectsService {
 
   /*
    * get all records for duplicate records
-   */ private String concatFields(Class<?> modelClass, Set<String> fieldSet)
+   */ protected String concatFields(Class<?> modelClass, Set<String> fieldSet)
       throws AxelorException {
 
     StringBuilder fields = new StringBuilder("LOWER(concat(");
@@ -229,7 +229,7 @@ public class DuplicateObjectsService {
     return fields.toString();
   }
 
-  private String createSubQuery(Class<?> modelClass, String filter, String concatedFields) {
+  protected String createSubQuery(Class<?> modelClass, String filter, String concatedFields) {
 
     StringBuilder queryBuilder = new StringBuilder("SELECT ");
     queryBuilder.append(concatedFields);

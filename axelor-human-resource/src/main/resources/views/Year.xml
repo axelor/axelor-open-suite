@@ -12,8 +12,10 @@
       <field name="company" widget="SuggestBox" form-view="company-form" required="true"
         colSpan="3" grid-view="company-grid"/>
       <panel name="datesPanel" title="Dates" colSpan="12">
-        <field name="fromDate" colSpan="3" readonlyIf="periodList.length > 0"/>
-        <field name="toDate" colSpan="3" readonlyIf="periodList.length > 0"/>
+        <field name="fromDate" colSpan="3"
+          readonlyIf="periodList &amp;&amp; periodList.length > 0"/>
+        <field name="toDate" colSpan="3"
+          readonlyIf="periodList &amp;&amp; periodList.length > 0"/>
       </panel>
     </panel>
     <panel-related name="periodListPanel" field="periodList" colSpan="12"

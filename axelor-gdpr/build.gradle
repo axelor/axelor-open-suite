@@ -1,0 +1,17 @@
+apply plugin: "com.axelor.app-module"
+
+apply from: "../libs.gradle"
+apply from: "../version.gradle"
+
+apply {
+    version = openSuiteVersion
+}
+
+axelor {
+    title "Axelor GDPR"
+    description "Axelor GDPR Module"
+}
+
+dependencies {
+    api project(":modules:axelor-base")
+}

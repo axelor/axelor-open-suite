@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -146,7 +146,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     return false;
   }
 
-  private ProductVariant getProductVariant(
+  protected ProductVariant getProductVariant(
       ProductVariantAttr productVariantAttr1,
       ProductVariantAttr productVariantAttr2,
       ProductVariantAttr productVariantAttr3,
@@ -241,7 +241,8 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     return productModel;
   }
 
-  private Product getProductVariant(ProductVariant parentProductVariant, Product productSearched) {
+  protected Product getProductVariant(
+      ProductVariant parentProductVariant, Product productSearched) {
 
     LOG.debug(
         "Variant research of the product {} which has shared attributes as {}",
@@ -738,7 +739,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     return productSearched;
   }
 
-  private boolean containsProductVariantValue(
+  protected boolean containsProductVariantValue(
       Product product, ProductVariantValue productVariantValue) {
 
     ProductVariant productVariantFind = product.getProductVariant();

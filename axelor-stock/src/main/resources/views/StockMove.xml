@@ -268,8 +268,7 @@
           </field>
           <panel name="typeFieldAndTagPanel" colSpan="2" itemSpan="12" stacked="true">
             <field name="typeSelect" title="Type" showIf="!$readonly()"
-              readonlyIf="statusSelect != 1"
-              onChange="action-stock-move-attrs-set-values-typeselect-onchange,action-stock-move-set-default-stock-locations,action-stock-move-attrs-typeselect-change"/>
+              readonlyIf="statusSelect != 1" onChange="action-stock-move-group-type-select-onchange"/>
             <field name="$typeTags" showTitle="false" hidden="true" showIf="$readonly()"
               readonlyIf="statusSelect != 1">
               <viewer depends="typeSelect"><![CDATA[
@@ -618,7 +617,7 @@
           <field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
         </panel>
         <panel name="pickingOrderCommentsPanel" title="Comment to display on picking order"
-          colSpan="12">
+          colSpan="12" showIf="typeSelect == 2">
           <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
       </panel>
@@ -721,6 +720,28 @@
       <field name="typeSelect" hidden="true"/>
       <field name="fromStockLocation" hidden="true"/>
       <field name="isWithBackorder" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="popup-stock-move-check-wap-form" title="Stock move"
+    model="com.axelor.apps.stock.db.StockMove" onLoad="action-stock-move-record-wap-on-load">
+    <panel name="mainPanel">
+      <field name="$msg" showTitle="false" colSpan="12" readonly="true">
+        <viewer depends="$percentToleranceForWapChange,$productsWithError">
+	   <![CDATA[
+              <h5 class="text-left">
+                <span x-translate>This stock move will have a huge impact (more than </span> {{record.$percentToleranceForWapChange}}<span x-translate>%) on the WAP of </span> {{record.$productsWithError}}. <span x-translate> Do you want to proceed?</span>
+             </h5>
+           ]]>
+        </viewer>
+      </field>
+      <button name="confirmBtn" title="Confirm"
+        onClick="save,action-stock-move-group-realize,close" icon="fa-check" colOffset="3"
+        colSpan="3"/>
+      <button name="cancelBtn" title="Cancel" onClick="close" icon="fa-times"
+        css="btn-danger" colSpan="3"/>
+      <field name="$percentToleranceForWapChange" type="integer" hidden="true"/>
+      <field name="$productsWithError" type="string" hidden="true"/>
     </panel>
   </form>
 
@@ -832,6 +853,8 @@
 
   <action-group name="action-group-stock-stockmove-onnew">
     <action name="action-stock-move-record-new"/>
+    <action name="action-stock-move-method-get-from-stock-location"/>
+    <action name="action-stock-move-method-get-to-stock-location"/>
     <action name="action-stock-move-record-mail-configuration"/>
     <action name="action-stock-move-attrs-typeselect-change"/>
     <action name="action-stock-move-generate-invoice-button"/>
@@ -878,11 +901,16 @@
     <action name="action-stock-move-check-stock-move-line-real-qty"/>
     <action name="action-stock-move-validate-shipment-informations"
       if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !isReversion"/>
+    <action name="action-stock-move-method-check-wap"/>
+    <action name="action-stock-move-group-realize" if="isValidWAP"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-stock-move-group-realize">
     <action name="action-stock-move-method-manage-backorder"
       if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
     <action name="action-stock-move-method-realize"
       if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} || isWithBackorder"/>
-    <action name="save"/>
   </action-group>
 
   <action-method name="action-stock-move-method-manage-backorder">
@@ -901,6 +929,8 @@
   </action-group>
 
   <action-group name="action-stock-move-group-partner-onchange">
+    <action name="action-stock-move-method-get-from-stock-location"/>
+    <action name="action-stock-move-method-get-to-stock-location"/>
     <action name="action-stock-move-record-partner-delivery-informations"/>
     <action name="action-stock-move-record-auto-mail"/>
     <action name="action-stock-move-record-ispm-field"/>
@@ -917,7 +947,8 @@
   <action-group name="action-stock-move-group-onchange-company">
     <action name="action-stock-move-record-update-info-company"/>
     <action name="action-stock-move-record-mail-configuration"/>
-    <action name="action-stock-move-record-set-stock-locations-company-onchange"/>
+    <action name="action-stock-move-method-get-from-stock-location"/>
+    <action name="action-stock-move-method-get-to-stock-location"/>
   </action-group>
 
   <action-group name="action-stock-move-group-available-qty-onchange">
@@ -1017,14 +1048,6 @@
     <field name="statusSelect" expr="eval: 1"/>
     <field name="estimatedDate" expr="eval:__config__.date"/>
     <field name="typeSelect" expr="eval: _typeSelect"/>
-    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.receiptDefaultStockLocation"/>
-    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="fromStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
-    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="fromStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.pickupDefaultStockLocation"/>
-    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="toStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
     <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
       if="__user__.activeCompany != null"/>
     <field name="isWithBackorder"
@@ -1068,18 +1091,6 @@
     <field name="toAddress" expr="eval:toStockLocation?.address"/>
   </action-record>
 
-  <action-record name="action-stock-move-set-default-stock-locations"
-    model="com.axelor.apps.stock.db.StockMove">
-    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="fromStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.pickupDefaultStockLocation"/>
-    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="toStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
-    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.receiptDefaultStockLocation"/>
-    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING" name="fromStockLocation"
-      expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
-  </action-record>
-
   <action-record name="action-stock-move-record-partner-delivery-informations"
     model="com.axelor.apps.stock.db.StockMove">
     <field name="shipmentMode" expr="eval: partner?.shipmentMode"/>
@@ -1112,41 +1123,25 @@
   <action-record name="action-stock-move-record-mail-configuration"
     model="com.axelor.apps.stock.db.StockMove">
     <field
-      if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING"
+      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __user__.activeCompany != null"
       name="plannedStockMoveAutomaticMail"
       expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveAutomaticMail"/>
     <field
-      if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING"
+      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __user__.activeCompany != null"
       name="realStockMoveAutomaticMail"
       expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail"/>
     <field
-      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveAutomaticMail"
+      if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveAutomaticMail"
       name="plannedStockMoveMessageTemplate"
       expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.plannedStockMoveMessageTemplate"/>
     <field
-      if="(_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail"
+      if="__user__.activeCompany != null &amp;&amp; (_typeSelect == __repo__(StockMove).TYPE_OUTGOING || typeSelect == __repo__(StockMove).TYPE_OUTGOING) &amp;&amp; __repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveAutomaticMail"
       name="realStockMoveMessageTemplate"
       expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.realStockMoveMessageTemplate"/>
     <field if="company == null" name="plannedStockMoveAutomaticMail" expr="eval: false"/>
     <field if="company == null" name="realStockMoveAutomaticMail" expr="eval: false"/>
     <field if="company == null" name="plannedStockMoveMessageTemplate" expr="eval: null"/>
     <field if="company == null" name="realStockMoveMessageTemplate" expr="eval: null"/>
-  </action-record>
-
-  <action-record name="action-stock-move-record-set-stock-locations-company-onchange"
-    model="com.axelor.apps.stock.db.StockMove">
-    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; company != null"
-      name="fromStockLocation"
-      expr="eval: company?.getStockConfig()?.getPickupDefaultStockLocation()"/>
-    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; company != null"
-      name="toStockLocation"
-      expr="eval:company?.getStockConfig()?.getCustomerVirtualStockLocation()"/>
-    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; company != null"
-      name="toStockLocation" expr="eval:company?.getStockConfig()?.getReceiptDefaultStockLocation()"/>
-    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; company != null"
-      name="fromStockLocation"
-      expr="eval:company?.getStockConfig()?.getSupplierVirtualStockLocation()"/>
-    <field name="fromStockLocation,toStockLocation" expr="eval: null" if="company == null"/>
   </action-record>
 
   <action-record name="action-stock-move-record-set-address-from-partner"
@@ -1509,5 +1504,30 @@
     <attribute for="generateInvoiceBtn" name="hidden"
       expr="statusSelect != 3 || typeSelect == 1 || (__config__.app.getApp('supplychain')?.getValidStepForInvOutSM() &amp;&amp; invoicingStatusSelect != 4)"/>
   </action-attrs>
+
+  <action-group name="action-stock-move-group-type-select-onchange">
+    <action name="action-stock-move-attrs-set-values-typeselect-onchange"/>
+    <action name="action-stock-move-method-get-from-stock-location"/>
+    <action name="action-stock-move-method-get-to-stock-location"/>
+    <action name="action-stock-move-attrs-typeselect-change"/>
+  </action-group>
+
+  <action-method name="action-stock-move-method-get-from-stock-location">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="getFromStockLocation"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-get-to-stock-location">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="getToStockLocation"/>
+  </action-method>
+
+  <action-record name="action-stock-move-record-wap-on-load"
+    model="com.axelor.apps.stock.db.StockMove">
+    <field name="$percentToleranceForWapChange" expr="eval: _percentToleranceForWapChange"/>
+    <field name="$productsWithError" expr="eval: _productsWithErrorStr"/>
+  </action-record>
+
+  <action-method name="action-stock-move-method-check-wap">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="checkWap"/>
+  </action-method>
 
 </object-views>

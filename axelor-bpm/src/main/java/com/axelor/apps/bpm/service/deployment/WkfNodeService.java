@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -84,7 +84,7 @@ public class WkfNodeService {
     return metaAttrsList;
   }
 
-  private Process findProcess(FlowNode activity) {
+  protected Process findProcess(FlowNode activity) {
 
     ModelElementInstance modelElementInstance = activity.getParentElement();
 
@@ -146,7 +146,7 @@ public class WkfNodeService {
     return config;
   }
 
-  private void updateMenus(WkfTaskConfig taskConfig, boolean remove) {
+  protected void updateMenus(WkfTaskConfig taskConfig, boolean remove) {
 
     if (!remove && taskConfig.getNewMenu()) {
       wkfMenuService.createOrUpdateMenu(taskConfig);

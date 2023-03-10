@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
 import com.axelor.apps.talent.service.AppraisalService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -125,7 +126,7 @@ public class AppraisalController {
           Beans.get(AppraisalService.class).createAppraisals(appraisalTemplate, employees, send);
 
       response.setView(
-          ActionView.define("Appraisal")
+          ActionView.define(I18n.get("Appraisal"))
               .model(Appraisal.class.getName())
               .add("grid", "appraisal-grid")
               .add("form", "appraisal-form")

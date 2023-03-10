@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,7 +60,7 @@ public class PackLineServiceImpl implements PackLineService {
     return packLine;
   }
 
-  private Unit getSaleUnit(Product product) {
+  protected Unit getSaleUnit(Product product) {
     Unit unit = product.getSalesUnit();
     if (unit == null) {
       unit = product.getUnit();
@@ -68,7 +68,7 @@ public class PackLineServiceImpl implements PackLineService {
     return unit;
   }
 
-  private BigDecimal getUnitPrice(PackLine packLine, Pack pack) throws AxelorException {
+  protected BigDecimal getUnitPrice(PackLine packLine, Pack pack) throws AxelorException {
     return (BigDecimal)
         productCompanyService.get(packLine.getProduct(), "salePrice", pack.getCompany());
   }

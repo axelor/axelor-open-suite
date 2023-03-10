@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -78,7 +78,7 @@ public class DmnExportServiceImpl implements DmnExportService {
     return exportFile;
   }
 
-  private void processTables(Collection<DecisionTable> tables) throws AxelorException {
+  protected void processTables(Collection<DecisionTable> tables) throws AxelorException {
     for (DecisionTable table : tables) {
       String sheetName = table.getParentElement().getAttributeValue("id");
       Sheet sheet = workbook.createSheet(sheetName);
@@ -87,7 +87,7 @@ public class DmnExportServiceImpl implements DmnExportService {
     }
   }
 
-  private void createHeaderRow(Sheet sheet, DecisionTable table) throws AxelorException {
+  protected void createHeaderRow(Sheet sheet, DecisionTable table) throws AxelorException {
     Row titleRow = sheet.createRow(sheet.getLastRowNum());
     Cell titleCell = titleRow.createCell(0);
     titleCell.setCellValue(table.getParentElement().getAttributeValue("name"));
@@ -123,7 +123,7 @@ public class DmnExportServiceImpl implements DmnExportService {
     sheet.autoSizeColumn(outputIndex);
   }
 
-  private void createDataRow(Sheet sheet, DecisionTable table) {
+  protected void createDataRow(Sheet sheet, DecisionTable table) {
     int index = sheet.getLastRowNum() + 1;
     for (Rule rule : table.getRules()) {
       Row row = sheet.createRow(index);

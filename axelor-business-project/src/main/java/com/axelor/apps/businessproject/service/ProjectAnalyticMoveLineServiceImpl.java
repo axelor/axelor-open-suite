@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,7 +36,7 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public PurchaseOrder updateLines(PurchaseOrder purchaseOrder) {
     for (PurchaseOrderLine orderLine : purchaseOrder.getPurchaseOrderLineList()) {
       orderLine.setProject(purchaseOrder.getProject());
@@ -49,7 +49,7 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public SaleOrder updateLines(SaleOrder saleOrder) {
     for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
       orderLine.setProject(saleOrder.getProject());

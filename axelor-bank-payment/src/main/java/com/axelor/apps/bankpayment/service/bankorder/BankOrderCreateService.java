@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,8 +32,10 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -92,9 +94,9 @@ public class BankOrderCreateService {
     bankOrder.setPaymentMode(paymentMode);
     bankOrder.setPartnerTypeSelect(partnerType);
 
-    if (!bankOrderFileFormat.getIsMultiDate()) {
-      bankOrder.setBankOrderDate(bankOrderDate);
-    }
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(senderCompany);
+    bankOrder.setBankOrderDate(bankOrderDate.isBefore(todayDate) ? todayDate : bankOrderDate);
+    bankOrder.setIsMultiDate(bankOrderFileFormat.getIsMultiDate());
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
     bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_NOT_REJECTED);

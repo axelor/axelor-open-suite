@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -279,9 +279,6 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             "S10.G01.01.006",
             ObjectUtils.firstNonNull(
                 dasContactPartner.getFixedPhone(), dasContactPartner.getMobilePhone())));
-    if (!Strings.isNullOrEmpty(dasContactPartner.getFax())) {
-      lines.add(setN4DSLine("S10.G01.01.007", dasContactPartner.getFax()));
-    }
 
     // S10.G01.05
     lines.add(setN4DSLine("S10.G01.05.013.001", siren));

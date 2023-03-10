@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,10 +39,10 @@ public class ConvertWizardService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public Object createObject(Map<String, Object> context, Object obj, Mapper mapper)
+  public Object createObject(Map<String, Object> objectMap, Object obj, Mapper mapper)
       throws AxelorException {
 
-    if (context != null) {
+    if (objectMap != null) {
 
       final int random = new Random().nextInt();
       for (final Property p : mapper.getProperties()) {
@@ -51,11 +51,11 @@ public class ConvertWizardService {
           continue;
         }
 
-        LOG.debug("Property name / Context value  : {} / {}", p.getName());
+        LOG.debug("Property name / objectMap value  : {} / {}", p.getName());
 
-        Object value = context.get(p.getName());
+        Object value = objectMap.get(p.getName());
 
-        LOG.debug("Context value : {}", value);
+        LOG.debug("ObjectMap value : {}", value);
 
         if (value != null) {
 

@@ -105,7 +105,8 @@
         showIf="valueForCollectionAccount"/>
     </panel>
 
-    <panel name="paymentDetailsPanel" showIf="paymentVoucherList">
+    <panel name="paymentDetailsPanel"
+      showIf="paymentVoucherList &amp;&amp; paymentVoucherList.length > 0">
       <field name="totalAmount"/>
       <field name="chequeCount"/>
     </panel>
@@ -162,7 +163,7 @@
   <action-record name="action-deposit-slip-defaults"
     model="com.axelor.apps.account.db.DepositSlip">
     <field name="company" expr="eval: __user__.activeCompany"/>
-    <field name="depositDate" expr="eval: __config__.app.todayDate"/>
+    <field name="depositDate" expr="eval: __config__.date"/>
   </action-record>
 
   <action-record name="action-deposit-slip-company-onchange"

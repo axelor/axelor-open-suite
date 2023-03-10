@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -61,7 +61,9 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
     if (pdfPath != null) {
 
       response.setView(
-          ActionView.define("Message " + message.getSubject()).add("html", pdfPath).map());
+          ActionView.define(I18n.get("Message ") + message.getSubject())
+              .add("html", pdfPath)
+              .map());
 
     } else response.setFlash(I18n.get(BaseExceptionMessage.MESSAGE_1));
   }
