@@ -156,7 +156,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       if (moveLine.getOriginDate() == null) {
         if (ObjectUtils.notEmpty(move.getOriginDate())) {
           moveLine.setOriginDate(move.getOriginDate());
-        } else {
+        } else if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
           moveLine.setOriginDate(date);
         }
       }

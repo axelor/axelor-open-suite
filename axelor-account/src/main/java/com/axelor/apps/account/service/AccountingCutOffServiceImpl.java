@@ -42,6 +42,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -68,6 +69,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveToolService moveToolService;
+  protected MoveLineToolService moveLineToolService;
   protected AccountManagementAccountService accountManagementAccountService;
   protected TaxAccountService taxAccountService;
   protected AppAccountService appAccountService;
@@ -89,6 +91,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   public AccountingCutOffServiceImpl(
       MoveCreateService moveCreateService,
       MoveToolService moveToolService,
+      MoveLineToolService moveLineToolService,
       AccountManagementAccountService accountManagementAccountService,
       TaxAccountService taxAccountService,
       AppAccountService appAccountService,
@@ -109,6 +112,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
+    this.moveLineToolService = moveLineToolService;
     this.accountManagementAccountService = accountManagementAccountService;
     this.taxAccountService = taxAccountService;
     this.appAccountService = appAccountService;
@@ -391,8 +395,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     for (MoveLine moveLine : sortedMoveLineList) {
       if (moveLine.getAccount().getManageCutOffPeriod()
-          && moveLine.getCutOffStartDate() != null
-          && moveLine.getCutOffEndDate() != null
+          && moveLineToolService.isCutOffActive(moveLine)
           && (moveLine.getCutOffEndDate().isAfter(moveDate) || isReverse)) {
         moveLineAccount = moveLine.getAccount();
         amountInCurrency = moveLineService.getCutOffProrataAmount(moveLine, originMoveDate);

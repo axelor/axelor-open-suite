@@ -35,6 +35,7 @@ import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.PurchaseOrderBudgetService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.translation.ITranslation;
@@ -129,7 +130,7 @@ public class PurchaseOrderController {
     if (appAccountService.isApp("budget")
         && !appAccountService.getAppBudget().getManageMultiBudget()) {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      Beans.get(PurchaseOrderSupplychainService.class).generateBudgetDistribution(purchaseOrder);
+      Beans.get(PurchaseOrderBudgetService.class).generateBudgetDistribution(purchaseOrder);
       response.setValues(purchaseOrder);
     }
   }
@@ -354,16 +355,16 @@ public class PurchaseOrderController {
 
   public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
     try {
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService =
-          Beans.get(PurchaseOrderSupplychainService.class);
+      PurchaseOrderBudgetService purchaseOrderBudgetService =
+          Beans.get(PurchaseOrderBudgetService.class);
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       AppBudget appBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
 
       if (appBudget.getManageMultiBudget()) {
-        purchaseOrderSupplychainService.applyToallBudgetDistribution(purchaseOrder);
+        purchaseOrderBudgetService.applyToallBudgetDistribution(purchaseOrder);
       } else {
-        purchaseOrderSupplychainService.setPurchaseOrderLineBudget(purchaseOrder);
+        purchaseOrderBudgetService.setPurchaseOrderLineBudget(purchaseOrder);
 
         response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
       }
@@ -448,7 +449,7 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      Beans.get(PurchaseOrderSupplychainService.class)
+      Beans.get(PurchaseOrderBudgetService.class)
           .updateBudgetDistributionAmountAvailable(purchaseOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -460,7 +461,7 @@ public class PurchaseOrderController {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
-      if (!Beans.get(PurchaseOrderSupplychainService.class)
+      if (!Beans.get(PurchaseOrderBudgetService.class)
           .isGoodAmountBudgetDistribution(purchaseOrder)) {
         response.setAlert(I18n.get(ITranslation.PURCHASE_ORDER_BUDGET_DISTRIBUTIONS_SUM_NOT_EQUAL));
       }
