@@ -76,15 +76,11 @@
             if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
             onSelect="action-move-set-trading-name-domain" colSpan="3"/>
-          <field name="companyBankDetails" canEdit="false" colSpan="3"
-            onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
-            form-view="bank-details-form" grid-view="bank-details-grid"
-            if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-move-group-journal-on-change" colSpan="3"/>
-          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="2"
+          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
             showTitle="false" placeholder="Functional origin"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
           <panel name="datePanel" showFrame="false" colSpan="12" itemSpan="3">
@@ -121,8 +117,7 @@
             onChange="action-move-attrs-header-change"/>
           <field name="companyBankDetails" canEdit="false" colSpan="3"
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
-            form-view="bank-details-form" grid-view="bank-details-grid"
-            if="!__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+            form-view="bank-details-form" grid-view="bank-details-grid"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" widget="text" height="1"
