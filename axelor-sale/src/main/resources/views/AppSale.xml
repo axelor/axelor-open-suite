@@ -17,7 +17,7 @@
       <field name="printingConfigPerSaleOrder" widget="boolean-switch"/>
       <field name="closeOpportunityUponSaleOrderConfirmation" widget="boolean-switch"/>
       <field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
-      <field name="salemanSelect"/>
+      <field name="salespersonSelect"/>
       <field name="enableCustomerCatalogMgt" widget="boolean-switch"/>
       <field name="enablePackManagement" widget="boolean-switch"/>
       <field name="isDisplaySaleOrderLineNumber" widget="boolean-switch"/>

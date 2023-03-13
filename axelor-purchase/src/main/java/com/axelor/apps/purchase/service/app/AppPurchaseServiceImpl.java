@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppPurchase;
 import com.axelor.studio.db.repo.AppPurchaseRepository;
@@ -46,10 +47,11 @@ public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPur
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
       AppPurchaseRepository appPurchaseRepo,
       CompanyRepository companyRepo,
       PurchaseConfigRepository purchaseConfigRepo) {
-    super(appRepo, metaFiles, appVersionService);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo);
     this.appPurchaseRepo = appPurchaseRepo;
     this.companyRepo = companyRepo;
     this.purchaseConfigRepo = purchaseConfigRepo;

@@ -401,7 +401,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generateRandomPasswordForUsers(List<Long> userIds) {
     AuthService authService = Beans.get(AuthService.class);
     LocalDateTime todayDateTime =
@@ -425,7 +425,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Partner setUserPartner(Partner partner, User user) {
     partner.setUser(user);
     partner.setTeam(user.getActiveTeam());
