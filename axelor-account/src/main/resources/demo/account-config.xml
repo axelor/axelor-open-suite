@@ -134,11 +134,16 @@
     </bind>
   </input>
 
+  <input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template"/>
+
   <input file="account_debtRecoveryMethod.csv" separator=";"
     type="com.axelor.apps.account.db.DebtRecoveryMethod" search="self.code = :code"/>
 
   <input file="account_debtRecoveryMethodLine.csv" separator=";"
-    type="com.axelor.apps.account.db.DebtRecoveryMethodLine"/>
+    type="com.axelor.apps.account.db.DebtRecoveryMethodLine">
+    <bind column="messageTemplateSet" to="messageTemplateSet"
+      search="self.name in :messageTemplateSet" eval="messageTemplateSet.split('\\|') as List"/>
+  </input>
 
 
   <input file="account_fixedAssetCategory.csv" separator=";"

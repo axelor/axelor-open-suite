@@ -357,7 +357,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       return super.getSubject(message, entity);
     }
 
-    return templates.fromText(messageTemplate.getSubject()).make(templatesContext).render();
+    String subject =
+        message.getSubject() != null ? message.getSubject() : messageTemplate.getSubject();
+    return templates.fromText(subject).make(templatesContext).render();
   }
 
   void updateTemplateAndContext(MailMessage message, Model entity) {
