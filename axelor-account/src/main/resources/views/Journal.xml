@@ -72,7 +72,8 @@
         <panel name="moveLinePanel" title="MoveLine" colSpan="12">
           <field name="sequence" domain="self.codeSelect = 'move' and self.company = :company"
             form-view="sequence-form" grid-view="sequence-grid" canEdit="true" canNew="true"/>
-          <field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
+          <field name="isInvoiceMoveConsolidated" widget="boolean-switch"/>
+          <field name="isFillOriginDate" widget="boolean-switch"/>
           <field name="descriptionModel"/>
           <field name="descriptionIdentificationOk"/>
           <field name="authorizeSimulatedMove"
