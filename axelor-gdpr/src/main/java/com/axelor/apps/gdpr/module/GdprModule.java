@@ -18,7 +18,12 @@
 package com.axelor.apps.gdpr.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.gdpr.service.*;
+import com.axelor.apps.gdpr.service.GdprAnonymizeService;
+import com.axelor.apps.gdpr.service.GdprAnonymizeServiceImpl;
+import com.axelor.apps.gdpr.service.GdprErasureLogService;
+import com.axelor.apps.gdpr.service.GdprErasureLogServiceImpl;
+import com.axelor.apps.gdpr.service.GdprSearchEngineService;
+import com.axelor.apps.gdpr.service.GdprSearchEngineServiceImpl;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.apps.gdpr.service.app.AppGdprServiceImpl;
 import com.axelor.apps.gdpr.service.response.GdprResponseAccessService;
