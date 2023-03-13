@@ -326,8 +326,7 @@ public class MassEntryServiceImpl implements MassEntryService {
             : null);
   }
 
-  public String checkMassEntryMoveGeneration(Move move) {
-    String errorMessageList = " Raté Hassane, les contrôles ne sont pas encore fini !";
+  public void checkMassEntryMoveGeneration(Move move) {
     int numberOfDifferentMovesToCheck = 0;
     List<Move> moveList = new ArrayList<>();
     Move moveToCheck;
@@ -345,19 +344,17 @@ public class MassEntryServiceImpl implements MassEntryService {
     }
 
     for (Move moveListElement : moveList) {
-      // TODO retrieve Map<> from check method to get the position of each line where we need to
-      // change
-      massEntryVerificationService.checkDateInAllMoveLineMassEntry(
-          moveListElement.getMoveLineMassEntryList());
+      moveListElement.setMassEntryErrors("");
 
-      massEntryVerificationService.checkOriginDateInAllMoveLineMassEntry(
-          moveListElement.getMoveLineMassEntryList());
+      // TODO create a same method for all checks to no duplicate loops if possible
+      // like checkDateInAllMoveLineMassEntry and checkOriginDateInAllMoveLineMassEntry
+      massEntryVerificationService.checkDateInAllMoveLineMassEntry(moveListElement);
 
-      massEntryVerificationService.checkOriginInAllMoveLineMassEntry(
-          moveListElement.getMoveLineMassEntryList());
+      massEntryVerificationService.checkOriginDateInAllMoveLineMassEntry(moveListElement);
 
-      massEntryVerificationService.checkCurrencyRateInAllMoveLineMassEntry(
-          moveListElement.getMoveLineMassEntryList());
+      massEntryVerificationService.checkOriginInAllMoveLineMassEntry(moveListElement);
+
+      massEntryVerificationService.checkCurrencyRateInAllMoveLineMassEntry(moveListElement);
 
       // TODO add control for Partner
       // need to be checked with CDP
@@ -370,9 +367,14 @@ public class MassEntryServiceImpl implements MassEntryService {
 
       // TODO add control for AnalyticDistributionLine
       // need to be checked after addition on grid
+      if (moveListElement.getMassEntryErrors() != null
+          && ObjectUtils.notEmpty(moveListElement.getMassEntryErrors())) {
+        move.setMassEntryErrors(
+            move.getMassEntryErrors() != null
+                ? move.getMassEntryErrors() + '\n'
+                : "" + moveListElement.getMassEntryErrors());
+      }
     }
-
-    return errorMessageList;
   }
 
   public Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList) {

@@ -53,7 +53,7 @@ public interface MassEntryService {
   void setPartnerAndBankDetails(Move move, MoveLineMassEntry moveLineMassEntry)
       throws AxelorException;
 
-  String checkMassEntryMoveGeneration(Move move);
+  void checkMassEntryMoveGeneration(Move move);
 
   Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList);
 }

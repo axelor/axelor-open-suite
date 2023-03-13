@@ -6,7 +6,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 public interface MassEntryVerificationService {
 
@@ -31,11 +30,11 @@ public interface MassEntryVerificationService {
   void checkAndReplaceCurrencyRateInMoveLineMassEntry(
       MoveLineMassEntry moveLineMassEntry, BigDecimal newCurrencyRate);
 
-  void checkDateInAllMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList);
+  void checkDateInAllMoveLineMassEntry(Move move);
 
-  void checkCurrencyRateInAllMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList);
+  void checkCurrencyRateInAllMoveLineMassEntry(Move move);
 
-  void checkOriginDateInAllMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList);
+  void checkOriginDateInAllMoveLineMassEntry(Move move);
 
-  void checkOriginInAllMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList);
+  void checkOriginInAllMoveLineMassEntry(Move move);
 }

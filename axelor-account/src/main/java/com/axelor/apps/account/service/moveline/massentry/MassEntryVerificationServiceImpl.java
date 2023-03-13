@@ -8,11 +8,13 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,24 +102,62 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
   }
 
-  public void checkDateInAllMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList) {
-    // TODO add control for MoveDate
-    // need to verify if one line have a different date
-    // need to verify if period is not closed or exist
+  public void checkDateInAllMoveLineMassEntry(Move move) {
+    List<MoveLineMassEntry> differentElements = new ArrayList<>();
+
+    MoveLineMassEntry firstMoveLineMassEntry = move.getMoveLineMassEntryList().get(0);
+    for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+      // TODO add control for MoveDate
+      // need to verify if period is not closed or exist
+      if (firstMoveLineMassEntry.getDate().equals(moveLineMassEntry.getDate())) { // TODO set !=
+        String message = "";
+        if (ObjectUtils.notEmpty(moveLineMassEntry.getFieldsErrorList())) {
+          message += moveLineMassEntry.getFieldsErrorList() + ";";
+        }
+        message += "date:" + moveLineMassEntry.getDate().toString();
+        moveLineMassEntry.setFieldsErrorList(message);
+        differentElements.add(moveLineMassEntry);
+      }
+    }
+    if (ObjectUtils.notEmpty(differentElements)) {
+      move.setMassEntryErrors(
+          move.getMassEntryErrors()
+              + "Different dates in move : "
+              + move.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber());
+    }
   }
 
-  public void checkCurrencyRateInAllMoveLineMassEntry(
-      List<MoveLineMassEntry> moveLineMassEntryList) {
+  public void checkCurrencyRateInAllMoveLineMassEntry(Move move) {
     // TODO add control for currencyRate
     // need to verify if currencyRate is not 0,00
   }
 
-  public void checkOriginDateInAllMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList) {
-    // TODO add control for OriginDate
-    // need to verify if one line on same temporaryMoveNumber have a different originDate
+  public void checkOriginDateInAllMoveLineMassEntry(Move move) {
+    List<MoveLineMassEntry> differentElements = new ArrayList<>();
+
+    MoveLineMassEntry firstMoveLineMassEntry = move.getMoveLineMassEntryList().get(0);
+    for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+      if (moveLineMassEntry
+          .getOriginDate()
+          .equals(firstMoveLineMassEntry.getOriginDate())) { // TODO set !=
+        String message = "";
+        if (ObjectUtils.notEmpty(moveLineMassEntry.getFieldsErrorList())) {
+          message += moveLineMassEntry.getFieldsErrorList() + ";";
+        }
+        message += "originDate:" + moveLineMassEntry.getOriginDate().toString();
+        moveLineMassEntry.setFieldsErrorList(message);
+        differentElements.add(moveLineMassEntry);
+      }
+    }
+    if (ObjectUtils.notEmpty(differentElements)) {
+      move.setMassEntryErrors(
+          move.getMassEntryErrors()
+              + "\nDifferent origin dates in move : "
+              + move.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber());
+    }
   }
 
-  public void checkOriginInAllMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList) {
+  public void checkOriginInAllMoveLineMassEntry(Move move) {
     // TODO add control for Origin
     // need to verify if we have duplicates Origin on same Journal/Period/Partner
   }

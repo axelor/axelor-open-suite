@@ -1060,6 +1060,9 @@ public final class AccountExceptionMessage {
   public static final String MASS_ENTRY_MOVE_CONTROL_ERROR = /*$$(*/
       "Error during moves control" /*)*/;
 
+  public static final String MASS_ENTRY_MOVE_NO_LINE = /*$$(*/
+      "Error : No one line to control" /*)*/;
+
   public static final String MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL = /*$$(*/
       "Moves control process successfully" /*)*/;
 

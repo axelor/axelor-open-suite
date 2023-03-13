@@ -82,17 +82,20 @@ public class MassEntryMoveController {
   public void controlMassEntryMoves(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      String message;
 
       if (move != null) {
-        message = Beans.get(MassEntryService.class).checkMassEntryMoveGeneration(move);
-        if (ObjectUtils.isEmpty(message)) {
-          response.setAttr("controlMassEntryMoves", "hidden", true);
-          response.setAttr("validateMassEntryMoves", "hidden", false);
-          response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL);
+        if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
+          Beans.get(MassEntryService.class).checkMassEntryMoveGeneration(move);
+          if (ObjectUtils.isEmpty(move.getMassEntryErrors())) {
+            response.setAttr("controlMassEntryMoves", "hidden", true);
+            response.setAttr("validateMassEntryMoves", "hidden", false);
+            response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL);
+          } else {
+            response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_ERROR);
+            response.setValues(move);
+          }
         } else {
-          response.setError(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_ERROR + message);
-          // TODO set "message" in field to be displayed for user
+          response.setError(AccountExceptionMessage.MASS_ENTRY_MOVE_NO_LINE);
         }
       }
     } catch (Exception e) {

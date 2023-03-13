@@ -391,6 +391,10 @@
         grid-view="move-line-mass-entry-move-grid" form-view="move-line-move-form"
         onChange="action-move-group-move-line-list-onchange"/>
     </panel>
+
+    <panel name="errorPanel">
+      <field name="massEntryErrors" readonly="true" widget="text"/>
+    </panel>
   </form>
 
   <form name="move-simplified-form" title="Account move"

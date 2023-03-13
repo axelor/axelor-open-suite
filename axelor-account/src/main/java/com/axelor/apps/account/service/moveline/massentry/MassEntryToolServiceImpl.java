@@ -76,6 +76,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineMassEntry.setMoveStatusSelect(move.getStatusSelect());
 
       moveLineMassEntry.setMove(move);
+      moveLineMassEntry.setCounter(moveLine.getCounter());
       moveLineMassEntry.setPartner(moveLine.getPartner());
       moveLineMassEntry.setAccount(moveLine.getAccount());
       moveLineMassEntry.setDate(moveLine.getDate());

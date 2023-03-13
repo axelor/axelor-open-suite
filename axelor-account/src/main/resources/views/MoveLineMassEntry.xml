@@ -11,12 +11,20 @@
     <field name="inputAction" selection="iaccount.move.input.action.select"
       onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
       required="true" width="50"/>
-    <field name="date" onChange="account-move-line-group-date-onchange"/>
-    <field name="originDate" onChange="action-move-line-mass-entry-method-set-currencyRate"/>
-    <field name="origin" onChange="action-move-line-mass-entry-record-set-is-edited"/>
+    <field name="fieldsErrorList" hidden="false"/>
+    <field name="date" onChange="account-move-line-group-date-onchange">
+      <hilite if="$contains(fieldsErrorList,'date:'+date.toString())" background="danger"/>
+    </field>
+    <field name="originDate" onChange="action-move-line-mass-entry-method-set-currencyRate">
+      <hilite if="$contains(fieldsErrorList,'originDate:'+originDate.toString())"
+        background="danger"/>
+    </field>
+    <field name="origin" onChange="action-move-line-mass-entry-record-set-is-edited">
+      <hilite if="$contains(fieldsErrorList,'origin:'+origin)" background="danger"/>
+    </field>
     <field name="moveDescription"
-      onChange="action-account-move-line-mass-entry-attrs-set-description" readonly="false"
-      required="true"/>
+      onChange="action-account-move-line-mass-entry-attrs-set-description,action-move-line-mass-entry-record-set-is-edited"
+      readonly="false" required="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-account-move-line-partner-group"
       onChange="action-move-line-mass-entry-method-on-change-partner" width="120" canEdit="false"

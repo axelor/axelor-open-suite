@@ -64,14 +64,15 @@ public class MoveLineMassEntryController {
             if (moveLineMassEntry.getTemporaryMoveNumber() == 0) {
               moveLineMassEntry.setTemporaryMoveNumber(
                   massEntryService.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()));
+              moveLineMassEntry.setCounter(move.getMoveLineMassEntryList().size() + 1);
             }
           } else {
             moveLineMassEntry.setTemporaryMoveNumber(1);
+            moveLineMassEntry.setCounter(1);
           }
           response.setValues(
               massEntryService.getFirstMoveLineMassEntryInformations(
                   move.getMoveLineMassEntryList(), moveLineMassEntry));
-
           if (move.getMoveLineMassEntryList() != null
               && move.getMoveLineMassEntryList().size() != 0) {
             response.setAttr("inputAction", "readonly", false);
