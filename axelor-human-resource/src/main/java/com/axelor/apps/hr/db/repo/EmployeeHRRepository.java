@@ -30,6 +30,7 @@ import com.google.common.base.Strings;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class EmployeeHRRepository extends EmployeeRepository {
 
@@ -162,7 +163,9 @@ public class EmployeeHRRepository extends EmployeeRepository {
         appBaseService.getTodayDate(
             employee.getUser() != null
                 ? employee.getUser().getActiveCompany()
-                : AuthUtils.getUser().getActiveCompany());
+                : Optional.ofNullable(AuthUtils.getUser())
+                    .map(User::getActiveCompany)
+                    .orElse(null));
     return isEmployeeFormerNewOrArchived(employee, today);
   }
 }

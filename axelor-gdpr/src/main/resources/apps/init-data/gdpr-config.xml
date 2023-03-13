@@ -3,11 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
 
-  <input file="studio_appGdpr.csv" separator=";" type="com.axelor.studio.db.AppGdpr"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
   <input file="gdpr-anonymizer.csv" separator=";" type="com.axelor.apps.base.db.Anonymizer"/>
 
   <input file="gdpr-anonymizer-lines.csv" separator=";"
