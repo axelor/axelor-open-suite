@@ -64,6 +64,27 @@
         showIf="id != null &amp;&amp; !archived &amp;&amp; statusSelect != 3"/>
     </toolbar>
 
+    <panel name="hiddenFields" hidden="true" readonly="true">
+      <field name="currencyCode"/>
+      <field name="journal.authorizeSimulatedMove"/>
+      <field name="journal.hasRequiredOrigin"/>
+      <field name="journal.hasDuplicateDetectionOnOrigin"/>
+      <field name="journal.authorizedFunctionalOriginSelect"/>
+      <field name="paymentCondition.isFree"/>
+      <field name="paymentMode.typeSelect"/>
+      <field name="period.statusSelect"/>
+      <field name="$companyCurrencyCodeIso"/>
+      <field name="$dateChange" type="boolean"/>
+      <field name="$isThereRelatedCutOffMoves" type="boolean"/>
+      <field name="$journalTechnicalTypeSelect" type="integer"/>
+      <field name="$headerChange" type="boolean"/>
+      <field name="$paymentConditionChange" type="boolean"/>
+      <field name="$paymentConditionChangeError"/>
+      <field name="$periodClosed"/>
+      <field name="$simulatedPeriodClosed"/>
+      <field name="$validatePeriod" type="boolean"/>
+    </panel>
+
     <panel name="mainPanel" colSpan="12">
       <panel name="moveDetailsPanel" colSpan="9">
         <field name="reference" colSpan="12"/>
@@ -119,22 +140,12 @@
             onSelect="action-move-attrs-bank-details-from-partner-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
             onChange="action-move-attrs-header-change"/>
-          <field name="period.statusSelect" hidden="true"/>
-          <field name="paymentMode.typeSelect" hidden="true"/>
-          <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
-          <field name="$headerChange" type="boolean" hidden="true"/>
-          <field name="$paymentConditionChange" type="boolean" hidden="true"/>
-          <field name="$paymentConditionChangeError" hidden="true"/>
-          <field name="$dateChange" type="boolean" hidden="true"/>
-          <field name="paymentCondition.isFree" hidden="true"/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="description" colSpan="6" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-description-on-lines"/>
           <field name="origin" colSpan="3" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-origin" requiredIf="journal.hasRequiredOrigin"/>
-          <field name="$validatePeriod" hidden="true" type="boolean"/>
-          <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
           <field name="journal.hasDuplicateDetectionOnOrigin" readonly="true" hidden="true"/>
         </panel>
         <panel name="cutOffPanel" colSpan="12" title="Cut off" itemSpan="4"
@@ -147,7 +158,6 @@
             onClick="action-move-method-apply-cut-off-dates"
             readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
         </panel>
-        <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
       </panel>
 
       <panel name="otherDetailsPanel" colSpan="3"
@@ -204,7 +214,6 @@
         <field name="getInfoFromFirstMoveLineOk" colSpan="12" readonlyIf="$validatePeriod"
           hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch"/>
         <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
-        <field name="journal.authorizeSimulatedMove" hidden="true"/>
         <button name="simulateBtn" title="Simulate" readonlyIf="$validatePeriod"
           onClick="action-move-account-group-simulate" colSpan="12"
           showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"/>
@@ -304,7 +313,6 @@
           colSpan="12" action="action-move-view-related-cut-off-moves"
           showIf="$isThereRelatedCutOffMoves"
           if="__config__.app.getApp('account').manageCutOffPeriod"/>
-        <field name="$isThereRelatedCutOffMoves" type="boolean" hidden="true"/>
         <field name="fiscalPosition" grid-view="fiscal-position-grid"
           form-view="fiscal-position-form" canNew="false" canEdit="false"/>
       </panel>
@@ -323,8 +331,6 @@
           readonlyIf="moveLineList != null &amp;&amp; moveLineList.length != 0" required="true"
           onChange="action-move-record-set-currency-code"/>
         <field name="companyCurrency" readonly="true"/>
-        <field name="currencyCode" hidden="true"/>
-        <field name="$companyCurrencyCodeIso" hidden="true"/>
       </panel>
 
       <panel name="fecImportPanel" title="FEC Import" showIf="technicalOriginSelect == 4">
@@ -335,8 +341,6 @@
         <field name="ignoreInAccountingOk" showIf="ignoreInAccountingOk" readonly="true"/>
         <field name="ignoreInDebtRecoveryOk"/>
         <field name="rejectOk" showIf="rejectOk" readonly="true"/>
-        <field name="$periodClosed" hidden="true"/>
-        <field name="$simulatedPeriodClosed" hidden="true"/>
       </panel>
     </panel-tabs>
 
@@ -359,6 +363,28 @@
       <button name="deleteMoveBtn" title="delete" showIf="id != null" icon="fa-trash"
         onClick="action-move-method-delete-move"/>
     </toolbar>
+
+    <panel name="hiddenFields" hidden="true" readonly="true">
+      <field name="currencyCode"/>
+      <field name="journal.authorizeSimulatedMove"/>
+      <field name="journal.hasRequiredOrigin"/>
+      <field name="journal.hasDuplicateDetectionOnOrigin"/>
+      <field name="journal.authorizedFunctionalOriginSelect"/>
+      <field name="paymentCondition.isFree"/>
+      <field name="paymentMode.typeSelect"/>
+      <field name="period.statusSelect"/>
+      <field name="$companyCurrencyCodeIso"/>
+      <field name="$dateChange" type="boolean"/>
+      <field name="$isThereRelatedCutOffMoves" type="boolean"/>
+      <field name="$journalTechnicalTypeSelect" type="integer"/>
+      <field name="$headerChange" type="boolean"/>
+      <field name="$paymentConditionChange" type="boolean"/>
+      <field name="$paymentConditionChangeError"/>
+      <field name="$periodClosed"/>
+      <field name="$simulatedPeriodClosed"/>
+      <field name="$validatePeriod" type="boolean"/>
+    </panel>
+
     <panel name="mainPanel" colSpan="12">
       <panel name="moveDetailsPanel" colSpan="9">
         <field name="reference" colSpan="12"/>
@@ -380,17 +406,11 @@
             name="tradingName" canNew="false" onSelect="action-move-set-trading-name-domain"
             form-view="trading-name-form" grid-view="trading-name-grid"/>
           <field name="paymentMode" colSpan="3"/>
-          <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
-          <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
           onChange="action-account-move-group-set-description-on-lines"/>
         <field name="origin" colSpan="3" requiredIf="journal.hasRequiredOrigin"
           onChange="action-account-move-group-set-origin"/>
-        <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
-        <field name="journal.hasDuplicateDetectionOnOrigin" readonly="true" hidden="true"/>
-        <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
-        <field name="$companyCurrencyCodeIso" hidden="true"/>
       </panel>
       <panel name="otherDetailsPanel" readonlyIf="statusSelect == 3" colSpan="3">
         <field name="$viewerTags" showTitle="false">
@@ -424,7 +444,6 @@
 
 	                ]]></viewer>
         </field>
-        <field name="journal.authorizeSimulatedMove" hidden="true"/>
         <button name="accountingBtn" title="Accounting.toAccount"
           readonlyIf="$validatePeriod" onClick="action-account-move-group-accounting-click"
           colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
@@ -438,7 +457,6 @@
           showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
           name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
           onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
-        <field name="$validatePeriod" hidden="true" type="boolean"/>
       </panel>
     </panel>
     <panel>
