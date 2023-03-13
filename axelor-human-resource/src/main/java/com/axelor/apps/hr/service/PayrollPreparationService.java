@@ -228,7 +228,7 @@ public class PayrollPreparationService {
                     + "AND self.statusSelect = ?2 "
                     + "AND (self.payrollPreparation IS NULL OR self.payrollPreparation.id = ?3) "
                     + "AND self.companyCbSelect = ?4 "
-                    + "AND self.validationDate BETWEEN ?5 AND ?6",
+                    + "AND self.validationDateTime BETWEEN ?5 AND ?6",
                 payrollPreparation.getEmployee(),
                 ExpenseRepository.STATUS_VALIDATED,
                 payrollPreparation.getId(),
