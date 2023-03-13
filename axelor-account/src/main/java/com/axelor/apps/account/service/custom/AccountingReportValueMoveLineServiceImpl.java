@@ -464,7 +464,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       LocalDate startDate,
       LocalDate endDate) {
     Pair<LocalDate, LocalDate> dates =
-        this.getDates(accountingReport, groupColumn, column, startDate, endDate);
+        this.getDates(accountingReport, groupColumn, column, line, startDate, endDate);
 
     return this.buildMoveLineQuery(
         accountingReport,
@@ -482,15 +482,26 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReport accountingReport,
       AccountingReportConfigLine groupColumn,
       AccountingReportConfigLine column,
+      AccountingReportConfigLine line,
       LocalDate startDate,
       LocalDate endDate) {
+    Pair<LocalDate, LocalDate> dates;
+
     if (column.getComputePreviousYear()) {
-      return Pair.of(startDate.minusYears(1), endDate.minusYears(1));
+      dates = Pair.of(startDate.minusYears(1), endDate.minusYears(1));
     } else if (this.isComputeOnOtherPeriod(groupColumn, column)) {
-      return Pair.of(accountingReport.getOtherDateFrom(), accountingReport.getOtherDateTo());
+      dates = Pair.of(accountingReport.getOtherDateFrom(), accountingReport.getOtherDateTo());
     } else {
-      return Pair.of(startDate, endDate);
+      dates = Pair.of(startDate, endDate);
     }
+
+    if (line.getBalanceBeforePeriod()
+        || column.getBalanceBeforePeriod()
+        || (groupColumn != null && groupColumn.getBalanceBeforePeriod())) {
+      dates = Pair.of(LocalDate.of(1900, 1, 1), dates.getLeft().minusDays(1));
+    }
+
+    return dates;
   }
 
   protected boolean isComputeOnOtherPeriod(

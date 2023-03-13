@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
@@ -244,7 +245,9 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updatePaymentTax(reconcile);
+    this.setEffectiveDate(reconcile);
     this.updatePaymentMoveLineDistribution(reconcile);
+
     return reconcile;
   }
 
@@ -746,6 +749,40 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
     paymentMoveLineDistributionService.generatePaymentMoveLineDistributionList(
         purchaseMove, reconcile);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void setEffectiveDate(Reconcile reconcile) {
+    MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+    MoveLine debitMoveLine = reconcile.getDebitMoveLine();
+    LocalDate creditMoveLineDate, debitMoveLineDate;
+
+    if (creditMoveLine.getMove().getJournal().getJournalType().getTechnicalTypeSelect()
+        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
+      creditMoveLineDate = creditMoveLine.getDueDate();
+      debitMoveLineDate = debitMoveLine.getOriginDate();
+    } else if (debitMoveLine.getMove().getJournal().getJournalType().getTechnicalTypeSelect()
+        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
+      creditMoveLineDate = creditMoveLine.getOriginDate();
+      debitMoveLineDate = debitMoveLine.getDueDate();
+    } else if (creditMoveLine.getOriginDate() != null && debitMoveLine.getOriginDate() != null) {
+      creditMoveLineDate = creditMoveLine.getOriginDate();
+      debitMoveLineDate = debitMoveLine.getOriginDate();
+    } else {
+      creditMoveLineDate = creditMoveLine.getDate();
+      debitMoveLineDate = debitMoveLine.getDate();
+    }
+
+    reconcile.setEffectiveDate(max(creditMoveLineDate, debitMoveLineDate));
+
+    reconcileRepository.save(reconcile);
+  }
+
+  private LocalDate max(LocalDate d1, LocalDate d2) {
+    if (d1 == null && d2 == null) return null;
+    if (d1 == null) return d2;
+    if (d2 == null) return d1;
+    return (d1.isAfter(d2)) ? d1 : d2;
   }
 
   protected void reversePaymentMoveLineDistributionLines(Reconcile reconcile) {

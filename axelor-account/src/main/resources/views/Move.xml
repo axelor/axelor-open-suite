@@ -84,11 +84,13 @@
             <field name="date"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
               onChange="action-group-move-date-onchange"/>
-            <field name="originDate" onChange="action-move-group-origin-date-onchange"
+            <field name="originDate"
+              onChange="action-move-group-origin-date-onchange,action-account-move-group-onsave"
               readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
             <field name="$dueDate" type="date" title="Due date" hidden="true"
               onChange="action-account-move-group-onsave" readonlyIf="!paymentCondition.isFree"
               help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."/>
+            <field name="journal.isFillOriginDate" hidden="true"/>
           </panel>
           <field name="tradingName"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
@@ -98,7 +100,8 @@
           <field name="partner" colSpan="6" canNew="false" canEdit="false"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0" form-view="partner-form"
             grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"
-            onChange="action-move-group-partner-onchange"/>
+            onChange="action-move-group-partner-onchange"
+            requiredIf="$contains([1,2], journal.journalType.technicalTypeSelect)"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
@@ -138,11 +141,12 @@
           <field name="journal.hasDuplicateDetectionOnOrigin" readonly="true" hidden="true"/>
         </panel>
         <panel name="cutOffPanel" colSpan="12" title="Cut off" itemSpan="4"
-          hideIf="$periodClosed" if="__config__.app.getApp('account').manageCutOffPeriod">
+          hideIf="$periodClosed || [1,2,6].includes(functionalOriginSelect)"
+          if="__config__.app.getApp('account').manageCutOffPeriod">
           <field name="$cutOffStartDate" type="date" title="From date"
-            validIf="!$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate"/>
+            validIf="[1,2,6].includes(functionalOriginSelect) || !$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate"/>
           <field name="$cutOffEndDate" type="date" title="To date"
-            validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate"/>
+            validIf="[1,2,6].includes(functionalOriginSelect) || !$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
             onClick="action-move-method-apply-cut-off-dates"
             readonlyIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
@@ -338,6 +342,11 @@
         <field name="$periodClosed" hidden="true"/>
         <field name="$simulatedPeriodClosed" hidden="true"/>
       </panel>
+
+      <panel name="hiddenPanel" hidden="true">
+        <field name="journal.journalType"/>
+        <field name="journal.journalType.technicalTypeSelect"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
@@ -382,6 +391,7 @@
           <field name="paymentMode" colSpan="3"/>
           <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
+          <field name="originDate" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
           onChange="action-account-move-group-set-description-on-lines"/>
@@ -567,6 +577,7 @@
     <action name="action-move-record-journal"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-method-get-period"/>
+    <action name="action-move-attrs-set-origin-date" if="journal?.isFillOriginDate"/>
     <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
     <action name="action-move-attrs-validate-button-title"/>
@@ -635,6 +646,8 @@
   <action-group name="action-account-move-group-accounting-click">
     <action name="action-account-accounting-prompt"
       if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
+    <action name="action-move-validate-check-pfp-validator-user"/>
+    <action name="action-move-method-apply-cut-off-dates-in-empty-lines"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
@@ -652,6 +665,7 @@
   </action-group>
 
   <action-group name="action-move-account-group-simulate">
+    <action name="action-move-method-apply-cut-off-dates-in-empty-lines"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-set-status-simulate"/>
   </action-group>
@@ -670,8 +684,8 @@
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-set-moveline-dates"/>
-    <action name="action-move-attrs-date-change"/>
-    <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-move-attrs-set-origin-date" if="journal?.isFillOriginDate"/>
+    <action name="action-move-group-origin-date-onchange" if="journal?.isFillOriginDate"/>
     <action name="action-account-move-group-onsave"/>
   </action-group>
 
@@ -684,6 +698,7 @@
     <action name="action-move-record-set-payment-mode"/>
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
+    <action name="action-move-attrs-set-origin-date" if="journal?.isFillOriginDate"/>
   </action-group>
 
   <action-group name="action-move-group-partner-onchange">
@@ -715,7 +730,6 @@
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-move-attrs-payment-condition-change"/>
-    <action name="action-account-move-group-onsave"/>
   </action-group>
 
   <action-group name="action-move-group-check-term-in-payment">
@@ -752,6 +766,12 @@
   <action-validate name="action-move-validate-check-term-in-payment">
     <error message="$paymentConditionChangeError"
       if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
+  </action-validate>
+
+  <action-validate name="action-move-validate-check-pfp-validator-user">
+    <alert message="At least one pfp validator is missing, do you wish to continue ?"
+      if="moveLineList.any{ml -> com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(ml.move?.invoice, ml)
+          &amp;&amp; ml.invoiceTermList.any{it -> !it.pfpValidatorUser}}"/>
   </action-validate>
 
   <!-- ACTION RECORD -->
@@ -993,6 +1013,11 @@
     <call class="com.axelor.apps.account.web.MoveController" method="applyCutOffDates"/>
   </action-method>
 
+  <action-method name="action-move-method-apply-cut-off-dates-in-empty-lines">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="applyCutOffDatesInEmptyLines"/>
+  </action-method>
+
   <action-method name="action-move-method-round-invoice-term-percentages">
     <call class="com.axelor.apps.account.web.MoveController"
       method="roundInvoiceTermPercentages"/>
@@ -1095,6 +1120,10 @@
   <action-attrs name="action-move-attrs-date-change">
     <attribute name="value" for="$dateChange" expr="eval: true"/>
     <attribute name="value" for="$dueDate" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-attrs-set-origin-date">
+    <attribute name="value" for="originDate" expr="eval: date" if="date != null"/>
   </action-attrs>
 
   <action-attrs name="action-move-attrs-manage-bank-details">
