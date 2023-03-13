@@ -974,7 +974,8 @@
   </action-record>
 
   <action-group name="account-move-line-group-date-onchange">
-    <action name="account-move-line-record-date-onchange"/>
+    <action name="account-move-line-record-date-onchange"
+      if="__parent__?.journal?.isFillOriginDate"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-validate-check-date-in-period"/>
   </action-group>
