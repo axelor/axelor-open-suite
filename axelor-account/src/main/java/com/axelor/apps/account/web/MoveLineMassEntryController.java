@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -153,7 +154,11 @@ public class MoveLineMassEntryController {
       Context parentContext = request.getContext().getParent();
       BigDecimal currencyRate = BigDecimal.ONE;
       boolean isOriginRequired = false;
-      int[] technicalTypeSelectArray = {1, 2, 3};
+      int[] technicalTypeSelectArray = {
+        JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+        JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+        JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
+      };
 
       if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);

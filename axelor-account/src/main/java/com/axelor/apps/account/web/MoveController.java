@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
@@ -927,8 +928,10 @@ public class MoveController {
           && move.getIsMassEntry()
           && move.getCompanyBankDetails() == null
           && move.getJournal() != null
-          && (move.getJournal().getJournalType().getTechnicalTypeSelect() == 1
-              || move.getJournal().getJournalType().getTechnicalTypeSelect() == 2)) {
+          && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+              || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
         response.setError(
             String.format(
                 I18n.get(AccountExceptionMessage.COMPANY_BANK_DETAILS_MISSING),

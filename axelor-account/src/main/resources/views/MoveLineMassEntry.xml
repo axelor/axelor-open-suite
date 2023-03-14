@@ -27,7 +27,9 @@
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-account-move-line-partner-group"
       onChange="action-move-line-mass-entry-method-on-change-partner" width="120" canEdit="false"
-      readonly="false"/>
+      readonly="false">
+      <hilite if="$contains(fieldsErrorList,'partner:'+partner.name)" background="danger"/>
+    </field>
     <field name="movePaymentCondition" form-view="payment-condition-form"
       grid-view="payment-condition-grid"/>
     <field name="movePaymentMode" readonly="false" form-view="payment-mode-form"

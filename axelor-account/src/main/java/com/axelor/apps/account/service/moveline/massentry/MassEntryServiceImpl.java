@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
@@ -309,7 +310,8 @@ public class MassEntryServiceImpl implements MassEntryService {
       move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
 
       moveLineMassEntry.setMovePaymentCondition(null);
-      if (move.getJournal().getJournalType().getTechnicalTypeSelect() != 4) {
+      if (move.getJournal().getJournalType().getTechnicalTypeSelect()
+          != JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
         moveLineMassEntry.setMovePaymentCondition(
             moveLineMassEntry.getPartner().getPaymentCondition());
       }
@@ -348,8 +350,7 @@ public class MassEntryServiceImpl implements MassEntryService {
 
       massEntryVerificationService.checkCurrencyRateInAllMoveLineMassEntry(moveListElement);
 
-      // TODO add control for Partner
-      // need to be checked with CDP
+      massEntryVerificationService.checkPartnerInAllMoveLineMassEntry(moveListElement);
 
       // TODO add control for AnalyticDistributionTemplate
       // need to be checked after addition on grid
@@ -359,6 +360,7 @@ public class MassEntryServiceImpl implements MassEntryService {
 
       // TODO add control for AnalyticDistributionLine
       // need to be checked after addition on grid
+
       if (moveListElement.getMassEntryErrors() != null
           && ObjectUtils.notEmpty(moveListElement.getMassEntryErrors())) {
         move.setMassEntryErrors(
@@ -403,6 +405,7 @@ public class MassEntryServiceImpl implements MassEntryService {
             moveToCheck.setOrigin(moveLineMassEntry.getOrigin());
             firstMove = false;
           }
+          moveLineMassEntry.setMove(moveToCheck);
           moveLineMassEntry.setFieldsErrorList(null);
           moveToCheck.addMoveLineMassEntryListItem(moveLineMassEntry);
         }
