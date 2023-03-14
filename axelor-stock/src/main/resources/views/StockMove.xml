@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
@@ -562,7 +562,7 @@
         orderBy="sequence" canRemove="!(statusSelect == 2 &amp;&amp; pickingIsEdited)" canNew="true"/>
       <panel name="freightCarrierPanel" title="Freight Carrier" itemSpan="12">
         <panel itemSpan="3">
-          <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid"
+          <field name="shipmentMode" canEdit="false" form-view="shipment-mode-form"
             grid-view="shipment-mode-grid"/>
           <field name="freightCarrierMode" canEdit="false"
             domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form"
