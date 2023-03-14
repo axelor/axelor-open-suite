@@ -95,6 +95,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 @Singleton
@@ -506,6 +507,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                 : "");
     moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
+    List<AnalyticMoveLine> analyticMoveLineList =
+        new ArrayList<>(moveLine.getAnalyticMoveLineList());
+    moveLine.clearAnalyticMoveLineList();
     expenseLine
         .getAnalyticMoveLineList()
         .forEach(
@@ -513,6 +517,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 moveLine.addAnalyticMoveLineListItem(
                     analyticMoveLineGenerateRealService.createFromForecast(
                         analyticMoveLine, moveLine)));
+    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
     return moveLine;
   }
 
