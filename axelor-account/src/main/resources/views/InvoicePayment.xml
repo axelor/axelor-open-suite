@@ -65,7 +65,8 @@
         showIf="applyFinancialDiscount &amp;&amp; totalAmountWithFinancialDiscount != null"
         readonly="true"/>
       <panel name="financialDiscountAmountPanel"
-        showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" readonly="true" colSpan="12">
+        showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" readonlyIf="statusSelect > 0"
+        colSpan="12">
         <field name="financialDiscount"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
