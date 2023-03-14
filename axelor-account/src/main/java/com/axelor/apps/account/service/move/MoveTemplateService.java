@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
@@ -245,9 +246,17 @@ public class MoveTemplateService {
                 moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
               }
             }
+            List<AnalyticMoveLine> analyticMoveLineList =
+                new ArrayList<>(moveLine.getAnalyticMoveLineList());
+            moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
+
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+
+            if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+              moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+            }
 
             counter++;
           }
@@ -355,9 +364,17 @@ public class MoveTemplateService {
               }
             }
 
+            List<AnalyticMoveLine> analyticMoveLineList =
+                new ArrayList<>(moveLine.getAnalyticMoveLineList());
+            moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
+
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+
+            if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+              moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+            }
             counter++;
           } else {
             taxLineDescription = moveTemplateLine.getName();
