@@ -24,7 +24,7 @@
     <field name="invoiceLine.product"/>
     <field name="budgetAmountAvailable"/>
     <field name="invoiceLine.invoice"/>
-    <field name="invoiceLine.invoice.validatedDate"/>
+    <field name="invoiceLine.invoice.validatedDateTime"/>
     <field name="amount"/>
   </grid>
 
@@ -61,7 +61,7 @@
       <field name="budget" readonly="true"/>
       <field name="invoiceLine.product" readonly="true" domain="self.dtype = 'Product'"/>
       <field name="invoiceLine.invoice" readonly="true"/>
-      <field name="invoiceLine.invoice.validatedDate" readonly="true"/>
+      <field name="invoiceLine.invoice.validatedDateTime" readonly="true"/>
       <field name="budgetAmountAvailable" readonly="true"/>
       <field name="amount" readonly="true"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
