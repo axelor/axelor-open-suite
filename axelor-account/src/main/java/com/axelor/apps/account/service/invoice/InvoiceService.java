@@ -316,6 +316,8 @@ public interface InvoiceService {
 
   boolean checkManageCutOffDates(Invoice invoice);
 
+  void autoApplyCutOffDates(Invoice invoice);
+
   void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
