@@ -115,4 +115,6 @@ public interface InvoiceLineService {
 
   Map<String, String> getProductDescriptionAndNameTranslation(
       Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException;
+
+  void autoApplyCutOffDates(InvoiceLine invoiceLine, Invoice invoice);
 }

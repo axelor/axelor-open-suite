@@ -37,6 +37,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
+import com.axelor.apps.account.service.move.MoveStatusService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -85,6 +86,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected CurrencyService currencyService;
   protected TaxAccountToolService taxAccountToolService;
   protected MoveLineRepository moveLineRepository;
+  protected MoveStatusService moveStatusService;
   protected int counter = 0;
 
   @Inject
@@ -108,7 +110,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveLineService moveLineService,
       CurrencyService currencyService,
       TaxAccountToolService taxAccountToolService,
-      MoveLineRepository moveLineRepository) {
+      MoveLineRepository moveLineRepository,
+      MoveStatusService moveStatusService) {
 
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
@@ -130,6 +133,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.currencyService = currencyService;
     this.taxAccountToolService = taxAccountToolService;
     this.moveLineRepository = moveLineRepository;
+    this.moveStatusService = moveStatusService;
   }
 
   @Override
@@ -346,7 +350,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         break;
       case MoveRepository.STATUS_ACCOUNTED:
         moveValidateService.checkPreconditions(move);
-        move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
+        moveStatusService.update(move, MoveRepository.STATUS_DAYBOOK);
         moveValidateService.accounting(move);
         break;
       case MoveRepository.STATUS_DAYBOOK:

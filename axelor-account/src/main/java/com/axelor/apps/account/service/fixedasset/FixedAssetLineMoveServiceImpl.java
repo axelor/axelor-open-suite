@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveStatusService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -92,6 +93,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
   protected FixedAssetDateService fixedAssetDateService;
 
+  protected MoveStatusService moveStatusService;
+
   private Batch batch;
 
   @Inject
@@ -108,7 +111,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       MoveLineCreateService moveLineCreateService,
       BatchRepository batchRepository,
       BankDetailsService bankDetailsService,
-      FixedAssetDateService fixedAssetDateService) {
+      FixedAssetDateService fixedAssetDateService,
+      MoveStatusService moveStatusService) {
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
@@ -122,6 +126,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
     this.fixedAssetDateService = fixedAssetDateService;
+    this.moveStatusService = moveStatusService;
   }
 
   @Override
@@ -324,7 +329,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       if (move != null) {
 
         if (isSimulated) {
-          move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
+          moveStatusService.update(move, MoveRepository.STATUS_SIMULATED);
         }
         List<MoveLine> moveLines = new ArrayList<>();
 
@@ -459,7 +464,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
             companyBankDetails);
     if (move != null) {
       if (isSimulated) {
-        move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
+        moveStatusService.update(move, MoveRepository.STATUS_SIMULATED);
       }
       List<MoveLine> moveLines = new ArrayList<>();
 
