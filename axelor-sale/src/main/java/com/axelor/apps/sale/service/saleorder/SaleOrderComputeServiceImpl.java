@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;

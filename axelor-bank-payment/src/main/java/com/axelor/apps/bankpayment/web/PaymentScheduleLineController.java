@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Wizard;

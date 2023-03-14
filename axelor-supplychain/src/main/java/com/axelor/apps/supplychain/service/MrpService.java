@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Mrp;
-import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 

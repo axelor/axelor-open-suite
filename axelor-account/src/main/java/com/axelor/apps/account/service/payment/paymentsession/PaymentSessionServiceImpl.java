@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.translation.ITranslation;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
@@ -44,7 +45,6 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -65,15 +65,18 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected PaymentSessionRepository paymentSessionRepository;
   protected InvoiceTermRepository invoiceTermRepository;
   protected InvoiceTermService invoiceTermService;
+  protected PaymentSessionValidateService paymentSessionValidateService;
 
   @Inject
   public PaymentSessionServiceImpl(
       PaymentSessionRepository paymentSessionRepository,
       InvoiceTermRepository invoiceTermRepository,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      PaymentSessionValidateService paymentSessionValidateService) {
     this.paymentSessionRepository = paymentSessionRepository;
     this.invoiceTermRepository = invoiceTermRepository;
     this.invoiceTermService = invoiceTermService;
+    this.paymentSessionValidateService = paymentSessionValidateService;
   }
 
   @Override
@@ -364,7 +367,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   protected void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     LocalDate nextSessionDate = paymentSession.getNextSessionDate();
-    LocalDate paymentDate = paymentSession.getPaymentDate();
+    LocalDate paymentDate =
+        paymentSessionValidateService.getAccountingDate(paymentSession, invoiceTerm);
     LocalDate financialDiscountDeadlineDate = invoiceTerm.getFinancialDiscountDeadlineDate();
     boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
 
@@ -378,6 +382,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     }
 
     if (invoiceTerm.getApplyFinancialDiscount() && financialDiscountDeadlineDate != null) {
+
       if (invoiceTerm.getFinancialDiscountAmount().compareTo(invoiceTerm.getAmountRemaining())
           > 0) {
         invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);

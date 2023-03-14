@@ -27,7 +27,7 @@ import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;

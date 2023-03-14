@@ -18,9 +18,9 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 

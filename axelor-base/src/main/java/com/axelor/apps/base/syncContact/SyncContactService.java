@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.syncContact;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Company;
@@ -42,7 +43,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
@@ -175,7 +175,7 @@ public class SyncContactService {
     updateSyncContact(id, syncContactHistoric);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Deprecated
   public void updateSyncContact(Long id, SyncContactHistoric syncContactHistoric) {
     SyncContact syncContact;
@@ -194,7 +194,7 @@ public class SyncContactService {
     syncContactRepo.save(syncContact);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Deprecated
   public Partner importContact(Person googlePerson, Boolean updateContactField)
       throws AxelorException {
@@ -424,7 +424,7 @@ public class SyncContactService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Partner updatePartner(Person googlePerson, Partner partner, Boolean updateContactField) {
     Boolean toUpdate =
         updateContactField

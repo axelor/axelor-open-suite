@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.CrmReporting;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.CrmReportingService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;

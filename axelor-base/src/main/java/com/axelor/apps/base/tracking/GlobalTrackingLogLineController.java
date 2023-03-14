@@ -19,7 +19,7 @@ package com.axelor.apps.base.tracking;
 
 import com.axelor.apps.base.db.GlobalTrackingLog;
 import com.axelor.apps.base.db.GlobalTrackingLogLine;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;

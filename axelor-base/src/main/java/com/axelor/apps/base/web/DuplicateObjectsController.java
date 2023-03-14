@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.DuplicateObjectsService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Wizard;
@@ -190,7 +190,7 @@ public class DuplicateObjectsController {
     }
   }
 
-  private String findDuplicated(
+  protected String findDuplicated(
       ActionRequest request, Set<String> fields, Class<? extends Model> modelClass)
       throws AxelorException {
 
@@ -261,7 +261,7 @@ public class DuplicateObjectsController {
             .map());
   }
 
-  private String getCriteria(ActionRequest request, Class<? extends Model> modelClass) {
+  protected String getCriteria(ActionRequest request, Class<? extends Model> modelClass) {
 
     String criteria = (String) (request.getContext().get("_criteria"));
     if (criteria != null) {

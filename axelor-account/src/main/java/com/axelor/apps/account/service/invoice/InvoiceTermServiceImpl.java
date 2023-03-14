@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -53,7 +54,6 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.utils.ContextTool;
@@ -1477,5 +1477,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public boolean isMultiCurrency(InvoiceTerm invoiceTerm) {
     return !Objects.equals(this.getCurrency(invoiceTerm), this.getCompanyCurrency(invoiceTerm));
+  }
+
+  @Override
+  public List<InvoiceTerm> recomputeInvoiceTermsPercentage(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    InvoiceTerm lastInvoiceTerm = invoiceTermList.remove(invoiceTermList.size() - 1);
+    BigDecimal percentageTotal = BigDecimal.ZERO;
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      BigDecimal percentage = this.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+
+      invoiceTerm.setPercentage(percentage);
+      percentageTotal = percentageTotal.add(percentage);
+    }
+
+    lastInvoiceTerm.setPercentage(BigDecimal.valueOf(100).subtract(percentageTotal));
+    invoiceTermList.add(lastInvoiceTerm);
+
+    return invoiceTermList;
   }
 }

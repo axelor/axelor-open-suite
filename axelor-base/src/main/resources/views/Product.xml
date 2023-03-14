@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product"
     orderBy="code,name" x-row-height="80">
@@ -341,7 +341,8 @@
           <field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
           <button name="showAllStockMoveLineBtn" title="Show all stock moves" colSpan="6"
             onClick="action-product-view-stock-move-line"/>
-          <field name="avgPrice" hideIf="!stockManaged"/>
+          <field name="avgPrice" hideIf="!stockManaged"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'avgPrice'})"/>
           <spacer name="avgPriceSpacer"/>
           <panel-dashlet name="productStockPanel" colSpan="12"
             action="action-product-view-stock" showIf="id &amp;&amp; stockManaged"/>

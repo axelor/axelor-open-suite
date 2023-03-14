@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence";"anonymizer.name"
-"GDPR";"gdpr";35;"GDPR configuration ";"RGPDLogo.png";"axelor-gdpr";"base";55;"GDPRAnonymizer"

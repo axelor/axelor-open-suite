@@ -18,9 +18,9 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.TimetableTemplate;
-import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;

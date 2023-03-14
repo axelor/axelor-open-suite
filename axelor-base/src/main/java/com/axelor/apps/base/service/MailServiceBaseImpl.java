@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.MailTemplateAssociation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
@@ -30,7 +31,6 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailException;
@@ -365,7 +365,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       return super.getSubject(message, entity);
     }
 
-    return templates.fromText(messageTemplate.getSubject()).make(templatesContext).render();
+    String subject =
+        message.getSubject() != null ? message.getSubject() : messageTemplate.getSubject();
+    return templates.fromText(subject).make(templatesContext).render();
   }
 
   void updateTemplateAndContext(MailMessage message, Model entity) {
@@ -466,6 +468,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   void updateRecipientsTemplatesContext(Set<String> recipients) {
     String contRecipients = String.join(", ", recipients);
 
+    if (templatesContext == null) {
+      templatesContext = Maps.newHashMap();
+    }
     // Creating 2 same keys as it could be useful for a future update
     templatesContext.put("toRecipients", contRecipients);
     templatesContext.put("ccRecipients", contRecipients);

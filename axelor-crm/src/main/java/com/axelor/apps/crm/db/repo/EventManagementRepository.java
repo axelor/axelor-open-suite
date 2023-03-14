@@ -17,17 +17,17 @@
  */
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;

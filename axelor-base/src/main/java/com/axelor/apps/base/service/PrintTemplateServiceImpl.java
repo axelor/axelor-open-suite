@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Language;
@@ -26,6 +27,7 @@ import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.PrintTemplate;
 import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.auth.AuthUtils;
@@ -35,8 +37,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.TemplateContext;
 import com.axelor.message.service.TemplateContextService;
@@ -84,7 +84,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
 
   @SuppressWarnings("unchecked")
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Print generatePrint(Long objectId, PrintTemplate printTemplate)
       throws AxelorException, IOException, ClassNotFoundException {
     MetaModel metaModel = printTemplate.getMetaModel();
@@ -185,7 +185,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     return print;
   }
 
-  private void processPrintTemplateLineList(
+  protected void processPrintTemplateLineList(
       List<PrintTemplateLine> templateLineList,
       Print print,
       PrintLine parent,
@@ -276,7 +276,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
   }
 
-  private void addSequencesInContext(TemplateMaker maker, int level, int seq, PrintLine parent) {
+  protected void addSequencesInContext(TemplateMaker maker, int level, int seq, PrintLine parent) {
     maker.addInContext(TEMPLATE_CONTEXT_SEQUENCE_KEY_PREFIX + level, seq);
     if (ObjectUtils.notEmpty(parent)) {
       addSequencesInContext(maker, level - 1, parent.getSequence(), parent.getParent());

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
@@ -24,7 +25,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.exception.AxelorException;
 import com.axelor.studio.db.AppStock;
 import com.google.inject.Inject;
 

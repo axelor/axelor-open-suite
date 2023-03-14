@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
@@ -30,6 +31,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -65,8 +67,6 @@ import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JpaSupport;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -455,21 +455,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   }
 
   @Override
-  public LocalDate getFromPeriodDate() {
-    Timesheet timesheet =
-        timeSheetRepository
-            .all()
-            .filter(
-                "self.employee.user.id = ?1 ORDER BY self.toDate DESC", AuthUtils.getUser().getId())
-            .fetchOne();
-    if (timesheet != null) {
-      return timesheet.getToDate();
-    } else {
-      return null;
-    }
-  }
-
-  @Override
   public Timesheet getCurrentTimesheet() {
     Timesheet timesheet =
         timeSheetRepository
@@ -764,7 +749,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.setProjectTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
   }
 
-  private Project findProject(Long projectId) {
+  protected Project findProject(Long projectId) {
     Project project;
     final long startTime = System.currentTimeMillis();
     while ((project = projectRepo.find(projectId)) == null
@@ -777,7 +762,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     return project;
   }
 
-  private void sleep() {
+  protected void sleep() {
     try {
       Thread.sleep(ENTITY_FIND_INTERVAL);
     } catch (InterruptedException e) {

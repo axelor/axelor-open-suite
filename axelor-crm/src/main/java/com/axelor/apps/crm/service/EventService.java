@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.meta.CallMethod;
 import java.time.LocalDate;

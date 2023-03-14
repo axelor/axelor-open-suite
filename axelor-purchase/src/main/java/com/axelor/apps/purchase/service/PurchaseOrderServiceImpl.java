@@ -18,6 +18,7 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -30,6 +31,7 @@ import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -50,8 +52,6 @@ import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -129,18 +129,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
    * @throws AxelorException
    */
   @Override
-  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+  public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (purchaseOrderLineList == null) {
+      return;
+    }
 
     logger.debug(
         "Populate an invoice => purchase order lines: {} ",
-        new Object[] {purchaseOrder.getPurchaseOrderLineList().size()});
+        new Object[] {purchaseOrderLineList.size()});
 
     // create Tva lines
     purchaseOrder
         .getPurchaseOrderLineTaxList()
         .addAll(
             purchaseOrderLineVatService.createsPurchaseOrderLineTax(
-                purchaseOrder, purchaseOrder.getPurchaseOrderLineList()));
+                purchaseOrder, purchaseOrderLineList));
   }
 
   /**
@@ -157,20 +161,27 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setTaxTotal(BigDecimal.ZERO);
     purchaseOrder.setInTaxTotal(BigDecimal.ZERO);
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      purchaseOrder.setExTaxTotal(
-          purchaseOrder.getExTaxTotal().add(purchaseOrderLine.getExTaxTotal()));
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    List<PurchaseOrderLineTax> purchaseOrderLineTaxList =
+        purchaseOrder.getPurchaseOrderLineTaxList();
+    if (purchaseOrderLineList != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        purchaseOrder.setExTaxTotal(
+            purchaseOrder.getExTaxTotal().add(purchaseOrderLine.getExTaxTotal()));
 
-      // In the company accounting currency
-      purchaseOrder.setCompanyExTaxTotal(
-          purchaseOrder.getCompanyExTaxTotal().add(purchaseOrderLine.getCompanyExTaxTotal()));
+        // In the company accounting currency
+        purchaseOrder.setCompanyExTaxTotal(
+            purchaseOrder.getCompanyExTaxTotal().add(purchaseOrderLine.getCompanyExTaxTotal()));
+      }
     }
 
-    for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrder.getPurchaseOrderLineTaxList()) {
+    if (purchaseOrderLineTaxList != null) {
+      for (PurchaseOrderLineTax purchaseOrderLineVat : purchaseOrderLineTaxList) {
 
-      // In the purchase order currency
-      purchaseOrder.setTaxTotal(
-          purchaseOrder.getTaxTotal().add(purchaseOrderLineVat.getTaxTotal()));
+        // In the purchase order currency
+        purchaseOrder.setTaxTotal(
+            purchaseOrder.getTaxTotal().add(purchaseOrderLineVat.getTaxTotal()));
+      }
     }
 
     purchaseOrder.setInTaxTotal(purchaseOrder.getExTaxTotal().add(purchaseOrder.getTaxTotal()));

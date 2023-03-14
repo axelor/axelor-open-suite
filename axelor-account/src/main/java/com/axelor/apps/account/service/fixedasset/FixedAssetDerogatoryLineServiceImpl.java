@@ -25,7 +25,7 @@ import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -172,7 +172,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
         FixedAssetLineRepository.STATUS_PLANNED);
   }
 
-  private FixedAssetLine extractLineWithType(List<FixedAssetLine> fixedAssetLineList, int type) {
+  protected FixedAssetLine extractLineWithType(List<FixedAssetLine> fixedAssetLineList, int type) {
     if (fixedAssetLineList != null) {
       return fixedAssetLineList.stream()
           .filter(fixedAssetLine -> fixedAssetLine.getTypeSelect() == type)

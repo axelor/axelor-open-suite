@@ -17,16 +17,16 @@
  */
 package com.axelor.apps.sale.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PostPersist;
 
 public class ConfiguratorCreatorListener {
 
   @PostPersist
-  private void onPostPersist(ConfiguratorCreator creator) {
+  protected void onPostPersist(ConfiguratorCreator creator) {
     try {
       Beans.get(ConfiguratorCreatorService.class).init(creator);
     } catch (Exception e) {

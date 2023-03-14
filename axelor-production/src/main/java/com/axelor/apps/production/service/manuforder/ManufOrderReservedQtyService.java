@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.exception.AxelorException;
 
 public interface ManufOrderReservedQtyService {
 

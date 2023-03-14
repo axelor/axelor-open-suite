@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxNumber;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -34,7 +35,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;

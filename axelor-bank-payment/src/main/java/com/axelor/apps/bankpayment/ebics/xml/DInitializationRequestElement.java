@@ -58,7 +58,7 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
 import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
 import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;

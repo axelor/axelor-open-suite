@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppCrm;
 import java.util.Map;

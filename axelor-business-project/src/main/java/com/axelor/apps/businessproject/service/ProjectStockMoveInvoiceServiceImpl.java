@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -38,7 +39,6 @@ import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -101,11 +101,14 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       StockMove stockMove, SaleOrder saleOrder, Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException {
     Invoice invoice = super.createInvoiceFromSaleOrder(stockMove, saleOrder, qtyToInvoiceMap);
-    Project project = saleOrder.getProject();
-    if (project != null) {
-      invoice.setProject(project);
+
+    if (invoice != null) {
+      Project project = saleOrder.getProject();
+      if (project != null) {
+        invoice.setProject(project);
+      }
+      invoiceRepository.save(invoice);
     }
-    invoiceRepository.save(invoice);
     return invoice;
   }
 
@@ -116,11 +119,13 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       throws AxelorException {
     Invoice invoice =
         super.createInvoiceFromPurchaseOrder(stockMove, purchaseOrder, qtyToInvoiceMap);
-    Project project = purchaseOrder.getProject();
-    if (project != null) {
-      invoice.setProject(project);
+    if (invoice != null) {
+      Project project = purchaseOrder.getProject();
+      if (project != null) {
+        invoice.setProject(project);
+      }
+      invoiceRepository.save(invoice);
     }
-    invoiceRepository.save(invoice);
     return invoice;
   }
 }

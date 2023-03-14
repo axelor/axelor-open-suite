@@ -41,16 +41,16 @@ import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.StringTool;
@@ -374,11 +374,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           invoice.getInvoiceId());
     }
     AccountingSituation accountingSituation = null;
+    Partner partnerAccountingSituation = null;
     if (isPurchase) {
       accountingSituation = accountingSituationRepository.findByCompanyAndPartner(company, partner);
+      partnerAccountingSituation = partner;
     } else {
       accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
+      partnerAccountingSituation = company.getPartner();
     }
 
     String origin = invoice.getInvoiceId();
@@ -510,9 +513,18 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         MoveLine moveLine;
         if (hasFixedAssets
             && invoiceLineTax.getCompanySubTotalOfFixedAssets().compareTo(BigDecimal.ZERO) != 0) {
+          if (accountingSituation == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(
+                    AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION),
+                partnerAccountingSituation.getFullName(),
+                company.getCode());
+          }
           int vatSystemSelect =
               accountingSituationService.determineVatSystemSelect(
-                  accountingSituation, invoiceLineTax.getVatSystemSelect());
+                  accountingSituation, invoiceLineTax);
+
           account =
               taxAccountService.getAccount(
                   tax,
@@ -556,9 +568,17 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         if (hasOtherAssets
             && invoiceLineTax.getCompanySubTotalExcludingFixedAssets().compareTo(BigDecimal.ZERO)
                 != 0) {
+          if (accountingSituation == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(
+                    AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION),
+                partnerAccountingSituation.getFullName(),
+                company.getCode());
+          }
           int vatSystemSelect =
               accountingSituationService.determineVatSystemSelect(
-                  accountingSituation, invoiceLineTax.getVatSystemSelect());
+                  accountingSituation, invoiceLineTax);
           account =
               taxAccountService.getAccount(
                   tax,
@@ -880,9 +900,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
       AccountingSituation accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, partner);
+
       int vatSystemSelect =
           accountingSituationService.determineVatSystemSelect(
-              accountingSituation, moveLine.getAccount().getVatSystemSelect());
+              accountingSituation, moveLine.getAccount());
+
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
@@ -895,9 +917,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
       AccountingSituation accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
+
       int vatSystemSelect =
           accountingSituationService.determineVatSystemSelect(
-              accountingSituation, moveLine.getAccount().getVatSystemSelect());
+              accountingSituation, moveLine.getAccount());
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
@@ -910,9 +933,17 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
       AccountingSituation accountingSituation =
           accountingSituationRepository.findByCompanyAndPartner(company, partner);
+      if (accountingSituation == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION),
+            partner.getFullName(),
+            company.getCode());
+      }
       int vatSystemSelect =
           accountingSituationService.determineVatSystemSelect(
-              accountingSituation, moveLine.getAccount().getVatSystemSelect());
+              accountingSituation, moveLine.getAccount());
+
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),

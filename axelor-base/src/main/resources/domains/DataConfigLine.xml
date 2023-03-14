@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="DataConfigLine" cacheable="true">
+
+    <![CDATA[
+      This object stores the configuration lines for export of data.
+    ]]>
+
+    <many-to-one name="metaModel" title="Object" ref="com.axelor.meta.db.MetaModel"/>
+    <integer name="typeSelect" title="Query/path" selection="data.config.line.type.select"/>
+    <string name="path" title="Query"/>
+    <many-to-one name="metaFieldPath" ref="com.axelor.meta.db.MetaField"
+      title="Path Field"/>
+    <many-to-many name="toExportMetaFieldSet" ref="com.axelor.meta.db.MetaField"
+      title="Fields to export"/>
+    <many-to-one name="objectDataConfig" ref="ObjectDataConfig"/>
+    <integer name="resetPathSelect" title="Action to perform"
+      selection="data.config.line.reset.path.select"/>
+    <string name="record" title="Record" selection="object.data.config.model.select"/>
+    <long name="recordSelectId"/>
+    <many-to-many name="toDeleteMetaFieldSet" ref="com.axelor.meta.db.MetaField"
+      title="Fields to delete"/>
+    <string name="tabName" title="Tab name" required="true"/>
+
+    <unique-constraint columns="objectDataConfig,tabName"/>
+
+    <extra-code><![CDATA[
+      public static final int TYPE_PATH = 0;
+      public static final int TYPE_QUERY = 1;
+
+      public static final int RESET_NONE = 0;
+      public static final int RESET_REPLACE = 1;
+      public static final int RESET_DELETE = 2;
+    ]]></extra-code>
+
+  </entity>
+
+</domain-models>

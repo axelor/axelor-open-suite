@@ -46,14 +46,14 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -676,6 +676,13 @@ public class PaymentVoucherConfirmService {
               .findFirst()
               .orElse(null);
       if (accountManagement != null) {
+        if (financialDiscountAccount.getVatSystemSelect() == null
+            || financialDiscountAccount.getVatSystemSelect() == 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+              financialDiscountAccount.getCode());
+        }
         int vatSystem = financialDiscountAccount.getVatSystemSelect();
         MoveLine financialDiscountVatMoveLine =
             moveLineCreateService.createMoveLine(

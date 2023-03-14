@@ -22,10 +22,10 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.exception.AxelorException;
 import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,24 +40,24 @@ public class TestSaleOrderStockService {
     saleOrderStockService = mock(SaleOrderStockServiceImpl.class);
     when(saleOrderStockService.isStockMoveProduct(any(SaleOrderLine.class), any(SaleOrder.class)))
         .thenReturn(true);
-    doCallRealMethod().when(saleOrderStockService).updateDeliveryState(any(SaleOrder.class));
+    doCallRealMethod().when(saleOrderStockService).computeDeliveryState(any(SaleOrder.class));
   }
 
   @Test
   public void testUpdateDeliveryStateSaleOrderWithNull() throws AxelorException {
     SaleOrder saleOrder = new SaleOrder();
-    saleOrderStockService.updateDeliveryState(saleOrder);
     Assert.assertEquals(
-        SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED, (int) saleOrder.getDeliveryState());
+        SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED,
+        saleOrderStockService.computeDeliveryState(saleOrder));
   }
 
   @Test
   public void testUpdateDeliveryStateEmptySaleOrder() throws AxelorException {
     SaleOrder saleOrder = new SaleOrder();
     saleOrder.setSaleOrderLineList(new ArrayList<>());
-    saleOrderStockService.updateDeliveryState(saleOrder);
     Assert.assertEquals(
-        SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED, (int) saleOrder.getDeliveryState());
+        SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED,
+        saleOrderStockService.computeDeliveryState(saleOrder));
   }
 
   @Test
@@ -71,9 +71,9 @@ public class TestSaleOrderStockService {
     saleOrder.addSaleOrderLineListItem(saleOrderLine1);
     saleOrder.addSaleOrderLineListItem(saleOrderLine2);
 
-    saleOrderStockService.updateDeliveryState(saleOrder);
     Assert.assertEquals(
-        SaleOrderRepository.DELIVERY_STATE_DELIVERED, (int) saleOrder.getDeliveryState());
+        SaleOrderRepository.DELIVERY_STATE_DELIVERED,
+        saleOrderStockService.computeDeliveryState(saleOrder));
   }
 
   @Test
@@ -88,7 +88,8 @@ public class TestSaleOrderStockService {
 
     saleOrderStockService.updateDeliveryState(saleOrder);
     Assert.assertEquals(
-        SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED, (int) saleOrder.getDeliveryState());
+        SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED,
+        saleOrderStockService.computeDeliveryState(saleOrder));
   }
 
   @Test
@@ -101,9 +102,9 @@ public class TestSaleOrderStockService {
     saleOrder.addSaleOrderLineListItem(saleOrderLine1);
     saleOrder.addSaleOrderLineListItem(saleOrderLine2);
 
-    saleOrderStockService.updateDeliveryState(saleOrder);
     Assert.assertEquals(
-        SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED, (int) saleOrder.getDeliveryState());
+        SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED,
+        saleOrderStockService.computeDeliveryState(saleOrder));
   }
 
   @Test
@@ -120,9 +121,9 @@ public class TestSaleOrderStockService {
     saleOrder.addSaleOrderLineListItem(saleOrderLine2);
     saleOrder.addSaleOrderLineListItem(saleOrderLine3);
 
-    saleOrderStockService.updateDeliveryState(saleOrder);
     Assert.assertEquals(
-        SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED, (int) saleOrder.getDeliveryState());
+        SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED,
+        saleOrderStockService.computeDeliveryState(saleOrder));
   }
 
   @Test
@@ -139,8 +140,8 @@ public class TestSaleOrderStockService {
     saleOrder.addSaleOrderLineListItem(saleOrderLine2);
     saleOrder.addSaleOrderLineListItem(saleOrderLine3);
 
-    saleOrderStockService.updateDeliveryState(saleOrder);
     Assert.assertEquals(
-        SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED, (int) saleOrder.getDeliveryState());
+        SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED,
+        saleOrderStockService.computeDeliveryState(saleOrder));
   }
 }

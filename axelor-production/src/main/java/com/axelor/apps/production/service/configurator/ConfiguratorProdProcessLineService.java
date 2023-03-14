@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.production.service.configurator;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenterGroup;
-import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
 
 public interface ConfiguratorProdProcessLineService {

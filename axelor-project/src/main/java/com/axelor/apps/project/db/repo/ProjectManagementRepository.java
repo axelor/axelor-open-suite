@@ -27,7 +27,7 @@ public class ProjectManagementRepository extends ProjectRepository {
 
   @Inject ProjectTaskService projectTaskService;
 
-  private void setAllProjectFullName(Project project) {
+  protected void setAllProjectFullName(Project project) {
     String projectCode =
         (Strings.isNullOrEmpty(project.getCode())) ? "" : project.getCode() + " - ";
     project.setFullName(projectCode + project.getName());
