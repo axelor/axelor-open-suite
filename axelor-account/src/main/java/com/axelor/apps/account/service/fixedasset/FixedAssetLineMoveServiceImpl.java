@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
@@ -381,7 +382,15 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 fixedAsset.getName());
         moveLines.add(debitMoveLine);
 
+        List<AnalyticMoveLine> analyticDebitMoveLineList =
+            new ArrayList<>(debitMoveLine.getAnalyticMoveLineList());
+        debitMoveLine.clearAnalyticMoveLineList();
+
         this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
+
+        if (CollectionUtils.isEmpty(debitMoveLine.getAnalyticMoveLineList())) {
+          debitMoveLine.setAnalyticMoveLineList(analyticDebitMoveLineList);
+        }
 
         MoveLine creditMoveLine =
             moveLineCreateService.createMoveLine(
@@ -396,7 +405,15 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 fixedAsset.getName());
         moveLines.add(creditMoveLine);
 
+        List<AnalyticMoveLine> analyticCreditMoveLineList =
+            new ArrayList<>(creditMoveLine.getAnalyticMoveLineList());
+        creditMoveLine.clearAnalyticMoveLineList();
+
         this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
+
+        if (CollectionUtils.isEmpty(creditMoveLine.getAnalyticMoveLineList())) {
+          creditMoveLine.setAnalyticMoveLineList(analyticCreditMoveLineList);
+        }
 
         move.getMoveLineList().addAll(moveLines);
         if (batch != null) {
@@ -499,8 +516,15 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               move, partner, debitLineAccount, amount, true, date, 1, origin, fixedAsset.getName());
       moveLines.add(debitMoveLine);
 
+      List<AnalyticMoveLine> analyticDebitMoveLineList =
+          new ArrayList<>(debitMoveLine.getAnalyticMoveLineList());
+      debitMoveLine.clearAnalyticMoveLineList();
+
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
 
+      if (CollectionUtils.isEmpty(debitMoveLine.getAnalyticMoveLineList())) {
+        debitMoveLine.setAnalyticMoveLineList(analyticDebitMoveLineList);
+      }
       MoveLine creditMoveLine =
           moveLineCreateService.createMoveLine(
               move,
@@ -514,8 +538,15 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               fixedAsset.getName());
       moveLines.add(creditMoveLine);
 
+      List<AnalyticMoveLine> analyticCreditMoveLineList =
+          new ArrayList<>(creditMoveLine.getAnalyticMoveLineList());
+      creditMoveLine.clearAnalyticMoveLineList();
+
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
 
+      if (CollectionUtils.isEmpty(creditMoveLine.getAnalyticMoveLineList())) {
+        creditMoveLine.setAnalyticMoveLineList(analyticCreditMoveLineList);
+      }
       move.getMoveLineList().addAll(moveLines);
       if (batch != null) {
         move.addBatchSetItem(batchRepository.find(batch.getId()));
@@ -615,8 +646,15 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 fixedAsset.getName());
         moveLines.add(chargeAccountDebitMoveLine);
 
+        List<AnalyticMoveLine> analyticMoveLineList =
+            new ArrayList<>(chargeAccountDebitMoveLine.getAnalyticMoveLineList());
+        chargeAccountDebitMoveLine.clearAnalyticMoveLineList();
+
         this.addAnalyticToMoveLine(
             fixedAsset.getAnalyticDistributionTemplate(), chargeAccountDebitMoveLine);
+        if (CollectionUtils.isEmpty(chargeAccountDebitMoveLine.getAnalyticMoveLineList())) {
+          chargeAccountDebitMoveLine.setAnalyticMoveLineList(analyticMoveLineList);
+        }
       }
       if (chargeAmount.signum() == 0
           && (cumulativeDepreciationAmount == null || cumulativeDepreciationAmount.signum() > 0)) {
@@ -768,7 +806,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       creditMoveLine1.setTaxLine(taxLine);
       moveLines.add(creditMoveLine1);
 
+      List<AnalyticMoveLine> analyticCredit1MoveLineList =
+          new ArrayList<>(creditMoveLine1.getAnalyticMoveLineList());
+      creditMoveLine1.clearAnalyticMoveLineList();
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine1);
+      if (CollectionUtils.isEmpty(creditMoveLine1.getAnalyticMoveLineList())) {
+        creditMoveLine1.setAnalyticMoveLineList(analyticCredit1MoveLineList);
+      }
       if (creditAmountTwo.compareTo(BigDecimal.ZERO) > 0) {
         MoveLine creditMoveLine2 =
             moveLineCreateService.createMoveLine(
@@ -783,8 +827,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
                 fixedAsset.getName());
         creditMoveLine2.setTaxLine(taxLine);
         moveLines.add(creditMoveLine2);
-
+        List<AnalyticMoveLine> analyticCerdit2MoveLineList =
+            new ArrayList<>(creditMoveLine2.getAnalyticMoveLineList());
+        creditMoveLine2.clearAnalyticMoveLineList();
         this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine2);
+        if (CollectionUtils.isEmpty(creditMoveLine2.getAnalyticMoveLineList())) {
+          creditMoveLine2.setAnalyticMoveLineList(analyticCerdit2MoveLineList);
+        }
       }
 
       MoveLine debitMoveLine =
@@ -800,7 +849,13 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
               fixedAsset.getName());
       moveLines.add(debitMoveLine);
 
+      List<AnalyticMoveLine> analyticDebitMoveLineList =
+          new ArrayList<>(debitMoveLine.getAnalyticMoveLineList());
+      debitMoveLine.clearAnalyticMoveLineList();
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
+      if (CollectionUtils.isEmpty(debitMoveLine.getAnalyticMoveLineList())) {
+        debitMoveLine.setAnalyticMoveLineList(analyticDebitMoveLineList);
+      }
 
       move.getMoveLineList().addAll(moveLines);
     }
