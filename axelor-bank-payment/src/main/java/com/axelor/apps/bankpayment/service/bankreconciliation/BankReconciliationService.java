@@ -949,6 +949,7 @@ public class BankReconciliationService {
                     == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
             if (isUnderCorrection) {
               bankReconciliationLine.setIsPosted(true);
+              bankReconciliationLineService.checkAmount(bankReconciliationLine);
               bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
             }
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
@@ -1267,7 +1268,7 @@ public class BankReconciliationService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
     BankReconciliationLine bankReconciliationLine;
@@ -1294,6 +1295,7 @@ public class BankReconciliationService {
             == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
     if (isUnderCorrection) {
       bankReconciliationLine.setIsPosted(true);
+      bankReconciliationLineService.checkAmount(bankReconciliationLine);
       bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
     }
     return bankReconciliation;
