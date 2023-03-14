@@ -11,7 +11,8 @@
     <field name="validationLog" hidden="true"/>
   </grid>
 
-  <form name="file-tab-form" title="File tab" model="com.axelor.apps.base.db.FileTab">
+  <form name="file-tab-form" title="File tab" model="com.axelor.apps.base.db.FileTab"
+    onLoad="action-file-tab-method-set-viewer-data">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="metaModel" required="true" onChange="action-file-tab-group-on-meta-model"/>
@@ -29,6 +30,19 @@
         colSpan="12" grid-view="file-field-grid" form-view="file-field-form" orderBy="sequence"/>
       <field name="validationLog" widget="binary-link" showIf="validationLog != null"/>
       <field name="advancedImport.statusSelect" hidden="true"/>
+    </panel>
+    <panel name="importedRecordPanel" title="Open Imported" showIf="$recordMap != null">
+      <field name="$recordMap" showTitle="false" colspan="12">
+        <viewer>
+      		<![CDATA[
+      			<div ng-repeat="item in record.$recordMap">
+      				<div style="margin: 3px 2px 2px 3px">
+      					<a href="" ui-action-context="item" ui-action-click="action-file-tab-method-show-records-onclick,close" style=" color: #1958e6">{{item.model}}</a>
+      				</div>
+      			</div>
+      		]]>
+        </viewer>
+      </field>
     </panel>
   </form>
 
@@ -53,10 +67,6 @@
     <call class="com.axelor.apps.base.web.FileTabController" method="compute"/>
   </action-method>
 
-  <action-method name="action-file-tab-method-show-record">
-    <call class="com.axelor.apps.base.web.FileTabController" method="showRecord"/>
-  </action-method>
-
   <action-group name="action-file-tab-group-on-meta-model">
     <action name="action-file-tab-record-import-type"/>
     <action name="action-file-tab-record-set-search-field"/>
@@ -69,6 +79,14 @@
 
   <action-method name="action-file-tab-method-on-change-validate-search-call">
     <call class="com.axelor.apps.base.web.FileTabController" method="validateSearchCall"/>
+  </action-method>
+
+  <action-method name="action-file-tab-method-set-viewer-data">
+    <call class="com.axelor.apps.base.web.FileTabController" method="setViewerData"/>
+  </action-method>
+
+  <action-method name="action-file-tab-method-show-records-onclick">
+    <call class="com.axelor.apps.base.web.FileTabController" method="showRecords"/>
   </action-method>
 
 </object-views>
