@@ -36,5 +36,5 @@ public interface MassEntryVerificationService {
 
   void checkOriginDateInAllMoveLineMassEntry(Move move);
 
-  void checkOriginInAllMoveLineMassEntry(Move move);
+  void checkOriginInAllMoveLineMassEntry(Move move) throws AxelorException;
 }

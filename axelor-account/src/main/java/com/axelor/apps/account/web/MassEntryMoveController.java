@@ -92,8 +92,8 @@ public class MassEntryMoveController {
             response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL);
           } else {
             response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_ERROR);
-            response.setValues(move);
           }
+          response.setValues(move);
         } else {
           response.setError(AccountExceptionMessage.MASS_ENTRY_MOVE_NO_LINE);
         }

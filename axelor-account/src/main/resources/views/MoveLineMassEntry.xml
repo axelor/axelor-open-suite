@@ -11,7 +11,6 @@
     <field name="inputAction" selection="iaccount.move.input.action.select"
       onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
       required="true" width="50"/>
-    <field name="fieldsErrorList" hidden="false"/>
     <field name="date" onChange="account-move-line-group-date-onchange">
       <hilite if="$contains(fieldsErrorList,'date:'+date.toString())" background="danger"/>
     </field>
@@ -48,7 +47,10 @@
       width="90"/>
     <field name="currencyRate"
       onChange="action-move-line-group-currency-amount-rate-onchange,action-move-line-mass-entry-record-set-is-edited"
-      readonlyIf="!isOtherCurrency"/>
+      readonlyIf="!isOtherCurrency">
+      <hilite if="$contains(fieldsErrorList,'currencyRate:'+currencyRate.toString())"
+        background="danger"/>
+    </field>
     <field name="currencyAmount"
       onChange="action-move-line-group-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"/>
     <field name="description"
@@ -63,10 +65,11 @@
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <field name="movePartnerBankDetails"
       onSelect="action-move-line-mass-entry-attrs-bank-details-from-partner-domain"
-      form-view="bank-details-form" grid-view="bank-details-grid"/>
+      form-view="bank-details-form" grid-view="bank-details-grid" hidden="true"/>
     <field name="vatSystemSelect"/>
     <field name="moveStatusSelect"/>
     <field name="isOtherCurrency" hidden="true"/>
+    <field name="fieldsErrorList" hidden="true"/>
   </grid>
 
   <!-- Action group -->

@@ -28,7 +28,9 @@ import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -56,6 +58,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MassEntryVerificationService massEntryVerificationService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected CurrencyService currencyService;
+  protected PeriodService periodService;
 
   @Inject
   public MassEntryServiceImpl(
@@ -65,7 +68,8 @@ public class MassEntryServiceImpl implements MassEntryService {
       MoveCounterPartService moveCounterPartService,
       MassEntryVerificationService massEntryVerificationService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      PeriodService periodService) {
     this.massEntryToolService = massEntryToolService;
     this.moveToolService = moveToolService;
     this.moveLineTaxService = moveLineTaxService;
@@ -73,6 +77,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.currencyService = currencyService;
+    this.periodService = periodService;
   }
 
   public void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
@@ -326,28 +331,15 @@ public class MassEntryServiceImpl implements MassEntryService {
             : null);
   }
 
-  public void checkMassEntryMoveGeneration(Move move) {
-    int numberOfDifferentMovesToCheck = 0;
-    List<Move> moveList = new ArrayList<>();
-    Move moveToCheck;
+  public void checkMassEntryMoveGeneration(Move move) throws AxelorException {
+    List<Move> moveList;
 
-    numberOfDifferentMovesToCheck = this.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList());
-
-    for (int i = 1; i <= numberOfDifferentMovesToCheck; i++) {
-      moveToCheck = new Move();
-      for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
-        if (moveLineMassEntry.getTemporaryMoveNumber() == i) {
-          moveToCheck.addMoveLineMassEntryListItem(moveLineMassEntry);
-        }
-      }
-      moveList.add(moveToCheck);
-    }
+    moveList = this.createMoveListFromMassEntryList(move);
+    move.setMassEntryErrors("");
 
     for (Move moveListElement : moveList) {
       moveListElement.setMassEntryErrors("");
 
-      // TODO create a same method for all checks to no duplicate loops if possible
-      // like checkDateInAllMoveLineMassEntry and checkOriginDateInAllMoveLineMassEntry
       massEntryVerificationService.checkDateInAllMoveLineMassEntry(moveListElement);
 
       massEntryVerificationService.checkOriginDateInAllMoveLineMassEntry(moveListElement);
@@ -370,9 +362,7 @@ public class MassEntryServiceImpl implements MassEntryService {
       if (moveListElement.getMassEntryErrors() != null
           && ObjectUtils.notEmpty(moveListElement.getMassEntryErrors())) {
         move.setMassEntryErrors(
-            move.getMassEntryErrors() != null
-                ? move.getMassEntryErrors() + '\n'
-                : "" + moveListElement.getMassEntryErrors());
+            move.getMassEntryErrors() + moveListElement.getMassEntryErrors() + '\n');
       }
     }
   }
@@ -387,5 +377,39 @@ public class MassEntryServiceImpl implements MassEntryService {
     }
 
     return max;
+  }
+
+  public List<Move> createMoveListFromMassEntryList(Move move) {
+    int numberOfDifferentMovesToCheck = 0;
+    List<Move> moveList = new ArrayList<>();
+    Move moveToCheck;
+    boolean firstMove = true;
+
+    numberOfDifferentMovesToCheck = this.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList());
+
+    for (int i = 1; i <= numberOfDifferentMovesToCheck; i++) {
+      moveToCheck = new Move();
+      moveToCheck.setJournal(move.getJournal());
+
+      for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+        if (moveLineMassEntry.getTemporaryMoveNumber() == i) {
+          if (firstMove) {
+            if (moveLineMassEntry.getDate() != null && move.getCompany() != null) {
+              moveToCheck.setPeriod(
+                  periodService.getPeriod(
+                      moveLineMassEntry.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+            }
+            moveToCheck.setPartner(moveLineMassEntry.getPartner());
+            moveToCheck.setOrigin(moveLineMassEntry.getOrigin());
+            firstMove = false;
+          }
+          moveLineMassEntry.setFieldsErrorList(null);
+          moveToCheck.addMoveLineMassEntryListItem(moveLineMassEntry);
+        }
+      }
+      moveList.add(moveToCheck);
+    }
+
+    return moveList;
   }
 }
