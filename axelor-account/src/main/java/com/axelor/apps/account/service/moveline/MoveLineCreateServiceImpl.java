@@ -53,6 +53,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -412,6 +413,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 origin,
                 invoiceLine.getProductName());
 
+        List<AnalyticMoveLine> analyticMoveLineList =
+            new ArrayList<>(moveLine.getAnalyticMoveLineList());
+        moveLine.clearAnalyticMoveLineList();
+
         moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
         if (invoiceLine.getAnalyticMoveLineList() != null
             && !invoiceLine.getAnalyticMoveLineList().isEmpty()) {
@@ -423,6 +428,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           }
         } else {
           moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+        }
+
+        if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+          moveLine.setAnalyticMoveLineList(analyticMoveLineList);
         }
 
         TaxLine taxLine = invoiceLine.getTaxLine();

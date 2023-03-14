@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
@@ -48,6 +49,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -216,10 +218,16 @@ public class MoveTemplateService {
             }
           }
 
+          List<AnalyticMoveLine> analyticMoveLineList =
+              new ArrayList<>(moveLine.getAnalyticMoveLineList());
+          moveLine.clearAnalyticMoveLineList();
           moveLine.setAnalyticDistributionTemplate(
               moveTemplateLine.getAnalyticDistributionTemplate());
           moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
+          if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+            moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+          }
           counter++;
         }
 
@@ -302,9 +310,15 @@ public class MoveTemplateService {
             }
           }
 
+          List<AnalyticMoveLine> analyticMoveLineList =
+              new ArrayList<>(moveLine.getAnalyticMoveLineList());
+          moveLine.clearAnalyticMoveLineList();
           moveLine.setAnalyticDistributionTemplate(
               moveTemplateLine.getAnalyticDistributionTemplate());
           moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+          if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+            moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+          }
 
           counter++;
         }
