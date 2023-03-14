@@ -40,7 +40,7 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,7 +128,8 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       throws IOException {
 
     List<String[]> list = new ArrayList<>();
-    LocalDate today = Beans.get(AppBaseService.class).getTodayDate(hrBatch.getCompany());
+    LocalDateTime today =
+        Beans.get(AppBaseService.class).getTodayDateTime(hrBatch.getCompany()).toLocalDateTime();
 
     for (PayrollPreparation payrollPreparation : payrollPreparationList) {
       String[] item = new String[5];
@@ -140,7 +141,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       list.add(item);
 
       payrollPreparation.setExported(true);
-      payrollPreparation.setExportDate(today);
+      payrollPreparation.setExportDateTime(today);
       payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_STANDARD);
       payrollPreparation.addBatchListItem(batch);
       payrollPreparationRepository.save(payrollPreparation);
