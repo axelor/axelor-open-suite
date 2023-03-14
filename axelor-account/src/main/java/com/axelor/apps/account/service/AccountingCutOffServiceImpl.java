@@ -390,8 +390,16 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           cutOffMoveLineMap.put(moveLineAccount, cutOffMoveLine);
         }
 
+        List<AnalyticMoveLine> analyticMoveLineList =
+            new ArrayList<>(cutOffMoveLine.getAnalyticMoveLineList());
+        cutOffMoveLine.clearAnalyticMoveLineList();
+
         // Copy analytic move lines
         this.copyAnalyticMoveLines(moveLine, cutOffMoveLine, amountInCurrency);
+
+        if (CollectionUtils.isEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
+          cutOffMoveLine.setAnalyticMoveLineList(analyticMoveLineList);
+        }
       }
     }
 
