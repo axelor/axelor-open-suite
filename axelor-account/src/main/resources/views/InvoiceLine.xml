@@ -452,6 +452,7 @@
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-invoice-line-method-translate-product-description-and-name"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-method-auto-apply-invoice-lines-cut-off-dates"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -478,6 +479,7 @@
     <action name="action-invoice-line-method-axis-create-analytic-line"/>
     <action name="action-invoice-line-group-analytic-distribution-template-onchange"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-method-auto-apply-invoice-lines-cut-off-dates"/>
   </action-group>
 
   <action-group
@@ -618,6 +620,12 @@
   <action-method name="action-invoice-line-check-distribution-template-account">
     <call class="com.axelor.apps.account.web.InvoiceLineController"
       method="checkAnalyticAccount"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-line-method-auto-apply-invoice-lines-cut-off-dates">
+    <call class="com.axelor.apps.account.web.InvoiceLineController"
+      method="autoApplyCutOffDates"/>
   </action-method>
 
   <!-- ACTION ATTRS -->

@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveStatusService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -88,6 +89,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected AccountConfigService accountConfigService;
   protected PartnerService partnerService;
   protected PaymentModeService paymentModeService;
+  protected MoveStatusService moveStatusService;
   protected int counter = 0;
 
   @Inject
@@ -108,7 +110,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoicePaymentRepository invoicePaymentRepo,
       AccountConfigService accountConfigService,
       PartnerService partnerService,
-      PaymentModeService paymentModeService) {
+      PaymentModeService paymentModeService,
+      MoveStatusService moveStatusService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -126,6 +129,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.accountConfigService = accountConfigService;
     this.partnerService = partnerService;
     this.paymentModeService = paymentModeService;
+    this.moveStatusService = moveStatusService;
   }
 
   @Override
@@ -683,11 +687,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     moveValidateService.updateValidateStatus(move, daybook);
 
     if (daybook) {
-      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
+      moveStatusService.update(move, MoveRepository.STATUS_DAYBOOK);
       moveValidateService.completeMoveLines(move);
       moveValidateService.freezeFieldsOnMoveLines(move);
     } else {
       moveValidateService.accounting(move);
+      moveStatusService.applyCutOffDates(move);
     }
   }
 

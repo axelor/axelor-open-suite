@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveStatusService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.AxelorException;
@@ -68,6 +69,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   protected BatchRepository batchRepository;
   protected BankDetailsService bankDetailsService;
   protected FixedAssetDateService fixedAssetDateService;
+  protected MoveStatusService moveStatusService;
   private Batch batch;
 
   @Inject
@@ -80,7 +82,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       MoveLineCreateService moveLineCreateService,
       BatchRepository batchRepository,
       BankDetailsService bankDetailsService,
-      FixedAssetDateService fixedAssetDateService) {
+      FixedAssetDateService fixedAssetDateService,
+      MoveStatusService moveStatusService) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
@@ -90,6 +93,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
     this.fixedAssetDateService = fixedAssetDateService;
+    this.moveStatusService = moveStatusService;
   }
 
   @Override
@@ -269,7 +273,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     if (move != null) {
 
       if (isSimulated) {
-        move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
+        moveStatusService.update(move, MoveRepository.STATUS_SIMULATED);
       }
       List<MoveLine> moveLines = new ArrayList<>();
 

@@ -1022,7 +1022,7 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
-        <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"
+        <field name="invoiceDate" onChange="action-invoice-group-invoice-date-onchange"
           readonlyIf="ventilatedByUser || ventilatedDate"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
@@ -1184,7 +1184,7 @@ InvoiceSet.length > 0))"
         <field name="externalReference"/>
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
-        <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"/>
+        <field name="invoiceDate" onChange="action-invoice-group-invoice-date-onchange"/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
         <field name="paymentCondition.isFree" hidden="true"/>
       </panel>
@@ -1652,6 +1652,11 @@ InvoiceSet.length > 0))"
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
       if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-invoice-date-onchange">
+    <action name="action-invoice-group-payment-condition-onchange"/>
+    <action name="action-invoice-method-auto-apply-invoice-lines-cut-off-dates"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
@@ -2270,6 +2275,11 @@ InvoiceSet.length > 0))"
     name="action-invoice-method-check-invoice-lines-analytic-distribution">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="checkInvoiceLinesAnalyticDistribution"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-auto-apply-invoice-lines-cut-off-dates">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="autoApplyInvoiceLinesCutOffDates"/>
   </action-method>
 
   <action-method name="action-invoice-method-check-invoice-lines-cut-off-dates">
