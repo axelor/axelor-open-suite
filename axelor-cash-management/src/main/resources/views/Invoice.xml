@@ -15,7 +15,7 @@
     </extend>
     <extend target="//field[@name='invoiceDate']">
       <attribute name="onChange"
-        value="action-cash-management-group-payment-condition-onchange"/>
+        value="cash-management-action-invoice-group-invoice-date-onchange"/>
     </extend>
     <extend target="//field[@name='dueDate']">
       <attribute name="onChange" value="action-invoice-method-estimated-payment-date"/>
@@ -53,6 +53,11 @@
 
   <action-group name="action-cash-management-group-payment-condition-onchange">
     <action name="action-invoice-group-payment-condition-onchange"/>
+    <action name="action-invoice-method-estimated-payment-date"/>
+  </action-group>
+
+  <action-group name="cash-management-action-invoice-group-invoice-date-onchange">
+    <action name="action-invoice-group-invoice-date-onchange"/>
     <action name="action-invoice-method-estimated-payment-date"/>
   </action-group>
 

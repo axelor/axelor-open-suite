@@ -1093,6 +1093,18 @@ public class InvoiceController {
     }
   }
 
+  public void autoApplyInvoiceLinesCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      Beans.get(InvoiceService.class).autoApplyCutOffDates(invoice);
+
+      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void checkInvoiceLinesCutOffDates(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);

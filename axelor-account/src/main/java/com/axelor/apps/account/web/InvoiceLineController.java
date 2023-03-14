@@ -652,4 +652,27 @@ public class InvoiceLineController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void autoApplyCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().getParent() == null
+          || !request
+              .getContext()
+              .getParent()
+              .get("_model")
+              .equals("com.axelor.apps.account.db.Invoice")) {
+        return;
+      }
+
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+
+      Beans.get(InvoiceLineService.class).autoApplyCutOffDates(invoiceLine, invoice);
+
+      response.setValue("cutOffStartDate", invoiceLine.getCutOffStartDate());
+      response.setValue("cutOffEndDate", invoiceLine.getCutOffEndDate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
