@@ -76,11 +76,9 @@ public class InvoiceLineController {
 
   public void getAndComputeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-    Invoice invoice = invoiceLine.getInvoice();
-    if (invoice == null) {
-      invoice = request.getContext().getParent().asType(Invoice.class);
-    }
+    Context context = request.getContext();
+    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    Invoice invoice = this.getInvoice(context);
 
     response.setValue(
         "analyticMoveLineList",
