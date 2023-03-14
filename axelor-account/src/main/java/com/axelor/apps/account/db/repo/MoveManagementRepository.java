@@ -147,7 +147,7 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setReasonOfRefusalToPay(null);
     invoiceTerm.setReasonOfRefusalToPayStr(null);
     invoiceTerm.setPfpValidatorUser(null);
-    invoiceTerm.setDecisionPfpTakenDate(null);
+    invoiceTerm.setDecisionPfpTakenDateTime(null);
     invoiceTerm.setInvoice(null);
 
     invoiceTermService.setPfpStatus(invoiceTerm);
