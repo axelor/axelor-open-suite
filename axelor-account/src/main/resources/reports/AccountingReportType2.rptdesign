@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,6 +19,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -341,7 +342,7 @@ or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = Parent
 or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
 
 AND ((AccountingReport.exclude_view_account is true AND AccountType.technical_type_select != 'view') OR AccountingReport.exclude_view_account is false)
-AND ((AccountingReport.exclude_commitment_special_account is true AND AccountType.technical_type_select != 'commitment' AND AccountType.technical_type_select != 'special') 
+AND ((AccountingReport.exclude_commitment_special_account is true AND AccountType.technical_type_select != 'commitment' AND AccountType.technical_type_select != 'special')
 OR AccountingReport.exclude_commitment_special_account is false)
 
 AND

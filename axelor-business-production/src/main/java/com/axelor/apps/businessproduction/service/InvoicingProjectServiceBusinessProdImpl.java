@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -143,7 +142,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
     return toInvoiceCount;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Override
   public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
 

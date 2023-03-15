@@ -7,7 +7,7 @@
 "6";"stock_menu_inventory";"Inventaire"
 "7";"manufacturing_menu_manufacturing_order";"Ordre de fabrication"
 "8";"manufacturing_menu_operation_order";"Opération de fabrication"
-"9";"manufacturing_menu_manufacturing_order";"Opérations planifiées"
+"9";"manufacturing_menu_operation_order_planning";"Opérations planifiées"
 "10";"crm_menu_lead";"Piste"
 "11";"crm_menu_prospect";"Prospect"
 "12";"crm_menu_opportunity";"Opportunité"
