@@ -215,7 +215,7 @@
   </form>
 
   <form name="mass-update-status-wizard-form" title="Mass update status"
-    model="com.axelor.message.db.Wizard" width="large">
+    model="com.axelor.utils.db.Wizard" width="large">
     <panel name="mainPanel">
       <field name="statusSelect" type="integer" title="Status"
         selection="iaccount.status.select.selection"
@@ -273,7 +273,7 @@
   </action-group>
 
   <action-view name="action-mass-update-status-wizard" title="Mass update status"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="mass-update-status-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>

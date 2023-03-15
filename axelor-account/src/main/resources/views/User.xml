@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form model="com.axelor.message.db.Wizard" title="Delegate Rights of Pfp Validator"
+  <form model="com.axelor.utils.db.Wizard" title="Delegate Rights of Pfp Validator"
     name="user-delegate-rights-pfp-validator-wizard-form">
     <panel name="mainPanel">
       <field name="$newPfpValidatorUser" title="New Pfp Validator" type="many-to-one"
@@ -17,7 +17,7 @@
   </form>
 
   <action-view name="action-user-view-delegate-rights-pfp-validator"
-    title="Delegate Rights of Pfp Validator" model="com.axelor.message.db.Wizard">
+    title="Delegate Rights of Pfp Validator" model="com.axelor.utils.db.Wizard">
     <view type="form" name="user-delegate-rights-pfp-validator-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
