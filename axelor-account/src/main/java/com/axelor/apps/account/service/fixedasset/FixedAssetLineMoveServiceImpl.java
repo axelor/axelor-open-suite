@@ -352,7 +352,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         moveLines.add(debitMoveLine);
 
         List<AnalyticMoveLine> analyticDebitMoveLineList =
-            new ArrayList<>(debitMoveLine.getAnalyticMoveLineList());
+            CollectionUtils.isEmpty(debitMoveLine.getAnalyticMoveLineList())
+                ? new ArrayList<>()
+                : new ArrayList<>(debitMoveLine.getAnalyticMoveLineList());
         debitMoveLine.clearAnalyticMoveLineList();
 
         this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
@@ -375,7 +377,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         moveLines.add(creditMoveLine);
 
         List<AnalyticMoveLine> analyticCreditMoveLineList =
-            new ArrayList<>(creditMoveLine.getAnalyticMoveLineList());
+            CollectionUtils.isEmpty(creditMoveLine.getAnalyticMoveLineList())
+                ? new ArrayList<>()
+                : new ArrayList<>(creditMoveLine.getAnalyticMoveLineList());
         creditMoveLine.clearAnalyticMoveLineList();
 
         this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
@@ -467,7 +471,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       moveLines.add(debitMoveLine);
 
       List<AnalyticMoveLine> analyticDebitMoveLineList =
-          new ArrayList<>(debitMoveLine.getAnalyticMoveLineList());
+          CollectionUtils.isEmpty(debitMoveLine.getAnalyticMoveLineList())
+              ? new ArrayList<>()
+              : new ArrayList<>(debitMoveLine.getAnalyticMoveLineList());
       debitMoveLine.clearAnalyticMoveLineList();
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
@@ -489,7 +495,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       moveLines.add(creditMoveLine);
 
       List<AnalyticMoveLine> analyticCreditMoveLineList =
-          new ArrayList<>(creditMoveLine.getAnalyticMoveLineList());
+          CollectionUtils.isEmpty(creditMoveLine.getAnalyticMoveLineList())
+              ? new ArrayList<>()
+              : new ArrayList<>(creditMoveLine.getAnalyticMoveLineList());
       creditMoveLine.clearAnalyticMoveLineList();
 
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
@@ -590,7 +598,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         moveLines.add(chargeAccountDebitMoveLine);
 
         List<AnalyticMoveLine> analyticMoveLineList =
-            new ArrayList<>(chargeAccountDebitMoveLine.getAnalyticMoveLineList());
+            CollectionUtils.isEmpty(chargeAccountDebitMoveLine.getAnalyticMoveLineList())
+                ? new ArrayList<>()
+                : new ArrayList<>(chargeAccountDebitMoveLine.getAnalyticMoveLineList());
         chargeAccountDebitMoveLine.clearAnalyticMoveLineList();
 
         this.addAnalyticToMoveLine(
@@ -735,7 +745,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       moveLines.add(creditMoveLine1);
 
       List<AnalyticMoveLine> analyticCredit1MoveLineList =
-          new ArrayList<>(creditMoveLine1.getAnalyticMoveLineList());
+          CollectionUtils.isEmpty(creditMoveLine1.getAnalyticMoveLineList())
+              ? new ArrayList<>()
+              : new ArrayList<>(creditMoveLine1.getAnalyticMoveLineList());
       creditMoveLine1.clearAnalyticMoveLineList();
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine1);
       if (CollectionUtils.isEmpty(creditMoveLine1.getAnalyticMoveLineList())) {
@@ -756,7 +768,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         creditMoveLine2.setTaxLine(taxLine);
         moveLines.add(creditMoveLine2);
         List<AnalyticMoveLine> analyticCerdit2MoveLineList =
-            new ArrayList<>(creditMoveLine2.getAnalyticMoveLineList());
+            CollectionUtils.isEmpty(creditMoveLine2.getAnalyticMoveLineList())
+                ? new ArrayList<>()
+                : new ArrayList<>(creditMoveLine2.getAnalyticMoveLineList());
         creditMoveLine2.clearAnalyticMoveLineList();
         this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine2);
         if (CollectionUtils.isEmpty(creditMoveLine2.getAnalyticMoveLineList())) {
