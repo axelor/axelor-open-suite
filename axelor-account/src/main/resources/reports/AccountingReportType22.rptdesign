@@ -973,7 +973,8 @@ FROM
             AND FixedAssetLine.status_select = 2
             AND FixedAssetLine.type_select = 1
             AND FixedAssetType.technical_type_select != 1
-            AND (FixedAsset.status_select IN (2,3,4))
+            AND (FixedAsset.status_select IN (2,3)
+                OR (FixedAsset.status_select = 4 AND FixedAsset.disposal_date >= (AccountingReport.date_from - interval '1 day')))
             AND FixedAssetLine.depreciation_date <= AccountingReport.date_from
 	UNION ALL
 	SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
@@ -1134,6 +1135,7 @@ FROM
             AND FixedAssetLine.status_select = 2
             AND FixedAssetLine.type_select = 1
             AND FixedAssetType.technical_type_select != 1
+            AND FixedAsset.disposal_date < AccountingReport.date_from
             AND FixedAssetLine.depreciation_date = (
                 SELECT
                     FixedAssetLine2.depreciation_date
@@ -1146,7 +1148,7 @@ FROM
                     AND FixedAsset2.id = FixedAsset.id
                     AND FixedAssetLine2.status_select = 2
                     AND FixedAssetLine2.type_select = 1
-                    AND FixedAssetLine2.depreciation_date < AccountingReport2.date_to
+                    AND FixedAssetLine2.depreciation_date < AccountingReport2.date_from
                 ORDER BY FixedAssetLine2.depreciation_date DESC LIMIT 1)
     UNION ALL
 	SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
