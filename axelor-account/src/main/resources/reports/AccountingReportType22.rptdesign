@@ -916,67 +916,64 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	SUM(impairment_value_b) AS impairment_value_b,
 	SUM(impairment_value_c) AS impairment_value_c
 FROM 
-	(SELECT FixedAssetType.technical_type_select AS fixed_asset_type, 
-			FixedAssetLine.cumulative_depreciation AS depreciation_a,
-			0 AS depreciation_b,
-			0 AS depreciation_c,
-			0 AS impairment_value_a,
-			0 AS impairment_value_b,
-			0 AS impairment_value_c
-		FROM
-			account_accounting_report AS AccountingReport,
-			account_fixed_asset_line  AS FixedAssetLine
-		LEFT JOIN account_fixed_asset AS FixedAsset ON FixedAssetLine.fixed_asset = FixedAsset.id
-		LEFT JOIN account_fixed_asset_Category AS FixedAssetCategory ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
-		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
-		WHERE
-		    AccountingReport.id = ?
-			AND FixedAsset.company = AccountingReport.company
-			AND FixedAssetLine.status_select = 2
-			AND FixedAssetLine.type_select = 1
-			AND FixedAssetType.technical_type_select != 1
-			AND (FixedAsset.status_select IN (2,3)
-			OR (FixedAsset.status_select = 4 
-			AND	FixedAsset.disposal_date >= AccountingReport.date_from))
-			AND FixedAssetLine.depreciation_date = (
-			    SELECT
-                    FixedAssetLine2.depreciation_date
-                FROM
-                    account_accounting_report AS AccountingReport2,
-                    account_fixed_asset_line  AS FixedAssetLine2
-                LEFT JOIN account_fixed_asset AS FixedAsset2 ON FixedAssetLine2.fixed_asset = FixedAsset.id
-                WHERE
-                    AccountingReport2.id = AccountingReport.id
-                    AND FixedAsset2.id = FixedAsset.id
-                    AND FixedAssetLine2.status_select = 2
-                    AND FixedAssetLine2.type_select = 1
-                    AND FixedAssetLine2.depreciation_date < AccountingReport2.date_from
-                ORDER BY FixedAssetLine2.depreciation_date DESC LIMIT 1)
-	UNION ALL
-	    SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
-            -FixedAssetLine.impairment_value AS impairment_depreciation_a,
-            0 AS depreciation_b,
-            0 AS depreciation_c,
-            0 AS impairment_value_a,
-            0 AS impairment_value_b,
-            0 AS impairment_value_c
-        FROM
-            account_accounting_report AS AccountingReport,
-            account_fixed_asset_line  AS FixedAssetLine
-        LEFT JOIN account_fixed_asset AS FixedAsset ON FixedAssetLine.fixed_asset = FixedAsset.id
-        LEFT JOIN account_fixed_asset_Category AS FixedAssetCategory ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
-        LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
-        WHERE
-            AccountingReport.id = ?
-            AND FixedAsset.company = AccountingReport.company
-            AND FixedAsset.id != 0
-            AND FixedAssetLine.status_select = 2
-            AND FixedAssetLine.type_select = 1
-            AND FixedAssetType.technical_type_select != 1
-            AND (FixedAsset.status_select IN (2,3)
-                OR (FixedAsset.status_select = 4 AND FixedAsset.disposal_date >= (AccountingReport.date_from - interval '1 day')))
-            AND FixedAssetLine.depreciation_date <= AccountingReport.date_from
-	UNION ALL
+	(SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
+        FixedAssetLine.depreciation AS depreciation_a,
+        0 AS depreciation_b,
+        0 AS depreciation_c,
+        0 AS impairment_value_a,
+        0 AS impairment_value_b,
+        0 AS impairment_value_c
+    FROM
+        account_accounting_report AS AccountingReport,
+        account_fixed_asset_line  AS FixedAssetLine
+    LEFT JOIN account_fixed_asset AS FixedAsset ON FixedAssetLine.fixed_asset = FixedAsset.id
+    LEFT JOIN account_fixed_asset_Category AS FixedAssetCategory ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
+    LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
+    WHERE
+        AccountingReport.id = ?
+        AND FixedAsset.company = AccountingReport.company
+        AND FixedAsset.status_select != 1
+        AND FixedAssetLine.status_select = 2
+        AND FixedAssetLine.type_select = 1
+        AND FixedAssetType.technical_type_select != 1
+        AND FixedAssetLine.depreciation_date < AccountingReport.date_from
+    UNION ALL
+    SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
+        -FixedAssetLine.cumulative_depreciation AS depreciation_a,
+        0 AS depreciation_b,
+        0 AS depreciation_c,
+        0 AS impairment_value_a,
+        0 AS impairment_value_b,
+        0 AS impairment_value_c
+    FROM
+        account_accounting_report AS AccountingReport,
+        account_fixed_asset_line  AS FixedAssetLine
+    LEFT JOIN account_fixed_asset AS FixedAsset ON FixedAssetLine.fixed_asset = FixedAsset.id
+    LEFT JOIN account_fixed_asset_Category AS FixedAssetCategory ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
+    LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
+    WHERE
+        AccountingReport.id = ?
+        AND FixedAsset.company = AccountingReport.company
+        AND FixedAsset.status_select = 4
+        AND FixedAssetLine.status_select = 2
+        AND FixedAssetLine.type_select = 1
+        AND FixedAssetType.technical_type_select != 1
+        AND FixedAsset.disposal_date < AccountingReport.date_from
+        AND FixedAssetLine.depreciation_date = (
+            SELECT
+                FixedAssetLine2.depreciation_date
+            FROM
+                account_accounting_report AS AccountingReport2,
+                account_fixed_asset_line  AS FixedAssetLine2
+            LEFT JOIN account_fixed_asset AS FixedAsset2 ON FixedAssetLine2.fixed_asset = FixedAsset.id
+            WHERE
+                AccountingReport2.id = AccountingReport.id
+                AND FixedAsset2.id = FixedAsset.id
+                AND FixedAssetLine2.status_select = 2
+                AND FixedAssetLine2.type_select = 1
+                AND FixedAssetLine2.depreciation_date < AccountingReport2.date_from
+            ORDER BY FixedAssetLine2.depreciation_date DESC LIMIT 1)
+    UNION ALL
 	SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
 			FixedAsset.already_depreciated_amount AS imported_depreciation_a,
 			0 AS depreciation_b,
