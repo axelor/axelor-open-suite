@@ -876,8 +876,8 @@ public class MoveController {
       if (StringUtils.notEmpty(errorMessage)) {
         if (move.getId() != null) {
           response.setValue(
-                  "paymentCondition",
-                  Beans.get(MoveRepository.class).find(move.getId()).getPaymentCondition());
+              "paymentCondition",
+              Beans.get(MoveRepository.class).find(move.getId()).getPaymentCondition());
         }
 
         response.setError(errorMessage);

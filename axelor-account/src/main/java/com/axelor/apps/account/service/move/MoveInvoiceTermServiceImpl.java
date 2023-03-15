@@ -35,7 +35,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
