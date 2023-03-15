@@ -510,7 +510,9 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     moveLine.setDueDate(moveDate);
 
     List<AnalyticMoveLine> analyticMoveLineList =
-        new ArrayList<>(moveLine.getAnalyticMoveLineList());
+        CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            ? new ArrayList<>()
+            : new ArrayList<>(moveLine.getAnalyticMoveLineList());
     moveLine.clearAnalyticMoveLineList();
     getAndComputeAnalyticDistribution(product, move, moveLine, isPurchase);
 
