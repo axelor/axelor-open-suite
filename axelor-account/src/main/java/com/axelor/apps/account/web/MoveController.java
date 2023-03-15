@@ -773,7 +773,6 @@ public class MoveController {
       } else if (request.getContext().containsKey("headerChange")
           && (boolean) request.getContext().get("headerChange")) {
         Move move = request.getContext().asType(Move.class);
-        move = Beans.get(MoveRepository.class).find(move.getId());
 
         boolean isAllUpdated = moveInvoiceTermService.updateInvoiceTerms(move);
 
