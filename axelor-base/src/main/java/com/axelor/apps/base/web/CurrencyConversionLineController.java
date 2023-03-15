@@ -134,7 +134,7 @@ public class CurrencyConversionLineController {
           response.setInfo(I18n.get(BaseExceptionMessage.CURRENCY_6));
         else {
           response.setValue("variations", "0");
-          if (context.get("_model").equals("com.axelor.message.db.Wizard"))
+          if (context.get("_model").equals("com.axelor.utils.db.Wizard"))
             response.setValue("newExchangeRate", rate);
           else response.setValue("exchangeRate", rate);
           LocalDate todayDate =
