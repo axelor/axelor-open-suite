@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -106,15 +107,20 @@ public class MassEntryMoveController {
   }
 
   public void validateMassEntryMoves(ActionRequest request, ActionResponse response) {
+    String error;
     try {
       Move move = request.getContext().asType(Move.class);
 
       if (move != null) {
-        Beans.get(MassEntryService.class).validateMassEntryMove(move);
-        // TODO set return from validateMassEntryMove into response.setAlert()
-
-        response.setAttr("validateMassEntryMoves", "hidden", true);
-        response.setAttr("showMassEntryMoves", "hidden", false);
+        error = Beans.get(MassEntryService.class).validateMassEntryMove(move);
+        if (error.length() > 0) {
+          response.setFlash(
+              String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
+          response.setAttr("validateMassEntryMoves", "hidden", true);
+          response.setAttr("showMassEntryMoves", "hidden", false);
+        } else {
+          response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

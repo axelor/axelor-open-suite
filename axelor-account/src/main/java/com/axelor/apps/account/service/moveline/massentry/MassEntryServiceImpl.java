@@ -24,13 +24,21 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
@@ -55,6 +63,8 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MassEntryVerificationService massEntryVerificationService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected CurrencyService currencyService;
+  protected MoveValidateService moveValidateService;
+  protected PeriodServiceAccount periodServiceAccount;
 
   @Inject
   public MassEntryServiceImpl(
@@ -63,13 +73,17 @@ public class MassEntryServiceImpl implements MassEntryService {
       MoveCounterPartService moveCounterPartService,
       MassEntryVerificationService massEntryVerificationService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      MoveValidateService moveValidateService,
+      PeriodServiceAccount periodServiceAccount) {
     this.massEntryToolService = massEntryToolService;
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.currencyService = currencyService;
+    this.moveValidateService = moveValidateService;
+    this.periodServiceAccount = periodServiceAccount;
   }
 
   public void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
@@ -365,24 +379,44 @@ public class MassEntryServiceImpl implements MassEntryService {
   }
 
   public String validateMassEntryMove(Move move) {
-    String resultMessage = "";
+    String errors = "";
     List<Move> moveList;
+    User user = AuthUtils.getUser();
+    int i = 0;
 
-    moveList = massEntryToolService.createMoveListFromMassEntryList(move);
+    // TODO comptabiliser les écritures
+    // TODO generer les fiches immo quand on a un compte paramétré en immo
+    // TODO calcul des imputation budgétaire
 
-    for (Move moveListElement : moveList) {
-      if (!moveListElement.getJournal().getAllowAccountingNewOnMassEntry()) {}
-
-      // TODO comptabiliser les écritures
-      // TODO generer les fiches immo quand on a un compte paramétré en immo
-      // TODO calcul des imputation budgétaire
-
-      // TODO ajouter une option sur le journal
-      // si l'option "Autoriser la comptabilisation au status Nouveau>> est coché
-      // alors on comptabilise les écritures avec le status "Nouveau"
-      // sinon on ne comptabilise pas les écritures a nouveau
-
+    if (massEntryToolService.verifyJournalAuthorizeNewMove(
+        move.getMoveLineMassEntryList(), move.getJournal())) {
+      moveList = massEntryToolService.createMoveListFromMassEntryList(move);
+      // TODO check if list is null
+      for (Move moveListElement : moveList) {
+        String moveTemporaryMoveNUmber = moveListElement.getReference();
+        try {
+          moveListElement.setReference(null);
+          if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(moveListElement, user)) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                String.format(
+                    I18n.get(AccountExceptionMessage.ACCOUNT_PERIOD_TEMPORARILY_CLOSED),
+                    moveListElement.getReference()));
+          }
+          if (moveListElement.getStatusSelect() != MoveRepository.STATUS_ACCOUNTED
+              && moveListElement.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
+            moveValidateService.accounting(moveListElement);
+          }
+        } catch (Exception e) {
+          TraceBackService.trace(e);
+          if (errors.length() > 0) {
+            errors = errors.concat(", ");
+          }
+          errors = errors.concat(moveTemporaryMoveNUmber);
+        }
+      }
     }
-    return resultMessage;
+
+    return errors;
   }
 }

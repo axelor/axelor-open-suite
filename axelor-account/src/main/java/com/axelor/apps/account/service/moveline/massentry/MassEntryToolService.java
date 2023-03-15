@@ -1,5 +1,6 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
@@ -27,4 +28,7 @@ public interface MassEntryToolService {
   Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList);
 
   void setNewStatusSelectOnMassEntryLines(Move move, Integer newStatusSelect);
+
+  boolean verifyJournalAuthorizeNewMove(
+      List<MoveLineMassEntry> moveLineMassEntryList, Journal journal);
 }

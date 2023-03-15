@@ -1,8 +1,10 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.common.ObjectUtils;
@@ -153,6 +155,8 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
     for (int i = 1; i <= numberOfDifferentMovesToCheck; i++) {
       moveToCheck = new Move();
       moveToCheck.setJournal(move.getJournal());
+      moveToCheck.setCompany(move.getCompany());
+      moveToCheck.setCurrency(move.getCurrency());
 
       for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
         if (moveLineMassEntry.getTemporaryMoveNumber() == i) {
@@ -162,6 +166,8 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
                   periodService.getPeriod(
                       moveLineMassEntry.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
             }
+            moveToCheck.setReference(moveLineMassEntry.getTemporaryMoveNumber().toString());
+            moveToCheck.setDate(moveLineMassEntry.getDate());
             moveToCheck.setPartner(moveLineMassEntry.getPartner());
             moveToCheck.setOrigin(moveLineMassEntry.getOrigin());
             moveToCheck.setStatusSelect(moveLineMassEntry.getMoveStatusSelect());
@@ -169,6 +175,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
           }
           moveLineMassEntry.setMove(moveToCheck);
           moveLineMassEntry.setFieldsErrorList(null);
+          moveToCheck.addMoveLineListItem(moveLineMassEntry);
           moveToCheck.addMoveLineMassEntryListItem(moveLineMassEntry);
         }
       }
@@ -198,5 +205,18 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
         moveLineMassEntry.setMoveStatusSelect(newStatusSelect);
       }
     }
+  }
+
+  @Override
+  public boolean verifyJournalAuthorizeNewMove(
+      List<MoveLineMassEntry> moveLineMassEntryList, Journal journal) {
+    if (!journal.getAllowAccountingNewOnMassEntry()) {
+      for (MoveLineMassEntry moveLineMassEntry : moveLineMassEntryList) {
+        if (moveLineMassEntry.getMoveStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
