@@ -535,7 +535,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 : "");
     moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
     List<AnalyticMoveLine> analyticMoveLineList =
-        new ArrayList<>(moveLine.getAnalyticMoveLineList());
+        CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            ? new ArrayList<>()
+            : new ArrayList<>(moveLine.getAnalyticMoveLineList());
     moveLine.clearAnalyticMoveLineList();
     expenseLine
         .getAnalyticMoveLineList()

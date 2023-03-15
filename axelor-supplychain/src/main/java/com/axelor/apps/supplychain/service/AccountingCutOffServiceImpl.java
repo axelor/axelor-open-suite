@@ -497,7 +497,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     moveLine.setDueDate(moveDate);
 
     List<AnalyticMoveLine> analyticMoveLineList =
-        new ArrayList<>(moveLine.getAnalyticMoveLineList());
+        CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            ? new ArrayList<>()
+            : new ArrayList<>(moveLine.getAnalyticMoveLineList());
     moveLine.clearAnalyticMoveLineList();
     getAndComputeAnalyticDistribution(product, move, moveLine);
 
