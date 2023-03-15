@@ -632,7 +632,7 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException {
+  public List<Move> getMovesWithDuplicatedOrigin(Move move) {
     List<Move> moveList = null;
     if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
       moveList =

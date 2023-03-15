@@ -324,7 +324,7 @@ public class MassEntryServiceImpl implements MassEntryService {
             : null);
   }
 
-  public void checkMassEntryMoveGeneration(Move move) throws AxelorException {
+  public void checkMassEntryMoveGeneration(Move move) {
     List<Move> moveList;
 
     moveList = massEntryToolService.createMoveListFromMassEntryList(move);
@@ -370,15 +370,19 @@ public class MassEntryServiceImpl implements MassEntryService {
 
     moveList = massEntryToolService.createMoveListFromMassEntryList(move);
 
-    // TODO comptabiliser les écritures
-    // TODO generer les fiches immo quand on a un compte paramétré en immo
-    // TODO calcul des imputation budgétaire
+    for (Move moveListElement : moveList) {
+      if (!moveListElement.getJournal().getAllowAccountingNewOnMassEntry()) {}
 
-    // TODO ajouter une option sur le journal
-    // si l'option "Autoriser la comptabilisation au status Nouveau>> est coché
-    // alors on comptabilise les écritures avec le status "Nouveau"
-    // sinon on ne comptabilise pas les écritures a nouveau
+      // TODO comptabiliser les écritures
+      // TODO generer les fiches immo quand on a un compte paramétré en immo
+      // TODO calcul des imputation budgétaire
 
+      // TODO ajouter une option sur le journal
+      // si l'option "Autoriser la comptabilisation au status Nouveau>> est coché
+      // alors on comptabilise les écritures avec le status "Nouveau"
+      // sinon on ne comptabilise pas les écritures a nouveau
+
+    }
     return resultMessage;
   }
 }

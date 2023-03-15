@@ -83,20 +83,22 @@ public class MassEntryMoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      if (move != null) {
-        if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-          Beans.get(MassEntryService.class).checkMassEntryMoveGeneration(move);
-          if (ObjectUtils.isEmpty(move.getMassEntryErrors())) {
-            response.setAttr("controlMassEntryMoves", "hidden", true);
-            response.setAttr("validateMassEntryMoves", "hidden", false);
-            response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL);
-          } else {
-            response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_ERROR);
-          }
-          response.setValues(move);
+      if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
+        Beans.get(MassEntryService.class).checkMassEntryMoveGeneration(move);
+        if (ObjectUtils.isEmpty(move.getMassEntryErrors())) {
+          response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL);
         } else {
-          response.setError(AccountExceptionMessage.MASS_ENTRY_MOVE_NO_LINE);
+          response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_ERROR);
         }
+
+        if (move.getJournal().getAllowAccountingNewOnMassEntry()
+            || ObjectUtils.isEmpty(move.getMassEntryErrors())) {
+          response.setAttr("controlMassEntryMoves", "hidden", true);
+          response.setAttr("validateMassEntryMoves", "hidden", false);
+        }
+        response.setValues(move);
+      } else {
+        response.setError(AccountExceptionMessage.MASS_ENTRY_MOVE_NO_LINE);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

@@ -185,7 +185,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         move, "Different origin dates in move : ", ObjectUtils.notEmpty(differentElements));
   }
 
-  public void checkOriginInAllMoveLineMassEntry(Move move) throws AxelorException {
+  public void checkOriginInAllMoveLineMassEntry(Move move) {
     List<MoveLineMassEntry> differentElements = new ArrayList<>();
 
     for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {

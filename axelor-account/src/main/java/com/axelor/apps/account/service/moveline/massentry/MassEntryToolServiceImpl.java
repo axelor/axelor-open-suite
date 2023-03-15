@@ -164,6 +164,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
             }
             moveToCheck.setPartner(moveLineMassEntry.getPartner());
             moveToCheck.setOrigin(moveLineMassEntry.getOrigin());
+            moveToCheck.setStatusSelect(moveLineMassEntry.getMoveStatusSelect());
             firstMove = false;
           }
           moveLineMassEntry.setMove(moveToCheck);
