@@ -126,6 +126,8 @@ public class BatchBillOfExchange extends AbstractBatch {
       Query<Invoice> query, List<Long> anomalyList, AccountingBatch accountingBatch) {
     List<Invoice> invoicesList = null;
     while (!(invoicesList = query.bind("anomalyList", anomalyList).fetch(FETCH_LIMIT)).isEmpty()) {
+      findBatch();
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       for (Invoice invoice : invoicesList) {
         try {
           createMoveAndUpdateInvoice(accountingBatch, invoice);
@@ -135,13 +137,14 @@ public class BatchBillOfExchange extends AbstractBatch {
           incrementAnomaly();
           TraceBackService.trace(
               e, "billOfExchangeBatch: create lcr accounting move", batch.getId());
-          continue;
+          break;
         }
       }
       JPA.clear();
     }
   }
 
+  @Transactional(rollbackOn = Exception.class)
   protected void createMoveAndUpdateInvoice(AccountingBatch accountingBatch, Invoice invoice)
       throws AxelorException {
 
