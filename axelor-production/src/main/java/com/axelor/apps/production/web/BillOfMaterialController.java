@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
@@ -25,9 +28,6 @@ import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -127,7 +127,7 @@ public class BillOfMaterialController {
     BillOfMaterial copy = Beans.get(BillOfMaterialService.class).generateNewVersion(billOfMaterial);
 
     response.setView(
-        ActionView.define("Bill of materials")
+        ActionView.define(I18n.get("Bill of materials"))
             .model(BillOfMaterial.class.getName())
             .add("form", "bill-of-material-form")
             .add("grid", "bill-of-material-grid")

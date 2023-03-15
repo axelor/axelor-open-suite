@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -259,6 +259,7 @@
     <option value="2">Permanently Closed</option>
     <option value="3">Adjusting</option>
     <option value="4">Temporarily Closed</option>
+    <option value="5">Closure in progress</option>
   </selection>
 
   <selection name="company.partner.category.select">
@@ -463,9 +464,9 @@
     <option value="2">Modification</option>
   </selection>
 
-  <selection id="base.object.data.config.model.select"
-    name="object.data.config.model.select">
+  <selection name="object.data.config.model.select">
     <option value="com.axelor.apps.base.db.Partner">Partner</option>
+    <option value="com.axelor.auth.db.User">User</option>
   </selection>
 
   <selection name="base.user.form.step.select">
@@ -475,16 +476,6 @@
     <option value="3">Employee</option>
     <option value="4">Activation</option>
     <option value="5">Complete</option>
-  </selection>
-
-  <selection name="select.language" id="base.language.select">
-    <option value="de">German Beta</option>
-    <option value="es">Spanish Beta</option>
-    <option value="pt">Portuguese Beta</option>
-    <option value="it">Italian Beta</option>
-    <option value="nl">Dutch Beta</option>
-    <option value="pl">Polish Beta</option>
-    <option value="ru">Russian Beta</option>
   </selection>
 
   <selection name="frequency.base.type.select">
@@ -547,7 +538,8 @@
     <option value="3">End of pack</option>
   </selection>
 
-  <selection name='trace.back.origin.select' id="trace.back.origin.select.base">
+  <selection name='trace.back.origin.select'>
+    <option value="default">Default</option>
     <option value="import">Importing</option>
   </selection>
 
@@ -674,6 +666,56 @@
   <selection name="import.batch.action.select">
     <option value="0">Import</option>
     <option value="1">Advanced import</option>
+  </selection>
+
+  <selection name='trace.back.type.select'>
+    <option value='0'>Technical anomaly</option>
+    <option value='1'>Functional anomaly</option>
+  </selection>
+
+  <selection name='trace.back.category.select'>
+    <option value='1'>Missing field</option>
+    <option value='2'>Non-unique key</option>
+    <option value='3'>No Return Value</option>
+    <option value='4'>Configuration problem</option>
+    <option value='5'>Inconsistency</option>
+  </selection>
+
+  <selection name="permission.assistant.type.select">
+    <option value="1">Groups</option>
+    <option value="2">Roles</option>
+  </selection>
+
+  <selection name="object.data.export.format.select">
+    <option value="csv">CSV</option>
+    <option value="xlsx">Excel</option>
+  </selection>
+
+  <selection name="data.config.line.type.select">
+    <option value="0">Path</option>
+    <option value="1">Query</option>
+  </selection>
+
+  <selection name="data.config.line.reset.path.select">
+    <option value="0">None</option>
+    <option value="1">Replace</option>
+    <option value="2">Delete</option>
+  </selection>
+
+  <selection name="data.backup.status.select">
+    <option value="0">Draft</option>
+    <option value="1">In Progress</option>
+    <option value="2">Backup Created</option>
+    <option value="3">Backup Restored</option>
+    <option value="4">Backup Restore Error</option>
+    <option value="5">Error</option>
+  </selection>
+
+  <selection name="global.tracking.log.type.select">
+    <option value="1">CREATE</option>
+    <option value="3">UPDATE</option>
+    <option value="4">DELETE</option>
+    <option value="5">EXPORT</option>
   </selection>
 
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="helpdesk-root" title="Helpdesk" order="-80"
     if="__config__.app.isApp('helpdesk')" icon="fa-life-ring" icon-background="#b6473f"/>
@@ -108,7 +108,7 @@
   </action-view>
 
   <menuitem title="SLA" name="helpdesk-report-sla" action="helpdesk.report.sla"
-    parent="helpdesk-reporting" if="__config__.app.getApp('helpdesk').getIsSla()"/>
+    parent="helpdesk-reporting" if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
 
   <action-view name="helpdesk.report.sla" title="SLA">
     <view name="helpdesk.sla.dashboard" type="dashboard"/>
@@ -121,7 +121,7 @@
 
   <menuitem title="SLA policies" name="helpdesk-sla-policies-all"
     action="helpdesk.sla.policies.all" parent="helpdesk-config"
-    if="__config__.app.getApp('helpdesk').getIsSla()"/>
+    if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
 
   <action-view name="helpdesk.sla.policies.all" title="SLA policies"
     model="com.axelor.apps.helpdesk.db.Sla">

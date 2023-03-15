@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.*;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.stock.db.StockCorrection;
+import com.axelor.apps.stock.db.StockCorrectionReason;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import java.math.BigDecimal;
 import java.util.Map;
 

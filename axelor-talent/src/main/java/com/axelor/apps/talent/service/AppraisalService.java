@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,16 +19,12 @@ package com.axelor.apps.talent.service;
 
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.Appraisal;
-import com.axelor.exception.AxelorException;
-import java.io.IOException;
 import java.util.Set;
 import javax.mail.MessagingException;
 
 public interface AppraisalService {
 
-  public void send(Appraisal appraisal)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException;
+  public void send(Appraisal appraisal) throws ClassNotFoundException, MessagingException;
 
   public void realize(Appraisal appraisal);
 
@@ -38,6 +34,5 @@ public interface AppraisalService {
 
   public Set<Long> createAppraisals(
       Appraisal appraisalTemplate, Set<Employee> employees, Boolean send)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException;
+      throws ClassNotFoundException, MessagingException;
 }

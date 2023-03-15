@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,17 +32,19 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -71,6 +73,7 @@ public class AccountClearanceService {
   protected AppBaseService appBaseService;
   protected User user;
   protected MoveLineCreateService moveLineCreateService;
+  protected BankDetailsService bankDetailsService;
 
   @Inject
   public AccountClearanceService(
@@ -84,7 +87,8 @@ public class AccountClearanceService {
       TaxService taxService,
       TaxAccountService taxAccountService,
       AccountClearanceRepository accountClearanceRepo,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      BankDetailsService bankDetailsService) {
 
     this.appBaseService = appBaseService;
     this.user = userService.getUser();
@@ -97,6 +101,7 @@ public class AccountClearanceService {
     this.taxAccountService = taxAccountService;
     this.accountClearanceRepo = accountClearanceRepo;
     this.moveLineCreateService = moveLineCreateService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   public List<? extends MoveLine> getExcessPayment(AccountClearance accountClearance)
@@ -152,6 +157,13 @@ public class AccountClearanceService {
     Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 
     for (MoveLine moveLine : moveLineList) {
+      if (moveLine.getAccount().getVatSystemSelect() == null
+          || moveLine.getAccount().getVatSystemSelect() == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+            moveLine.getAccount().getCode());
+      }
       Account taxAccount =
           taxAccountService.getAccount(
               tax,
@@ -169,7 +181,8 @@ public class AccountClearanceService {
     accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
     accountClearance.setDateTime(appBaseService.getTodayDateTime());
     accountClearance.setName(
-        sequenceService.getSequenceNumber(SequenceRepository.ACCOUNT_CLEARANCE, company));
+        sequenceService.getSequenceNumber(
+            SequenceRepository.ACCOUNT_CLEARANCE, company, AccountClearance.class, "name"));
     accountClearanceRepo.save(accountClearance);
   }
 
@@ -185,6 +198,11 @@ public class AccountClearanceService {
     Partner partner = moveLine.getPartner();
 
     // Move
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
     Move move =
         moveCreateService.createMove(
             journal,
@@ -196,7 +214,8 @@ public class AccountClearanceService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             moveLine.getMove().getFunctionalOriginSelect(),
             null,
-            null);
+            null,
+            companyBankDetails);
 
     // Debit MoveLine 411
     BigDecimal amount = moveLine.getAmountRemaining();

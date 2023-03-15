@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,11 +18,13 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -45,8 +47,6 @@ import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -93,7 +93,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SupplyChainConfigService supplyChainConfigService,
       ProductCompanyService productCompanyService,
       PartnerStockSettingsService partnerStockSettingsService) {
-
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -224,13 +223,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         continue;
       }
 
-      LocalDate dateKey = saleOrderLine.getEstimatedDelivDate();
+      LocalDate dateKey = saleOrderLine.getEstimatedShippingDate();
 
       if (dateKey == null) {
-        dateKey = saleOrderLine.getSaleOrder().getDeliveryDate();
+        dateKey = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
       }
       if (dateKey == null) {
-        dateKey = saleOrderLine.getDesiredDelivDate();
+        dateKey = saleOrderLine.getDesiredDeliveryDate();
       }
 
       List<SaleOrderLine> saleOrderLineLists = saleOrderLinePerDateMap.get(dateKey);
@@ -270,7 +269,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (toStockLocation == null) {
       toStockLocation =
           partnerStockSettingsService.getDefaultExternalStockLocation(
-              saleOrder.getClientPartner(), company);
+              saleOrder.getClientPartner(), company, null);
     }
     if (toStockLocation == null) {
       toStockLocation =
@@ -340,10 +339,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
           break;
         case SupplyChainConfigRepository.SALE_ORDER_SHIPPING_DATE:
           SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-          if (saleOrderLine == null || saleOrderLine.getEstimatedDelivDate() == null) {
+          if (saleOrderLine == null || saleOrderLine.getEstimatedShippingDate() == null) {
             reservationDateTime = null;
           } else {
-            reservationDateTime = saleOrderLine.getEstimatedDelivDate().atStartOfDay();
+            reservationDateTime = saleOrderLine.getEstimatedShippingDate().atStartOfDay();
           }
           break;
         default:
@@ -517,7 +516,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     updateDeliveryState(saleOrder);
   }
 
-  private int computeDeliveryState(SaleOrder saleOrder) throws AxelorException {
+  protected int computeDeliveryState(SaleOrder saleOrder) throws AxelorException {
 
     if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
       return SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED;

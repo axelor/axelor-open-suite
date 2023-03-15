@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,9 +25,12 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -36,9 +39,6 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -160,6 +160,10 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
       Account forecastedInvCustAccount = accountingBatch.getForecastedInvCustAccount();
       Account forecastedInvSuppAccount = accountingBatch.getForecastedInvSuppAccount();
+      String prefixOrigin =
+          accountingBatch.getPrefixOrigin() != null
+              ? accountingBatch.getPrefixOrigin()
+              : miscOpeJournal.getPrefixOrigin() != null ? miscOpeJournal.getPrefixOrigin() : "";
 
       List<Move> moveList =
           cutOffSupplyChainService.generateCutOffMovesFromStockMove(
@@ -177,7 +181,8 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
               automaticReverse,
               automaticReconcile,
               forecastedInvCustAccount,
-              forecastedInvSuppAccount);
+              forecastedInvSuppAccount,
+              prefixOrigin);
 
       if (moveList != null && !moveList.isEmpty()) {
         updateStockMove(stockMove);

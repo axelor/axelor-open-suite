@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,13 +18,13 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.exception.AxelorException;
+import com.axelor.utils.StringTool;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -213,14 +213,14 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     }
 
     if (label != null && !label.isEmpty()) {
-      if (stringBuilder.toString().isEmpty() || stringBuilder == null) {
+      if (stringBuilder.toString().isEmpty()) {
         stringBuilder.append(label);
       } else {
-        stringBuilder.append(" - " + label);
+        stringBuilder.append(" - ").append(label);
       }
     }
 
-    if (!stringBuilder.toString().isEmpty() && stringBuilder != null) {
+    if (!stringBuilder.toString().isEmpty()) {
       stringBuilder.append(" - ");
     }
 
@@ -229,7 +229,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     }
 
     if (bankFullName != null && !bankFullName.isEmpty()) {
-      stringBuilder.append(" - " + bankFullName);
+      stringBuilder.append(" - ").append(bankFullName);
     }
 
     return stringBuilder.toString();

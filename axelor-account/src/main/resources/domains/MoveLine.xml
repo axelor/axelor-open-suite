@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -17,11 +17,12 @@
     <date name="dueDate" title="Due Date" initParam="true"/>
     <date name="cutOffStartDate" title="From date"/>
     <date name="cutOffEndDate" title="To date"/>
+    <boolean name="isCutOffGenerated" default="false"/>
     <integer name="counter" title="Line Nbr." initParam="true"/>
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>
-    <string name="origin" title="Origin" initParam="true"/>
+    <string name="origin" title="moveLine.origin" initParam="true"/>
 
     <one-to-many name="debitReconcileList" orphanRemoval="false" ref="Reconcile"
       title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
@@ -41,8 +42,13 @@
     <string name="passageReason" title="Doubtful Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <many-to-one name="taxLineBeforeReverse" ref="com.axelor.apps.account.db.TaxLine"
+      title="Tax"/>
     <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine"
       title="Source Tax"/>
+
+    <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
+      title="Tax Equiv"/>
 
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5"
       initParam="true"/>
@@ -105,12 +111,6 @@
       mappedBy="moveLine" title="Invoice terms"/>
 
     <!-- DAS2 -->
-    <many-to-one name="serviceType" ref="ServiceType" title="Service type"
-      readonly="true"/>
-    <string name="serviceTypeCode" title="Service type code" readonly="true"/>
-    <many-to-one name="das2Activity" ref="com.axelor.apps.account.db.Das2Activity"
-      title="DAS2 activity" readonly="true"/>
-    <string name="das2ActivityName" title="DAS2 activity name" readonly="true"/>
 
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[
@@ -164,6 +164,17 @@
     <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
     <decimal name="remainingAmountAfterFinDiscount"
       title="Remaining amount after Fin. discount"/>
+
+    <!-- Fixed information -->
+    <string name="companyCode"/>
+    <string name="companyName"/>
+    <string name="journalCode"/>
+    <string name="journalName"/>
+    <string name="currencyCode"/>
+    <string name="companyCurrencyCode"/>
+    <string name="fiscalYearCode"/>
+    <date name="accountingDate"/>
+    <boolean name="adjustingMove"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>

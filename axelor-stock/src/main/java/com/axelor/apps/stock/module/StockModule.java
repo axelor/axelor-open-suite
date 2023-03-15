@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,8 @@ import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionStockRepository;
+import com.axelor.apps.stock.db.repo.StockHistoryLineManagementRepository;
+import com.axelor.apps.stock.db.repo.StockHistoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -59,10 +61,14 @@ import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
+import com.axelor.apps.stock.service.StockLocationLineHistoryService;
+import com.axelor.apps.stock.service.StockLocationLineHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
+import com.axelor.apps.stock.service.StockMoveCheckWapService;
+import com.axelor.apps.stock.service.StockMoveCheckWapServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -127,5 +133,8 @@ public class StockModule extends AxelorModule {
     bind(WapHistoryService.class).to(WapHistoryServiceImpl.class);
     bind(StockProductRestService.class).to(StockProductRestServiceImpl.class);
     bind(InventoryUpdateService.class).to(InventoryUpdateServiceImpl.class);
+    bind(StockHistoryLineRepository.class).to(StockHistoryLineManagementRepository.class);
+    bind(StockMoveCheckWapService.class).to(StockMoveCheckWapServiceImpl.class);
+    bind(StockLocationLineHistoryService.class).to(StockLocationLineHistoryServiceImpl.class);
   }
 }

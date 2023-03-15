@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
+
+  <entity name="GDPRRequest">
+    <integer name="typeSelect" title="Type" selection="gdpr.request.type.select"/>
+    <many-to-one name="gdprRequestOrigin" title="Request origin"
+      ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin"/>
+    <datetime name="requestDateT" title="Request date"/>
+    <datetime name="dueSendingDateT" title="Due sending date"/>
+    <integer name="statusSelect" title="Status" selection="gdpr.request.status.select"/>
+    <long name="modelId" title="Model id"/>
+    <string name="modelSelect" title="Model" selection="gdpr.request.model.select"/>
+    <string name="requestComment" title="Comment"/>
+    <string name="label" title="Label" namecolumn="true">
+      <![CDATA[
+        String name = "";
+       if (typeSelect == 0) {
+        name = "Access";
+       }
+       else {
+        name = "Erasure";
+       }
+		return name + " " + String.valueOf(requestDateT);
+	]]>
+    </string>
+    <many-to-one name="gdprResponse" ref="com.axelor.apps.gdpr.db.GDPRResponse"
+      title="Response"/>
+
+    <extra-code> <![CDATA[
+    		public static int REQUEST_TYPE_ACCESS = 0;
+    		public static int REQUEST_TYPE_ERASURE = 1;
+
+    		public static int REQUEST_STATUS_RECEIVED = 0;
+    		public static int REQUEST_STATUS_CONFIRMED = 1;
+    		public static int REQUEST_STATUS_SENT = 2;
+    		public static int REQUEST_STATUS_CANCELED = 3;
+    	]]>
+    </extra-code>
+  </entity>
+</domain-models>

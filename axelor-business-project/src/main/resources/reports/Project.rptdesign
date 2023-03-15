@@ -1872,10 +1872,10 @@ group by emp.id,emp.name,tm_validation_date,emp.hourly_rate]]></xml-property>
             <xml-property name="queryText"><![CDATA[select prod.full_name as ppt_activity,
 	sum(planned_hours) as total_hours,
 	case
-		when prod.unit = (select unit_hours from base_app_base) then
+		when prod.unit = (select unit_hours from studio_app_base) then
 			sum((planned_hours / NULLIF(planned_hours,0)) * prod.sale_price)
 		else	
-			sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+			sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from studio_app_base)), 0)) * prod.sale_price, 0))
 	end as revenue
 from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
@@ -2298,10 +2298,10 @@ group by month,partner.charge_back_purchase_select
 union
 select to_char(ppt.date_val, 'YYYY-MM') as month, 0 as costs, 
 case
-	when prod.unit = (select unit_hours from base_app_base) then
+	when prod.unit = (select unit_hours from studio_app_base) then
 		sum((planned_hours / NULLIF(planned_hours,0)) * prod.sale_price)
 	else	
-		sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+		sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from studio_app_base)), 0)) * prod.sale_price, 0))
 end as turnover
 from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
@@ -2318,14 +2318,14 @@ group by month,prod.unit
 union
 select to_char(tml.date_val, 'YYYY-MM') as month, 0 as costs, 
 case
-	when prod.unit = (select unit_hours from base_app_base) then
+	when prod.unit = (select unit_hours from studio_app_base) then
 		sum(hours_duration * prod.sale_price)
 	else	
 		case
-			when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit) > 0 then
-				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
+			when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from studio_app_base) and end_unit = prod.unit) > 0 then
+				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from studio_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
 			else
-				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))		
+				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from studio_app_base)), 0)) * prod.sale_price, 0))		
 		end
 end as turnover
 from hr_timesheet_line as tml
@@ -2904,14 +2904,14 @@ group by month,me.currency,project.currency) CostData group by month)) ChartData
             <xml-property name="queryText"><![CDATA[select prod.full_name as tml_activity,
 	sum(hours_duration) as total_hours,
 	case
-		when prod.unit = (select unit_hours from base_app_base) then
+		when prod.unit = (select unit_hours from studio_app_base) then
 			sum(hours_duration * prod.sale_price)
 		else
 			case
-				when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit) > 0 then
-					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
+				when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from studio_app_base) and end_unit = prod.unit) > 0 then
+					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from studio_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
 				else
-					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))		
+					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from studio_app_base)), 0)) * prod.sale_price, 0))		
 			end
 	end as revenue
 from hr_timesheet_line as tml

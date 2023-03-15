@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -47,6 +47,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -55,7 +56,9 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -74,14 +77,13 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.bankorder.BankOrderCreateServiceHr;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -93,7 +95,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.mail.MessagingException;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 @Singleton
@@ -115,6 +117,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected PaymentModeService paymentModeService;
   protected KilometricService kilometricService;
   protected PeriodRepository periodRepository;
+  protected BankDetailsService bankDetailsService;
 
   @Inject
   public ExpenseServiceImpl(
@@ -133,7 +136,8 @@ public class ExpenseServiceImpl implements ExpenseService {
       PaymentModeService paymentModeService,
       PeriodRepository periodRepository,
       MoveLineConsolidateService moveLineConsolidateService,
-      KilometricService kilometricService) {
+      KilometricService kilometricService,
+      BankDetailsService bankDetailsService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -151,6 +155,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.periodRepository = periodRepository;
     this.moveLineConsolidateService = moveLineConsolidateService;
     this.kilometricService = kilometricService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Override
@@ -246,8 +251,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendConfirmationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -296,8 +300,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendValidationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -322,8 +325,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendRefusalEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -373,6 +375,13 @@ public class ExpenseServiceImpl implements ExpenseService {
           expense.getEmployee().getName());
     }
 
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(
+              company, partner.getInPaymentMode(), partner, null);
+    }
+
     Move move =
         moveCreateService.createMove(
             accountConfigService.getExpenseJournal(accountConfig),
@@ -386,7 +395,8 @@ public class ExpenseServiceImpl implements ExpenseService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
             origin,
-            description);
+            description,
+            companyBankDetails);
 
     List<MoveLine> moveLines = new ArrayList<>();
 
@@ -497,6 +507,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                 : "");
     moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
+    List<AnalyticMoveLine> analyticMoveLineList =
+        new ArrayList<>(moveLine.getAnalyticMoveLineList());
+    moveLine.clearAnalyticMoveLineList();
     expenseLine
         .getAnalyticMoveLineList()
         .forEach(
@@ -504,6 +517,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 moveLine.addAnalyticMoveLineListItem(
                     analyticMoveLineGenerateRealService.createFromForecast(
                         analyticMoveLine, moveLine)));
+    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
     return moveLine;
   }
 
@@ -535,8 +551,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendCancellationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -600,13 +615,12 @@ public class ExpenseServiceImpl implements ExpenseService {
     Partner partner = expense.getEmployee().getContactPartner();
     LocalDate paymentDate = expense.getPaymentDate();
     BigDecimal paymentAmount = expense.getInTaxTotal();
-    BankDetails companyBankDetails = company.getDefaultBankDetails();
+    BankDetails bankDetails = expense.getBankDetails();
     String origin = expense.getExpenseSeq();
 
     Account employeeAccount;
 
-    Journal journal =
-        paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
+    Journal journal = paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails);
 
     MoveLine expenseMoveLine = this.getExpenseEmployeeMoveLineByLoop(expense);
 
@@ -628,13 +642,14 @@ public class ExpenseServiceImpl implements ExpenseService {
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null);
+            null,
+            bankDetails);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
             move,
             partner,
-            paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
+            paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails),
             paymentAmount,
             false,
             paymentDate,
@@ -681,7 +696,18 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public void addPayment(Expense expense) throws AxelorException {
-    addPayment(expense, expense.getBankDetails());
+    BankDetails bankDetails = expense.getBankDetails();
+    if (ObjectUtils.isEmpty(bankDetails)) {
+      bankDetails = expense.getCompany().getDefaultBankDetails();
+    }
+
+    if (ObjectUtils.isEmpty(bankDetails)) {
+      throw new AxelorException(
+          expense,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_NO_COMPANY_BANK_DETAILS));
+    }
+    addPayment(expense, bankDetails);
   }
 
   @Override
@@ -702,14 +728,21 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     Move paymentMove = expense.getPaymentMove();
     if (paymentMove != null) {
-      expense.setPaymentMove(null);
+      if (paymentMove.getStatusSelect() == MoveRepository.STATUS_NEW) {
+        expense.setPaymentMove(null);
+      }
       Beans.get(MoveCancelService.class).cancel(paymentMove);
     }
+    resetExpensePaymentAfterCancellation(expense);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void resetExpensePaymentAfterCancellation(Expense expense) {
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setPaymentDate(null);
     expense.setPaymentAmount(BigDecimal.ZERO);
-    expenseRepository.save(expense);
   }
 
   @Override
@@ -888,7 +921,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
   }
 
-  private void setExpenseSeq(Expense expense) throws AxelorException {
+  protected void setExpenseSeq(Expense expense) throws AxelorException {
     if (!Beans.get(SequenceService.class).isEmptyOrDraftSequenceNumber(expense.getExpenseSeq())) {
       return;
     }
@@ -898,7 +931,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     if (sequence != null) {
       expense.setExpenseSeq(
-          Beans.get(SequenceService.class).getSequenceNumber(sequence, expense.getSentDate()));
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(sequence, expense.getSentDate(), Expense.class, "expenseSeq"));
       if (expense.getExpenseSeq() != null) {
         return;
       }

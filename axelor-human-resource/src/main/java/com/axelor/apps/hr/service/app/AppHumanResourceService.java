@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.hr.service.app;
 
-import com.axelor.apps.base.db.AppExpense;
-import com.axelor.apps.base.db.AppLeave;
-import com.axelor.apps.base.db.AppTimesheet;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppExpense;
+import com.axelor.studio.db.AppLeave;
+import com.axelor.studio.db.AppTimesheet;
 
 public interface AppHumanResourceService extends AppBaseService {
 

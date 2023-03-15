@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form title="Response" name="gdpr-response-form" model="com.axelor.apps.gdpr.db.GDPRResponse">
+    <panel name="mainPanel">
+      <field name="typeSelect"/>
+      <field name="responseEmailAddress" widget="email"/>
+      <field name="sendingDateT" widget="date-time" showIf="sendingDateT"/>
+      <field name="responseMessage" showIf="responseMessage"/>
+      <field name="dataFile" showIf="dataFile"/>
+      <field name="responseErasureLogList" colSpan="12"
+        showIf="responseErasureLogList.length > 0"/>
+    </panel>
+  </form>
+</object-views>

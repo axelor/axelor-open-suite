@@ -1,0 +1,3 @@
+---
+title : "AxelorMessageException : Move it from message module to exception module"
+type : change

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move lines"
+    name="move-line-query-line-grid" editable="true">
+    <button name="selectBtn" onClick="action-move-line-query-line-group-set-isselected"
+      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelected"/>
+    <button name="unselectBtn" onClick="action-move-line-query-line-group-set-isselected"
+      title="Select / Unselect" icon="fa-minus-circle" showIf="isSelected"/>
+    <field name="moveLine.reconcileGroup" width="120"/>
+    <field name="moveLine" readonly="true"/>
+    <field name="moveLine.name" width="135"/>
+    <field name="moveLine.date" width="90"/>
+    <field name="moveLine.move.period" width="100" canView="false"/>
+    <field name="moveLine.move.journal" width="140"/>
+    <field name="moveLine.partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="moveLine.account" form-view="account-form" grid-view="account-grid"/>
+    <field name="moveLine.move.company" form-view="company-form" grid-view="company-grid"
+      width="120" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="moveLine.debit" aggregate="sum" width="100"/>
+    <field name="moveLine.credit" aggregate="sum" width="100"/>
+    <field name="moveLine.amountRemaining" aggregate="sum" width="100"/>
+    <field name="moveLine.taxLine" domain="self.endDate > :date OR self.endDate IS NULL"/>
+    <field name="moveLine.analyticDistributionTemplate"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      grid-view="analytic-distribution-template-grid"
+      form-view="analytic-distribution-template-form"/>
+    <field name="moveLine.move.statusSelect" width="90"/>
+    <field name="moveLine.origin" width="120"/>
+    <field name="moveLine.description"/>
+    <field name="moveLine.dueDate"/>
+    <field name="moveLineQuery.processSelect" hidden="true"/>
+    <field name="isSelected" hidden="true"/>
+  </grid>
+
+  <form model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move line"
+    name="move-line-query-line-form">
+    <panel name="mainPanel" itemSpan="6">
+      <field name="moveLine" readonly="true"/>
+      <field name="moveLine.name"/>
+      <field name="moveLine.date"/>
+      <field name="moveLine.move.period" canView="false"/>
+      <field name="moveLine.move.journal"/>
+      <field name="moveLine.partner" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="moveLine.account" form-view="account-form" grid-view="account-grid"/>
+      <field name="moveLine.move.company" form-view="company-form" grid-view="company-grid"
+        if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+      <field name="moveLine.debit" aggregate="sum"/>
+      <field name="moveLine.credit" aggregate="sum"/>
+      <field name="moveLine.amountRemaining" aggregate="sum"/>
+      <field name="moveLine.taxLine" domain="self.endDate > :date OR self.endDate IS NULL"/>
+      <field name="moveLine.analyticDistributionTemplate"
+        if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+        grid-view="analytic-distribution-template-grid"
+        form-view="analytic-distribution-template-form"/>
+      <field name="moveLine.move.statusSelect"/>
+      <field name="moveLine.reconcileGroup"/>
+      <field name="moveLine.origin"/>
+      <field name="moveLine.description"/>
+      <field name="moveLine.dueDate"/>
+      <field name="isSelected"/>
+    </panel>
+  </form>
+
+  <action-group name="action-move-line-query-line-group-set-isselected">
+    <action name="action-move-line-query-line-record-update-isselected"/>
+  </action-group>
+
+  <action-record name="action-move-line-query-line-record-update-isselected"
+    model="com.axelor.apps.account.db.MoveLineQueryLine">
+    <field name="isSelected" expr="eval: !isSelected"/>
+  </action-record>
+
+</object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -28,7 +29,6 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -75,38 +75,6 @@ public class OperationOrderController {
     operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
     Beans.get(OperationOrderWorkflowService.class)
         .setRealDates(operationOrder, realStartDateT, realEndDateT);
-  }
-
-  public void machineChange(ActionRequest request, ActionResponse response) {
-    try {
-      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-      OperationOrderRepository operationOrderRepo = Beans.get(OperationOrderRepository.class);
-      OperationOrderWorkflowService operationOrderWorkflowService =
-          Beans.get(OperationOrderWorkflowService.class);
-
-      operationOrder = operationOrderRepo.find(operationOrder.getId());
-      if (operationOrder != null
-          && operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
-        operationOrder = operationOrderWorkflowService.replan(operationOrder);
-        List<OperationOrder> operationOrderList =
-            operationOrderRepo
-                .all()
-                .filter(
-                    "self.manufOrder = ?1 AND self.priority >= ?2 AND self.statusSelect = 3 AND self.id != ?3",
-                    operationOrder.getManufOrder(),
-                    operationOrder.getPriority(),
-                    operationOrder.getId())
-                .order("priority")
-                .order("plannedEndDateT")
-                .fetch();
-        for (OperationOrder operationOrderIt : operationOrderList) {
-          operationOrderWorkflowService.replan(operationOrderIt);
-        }
-        response.setReload(true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
   }
 
   public void plan(ActionRequest request, ActionResponse response) {
@@ -256,7 +224,7 @@ public class OperationOrderController {
     }
   }
 
-  private String getTimezone(OperationOrder operationOrder) {
+  protected String getTimezone(OperationOrder operationOrder) {
     if (operationOrder.getManufOrder() == null
         || operationOrder.getManufOrder().getCompany() == null) {
       return null;

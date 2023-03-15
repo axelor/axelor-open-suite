@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,16 +17,31 @@
  */
 package com.axelor.apps.project.service.app;
 
-import com.axelor.apps.base.db.AppProject;
-import com.axelor.apps.base.db.repo.AppProjectRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.db.AppProject;
+import com.axelor.studio.db.repo.AppProjectRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProjectService {
 
-  @Inject private AppProjectRepository appProjectRepo;
+  protected AppProjectRepository appProjectRepo;
+
+  @Inject
+  public AppProjectServiceImpl(
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppProjectRepository appProjectRepo) {
+    super(appRepo, metaFiles, appVersionService, metaModelRepo);
+    this.appProjectRepo = appProjectRepo;
+  }
 
   @Override
   public AppProject getAppProject() {

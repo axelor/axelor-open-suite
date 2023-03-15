@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,13 +18,9 @@
 package com.axelor.apps.base.service.administration;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.repo.GroupRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.MetaScanner;
@@ -36,6 +32,9 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.meta.loader.ModuleManager;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.xml.XPathParse;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -125,13 +124,13 @@ public class ExportDbObjectService {
 
       return metaFile;
 
-    } catch (ParserConfigurationException | SAXException | IOException | AxelorException e) {
+    } catch (ParserConfigurationException | SAXException | IOException e) {
       e.printStackTrace();
     }
     return null;
   }
 
-  private void writeObjects(File objectFile) {
+  protected void writeObjects(File objectFile) {
     try {
       List<? extends MetaMenu> menuList =
           Beans.get(MetaMenuRepository.class)
@@ -149,7 +148,7 @@ public class ExportDbObjectService {
     }
   }
 
-  private void generateMenuGraph(List<? extends MetaMenu> menuList) {
+  protected void generateMenuGraph(List<? extends MetaMenu> menuList) {
     // log.debug("Checking menu list: {}",menuList);
     for (MetaMenu menu : menuList) {
       String model = menu.getAction() != null ? menu.getAction().getModel() : null;
@@ -171,7 +170,7 @@ public class ExportDbObjectService {
   }
 
   @SuppressWarnings("unchecked")
-  private void updateFieldData(MetaAction action) {
+  protected void updateFieldData(MetaAction action) {
     String[] objectName = action.getModel().split("\\.");
     String objName = objectName[objectName.length - 1];
     Map<String, Object> moduleMap = (Map<String, Object>) objectMap.get(objName);
@@ -219,7 +218,7 @@ public class ExportDbObjectService {
     objectList.add(action.getModel());
   }
 
-  private String getActionUrl(MetaAction action) {
+  protected String getActionUrl(MetaAction action) {
 
     String url = AppSettings.get().getBaseURL() + "#/ds";
     String viewType = getActionViewType(action.getXml());
@@ -265,7 +264,7 @@ public class ExportDbObjectService {
   }
 
   @SuppressWarnings("unchecked")
-  private void updateObjectMap(List<String> modules, SAXParser parser, XmlHandler xmlHandler)
+  protected void updateObjectMap(List<String> modules, SAXParser parser, XmlHandler xmlHandler)
       throws SAXException, IOException {
     for (String module : modules) {
 
@@ -286,7 +285,7 @@ public class ExportDbObjectService {
     }
   }
 
-  private Object updateObjectModel(
+  protected Object updateObjectModel(
       List<Map<String, String>> fieldList, String objectName, String moduleName) {
 
     for (Map<String, String> field : fieldList) {

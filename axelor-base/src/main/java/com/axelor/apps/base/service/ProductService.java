@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,18 +17,18 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
-import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 
 public interface ProductService {
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateProductPrice(Product product) throws AxelorException;
 
   public String getSequence(Product product) throws AxelorException;
@@ -37,7 +37,7 @@ public interface ProductService {
 
   public boolean hasActivePriceList(Product product);
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateProductVariants(Product productModel) throws AxelorException;
 
   public Product createProduct(Product productModel, ProductVariant productVariant, int seq)

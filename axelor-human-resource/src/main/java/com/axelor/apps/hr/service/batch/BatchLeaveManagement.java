@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,10 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -26,14 +30,10 @@ import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
@@ -56,6 +56,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 
   protected LeaveLineRepository leaveLineRepository;
   protected LeaveManagementRepository leaveManagementRepository;
+  protected EmployeeService employeeService;
 
   @Inject private Provider<LeaveService> leaveServiceProvider;
 
@@ -63,11 +64,13 @@ public class BatchLeaveManagement extends BatchStrategy {
   public BatchLeaveManagement(
       LeaveManagementService leaveManagementService,
       LeaveLineRepository leaveLineRepository,
-      LeaveManagementRepository leaveManagementRepository) {
+      LeaveManagementRepository leaveManagementRepository,
+      EmployeeService employeeService) {
 
     super(leaveManagementService);
     this.leaveLineRepository = leaveLineRepository;
     this.leaveManagementRepository = leaveManagementRepository;
+    this.employeeService = employeeService;
   }
 
   @Override
@@ -188,7 +191,7 @@ public class BatchLeaveManagement extends BatchStrategy {
     LeaveManagement leaveManagement =
         leaveManagementService.createLeaveManagement(
             leaveLine,
-            AuthUtils.getUser(),
+            employeeService.getUser(employee),
             batch.getHrBatch().getComments(),
             null,
             batch.getHrBatch().getStartDate(),

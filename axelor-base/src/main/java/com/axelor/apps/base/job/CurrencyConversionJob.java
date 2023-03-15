@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.base.job;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;

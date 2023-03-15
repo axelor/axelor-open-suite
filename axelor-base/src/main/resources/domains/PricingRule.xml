@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -41,6 +41,19 @@
 
      	]]></extra-code>
 
+    <track>
+      <field name="name"/>
+      <field name="concernedModel"/>
+      <field name="typeSelect"/>
+      <field name="formula"/>
+      <field name="company"/>
+      <field name="fieldToPopulate" on="UPDATE"/>
+      <field name="fieldTypeSelect" on="UPDATE"/>
+      <field name="operatorSelect" on="UPDATE"/>
+      <field name="tempVarName" on="UPDATE"/>
+      <field name="metaJsonField" on="UPDATE"/>
+      <field name="scale" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

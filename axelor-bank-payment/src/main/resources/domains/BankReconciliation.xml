@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -31,10 +31,15 @@
       title="Bank statement"/>
     <decimal name="totalPaid" title="Total paid" readonly="true"/>
     <decimal name="totalCashed" title="Total cashed" readonly="true"/>
-    <boolean name="includeOtherBankStatements" title="Include other bank statements"/>
+    <boolean name="includeOtherBankStatements" title="Include other bank statements"
+      default="true"/>
     <many-to-one name="validatedByUser" title="Validated By"
       ref="com.axelor.auth.db.User" readonly="true"/>
     <date name="validatedDate" title="Validated On" readonly="true"/>
+    <boolean name="hasBeenCorrected" title="Corrected" default="false"/>
+    <datetime name="correctedDateTime" readonly="true"/>
+    <many-to-one name="correctedUser" ref="com.axelor.auth.db.User" readonly="true"/>
+    <string name="comments" title="Comment" large="true"/>
 
     <!-- Balances -->
 
@@ -62,6 +67,7 @@
 	   	// Status select
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_VALIDATED = 2;
+		public static final int STATUS_UNDER_CORRECTION = 3;
 
 	]]></extra-code>
 

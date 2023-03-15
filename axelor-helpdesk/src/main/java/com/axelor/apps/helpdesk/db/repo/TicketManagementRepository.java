@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.helpdesk.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.google.inject.Inject;
@@ -30,7 +32,11 @@ public class TicketManagementRepository extends TicketRepository {
   @Override
   public Ticket save(Ticket ticket) {
 
-    ticketService.computeSeq(ticket);
+    try {
+      ticketService.computeSeq(ticket);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+    }
     ticketService.computeSLA(ticket);
     ticketService.checkSLAcompleted(ticket);
     return super.save(ticket);

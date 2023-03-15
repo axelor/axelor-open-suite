@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="day-planning-grid" title="Day" model="com.axelor.apps.base.db.DayPlanning"
+    editable="true" canMove="true" orderBy="sequence">
+    <field name="nameSelect" readonly="true"/>
+    <field name="morningFrom"/>
+    <field name="morningTo"/>
+    <field name="afternoonFrom"/>
+    <field name="afternoonTo"/>
+  </grid>
+
+  <form name="day-planning-form" title="Day" model="com.axelor.apps.base.db.DayPlanning">
+    <panel name="mainPanel">
+      <field name="nameSelect" readonly="true"/>
+      <field name="morningFrom"/>
+      <field name="morningTo"/>
+      <field name="afternoonFrom"/>
+      <field name="afternoonTo"/>
+    </panel>
+  </form>
+
+</object-views>

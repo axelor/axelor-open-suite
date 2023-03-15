@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,12 +18,14 @@
 package com.axelor.apps.hr.web.timesheet;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
@@ -33,22 +35,21 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Wizard;
+import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -258,7 +259,7 @@ public class TimesheetController {
     Timesheet timesheet =
         Beans.get(TimesheetRepository.class).find(Long.valueOf((Integer) timesheetMap.get("id")));
     response.setView(
-        ActionView.define("Timesheet")
+        ActionView.define(I18n.get("Timesheet"))
             .model(Timesheet.class.getName())
             .add("form", "timesheet-form")
             .param("forceEdit", "true")
@@ -444,7 +445,7 @@ public class TimesheetController {
    * @param response
    * @throws AxelorException
    */
-  public void valid(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void valid(ActionRequest request, ActionResponse response) {
 
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -486,7 +487,7 @@ public class TimesheetController {
   }
 
   // action called when refusing a timesheet. Changing status + Sending mail to Applicant
-  public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -557,7 +558,9 @@ public class TimesheetController {
       if (user != null) {
         Company company = user.getActiveCompany();
         if (company != null && company.getHrConfig() != null) {
-          showActivity = !company.getHrConfig().getUseUniqueProductForTimesheet();
+          showActivity =
+              !company.getHrConfig().getUseUniqueProductForTimesheet()
+                  && Beans.get(AppHumanResourceService.class).getAppTimesheet().getEnableActivity();
         }
       }
     }
@@ -570,7 +573,7 @@ public class TimesheetController {
     Context context = request.getContext();
 
     String url =
-        "hr/timesheet?timesheetId="
+        "hr/timesheet/?timesheetId="
             + context.get("id")
             + "&showActivity="
             + context.get("showActivity");

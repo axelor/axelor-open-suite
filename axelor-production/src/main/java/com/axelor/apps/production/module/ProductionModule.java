@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,10 @@ import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepositor
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.rest.ManufOrderProductRestService;
 import com.axelor.apps.production.rest.ManufOrderProductRestServiceImpl;
+import com.axelor.apps.production.rest.ManufOrderRestService;
+import com.axelor.apps.production.rest.ManufOrderRestServiceImpl;
+import com.axelor.apps.production.rest.OperationOrderRestService;
+import com.axelor.apps.production.rest.OperationOrderRestServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
@@ -91,6 +95,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServic
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
@@ -168,5 +174,8 @@ public class ProductionModule extends AxelorModule {
     bind(ConfiguratorProdProductService.class).to(ConfiguratorProdProductServiceImpl.class);
     bind(ProductVariantServiceSupplyChainImpl.class).to(ProductVariantServiceProductionImpl.class);
     bind(ManufOrderProductRestService.class).to(ManufOrderProductRestServiceImpl.class);
+    bind(ManufOrderRestService.class).to(ManufOrderRestServiceImpl.class);
+    bind(OperationOrderRestService.class).to(OperationOrderRestServiceImpl.class);
+    bind(ManufOrderWorkflowService.class).to(ManufOrderWorkflowServiceImpl.class);
   }
 }

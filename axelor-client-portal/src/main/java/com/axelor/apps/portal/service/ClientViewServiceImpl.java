@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,6 @@ package com.axelor.apps.portal.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
@@ -37,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
+import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
@@ -375,7 +375,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     return filters;
   }
 
-  private void addPermissionFilter(List<Filter> filters, Filter filterFromPermission) {
+  protected void addPermissionFilter(List<Filter> filters, Filter filterFromPermission) {
     if (filterFromPermission != null) {
       filters.add(filterFromPermission);
     }

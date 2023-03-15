@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.service.LogisticalFormLineService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -64,7 +64,7 @@ public class LogisticalFormLineController {
     }
   }
 
-  private LogisticalFormLine getLogisticalFormLine(ActionRequest request) {
+  protected LogisticalFormLine getLogisticalFormLine(ActionRequest request) {
     LogisticalFormLine logisticalFormLine = request.getContext().asType(LogisticalFormLine.class);
 
     if (logisticalFormLine.getLogisticalForm() == null) {

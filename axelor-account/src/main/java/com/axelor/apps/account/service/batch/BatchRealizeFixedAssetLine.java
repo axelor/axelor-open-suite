@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,10 +31,10 @@ import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -76,7 +76,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   @Override
   protected void process() {
-    String query = "self.statusSelect = :statusSelect";
+    String query = "self.statusSelect = :statusSelect AND self.fixedAsset.company.id = :companyId";
     LocalDate startDate = batch.getAccountingBatch().getStartDate();
     LocalDate endDate = batch.getAccountingBatch().getEndDate();
     if (!batch.getAccountingBatch().getUpdateAllRealizedFixedAssetLines()
@@ -89,6 +89,11 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     }
     HashMap<String, Object> queryParameters = new HashMap<>();
     queryParameters.put("statusSelect", FixedAssetLineRepository.STATUS_PLANNED);
+    queryParameters.put(
+        "companyId",
+        batch.getAccountingBatch().getCompany() != null
+            ? batch.getAccountingBatch().getCompany().getId()
+            : Long.valueOf(0));
     queryParameters.put("startDate", startDate);
     queryParameters.put("endDate", endDate);
     queryParameters.put(
@@ -117,7 +122,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
         if (fixedAsset != null
             && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
           fixedAssetSet.add(fixedAsset);
-          fixedAssetLineMoveService.realize(fixedAssetLine, true, true);
+          fixedAssetLineMoveService.realize(fixedAssetLine, true, true, false);
           incrementDone();
           countFixedAssetLineType(fixedAssetLine);
         }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.production.service.productionorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -31,8 +33,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrde
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -70,7 +70,9 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
   public String getProductionOrderSeq() throws AxelorException {
 
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PRODUCTION_ORDER);
+    String seq =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PRODUCTION_ORDER, ProductionOrder.class, "productionOrderSeq");
 
     if (seq == null) {
       throw new AxelorException(

@@ -24,6 +24,7 @@ dependencies {
     jaxb libs.jaxb_xjc
 	jaxb libs.jaxb_impl
 	jaxb libs.jaxb_api
+	implementation libs.jakarta_api
 
 	api files("src/main/lib/ebics-1.0.2.jar")
 

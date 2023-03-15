@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,17 +23,17 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
-import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
+import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
-import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
@@ -45,19 +45,24 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -139,7 +144,7 @@ public class MoveController {
       Move newMove = Beans.get(MoveReverseService.class).generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
-            ActionView.define(I18n.get("Account move"))
+            ActionView.define(I18n.get("Account moves"))
                 .model("com.axelor.apps.account.db.Move")
                 .add("grid", "move-grid")
                 .add("form", "move-form")
@@ -156,7 +161,8 @@ public class MoveController {
   @SuppressWarnings("unchecked")
   public void massReverseMove(ActionRequest request, ActionResponse response) {
     try {
-      List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+      Context context = request.getContext();
+      List<Long> moveIds = (List<Long>) context.get("_ids");
 
       if (CollectionUtils.isNotEmpty(moveIds)) {
         List<Move> moveList =
@@ -170,7 +176,7 @@ public class MoveController {
         if (CollectionUtils.isNotEmpty(moveList)) {
           Map<String, Object> assistantMap =
               Beans.get(ExtractContextMoveService.class)
-                  .getMapFromMoveWizardMassReverseForm(request.getContext());
+                  .getMapFromMoveWizardMassReverseForm(context);
 
           String reverseMoveIds =
               Beans.get(MoveReverseService.class).massReverse(moveList, assistantMap).stream()
@@ -179,7 +185,7 @@ public class MoveController {
                   .collect(Collectors.joining(","));
 
           response.setView(
-              ActionView.define(I18n.get("Account move"))
+              ActionView.define(I18n.get("Account moves"))
                   .model("com.axelor.apps.account.db.Move")
                   .add("grid", "move-grid")
                   .add("form", "move-form")
@@ -242,7 +248,7 @@ public class MoveController {
           User user = AuthUtils.getUser();
           for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
             Move move = Beans.get(MoveRepository.class).find(Long.valueOf(id));
-            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
+            if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, user)) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
@@ -441,7 +447,9 @@ public class MoveController {
     Move move = request.getContext().asType(Move.class);
     if (move != null) {
       try {
-        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(move.getCompany(), move.getJournal());
         response.setAttr("partner", "domain", domain);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -559,10 +567,20 @@ public class MoveController {
     }
   }
 
-  public void setOriginAndDescriptionOnLines(ActionRequest request, ActionResponse response) {
+  public void setOriginOnLines(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveToolService.class).setOriginAndDescriptionOnMoveLineList(move);
+      Beans.get(MoveToolService.class).setOriginOnMoveLineList(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDescriptionOnLines(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MoveToolService.class).setDescriptionOnMoveLineList(move);
       response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -580,11 +598,22 @@ public class MoveController {
     }
   }
 
-  public void validateOriginDescription(ActionRequest request, ActionResponse response) {
+  public void validateOrigin(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      if (move.getOrigin() == null && move.getDescription() == null) {
-        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION));
+      if (move.getOrigin() == null) {
+        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void validateDescription(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getDescription() == null) {
+        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_DESCRIPTION));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -661,27 +690,18 @@ public class MoveController {
     }
   }
 
-  public void filterJournalPartnerCompatibleType(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      String journalPartnerCompatibleDomain =
-          Beans.get(JournalService.class).filterJournalPartnerCompatibleType(move);
-      if (journalPartnerCompatibleDomain != null) {
-        response.setAttr("partner", "domain", journalPartnerCompatibleDomain);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void onChangeJournal(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
       if (move.getPartner() != null) {
-        boolean isPartnerNotCompatible =
-            Beans.get(MoveCreateFromInvoiceService.class).isPartnerNotCompatible(move);
-        if (isPartnerNotCompatible) {
+        boolean isPartnerCompatible =
+            Beans.get(JournalCheckPartnerTypeService.class)
+                .isPartnerCompatible(move.getJournal(), move.getPartner());
+        if (!isPartnerCompatible) {
           response.setValue("partner", null);
+          response.setNotify(
+              I18n.get(
+                  AccountExceptionMessage.MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL));
         }
       }
     } catch (Exception e) {
@@ -705,8 +725,7 @@ public class MoveController {
       User user = AuthUtils.getUser();
       response.setValue(
           "$validatePeriod",
-          !Beans.get(PeriodServiceAccount.class)
-              .isAuthorizedToAccountOnPeriod(move.getPeriod(), user));
+          !Beans.get(PeriodServiceAccount.class).isAuthorizedToAccountOnPeriod(move, user));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -816,7 +835,7 @@ public class MoveController {
     }
   }
 
-  private LocalDate extractDueDate(ActionRequest request) {
+  protected LocalDate extractDueDate(ActionRequest request) {
     if (!request.getContext().containsKey("dueDate")
         || request.getContext().get("dueDate") == null) {
       return null;
@@ -843,5 +862,48 @@ public class MoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void checkTermsInPayment(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      String errorMessage =
+          Beans.get(MoveInvoiceTermService.class).checkIfInvoiceTermInPayment(move);
+      if (move.getId() != null && !StringUtils.isEmpty(errorMessage)) {
+        response.setValue(
+            "paymentCondition",
+            Beans.get(MoveRepository.class).find(move.getId()).getPaymentCondition());
+      }
+      response.setValue("$paymentConditionChangeError", errorMessage);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called on load and in partner, company or payment mode change. Fill the bank details with a
+   * default value.
+   *
+   * @param request
+   * @param response
+   * @throws AxelorException
+   */
+  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+    PaymentMode paymentMode = move.getPaymentMode();
+    Company company = move.getCompany();
+    Partner partner = move.getPartner();
+    if (company == null) {
+      response.setValue("companyBankDetails", null);
+      return;
+    }
+    if (partner != null) {
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    }
+    BankDetails defaultBankDetails =
+        Beans.get(BankDetailsService.class)
+            .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
+    response.setValue("companyBankDetails", defaultBankDetails);
   }
 }

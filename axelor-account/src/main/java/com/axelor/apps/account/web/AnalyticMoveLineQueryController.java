@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,21 +20,27 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
-import com.axelor.apps.tool.ContextTool;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.ContextTool;
+import com.google.common.base.Joiner;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticMoveLineQueryController {
 
@@ -162,6 +168,39 @@ public class AnalyticMoveLineQueryController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setAnalyticAccountDomains(ActionRequest request, ActionResponse response) {
+    try {
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+      InvoiceLine invoiceLine =
+          ContextTool.getContextParent(request.getContext(), InvoiceLine.class, 1);
+      MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+      AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
+      List<Long> analyticAccountList = new ArrayList<>();
+      StringBuilder domain = new StringBuilder("self.id in (");
+      if (invoiceLine != null) {
+        analyticAccountList =
+            analyticLineService.getAnalyticAccountsByAxis(
+                invoiceLine, analyticMoveLine.getAnalyticAxis());
+      } else if (moveLine != null) {
+        analyticAccountList =
+            analyticLineService.getAnalyticAccountsByAxis(
+                moveLine, analyticMoveLine.getAnalyticAxis());
+      }
+      if (CollectionUtils.isEmpty(analyticAccountList)) {
+        domain.append("0");
+      } else {
+        String idList = Joiner.on(",").join(analyticAccountList);
+        domain.append(idList);
+      }
+      domain.append(")");
+      response.setAttr("analyticAccount", "domain", domain.toString());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

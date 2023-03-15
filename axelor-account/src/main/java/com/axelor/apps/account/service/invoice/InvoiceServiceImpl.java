@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,7 +36,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -45,8 +44,10 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
@@ -57,6 +58,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -64,16 +66,14 @@ import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.ModelTool;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.ModelTool;
+import com.axelor.utils.StringTool;
+import com.axelor.utils.ThrowConsumer;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -113,6 +113,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected TaxService taxService;
+  protected InvoiceProductStatementService invoiceProductStatementService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -129,7 +130,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      TaxService taxService) {
+      TaxService taxService,
+      InvoiceProductStatementService invoiceProductStatementService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -145,6 +147,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.appBaseService = appBaseService;
     this.taxService = taxService;
+    this.invoiceProductStatementService = invoiceProductStatementService;
   }
 
   // WKF
@@ -168,26 +171,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (alarm != null) {
 
       alarm.setInvoice(invoice);
-    }
-  }
-
-  @Override
-  public Account getPartnerAccount(Invoice invoice, boolean isHoldBack) throws AxelorException {
-    if (invoice.getCompany() == null
-        || invoice.getOperationTypeSelect() == null
-        || invoice.getOperationTypeSelect() == 0
-        || invoice.getPartner() == null) {
-      return null;
-    }
-    AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
-    if (InvoiceToolService.isPurchase(invoice)) {
-      return isHoldBack
-          ? situationService.getHoldBackSupplierAccount(invoice.getPartner(), invoice.getCompany())
-          : situationService.getSupplierAccount(invoice.getPartner(), invoice.getCompany());
-    } else {
-      return isHoldBack
-          ? situationService.getHoldBackCustomerAccount(invoice.getPartner(), invoice.getCompany())
-          : situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
     }
   }
 
@@ -263,6 +246,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     Invoice invoice1 = invoiceGenerator.generate();
     invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
+    invoice1.setInvoiceProductStatement(
+        invoiceProductStatementService.getInvoiceProductStatement(invoice1));
     return invoice1;
   }
 
@@ -439,7 +424,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return null;
   }
 
-  private long getRefundsAmount(Long partnerId, int refundType) {
+  protected long getRefundsAmount(Long partnerId, int refundType) {
     return invoiceRepo
         .all()
         .filter(
@@ -943,14 +928,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   private Pair<Integer, Integer> massProcess(
-      Collection<? extends Number> invoiceIds, ThrowConsumer<Invoice> consumer, int statusSelect) {
+      Collection<? extends Number> invoiceIds,
+      ThrowConsumer<Invoice, Exception> consumer,
+      int statusSelect) {
     IntCounter doneCounter = new IntCounter();
 
     int errorCount =
         ModelTool.apply(
             Invoice.class,
             invoiceIds,
-            new ThrowConsumer<Invoice>() {
+            new ThrowConsumer<Invoice, Exception>() {
               @Override
               public void accept(Invoice invoice) throws Exception {
                 if (invoice.getStatusSelect() == statusSelect) {
@@ -1084,6 +1071,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .setParameter(4, partner.getId())
         .getResultList()
         .size();
+  }
+
+  @Override
+  public boolean checkInvoiceLinesAnalyticDistribution(Invoice invoice) {
+    return CollectionUtils.isEmpty(invoice.getInvoiceLineList())
+        || invoice.getInvoiceLineList().stream()
+            .allMatch(invoiceLineService::checkAnalyticDistribution);
   }
 
   @Override

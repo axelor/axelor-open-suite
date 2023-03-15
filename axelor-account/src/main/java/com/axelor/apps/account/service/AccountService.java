@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,20 +21,22 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Year;
-import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.StringTool;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -61,16 +63,12 @@ public class AccountService {
   public static final int MAX_LEVEL_OF_ACCOUNT = 20;
 
   protected AccountRepository accountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AccountConfigService accountConfigService;
 
   @Inject
   public AccountService(
-      AccountRepository accountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
-      AccountConfigService accountConfigService) {
+      AccountRepository accountRepository, AccountConfigService accountConfigService) {
     this.accountRepository = accountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.accountConfigService = accountConfigService;
   }
 
@@ -98,9 +96,12 @@ public class AccountService {
             .createQuery(
                 String.format(
                     "select sum(self.debit - self.credit) from MoveLine self where self.account%s = :account "
-                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect = "
-                        + MoveRepository.STATUS_ACCOUNTED
-                        + "%s",
+                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN ("
+                        + Joiner.on(',')
+                            .join(
+                                Lists.newArrayList(
+                                    MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK))
+                        + ") %s",
                     account == null ? ".accountType" : "",
                     year != null ? " and self.move.period.year = :year" : ""));
 
@@ -158,9 +159,11 @@ public class AccountService {
         .collect(Collectors.toList());
   }
 
-  public void checkAnalyticAxis(Account account) throws AxelorException {
+  public void checkAnalyticAxis(
+      Account account, AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
     if (account != null && account.getAnalyticDistributionAuthorized()) {
-      if (account.getAnalyticDistributionTemplate() == null
+      if (analyticDistributionTemplate == null
           && account.getCompany() != null
           && accountConfigService
                   .getAccountConfig(account.getCompany())
@@ -171,18 +174,24 @@ public class AccountService {
             I18n.get("Please put AnalyticDistribution Template"));
 
       } else {
-        if (account.getAnalyticDistributionTemplate() != null) {
-          if (account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList() == null) {
+        if (analyticDistributionTemplate != null) {
+          if (analyticDistributionTemplate.getAnalyticDistributionLineList() == null) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 I18n.get(
                     "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
           } else {
             List<Long> rulesAnalyticAccountList = getRulesIds(account);
+            if (CollectionUtils.isEmpty(rulesAnalyticAccountList)) {
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                  I18n.get(
+                      AccountExceptionMessage
+                          .ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS));
+            }
 
             if (CollectionUtils.isNotEmpty(rulesAnalyticAccountList)
-                && account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList()
-                    .stream()
+                && analyticDistributionTemplate.getAnalyticDistributionLineList().stream()
                     .map(AnalyticDistributionLine::getAnalyticAccount)
                     .filter(Objects::nonNull)
                     .map(AnalyticAccount::getId)
@@ -190,7 +199,8 @@ public class AccountService {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   I18n.get(
-                      "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."));
+                      AccountExceptionMessage
+                          .ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS));
             }
           }
         }

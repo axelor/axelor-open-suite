@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip"
     title="Deposit slips" orderBy="-depositDate,-depositNumber">
     <field name="depositNumber" width="120"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="companyBankDetails"/>
     <field name="depositDate"/>
     <field name="depositType"/>
@@ -20,7 +20,7 @@
     onLoad="action-deposit-slip-load-payment-voucher-due-list" width="large">
 
     <panel name="paymentVouchersOnInvoicePanel" colSpan="12"
-      if="!__config__.app.getApp('account')?.paymentVouchersOnInvoice">
+      if="!__config__.app.getApp('account')?.paymentVouchersOnCustomerInvoice">
       <static><![CDATA[<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>]]></static>
     </panel>
 
@@ -105,7 +105,8 @@
         showIf="valueForCollectionAccount"/>
     </panel>
 
-    <panel name="paymentDetailsPanel" showIf="paymentVoucherList">
+    <panel name="paymentDetailsPanel"
+      showIf="paymentVoucherList &amp;&amp; paymentVoucherList.length > 0">
       <field name="totalAmount"/>
       <field name="chequeCount"/>
     </panel>
@@ -162,7 +163,7 @@
   <action-record name="action-deposit-slip-defaults"
     model="com.axelor.apps.account.db.DepositSlip">
     <field name="company" expr="eval: __user__.activeCompany"/>
-    <field name="depositDate" expr="eval: __config__.app.todayDate"/>
+    <field name="depositDate" expr="eval: __config__.date"/>
   </action-record>
 
   <action-record name="action-deposit-slip-company-onchange"
@@ -256,7 +257,7 @@
   <search-filters name="cheque-deposit-slip-filters"
     model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slip filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

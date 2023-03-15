@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <grid name="ticket-grid" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
@@ -83,7 +83,7 @@
       </panel>
 
       <panel name="timerPanel" title="Timer" showIf="id" hidden="true" sidebar="true"
-        if="__config__.app.getApp('helpdesk').getManageTimer()">
+        if="__config__.app.getApp('helpdesk')?.getManageTimer()">
         <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="4" hidden="true"
           onClick="action-ticket-method-start-timer"/>
         <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="4" hidden="true"
@@ -308,9 +308,9 @@
 
   <action-group name="action-ticket-group-timer-process">
     <action name="action-ticket-method-manage-timer-buttons"
-      if="__config__.app.getApp('helpdesk').manageTimer"/>
+      if="__config__.app.getApp('helpdesk')?.manageTimer"/>
     <action name="action-ticket-method-compute-total-timer-duration"
-      if="__config__.app.getApp('helpdesk').manageTimer"/>
+      if="__config__.app.getApp('helpdesk')?.manageTimer"/>
   </action-group>
 
   <action-method name="action-ticket-method-start-timer">
@@ -332,9 +332,9 @@
   <search-filters name="ticket-filters" model="com.axelor.apps.helpdesk.db.Ticket"
     title="Ticket filters">
     <field name="realTotalDuration" hidden="true"
-      if="!__config__.app.getApp('helpdesk').getManageTimer()"/>
+      if="!__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <field name="timerState" hidden="true"
-      if="!__config__.app.getApp('helpdesk').getManageTimer()"/>
+      if="!__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <field name="ticketLead" hidden="true" if="!__config__.app.isApp('crm')"/>
   </search-filters>
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,28 +17,37 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.interfaces.PricedOrder;
 
 public class PricedOrderDomainServiceImpl implements PricedOrderDomainService {
 
   @Override
-  public String getPartnerDomain(PricedOrder pricedOrder, String domain) {
+  public String getPartnerDomain(PricedOrder pricedOrder, String domain, int invoiceTypeSelect) {
     StringBuilder newDomain = new StringBuilder(domain);
     if (pricedOrder != null) {
       if (pricedOrder.getCurrency() != null) {
         newDomain.append(
             String.format(" AND self.currency.id = %d", pricedOrder.getCurrency().getId()));
       }
-      if (pricedOrder.getPriceList() != null) {
-        newDomain.append(
-            String.format(
-                " AND %d IN self.salePartnerPriceList.priceListSet.id",
-                pricedOrder.getPriceList().getId()));
-      }
-      if (pricedOrder.getFiscalPosition() != null) {
-        newDomain.append(
-            String.format(
-                " AND self.fiscalPosition.id = %s", pricedOrder.getFiscalPosition().getId()));
+      if (invoiceTypeSelect == PriceListRepository.TYPE_SALE) {
+        if (pricedOrder.getPriceList() != null) {
+          newDomain.append(
+              String.format(
+                  " AND %d IN self.salePartnerPriceList.priceListSet.id",
+                  pricedOrder.getPriceList().getId()));
+        } else {
+          newDomain.append(" AND self.salePartnerPriceList is NULL");
+        }
+      } else if (invoiceTypeSelect == PriceListRepository.TYPE_PURCHASE) {
+        if (pricedOrder.getPriceList() != null) {
+          newDomain.append(
+              String.format(
+                  " AND %d IN self.purchasePartnerPriceList.priceListSet.id",
+                  pricedOrder.getPriceList().getId()));
+        } else {
+          newDomain.append(" AND self.purchasePartnerPriceList is NULL");
+        }
       }
     }
     return newDomain.toString();

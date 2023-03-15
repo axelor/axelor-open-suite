@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,13 +17,17 @@
  */
 package com.axelor.apps.purchase.service.app;
 
-import com.axelor.apps.base.db.AppPurchase;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppPurchaseRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.db.AppPurchase;
+import com.axelor.studio.db.repo.AppPurchaseRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -32,11 +36,26 @@ import java.util.List;
 @Singleton
 public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPurchaseService {
 
-  @Inject private AppPurchaseRepository appPurchaseRepo;
+  protected AppPurchaseRepository appPurchaseRepo;
 
-  @Inject private CompanyRepository companyRepo;
+  protected CompanyRepository companyRepo;
 
-  @Inject private PurchaseConfigRepository purchaseConfigRepo;
+  protected PurchaseConfigRepository purchaseConfigRepo;
+
+  @Inject
+  public AppPurchaseServiceImpl(
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppPurchaseRepository appPurchaseRepo,
+      CompanyRepository companyRepo,
+      PurchaseConfigRepository purchaseConfigRepo) {
+    super(appRepo, metaFiles, appVersionService, metaModelRepo);
+    this.appPurchaseRepo = appPurchaseRepo;
+    this.companyRepo = companyRepo;
+    this.purchaseConfigRepo = purchaseConfigRepo;
+  }
 
   @Override
   public AppPurchase getAppPurchase() {

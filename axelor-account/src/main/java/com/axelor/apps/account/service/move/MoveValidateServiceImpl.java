@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,19 +39,19 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
 @RequestScoped
 public class MoveValidateServiceImpl implements MoveValidateService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
+  protected int jpaLimit = 20;
   protected MoveLineControlService moveLineControlService;
   protected MoveLineToolService moveLineToolService;
   protected AccountConfigService accountConfigService;
@@ -159,10 +159,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         } else {
           moveLine.setOriginDate(date);
         }
-      }
-
-      if (partner != null) {
-        moveLine.setPartner(partner);
       }
       moveLine.setCounter(counter);
       counter++;
@@ -343,8 +339,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected void checkClosurePeriod(Move move) throws AxelorException {
 
-    if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(
-        move.getPeriod(), AuthUtils.getUser())) {
+    if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED));
@@ -409,7 +404,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveInvoiceTermService.updateMoveLineDueDates(move);
 
     this.completeMoveLines(move);
-    this.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    this.setMoveLineAccountingDate(move, dayBookMode);
+    this.freezeFieldsOnMoveLines(move);
     this.updateValidateStatus(move, dayBookMode);
 
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
@@ -420,6 +416,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     if (updateCustomerAccount) {
       moveCustAccountService.updateCustomerAccount(move);
+    }
+  }
+
+  protected void setMoveLineAccountingDate(Move move, boolean daybook) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK || !daybook) {
+        moveLine.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
+      }
     }
   }
 
@@ -496,14 +500,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
-    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
-        || !daybook
-        || (daybook
-            && (move.getStatusSelect() == MoveRepository.STATUS_NEW
-                || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED)
-            && (move.getTechnicalOriginSelect() == MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC)
-            && (move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
-                || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE))) {
+    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK || !daybook) {
       move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
       move.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
     } else {
@@ -525,7 +522,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     List<Partner> partnerList = new ArrayList<>();
     partnerList.addAll(partnerSet);
 
-    this.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    this.freezeFieldsOnMoveLines(move);
     moveRepository.save(move);
 
     moveCustAccountService.updateCustomerAccount(partnerList, move.getCompany());
@@ -562,7 +559,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
    * @param move
    */
   @Override
-  public void freezeAccountAndPartnerFieldsOnMoveLines(Move move) {
+  public void freezeFieldsOnMoveLines(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
 
       Account account = moveLine.getAccount();
@@ -570,9 +567,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       moveLine.setAccountId(account.getId());
       moveLine.setAccountCode(account.getCode());
       moveLine.setAccountName(account.getName());
-      moveLine.setServiceType(account.getServiceType());
-      moveLine.setServiceTypeCode(
-          account.getServiceType() != null ? account.getServiceType().getCode() : null);
 
       Partner partner = moveLine.getPartner();
 
@@ -580,15 +574,27 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLine.setPartnerId(partner.getId());
         moveLine.setPartnerFullName(partner.getSimpleFullName());
         moveLine.setPartnerSeq(partner.getPartnerSeq());
-        moveLine.setDas2Activity(partner.getDas2Activity());
-        moveLine.setDas2ActivityName(
-            partner.getDas2Activity() != null ? partner.getDas2Activity().getName() : null);
       }
       if (moveLine.getTaxLine() != null) {
         moveLine.setTaxRate(moveLine.getTaxLine().getValue());
         moveLine.setTaxCode(moveLine.getTaxLine().getTax().getCode());
       }
+
+      setMoveLineFixedInformation(move, moveLine);
     }
+  }
+
+  protected void setMoveLineFixedInformation(Move move, MoveLine moveLine) {
+    Company company = move.getCompany();
+    Journal journal = move.getJournal();
+    moveLine.setCompanyCode(company.getCode());
+    moveLine.setCompanyName(company.getName());
+    moveLine.setJournalCode(journal.getCode());
+    moveLine.setJournalName(journal.getName());
+    moveLine.setFiscalYearCode(move.getPeriod().getYear().getCode());
+    moveLine.setCurrencyCode(move.getCurrencyCode());
+    moveLine.setCompanyCurrencyCode(company.getCurrency().getCode());
+    moveLine.setAdjustingMove(move.getAdjustingMove());
   }
 
   @Override
@@ -602,7 +608,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     for (Integer moveId : moveIds) {
       Move move = moveRepository.find(moveId.longValue());
       try {
-        if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), user)) {
+        if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(move, user)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(
@@ -620,7 +626,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         }
         errors = errors.concat(move.getReference());
       } finally {
-        if (++i % 20 == 0) {
+        if (++i % jpaLimit == 0) {
           JPA.clear();
         }
       }
@@ -779,5 +785,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       }
     }
     return false;
+  }
+
+  public void checkMoveLinesPartner(Move move) throws AxelorException {
+    if (CollectionUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      moveLineControlService.checkPartner(moveLine);
+    }
   }
 }

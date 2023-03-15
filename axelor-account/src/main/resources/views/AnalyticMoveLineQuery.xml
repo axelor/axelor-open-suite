@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="analytic-move-line-query-grid" title="Analytic review"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery" x-selector="checkbox">
@@ -41,7 +41,7 @@
               onChange="action-analytic-move-line-search-query-attrs-axis-onchange"/>
             <field name="analyticAccountSet" grid-view="analytic-account-grid"
               form-view="analytic-account-info-form"
-              onSelect="action-attrs-domain-account-distribution-line" widget="TagSelect"/>
+              onSelect="action-method-domain-account-distribution-line" widget="TagSelect"/>
           </editor>
         </field>
       </panel>
@@ -58,7 +58,7 @@
               onChange="action-analytic-move-line-reverse-query-attrs-axis-onchange"/>
             <field name="analyticAccount" grid-view="analytic-account-grid"
               form-view="analytic-account-info-form"
-              onSelect="action-attrs-domain-account-distribution-line"/>
+              onSelect="action-method-domain-account-distribution-line"/>
           </editor>
         </field>
       </panel>
@@ -103,7 +103,7 @@
   <action-record name="action-analytic-move-line-query-record-default"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery">
     <field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany"/>
-    <field name="toDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="toDate" expr="eval:__config__.date"/>
   </action-record>
 
   <action-record name="action-analytic-move-line-query-record-company-onchange"

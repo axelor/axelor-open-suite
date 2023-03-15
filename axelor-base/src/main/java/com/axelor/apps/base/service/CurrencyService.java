@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,18 +17,18 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
+import com.axelor.utils.date.DateTool;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -123,7 +123,7 @@ public class CurrencyService {
     return BigDecimal.ONE;
   }
 
-  private CurrencyConversionLine getCurrencyConversionLine(
+  protected CurrencyConversionLine getCurrencyConversionLine(
       Currency startCurrency, Currency endCurrency, LocalDate localDate) {
 
     List<CurrencyConversionLine> currencyConversionLineList =
@@ -169,28 +169,13 @@ public class CurrencyService {
   public BigDecimal getAmountCurrencyConvertedAtDate(
       Currency startCurrency, Currency endCurrency, BigDecimal amount, LocalDate date)
       throws AxelorException {
-    return this.getAmountCurrencyConvertedAtDate(
-        startCurrency, endCurrency, amount, date, RoundingMode.HALF_UP, 2);
-  }
-
-  protected BigDecimal getAmountCurrencyConvertedAtDate(
-      Currency startCurrency,
-      Currency endCurrency,
-      BigDecimal amount,
-      LocalDate date,
-      RoundingMode roundingMode,
-      int scale)
-      throws AxelorException {
 
     // If the start currency is different from end currency
     // So we convert the amount
     if (startCurrency != null && endCurrency != null && !startCurrency.equals(endCurrency)) {
 
       return this.getAmountCurrencyConvertedUsingExchangeRate(
-          amount,
-          this.getCurrencyConversionRate(startCurrency, endCurrency, date),
-          roundingMode,
-          scale);
+          amount, this.getCurrencyConversionRate(startCurrency, endCurrency, date));
     }
 
     return amount;
@@ -208,19 +193,12 @@ public class CurrencyService {
    */
   public BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
       BigDecimal amount, BigDecimal exchangeRate) throws AxelorException {
-    return this.getAmountCurrencyConvertedUsingExchangeRate(
-        amount, exchangeRate, RoundingMode.HALF_UP, 2);
-  }
-
-  protected BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
-      BigDecimal amount, BigDecimal exchangeRate, RoundingMode roundingMode, int scale)
-      throws AxelorException {
 
     // If the start currency is different from end currency
     // So we convert the amount
     if (exchangeRate.compareTo(BigDecimal.ONE) != 0) {
 
-      return amount.multiply(exchangeRate).setScale(scale, roundingMode);
+      return amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_UP);
     }
 
     return amount;
@@ -275,20 +253,5 @@ public class CurrencyService {
             endCurrency.getCodeISO());
       }
     }
-  }
-
-  public boolean isUnevenRounding(
-      Currency startCurrency, Currency endCurrency, BigDecimal amount, LocalDate date)
-      throws AxelorException {
-    BigDecimal downAmount =
-        this.getAmountCurrencyConvertedAtDate(
-                startCurrency, endCurrency, amount, date, RoundingMode.HALF_EVEN, 3)
-            .setScale(2, RoundingMode.HALF_DOWN);
-    BigDecimal upAmount =
-        this.getAmountCurrencyConvertedAtDate(
-                startCurrency, endCurrency, amount, date, RoundingMode.HALF_EVEN, 3)
-            .setScale(2, RoundingMode.HALF_UP);
-
-    return downAmount.compareTo(upAmount) != 0;
   }
 }

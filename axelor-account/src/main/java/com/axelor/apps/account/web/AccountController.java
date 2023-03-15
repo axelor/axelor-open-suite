@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,18 +25,20 @@ import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.translation.ITranslation;
-import com.axelor.apps.tool.MassUpdateTool;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.axelor.utils.MassUpdateTool;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
@@ -103,9 +105,10 @@ public class AccountController {
   public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      Beans.get(AccountService.class).checkAnalyticAxis(account);
+      Beans.get(AccountService.class)
+          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -259,8 +262,22 @@ public class AccountController {
           Beans.get(AnalyticDistributionTemplateService.class);
       analyticDistributionTemplateService.verifyTemplateValues(
           account.getAnalyticDistributionTemplate());
+      Beans.get(AccountService.class)
+          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
       analyticDistributionTemplateService.validateTemplatePercentages(
           account.getAnalyticDistributionTemplate());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setAmountRemainingReconciliableMoveLines(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      Beans.get(MoveLineToolService.class).setAmountRemainingReconciliableMoveLines(context);
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

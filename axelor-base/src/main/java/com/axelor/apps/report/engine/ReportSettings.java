@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,16 +18,16 @@
 package com.axelor.apps.report.engine;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerServiceImpl;
-import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.utils.StringTool;
 import com.google.common.collect.Maps;
 import java.io.File;
 import java.io.FileInputStream;
@@ -212,12 +212,12 @@ public class ReportSettings {
         .addParam("Password", appSettings.get("db.default.password"));
   }
 
-  private ReportSettings addAttachmentPath() {
+  protected ReportSettings addAttachmentPath() {
 
     String attachmentPath = null;
     try {
       attachmentPath = AppService.getFileUploadDir();
-    } catch (AxelorException e) {
+    } catch (Exception e) {
       TraceBackService.trace(e);
     }
     if (attachmentPath == null) {

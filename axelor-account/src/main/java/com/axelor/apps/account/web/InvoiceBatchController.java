@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,8 +21,8 @@ import com.axelor.apps.account.db.InvoiceBatch;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.service.invoice.InvoiceBatchService;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchWkf;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

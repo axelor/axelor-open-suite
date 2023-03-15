@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -31,20 +32,22 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -52,19 +55,17 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -101,7 +102,7 @@ public class InvoiceController {
       invoice = Beans.get(InvoiceService.class).compute(invoice);
       response.setValues(invoice);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -131,7 +132,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.MessageExceptionMessage
+                                com.axelor.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -166,7 +167,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.MessageExceptionMessage
+                                com.axelor.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -200,7 +201,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.MessageExceptionMessage
+                                com.axelor.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -347,8 +348,8 @@ public class InvoiceController {
         return;
       }
 
-      invoiceTermService.updateFinancialDiscount(invoice);
-      response.setReload(true);
+      List<InvoiceTerm> invoiceTermList = invoiceTermService.updateFinancialDiscount(invoice);
+      response.setValue("invoiceTermList", invoiceTermList);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -561,7 +562,7 @@ public class InvoiceController {
     }
   }
 
-  private String buildMassMessage(int doneCount, int errorCount) {
+  protected String buildMassMessage(int doneCount, int errorCount) {
     StringBuilder sb = new StringBuilder();
     sb.append(
         String.format(
@@ -581,7 +582,7 @@ public class InvoiceController {
     return sb.toString();
   }
 
-  private void massProcess(
+  protected void massProcess(
       ActionRequest request,
       ActionResponse response,
       Function<Collection<? extends Number>, Pair<Integer, Integer>> function) {
@@ -917,9 +918,10 @@ public class InvoiceController {
           Beans.get(InvoiceDomainService.class)
               .getPartnerBaseDomain(company, invoice, invoiceTypeSelect);
 
-      if ((!(invoiceLineList == null || invoiceLineList.isEmpty()))
-          && (invoiceTypeSelect == PriceListRepository.TYPE_SALE)) {
-        domain = Beans.get(PricedOrderDomainService.class).getPartnerDomain(invoice, domain);
+      if (!(invoiceLineList == null || invoiceLineList.isEmpty())) {
+        domain =
+            Beans.get(PricedOrderDomainService.class)
+                .getPartnerDomain(invoice, domain, invoiceTypeSelect);
       }
 
       response.setAttr("partner", "domain", domain);
@@ -959,12 +961,9 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
       if (invoice.getInvoiceLineList() != null) {
-        InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
-        for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          invoiceLineService.updateLinesAfterFiscalPositionChange(invoice);
-        }
-        response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+        Beans.get(InvoiceLineService.class).updateLinesAfterFiscalPositionChange(invoice);
       }
+      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -996,6 +995,8 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       User user = request.getUser();
       InvoiceVisibilityService invoiceVisibilityService = Beans.get(InvoiceVisibilityService.class);
+      boolean paymentBtnVisible = invoiceVisibilityService.isPaymentButtonVisible(invoice);
+      boolean paymentVouchersStatus = invoiceVisibilityService.getPaymentVouchersStatus(invoice);
 
       response.setAttr(
           "passedForPaymentValidationBtn",
@@ -1008,12 +1009,14 @@ public class InvoiceController {
           !invoiceVisibilityService.isPfpButtonVisible(invoice, user, false));
 
       response.setAttr(
-          "addPaymentBtn", "hidden", !invoiceVisibilityService.isPaymentButtonVisible(invoice));
+          "addPaymentBtn",
+          "hidden",
+          (paymentBtnVisible) ? paymentVouchersStatus : !paymentBtnVisible);
 
       response.setAttr(
           "registerPaymentBtn",
           "hidden",
-          !invoiceVisibilityService.isPaymentButtonVisible(invoice));
+          (paymentBtnVisible) ? !paymentVouchersStatus : !paymentBtnVisible);
 
       response.setAttr(
           "pfpValidatorUser", "hidden", !invoiceVisibilityService.isValidatorUserVisible(invoice));
@@ -1027,6 +1030,8 @@ public class InvoiceController {
           "sendPfpNotifyEmailBtn",
           "hidden",
           !invoiceVisibilityService.isSendNotifyVisible(invoice));
+
+      response.setValue("$paymentVouchersOnInvoice", paymentBtnVisible);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -1069,6 +1074,20 @@ public class InvoiceController {
                       + idList
                       + ")")
               .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkInvoiceLinesAnalyticDistribution(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+      if (!Beans.get(InvoiceService.class).checkInvoiceLinesAnalyticDistribution(invoice)) {
+        response.setError(I18n.get(AccountExceptionMessage.INVOICE_WRONG_ANALYTIC_DISTRIBUTION));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -1175,6 +1194,31 @@ public class InvoiceController {
                 I18n.get(AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER),
                 partnerType.toLowerCase()));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
+
+      if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
+        Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoice);
+        response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+      }
+
+      response.setValue("financialDiscount", invoice.getFinancialDiscount());
+      response.setValue("legalNotice", invoice.getLegalNotice());
+      response.setValue("financialDiscountRate", invoice.getFinancialDiscountRate());
+      response.setValue("financialDiscountTotalAmount", invoice.getFinancialDiscountTotalAmount());
+      response.setValue(
+          "remainingAmountAfterFinDiscount", invoice.getRemainingAmountAfterFinDiscount());
+      response.setValue(
+          "financialDiscountDeadLineDate", invoice.getFinancialDiscountDeadlineDate());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

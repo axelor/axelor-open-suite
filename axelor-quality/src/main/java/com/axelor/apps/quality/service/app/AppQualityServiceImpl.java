@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.quality.service.app;
 
-import com.axelor.apps.base.db.AppQuality;
-import com.axelor.apps.base.db.repo.AppQualityRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.db.AppQuality;
+import com.axelor.studio.db.repo.AppQualityRepository;
+import com.axelor.studio.db.repo.AppRepository;
 import com.google.inject.Inject;
 
 public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {
@@ -27,7 +31,13 @@ public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQual
   private AppQualityRepository appQualityRepo;
 
   @Inject
-  public AppQualityServiceImpl(AppQualityRepository appQualityRepo) {
+  public AppQualityServiceImpl(
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppQualityRepository appQualityRepo) {
+    super(appRepo, metaFiles, appVersionService, metaModelRepo);
     this.appQualityRepo = appQualityRepo;
   }
 

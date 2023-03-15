@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
@@ -32,15 +33,15 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -176,7 +177,8 @@ public class BankOrderLineService {
     }
 
     if (bankOrderFileFormat.getIsMultiDate()) {
-      bankOrderLine.setBankOrderDate(bankOrderDate);
+      LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(receiverCompany);
+      bankOrderLine.setBankOrderDate(bankOrderDate.isBefore(todayDate) ? todayDate : bankOrderDate);
     }
 
     bankOrderLine.setReceiverReference(receiverReference);
@@ -359,7 +361,7 @@ public class BankOrderLineService {
     }
 
     try {
-      checkBankDetails(candidateBankDetails, bankOrder);
+      checkBankDetails(candidateBankDetails, bankOrder, bankOrderLine);
     } catch (AxelorException e) {
       candidateBankDetails = null;
     }
@@ -367,7 +369,8 @@ public class BankOrderLineService {
     return candidateBankDetails;
   }
 
-  public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder)
+  public void checkBankDetails(
+      BankDetails bankDetails, BankOrder bankOrder, BankOrderLine bankOrderLine)
       throws AxelorException {
     if (bankDetails == null) {
       throw new AxelorException(
@@ -379,7 +382,8 @@ public class BankOrderLineService {
     if (!bankDetails.getActive()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE));
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE),
+          bankOrderLine.getSequence());
     }
 
     // filter on the result from bankPartner if the option is active.
@@ -423,7 +427,7 @@ public class BankOrderLineService {
     }
   }
 
-  private boolean ebicsPartnerIsFiltering(EbicsPartner ebicsPartner, int orderType) {
+  protected boolean ebicsPartnerIsFiltering(EbicsPartner ebicsPartner, int orderType) {
     return (ebicsPartner != null)
         && (ebicsPartner.getFilterReceiverBD())
         && (ebicsPartner.getReceiverBankDetailsSet() != null)

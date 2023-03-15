@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,9 +21,10 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -122,5 +123,18 @@ public class InvoiceLineController {
 
     response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
     response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
+  }
+
+  public void checkQty(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+
+      Beans.get(InvoiceLineSupplychainService.class)
+          .checkMinQty(invoice, invoiceLine, request, response);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

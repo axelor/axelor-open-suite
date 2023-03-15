@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,13 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
@@ -43,7 +47,6 @@ import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -73,7 +76,10 @@ public class WorkflowVentilationProjectServiceImpl
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
       SupplyChainConfigService supplyChainConfigService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      AppAccountService appAccountService,
+      InvoiceFinancialDiscountService invoiceFinancialDiscountService,
+      InvoiceTermService invoiceTermService) {
     super(
         accountConfigService,
         invoicePaymentRepo,
@@ -89,7 +95,10 @@ public class WorkflowVentilationProjectServiceImpl
         unitConversionService,
         appBaseService,
         supplyChainConfigService,
-        stockMoveLineRepository);
+        stockMoveLineRepository,
+        appAccountService,
+        invoiceFinancialDiscountService,
+        invoiceTermService);
     this.invoicingProjectRepo = invoicingProjectRepo;
     this.timesheetLineRepo = timesheetLineRepo;
   }
@@ -136,7 +145,7 @@ public class WorkflowVentilationProjectServiceImpl
     }
   }
 
-  private boolean checkInvoicedTimesheetLines(ProjectTask projectTask) {
+  protected boolean checkInvoicedTimesheetLines(ProjectTask projectTask) {
 
     long timesheetLineCnt =
         timesheetLineRepo
