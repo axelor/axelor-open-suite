@@ -118,6 +118,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getAccount().getHasInvoiceTerm()) {
+          moveLine.setMove(move);
           moveLineInvoiceTermService.recreateInvoiceTerms(moveLine);
         }
       }
@@ -180,7 +181,6 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void updateSingleInvoiceTermDueDate(Move move, LocalDate dueDate) {
     if (CollectionUtils.isEmpty(move.getMoveLineList()) || dueDate == null) {
       return;
@@ -193,7 +193,6 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         && !Objects.equals(dueDate, singleInvoiceTerm.getDueDate())) {
       singleInvoiceTerm.setDueDate(dueDate);
       singleInvoiceTerm.getMoveLine().setDueDate(dueDate);
-      invoiceTermRepo.save(singleInvoiceTerm);
     }
   }
 
@@ -208,34 +207,40 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
 
   @Override
   public String checkIfInvoiceTermInPayment(Move move) {
-    String errorMessage = "";
+    String errorMessage;
+
     if (move != null
         && (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)
             || move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED))
-        && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+        && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       List<InvoiceTerm> invoiceTermList =
           move.getMoveLineList().stream()
               .map(MoveLine::getInvoiceTermList)
               .flatMap(Collection::stream)
               .collect(Collectors.toList());
-      if (!CollectionUtils.isEmpty(invoiceTermList)) {
+
+      if (CollectionUtils.isNotEmpty(invoiceTermList)) {
         errorMessage = this.checkInvoiceTermInPaymentVoucher(invoiceTermList);
-        if (!StringUtils.isEmpty(errorMessage)) {
+
+        if (StringUtils.notEmpty(errorMessage)) {
           return errorMessage;
         }
+
         errorMessage = this.checkInvoiceTermInPaymentSession(invoiceTermList);
-        if (!StringUtils.isEmpty(errorMessage)) {
+
+        if (StringUtils.notEmpty(errorMessage)) {
           return errorMessage;
         }
+
         for (InvoiceTerm invoiceTerm : invoiceTermList) {
           if (!invoiceTermService.isNotReadonlyExceptPfp(invoiceTerm)) {
-            errorMessage =
-                I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE);
+            return I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE);
           }
         }
       }
     }
-    return errorMessage;
+
+    return "";
   }
 
   public String checkInvoiceTermInPaymentVoucher(List<InvoiceTerm> invoiceTermList) {
