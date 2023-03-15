@@ -391,7 +391,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         }
 
         List<AnalyticMoveLine> analyticMoveLineList =
-            new ArrayList<>(cutOffMoveLine.getAnalyticMoveLineList());
+            CollectionUtils.isEmpty(cutOffMoveLine.getAnalyticMoveLineList())
+                ? new ArrayList<>()
+                : new ArrayList<>(cutOffMoveLine.getAnalyticMoveLineList());
         cutOffMoveLine.clearAnalyticMoveLineList();
 
         // Copy analytic move lines
