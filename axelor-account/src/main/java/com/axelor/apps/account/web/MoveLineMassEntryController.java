@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
+import com.axelor.apps.account.service.moveline.massentry.MassEntryToolService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -52,7 +53,6 @@ public class MoveLineMassEntryController {
     try {
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
-      MassEntryService massEntryService = Beans.get(MassEntryService.class);
 
       if (moveLineMassEntry != null
           && parentContext != null
@@ -64,7 +64,8 @@ public class MoveLineMassEntryController {
           if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
             if (moveLineMassEntry.getTemporaryMoveNumber() == 0) {
               moveLineMassEntry.setTemporaryMoveNumber(
-                  massEntryService.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()));
+                  Beans.get(MassEntryToolService.class)
+                      .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()));
               moveLineMassEntry.setCounter(move.getMoveLineMassEntryList().size() + 1);
             }
           } else {
@@ -72,8 +73,9 @@ public class MoveLineMassEntryController {
             moveLineMassEntry.setCounter(1);
           }
           response.setValues(
-              massEntryService.getFirstMoveLineMassEntryInformations(
-                  move.getMoveLineMassEntryList(), moveLineMassEntry));
+              Beans.get(MassEntryService.class)
+                  .getFirstMoveLineMassEntryInformations(
+                      move.getMoveLineMassEntryList(), moveLineMassEntry));
           if (move.getMoveLineMassEntryList() != null
               && move.getMoveLineMassEntryList().size() != 0) {
             response.setAttr("inputAction", "readonly", false);
@@ -108,7 +110,9 @@ public class MoveLineMassEntryController {
             massEntryService.resetMoveLineMassEntry(moveLineMassEntry);
             moveLineMassEntry.setInputAction(1);
             moveLineMassEntry.setTemporaryMoveNumber(
-                massEntryService.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()) + 1);
+                Beans.get(MassEntryToolService.class)
+                        .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList())
+                    + 1);
             response.setValues(moveLineMassEntry);
             break;
           default:

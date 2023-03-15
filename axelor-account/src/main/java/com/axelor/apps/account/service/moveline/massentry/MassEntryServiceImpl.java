@@ -26,12 +26,9 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -53,32 +50,26 @@ public class MassEntryServiceImpl implements MassEntryService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MassEntryToolService massEntryToolService;
-  protected MoveToolService moveToolService;
   protected MoveLineTaxService moveLineTaxService;
   protected MoveCounterPartService moveCounterPartService;
   protected MassEntryVerificationService massEntryVerificationService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected CurrencyService currencyService;
-  protected PeriodService periodService;
 
   @Inject
   public MassEntryServiceImpl(
       MassEntryToolService massEntryToolService,
-      MoveToolService moveToolService,
       MoveLineTaxService moveLineTaxService,
       MoveCounterPartService moveCounterPartService,
       MassEntryVerificationService massEntryVerificationService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
-      CurrencyService currencyService,
-      PeriodService periodService) {
+      CurrencyService currencyService) {
     this.massEntryToolService = massEntryToolService;
-    this.moveToolService = moveToolService;
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.currencyService = currencyService;
-    this.periodService = periodService;
   }
 
   public void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
@@ -336,7 +327,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   public void checkMassEntryMoveGeneration(Move move) throws AxelorException {
     List<Move> moveList;
 
-    moveList = this.createMoveListFromMassEntryList(move);
+    moveList = massEntryToolService.createMoveListFromMassEntryList(move);
     move.setMassEntryErrors("");
 
     for (Move moveListElement : moveList) {
@@ -361,58 +352,33 @@ public class MassEntryServiceImpl implements MassEntryService {
       // TODO add control for AnalyticDistributionLine
       // need to be checked after addition on grid
 
-      if (moveListElement.getMassEntryErrors() != null
-          && ObjectUtils.notEmpty(moveListElement.getMassEntryErrors())) {
+      if (ObjectUtils.notEmpty(moveListElement.getMassEntryErrors())) {
         move.setMassEntryErrors(
             move.getMassEntryErrors() + moveListElement.getMassEntryErrors() + '\n');
+        massEntryToolService.setNewStatusSelectOnMassEntryLines(
+            moveListElement, MoveRepository.STATUS_NEW);
+      } else {
+        massEntryToolService.setNewStatusSelectOnMassEntryLines(
+            moveListElement, MoveRepository.STATUS_DAYBOOK);
       }
     }
   }
 
-  public Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList) {
-    int max = 0;
+  public String validateMassEntryMove(Move move) {
+    String resultMessage = "";
+    List<Move> moveList;
 
-    for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
-      if (moveLine.getTemporaryMoveNumber() > max) {
-        max = moveLine.getTemporaryMoveNumber();
-      }
-    }
+    moveList = massEntryToolService.createMoveListFromMassEntryList(move);
 
-    return max;
-  }
+    // TODO comptabiliser les écritures
+    // TODO generer les fiches immo quand on a un compte paramétré en immo
+    // TODO calcul des imputation budgétaire
 
-  public List<Move> createMoveListFromMassEntryList(Move move) {
-    int numberOfDifferentMovesToCheck = 0;
-    List<Move> moveList = new ArrayList<>();
-    Move moveToCheck;
-    boolean firstMove = true;
+    // TODO ajouter une option sur le journal
+    // si l'option "Autoriser la comptabilisation au status Nouveau>> est coché
+    // alors on comptabilise les écritures avec le status "Nouveau"
+    // sinon on ne comptabilise pas les écritures a nouveau
 
-    numberOfDifferentMovesToCheck = this.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList());
-
-    for (int i = 1; i <= numberOfDifferentMovesToCheck; i++) {
-      moveToCheck = new Move();
-      moveToCheck.setJournal(move.getJournal());
-
-      for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
-        if (moveLineMassEntry.getTemporaryMoveNumber() == i) {
-          if (firstMove) {
-            if (moveLineMassEntry.getDate() != null && move.getCompany() != null) {
-              moveToCheck.setPeriod(
-                  periodService.getPeriod(
-                      moveLineMassEntry.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
-            }
-            moveToCheck.setPartner(moveLineMassEntry.getPartner());
-            moveToCheck.setOrigin(moveLineMassEntry.getOrigin());
-            firstMove = false;
-          }
-          moveLineMassEntry.setMove(moveToCheck);
-          moveLineMassEntry.setFieldsErrorList(null);
-          moveToCheck.addMoveLineMassEntryListItem(moveLineMassEntry);
-        }
-      }
-      moveList.add(moveToCheck);
-    }
-
-    return moveList;
+    return resultMessage;
   }
 }

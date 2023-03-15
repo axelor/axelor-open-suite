@@ -55,7 +55,5 @@ public interface MassEntryService {
 
   void checkMassEntryMoveGeneration(Move move) throws AxelorException;
 
-  Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList);
-
-  List<Move> createMoveListFromMassEntryList(Move move);
+  String validateMassEntryMove(Move move);
 }

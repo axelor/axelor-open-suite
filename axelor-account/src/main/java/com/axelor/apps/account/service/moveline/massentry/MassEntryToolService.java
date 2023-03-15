@@ -21,4 +21,10 @@ public interface MassEntryToolService {
 
   void setPaymentModeOnMoveLineMassEntry(
       MoveLineMassEntry moveLineMassEntry, Integer technicalTypeSelect);
+
+  List<Move> createMoveListFromMassEntryList(Move move);
+
+  Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList);
+
+  void setNewStatusSelectOnMassEntryLines(Move move, Integer newStatusSelect);
 }

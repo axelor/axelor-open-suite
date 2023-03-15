@@ -107,8 +107,13 @@ public class MassEntryMoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      response.setAttr("validateMassEntryMoves", "hidden", true);
-      response.setAttr("showMassEntryMoves", "hidden", false);
+      if (move != null) {
+        Beans.get(MassEntryService.class).validateMassEntryMove(move);
+        // TODO set return from validateMassEntryMove into response.setAlert()
+
+        response.setAttr("validateMassEntryMoves", "hidden", true);
+        response.setAttr("showMassEntryMoves", "hidden", false);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

@@ -3,7 +3,10 @@ package com.axelor.apps.account.service.moveline.massentry;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.common.ObjectUtils;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,6 +18,13 @@ import org.slf4j.LoggerFactory;
 public class MassEntryToolServiceImpl implements MassEntryToolService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected PeriodService periodService;
+
+  @Inject
+  public MassEntryToolServiceImpl(PeriodService periodService) {
+    this.periodService = periodService;
+  }
 
   @Override
   public void clearMoveLineMassEntryListAndAddNewLines(Move move, Integer temporaryMoveNumber) {
@@ -128,6 +138,64 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       default:
         moveLineMassEntry.setMovePaymentMode(null);
         break;
+    }
+  }
+
+  @Override
+  public List<Move> createMoveListFromMassEntryList(Move move) {
+    int numberOfDifferentMovesToCheck = 0;
+    List<Move> moveList = new ArrayList<>();
+    Move moveToCheck;
+    boolean firstMove = true;
+
+    numberOfDifferentMovesToCheck = this.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList());
+
+    for (int i = 1; i <= numberOfDifferentMovesToCheck; i++) {
+      moveToCheck = new Move();
+      moveToCheck.setJournal(move.getJournal());
+
+      for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+        if (moveLineMassEntry.getTemporaryMoveNumber() == i) {
+          if (firstMove) {
+            if (moveLineMassEntry.getDate() != null && move.getCompany() != null) {
+              moveToCheck.setPeriod(
+                  periodService.getPeriod(
+                      moveLineMassEntry.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+            }
+            moveToCheck.setPartner(moveLineMassEntry.getPartner());
+            moveToCheck.setOrigin(moveLineMassEntry.getOrigin());
+            firstMove = false;
+          }
+          moveLineMassEntry.setMove(moveToCheck);
+          moveLineMassEntry.setFieldsErrorList(null);
+          moveToCheck.addMoveLineMassEntryListItem(moveLineMassEntry);
+        }
+      }
+      moveList.add(moveToCheck);
+    }
+
+    return moveList;
+  }
+
+  @Override
+  public Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList) {
+    int max = 0;
+
+    for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
+      if (moveLine.getTemporaryMoveNumber() > max) {
+        max = moveLine.getTemporaryMoveNumber();
+      }
+    }
+
+    return max;
+  }
+
+  @Override
+  public void setNewStatusSelectOnMassEntryLines(Move move, Integer newStatusSelect) {
+    if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
+      for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+        moveLineMassEntry.setMoveStatusSelect(newStatusSelect);
+      }
     }
   }
 }
