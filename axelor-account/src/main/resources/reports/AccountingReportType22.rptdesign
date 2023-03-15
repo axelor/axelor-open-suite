@@ -953,8 +953,7 @@ FROM
             AND FixedAssetLine.status_select = 2
             AND FixedAssetLine.type_select = 1
             AND FixedAssetType.technical_type_select != 1
-            AND (FixedAsset.status_select IN (2,3)
-                OR (FixedAsset.status_select = 4 AND FixedAssetLine.depreciation_date != FixedAsset.disposal_date))
+            AND (FixedAsset.status_select IN (2,3,4))
             AND FixedAssetLine.depreciation_date <= AccountingReport.date_from
             /*AND EXISTS (
                 SELECT 1 FROM account_fixed_asset_line AS FixedAssetLine2
