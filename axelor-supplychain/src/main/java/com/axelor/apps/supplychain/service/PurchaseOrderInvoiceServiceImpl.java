@@ -271,7 +271,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     return invoicedAmount;
   }
 
-  private BigDecimal getAmountVentilated(
+  protected BigDecimal getAmountVentilated(
       PurchaseOrder purchaseOrder,
       Long currentInvoiceId,
       boolean excludeCurrentInvoice,
@@ -544,7 +544,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateSupplierAdvancePayment(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException {

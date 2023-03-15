@@ -13,8 +13,9 @@
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
-  <form onNew="action-accounting-batch-record-on-new" name="accounting-batch-form"
-    title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch">
+  <form onNew="action-accounting-batch-group-on-new" name="accounting-batch-form"
+    title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch"
+    onLoad="action-accounting-batch-group-on-load">
     <panel name="mainPanel">
       <field name="actionSelect"
         onChange="action-accounting-batch-record-default-currency,action-attrs-accounting-batch-hide-trading-name-set"/>
@@ -196,6 +197,11 @@
   <action-group name="action-accounting-batch-group-realize-fixed-asset-lines">
     <action name="action-accounting-batch-validate-realized-fixed-date"/>
     <action name="action-accounting-batch-method-action-fixed-asset-lines-realize"/>
+  </action-group>
+
+  <action-group name="action-accounting-batch-group-on-new">
+    <action name="action-accounting-batch-record-on-new"/>
+    <action name="action-attrs-accounting-batch-hide-trading-name-set"/>
   </action-group>
 
   <action-group name="action-accounting-batch-group-on-load">

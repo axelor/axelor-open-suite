@@ -202,7 +202,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     fout.close();
   }
 
-  private XMLInput createInput(AppDataLoader dataLoader, boolean relationalInput)
+  protected XMLInput createInput(AppDataLoader dataLoader, boolean relationalInput)
       throws ClassNotFoundException {
 
     XMLInput xmlInput;
@@ -245,7 +245,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return xmlInput;
   }
 
-  private String getBindNodeName(String root) {
+  protected String getBindNodeName(String root) {
     return root.substring(0, root.length() - 1);
   }
 
@@ -341,7 +341,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     }
   }
 
-  private void fixTargetName(Map<String, Object> jsonFieldMap) {
+  protected void fixTargetName(Map<String, Object> jsonFieldMap) {
 
     // NOTE: Issue in AOP, it always return name as targetname for custom model.
     for (String field : jsonFieldMap.keySet()) {
@@ -457,7 +457,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return value;
   }
 
-  private String getTargetName(Map<String, Object> fieldAttrs) {
+  protected String getTargetName(Map<String, Object> fieldAttrs) {
 
     String targetName = (String) fieldAttrs.get("targetName");
     if (Strings.isNullOrEmpty(targetName)) {
@@ -607,7 +607,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return fieldBindings;
   }
 
-  private XMLBind createDummyFieldBinding(String name) {
+  protected XMLBind createDummyFieldBinding(String name) {
 
     XMLBind dummyBind = new XMLBind();
     dummyBind.setNode(name);
@@ -616,7 +616,8 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return dummyBind;
   }
 
-  private void addRelationalMetaFieldBind(Mapper modelMapper, MetaField field, XMLBind fieldBind) {
+  protected void addRelationalMetaFieldBind(
+      Mapper modelMapper, MetaField field, XMLBind fieldBind) {
 
     Property property = modelMapper.getProperty(field.getName());
     if (property.isCollection()) {
@@ -695,7 +696,7 @@ public class AppLoaderExportServiceImpl implements AppLoaderExportService {
     return fieldBindings;
   }
 
-  private void addRelationaJsonFieldBind(
+  protected void addRelationaJsonFieldBind(
       MetaJsonField jsonField, Map<String, Object> fieldAttrs, XMLBind xmlBind) {
 
     String jsonFunction = "json_extract_text";

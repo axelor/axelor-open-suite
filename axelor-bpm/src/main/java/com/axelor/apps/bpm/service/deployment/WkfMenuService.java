@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -107,7 +107,7 @@ public class WkfMenuService {
     metaMenuRepository.save(metaMenu);
   }
 
-  private MetaMenu findOrCreateMenu(String name) {
+  protected MetaMenu findOrCreateMenu(String name) {
 
     MetaMenu menu = metaMenuRepository.findByName(name);
     if (menu == null) {
@@ -220,7 +220,7 @@ public class WkfMenuService {
     return viewMap;
   }
 
-  private String createQuery(WkfTaskConfig wkfTaskConfig, boolean userMenu, boolean isJson) {
+  protected String createQuery(WkfTaskConfig wkfTaskConfig, boolean userMenu, boolean isJson) {
 
     Property property = null;
     String query = "self.processInstanceId in (:processInstanceIds)";
@@ -258,7 +258,7 @@ public class WkfMenuService {
     return query;
   }
 
-  private String getViewPrefix(WkfTaskConfig wkfTaskConfig, boolean isJson) {
+  protected String getViewPrefix(WkfTaskConfig wkfTaskConfig, boolean isJson) {
 
     if (isJson) {
       return "custom-model-" + wkfTaskConfig.getJsonModelName();

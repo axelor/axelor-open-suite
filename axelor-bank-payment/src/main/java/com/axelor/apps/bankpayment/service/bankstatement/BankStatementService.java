@@ -157,7 +157,7 @@ public class BankStatementService {
         .getFileLink();
   }
 
-  private String getTimezone(BankStatement bankStatement) {
+  protected String getTimezone(BankStatement bankStatement) {
     if (bankStatement.getEbicsPartner() == null
         || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser() == null
         || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser().getAssociatedUser()

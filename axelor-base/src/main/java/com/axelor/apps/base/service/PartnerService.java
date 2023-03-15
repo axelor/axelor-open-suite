@@ -62,10 +62,13 @@ public interface PartnerService {
 
   Map<String, String> getSocialNetworkUrl(String name, String firstName, Integer typeSelect);
 
+  @Deprecated
   List<Long> findPartnerMails(Partner partner);
 
+  @Deprecated
   List<Long> findContactMails(Partner partner);
 
+  @Deprecated
   List<Long> findMailsFromPartner(Partner partner);
 
   void resetDefaultAddress(Partner partner, String addrTypeQuery);

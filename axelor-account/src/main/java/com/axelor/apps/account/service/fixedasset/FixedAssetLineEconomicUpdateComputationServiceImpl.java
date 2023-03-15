@@ -179,7 +179,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     return false;
   }
 
-  private void prepareRecomputation(FixedAsset fixedAsset) throws AxelorException {
+  protected void prepareRecomputation(FixedAsset fixedAsset) throws AxelorException {
     BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
     if (fixedAsset.getCorrectedAccountingValue() == null
         || fixedAsset.getCorrectedAccountingValue().signum() <= 0) {
@@ -213,7 +213,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     this.canGenerateLines = true;
   }
 
-  private void clearPlannedFixedAssetLineListExcept(
+  protected void clearPlannedFixedAssetLineListExcept(
       List<FixedAssetLine> fixedAssetLineList, FixedAssetLine firstPlannedFixedAssetLine) {
     // We remove all fixedAssetLine that are not realized but we keep first planned line.
     List<FixedAssetLine> linesToRemove =
@@ -231,7 +231,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     fixedAssetLineService.clear(linesToRemove);
   }
 
-  private void recomputeFirstPlannedLine(
+  protected void recomputeFirstPlannedLine(
       List<FixedAssetLine> fixedAssetLineList,
       FixedAssetLine firstPlannedFixedAssetLine,
       BigDecimal correctedAccountingValue) {

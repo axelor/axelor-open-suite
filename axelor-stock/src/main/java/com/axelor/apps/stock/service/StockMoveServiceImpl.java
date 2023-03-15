@@ -505,7 +505,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param stockMove
    * @throws AxelorException
    */
-  private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
+  protected void checkOngoingInventory(StockMove stockMove) throws AxelorException {
     List<StockLocation> stockLocationList = new ArrayList<>();
 
     if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
@@ -554,7 +554,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
   }
 
-  private void resetMasses(StockMove stockMove) {
+  protected void resetMasses(StockMove stockMove) {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
 
     if (stockMoveLineList == null) {
@@ -804,7 +804,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       newStockMove.setCarrierPartner(stockMove.getPartner().getCarrierPartner());
     }
     newStockMove.setReversionOriginStockMove(stockMove);
-    newStockMove.setFromAddressStr(stockMove.getFromAddressStr());
+    newStockMove.setFromAddressStr(stockMove.getToAddressStr());
     newStockMove.setNote(stockMove.getNote());
     newStockMove.setNumOfPackages(stockMove.getNumOfPackages());
     newStockMove.setNumOfPalettes(stockMove.getNumOfPalettes());
@@ -1044,7 +1044,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     return stock;
   }
 
-  private Double getStock(Long locationId, Long productId, LocalDate date) {
+  protected Double getStock(Long locationId, Long productId, LocalDate date) {
 
     List<StockMoveLine> inLines =
         stockMoveLineRepo

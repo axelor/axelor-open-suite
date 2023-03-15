@@ -123,8 +123,9 @@
     <view type="grid" name="stock-move-out-grid"/>
     <view type="form" name="stock-move-form"/>
     <view-param name="search-filters" value="customer-deliveries-filters"/>
-    <domain>self.toStockLocation.typeSelect = 2</domain>
-    <context name="_typeSelect" expr="2"/>
+    <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+    <context name="_isReversion" expr="eval: false"/>
   </action-view>
 
   <menuitem name="purchase-root-purchase-orders-without-stock.move"

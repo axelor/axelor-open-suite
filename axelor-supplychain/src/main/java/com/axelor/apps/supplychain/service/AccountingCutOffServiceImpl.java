@@ -76,6 +76,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
@@ -495,7 +496,16 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     moveLine.setDate(moveDate);
     moveLine.setDueDate(moveDate);
 
+    List<AnalyticMoveLine> analyticMoveLineList =
+        CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            ? new ArrayList<>()
+            : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+    moveLine.clearAnalyticMoveLineList();
     getAndComputeAnalyticDistribution(product, move, moveLine);
+
+    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
 
     move.addMoveLineListItem(moveLine);
 

@@ -555,8 +555,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       newPrice =
           unitConversionService.convert(
-              stockMoveLineUnit,
               stockLocationLineUnit,
+              stockMoveLineUnit,
               newPrice,
               newPrice.scale(),
               stockMoveLine.getProduct());
@@ -983,7 +983,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLine, updatedLogisticalFormLineList);
   }
 
-  private BigDecimal computeSpreadableQtyOverLogisticalFormLines(
+  protected BigDecimal computeSpreadableQtyOverLogisticalFormLines(
       StockMoveLine stockMoveLine, List<LogisticalFormLine> logisticalFormLineList) {
 
     if (stockMoveLine == null) {

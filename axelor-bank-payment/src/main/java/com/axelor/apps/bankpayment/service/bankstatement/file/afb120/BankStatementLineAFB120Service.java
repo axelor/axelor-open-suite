@@ -38,15 +38,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class BankStatementLineAFB120Service extends BankStatementLineService {
-  protected BankPaymentBankStatementLineAFB120Repository
-      bankPaymentBankStatementLineAFB120Repository;
 
   @Inject
   public BankStatementLineAFB120Service(
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository) {
     super(bankPaymentBankStatementLineAFB120Repository);
-    this.bankPaymentBankStatementLineAFB120Repository =
-        bankPaymentBankStatementLineAFB120Repository;
   }
 
   public BankStatementLineAFB120 createBankStatementLine(

@@ -205,7 +205,7 @@ public class PartnerController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  private String getTimezone(User user) {
+  protected String getTimezone(User user) {
     if (user == null || user.getActiveCompany() == null) {
       return null;
     }
@@ -237,6 +237,7 @@ public class PartnerController {
     response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
   }
 
+  @Deprecated
   public void findPartnerMails(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     List<Long> idList = Beans.get(PartnerService.class).findPartnerMails(partner);
@@ -271,6 +272,7 @@ public class PartnerController {
     }
   }
 
+  @Deprecated
   public void findContactMails(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     List<Long> idList = Beans.get(PartnerService.class).findContactMails(partner);

@@ -44,7 +44,7 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public GlobalTrackingLog createExportLog(MetaModel model, MetaFile metaFile) {
 
     GlobalTrackingLog log = new GlobalTrackingLog();

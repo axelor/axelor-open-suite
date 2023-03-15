@@ -1,3 +1,111 @@
+## [6.3.13] (2023-03-09)
+
+#### Changes
+
+* Debt recovery method line: add demo data email messages for B2C and B2B reminder recovery methods.
+
+#### Fixed
+
+* Sale order: incoterm is not required anymore if it contains only services
+* Account Config: fixed account chart data so imported accounts are now active.
+* Invoice: when the PFP feature was disabled, fixed an issue where the menu "supplier invoices to pay" was not displaying any invoices.
+* Employee: in the user creation wizard, prevent validation when login is empty or if the activation and expiration dates are inconsistent.
+* Base: fixed an issue in some processes where an error would create inconsistencies.
+* Accounting report 2054: Gross value amount of a fixed asset bought and disposed in the same year must appear in columns B and C.
+* Project task: fixed an issue where setting project task category would not update invoicing type.
+* Mail message: use tracking subject instead of template subject when adding followers or posting comments.
+* Accounting report: fixed error preventing analytic balance printing when the currency was not filled.
+* Business: fixed an issue in some processes where an error would create inconsistencies.
+* Batch form: close the popup to show the invoice list when the user is clicking the "show invoice" button.
+* Logistical Form: filter stock moves on company on logistical forms.
+* CRM: fixed an issue in some processes where an error would create inconsistencies.
+* Stock rules: alert checkbox is no longer displayed when use case is set to 'MRP'.
+* Fixed asset: warning message translated in FR when trying to realize a line with IFRS depreciation plan.
+* Fixed asset: fix typos in french translation.
+* Freight carrier mode: fix typo in french translation.
+* Invoice: fixed an issue preventing to change the partner with existing invoice lines.
+* Sale order: allow to select direct order stock locations from the company as the sale order stock location.
+* Project: fixed the display of description in Kanban view.
+* HR Batch: fixed error making the batch process crash when using batch with a scheduler.
+* Configurator: in the help panel for writing groovy scripts, fix external link so it is opened on a new tab by default.
+* Invoice: does not block the advance payment invoice validation if an account is not selected on the invoice.
+* Accounting report: it is no longer required to fill the year to generate DAS 2 reports.
+* Invoice: printing a report will open the correct one even if another report have the same file name.
+
+## [6.3.12] (2023-02-24)
+
+#### Fixed
+
+* Accounting report: fixed advanced search feature on grid view.
+* Stock move: fixed error on invoice creation when we try to invoice a stock move generated from a purchase order.
+* Stock move: fixed an error blocking stock move planification when app supplychain is not initialized.
+* Stock move: fixed error message when trying to create partial invoice with a quantity equals to 0.
+* Leave request: fixed the message informing the user of a negative number of leaves available.
+* Followers: fixed a bug where a NPE could occur if default mail message template was null.
+* Invoice: fixed the duplicate supplier invoice warning so it does not trigger for an invoice and its own refund.
+* MRP: Improve proposals generation process performance.
+* Supplychain: improved error management to avoid creating inconsistencies in database.
+* Move template line: selecting a partner is now correctly filtered on non-contact partners.
+* Price lists: in a sale order, correctly check if the price list is active before allowing it to be selected.
+* DMN: fixed model change issue.
+* Stock location line: updating the WAP from the stock location line will now correctly update the WAP on the product.
+* Unify the sale orders and deliveries menu entries: now the menu entries at the top are the same as the menu entries at the side.
+* Move: correctly retrieves the analytic distribution template when reversing a move.
+* Advanced export: fix duplicate lines when exporting a large amount of data.
+* Invoice: fixed an error that happened when selecting a Partner.
+* Production batch: fixed running 'Work in progress valuation' batch process from the form view.
+* Accounting Batch: fixed trading name field display.
+
+## [6.3.11] (2023-02-14)
+
+#### Fixed
+
+* Studio : Fix editor issues
+
+Fix difficulty to insert fields. Fix crash on click on '+' icon of panel tab.
+
+* Partner: improve email panel
+
+Fixed an issue where permissions were not applied for emails displayed in this panel, also improve display by using a card view.
+
+* Opportunity: lost reason is now correctly cleared when reopening a lost opportunity.
+* Opportunity: fixed description on kanban view.
+* Ticket type: fixed error preventing to show chart information on opening a ticket type form.
+* Meta select: fixed wrong french translation for "Order".
+
+## [6.3.10] (2023-02-03)
+
+#### Fixed
+
+* Accounting report: fixed partner grouping issue on preparatory process for fees declaration.
+* User: fixed active user being able to change its user code.
+* Sale order: fixed a bug where doing a partial invoicing in percentage could not work.
+* Company bank details: fixed company bank details filter in invoice and purchase order form views.
+* Stock move: fixed rounding issues when computing the total to avoid a gap between order/invoice totals and related stock moves totals.
+* Stock move: fixed report not showing manually changed address for customer delivery.
+* Cost calculation: fixed the priority on the bill of materials chosen during the calculation process. This fixes an issue where a bill of materials from another company was used to compute the cost.
+* Fiscal position: changed the behavior of fiscal position on purchase and sale order:
+
+Now the partner is filtered depending on the currency and price list which are readonly if there is an order line.
+The fiscal position is now editable even if there is an order line. Changing the partner updates the fiscal position and the taxes on lines.
+
+* Product: updated condition for default value on product pulled off market date.
+* Accounting report: corrected wrong values in 2054 accounting report.
+* Manufacturing order: fixed small UI issue in form view.
+* Sale order/Purchase order/Invoice line: fixed JNPE error occured when fetching the correct translation for code and description.
+* Sale order printing: correctly hide discount related rows when the sale order is configured to hide discounts.
+* Move consolidation: fixed errors during move consolidation happening when analytic distribution line were missing information.
+* Subrogation release: fixed an issue where supplier invoices were retrieved with customer invoices.
+* Account management: fixed an issue preventing any user from adding an account management of type tax in the financial configuration.
+* Fixed asset category: clear company related fields when changing or clearing the company field to avoid inconsistencies.
+* Fixed asset: clear company related fields when changing or clearing the company field to avoid inconsistencies.
+* Fixed asset: set default value to 0 to avoid saving a wrong default value in the fields Disposal Type and Quantity type on new and ongoing fixed asset.
+* Fixed asset: improved UI for the 'Update depreciating settings' feature.
+* Fixed asset: fixed filter on partner field in form view.
+* Account config: fixed an issue were financial discount related configuration were required.
+* Purchase order: duplicating a purchase order now correctly resets budget.
+* Bill of materials: fixed an issue where the label 'BOM by default' was displayed on a new bill of materials.
+
 ## [6.3.9] (2023-01-19)
 
 #### Fixed
@@ -417,6 +525,10 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.13]: https://github.com/axelor/axelor-open-suite/compare/v6.3.12...v6.3.13
+[6.3.12]: https://github.com/axelor/axelor-open-suite/compare/v6.3.11...v6.3.12
+[6.3.11]: https://github.com/axelor/axelor-open-suite/compare/v6.3.10...v6.3.11
+[6.3.10]: https://github.com/axelor/axelor-open-suite/compare/v6.3.9...v6.3.10
 [6.3.9]: https://github.com/axelor/axelor-open-suite/compare/v6.3.8...v6.3.9
 [6.3.8]: https://github.com/axelor/axelor-open-suite/compare/v6.3.7...v6.3.8
 [6.3.7]: https://github.com/axelor/axelor-open-suite/compare/v6.3.6...v6.3.7

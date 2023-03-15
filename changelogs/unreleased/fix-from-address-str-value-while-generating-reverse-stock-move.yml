@@ -1,0 +1,3 @@
+---
+title: "Generate reversion stock move fills the wrong value in 'FromAddressStr'"
+type: fix

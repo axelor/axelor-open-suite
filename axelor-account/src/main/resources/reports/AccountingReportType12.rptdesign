@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -69,6 +69,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -420,7 +421,7 @@ Case when AccountType.technical_type_select = 'tax' then
 end as creditTaxAmount
 
 
-from public.account_accounting_report as AccountingReport 
+from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_account as Account on (MoveLine.account = Account.id)
 left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
@@ -428,8 +429,8 @@ left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal_position = FiscalPosition.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
-where 
-(AccountingReport.currency = Move.company_currency) 
+where
+(AccountingReport.currency = Move.company_currency)
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
@@ -579,7 +580,7 @@ order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name,AccountingReport.date_from,AccountingReport.date_to,
 AcYear.name as year_name, AccountingReport.publication_date_time as "ReportDateEdition",
-Currency.code as currency 
+Currency.code as currency
 from public.account_accounting_report as AccountingReport 
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join public.base_year as AcYear on (AccountingReport.year = AcYear.id)
@@ -763,14 +764,14 @@ Tax.name as taxName,
 FiscalPosition.code as fiscalPositionCode,
 TaxLine.value as taxLineValue, 
 sum(Case  when AccountType.technical_type_select != 'tax' then 
-	Case when Move.functional_origin_select = 3 then 0 else 
+	Case when Move.functional_origin_select = 3 then 0 else
 		Case when Move.functional_origin_select = 4 then MoveLine.debit - MoveLine.credit else MoveLine.debit
 		end
 	end
 else 0
 end) as debit,
 sum(Case when AccountType.technical_type_select = 'tax' then 
-	Case when Move.functional_origin_select = 3 then 0 else 
+	Case when Move.functional_origin_select = 3 then 0 else
 		Case when Move.functional_origin_select = 4 then MoveLine.debit - MoveLine.credit else MoveLine.debit
 		end
 	end
@@ -791,7 +792,7 @@ sum(Case when AccountType.technical_type_select = 'tax' then
 else 0
 end) as creditTaxAmount
 
-from public.account_accounting_report as AccountingReport 
+from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_account as Account on (MoveLine.account = Account.id)
 left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id)
@@ -800,11 +801,11 @@ left outer join public.account_fiscal_position as FiscalPosition on (Move.fiscal
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
 where 
-(AccountingReport.currency = Move.company_currency) 
+(AccountingReport.currency = Move.company_currency)
 AND AccountingReport.company = Move.company 
 AND MoveLine.date_val >= AccountingReport.date_from 
 AND MoveLine.date_val <= AccountingReport.date_to 
-AND (Move.status_select = 3 OR Move.status_select = 2) 
+AND (Move.status_select = 3 OR Move.status_select = 2)
 AND MoveLine.tax_line is not null
 AND Tax.type_select = 2
 AND (AccountingReport.display_closing_accounting_moves is true

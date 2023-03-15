@@ -341,7 +341,8 @@
           <field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
           <button name="showAllStockMoveLineBtn" title="Show all stock moves" colSpan="6"
             onClick="action-product-view-stock-move-line"/>
-          <field name="avgPrice" hideIf="!stockManaged"/>
+          <field name="avgPrice" hideIf="!stockManaged"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'avgPrice'})"/>
           <spacer name="avgPriceSpacer"/>
           <panel-dashlet name="productStockPanel" colSpan="12"
             action="action-product-view-stock" showIf="id &amp;&amp; stockManaged"/>
@@ -838,7 +839,7 @@
   <action-record name="action-product-record-reset-end-date"
     model="com.axelor.apps.base.db.Product">
     <field name="endDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="endDate &lt; startDate"/>
+      if="startDate != null &amp;&amp; endDate != null &amp;&amp; endDate &lt; startDate"/>
   </action-record>
 
   <action-view name="action-product-view-product-variant" title="Products variants"

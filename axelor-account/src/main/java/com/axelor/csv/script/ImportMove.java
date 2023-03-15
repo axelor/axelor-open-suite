@@ -236,7 +236,7 @@ public class ImportMove {
     return moveLine;
   }
 
-  private Company getCompany(Map<String, Object> values) {
+  protected Company getCompany(Map<String, Object> values) {
     final Path path = (Path) values.get("__path__");
     String fileName = path.getFileName().toString();
     String registrationCode = fileName.substring(0, fileName.indexOf('F'));

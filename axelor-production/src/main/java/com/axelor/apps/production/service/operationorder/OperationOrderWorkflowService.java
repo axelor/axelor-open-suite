@@ -701,7 +701,7 @@ public class OperationOrderWorkflowService {
     return duration;
   }
 
-  private void calculateHoursOfUse(OperationOrder operationOrder) {
+  protected void calculateHoursOfUse(OperationOrder operationOrder) {
 
     if (operationOrder.getMachineTool() == null) {
       return;

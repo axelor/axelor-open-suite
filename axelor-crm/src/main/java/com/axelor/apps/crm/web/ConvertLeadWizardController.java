@@ -153,7 +153,7 @@ public class ConvertLeadWizardController {
     return contactPartner;
   }
 
-  private void openPartner(ActionResponse response, Lead lead) {
+  protected void openPartner(ActionResponse response, Lead lead) {
 
     Partner partner = lead.getPartner();
     String form = "partner-customer-form";

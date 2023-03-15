@@ -415,7 +415,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return null;
   }
 
-  private long getRefundsAmount(Long partnerId, int refundType) {
+  protected long getRefundsAmount(Long partnerId, int refundType) {
     return invoiceRepo
         .all()
         .filter(

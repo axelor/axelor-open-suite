@@ -375,7 +375,7 @@ public class WsConnectoServiceImpl implements WsConnectorService {
     return Entity.json(payLoads);
   }
 
-  private Object createJson(Templates templates, Map<String, Object> ctx, WsKeyValue wsKeyValue) {
+  protected Object createJson(Templates templates, Map<String, Object> ctx, WsKeyValue wsKeyValue) {
 
     Object jsonVal;
     if (wsKeyValue.getWsValue() == null) {

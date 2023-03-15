@@ -28,6 +28,7 @@
 var rulesn1 = {};
 var rulesn2 = {};
 var temp = {};]]></method>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
@@ -203,7 +204,7 @@ if (row["rule_type"] == 2) {
 	rulesn2[row["rule_code"]] = valuen2;
 } else if (row["rule_type"] == 3)  {
 	rules[row["rule_code"]] = eval(row["rule"]);
-	rulesn1[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn1')); 
+	rulesn1[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn1'));
 	rulesn2[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn2'));
 }]]></method>
             <property name="dataSource">Data Source</property>
@@ -240,12 +241,12 @@ LEFT JOIN account_accounting_report_config_line_account_set as AccountSet
 ON AccountSet.account_accounting_report_config_line = ConfigLine.id
 
 LEFT JOIN account_account as Account
-ON Account.id = AccountSet.account_set 
+ON Account.id = AccountSet.account_set
 OR Account.account_type = AccountType.id
 OR Account.code SIMILAR TO ConfigLine.account_code
 
 LEFT JOIN account_move_line as MoveLine
-ON MoveLine.account = Account.id 
+ON MoveLine.account = Account.id
 
 LEFT JOIN account_move as Move
 ON MoveLine.move = Move.id
@@ -269,7 +270,7 @@ WHERE Report.id = ?
 	AND (MoveLine.id 	     IS NULL OR (
 		Report.currency	  = Move.company_currency
 		AND Report.company = Move.company
-		AND Move.ignore_in_accounting_ok IN ('false', null) 
+		AND Move.ignore_in_accounting_ok IN ('false', null)
 		AND (Move.status_select IN (2, 3) OR (Move.status_select = 5 AND Report.display_simulated_move))
 	))
 ORDER BY ConfigLine.sequence)
@@ -1834,7 +1835,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {
     }
     else if (isNaN(rules[row["rule_code"]])) {
     	0
@@ -1865,7 +1866,7 @@ if (row["type"] != 3) {
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3){
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {
     }
     else if (isNaN(rulesn1[row["rule_code"]])) {
     	0
@@ -1873,7 +1874,7 @@ if (row["type"] != 3){
     else {
     	rulesn1[row["rule_code"]]
     }
-	
+
 }
 </VALUE-OF>]]></text-property>
                                     </text>
@@ -1897,7 +1898,7 @@ if (row["type"] != 3){
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
 if (row["type"] != 3){
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
+    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {
     }
     else if (isNaN(rulesn2[row["rule_code"]])) {
     	0
@@ -1905,7 +1906,7 @@ if (row["type"] != 3){
     else {
     	rulesn2[row["rule_code"]]
     }
-	
+
 }
 </VALUE-OF>]]></text-property>
                                     </text>

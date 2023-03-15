@@ -429,7 +429,7 @@
           onSelect="action-sale-order-attrs-compute-tax-number-domain"
           onChange="action-sale-order-method-empty-fiscal-position-if-not-compatible,action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
         <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
-          readonlyIf="saleOrderLineList.length > 0 || (statusSelect > 1 &amp;&amp; !orderBeingEdited)"
+          readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-supplychain-attrs-fiscal-position-domain"
           onChange="action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
         <panel name="otherInfoPanel" colSpan="3">
@@ -501,7 +501,7 @@
           form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="deliveryDate" onChange="action-sale-order-group-on-delivery-date-change"/>
         <field name="deliveryCondition" colSpan="12"/>
-        <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid"
+        <field name="shipmentMode" canEdit="false" form-view="shipment-mode-form"
           grid-view="shipment-mode-grid"/>
         <field name="freightCarrierMode" canEdit="false"
           onChange="action-sale-order-record-freight-carrier"
@@ -654,7 +654,7 @@
         readonlyIf="!saleOrderLineList || !saleOrderLineList.length > 0" colSpan="12"
         onClick="save, action-supplychain-sale-order-create-stock-move"/>
       <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
-        colSpan="12" onClick="save,action-sale-group-confirmed"
+        colSpan="12" onClick="action-sale-group-confirmed"
         readonlyIf="advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)"/>
       <button name="invoiceAdvancePaymentBtn" title="Invoice an advance payment"
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"
@@ -1444,12 +1444,14 @@
     <action name="action-sale-order-attrs-set-required"/>
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
+    <action name="action-sale-order-attrs-incoterm-required"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
+    <action name="action-sale-order-validate-check-on-confirm"/>
+    <action name="save"/>
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
-    <action name="action-sale-order-validate-check-on-confirm"/>
     <action name="action-sale-order-method-confirm"/>
     <action name="action-sale-order-method-notify-stock-move-created"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
@@ -1468,6 +1470,7 @@
     <action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"
       if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
     <action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2} != null"/>
+    <action name="action-sale-order-attrs-incoterm-required"/>
   </action-group>
 
   <action-group name="action-sale-order-group-client-partner-change">
@@ -1496,6 +1499,8 @@
     <action
       name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
       if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
+    <action name="action-sale-order-method-fiscal-position-on-change"/>
+    <action name="action-sale-order-method-compute"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -1513,6 +1518,9 @@
     <alert
       message="One product is sold at loss, are you sure you want to finalize the quotation ?"
       if="saleOrderLineList?.any{ it.subTotalGrossMargin &lt; 0 }"/>
+    <alert
+      message="The selected price list is no longer valid, do you still want to continue?"
+      if="priceList != null  &amp;&amp; !(priceList?.isActive &amp;&amp; (priceList?.applicationBeginDate == null || priceList?.applicationBeginDate &lt; __config__.date) &amp;&amp; (priceList?.applicationEndDate == null || priceList?.applicationEndDate &gt; __config__.date))"/>
   </action-validate>
 
   <action-attrs name="action-sale-order-attrs-in-ati">
@@ -1737,7 +1745,7 @@
     <field name="paymentCondition" expr="eval: company?.accountConfig?.defPaymentCondition"
       if="__config__.app.isApp('account') &amp;&amp; clientPartner?.paymentCondition == null"/>
     <field name="fiscalPosition" expr="eval: clientPartner?.fiscalPosition"
-      if="__config__.app.isApp('account') &amp;&amp; saleOrderLineList?.isEmpty()"/>
+      if="__config__.app.isApp('account')"/>
     <field name="currency" expr="eval: clientPartner?.currency"
       if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
     <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
@@ -2085,7 +2093,7 @@
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
     <error message="Incoterm must be filled"
       if="__config__.app.isApp('supplychain')
-          &amp;&amp; incoterm == null
+          &amp;&amp; (incoterm == null &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'})
           &amp;&amp; (
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
           || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code))"/>
@@ -2210,5 +2218,14 @@
     <field name="stockLocation"
       expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : stockLocation"/>
   </action-record>
+
+  <action-attrs name="action-sale-order-attrs-incoterm-required">
+    <attribute for="incoterm" name="required"
+      expr="eval: __config__.app.isApp('supplychain')
+          &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'}
+          &amp;&amp; (
+          (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
+          || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
+  </action-attrs>
 
 </object-views>

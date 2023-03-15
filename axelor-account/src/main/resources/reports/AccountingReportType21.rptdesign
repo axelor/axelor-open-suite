@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,6 +19,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -663,7 +664,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 			FixedAsset.first_service_date >= AccountingReport.date_from
 			AND FixedAsset.first_service_date <= AccountingReport.date_to
 			AND ((FixedAsset.status_select = 2 OR FixedAsset.status_select = 3)
-			or(FixedAsset.status_select = 4 and FixedAsset.disposal_date > AccountingReport.date_to))
+			or(FixedAsset.status_select = 4 and (FixedAsset.disposal_date > AccountingReport.date_to OR (
+                SELECT COUNT(*)
+                FROM account_fixed_asset_line  AS FixedAssetLine
+                WHERE
+                FixedAssetLine.type_select = 1
+                AND FixedAssetLine.fixed_asset = FixedAsset.id
+			) = 1)))
 		THEN FixedAsset.gross_value
 		ELSE 0
 	END) AS value_b,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,6 +19,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -728,50 +729,50 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <xml-property name="queryText"><![CDATA[SELECT
 	FixedAssetType.technical_type_select AS fixed_asset_type,
 	SUM(CASE
-		WHEN 
+		WHEN
 			FixedAsset.first_service_date < AccountingReport.date_from
 		THEN FixedAssetLine.depreciation
 		ELSE 0
 	END) AS depreciation_a,
 	SUM(CASE
-		WHEN 
+		WHEN
 			FixedAsset.first_service_date >= AccountingReport.date_from
 			AND FixedAsset.first_service_date <= AccountingReport.date_to
 		THEN FixedAssetLine.depreciation
 		ELSE 0
 	END) AS depreciation_b,
 	SUM(CASE
-		WHEN 
+		WHEN
 			FixedAsset.disposal_date >= AccountingReport.date_from
 			AND FixedAsset.disposal_date <= AccountingReport.date_to
 		THEN FixedAssetLine.depreciation
 		ELSE 0
 	END) AS depreciation_c,
 	SUM(CASE
-		WHEN 
+		WHEN
 			FixedAsset.first_service_date < AccountingReport.date_from
 		THEN FixedAssetLine.impairment_value
 		ELSE 0
 	END) AS impairment_value_a,
 	SUM(CASE
-		WHEN 
+		WHEN
 			FixedAsset.first_service_date >= AccountingReport.date_from
 			AND FixedAsset.first_service_date <= AccountingReport.date_to
 		THEN FixedAssetLine.impairment_value
 		ELSE 0
 	END) AS impairment_value_b,
 	SUM(CASE
-		WHEN 
+		WHEN
 			FixedAsset.disposal_date >= AccountingReport.date_from
 			AND FixedAsset.disposal_date <= AccountingReport.date_to
 		THEN FixedAssetLine.impairment_value
 		ELSE 0
 	END) AS impairment_value_c
-	
-FROM 
+
+FROM
 	account_accounting_report AS AccountingReport,
 	account_fixed_asset_line  AS FixedAssetLine
-	
+
 LEFT JOIN account_fixed_asset AS FixedAsset
 ON FixedAssetLine.fixed_asset = FixedAsset.id
 
@@ -780,12 +781,12 @@ ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
 
 LEFT JOIN account_fixed_asset_type AS FixedAssetType
 ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
-	
+
 WHERE 
-	AccountingReport.id = ? 
+	AccountingReport.id = ?
 	AND FixedAsset.status_select > 1
 	AND FixedAssetType.technical_type_select > 1
-	
+
 GROUP BY FixedAssetType.technical_type_select]]></xml-property>
         </oda-data-set>
     </data-sets>

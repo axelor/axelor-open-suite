@@ -135,7 +135,7 @@ public class PeriodServiceImpl implements PeriodService {
     this.updateCloseTemporarilyPeriod(period);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   protected void updateClosePeriod(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
     period.setClosureDateTime(LocalDateTime.now());
@@ -143,7 +143,7 @@ public class PeriodServiceImpl implements PeriodService {
     periodRepo.save(period);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   protected void updateCloseTemporarilyPeriod(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_TEMPORARILY_CLOSED);
     period.setTemporarilyCloseDate(LocalDate.now());

@@ -88,7 +88,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.cancelPurchaseOrder(purchaseOrder);
 

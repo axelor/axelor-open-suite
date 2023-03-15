@@ -17,9 +17,29 @@
  */
 package com.axelor.apps.message.db.repo;
 
+import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MessageManagementRepository extends MessageRepository {
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    if (json != null && json.get("id") != null) {
+      final Message entity = find((Long) json.get("id"));
+
+      if (entity.getToEmailAddressSet() != null) {
+        json.put(
+            "toEmailAddresses",
+            entity.getToEmailAddressSet().stream()
+                .map(EmailAddress::getAddress)
+                .collect(Collectors.joining(", ")));
+      }
+    }
+    return json;
+  }
+
   @Override
   public Message copy(Message entity, boolean deep) {
     entity.setStatusSelect(1);

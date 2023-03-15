@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -55,6 +55,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -401,10 +402,10 @@ else  {&#13;
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[Select MoveLine.id as "MoveLineId", MoveLine.name as "MoveLineName", 
+            <xml-property name="queryText"><![CDATA[Select MoveLine.id as "MoveLineId", MoveLine.name as "MoveLineName",
 MoveLine.partner_full_name as "PartnerName", MoveLine.partner_seq as "PartnerSeq",
-MoveLine.origin as "Origin", COALESCE(AccountingReport.date_to, AccountingReport.date_val) as "ReportDate",     
-MoveLine.date_val as "MoveLineDate", MoveLine.due_date as "MoveLineDueDate", 
+MoveLine.origin as "Origin", COALESCE(AccountingReport.date_to, AccountingReport.date_val) as "ReportDate",
+MoveLine.date_val as "MoveLineDate", MoveLine.due_date as "MoveLineDueDate",
 MoveLine.credit as "Credit", MoveLine.debit as "Debit", Sum(Reconcile.amount) as "AmountReconciled"
 
 from public.account_accounting_report as AccountingReport 
@@ -417,13 +418,13 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
 left outer join public.account_account as MoveLineAccount on (MoveLine.account  = MoveLineAccount.id)
-left outer join public.account_reconcile as Reconcile on (Reconcile.debit_move_line = MoveLine.id OR Reconcile.credit_move_line = MoveLine.id) 
+left outer join public.account_reconcile as Reconcile on (Reconcile.debit_move_line = MoveLine.id OR Reconcile.credit_move_line = MoveLine.id)
 AND (Reconcile.reconciliation_date <= AccountingReport.date_val AND (Reconcile.reconciliation_cancel_date is NULL or Reconcile.reconciliation_cancel_date > AccountingReport.date_val)
 )
 
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.company_currency) AND
-(AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
+(AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
@@ -1578,7 +1579,7 @@ row["AmountRemaining"]
                                     <structure>
                                         <property name="name">Expression</property>
                                         <expression name="value" type="javascript">if(BirtDateTime.diffDay(row["MoveLineDueDate"],row["ReportDate"]) &lt;= 30 &amp;&amp; BirtDateTime.diffDay(row["MoveLineDueDate"], row["ReportDate"]) >= 0){
-row["AmountRemaining"] 
+row["AmountRemaining"]
 }</expression>
                                     </structure>
                                 </list-property>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -144,7 +144,7 @@ public class TicketServiceImpl implements TicketService {
    * @param sla
    * @throws AxelorException
    */
-  private void computeDuration(Ticket ticket, Sla sla) throws AxelorException {
+  protected void computeDuration(Ticket ticket, Sla sla) throws AxelorException {
 
     if (sla.getIsWorkingDays()
         && ticket.getAssignedToUser() != null
@@ -172,7 +172,7 @@ public class TicketServiceImpl implements TicketService {
    * @param ticket
    * @param sla
    */
-  private void calculateAllDays(Ticket ticket, Sla sla) {
+  protected void calculateAllDays(Ticket ticket, Sla sla) {
     LocalDateTime localDateTime = ticket.getStartDateT().plusDays(sla.getDays());
     localDateTime = localDateTime.plusHours(sla.getHours());
     ticket.setDeadlineDateT(localDateTime);
@@ -187,7 +187,7 @@ public class TicketServiceImpl implements TicketService {
    * @param days
    * @throws AxelorException
    */
-  private void calculateWorkingDays(LocalDateTime fromDate, Company company, int days)
+  protected void calculateWorkingDays(LocalDateTime fromDate, Company company, int days)
       throws AxelorException {
 
     if (weeklyPlanningService.getWorkingDayValueInDays(
