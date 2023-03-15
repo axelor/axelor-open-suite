@@ -1,5 +1,5 @@
 {
-  "name": "react-axelor-human-resource",
+  "name": "react-timesheet-new",
   "version": "0.1.0",
   "private": true,
   "homepage": "./",
@@ -61,7 +61,7 @@
     "react-error-overlay": "^1.0.7",
     "sw-precache-webpack-plugin": "0.9.1"
   },
-  "proxy": "https://test.axelor.com",
+  "proxy": "http://localhost:8080/",
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",

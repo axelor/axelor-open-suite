@@ -109,7 +109,7 @@ class TimeSheet extends Component {
           selectProject={(project) => this.props.toggleProjectList(project)}
           collapseProject={(projectId) => this.props.collapseProject(projectId)}
           style={{ flex: 1 }}
-          isUniqueProduct={this.props.isUniqueProduct}
+          showActivity={this.props.showActivity}
         />
         <Cell
           header="Task"
@@ -124,7 +124,7 @@ class TimeSheet extends Component {
         <div
           style={{
             ...divStyle,
-            maxWidth: this.props.showActivity === "true" ? "60%" : "75%",
+            maxWidth: this.props.showActivity ? "60%" : "75%",
             overflowX: "auto",
             overflowY: "hidden",
           }}

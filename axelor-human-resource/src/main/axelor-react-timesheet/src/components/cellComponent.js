@@ -8,8 +8,8 @@ import {
 } from "./container";
 
 export function translate(str) {
-  if (window._t && typeof str === "string") {
-    return window._t(str);
+  if (window.top && window.top._t && typeof str === "string") {
+    return window.top._t(str);
   }
   return str;
 }
@@ -46,7 +46,8 @@ class CellComponent extends Component {
       taskId: task.taskId,
       task: task.task,
       duration: parseFloat(duration === "" ? 0 : duration),
-      projectTask: task.projectTask
+      projectTask: task.projectTask,
+      projectTaskId: task.projectTask && task.projectTask.id,
     };
   }
 
@@ -124,8 +125,7 @@ class CellComponent extends Component {
   }
 
   render() {
-    const { isField, isToday, cellBackGroundColor, isUniqueProduct } =
-      this.props;
+    const { isField, isToday, cellBackGroundColor, showActivity } = this.props;
     let backgroundColor = this.props.cellBackgroundColor || "#FFFFFF";
     backgroundColor = this.props.isToday ? "aliceblue" : backgroundColor;
     const styles = {
@@ -421,7 +421,7 @@ class CellComponent extends Component {
                           fontWeight: "bold",
                         }}
                       >
-                        {!isUniqueProduct && (
+                        {showActivity && (
                           <span
                             className="collapse-icon"
                             onClick={() =>
@@ -438,9 +438,17 @@ class CellComponent extends Component {
                     ) : (
                       <div style={{ padding: "2px 5px 2px 20px" }}>
                         {isNaN(this.props.data[task]) ||
-                        this.props.data[task].title
-                          ? this.props.data[task].title
-                          : convertNumberToTime(this.props.data[task])}
+                        this.props.data[task].title ? (
+                          <span
+                            style={{
+                              display: showActivity ? "block" : "none",
+                            }}
+                          >
+                            {this.props.data[task].title}
+                          </span>
+                        ) : (
+                          convertNumberToTime(this.props.data[task])
+                        )}
                       </div>
                     )}
                   </div>

@@ -177,14 +177,26 @@ class Container extends Component {
     let tasks = {};
     let dateWise = {};
     let taskTotal = {};
-    const { HRConfig } = this.state;
-    const uniqueTaskId =
-      HRConfig.uniqueTimesheetProduct && HRConfig.uniqueTimesheetProduct.id;
+    const {
+      HRConfig,
+      params: { showActivity },
+    } = this.state;
+    const { uniqueTimesheetProduct } = HRConfig;
+    const uniqueTaskId = uniqueTimesheetProduct && uniqueTimesheetProduct.id;
     const getDD = (dd) =>
       moment(dd, this.state.taskDateFormat).format(this.state.taskDateFormat);
+
     data.forEach((t) => {
-      const { user, project, projectId, task, taskId, projectTask } = t;
-      let projectKey = `project_${projectId}`;
+      const { user, project, projectId, task, taskId, projectTask, id } = t;
+
+      let projectTaskId = projectTask && projectTask.id;
+      if (!showActivity && projectTaskId === null) {
+        projectTaskId = undefined;
+      }
+
+      let projectKey = !showActivity
+        ? `project_${projectId}_${projectTaskId}`
+        : `project_${projectId}`;
       if (!tasks[projectKey]) {
         const isCollapse =
           this.state.collapseProject.filter((p) => p === projectId).length > 0;
@@ -194,14 +206,19 @@ class Container extends Component {
           projectId,
           title: project,
           isCollapse,
-          projectTask,
+          projectTask: !showActivity ? projectTask : {},
+          projectTaskId,
+          id,
         };
       }
       /* check selected project line when  useUniqueProductForTimesheet is true*/
-      if (HRConfig.useUniqueProductForTimesheet) {
+      if (!showActivity) {
         const selected =
           this.state.selectedProjectTask.filter(
-            (s) => s.projectId === projectId && s.taskId === uniqueTaskId
+            (s) =>
+              s.projectId === projectId &&
+              s.taskId === uniqueTaskId &&
+              s.projectTaskId === projectTaskId
           ).length > 0;
         tasks[projectKey].selected = selected;
       }
@@ -209,15 +226,24 @@ class Container extends Component {
       /* check collapse data */
       const isProjectCollapse =
         this.state.collapseProject.filter((p) => p === projectId).length > 0;
-      if (isProjectCollapse || HRConfig.useUniqueProductForTimesheet) {
+      if (isProjectCollapse || !showActivity) {
         return;
       }
+      let projectTaskKey;
+      if (projectTaskId === undefined) {
+        projectTaskKey = `${projectId}_${taskId}_null`;
+      } else {
+        projectTaskKey = `${projectId}_${taskId}_${projectTaskId}`;
+      }
 
-      let projectTaskKey = `${projectId}_${taskId}`;
       if (!tasks[projectTaskKey]) {
         const selected =
           this.state.selectedProjectTask.filter(
-            (s) => s.projectId === projectId && s.taskId === taskId
+            (s) =>
+              s.projectId === projectId &&
+              s.taskId === taskId &&
+              s.projectTaskId === projectTaskId &&
+              s.id === id
           ).length > 0;
         tasks[projectTaskKey] = {
           user,
@@ -228,39 +254,67 @@ class Container extends Component {
           selected,
           title: task,
           projectTask,
+          projectTaskId,
+          id,
         };
       }
     });
     Object.keys(tasks).forEach((t) => {
       if (t.startsWith("project")) {
-        const { projectId } = tasks[t];
-        const isProjectExists = data.find((e) => e.projectId === projectId);
+        let { projectId, projectTaskId, id } = tasks[t];
+        if (!showActivity && projectTaskId === undefined) {
+          projectTaskId = null;
+        }
+
+        const isProjectExists = data.filter((e) => {
+          return (
+            e.projectId === projectId &&
+            e.projectTaskId === projectTaskId &&
+            e.id === id
+          );
+        });
+
         if (!isProjectExists) {
           delete tasks[t];
         } else {
-          const curTask = data.filter(
-            (e) => e.projectId === projectId && rowDates.indexOf(e.date) > -1
-          );
-          const projectTotalKey = `total_${t}_${projectId}`;
-          curTask.forEach((tsk) => {
-            if (!taskTotal[projectTotalKey]) {
-              taskTotal[projectTotalKey] = 0;
-            }
-            taskTotal[projectTotalKey] += tsk.duration;
+          const curTask = data.filter((e) => {
+            if (!showActivity)
+              return (
+                e.projectId === projectId &&
+                e.projectTaskId === projectTaskId &&
+                rowDates.indexOf(e.date) > -1
+              );
+            return e.projectId === projectId && rowDates.indexOf(e.date) > -1;
           });
+          const projectTotalKey = `total_${t}_${projectId}`;
+          if (curTask.length === 0) {
+            taskTotal[projectTotalKey] = 0;
+          } else {
+            curTask.forEach((tsk) => {
+              if (!taskTotal[projectTotalKey]) {
+                taskTotal[projectTotalKey] = 0;
+              }
+              taskTotal[projectTotalKey] += tsk.duration;
+            });
+          }
         }
       } else {
-        const { taskId, projectId } = tasks[t];
+        const { taskId, projectId, projectTaskId, id } = tasks[t];
         /* check collapse data */
         const isProjectCollapse =
           this.state.collapseProject.filter((p) => p === projectId).length > 0;
-        if (isProjectCollapse || HRConfig.useUniqueProductForTimesheet) {
+        if (isProjectCollapse || !showActivity) {
           return;
         }
 
-        const isTaskExist = data.find(
-          (e) => e.taskId === taskId && e.projectId === projectId
-        );
+        const isTaskExist = data.find((e) => {
+          let value =
+            e.taskId === taskId &&
+            e.projectId === projectId &&
+            (e.projectTaskId || (e.projectTask && e.projectTask.id)) ===
+              projectTaskId;
+          return value;
+        });
         if (!isTaskExist) {
           delete tasks[t];
         } else {
@@ -268,6 +322,8 @@ class Container extends Component {
             (e) =>
               e.taskId === taskId &&
               e.projectId === projectId &&
+              e.projectTaskId === projectTaskId &&
+              // e.id === id &&
               rowDates.indexOf(e.date) > -1
           );
           curTask.forEach((tsk) => {
@@ -282,25 +338,38 @@ class Container extends Component {
         }
       }
     });
+
     Object.keys(taskTotal).forEach((tsk) => {
       taskTotal[tsk] = taskTotal[tsk].toFixed(2);
     });
+
     let grandTotal = 0;
     rowDates.forEach((d) => {
       let dateRecord = dateWise[d] || { tasks: {}, total: 0 };
       let total = 0;
       Object.keys(tasks).forEach((t) => {
         if (t.startsWith("project")) {
-          const { projectId, projectTask } = tasks[t];
-          let dateTasks = data.filter(
-            (e) => e.date === getDD(d) && e.projectId === projectId
-          );
+          const { projectId, projectTask, id } = tasks[t];
+          let projectTaskId = projectTask && projectTask.id;
+
+          let dateTasks = !showActivity
+            ? data.filter((e) => {
+                return (
+                  e.date === getDD(d) &&
+                  e.projectId === projectId &&
+                  e.projectTaskId === projectTaskId
+                );
+              })
+            : data.filter(
+                (e) => e.date === getDD(d) && e.projectId === projectId
+              );
           let duration =
             dateTasks.length > 0
               ? dateTasks
                   .map((e) => e.duration)
                   .reduce((t1, t2) => Number(t1) + Number(t2))
               : 0;
+
           if (
             d >= this.state.fromDate &&
             (d <= this.state.toDate || this.state.toDate === null)
@@ -315,29 +384,64 @@ class Container extends Component {
               duration: isDisable ? "" : duration.toFixed(2),
               date: d,
               projectTask,
+              projectTaskId,
             };
-            if (HRConfig.useUniqueProductForTimesheet) {
-              const uniqueTaskId = HRConfig.uniqueTimesheetProduct.id;
+            if (!showActivity) {
+              const uniqueTaskId =
+                HRConfig.uniqueTimesheetProduct &&
+                HRConfig.uniqueTimesheetProduct.id;
               object["isReadOnly"] = false;
-              object["taskId"] = HRConfig.uniqueTimesheetProduct.id;
+              object["taskId"] =
+                HRConfig.uniqueTimesheetProduct &&
+                HRConfig.uniqueTimesheetProduct.id;
 
               /* check selected project line when  useUniqueProductForTimesheet is true*/
               const selected =
-                this.state.selectedProjectTask.filter(
-                  (s) => s.projectId === projectId && s.taskId === uniqueTaskId
-                ).length > 0;
+                this.state.selectedProjectTask.filter((s) => {
+                  return (
+                    s.projectId === projectId &&
+                    s.taskId === uniqueTaskId &&
+                    s.id === id
+                  );
+                }).length > 0;
               object["selected"] = selected;
             }
-            dateRecord.tasks[`project_${projectId}`] = object;
+
+            dateRecord.tasks[`project_${projectId}_${id}_${projectTaskId}`] =
+              object;
             grandTotal += duration;
             total += duration;
           } else {
-            // const selected = this.state.selectedProjectTask.filter(s => s.projectId === projectId && s.taskId === taskId).length > 0;
-            dateRecord.tasks[`project_dummy${projectId}`] = { duration: "" };
+            const selected =
+              this.state.selectedProjectTask.filter((s) => {
+                if (!showActivity) {
+                  return (
+                    s.projectId === projectId &&
+                    s.taskId === uniqueTaskId &&
+                    s.id === id
+                  );
+                } else {
+                  return (
+                    s.projectId === projectId &&
+                    s.taskId === uniqueTaskId &&
+                    s.projectTaskId === projectTaskId &&
+                    s.id === id
+                  );
+                }
+              }).length > 0;
+
+            dateRecord.tasks[
+              `project_dummy${projectId}_${id}_${projectTaskId}`
+            ] = {
+              duration: "",
+              selected,
+            };
           }
         } else {
-          const { taskId, projectId, task = "", projectTask } = tasks[t];
-          if (HRConfig.useUniqueProductForTimesheet) {
+          const { taskId, projectId, task = "", projectTask, id } = tasks[t];
+          const projectTaskId = projectTask && projectTask.id;
+
+          if (!showActivity) {
             return;
           }
           /* check collapse data */
@@ -352,7 +456,10 @@ class Container extends Component {
             (e) =>
               e.date === getDD(d) &&
               e.taskId === taskId &&
-              e.projectId === projectId
+              e.projectId === projectId &&
+              e.projectTaskId === projectTaskId
+            // &&
+            // e.id === id
           );
           let duration =
             dateTasks.length > 0
@@ -401,27 +508,38 @@ class Container extends Component {
 
             selected =
               this.state.selectedProjectTask.filter(
-                (s) => s.projectId === projectId && s.taskId === taskId
+                (s) =>
+                  s.projectId === projectId &&
+                  s.taskId === taskId &&
+                  s.projectTaskId === projectTaskId &&
+                  s.id === id
               ).length > 0;
 
-            dateRecord.tasks[`${projectId}_${taskId}`] = {
-              isReadOnly,
-              isDisable,
-              hasNegative,
-              selected,
-              taskId,
-              projectId,
-              duration: isDisable ? "" : duration.toFixed(2),
-              date: d,
-              task,
-              projectTask,
-            };
+            dateRecord.tasks[`${projectId}_${taskId}_${projectTaskId}_${id}`] =
+              {
+                isReadOnly,
+                isDisable,
+                hasNegative,
+                selected,
+                taskId,
+                projectId,
+                duration: isDisable ? "" : duration.toFixed(2),
+                date: d,
+                task,
+                projectTask,
+              };
           } else {
             const selected =
               this.state.selectedProjectTask.filter(
-                (s) => s.projectId === projectId && s.taskId === taskId
+                (s) =>
+                  s.projectId === projectId &&
+                  s.taskId === taskId &&
+                  s.projectTaskId === projectTaskId &&
+                  s.id === id
               ).length > 0;
-            dateRecord.tasks[`dummy${projectId}_${taskId}`] = {
+            dateRecord.tasks[
+              `dummy${projectId}_${taskId}_${projectTaskId}_${id}`
+            ] = {
               duration: "",
               selected,
             };
@@ -432,12 +550,8 @@ class Container extends Component {
       dateWise[d] = dateRecord;
     });
 
-    // let grandTotal = parseFloat((Object.keys(taskTotal).length > 0 ?
-    //                     Object.keys(taskTotal).map((t) => !t.startsWith('total_project') && taskTotal[t]).reduce((t1, t2) => Number(t1) + Number(t2))
-    //                     : 0)).toFixed(2);
     return { tasks, dateWise, taskTotal, grandTotal: grandTotal.toFixed(2) };
   }
-
   isReadOnlyTimesheet() {
     const { timesheet, user } = this.state;
     let isReadOnly = false;
@@ -480,14 +594,24 @@ class Container extends Component {
   }
 
   toggleProjectList(project) {
-    const { HRConfig } = this.state;
+    const {
+      HRConfig,
+      params: { showActivity },
+    } = this.state;
     const selectedProjectTask = this.state.selectedProjectTask;
+
     let index = null;
-    if (HRConfig.useUniqueProductForTimesheet) {
-      project.taskId = HRConfig.uniqueTimesheetProduct.id;
+    if (!showActivity) {
+      project.taskId =
+        HRConfig.uniqueTimesheetProduct && HRConfig.uniqueTimesheetProduct.id;
     }
     selectedProjectTask.forEach((sp, i) => {
-      if (sp.projectId === project.projectId && project.taskId === sp.taskId) {
+      if (
+        sp.projectId === project.projectId &&
+        project.taskId === sp.taskId &&
+        sp.projectTaskId === project.projectTaskId &&
+        sp.id === project.id
+      ) {
         index = i;
       }
     });
@@ -501,6 +625,7 @@ class Container extends Component {
       this.state.taskData,
       this.state.rowDates
     );
+
     const records = this.setDummyRecord(tasks, dateWise, taskTotal);
     this.setState({
       tasks: records.tasks,
@@ -511,7 +636,8 @@ class Container extends Component {
   }
 
   updateDuration(obj) {
-    const { projectId, date, duration, taskId, projectTask } = obj;
+    const { projectId, date, duration, taskId, projectTask, projectTaskId } =
+      obj;
     const service = new Service();
     let record = {};
     const { taskData } = this.state;
@@ -524,7 +650,8 @@ class Container extends Component {
         if (
           date === task.date &&
           task.taskId === taskId &&
-          projectId === task.projectId
+          projectId === task.projectId &&
+          projectTaskId === (task && task.projectTask && task.projectTask.id)
         ) {
           if (task.enableEditor) {
             counter = 0;
@@ -570,7 +697,8 @@ class Container extends Component {
           if (
             date === task.date &&
             task.taskId === taskId &&
-            projectId === task.projectId
+            projectId === task.projectId &&
+            projectTaskId === task.projectTaskId
           ) {
             return task.duration;
           }
@@ -591,7 +719,8 @@ class Container extends Component {
                 date === task.date &&
                 task.taskId === taskId &&
                 projectId === task.projectId &&
-                task.enableEditor !== true
+                task.enableEditor !== true &&
+                projectTaskId === task.projectTaskId
               ) {
                 return task.duration;
               }
@@ -610,7 +739,7 @@ class Container extends Component {
           object = {
             timesheet: { id: this.state.timesheetId },
             project: obj.projectId ? { id: obj.projectId } : null,
-            product: { id: obj.taskId },
+            product: obj.taskId === null ? null : { id: obj.taskId },
             hoursDuration: obj.duration - counter,
             date: obj.date,
             enableEditor: true,
@@ -636,8 +765,6 @@ class Container extends Component {
       } else {
         this.forceUpdate();
       }
-      // const { tasks, dateWise, taskTotal, grandTotal } = this.groupTasks(taskData, rowDates);
-      // this.setState({ taskData, tasks, dateWise, taskTotal, grandTotal });
     }
   }
 
@@ -1021,6 +1148,7 @@ class Container extends Component {
 
   async fetchTasks(project) {
     const service = new Service();
+    if (!project) return;
     const res = await service.search(
       "com.axelor.apps.project.db.ProjectTask",
       [],
@@ -1099,7 +1227,7 @@ class Container extends Component {
                           project: res.data ? res.data[0] : null,
                         },
                       });
-                      this.fetchTasks(res.data[0]);
+                      this.fetchTasks(res && res.data && res.data[0]);
                     });
                 });
               service
@@ -1133,13 +1261,10 @@ class Container extends Component {
 
   componentDidMount() {
     const service = new Service();
-    const params = {};
-    const regex = /[?&]([^=#]+)=([^&#]*)/g;
-    const url = window.location.href;
-    let match;
-    while ((match = regex.exec(url))) {
-      params[match[1]] = match[2];
-    }
+    const params = new URL(document.location).searchParams;
+    const timesheetId = params.get("timesheetId");
+    const showActivity = JSON.parse(params.get("showActivity"));
+
     const HREntity = "com.axelor.apps.hr.db.HRConfig";
     service.search(HREntity).then((res) => {
       const { data } = res;
@@ -1148,9 +1273,19 @@ class Container extends Component {
       }
     });
     service.info().then((res) => {
-      this.setState({ params, user: res, mode: this.props.mode }, () => {
-        this.refreshData(res);
-      });
+      this.setState(
+        {
+          params: {
+            timesheetId,
+            showActivity,
+          },
+          user: res,
+          mode: this.props.mode,
+        },
+        () => {
+          this.refreshData(res);
+        }
+      );
     });
   }
 
@@ -1191,21 +1326,35 @@ class Container extends Component {
 
   addNewLine() {
     const { editor, taskData, rowDates } = this.state;
-    const hasRecord = taskData.filter(
-      (task) =>
-        task.date === editor.date &&
-        task.projectId === editor.project.id &&
-        task.taskId === editor.task.id &&
-        task.projectTask &&
-        task.projectTask.id === editor.projectTask &&
-        editor.projectTask.id
-    );
+    const {
+      params: { showActivity },
+    } = this.state;
+    const hasRecord = taskData.filter((task) => {
+      if (showActivity && task.duration !== 0)
+        return (
+          task.date === editor.date &&
+          task.projectId === (editor.project && editor.project.id) &&
+          task.taskId === (editor.task && editor.task.id) &&
+          (task.projectTask && task.projectTask.id) ===
+            (editor.projectTask && editor.projectTask.id)
+        );
+      else if (!showActivity) {
+        return (
+          task.date === editor.date &&
+          task.projectId === (editor.project && editor.project.id) &&
+          task.taskId === (editor.task && editor.task.id) &&
+          (task.projectTask && task.projectTask.id) ===
+            (editor.projectTask && editor.projectTask.id)
+        );
+      }
+    });
     if (hasRecord.length > 0) {
       const obj = {
-        projectId: editor.project.id,
-        taskId: editor.task.id,
+        projectId: editor.project && editor.project.id,
+        taskId: editor.task && editor.task.id,
         projectTask: editor.projectTask,
-        task: editor.task.fullName,
+        projectTaskId: editor.projectTask && editor.projectTask.id,
+        task: editor.task && editor.task.fullName,
         date: editor.date,
         duration: editor.duration,
       };
@@ -1217,9 +1366,11 @@ class Container extends Component {
         projectId: editor.project.id,
         duration: parseFloat(editor.duration === "" ? 0 : editor.duration),
         date: editor.date,
-        task: editor.task.fullName,
-        taskId: editor.task.id,
+        task: editor.task && editor.task.fullName,
+        taskId: editor.task && editor.task.id,
         projectTask: editor.projectTask,
+        projectTaskId: editor.projectTask && editor.projectTask.id,
+        id: editor.task && editor.task.id,
       });
       taskData.sort((a, b) => {
         var x = a.projectId,
@@ -1279,23 +1430,42 @@ class Container extends Component {
     const project = this.state.projectTaskList.filter(
       (pt) => pt.excludeTimesheetEditor === false
     )[0];
-    this.setState({
-      show: true,
-      editor: {
-        project: project || { id: null },
-        task: this.state.defaultActivity,
-        date: moment().format("YYYY-MM-DD"),
-        duration: "0",
+    this.setState(
+      {
+        show: true,
+        editor: {
+          project: project || { id: null },
+          task: this.state.defaultActivity,
+          date: moment().format("YYYY-MM-DD"),
+          duration: "0",
+        },
       },
-    });
+      () => {
+        this.fetchTasks(project);
+      }
+    );
   }
 
   removeTimesheetLine() {
     const service = new Service();
+    const {
+      params: { showActivity },
+    } = this.state;
     this.state.selectedProjectTask.forEach((sp, i) => {
+      if (!showActivity) {
+        if (sp.projectTaskId === null) {
+          sp.projectTaskId = undefined;
+        } else if (sp.projectTaskId === undefined) {
+          sp.projectTaskId = null;
+        }
+      }
       const taskIds = this.state.taskData
         .map((t) => {
-          if (t.projectId === sp.projectId && t.taskId === sp.taskId) {
+          if (
+            t.projectId === sp.projectId &&
+            t.projectTaskId === sp.projectTaskId &&
+            t.taskId === sp.taskId
+          ) {
             return { id: t.id, version: t.version };
           }
         })
@@ -1314,6 +1484,9 @@ class Container extends Component {
                 var x = a.projectId,
                   y = b.projectId;
                 return x < y ? -1 : x > y ? 1 : 0;
+              });
+              this.setState({
+                selectedProjectTask: [],
               });
               const { tasks, dateWise, taskTotal, grandTotal } =
                 this.groupTasks(taskData, this.state.rowDates);
@@ -1360,7 +1533,6 @@ class Container extends Component {
   }
 
   render() {
-    const { HRConfig } = this.state;
     let close = () => this.setState({ show: false });
     let closeConfirm = () => this.setState({ confirmPopUp: false });
     return (
@@ -1441,9 +1613,7 @@ class Container extends Component {
           setSortingField={(fieldName) => this.setSortingField(fieldName)}
           sortingList={this.state.sortingList}
           collapseProject={(projectId) => this.collapseProject(projectId)}
-          isUniqueProduct={HRConfig.useUniqueProductForTimesheet || false}
         />
-
         <Modal
           show={this.state.show}
           onHide={close}
@@ -1493,7 +1663,7 @@ class Container extends Component {
                   ))}
               </FormControl>
             </FormGroup>
-            {this.state.params.showActivity === "true" && (
+            {this.state.params.showActivity && (
               <FormGroup style={{ marginBottom: 5 }}>
                 <ControlLabel style={{ float: "left" }}>
                   {translate("Activity")}
@@ -1513,11 +1683,12 @@ class Container extends Component {
                   }}
                 >
                   <option key="activity_default" value={null} />
-                  {this.state.subTaskList.map((p, index) => (
-                    <option key={index} value={p.id}>
-                      {p.fullName}
-                    </option>
-                  ))}
+                  {(this.state.subTaskList || []).length &&
+                    this.state.subTaskList.map((p, index) => (
+                      <option key={index} value={p.id}>
+                        {p.fullName}
+                      </option>
+                    ))}
                 </FormControl>
               </FormGroup>
             )}

@@ -1,6 +1,6 @@
 plugins {
 	id 'com.axelor.app'
-	id "com.github.node-gradle.node" version "3.5.0"
+	id "com.github.node-gradle.node"
 }
 
 apply from: "../libs.gradle"
@@ -54,15 +54,15 @@ task installFrontDeps(type: YarnTask) {
 
 task copyWebapp(type: Copy) {
 	destinationDir = file(rootProject.buildDir)
-	into("webapp/hr/axelor-react-timesheet") {
-		from "build/webapp/axelor-react-timesheet"
+	into("webapp/hr/timesheet") {
+		from "build/webapp/hr/timesheet"
 	}
 }
 
 
 task copyReactWebapp(type: Copy) {
 	from file("src/main/axelor-react-timesheet/build")
-	into file("build/webapp/axelor-react-timesheet")
+	into file("build/webapp/hr/timesheet")
 	
 	dependsOn buildFront
 }

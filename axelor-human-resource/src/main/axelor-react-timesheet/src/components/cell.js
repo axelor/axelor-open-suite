@@ -3,8 +3,8 @@ import React, { Component } from "react";
 import { convertNumberToTime } from "./container";
 
 export function translate(str) {
-  if (window._t && typeof str === "string") {
-    return window._t(str);
+  if (window.top && window.top._t && typeof str === "string") {
+    return window.top._t(str);
   }
   return str;
 }
@@ -29,6 +29,7 @@ class Cell extends Component {
       task: task.task,
       duration: parseFloat(duration === "" ? 0 : duration),
       projectTask: task.projectTask,
+      projectTaskId: task.projectTask && task.projectTask.id,
     };
   }
 
