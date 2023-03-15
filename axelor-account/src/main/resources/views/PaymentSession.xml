@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="payment-session-grid" title="Payment sessions" canDelete="false"
     model="com.axelor.apps.account.db.PaymentSession" orderBy="-paymentDate,-sequence">
@@ -152,14 +152,16 @@
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
       readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
       <panel name="accountingMethodPanel" stacked="true">
-        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect != 3"/>
+        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect != 3"
+          readonlyIf="statusSelect == 4"/>
         <field name="accountingMethodSelect" showIf="moveAccountingDateSelect == 3"
-          selection-in="[1,2]"/>
+          selection-in="[1,2]" readonlyIf="statusSelect == 4"/>
       </panel>
       <panel name="moveAccountingDatePanel" stacked="true">
-        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"/>
+        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"
+          readonlyIf="statusSelect == 4"/>
         <field name="moveAccountingDateSelect" showIf="accountingMethodSelect == 3"
-          selection-in="[1,2]"/>
+          readonlyIf="statusSelect == 4" selection-in="[1,2]"/>
       </panel>
       <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"
         selection-in="[1,2,3,4]"/>

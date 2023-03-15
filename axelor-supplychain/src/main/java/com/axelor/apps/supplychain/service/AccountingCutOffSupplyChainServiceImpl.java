@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -64,7 +65,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -76,6 +77,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServiceImpl
     implements AccountingCutOffSupplyChainService {
@@ -314,7 +316,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       if (partnerAccount == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.MISSING_FORECASTED_INV_CUST_ACCOUNT));
+            I18n.get(SupplychainExceptionMessage.MISSING_FORECASTED_INV_CUST_ACCOUNT));
       }
     }
     if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
@@ -329,7 +331,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       if (partnerAccount == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.MISSING_FORECASTED_INV_SUPP_ACCOUNT));
+            I18n.get(SupplychainExceptionMessage.MISSING_FORECASTED_INV_SUPP_ACCOUNT));
       }
     }
 
@@ -498,7 +500,14 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     moveLine.setDate(moveDate);
     moveLine.setDueDate(moveDate);
 
+    List<AnalyticMoveLine> analyticMoveLineList =
+        new ArrayList<>(moveLine.getAnalyticMoveLineList());
+    moveLine.clearAnalyticMoveLineList();
     getAndComputeAnalyticDistribution(product, move, moveLine, isPurchase);
+
+    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
 
     move.addMoveLineListItem(moveLine);
     if (recoveredTax) {

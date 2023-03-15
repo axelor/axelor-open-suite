@@ -469,7 +469,7 @@ public class MapService {
   }
 
   public String getOsmMapURI(String name, Long id) {
-    final String uri = "map/osm-objs.html";
+    final String uri = "osm-objs/index.html";
 
     try {
       UriBuilder ub = UriBuilder.fromUri(uri);

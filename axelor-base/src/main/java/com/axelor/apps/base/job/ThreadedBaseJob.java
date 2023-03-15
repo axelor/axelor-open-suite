@@ -34,7 +34,7 @@ public abstract class ThreadedBaseJob extends ThreadedJob {
     this.updateBatchOrigin(batch);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updateBatchOrigin(Batch batch) {
     batch.setActionLaunchOrigin(BatchRepository.ACTION_LAUNCH_ORIGIN_SCHEDULED);
     batchRepo.save(batch);

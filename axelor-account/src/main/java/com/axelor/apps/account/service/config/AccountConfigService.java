@@ -408,7 +408,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_HOLDBACK_CUSTOMER),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getHoldBackCustomerAccount();
@@ -420,7 +420,7 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_MISSING_HOLDBACK_SUPPLIER),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
     return accountConfig.getHoldBackSupplierAccount();

@@ -76,7 +76,7 @@ public class PrintServiceImpl implements PrintService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Map<String, Object> generatePDF(Print print) throws AxelorException {
     try {
       print = printRepo.find(print.getId());

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.payment.paymentsession;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -33,6 +34,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
@@ -66,17 +68,20 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected InvoiceTermRepository invoiceTermRepository;
   protected InvoiceTermService invoiceTermService;
   protected PaymentSessionValidateService paymentSessionValidateService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public PaymentSessionServiceImpl(
       PaymentSessionRepository paymentSessionRepository,
       InvoiceTermRepository invoiceTermRepository,
       InvoiceTermService invoiceTermService,
-      PaymentSessionValidateService paymentSessionValidateService) {
+      PaymentSessionValidateService paymentSessionValidateService,
+      AccountConfigService accountConfigService) {
     this.paymentSessionRepository = paymentSessionRepository;
     this.invoiceTermRepository = invoiceTermRepository;
     this.invoiceTermService = invoiceTermService;
     this.paymentSessionValidateService = paymentSessionValidateService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -229,11 +234,11 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   @Override
   @Transactional
-  public void retrieveEligibleTerms(PaymentSession paymentSession) {
+  public void retrieveEligibleTerms(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> eligibleInvoiceTermList =
         invoiceTermRepository
             .all()
-            .filter(retrieveEligibleTermsQuery())
+            .filter(retrieveEligibleTermsQuery(paymentSession.getCompany()))
             .bind("company", paymentSession.getCompany())
             .bind("paymentModeTypeSelect", paymentSession.getPaymentMode().getTypeSelect())
             .bind(
@@ -266,7 +271,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     computeTotalPaymentSession(paymentSession);
   }
 
-  protected String retrieveEligibleTermsQuery() {
+  protected String retrieveEligibleTermsQuery(Company company) throws AxelorException {
     String generalCondition =
         "self.moveLine.move.company = :company "
             + " AND self.dueDate <= :paymentDatePlusMargin "
@@ -274,6 +279,13 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.bankDetails IS NOT NULL "
             + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    if (company != null
+        && accountConfig != null
+        && accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
+      generalCondition += " AND self.moveLine.move.statusSelect != 2 ";
+    }
+
     String termsMoveLineCondition =
         " AND ((self.moveLine.partner.isCustomer = TRUE "
             + " AND :partnerTypeSelect = :partnerTypeClient"

@@ -510,6 +510,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     List<String> domainList = new ArrayList<>();
 
+    domainList.add("self.company = :company");
     domainList.add("self.partner = :deliverToCustomerPartner");
     domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
     domainList.add(
