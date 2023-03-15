@@ -102,7 +102,8 @@
         onSelect="action-payment-session-method-set-journal-domain"/>
       <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
       <field name="partnerSet" widget="TagSelect" canNew="false" canEdit="false"
-        onSelect="action-payment-session-attrs-set-partner-domain" form-view="partner-form"/>
+        onSelect="action-payment-session-attrs-set-partner-domain" form-view="partner-form"
+        readonlyIf="!company || !partnerTypeSelect"/>
     </panel>
     <panel name="searchPanel"
       showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails">
@@ -458,11 +459,14 @@
 
   <action-attrs name="action-payment-session-attrs-set-partner-domain">
     <attribute name="domain" for="partnerSet"
-      expr="eval: &quot;self.isSupplier = true&quot;" if="partnerTypeSelect == 1"/>
+      expr="eval: &quot;self.isSupplier = true AND :company member of self.companySet&quot;"
+      if="partnerTypeSelect == 1 &amp;&amp; company"/>
     <attribute name="domain" for="partnerSet"
-      expr="eval: &quot;self.isEmployee = true&quot;" if="partnerTypeSelect == 2"/>
+      expr="eval: &quot;self.isEmployee = true AND :company member of self.companySet&quot;"
+      if="partnerTypeSelect == 2 &amp;&amp; company"/>
     <attribute name="domain" for="partnerSet"
-      expr="eval: &quot;self.isCustomer = true&quot;" if="partnerTypeSelect == 3"/>
+      expr="eval: &quot;self.isCustomer = true AND :company member of self.companySet&quot;"
+      if="partnerTypeSelect == 3 &amp;&amp; company"/>
   </action-attrs>
 
 </object-views>
