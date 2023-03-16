@@ -20,8 +20,9 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
-import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
-import com.axelor.apps.account.service.moveline.massentry.MassEntryToolService;
+import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -93,7 +94,6 @@ public class MoveLineMassEntryController {
     try {
       MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
-      MassEntryService massEntryService = Beans.get(MassEntryService.class);
       boolean isCounterpartLine = false;
 
       if (parentContext != null
@@ -107,7 +107,7 @@ public class MoveLineMassEntryController {
             isCounterpartLine = true;
             break;
           case 3:
-            massEntryService.resetMoveLineMassEntry(moveLineMassEntry);
+            Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLineMassEntry);
             moveLineMassEntry.setInputAction(1);
             moveLineMassEntry.setTemporaryMoveNumber(
                 Beans.get(MassEntryToolService.class)
@@ -119,8 +119,8 @@ public class MoveLineMassEntryController {
             break;
         }
         response.setAttrs(
-            massEntryService.setAttrsInputActionOnChange(
-                isCounterpartLine, moveLineMassEntry.getAccount()));
+            Beans.get(MoveLineMassEntryService.class)
+                .setAttrsInputActionOnChange(isCounterpartLine, moveLineMassEntry.getAccount()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -143,7 +143,8 @@ public class MoveLineMassEntryController {
 
         } else {
           Move move = parentContext.asType(Move.class);
-          Beans.get(MassEntryService.class).setPartnerAndBankDetails(move, moveLineMassEntry);
+          Beans.get(MoveLineMassEntryService.class)
+              .setPartnerAndBankDetails(move, moveLineMassEntry);
         }
       }
       response.setValues(moveLineMassEntry);
@@ -167,7 +168,7 @@ public class MoveLineMassEntryController {
       if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);
         currencyRate =
-            Beans.get(MassEntryService.class)
+            Beans.get(MoveLineMassEntryService.class)
                 .computeCurrentRate(
                     currencyRate,
                     move,

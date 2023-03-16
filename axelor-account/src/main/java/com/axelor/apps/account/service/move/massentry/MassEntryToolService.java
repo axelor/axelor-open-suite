@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.moveline.massentry;
+package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -19,9 +19,6 @@ public interface MassEntryToolService {
       Move move, MoveLine moveLine, Integer temporaryMoveNumber);
 
   List<MoveLineMassEntry> getEditedMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList);
-
-  void setPaymentModeOnMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, Integer technicalTypeSelect);
 
   List<Move> createMoveListFromMassEntryList(Move move);
 

@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.moveline.massentry;
+package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;

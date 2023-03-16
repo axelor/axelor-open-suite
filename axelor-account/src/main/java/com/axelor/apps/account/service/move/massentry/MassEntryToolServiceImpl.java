@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.moveline.massentry;
+package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -125,22 +125,6 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       }
     }
     return resultList;
-  }
-
-  @Override
-  public void setPaymentModeOnMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, Integer technicalTypeSelect) {
-    switch (technicalTypeSelect) {
-      case 1:
-        moveLineMassEntry.setMovePaymentMode(moveLineMassEntry.getPartner().getOutPaymentMode());
-        break;
-      case 2:
-        moveLineMassEntry.setMovePaymentMode(moveLineMassEntry.getPartner().getInPaymentMode());
-        break;
-      default:
-        moveLineMassEntry.setMovePaymentMode(null);
-        break;
-    }
   }
 
   @Override

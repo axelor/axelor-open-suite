@@ -21,7 +21,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.apps.account.service.moveline.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -58,7 +59,7 @@ public class MassEntryMoveController {
       MassEntryService massEntryService = Beans.get(MassEntryService.class);
 
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-        Beans.get(MassEntryService.class).verifyFieldsChangeOnMoveLineMassEntry(move);
+        massEntryService.verifyFieldsChangeOnMoveLineMassEntry(move);
 
         MoveLineMassEntry lastMoveLineMassEntry =
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
@@ -69,8 +70,11 @@ public class MassEntryMoveController {
           response.setValues(move);
 
           Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
-          massEntryService.generateTaxLineAndCounterpart(
-              move, this.extractDueDate(request), lastMoveLineMassEntry.getTemporaryMoveNumber());
+          Beans.get(MoveLineMassEntryService.class)
+              .generateTaxLineAndCounterpart(
+                  move,
+                  this.extractDueDate(request),
+                  lastMoveLineMassEntry.getTemporaryMoveNumber());
         }
         response.setValues(move);
         response.setAttr("controlMassEntryMoves", "hidden", false);
