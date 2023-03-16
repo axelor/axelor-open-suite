@@ -35,6 +35,7 @@ import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Query;
@@ -275,5 +276,34 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
       return null;
     }
     return accountingReport.getAccountingReportMoveLineList().get(0).getAccountingExport();
+  }
+
+  public BigDecimal getDebitBalance(String query) {
+    Query q =
+        JPA.em()
+            .createQuery(
+                "select SUM(self.exTaxProratedAmount) + Sum(self.taxProratedAmount) FROM PaymentMoveLineDistribution as self WHERE "
+                    + query,
+                BigDecimal.class);
+    return getNullSafeBalance(q);
+  }
+
+  public BigDecimal getCreditBalance(String query) {
+    Query q =
+        JPA.em()
+            .createQuery(
+                "select SUM(self.inTaxProratedAmount) FROM PaymentMoveLineDistribution as self WHERE "
+                    + query,
+                BigDecimal.class);
+
+    return getNullSafeBalance(q);
+  }
+
+  protected BigDecimal getNullSafeBalance(Query q) {
+    BigDecimal result = (BigDecimal) q.getSingleResult();
+    if (result == null) {
+      result = BigDecimal.ZERO;
+    }
+    return result;
   }
 }
