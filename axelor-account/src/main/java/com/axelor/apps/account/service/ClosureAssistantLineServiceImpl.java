@@ -174,7 +174,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
 
   @Transactional
   protected ClosureAssistantLine validateOrCancelClosureAssistantLine(
-      ClosureAssistantLine closureAssistantLine, boolean isValidated) throws AxelorException {
+      ClosureAssistantLine closureAssistantLine, boolean isValidated) {
     closureAssistantLine.setIsValidated(isValidated);
     if (isValidated) {
       closureAssistantLine.setValidatedByUser(AuthUtils.getUser());

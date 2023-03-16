@@ -57,7 +57,7 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     this.accountRepository = accountRepository;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public AccountingReport createAccountingReportFromBatch(AccountingBatch accountingBatch)
       throws AxelorException {

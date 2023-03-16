@@ -56,7 +56,7 @@ public class BankOrderMergeHRServiceImpl extends BankOrderMergeServiceImpl {
     this.expenseHRRepository = expenseHRRepository;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException {
     if (!Beans.get(AppService.class).isApp("employee")) {
