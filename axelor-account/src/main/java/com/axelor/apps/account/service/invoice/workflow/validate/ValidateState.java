@@ -131,7 +131,7 @@ public class ValidateState extends WorkflowInvoice {
     if (invoice.getPartnerAccount() == null) {
       invoice.setPartnerAccount(accountingSituationService.getPartnerAccount(invoice, false));
     }
-    if (invoice.getPartnerAccount() != null && !invoice.getPartnerAccount().getHasInvoiceTerm()) {
+    if (invoice.getPartnerAccount() != null && !invoice.getPartnerAccount().getUseForPartnerBalance()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
