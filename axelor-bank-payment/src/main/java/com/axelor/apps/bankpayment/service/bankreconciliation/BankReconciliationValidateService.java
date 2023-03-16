@@ -192,7 +192,8 @@ public class BankReconciliationValidateService {
   public void validateMultipleBankReconciles(
       BankReconciliation bankReconciliation,
       BankReconciliationLine bankReconciliationLine,
-      List<HashMap<String, Object>> moveLinesToReconcileContext) {
+      List<HashMap<String, Object>> moveLinesToReconcileContext)
+      throws AxelorException {
 
     LocalDate effectDate = bankReconciliationLine.getEffectDate();
     String name = bankReconciliationLine.getName();
