@@ -299,7 +299,7 @@ class Container extends Component {
           }
         }
       } else {
-        const { taskId, projectId, projectTaskId, id } = tasks[t];
+        const { taskId, projectId, projectTaskId} = tasks[t];
         /* check collapse data */
         const isProjectCollapse =
           this.state.collapseProject.filter((p) => p === projectId).length > 0;
@@ -724,6 +724,7 @@ class Container extends Component {
               ) {
                 return task.duration;
               }
+              return null;
             })
             .filter((t) => t)
             .reduce((t1, t2) => Number(t1) + Number(t2), 0);
@@ -1016,6 +1017,7 @@ class Container extends Component {
                                 ) {
                                   return week.indexOf(w.name);
                                 }
+                                return null;
                               })
                               .filter((wId) => wId !== undefined);
                             if (
@@ -1318,6 +1320,7 @@ class Container extends Component {
       ...taskData
         .map((tsk) => {
           if (tsk.taskId !== undefined) return tsk.taskId;
+          return null;
         })
         .filter((t) => t !== undefined)
     );
@@ -1347,6 +1350,7 @@ class Container extends Component {
             (editor.projectTask && editor.projectTask.id)
         );
       }
+      return null;
     });
     if (hasRecord.length > 0) {
       const obj = {
@@ -1468,6 +1472,7 @@ class Container extends Component {
           ) {
             return { id: t.id, version: t.version };
           }
+          return null;
         })
         .filter((t) => t);
       service
