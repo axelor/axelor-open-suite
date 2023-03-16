@@ -241,7 +241,7 @@ public class ConvertLeadWizardController {
     Lead lead = null;
 
     if (context.getParent() != null
-        && context.getParent().get("_model").equals("com.axelor.message.db.Wizard")) {
+        && context.getParent().get("_model").equals("com.axelor.utils.db.Wizard")) {
       context = context.getParent();
     }
 
