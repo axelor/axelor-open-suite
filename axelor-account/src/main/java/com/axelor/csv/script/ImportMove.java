@@ -77,19 +77,16 @@ public class ImportMove {
         moveLine.setCounter(counter);
       }
 
-      if (values.get("EcritureDate") != null) {
-        LocalDate moveLineDate = parseDate(values.get("EcritureDate").toString());
-        moveLine.setDate(moveLineDate);
-      }
+      moveLine.setDate(parseDate(values.get("EcritureDate").toString()));
 
       Move move = moveRepository.all().filter("self.reference = ?", moveReference).fetchOne();
       if (move == null) {
         move = new Move();
         move.setReference(moveReference);
 
-        if (values.get("ValidDate") != null) {
+        move.setValidationDate(parseDate(values.get("ValidDate").toString()));
+        if (move.getValidationDate() != null) {
           move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
-          move.setValidationDate(parseDate(values.get("ValidDate").toString()));
         } else {
           move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
         }
@@ -129,7 +126,6 @@ public class ImportMove {
                   .fetchOne();
           move.setPartner(partner);
         }
-        moveRepository.save(move);
       }
       if (values.get("CompteNum") != null) {
         Account account =
@@ -142,6 +138,7 @@ public class ImportMove {
                 .fetchOne();
         moveLine.setAccount(account);
       }
+      move.addMoveLineListItem(moveLine);
       moveLine.setMove(move);
     } catch (Exception e) {
       TraceBackService.trace(e);
