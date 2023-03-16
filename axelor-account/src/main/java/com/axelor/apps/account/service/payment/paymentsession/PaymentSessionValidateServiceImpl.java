@@ -65,6 +65,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
@@ -498,6 +499,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     this.reconcile(paymentSession, invoiceTerm, moveLine);
 
+    recomputeAmountPaid(invoiceTerm.getMoveLine());
+
     return move;
   }
 
@@ -532,6 +535,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       PaymentSession paymentSession, InvoiceTerm invoiceTerm, MoveLine moveLine)
       throws AxelorException {
     MoveLine debitMoveLine, creditMoveLine;
+    BigDecimal amountPaid =
+        moveLine.getAmountRemaining().signum() == 0 ? moveLine.getAmountPaid() : BigDecimal.ZERO;
 
     if (paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT) {
       debitMoveLine = moveLine;
@@ -555,7 +560,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
     }
 
-    return reconcileService.reconcile(debitMoveLine, creditMoveLine, invoicePayment, false, true);
+    if (paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT) {
+      debitMoveLine.setAmountPaid(debitMoveLine.getAmountPaid().subtract(amountPaid));
+    } else {
+      creditMoveLine.setAmountPaid(creditMoveLine.getAmountPaid().subtract(amountPaid));
+    }
+
+    return reconcileService.reconcile(
+        debitMoveLine, creditMoveLine, invoicePayment, false, amountPaid.signum() == 0);
   }
 
   protected InvoicePayment findInvoicePayment(
@@ -1056,5 +1068,17 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
     }
     return false;
+  }
+
+  protected void recomputeAmountPaid(MoveLine moveLine) {
+    if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+      Optional<BigDecimal> amountPaid =
+          moveLine.getInvoiceTermList().stream()
+              .map(it -> it.getPaymentAmount())
+              .reduce(BigDecimal::add);
+      if (amountPaid.isPresent()) {
+        moveLine.setAmountPaid(amountPaid.get());
+      }
+    }
   }
 }
