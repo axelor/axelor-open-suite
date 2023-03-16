@@ -59,7 +59,6 @@ task copyWebapp(type: Copy) {
 	}
 }
 
-
 task copyReactWebapp(type: Copy) {
 	from file("src/main/axelor-react-timesheet/build")
 	into file("build/webapp/hr/timesheet")
