@@ -280,7 +280,7 @@ public class OperationOrderWorkflowService {
    *
    * @param operationOrder An operation order
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(OperationOrder operationOrder) throws AxelorException {
     int oldStatus = operationOrder.getStatusSelect();
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_CANCELED);

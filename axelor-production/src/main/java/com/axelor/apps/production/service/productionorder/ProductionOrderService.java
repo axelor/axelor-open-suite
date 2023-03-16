@@ -22,7 +22,6 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -44,7 +43,6 @@ public interface ProductionOrderService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public ProductionOrder generateProductionOrder(
       Product product,
       BillOfMaterial billOfMaterial,
@@ -66,7 +64,6 @@ public interface ProductionOrderService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public ProductionOrder addManufOrder(
       ProductionOrder productionOrder,
       Product product,
