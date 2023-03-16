@@ -177,7 +177,7 @@
   </form>
 
 
-  <form name="payment-session-print-wizard-form" model="com.axelor.message.db.Wizard"
+  <form name="payment-session-print-wizard-form" model="com.axelor.utils.db.Wizard"
     title="Payment session print wizard">
     <panel name="mainPanel">
       <field name="_exportTypeSelect" type="string" title="Export format"
@@ -256,7 +256,7 @@
   </action-validate>
 
   <action-view name="action-view-account-payment-session-print-wizard"
-    title="Payment session print wizard" model="com.axelor.message.db.Wizard">
+    title="Payment session print wizard" model="com.axelor.utils.db.Wizard">
     <view type="form" name="payment-session-print-wizard-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="false"/>

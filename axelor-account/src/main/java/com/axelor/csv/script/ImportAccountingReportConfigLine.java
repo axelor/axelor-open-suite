@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
-import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
@@ -46,8 +45,8 @@ public class ImportAccountingReportConfigLine {
     this.accountingReportConfigLineRepo = accountingReportConfigLineRepo;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  public Object setAccounts(Object bean, Map<String, Object> values) throws AxelorException {
+  @Transactional
+  public Object setAccounts(Object bean, Map<String, Object> values) {
     assert bean instanceof AccountingReportConfigLine;
     AccountingReportConfigLine configLine = (AccountingReportConfigLine) bean;
 

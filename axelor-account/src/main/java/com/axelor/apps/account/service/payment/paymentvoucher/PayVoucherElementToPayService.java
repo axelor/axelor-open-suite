@@ -114,7 +114,7 @@ public class PayVoucherElementToPayService {
         elementToPay.getRemainingAmount().subtract(elementToPay.getAmountToPay()));
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PayVoucherElementToPay updateElementToPayWithFinancialDiscount(
       PayVoucherElementToPay payVoucherElementToPay,
       PayVoucherDueElement payVoucherDueElement,

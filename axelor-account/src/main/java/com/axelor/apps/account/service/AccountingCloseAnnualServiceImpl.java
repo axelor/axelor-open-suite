@@ -90,7 +90,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     this.bankDetailsService = bankDetailsService;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCloseAndOpenAnnualAccount(
       Year year,
       Account account,
@@ -154,7 +154,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCloseAnnualAccount(
       Year year,
       Account account,
@@ -193,7 +193,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateOpenAnnualAccount(
       Year year,
       Account account,

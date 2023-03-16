@@ -34,8 +34,8 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.utils.db.Wizard;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -174,7 +174,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
 
   @Transactional
   protected ClosureAssistantLine validateOrCancelClosureAssistantLine(
-      ClosureAssistantLine closureAssistantLine, boolean isValidated) throws AxelorException {
+      ClosureAssistantLine closureAssistantLine, boolean isValidated) {
     closureAssistantLine.setIsValidated(isValidated);
     if (isValidated) {
       closureAssistantLine.setValidatedByUser(AuthUtils.getUser());
