@@ -33,6 +33,16 @@
       default="false"
       help="Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application."/>
 
+    <!-- Stock line verification config -->
+    <boolean name="isVerifyCustomerDeliveryLineEnabled"
+      title="Enable customer delivery line verification" default="false"/>
+    <boolean name="isVerifySupplierArrivalLineEnabled"
+      title="Enable supplier arrival line verification" default="false"/>
+    <boolean name="isVerifyInternalMoveLineEnabled"
+      title="Enable internal move line verification" default="false"/>
+    <boolean name="isVerifyInventoryLineEnabled" title="Enable inventory line verification"
+      default="false"/>
+
     <track>
       <field name="isStockAppEnable"/>
       <field name="isProductionAppEnable"/>
@@ -41,6 +51,10 @@
       <field name="isTrackerMessageOnStockApp"/>
       <field name="isTrackerMessageOnProductionApp"/>
       <field name="isTrackerMessageOnCrmApp"/>
+      <field name="isVerifyCustomerDeliveryLineEnabled"/>
+      <field name="isVerifySupplierArrivalLineEnabled"/>
+      <field name="isVerifyInternalMoveLineEnabled"/>
+      <field name="isVerifyInventoryLineEnabled"/>
     </track>
   </entity>
 </domain-models>
