@@ -31,7 +31,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.BankDetails;
@@ -65,6 +65,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceService invoiceService;
+  protected InvoiceVisibilityService invoiceVisibilityService;
 
   @Inject
   public InvoicePaymentCreateServiceImpl(
@@ -74,7 +75,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
-      InvoiceService invoiceService) {
+      InvoiceService invoiceService,
+      InvoiceVisibilityService invoiceVisibilityService) {
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
@@ -83,6 +85,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceService = invoiceService;
+    this.invoiceVisibilityService = invoiceVisibilityService;
   }
 
   /**
@@ -495,8 +498,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     Company company = null;
     Currency currency = null;
     List<Long> invoiceToPay = new ArrayList<>();
-    Boolean isActivatePassedForPayment =
-        Beans.get(AppAccountService.class).getAppAccount().getActivatePassedForPayment();
 
     for (Long invoiceId : invoiceIdList) {
       Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
@@ -519,32 +520,33 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       if (company == null) {
         company = invoice.getCompany();
       }
+
       if (currency == null) {
         currency = invoice.getCurrency();
       }
 
-      if (invoice.getCompany() == null
-          || company == null
-          || !invoice.getCompany().equals(company)) {
+      if (invoice.getCompany() == null || !invoice.getCompany().equals(company)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
       }
-      if (invoice.getCurrency() == null
-          || currency == null
-          || !invoice.getCurrency().equals(currency)) {
+
+      if (invoice.getCurrency() == null || !invoice.getCurrency().equals(currency)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
       }
-      if (isActivatePassedForPayment
+
+      if (invoiceVisibilityService.getManagePfpCondition(invoice)
           && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(AccountExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION));
       }
+
       invoiceToPay.add(invoiceId);
     }
+
     return invoiceToPay;
   }
 }
