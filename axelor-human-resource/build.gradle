@@ -24,7 +24,7 @@ dependencies {
 }
 
 node {
-    yarnVersion = '1.22.19'
+	yarnVersion = '1.22.19'
     download = true
     distBaseUrl = null
     nodeModulesDir = file('src/main/axelor-react-timesheet')
