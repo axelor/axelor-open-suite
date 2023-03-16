@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -77,9 +78,7 @@ public class ImportMove {
       }
 
       if (values.get("EcritureDate") != null) {
-        LocalDate moveLineDate =
-            LocalDate.parse(
-                values.get("EcritureDate").toString(), DateTimeFormatter.BASIC_ISO_DATE);
+        LocalDate moveLineDate = parseDate(values.get("EcritureDate").toString());
         moveLine.setDate(moveLineDate);
       }
 
@@ -90,9 +89,7 @@ public class ImportMove {
 
         if (values.get("ValidDate") != null) {
           move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
-          move.setValidationDate(
-              LocalDate.parse(
-                  values.get("ValidDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
+          move.setValidationDate(parseDate(values.get("ValidDate").toString()));
         } else {
           move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
         }
@@ -100,9 +97,7 @@ public class ImportMove {
         move.setCompany(getCompany(values));
         move.setCompanyCurrency(move.getCompany().getCurrency());
 
-        move.setDate(
-            LocalDate.parse(
-                values.get("EcritureDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
+        move.setDate(parseDate(values.get("EcritureDate").toString()));
 
         move.setPeriod(
             Beans.get(PeriodService.class)
@@ -191,5 +186,17 @@ public class ImportMove {
     }
     moveRepository.save(move);
     return move;
+  }
+
+  protected LocalDate parseDate(String date) {
+    if (!StringUtils.isEmpty(date)) {
+      try {
+        return LocalDate.parse(date, DateTimeFormatter.BASIC_ISO_DATE);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+        throw e;
+      }
+    }
+    return null;
   }
 }
