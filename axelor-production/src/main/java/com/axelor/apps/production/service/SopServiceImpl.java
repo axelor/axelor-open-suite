@@ -121,7 +121,7 @@ public class SopServiceImpl implements SopService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void setSalesForecast(SopLine sopLine, ProductCategory category, Company company)
       throws AxelorException {
     sopLine = sopLineRepo.find(sopLine.getId());

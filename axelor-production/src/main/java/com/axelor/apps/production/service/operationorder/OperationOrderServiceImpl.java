@@ -102,15 +102,14 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public OperationOrder createOperationOrder(
       ManufOrder manufOrder,
       int priority,
       WorkCenter workCenter,
       Machine machine,
       MachineTool machineTool,
-      ProdProcessLine prodProcessLine)
-      throws AxelorException {
+      ProdProcessLine prodProcessLine) {
 
     logger.debug(
         "Création d'une opération {} pour l'OF {}", priority, manufOrder.getManufOrderSeq());

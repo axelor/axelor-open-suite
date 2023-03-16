@@ -453,7 +453,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
         unitCostCalculationRepository.find(unitCostCalculation.getId()));
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void updateUnitCosts(UnitCostCalcLine unitCostCalcLine) throws AxelorException {
 
     Product product = unitCostCalcLine.getProduct();
