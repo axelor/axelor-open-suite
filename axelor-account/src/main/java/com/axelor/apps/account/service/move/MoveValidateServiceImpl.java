@@ -242,7 +242,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     checkInactiveJournal(move);
     checkFunctionalOriginSelect(move);
 
-    validateVatSystem(move);
+    // validateVatSystem(move);
 
     Integer functionalOriginSelect = move.getFunctionalOriginSelect();
     if (functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE

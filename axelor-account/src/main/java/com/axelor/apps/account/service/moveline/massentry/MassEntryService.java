@@ -28,17 +28,21 @@ import java.util.Map;
 
 public interface MassEntryService {
 
-  void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber);
+  void fillMoveLineListWithMoveLineMassEntryList(
+      Move move, Integer temporaryMoveNumber); // TODO mettre dans move/massEntry folder service
 
   void generateTaxLineAndCounterpart(Move move, LocalDate dueDate, Integer temporaryMoveNumber)
       throws AxelorException;
 
   MoveLineMassEntry getFirstMoveLineMassEntryInformations(
-      List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry);
+      List<MoveLineMassEntry> moveLineMassEntryList,
+      MoveLineMassEntry moveLineMassEntry); // TODO mettre dans move/massEntry folder service
 
-  void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry);
+  void resetMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry); // TODO mettre dans move/massEntry folder service
 
-  void verifyFieldsChangeOnMoveLineMassEntry(Move move) throws AxelorException;
+  void verifyFieldsChangeOnMoveLineMassEntry(Move move)
+      throws AxelorException; // TODO mettre dans move/massEntry folder service
 
   void loadAccountInformation(Move move, MoveLineMassEntry moveLineMassEntry)
       throws AxelorException;
@@ -53,7 +57,12 @@ public interface MassEntryService {
   void setPartnerAndBankDetails(Move move, MoveLineMassEntry moveLineMassEntry)
       throws AxelorException;
 
-  void checkMassEntryMoveGeneration(Move move) throws AxelorException;
+  void checkMassEntryMoveGeneration(Move move)
+      throws AxelorException; // TODO mettre dans move/massEntry folder service
 
-  String validateMassEntryMove(Move move);
+  Map<List<Long>, String> validateMassEntryMove(
+      Move move); // TODO mettre dans move/massEntry folder service
+
+  Long generateMassEntryMove(Move move)
+      throws AxelorException; // TODO mettre dans move/massEntry folder service
 }

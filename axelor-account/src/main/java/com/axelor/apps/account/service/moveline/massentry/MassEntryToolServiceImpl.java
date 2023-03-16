@@ -157,6 +157,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveToCheck.setJournal(move.getJournal());
       moveToCheck.setCompany(move.getCompany());
       moveToCheck.setCurrency(move.getCurrency());
+      moveToCheck.setCompanyBankDetails(move.getCompanyBankDetails());
 
       for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
         if (moveLineMassEntry.getTemporaryMoveNumber() == i) {
@@ -171,6 +172,8 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
             moveToCheck.setPartner(moveLineMassEntry.getPartner());
             moveToCheck.setOrigin(moveLineMassEntry.getOrigin());
             moveToCheck.setStatusSelect(moveLineMassEntry.getMoveStatusSelect());
+            moveToCheck.setOriginDate(moveLineMassEntry.getOriginDate());
+            moveToCheck.setDescription(moveLineMassEntry.getDescription());
             firstMove = false;
           }
           moveLineMassEntry.setMove(moveToCheck);

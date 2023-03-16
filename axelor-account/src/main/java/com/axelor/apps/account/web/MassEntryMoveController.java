@@ -31,6 +31,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class MassEntryMoveController {
@@ -108,17 +110,29 @@ public class MassEntryMoveController {
 
   public void validateMassEntryMoves(ActionRequest request, ActionResponse response) {
     String error;
+    Map.Entry<List<Long>, String> entryMap;
+    List<Long> idMoveList;
     try {
       Move move = request.getContext().asType(Move.class);
 
       if (move != null) {
-        error = Beans.get(MassEntryService.class).validateMassEntryMove(move);
+        entryMap =
+            Beans.get(MassEntryService.class)
+                .validateMassEntryMove(move)
+                .entrySet()
+                .iterator()
+                .next();
+        idMoveList = entryMap.getKey();
+        error = entryMap.getValue();
+
         if (error.length() > 0) {
           response.setFlash(
               String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
           response.setAttr("validateMassEntryMoves", "hidden", true);
           response.setAttr("showMassEntryMoves", "hidden", false);
         } else {
+          // Return idMoveList
+          System.out.println(idMoveList);
           response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
         }
       }
