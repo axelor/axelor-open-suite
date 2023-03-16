@@ -154,7 +154,8 @@
             showIf="manageCutOffPeriod"/>
         </panel>
         <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
-          if-module="axelor-account" if="__config__.app.isApp('account')" showIf="useForPartnerBalance">
+          if-module="axelor-account" if="__config__.app.isApp('account')"
+          showIf="useForPartnerBalance">
           <field name="isRetrievedOnPaymentSession" widget="boolean-switch"/>
         </panel>
       </panel>

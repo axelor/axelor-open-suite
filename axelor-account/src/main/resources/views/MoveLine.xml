@@ -420,6 +420,7 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="invoiceTermPanel" title="Term(s)"
+        if="__config__.app.getApp('account').allowMultiInvoiceTerms"
         showIf="account.useForPartnerBalance &amp;&amp; move.invoice == null" colSpan="12">
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms"
@@ -429,6 +430,7 @@
           onChange="action-move-line-method-update-due-dates"/>
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
+        if="__config__.app.getApp('account').allowMultiInvoiceTerms"
         showIf="account.useForPartnerBalance  &amp;&amp; move.invoice != null" colSpan="12">
         <button name="showInvoiceTermsFromInvoiceBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice"
@@ -653,6 +655,7 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="invoiceTermPanel" title="Term(s)"
+        if="__config__.app.getApp('account').allowMultiInvoiceTerms"
         showIf="account.useForPartnerBalance &amp;&amp; move.invoice == null" colSpan="12">
         <panel name="financialDiscountPanel" colSpan="12"
           showIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
@@ -674,6 +677,7 @@
           onChange="action-move-line-method-update-due-dates"/>
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
+        if="__config__.app.getApp('account').allowMultiInvoiceTerms"
         showIf="account.useForPartnerBalance  &amp;&amp; move.invoice != null" colSpan="12">
         <button name="showInvoiceTermsFromInvoiceBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice"

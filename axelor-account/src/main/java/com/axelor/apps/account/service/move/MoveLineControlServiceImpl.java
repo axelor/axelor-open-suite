@@ -222,10 +222,11 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
         ObjectUtils.notEmpty(move.getInvoice()) && moveLine.getAccount().getUseForPartnerBalance();
     List<MoveLine> moveLines = move.getMoveLineList();
     boolean containsInvoiceTerm =
-            moveLines.stream().anyMatch(ml ->
+        moveLines.stream()
+            .anyMatch(
+                ml ->
                     ObjectUtils.notEmpty(ml.getInvoiceTermList())
-                            && ml.getInvoiceTermList().stream()
-                            .anyMatch(InvoiceTerm::getIsHoldBack));
+                        && ml.getInvoiceTermList().stream().anyMatch(InvoiceTerm::getIsHoldBack));
     boolean hasInvoiceTermMoveLines =
         moveLines.stream()
                 .filter(
