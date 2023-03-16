@@ -166,7 +166,6 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
   }
 
   @Override
-  @Transactional
   public Set<ProductionOrder> updateStatus(Set<ProductionOrder> productionOrderSet) {
 
     if (CollectionUtils.isEmpty(productionOrderSet)) {
