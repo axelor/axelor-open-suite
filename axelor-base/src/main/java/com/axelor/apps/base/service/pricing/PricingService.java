@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.base.service.pricing;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 import java.util.Optional;
 

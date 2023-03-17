@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.sale.exception;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 
 public class BlockedSaleOrderException extends AxelorException {
 

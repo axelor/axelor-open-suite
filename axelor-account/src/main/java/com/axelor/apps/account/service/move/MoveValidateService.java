@@ -18,9 +18,9 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface MoveValidateService {

@@ -28,7 +28,7 @@ import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.service.ArchivingToolService;

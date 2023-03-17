@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -37,7 +38,6 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 

@@ -20,7 +20,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.CalendarConfiguration;
 import com.axelor.apps.base.db.repo.CalendarConfigurationRepository;
 import com.axelor.apps.base.ical.CalendarConfigurationService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

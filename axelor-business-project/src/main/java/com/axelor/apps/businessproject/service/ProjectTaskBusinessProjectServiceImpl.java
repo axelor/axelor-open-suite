@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
@@ -49,7 +50,6 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
@@ -170,13 +170,13 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return projectTask;
   }
 
-  private void emptyDiscounts(ProjectTask projectTask) {
+  protected void emptyDiscounts(ProjectTask projectTask) {
     projectTask.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
     projectTask.setDiscountAmount(BigDecimal.ZERO);
     projectTask.setPriceDiscounted(BigDecimal.ZERO);
   }
 
-  private PriceListLine getPriceListLine(
+  protected PriceListLine getPriceListLine(
       ProjectTask projectTask, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
@@ -199,7 +199,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return projectTask;
   }
 
-  private BigDecimal computeDiscount(ProjectTask projectTask) {
+  protected BigDecimal computeDiscount(ProjectTask projectTask) {
 
     return priceListService.computeDiscount(
         projectTask.getUnitPrice(),
@@ -207,7 +207,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         projectTask.getDiscountAmount());
   }
 
-  private BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
+  protected BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
     BigDecimal amount =
         price
@@ -285,7 +285,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     nextProjectTask.setCustomerReferral(projectTask.getCustomerReferral());
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   @Override
   public ProjectTask updateTaskFinancialInfo(ProjectTask projectTask) throws AxelorException {
     Product product = projectTask.getProduct();
@@ -301,12 +300,17 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         return projectTask;
       }
 
-      projectTask.setInvoicingType(projectTaskCategory.getDefaultInvoicingType());
-      projectTask.setProduct(projectTaskCategory.getDefaultProduct());
-      product = projectTask.getProduct();
+      Integer invoicingType = projectTaskCategory.getDefaultInvoicingType();
+      projectTask.setInvoicingType(invoicingType);
+      if (invoicingType.equals(ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT)
+          || invoicingType.equals(ProjectTaskRepository.INVOICING_TYPE_PACKAGE)) {
+        projectTask.setToInvoice(true);
+      }
+      product = projectTaskCategory.getDefaultProduct();
       if (product == null) {
         return projectTask;
       }
+      projectTask.setProduct(product);
       projectTask.setUnitPrice(this.computeUnitPrice(projectTask));
     }
     Company company =
@@ -324,11 +328,10 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             : projectTask.getBudgetedTime());
     projectTask = this.updateDiscount(projectTask);
     projectTask = this.compute(projectTask);
-
-    return projectTaskRepo.save(projectTask);
+    return projectTask;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Override
   public ProjectTask updateTaskToInvoice(
       ProjectTask projectTask, AppBusinessProject appBusinessProject) {
@@ -358,7 +361,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return projectTaskRepo.save(projectTask);
   }
 
-  private BigDecimal computeUnitPrice(ProjectTask projectTask) throws AxelorException {
+  protected BigDecimal computeUnitPrice(ProjectTask projectTask) throws AxelorException {
     Product product = projectTask.getProduct();
     Company company =
         projectTask.getProject() != null ? projectTask.getProject().getCompany() : null;
@@ -436,5 +439,15 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       }
       JPA.clear();
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException {
+    if (projectTask.getSaleOrderLine() != null || projectTask.getInvoiceLine() != null) {
+      return projectTask;
+    }
+    projectTask = updateTaskFinancialInfo(projectTask);
+    return projectTaskRepo.save(projectTask);
   }
 }

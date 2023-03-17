@@ -19,20 +19,23 @@ package com.axelor.apps.gdpr.web;
 
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.AnonymizerLine;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegister;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRepository;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRuleRepository;
 import com.axelor.apps.gdpr.service.GdprAnonymizeService;
 import com.axelor.apps.gdpr.service.GdprProcessingRegisterService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GdprProcessingRegisterController {

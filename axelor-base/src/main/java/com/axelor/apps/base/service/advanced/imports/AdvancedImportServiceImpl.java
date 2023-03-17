@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.base.service.advanced.imports;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.Inflector;
 import com.axelor.db.EntityHelper;
@@ -29,8 +31,6 @@ import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -108,7 +108,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return this.process(reader, advancedImport);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public boolean process(DataReaderService reader, AdvancedImport advancedImport)
       throws AxelorException, ClassNotFoundException {
 
@@ -183,7 +183,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return isValid;
   }
 
-  private boolean applyObject(
+  protected boolean applyObject(
       String[] row, FileTab fileTab, boolean isConfig, int linesToIgnore, boolean isTabConfig)
       throws AxelorException {
     int rowIndex = isConfig ? (isTabConfig ? 1 : 0) : 0;
@@ -226,7 +226,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return true;
   }
 
-  private void applyWithConfig(
+  protected void applyWithConfig(
       String[] row,
       int line,
       List<FileField> fileFieldList,
@@ -294,7 +294,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void applyWithoutConfig(
       String[] row, int line, List<FileField> fileFieldList, FileTab fileTab, boolean isHeader)
       throws AxelorException {
@@ -341,7 +341,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  private void setSampleLines(int line, String value, FileField fileField) {
+  protected void setSampleLines(int line, String value, FileField fileField) {
     if (!StringUtils.isBlank(fileField.getTargetType())
         && fileField.getTargetType().equals("String")
         && !StringUtils.isBlank(value)
@@ -364,7 +364,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void readFields(
       String value,
       int index,
@@ -413,7 +413,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     fileTab.addFileFieldListItem(fileField);
   }
 
-  private boolean checkFields(Mapper mapper, String importField, String subImportField)
+  protected boolean checkFields(Mapper mapper, String importField, String subImportField)
       throws AxelorException, ClassNotFoundException {
 
     if (importField != null) {
@@ -449,7 +449,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return true;
   }
 
-  private boolean checkSubFields(String[] subFields, int index, Property parentProp, String model)
+  protected boolean checkSubFields(String[] subFields, int index, Property parentProp, String model)
       throws AxelorException, ClassNotFoundException {
     boolean isValid = true;
 
@@ -486,7 +486,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return isValid;
   }
 
-  private void setImportFields(
+  protected void setImportFields(
       Mapper mapper, FileField fileField, String importField, String subImportField) {
 
     Property prop = mapper.getProperty(importField);
@@ -513,7 +513,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  private int getImportType(String value, String importType) {
+  protected int getImportType(String value, String importType) {
 
     if (Strings.isNullOrEmpty(importType)) {
       if (value.contains(".")) {
@@ -543,7 +543,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  private int getForStatusSelect(String importType) {
+  protected int getForStatusSelect(String importType) {
 
     switch (importType.toLowerCase()) {
       case forSelectUseTitles:
@@ -714,8 +714,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return isResetValue;
   }
 
-  @Transactional
-  private void resetPropertyValue(Class<? extends Model> klass, List<Object> recordList)
+  @Transactional(rollbackOn = {Exception.class})
+  protected void resetPropertyValue(Class<? extends Model> klass, List<Object> recordList)
       throws ClassNotFoundException {
 
     JpaRepository<? extends Model> modelRepo = JpaRepository.of(klass);
@@ -737,7 +737,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  private void resetSubPropertyValue(Class<? extends Model> klass, JsonContext jsonContext)
+  protected void resetSubPropertyValue(Class<? extends Model> klass, JsonContext jsonContext)
       throws ClassNotFoundException {
 
     for (Property prop : Mapper.of(klass).getProperties()) {
@@ -784,7 +784,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void removeRecord(
       FileTab fileTab,
       Class<? extends Model> modelKlass,
@@ -833,7 +833,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void removeSubRecords(Class<? extends Model> klass, JsonContext jsonContext)
       throws ClassNotFoundException {
 

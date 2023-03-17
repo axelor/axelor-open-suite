@@ -24,18 +24,18 @@ import com.axelor.apps.account.db.ClosureAssistantLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.ClosureAssistantLineRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.utils.db.Wizard;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -174,7 +174,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
 
   @Transactional
   protected ClosureAssistantLine validateOrCancelClosureAssistantLine(
-      ClosureAssistantLine closureAssistantLine, boolean isValidated) throws AxelorException {
+      ClosureAssistantLine closureAssistantLine, boolean isValidated) {
     closureAssistantLine.setIsValidated(isValidated);
     if (isValidated) {
       closureAssistantLine.setValidatedByUser(AuthUtils.getUser());

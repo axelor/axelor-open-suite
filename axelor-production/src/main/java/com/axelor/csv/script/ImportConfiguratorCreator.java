@@ -17,9 +17,9 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.MetaScanner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -32,7 +32,7 @@ public class ImportConfiguratorCreator {
 
   @Inject ConfiguratorCreatorImportService configuratorCreatorImportService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importConfiguratorCreator(Object bean, Map values)
       throws AxelorException, IOException {
     String path = String.valueOf(values.get("path"));

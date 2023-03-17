@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -44,8 +46,6 @@ import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;

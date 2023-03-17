@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -27,7 +28,6 @@ import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;

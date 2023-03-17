@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.maintenance.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -30,7 +31,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
@@ -119,13 +119,13 @@
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
     <field name="vatSystemSelect"
-      readonlyIf="move.statusSelect != 1 || account.accountType.technicalTypeSelect != 'tax'"/>
+      readonlyIf="(move.statusSelect != 1 &amp;&amp; move.statusSelect != 5) || account.accountType.technicalTypeSelect != 'tax'"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"
       onChange="action-move-line-group-analytic-distribution-template-onchange"
-      onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
+      onSelect="action-move-line-group-set-analytic-distribution-template-onselect"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
     <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
@@ -299,11 +299,9 @@
 
   <form name="incl-analytic-distribution-move-line-form"
     model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false"
-    onLoad="action-record-initialize-permission-validation-move-line">
+    onLoad="action-record-initialize-permission-validation-move-line,action-move-line-attrs-set-hidden-analytic-distribution-panel">
     <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      showIf="account.analyticDistributionAuthorized"
-      readonlyIf="move.period.statusSelect == 2 || move.period.statusSelect == 5 || $validatePeriod">
+      readonlyIf="move.period.statusSelect == 2 || $validatePeriod">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid" colSpan="12"
         form-view="analytic-distribution-template-form"
@@ -446,7 +444,7 @@
       </panel>
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
         <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
-          hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
+          readonlyIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
         <field name="fixedAssetCategory"
           showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
         <field name="account.hasInvoiceTerm" hidden="true"/>
@@ -511,7 +509,8 @@
           domain="self.endDate > :date OR self.endDate IS NULL"
           readonlyIf="!account.isTaxAuthorizedOnMoveLine"
           onChange="account-move-line-update-tax-equiv"/>
-        <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1"
+        <field name="vatSystemSelect"
+          readonlyIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
           showIf="account.accountType.technicalTypeSelect == 'tax'"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="reimbursementStatusSelect"
@@ -692,7 +691,7 @@
       </panel>
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
         <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
-          hideIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
+          readonlyIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
         <field name="fixedAssetCategory"
           showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
         <field name="account.hasInvoiceTerm" hidden="true"/>
@@ -758,7 +757,8 @@
           domain="self.endDate > :date OR self.endDate IS NULL"
           onChange="account-move-line-update-tax-equiv"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
-        <field name="vatSystemSelect" readonlyIf="move.statusSelect != 1"
+        <field name="vatSystemSelect"
+          readonlyIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
           showIf="account.accountType.technicalTypeSelect == 'tax'"
           requiredIf="account.accountType.technicalTypeSelect == 'tax'"/>
         <field name="reimbursementStatusSelect"
@@ -798,7 +798,7 @@
   </form>
 
   <form name="account-move-line-calculation-wizard-form" title="Calculation"
-    model="com.axelor.message.db.Wizard" onNew="action-account-move-line-record-calculate-balance"
+    model="com.axelor.utils.db.Wizard" onNew="action-account-move-line-record-calculate-balance"
     canArchive="false">
     <panel name="mainPanel" colSpan="12" title="Total of the selected lines (without New) :">
       <field name="$debit" title="Debit :" readonly="true" colSpan="4"/>
@@ -869,6 +869,7 @@
     <action name="action-move-line-method-hide-axis-analytic-account"/>
     <action name="action-move-line-account-method-get-validate-period"/>
     <action name="action-record-analytic-distribution-type-select"/>
+    <action name="action-move-line-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-account-moveline-usher-process-onchange">
@@ -901,6 +902,7 @@
   <action-group name="action-account-move-line-move-form-account-group-on-change">
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
+    <action name="action-move-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-line-record-set-cut-off-generated-false"/>
@@ -939,6 +941,7 @@
     <action name="action-move-line-record-set-cut-off-generated-false"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-attrs-show-tax-amount"/>
+    <action name="action-move-line-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-move-line-group-analytic-distribution-template-onchange">
@@ -949,6 +952,7 @@
     <action name="action-move-line-method-set-required-analytic-accounts"/>
     <action name="action-move-line-method-clear-analytic-move-line"
       if="analyticDistributionTemplate == null"/>
+    <action name="action-move-line-check-distribution-template-account"/>
   </action-group>
 
   <action-group name="action-move-line-group-currency-amount-rate-onchange">
@@ -985,6 +989,10 @@
 
   <action-method name="action-move-line-account-method-get-validate-period">
     <call class="com.axelor.apps.account.web.MoveLineController" method="getValidatePeriod"/>
+  </action-method>
+
+  <action-method name="action-move-line-check-distribution-template-account">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="checkAnalyticAccount"/>
   </action-method>
 
   <action-attrs name="action-move-line-attrs-readonly">
@@ -1029,7 +1037,7 @@
   </action-record>
 
   <action-record name="action-account-move-line-record-calculate-balance"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="$credit" expr="eval: _credit" if="_credit != null"/>
     <field name="$debit" expr="eval: _debit" if="_debit != null"/>
     <field name="$balance" expr="eval: _balance" if="_balance != null"/>
@@ -1315,4 +1323,8 @@
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
 
+  <action-attrs name="action-move-line-attrs-set-hidden-analytic-distribution-panel">
+    <attribute for="analyticDistributionPanel" name="hidden"
+      expr="eval: !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || !account?.analyticDistributionAuthorized"/>
+  </action-attrs>
 </object-views>

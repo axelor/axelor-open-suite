@@ -23,13 +23,13 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -53,7 +53,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
     Company company = invoiceTerm.getCompany();
 
@@ -73,7 +73,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Integer massValidatePfp(List<Long> invoiceTermIds) {
     List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(invoiceTermIds);
     User currentUser = AuthUtils.getUser();
@@ -169,7 +169,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
@@ -245,7 +245,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     return invoiceTerm;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updateOriginalTerm(
       InvoiceTerm originalInvoiceTerm,
       InvoiceTerm newInvoiceTerm,
@@ -280,7 +280,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             .subtract(newInvoiceTerm.getCompanyAmountRemaining()));
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void checkOtherInvoiceTerms(InvoiceTerm invoiceTerm) {
     Invoice invoice = invoiceTerm.getInvoice();
     if (invoice == null) {

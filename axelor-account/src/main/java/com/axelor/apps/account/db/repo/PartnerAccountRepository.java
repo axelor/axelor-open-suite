@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;

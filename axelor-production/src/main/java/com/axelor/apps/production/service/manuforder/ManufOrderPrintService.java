@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
 import java.io.IOException;
 import java.util.List;
 

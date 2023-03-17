@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.TimerHistory;
 import com.axelor.apps.base.db.repo.TimerHistoryRepository;
@@ -26,7 +27,6 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;

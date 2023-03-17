@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.production.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.rest.dto.OperationOrderPutRequest;
 import com.axelor.apps.production.rest.dto.OperationOrderResponse;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;

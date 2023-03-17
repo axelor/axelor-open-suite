@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.cash.management.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.cash.management.db.ForecastRecap;
-import com.axelor.exception.AxelorException;
 
 public interface ForecastRecapService {
 

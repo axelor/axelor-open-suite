@@ -20,7 +20,7 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 

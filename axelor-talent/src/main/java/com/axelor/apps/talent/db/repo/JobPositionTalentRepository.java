@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.talent.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.talent.db.JobPosition;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 
 public class JobPositionTalentRepository extends JobPositionRepository {

@@ -24,12 +24,12 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -110,7 +110,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           && reportType != null
           && reportType != InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS) {
 
-        Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
+        Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFilePath());
         return path.toFile();
       } else {
 

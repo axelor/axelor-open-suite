@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
@@ -35,13 +37,11 @@ import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -120,7 +120,7 @@ public class ProjectServiceImpl implements ProjectService {
     return projectRepository.save(project);
   }
 
-  private String getUniqueProjectName(Partner partner) {
+  protected String getUniqueProjectName(Partner partner) {
     String baseName = String.format(I18n.get("%s project"), partner.getName());
     long count =
         projectRepository.all().filter(String.format("self.name LIKE '%s%%'", baseName)).count();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="move-grid" orderBy="-date" canArchive="false" title="Account moves"
     model="com.axelor.apps.account.db.Move" canDelete="false">
@@ -532,7 +532,7 @@
 
   <form name="move-wizard-mass-reverse-form" title="Mass Generate Reverse Move"
     onNew="action-move-attrs-set-generate-reverse-wizard-defaults"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <panel name="mainPanel">
       <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
       <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
@@ -608,6 +608,7 @@
     <action name="action-move-method-check-dates"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-check-remove-lines"/>
+    <action name="action-move-line-check-distribution-template-account"/>
     <action name="action-move-method-update-partner" if="id != null"/>
     <action name="save"/>
     <action name="action-move-method-update-invoice-terms"/>
@@ -646,7 +647,7 @@
   <action-group name="action-account-move-group-set-origin">
     <action name="action-account-move-method-origin-is-empty"/>
     <action name="action-account-move-method-check-duplicated-move-origin"
-      if="journal.hasDuplicateDetectionOnOrigin"/>
+      if="journal?.hasDuplicateDetectionOnOrigin"/>
     <action name="action-account-move-method-set-origin-on-lines"/>
   </action-group>
 
@@ -709,7 +710,7 @@
 
   <action-group name="action-move-group-origin-date-onchange">
     <action name="action-account-move-method-check-duplicated-move-origin"
-      if="journal.hasDuplicateDetectionOnOrigin"/>
+      if="journal?.hasDuplicateDetectionOnOrigin"/>
     <action name="action-move-method-set-moveline-origin-dates"/>
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
@@ -1053,7 +1054,7 @@
   </action-view>
 
   <action-view name="action-move-view-open-mass-reverse-wizard"
-    title="Generate Reverse Move" model="com.axelor.message.db.Wizard">
+    title="Generate Reverse Move" model="com.axelor.utils.db.Wizard">
     <view type="form" name="move-wizard-mass-reverse-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>

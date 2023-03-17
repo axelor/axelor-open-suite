@@ -18,7 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 

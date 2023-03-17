@@ -18,7 +18,10 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeBonusMgt;
 import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
@@ -29,9 +32,6 @@ import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.template.TemplateMaker;

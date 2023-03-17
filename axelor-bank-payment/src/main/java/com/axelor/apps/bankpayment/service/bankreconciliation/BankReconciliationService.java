@@ -63,10 +63,12 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconcili
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -76,8 +78,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -303,7 +303,7 @@ public class BankReconciliationService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateMove(
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
       throws AxelorException {
@@ -895,7 +895,7 @@ public class BankReconciliationService {
     return params;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconciliateAccordingToQueries(BankReconciliation bankReconciliation)
       throws AxelorException {
     List<BankStatementQuery> bankStatementQueries =
@@ -949,6 +949,7 @@ public class BankReconciliationService {
                     == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
             if (isUnderCorrection) {
               bankReconciliationLine.setIsPosted(true);
+              bankReconciliationLineService.checkAmount(bankReconciliationLine);
               bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
             }
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
@@ -1267,7 +1268,7 @@ public class BankReconciliationService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
     BankReconciliationLine bankReconciliationLine;
@@ -1294,6 +1295,7 @@ public class BankReconciliationService {
             == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
     if (isUnderCorrection) {
       bankReconciliationLine.setIsPosted(true);
+      bankReconciliationLineService.checkAmount(bankReconciliationLine);
       bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
     }
     return bankReconciliation;

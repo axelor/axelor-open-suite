@@ -18,8 +18,8 @@
 package com.axelor.apps.bankpayment.service.batch;
 
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

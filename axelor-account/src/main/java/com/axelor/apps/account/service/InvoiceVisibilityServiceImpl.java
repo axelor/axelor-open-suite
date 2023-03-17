@@ -24,8 +24,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -35,12 +35,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected InvoiceService invoiceService;
   protected AccountConfigService accountConfigService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public InvoiceVisibilityServiceImpl(
-      InvoiceService invoiceService, AccountConfigService accountConfigService) {
+      InvoiceService invoiceService,
+      AccountConfigService accountConfigService,
+      AppAccountService appAccountService) {
     this.invoiceService = invoiceService;
     this.accountConfigService = accountConfigService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -216,5 +220,12 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   protected boolean _getDecisionDateCondition(Invoice invoice) {
     return invoice.getDecisionPfpTakenDate() != null;
+  }
+
+  @Override
+  public boolean getPfpCondition(Invoice invoice) throws AxelorException {
+    return appAccountService.getAppAccount().getActivatePassedForPayment()
+        && this.getManagePfpCondition(invoice)
+        && this.getOperationTypePurchaseCondition(invoice);
   }
 }

@@ -42,13 +42,13 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.util.TaxAccountToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -390,8 +390,18 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           cutOffMoveLineMap.put(moveLineAccount, cutOffMoveLine);
         }
 
+        List<AnalyticMoveLine> analyticMoveLineList =
+            CollectionUtils.isEmpty(cutOffMoveLine.getAnalyticMoveLineList())
+                ? new ArrayList<>()
+                : new ArrayList<>(cutOffMoveLine.getAnalyticMoveLineList());
+        cutOffMoveLine.clearAnalyticMoveLineList();
+
         // Copy analytic move lines
         this.copyAnalyticMoveLines(moveLine, cutOffMoveLine, amountInCurrency);
+
+        if (CollectionUtils.isEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
+          cutOffMoveLine.setAnalyticMoveLineList(analyticMoveLineList);
+        }
       }
     }
 

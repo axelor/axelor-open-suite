@@ -25,7 +25,6 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBusinessProject;
 import com.google.inject.persist.Transactional;
@@ -143,7 +142,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
     return toInvoiceCount;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Override
   public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
 

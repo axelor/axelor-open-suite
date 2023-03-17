@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.production.service.configurator;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.db.ConfiguratorProdProcess;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
@@ -27,8 +29,6 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;

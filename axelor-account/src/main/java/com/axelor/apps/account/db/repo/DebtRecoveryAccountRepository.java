@@ -18,7 +18,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.DebtRecovery;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import javax.persistence.PersistenceException;
 
 public class DebtRecoveryAccountRepository extends DebtRecoveryRepository {

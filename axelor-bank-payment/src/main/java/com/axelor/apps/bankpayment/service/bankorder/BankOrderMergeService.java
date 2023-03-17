@@ -19,14 +19,12 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import com.axelor.apps.base.AxelorException;
 import java.time.LocalDate;
 import java.util.Collection;
 
 public interface BankOrderMergeService {
 
-  @Transactional(rollbackOn = {Exception.class})
   public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException;
 
   /**

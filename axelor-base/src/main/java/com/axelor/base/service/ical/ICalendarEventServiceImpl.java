@@ -17,11 +17,11 @@
  */
 package com.axelor.base.service.ical;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.auth.db.repo.UserRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.message.db.EmailAddress;
 import com.google.inject.Inject;
 import java.io.IOException;

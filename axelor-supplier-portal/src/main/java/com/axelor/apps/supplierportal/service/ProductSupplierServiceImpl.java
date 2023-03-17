@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.supplierportal.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.supplierportal.db.ProductSupplier;
 import com.axelor.apps.supplierportal.db.repo.ProductSupplierRepository;
 import com.axelor.apps.supplierportal.exceptions.SupplierPortalExceptionMessage;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;

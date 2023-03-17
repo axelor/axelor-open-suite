@@ -45,24 +45,24 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -447,7 +447,9 @@ public class MoveController {
     Move move = request.getContext().asType(Move.class);
     if (move != null) {
       try {
-        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(move.getCompany(), move.getJournal());
         response.setAttr("partner", "domain", domain);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -833,7 +835,7 @@ public class MoveController {
     }
   }
 
-  private LocalDate extractDueDate(ActionRequest request) {
+  protected LocalDate extractDueDate(ActionRequest request) {
     if (!request.getContext().containsKey("dueDate")
         || request.getContext().get("dueDate") == null) {
       return null;

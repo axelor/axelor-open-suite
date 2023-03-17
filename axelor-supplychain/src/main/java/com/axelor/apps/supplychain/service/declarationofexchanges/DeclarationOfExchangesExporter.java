@@ -18,9 +18,9 @@
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;

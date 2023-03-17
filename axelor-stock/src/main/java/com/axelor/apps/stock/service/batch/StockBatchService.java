@@ -17,14 +17,14 @@
  */
 package com.axelor.apps.stock.service.batch;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.stock.db.StockBatch;
 import com.axelor.apps.stock.db.repo.StockBatchRepository;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 

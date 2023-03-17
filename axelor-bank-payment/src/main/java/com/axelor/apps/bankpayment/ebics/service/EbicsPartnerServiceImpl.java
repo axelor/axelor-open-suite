@@ -25,10 +25,10 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.date.DateTool;
@@ -65,7 +65,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
     this.bankStatementRepository = bankStatementRepository;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<BankStatement> getBankStatements(EbicsPartner ebicsPartner)
       throws AxelorException, IOException {
     return getBankStatements(ebicsPartner, null);
@@ -74,8 +74,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
   @Transactional
   public List<BankStatement> getBankStatements(
       EbicsPartner ebicsPartner,
-      Collection<BankStatementFileFormat> bankStatementFileFormatCollection)
-      throws AxelorException, IOException {
+      Collection<BankStatementFileFormat> bankStatementFileFormatCollection) {
 
     List<BankStatement> bankStatementList = Lists.newArrayList();
 

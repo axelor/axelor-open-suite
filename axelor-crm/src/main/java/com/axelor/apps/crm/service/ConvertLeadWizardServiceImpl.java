@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -36,8 +38,6 @@ import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;

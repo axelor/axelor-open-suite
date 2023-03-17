@@ -31,13 +31,13 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -237,19 +237,19 @@ public class MoveLineServiceImpl implements MoveLineService {
         companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
   }
 
-  private void populateCredit(
+  protected void populateCredit(
       Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList) {
     populateMoveLineMap(moveLineMap, reconciliableMoveLineList, true);
   }
 
-  private void populateDebit(
+  protected void populateDebit(
       Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList) {
     populateMoveLineMap(moveLineMap, reconciliableMoveLineList, false);
   }
 
-  private void populateMoveLineMap(
+  protected void populateMoveLineMap(
       Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList,
       boolean isCredit) {
@@ -278,7 +278,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
     if (moveLine.getIsSelectedBankReconciliation() != null) {
       moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
@@ -289,7 +289,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
     String posted = moveLine.getPostedNbr();
     List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));

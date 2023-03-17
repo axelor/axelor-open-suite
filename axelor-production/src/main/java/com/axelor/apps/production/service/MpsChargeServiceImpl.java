@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.MpsCharge;
 import com.axelor.apps.production.db.MpsWeeklySchedule;
 import com.axelor.apps.production.db.repo.MpsChargeRepository;
 import com.axelor.apps.production.db.repo.MpsWeeklyScheduleRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -84,7 +84,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
     return totalHoursCountYearMonthForMpsWeeklySchedualMap;
   }
 
-  private BigDecimal countTotalHoursForGivenMonth(
+  protected BigDecimal countTotalHoursForGivenMonth(
       MpsWeeklySchedule mpsWeeklySchedule, YearMonth yearMonth) {
 
     Integer weekCountForLastDayOfMonth =
@@ -100,7 +100,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
     return totalHoursCountForGivenMonth;
   }
 
-  private BigDecimal countTotalHoursForExtraDaysInMonth(
+  protected BigDecimal countTotalHoursForExtraDaysInMonth(
       MpsWeeklySchedule mpsWeeklySchedule, YearMonth yearMonth) {
 
     BigDecimal totalHours = BigDecimal.ZERO;

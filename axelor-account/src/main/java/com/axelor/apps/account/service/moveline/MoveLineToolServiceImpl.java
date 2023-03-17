@@ -26,12 +26,12 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
@@ -364,7 +364,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void setAmountRemainingReconciliableMoveLines(Context context) {
     Long accountId = Long.valueOf(context.get("_accountId").toString());
     String startDate = (String) context.get("startDate");

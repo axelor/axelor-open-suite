@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.production.service.productionorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -31,8 +33,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrde
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;

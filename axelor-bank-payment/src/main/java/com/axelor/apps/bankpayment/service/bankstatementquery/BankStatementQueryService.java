@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.service.bankstatementquery;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementQuery;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 public interface BankStatementQueryService {
 

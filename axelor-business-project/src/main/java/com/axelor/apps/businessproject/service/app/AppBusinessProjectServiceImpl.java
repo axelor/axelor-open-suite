@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service.app;
 
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
@@ -34,8 +35,13 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
 
   @Inject
   public AppBusinessProjectServiceImpl(
-      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
-    super(appRepo, metaFiles, appVersionService);
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppBusinessProjectRepository appBusinessProjectRepo) {
+    super(appRepo, metaFiles, appVersionService, metaModelRepo);
+    this.appBusinessProjectRepo = appBusinessProjectRepo;
   }
 
   @Override

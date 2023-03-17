@@ -18,21 +18,21 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.io.IOException;

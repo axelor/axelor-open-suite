@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Department;
 import com.axelor.apps.base.db.Partner;
@@ -27,7 +28,6 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;

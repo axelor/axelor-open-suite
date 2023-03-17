@@ -18,7 +18,9 @@
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.Regime;
 import com.axelor.apps.stock.db.StockMove;
@@ -30,8 +32,6 @@ import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.file.CsvTool;

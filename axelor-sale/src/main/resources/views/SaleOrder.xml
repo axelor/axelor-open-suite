@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
@@ -133,7 +133,7 @@
     <field name="fullName"/>
   </calendar>
 
-  <form name="sale-order-merge-form" model="com.axelor.message.db.Wizard"
+  <form name="sale-order-merge-form" model="com.axelor.utils.db.Wizard"
     title="Merge sale orders" width="large">
     <panel-related name="saleOrderToMergePanel" field="$saleOrderToMerge"
       form-view="sale-order-form" title="Sale orders to merge" colSpan="12" type="many-to-many"
@@ -145,7 +145,7 @@
     </panel>
   </form>
 
-  <form name="sale-quotation-merge-form" model="com.axelor.message.db.Wizard"
+  <form name="sale-quotation-merge-form" model="com.axelor.utils.db.Wizard"
     title="Merge quotations" width="large">
     <panel-related name="saleQuotationToMergePanel" field="$saleQuotationToMerge"
       form-view="sale-order-form" title="Quotations to merge" colSpan="12" type="many-to-many"
@@ -157,7 +157,7 @@
     </panel>
   </form>
 
-  <form name="sale-order-merge-confirm-form" model="com.axelor.message.db.Wizard"
+  <form name="sale-order-merge-confirm-form" model="com.axelor.utils.db.Wizard"
     title="Confirmation" onNew="action-record-load-dummy-field-confirm-merge-saleorder">
     <panel name="mainPanel" colSpan="6" colOffset="3">
       <field name="priceListToCheck" hidden="true" colSpan="12"/>
@@ -184,7 +184,7 @@
     </panel>
   </form>
 
-  <form name="sale-order-template-wizard-form" model="com.axelor.message.db.Wizard"
+  <form name="sale-order-template-wizard-form" model="com.axelor.utils.db.Wizard"
     title="Create the quotation"
     onNew="action-sale-order-attrs-template-deafult-currency,action-sale-order-method-fill-price-list">
     <panel name="mainPanel">
@@ -500,7 +500,7 @@
         <field name="estimatedDeliveryDate"
           onChange="action-sale-order-group-on-estimated-delivery-date-change"/>
         <field name="deliveryCondition" colSpan="12"/>
-        <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid"
+        <field name="shipmentMode" canEdit="false" form-view="shipment-mode-form"
           grid-view="shipment-mode-grid"/>
         <field name="freightCarrierMode" canEdit="false"
           onChange="action-sale-order-record-freight-carrier"
@@ -654,7 +654,7 @@
         readonlyIf="!saleOrderLineList || !saleOrderLineList.length > 0" colSpan="12"
         onClick="save, action-supplychain-sale-order-create-stock-move"/>
       <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
-        colSpan="12" onClick="save,action-sale-group-confirmed"
+        colSpan="12" onClick="action-sale-group-confirmed"
         readonlyIf="advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)"/>
       <button name="invoiceAdvancePaymentBtn" title="Invoice an advance payment"
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"
@@ -1133,7 +1133,7 @@
   </action-attrs>
 
   <form name="sale-order-reports-wizard-form" title="Reports"
-    model="com.axelor.message.db.Wizard" onNew="action-sale-order-reports-wizard-attrs">
+    model="com.axelor.utils.db.Wizard" onNew="action-sale-order-reports-wizard-attrs">
     <panel name="mainPanel">
       <panel name="ReportTypePanel" colSpan="6">
         <field name="$reportType" title="Report type" type="integer"
@@ -1150,7 +1150,7 @@
   </form>
 
   <action-view name="action-sale-order-view-reports-wizard" title="Reports"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="sale-order-reports-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="false"/>
@@ -1444,12 +1444,14 @@
     <action name="action-sale-order-attrs-set-required"/>
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
+    <action name="action-sale-order-attrs-incoterm-required"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
+    <action name="action-sale-order-validate-check-on-confirm"/>
+    <action name="save"/>
     <action name="action-business-project-method-generate-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
-    <action name="action-sale-order-validate-check-on-confirm"/>
     <action name="action-sale-order-method-confirm"/>
     <action name="action-sale-order-method-notify-stock-move-created"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
@@ -1468,6 +1470,7 @@
     <action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"
       if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
     <action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2} != null"/>
+    <action name="action-sale-order-attrs-incoterm-required"/>
   </action-group>
 
   <action-group name="action-sale-order-group-client-partner-change">
@@ -1515,6 +1518,9 @@
     <alert
       message="One product is sold at loss, are you sure you want to finalize the quotation ?"
       if="saleOrderLineList?.any{ it.subTotalGrossMargin &lt; 0 }"/>
+    <alert
+      message="The selected price list is no longer valid, do you still want to continue?"
+      if="priceList != null  &amp;&amp; !(priceList?.isActive &amp;&amp; (priceList?.applicationBeginDate == null || priceList?.applicationBeginDate &lt; __config__.date) &amp;&amp; (priceList?.applicationEndDate == null || priceList?.applicationEndDate &gt; __config__.date))"/>
   </action-validate>
 
   <action-attrs name="action-sale-order-attrs-in-ati">
@@ -1655,12 +1661,12 @@
   </action-record>
 
   <action-view name="action-open-sale-order-merge-form" title="Merge sale orders"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="sale-order-merge-form"/>
   </action-view>
 
   <action-view name="action-open-sale-quotation-merge-form" title="Merge sale quotation"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="sale-quotation-merge-form"/>
   </action-view>
 
@@ -1686,7 +1692,7 @@
   </action-method>
 
   <action-record name="action-record-load-dummy-field-confirm-merge-saleorder"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
     <field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
     <field name="locationToCheck" expr="eval: contextLocationToCheck"/>
@@ -1712,12 +1718,12 @@
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="salespersonUser" expr="eval:__user__"
-      if="__config__.app.getApp('sale')?.getSalemanSelect() == 1"/>
+      if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
     <field name="salespersonUser" expr="eval: clientPartner?.getUser()"
-      if="__config__.app.getApp('sale')?.getSalemanSelect() == 2"/>
+      if="__config__.app.getApp('sale')?.getSalespersonSelect() == 2"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"
-      if="__config__.app.getApp('sale')?.getSalemanSelect() == 1"/>
+      if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
     <field name="template" expr="eval:_template"/>
     <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
       if="__user__.activeCompany != null"/>
@@ -1757,19 +1763,19 @@
     <field name="isNeedingConformityCertificate"
       expr="eval: clientPartner?.isNeedingConformityCertificate"/>
     <field name="salespersonUser" expr="eval:__user__"
-      if="__config__.app.getApp('sale')?.getSalemanSelect() == 1"/>
+      if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
     <field name="salespersonUser" expr="eval: clientPartner?.getUser()"
-      if="__config__.app.getApp('sale')?.getSalemanSelect() == 2"/>
+      if="__config__.app.getApp('sale')?.getSalespersonSelect() == 2"/>
     <field name="invoiceComments" expr="eval: clientPartner?.invoiceComments"/>
     <field name="deliveryComments" expr="eval: clientPartner?.deliveryComments"/>
     <field name="description" expr="eval: clientPartner?.saleOrderComments"/>
     <field name="pickingOrderComments" expr="eval: clientPartner?.pickingOrderComments"/>
     <field name="proformaComments" expr="eval: clientPartner?.proformaComments"/>
     <field name="team" expr="eval: clientPartner?.team"
-      if="__config__.app.getApp('sale')?.getSalemanSelect() == 2"/>
+      if="__config__.app.getApp('sale')?.getSalespersonSelect() == 2"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"
-      if="__config__.app.getApp('sale')?.getSalemanSelect() == 1"/>
+      if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
   </action-record>
 
   <action-record name="action-sale-order-record-hide-discount"
@@ -2076,7 +2082,7 @@
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
     <error message="Incoterm must be filled"
       if="__config__.app.isApp('supplychain')
-          &amp;&amp; incoterm == null
+          &amp;&amp; (incoterm == null &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'})
           &amp;&amp; (
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
           || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code))"/>
@@ -2211,5 +2217,14 @@
     <field name="stockLocation"
       expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : stockLocation"/>
   </action-record>
+
+  <action-attrs name="action-sale-order-attrs-incoterm-required">
+    <attribute for="incoterm" name="required"
+      expr="eval: __config__.app.isApp('supplychain')
+          &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'}
+          &amp;&amp; (
+          (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
+          || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
+  </action-attrs>
 
 </object-views>

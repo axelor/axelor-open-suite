@@ -18,6 +18,7 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -30,7 +31,6 @@ import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;

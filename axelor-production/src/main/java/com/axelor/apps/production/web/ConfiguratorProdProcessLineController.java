@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
@@ -24,7 +25,6 @@ import com.axelor.apps.production.db.repo.ConfiguratorProdProcessLineRepository;
 import com.axelor.apps.production.db.repo.WorkCenterGroupRepository;
 import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
