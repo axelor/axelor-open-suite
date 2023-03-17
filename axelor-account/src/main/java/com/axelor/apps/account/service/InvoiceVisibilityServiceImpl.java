@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Invoice;
@@ -7,8 +24,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -18,12 +35,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected InvoiceService invoiceService;
   protected AccountConfigService accountConfigService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public InvoiceVisibilityServiceImpl(
-      InvoiceService invoiceService, AccountConfigService accountConfigService) {
+      InvoiceService invoiceService,
+      AccountConfigService accountConfigService,
+      AppAccountService appAccountService) {
     this.invoiceService = invoiceService;
     this.accountConfigService = accountConfigService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -199,5 +220,12 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   protected boolean _getDecisionDateCondition(Invoice invoice) {
     return invoice.getDecisionPfpTakenDate() != null;
+  }
+
+  @Override
+  public boolean getPfpCondition(Invoice invoice) throws AxelorException {
+    return appAccountService.getAppAccount().getActivatePassedForPayment()
+        && this.getManagePfpCondition(invoice)
+        && this.getOperationTypePurchaseCondition(invoice);
   }
 }

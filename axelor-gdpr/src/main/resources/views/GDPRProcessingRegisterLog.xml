@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="gdpr-processing-register-log-grid" title="GDPR processing register logs"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog" canEdit="false" edit-icon="false">
+    <field name="processingDateT"/>
+    <field name="nbProcessed" title="Data processed"/>
+  </grid>
+
+  <form name="gdpr-processing-register-log-form" title="GDPR processing register log"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog" canEdit="false">
+    <panel>
+      <field name="processingDateT"/>
+      <field name="nbProcessed"/>
+    </panel>
+  </form>
+
+
+
+</object-views>

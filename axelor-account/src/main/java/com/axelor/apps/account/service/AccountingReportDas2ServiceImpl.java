@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
@@ -25,12 +26,12 @@ import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.tool.StringHTMLListBuilder;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.StringHTMLListBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -121,6 +122,9 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
         Beans.get(AccountConfigRepository.class).findByCompany(accountingReport.getCompany());
     JournalType journalType = accountConfig.getDasReportJournalType();
 
+    Account supplierAccount = accountConfig.getSupplierAccount();
+    Account customerAccount = accountConfig.getCustomerAccount();
+
     List<Long> partnerIds = new ArrayList<Long>();
     String sameQuery =
         "FROM PaymentMoveLineDistribution pmvld "
@@ -143,6 +147,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND account.serviceType IS NOT NULL  "
             + "AND partner.das2Activity IS NOT NULL  "
             + "AND account.serviceType.isDas2Declarable IS TRUE "
+            + "AND account NOT IN (:supplierAccount, :customerAccount) "
             + "AND journalType = :journalType "
             + "AND company = :company "
             + "AND currency = :currency "
@@ -170,6 +175,8 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
             .setParameter("dateFrom", accountingReport.getDateFrom())
             .setParameter("dateTo", accountingReport.getDateTo())
+            .setParameter("supplierAccount", supplierAccount)
+            .setParameter("customerAccount", customerAccount)
             .setParameter("journalType", journalType)
             .setParameter("company", accountingReport.getCompany())
             .setParameter("currency", accountingReport.getCurrency())
@@ -202,6 +209,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND pmvld1.operationDate >= :dateFrom "
             + "AND pmvld1.operationDate <= :dateTo "
             + "AND (account1.serviceType IS NULL OR partner1.das2Activity IS NULL) "
+            + "AND account NOT IN (:supplierAccount, :customerAccount) "
             + "AND journalType1 = :journalType "
             + "AND company1 = :company "
             + "AND currency1 = :currency "
@@ -230,6 +238,8 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
             .setParameter("dateFrom", accountingReport.getDateFrom())
             .setParameter("dateTo", accountingReport.getDateTo())
+            .setParameter("supplierAccount", supplierAccount)
+            .setParameter("customerAccount", customerAccount)
             .setParameter("journalType", journalType)
             .setParameter("company", accountingReport.getCompany())
             .setParameter("currency", accountingReport.getCurrency())

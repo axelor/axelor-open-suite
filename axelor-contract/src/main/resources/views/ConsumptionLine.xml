@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-	http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+	http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="consumption-line-grid" title="Consumption Lines"
     model="com.axelor.apps.contract.db.ConsumptionLine" orderBy="lineDate">
@@ -15,10 +15,16 @@
     <field name="unit"/>
     <field name="isInvoiced" hidden="true"/>
     <field name="isError" hidden="true"/>
+    <field name="invoiceLine.invoice.invoiceId"/>
+    <field name="invoiceLine.invoice.subscriptionFromDate"/>
+    <field name="invoiceLine.invoice.subscriptionToDate"/>
+    <field name="invoiceLine.invoice.statusSelect"/>
   </grid>
 
   <form name="consumption-line-form" title="Consumption Line"
-    model="com.axelor.apps.contract.db.ConsumptionLine">
+    model="com.axelor.apps.contract.db.ConsumptionLine"
+    onNew="action-consumption-line-attrs-scale-and-precision"
+    onLoad="action-consumption-line-attrs-scale-and-precision">
     <panel readonlyIf="isInvoiced" name="mainPanel">
       <field name="product" required="true" canEdit="false"
         onChange="action-consumption-line-method-change-product" domain="self.dtype = 'Product'"/>
@@ -34,5 +40,10 @@
   <action-method name="action-consumption-line-method-change-product">
     <call class="com.axelor.apps.contract.web.ConsumptionLineController" method="changeProduct"/>
   </action-method>
+
+  <action-attrs name="action-consumption-line-attrs-scale-and-precision">
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
 
 </object-views>

@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="account-equiv-grid" title="Account equivalences"
     model="com.axelor.apps.account.db.AccountEquiv" orderBy="fromAccount" editable="true">
     <field name="fromAccount" onChange="action-account-equiv-attrs-reset-to-account"
-      form-view="account-form" grid-view="account-grid"/>
+      form-view="account-form" grid-view="account-grid" validIf="fromAccount.id != toAccount.id"
+      onSelect="action-account-equiv-method-set-from-account-domain"/>
     <field name="toAccount" onSelect="action-account-equiv-attrs-domain-to-account"
-      form-view="account-form" grid-view="account-grid"/>
+      form-view="account-form" grid-view="account-grid" validIf="fromAccount.id != toAccount.id"/>
   </grid>
 
   <form name="account-equiv-form" title="Account equivalence"
     model="com.axelor.apps.account.db.AccountEquiv">
     <panel name="mainPanel">
       <field name="fromAccount" onChange="action-account-equiv-attrs-reset-to-account"
-        form-view="account-form" grid-view="account-grid"/>
+        onSelect="action-account-equiv-method-set-from-account-domain" form-view="account-form"
+        grid-view="account-grid" validIf="fromAccount.id != toAccount.id"/>
       <field name="toAccount" onSelect="action-account-equiv-attrs-domain-to-account"
-        form-view="account-form" grid-view="account-grid"/>
+        form-view="account-form" grid-view="account-grid" validIf="fromAccount.id != toAccount.id"/>
     </panel>
   </form>
 
@@ -29,5 +31,10 @@
   <action-attrs name="action-account-equiv-attrs-reset-to-account">
     <attribute name="value" for="toAccount" expr="eval: null"/>
   </action-attrs>
+
+  <action-method name="action-account-equiv-method-set-from-account-domain">
+    <call class="com.axelor.apps.account.web.AccountEquivController"
+      method="setFromAccountDomain"/>
+  </action-method>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
@@ -40,14 +42,12 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.tool.date.DateTool;
-import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.date.DateTool;
+import com.axelor.utils.date.DurationTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -56,6 +56,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
 public class OperationOrderWorkflowService {
@@ -85,7 +86,7 @@ public class OperationOrderWorkflowService {
     this.prodProcessLineService = prodProcessLineService;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void manageDurationWithMachinePlanning(
       OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, Long duration)
       throws AxelorException {
@@ -232,7 +233,7 @@ public class OperationOrderWorkflowService {
 
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
-    LocalDateTime lastOPerationDate = this.getLastOperationOrder(operationOrder);
+    LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
     LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
     operationOrder.setPlannedStartDateT(maxDate);
 
@@ -316,7 +317,7 @@ public class OperationOrderWorkflowService {
   @Transactional(rollbackOn = {Exception.class})
   public OperationOrder replan(OperationOrder operationOrder) throws AxelorException {
 
-    operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
+    operationOrder.setPlannedStartDateT(this.getLastOperationDate(operationOrder));
 
     operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
 
@@ -345,47 +346,42 @@ public class OperationOrderWorkflowService {
     return operationOrderList;
   }
 
-  public LocalDateTime getLastOperationOrder(OperationOrder operationOrder) {
-
+  protected LocalDateTime getLastOperationDate(OperationOrder operationOrder) {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
     OperationOrder lastOperationOrder =
         operationOrderRepo
             .all()
             .filter(
-                "self.manufOrder = ?1 AND self.priority <= ?2 AND self.statusSelect >= 3 AND self.statusSelect < 6 AND self.id != ?3",
-                operationOrder.getManufOrder(),
-                operationOrder.getPriority(),
-                operationOrder.getId())
+                "self.manufOrder = :manufOrder AND self.priority <= :priority AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
+            .bind("manufOrder", manufOrder)
+            .bind("priority", operationOrder.getPriority())
+            .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
+            .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
+            .bind("operationOrderId", operationOrder.getId())
             .order("-priority")
             .order("-plannedEndDateT")
             .fetchOne();
 
-    if (lastOperationOrder != null) {
-      if (lastOperationOrder.getPriority() != null
-          && lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
-        if (lastOperationOrder.getPlannedStartDateT() != null
-            && lastOperationOrder
-                .getPlannedStartDateT()
-                .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
-          if (lastOperationOrder.getMachine().equals(operationOrder.getMachine())) {
-            return lastOperationOrder.getPlannedEndDateT();
-          }
-          return lastOperationOrder.getPlannedStartDateT();
-        } else {
-          return operationOrder.getManufOrder().getPlannedStartDateT();
-        }
-      } else {
-        if (lastOperationOrder.getPlannedEndDateT() != null
-            && lastOperationOrder
-                .getPlannedEndDateT()
-                .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
-          return lastOperationOrder.getPlannedEndDateT();
-        } else {
-          return operationOrder.getManufOrder().getPlannedStartDateT();
-        }
-      }
+    LocalDateTime manufOrderPlannedStartDateT = manufOrder.getPlannedStartDateT();
+    if (lastOperationOrder == null) {
+      return manufOrderPlannedStartDateT;
     }
 
-    return operationOrder.getManufOrder().getPlannedStartDateT();
+    LocalDateTime plannedEndDateT = lastOperationOrder.getPlannedEndDateT();
+
+    if (Objects.equals(lastOperationOrder.getPriority(), operationOrder.getPriority())) {
+      LocalDateTime plannedStartDateT = lastOperationOrder.getPlannedStartDateT();
+      if (plannedStartDateT != null && plannedStartDateT.isAfter(manufOrderPlannedStartDateT)) {
+        boolean isOnSameMachine =
+            Objects.equals(lastOperationOrder.getMachine(), operationOrder.getMachine());
+        return isOnSameMachine ? plannedEndDateT : plannedStartDateT;
+      }
+
+    } else if (plannedEndDateT != null && plannedEndDateT.isAfter(manufOrderPlannedStartDateT)) {
+      return plannedEndDateT;
+    }
+
+    return manufOrderPlannedStartDateT;
   }
 
   /**
@@ -483,7 +479,7 @@ public class OperationOrderWorkflowService {
    *
    * @param operationOrder An operation order
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(OperationOrder operationOrder) throws AxelorException {
     int oldStatus = operationOrder.getStatusSelect();
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_CANCELED);
@@ -662,7 +658,7 @@ public class OperationOrderWorkflowService {
     return prodProcessLineService.computeEntireCycleDuration(prodProcessLine, qty);
   }
 
-  private void calculateHoursOfUse(OperationOrder operationOrder) {
+  protected void calculateHoursOfUse(OperationOrder operationOrder) {
 
     if (operationOrder.getMachineTool() == null) {
       return;

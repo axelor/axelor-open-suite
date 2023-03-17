@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.contract.batch.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.contract.batch.BatchContract;
 import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 
 public class BatchContractService extends AbstractBatchService {

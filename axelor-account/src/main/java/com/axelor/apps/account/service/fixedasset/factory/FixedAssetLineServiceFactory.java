@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,8 +24,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicComputat
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicUpdateComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineFiscalComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineIfrsComputationServiceImpl;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 
 public class FixedAssetLineServiceFactory {
@@ -36,7 +36,7 @@ public class FixedAssetLineServiceFactory {
     switch (typeSelect) {
       case FixedAssetLineRepository.TYPE_SELECT_ECONOMIC:
         if (fixedAsset.getCorrectedAccountingValue() != null
-            && fixedAsset.getCorrectedAccountingValue().signum() > 0) {
+            && fixedAsset.getCorrectedAccountingValue().signum() != 0) {
           return Beans.get(FixedAssetLineEconomicUpdateComputationServiceImpl.class);
         }
         return Beans.get(FixedAssetLineEconomicComputationServiceImpl.class);

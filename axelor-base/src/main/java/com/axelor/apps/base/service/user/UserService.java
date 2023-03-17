@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,11 +17,11 @@
  */
 package com.axelor.apps.base.service.user;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
@@ -137,15 +137,11 @@ public interface UserService {
    *
    * @param user
    * @throws ClassNotFoundException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws MessagingException
    * @throws IOException
    * @throws AxelorException
    */
   void processChangedPassword(User user)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
   /**
    * Match password with configured pattern.

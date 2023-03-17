@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -24,8 +25,6 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,7 +45,6 @@ public interface ManufOrderService {
     ORIGIN_TYPE_OTHER;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
       BigDecimal qtyRequested,
@@ -86,7 +84,6 @@ public interface ManufOrderService {
       LocalDateTime plannedEndDateT)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
 
   public void updateOperationsName(ManufOrder manufOrder);
@@ -271,4 +268,6 @@ public interface ManufOrderService {
   public void createBarcode(ManufOrder manufOrder);
 
   List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
+
+  public BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException;
 }

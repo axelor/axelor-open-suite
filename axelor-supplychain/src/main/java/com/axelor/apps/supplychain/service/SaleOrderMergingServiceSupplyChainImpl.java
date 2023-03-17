@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -24,12 +25,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.tool.MapTools;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
+import com.axelor.utils.MapTools;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.StringJoiner;
@@ -221,22 +222,15 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
 
     if (appSaleService.isApp("supplychain")) {
       if (getChecks(result).isExistIncotermDiff()) {
-        fieldErrors.add(
-            I18n.get(
-                com.axelor.apps.supplychain.exception.IExceptionMessage
-                    .SALE_ORDER_MERGE_ERROR_INCOTERM));
+        fieldErrors.add(I18n.get(SupplychainExceptionMessage.SALE_ORDER_MERGE_ERROR_INCOTERM));
       }
       if (getChecks(result).isExistInvoicedPartnerDiff()) {
         fieldErrors.add(
-            I18n.get(
-                com.axelor.apps.supplychain.exception.IExceptionMessage
-                    .SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER));
       }
       if (getChecks(result).isExistDeliveredPartnerDiff()) {
         fieldErrors.add(
-            I18n.get(
-                com.axelor.apps.supplychain.exception.IExceptionMessage
-                    .SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER));
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER));
       }
     }
   }

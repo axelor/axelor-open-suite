@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,16 +17,16 @@
  */
 package com.axelor.apps.sale.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PostPersist;
 
 public class ConfiguratorCreatorListener {
 
   @PostPersist
-  private void onPostPersist(ConfiguratorCreator creator) {
+  protected void onPostPersist(ConfiguratorCreator creator) {
     try {
       Beans.get(ConfiguratorCreatorService.class).init(creator);
     } catch (Exception e) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -37,14 +39,12 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.Message;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -55,7 +55,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class LeaveServiceImpl implements LeaveService {
@@ -646,6 +645,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageCancelLeaves(leaveRequest);
     }
@@ -665,8 +665,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   @Override
   public Message sendCancellationEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -683,6 +682,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageSentLeaves(leaveRequest);
     }
@@ -699,8 +699,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   @Override
   public Message sendConfirmationEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -717,6 +716,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
       isOverlapped(leaveRequest);
     }
@@ -742,8 +742,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   @Override
   public Message sendValidationEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -760,6 +759,7 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   public void refuse(LeaveRequest leaveRequest) throws AxelorException {
 
+    checkCompany(leaveRequest);
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageRefuseLeaves(leaveRequest);
     }
@@ -776,8 +776,7 @@ public class LeaveServiceImpl implements LeaveService {
 
   @Override
   public Message sendRefusalEmail(LeaveRequest leaveRequest)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(leaveRequest.getCompany());
 
@@ -853,9 +852,8 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
-      throws AxelorException {
+  @Transactional
+  public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason) {
     return getLeaveReasonToJustify(employee, leaveReason)
         .orElseGet(() -> createLeaveReasonToJustify(employee, leaveReason));
   }
@@ -987,5 +985,14 @@ public class LeaveServiceImpl implements LeaveService {
             leaveRequest.getEmployee(),
             leaveRequest.getLeaveReason())
         .fetchOne();
+  }
+
+  protected void checkCompany(LeaveRequest leaveRequest) throws AxelorException {
+
+    if (ObjectUtils.isEmpty(leaveRequest.getCompany())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_NO_COMPANY));
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,9 +20,9 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.translation.ITranslation;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -79,14 +79,14 @@ public class ImportCityController {
         importHistoryList = (List<ImportHistory>) importCityMap.get("importHistoryList");
         errorFile = (MetaFile) importCityMap.get("errorFile");
         if (errorFile != null) {
-          response.setFlash(I18n.get(BaseExceptionMessage.CITIES_IMPORT_FAILED));
+          response.setInfo(I18n.get(BaseExceptionMessage.CITIES_IMPORT_FAILED));
           response.setAttr("errorFile", "hidden", false);
           response.setValue("errorFile", errorFile);
         } else {
           response.setAttr("$importHistoryList", "hidden", false);
           response.setAttr("errorFile", "hidden", true);
           response.setAttr("$importHistoryList", "value", importHistoryList);
-          response.setFlash(I18n.get(ITranslation.BASE_GEONAMES_CITY_IMPORT_COMPLETED));
+          response.setInfo(I18n.get(ITranslation.BASE_GEONAMES_CITY_IMPORT_COMPLETED));
         }
       }
     } catch (Exception e) {

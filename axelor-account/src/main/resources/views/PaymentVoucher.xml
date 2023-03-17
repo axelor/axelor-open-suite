@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="payment-voucher-grid" title="Payment vouchers"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="-paymentDate">
@@ -122,8 +122,8 @@
     <panel-stack name="otherDetailsPanel" readonlyIf="statusSelect > 1">
       <panel-related name="payVoucherDueElementListPanel" colSpan="12"
         field="payVoucherDueElementList" form-view="pay-voucher-due-element-form"
-        grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1" orderBy="sequence"
-        canMove="true" readonly="true"/>
+        grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1"
+        orderBy="invoiceTerm.dueDate" canMove="true" readonly="true"/>
       <panel name="loadLinesPanel" colSpan="12" showIf="statusSelect == 1">
         <button name="loadSelectedLinesBtn" title="Load selected lines"
           onClick="action-method-payment-voucher-load-selected-lines,save"

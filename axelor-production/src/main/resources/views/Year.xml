@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="year-manuf-order-form" title="Manufacturing period"
     model="com.axelor.apps.base.db.Year" onSave="action-year-check-date"
@@ -12,8 +12,10 @@
       <field name="company" colSpan="3" widget="SuggestBox" required="true"
         form-view="company-form" grid-view="company-grid"/>
       <panel name="datesPanel" title="Dates" colSpan="12">
-        <field name="fromDate" readonlyIf="periodList.length > 0" colSpan="3"/>
-        <field name="toDate" readonlyIf="periodList.length > 0" colSpan="3"/>
+        <field name="fromDate" readonlyIf="periodList &amp;&amp; periodList.length > 0"
+          colSpan="3"/>
+        <field name="toDate" readonlyIf="periodList &amp;&amp; periodList.length > 0"
+          colSpan="3"/>
       </panel>
     </panel>
     <panel-related name="periodListPanel" readonlyIf="statusSelect == 2" colSpan="12"

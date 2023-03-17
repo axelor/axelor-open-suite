@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingReportType" lang="java">
+  <entity name="AccountingReportType">
 
     <string name="name" title="Name" required="true"/>
     <string name="reportTitle" title="Report title"/>
@@ -15,15 +15,17 @@
       selection="accounting.report.type.report.export.type.select"/>
     <many-to-one name="template" title="Report template"
       ref="com.axelor.meta.db.MetaFile"/>
-    <one-to-many name="accountingReportConfigLineList" title="Rules"
+    <one-to-many name="accountingReportConfigLineList" title="Lines rules"
       ref="com.axelor.apps.account.db.AccountingReportConfigLine" mappedBy="reportType"/>
+    <one-to-many name="accountingReportConfigLineColumnList" title="Column rules"
+      ref="com.axelor.apps.account.db.AccountingReportConfigLine" mappedBy="reportTypeColumn"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <integer name="comparison" title="Comparison"
       selection="accounting.report.type.comparison.select"/>
-    <integer name="noOfPeriods" title="Number of periods" default="1"
-      selection="accounting.report.type.no.of.periods.select"/>
+    <integer name="noOfPeriods" title="Number of periods" default="1" min="1"/>
     <many-to-one name="modelAccountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Model Accounting Report"/>
+    <boolean name="useLegacyCustomReports" title="Use legacy custom reports"/>
 
     <finder-method name="findByTypeSelect" using="typeSelect"/>
     <extra-code><![CDATA[
@@ -32,6 +34,7 @@
 		public static final int COMPARISON_NO_COMPARISON = 1;
 		public static final int COMPARISON_PREVIOUS_YEAR = 2;
 		public static final int COMPARISON_SAME_PERIOD_ON_PREVIOUS_YEAR = 3;
+		public static final int COMPARISON_OTHER_PERIOD = 4;
 
 	]]></extra-code>
 

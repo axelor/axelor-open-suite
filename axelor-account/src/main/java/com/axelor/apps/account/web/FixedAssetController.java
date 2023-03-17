@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,13 +34,13 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -124,13 +124,9 @@ public class FixedAssetController {
 
     FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
 
-    if (disposalQtySelect == FixedAssetRepository.DISPOSABLE_QTY_SELECT_PARTIAL
-        && disposalQty.compareTo(fixedAsset.getQty()) > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
-          fixedAsset.getQty().toString());
-    }
+    Beans.get(FixedAssetService.class)
+        .checkFixedAssetBeforeDisposal(fixedAsset, disposalDate, disposalQtySelect, disposalQty);
+
     try {
       int transferredReason =
           Beans.get(FixedAssetService.class)
@@ -149,7 +145,7 @@ public class FixedAssetController {
                   comments);
       if (createdFixedAsset != null) {
         response.setView(
-            ActionView.define("Fixed asset")
+            ActionView.define(I18n.get("Fixed asset"))
                 .model(FixedAsset.class.getName())
                 .add("form", "fixed-asset-form")
                 .context("_showRecord", createdFixedAsset.getId())
@@ -212,14 +208,14 @@ public class FixedAssetController {
                         .map(input -> Long.parseLong(input.toString()))
                         .collect(Collectors.toList()));
         int validatedFixedAssets = Beans.get(FixedAssetValidateService.class).massValidation(ids);
-        response.setFlash(
+        response.setInfo(
             validatedFixedAssets
                 + " "
                 + I18n.get(
                     "fixed asset validated", "fixed assets validated", validatedFixedAssets));
         response.setReload(true);
       } else {
-        response.setFlash(I18n.get("Please select something to validate"));
+        response.setInfo(I18n.get("Please select at least one fixed asset to validate"));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -353,7 +349,7 @@ public class FixedAssetController {
       // Open in view
       if (createdFixedAsset != null) {
         response.setView(
-            ActionView.define("Fixed asset")
+            ActionView.define(I18n.get("Fixed asset"))
                 .model(FixedAsset.class.getName())
                 .add("form", "fixed-asset-form")
                 .context("_showRecord", createdFixedAsset.getId())
@@ -497,7 +493,7 @@ public class FixedAssetController {
       boolean showDepreciationMessage =
           Beans.get(FixedAssetService.class).checkDepreciationPlans(fixedAsset);
       if (showDepreciationMessage) {
-        response.setFlash(I18n.get(AccountExceptionMessage.FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE));
+        response.setInfo(I18n.get(AccountExceptionMessage.FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

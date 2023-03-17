@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,41 +29,34 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
-import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
+import com.axelor.utils.ContextTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -383,6 +376,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
       findInvoiceTermsInInvoice(invoice.getMove().getMoveLineList(), invoiceTerm, invoice);
     }
+    invoiceTerm.setSequence(initInvoiceTermsSequence(invoice, invoiceTerm));
 
     return invoiceTerm;
   }
@@ -534,7 +528,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected int initInvoiceTermsSequence(MoveLine moveLine) {
-    if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+    if (moveLine == null || CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
       return 1;
     }
     return moveLine.getInvoiceTermList().stream()
@@ -544,14 +538,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         + 1;
   }
 
+  protected int initInvoiceTermsSequence(Invoice invoice, InvoiceTerm invoiceTerm) {
+
+    if (invoiceTerm == null
+        || invoice == null
+        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return 1;
+    } else {
+      return invoice.getInvoiceTermList().stream()
+              .max(Comparator.comparing(InvoiceTerm::getSequence))
+              .get()
+              .getSequence()
+          + 1;
+    }
+  }
+
   @Override
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException {
     String queryStr =
         "self.invoice = :invoice AND (self.isPaid IS NOT TRUE OR self.amountRemaining > 0)";
-    boolean pfpCondition =
-        appAccountService.getAppAccount().getActivatePassedForPayment()
-            && invoiceVisibilityService.getManagePfpCondition(invoice)
-            && invoiceVisibilityService.getOperationTypePurchaseCondition(invoice);
+    boolean pfpCondition = invoiceVisibilityService.getPfpCondition(invoice);
 
     if (pfpCondition) {
       queryStr =
@@ -689,13 +695,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateFinancialDiscount(Invoice invoice) {
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice) {
     invoice.getInvoiceTermList().stream()
         .filter(it -> it.getAmountRemaining().compareTo(it.getAmount()) == 0)
         .forEach(it -> this.computeFinancialDiscount(it, invoice));
 
-    invoiceRepo.save(invoice);
+    return invoice.getInvoiceTermList();
   }
 
   @Override
@@ -772,158 +777,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
     }
     return false;
-  }
-
-  @Override
-  @Transactional
-  public void retrieveEligibleTerms(PaymentSession paymentSession) {
-    List<InvoiceTerm> eligibleInvoiceTermList =
-        invoiceTermRepo
-            .all()
-            .filter(retrieveEligibleTermsQuery())
-            .bind("company", paymentSession.getCompany())
-            .bind("accountedStatus", MoveRepository.STATUS_ACCOUNTED)
-            .bind("daybookStatus", MoveRepository.STATUS_DAYBOOK)
-            .bind("paymentMode", paymentSession.getPaymentMode())
-            .bind(
-                "paymentDatePlusMargin",
-                paymentSession
-                    .getPaymentDate()
-                    .plusDays(paymentSession.getDaysMarginOnPaySession()))
-            .bind("currency", paymentSession.getCurrency())
-            .bind("partnerTypeSelect", paymentSession.getPartnerTypeSelect())
-            .bind("receivable", AccountTypeRepository.TYPE_RECEIVABLE)
-            .bind("payable", AccountTypeRepository.TYPE_PAYABLE)
-            .bind("partnerTypeClient", PaymentSessionRepository.PARTNER_TYPE_CUSTOMER)
-            .bind("partnerTypeSupplier", PaymentSessionRepository.PARTNER_TYPE_SUPPLIER)
-            .bind("functionalOriginClient", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-            .bind("functionalOriginSupplier", MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
-            .bind("activatePfp", appAccountService.getAppAccount().getActivatePassedForPayment())
-            .bind("noPfp", InvoiceTermRepository.PFP_STATUS_NO_PFP)
-            .bind("pfpValidateStatusValidated", InvoiceTermRepository.PFP_STATUS_VALIDATED)
-            .bind(
-                "pfpValidateStatusPartiallyValidated",
-                InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)
-            .fetch();
-
-    eligibleInvoiceTermList = this.filterNotAwaitingPayment(eligibleInvoiceTermList);
-    eligibleInvoiceTermList = this.filterBlocking(eligibleInvoiceTermList, paymentSession);
-    eligibleInvoiceTermList.forEach(
-        invoiceTerm -> {
-          fillEligibleTerm(paymentSession, invoiceTerm);
-          invoiceTermRepo.save(invoiceTerm);
-        });
-
-    Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
-  }
-
-  protected String retrieveEligibleTermsQuery() {
-    String generalCondition =
-        "self.moveLine.move.company = :company "
-            + " AND (self.moveLine.move.statusSelect = :accountedStatus"
-            + " OR (self.moveLine.move.company.accountConfig.retrieveDaybookMovesInPaymentSession IS TRUE"
-            + " AND self.moveLine.move.company.accountConfig.accountingDaybook IS TRUE"
-            + " AND self.moveLine.move.statusSelect = :daybookStatus))"
-            + " AND self.dueDate <= :paymentDatePlusMargin "
-            + " AND self.moveLine.move.currency = :currency "
-            + " AND self.bankDetails IS NOT NULL "
-            + " AND self.paymentMode = :paymentMode"
-            + " AND self.moveLine.account.isRetrievedOnPaymentSession IS TRUE ";
-
-    String termsMoveLineCondition =
-        " AND ((self.moveLine.partner.isCustomer IS TRUE "
-            + " AND :partnerTypeSelect = :partnerTypeClient"
-            + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginClient)"
-            + " OR (self.moveLine.partner.isSupplier IS TRUE "
-            + " AND :partnerTypeSelect = :partnerTypeSupplier "
-            + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier "
-            + " AND (:activatePfp IS FALSE "
-            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment IS FALSE  "
-            + " OR self.pfpValidateStatusSelect IN (:noPfp, :pfpValidateStatusValidated, :pfpValidateStatusPartiallyValidated)))) ";
-
-    String paymentHistoryCondition = " AND self.isPaid = FALSE" + " AND self.amountRemaining > 0";
-
-    return generalCondition + termsMoveLineCondition + paymentHistoryCondition;
-  }
-
-  protected List<InvoiceTerm> filterBlocking(
-      List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession) {
-    return invoiceTermList.stream()
-        .filter(it -> !this.isBlocking(it, paymentSession))
-        .collect(Collectors.toList());
-  }
-
-  protected boolean isBlocking(InvoiceTerm invoiceTerm, PaymentSession paymentSession) {
-    if (paymentSession.getPaymentMode().getTypeSelect() != PaymentModeRepository.TYPE_DD) {
-      return false;
-    }
-
-    if (invoiceTerm.getInvoice() != null) {
-      Invoice invoice = invoiceTerm.getInvoice();
-
-      if (invoice.getDebitBlockingOk()
-          && !paymentSession.getPaymentDate().isAfter(invoice.getDebitBlockingToDate())) {
-        return true;
-      }
-
-      if (this.isBlocking(invoice.getPartner(), paymentSession)) {
-        return true;
-      }
-    }
-
-    if (invoiceTerm.getMoveLine() != null) {
-      MoveLine moveLine = invoiceTerm.getMoveLine();
-
-      if (moveLine.getPartner() != null && this.isBlocking(moveLine.getPartner(), paymentSession)) {
-        return true;
-      } else if (moveLine.getMove().getPartner() != null
-          && this.isBlocking(moveLine.getMove().getPartner(), paymentSession)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  protected boolean isBlocking(Partner partner, PaymentSession paymentSession) {
-    for (Blocking blocking : partner.getBlockingList()) {
-      if (blocking.getBlockingSelect().equals(BlockingRepository.DEBIT_BLOCKING)
-          && !paymentSession.getPaymentDate().isAfter(blocking.getBlockingToDate())) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  protected void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
-    LocalDate nextSessionDate = paymentSession.getNextSessionDate();
-    LocalDate paymentDate = paymentSession.getPaymentDate();
-    LocalDate financialDiscountDeadlineDate = invoiceTerm.getFinancialDiscountDeadlineDate();
-    boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
-
-    invoiceTerm.setPaymentSession(paymentSession);
-    invoiceTerm.setIsSelectedOnPaymentSession(true);
-    if (isSignedNegative) {
-      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
-
-    } else {
-      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
-    }
-
-    if (invoiceTerm.getApplyFinancialDiscount() && financialDiscountDeadlineDate != null) {
-      if (invoiceTerm.getFinancialDiscountAmount().compareTo(invoiceTerm.getAmountRemaining())
-          > 0) {
-        invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
-      } else if (paymentDate != null && !financialDiscountDeadlineDate.isBefore(paymentDate)) {
-        invoiceTerm.setApplyFinancialDiscountOnPaymentSession(true);
-      }
-      if (nextSessionDate != null && !financialDiscountDeadlineDate.isBefore(nextSessionDate)) {
-        invoiceTerm.setIsSelectedOnPaymentSession(false);
-      }
-    }
-
-    computeAmountPaid(invoiceTerm);
   }
 
   @Override
@@ -1404,7 +1257,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total) {
     boolean isSubtract = true;
 
@@ -1420,6 +1273,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected boolean isUnevenRounding(InvoiceTerm invoiceTerm, BigDecimal total) {
+    if (total.compareTo(BigDecimal.ZERO) == 0) {
+      return false;
+    }
+
     BigDecimal percentageUp =
         invoiceTerm
             .getAmount()
@@ -1617,5 +1474,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public boolean isMultiCurrency(InvoiceTerm invoiceTerm) {
     return !Objects.equals(this.getCurrency(invoiceTerm), this.getCompanyCurrency(invoiceTerm));
+  }
+
+  @Override
+  public List<InvoiceTerm> recomputeInvoiceTermsPercentage(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    InvoiceTerm lastInvoiceTerm = invoiceTermList.remove(invoiceTermList.size() - 1);
+    BigDecimal percentageTotal = BigDecimal.ZERO;
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      BigDecimal percentage = this.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+
+      invoiceTerm.setPercentage(percentage);
+      percentageTotal = percentageTotal.add(percentage);
+    }
+
+    lastInvoiceTerm.setPercentage(BigDecimal.valueOf(100).subtract(percentageTotal));
+    invoiceTermList.add(lastInvoiceTerm);
+
+    return invoiceTermList;
   }
 }

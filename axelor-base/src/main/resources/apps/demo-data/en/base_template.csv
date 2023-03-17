@@ -1,0 +1,29 @@
+"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"Confirmation coordonnées";"Partner";2;;;;"true";;"Mise à jour de vos coordonnées";"<p>Madame, Monsieur,<br/>
+Nous sommes actuellement en phase de mise à jour de notre répertoire de contacts.<br/> 
+A ce jour voici les informations dont nous disposons : </p>
+ 
+<p>Téléphone fixe : $Partner.fixedPhone$<br/>
+Mobile : $Partner.mobilePhone$<br/>
+Email : $Partner.emailAddress.address$<br/>
+Adresse : <br/>
+$Partner.mainInvoicingAddress.fullName$<br/></p>
+
+<p>Si parmi les coordonnées ci-dessus, certaines sont erronées ou manquantes, merci de nous le faire savoir en répondant directement à cet email.</p>
+
+<p>Cordialement<br/>
+L'équipe Axelor</p>
+";"$Partner.emailAddress.address$";;;2
+"Contact details confirmation";"Partner";1;;;;"true";;"Contact details update";"<p>Dear $Partner.firstName$,<br/>
+We are currently proceeding to an update of  our contact database. Can you please confirm the following information about you are up to date :  </p>
+ 
+<p>Fixed phone : $Partner.fixedPhone$<br/>
+Mobile : $Partner.mobilePhone$<br/>
+Email : $Partner.emailAddress.address$<br/>
+Address : <br/>
+$Partner.mainInvoicingAddress.fullName$</p>
+
+<p>If among those information upwards, some are biased, please do inform us by reply thie email.</p>
+
+<p>Best regards<br/>
+Axelor Team</p>";"$Partner.emailAddress.address$";;;2

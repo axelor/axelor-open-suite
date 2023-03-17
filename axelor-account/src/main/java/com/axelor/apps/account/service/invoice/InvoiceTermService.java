@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2021 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,15 +27,13 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.axelor.rpc.Context;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -136,11 +134,9 @@ public interface InvoiceTermService {
    *
    * @param invoicePayment
    */
-  @Transactional(rollbackOn = {Exception.class})
   public void updateInvoiceTermsAmountRemaining(InvoicePayment invoicePayment)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void updateInvoiceTermsAmountRemaining(List<InvoiceTermPayment> invoiceTermPaymentList)
       throws AxelorException;
 
@@ -182,7 +178,7 @@ public interface InvoiceTermService {
    * @param invoice
    * @return
    */
-  public void updateFinancialDiscount(Invoice invoice);
+  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 
   /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
@@ -261,8 +257,6 @@ public interface InvoiceTermService {
 
   public void computeAmountPaid(InvoiceTerm invoiceTerm);
 
-  public void retrieveEligibleTerms(PaymentSession paymentSession);
-
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
 
   BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
@@ -314,4 +308,7 @@ public interface InvoiceTermService {
 
   @CallMethod
   boolean isMultiCurrency(InvoiceTerm invoiceTerm);
+
+  List<InvoiceTerm> recomputeInvoiceTermsPercentage(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total);
 }

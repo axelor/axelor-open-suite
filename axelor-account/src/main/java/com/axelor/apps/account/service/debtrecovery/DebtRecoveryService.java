@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,23 +38,23 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.TradingNameRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.message.db.repo.MultiRelatedRepository;
-import com.axelor.apps.tool.date.DateTool;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.db.repo.MultiRelatedRepository;
+import com.axelor.utils.date.DateTool;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -546,7 +546,7 @@ public class DebtRecoveryService {
     return null; // if no debtRecovery has been found for the specified tradingName
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public DebtRecovery createDebtRecovery(
       AccountingSituation accountingSituation, TradingName tradingName) {
     DebtRecovery debtRecovery = new DebtRecovery();
@@ -633,7 +633,10 @@ public class DebtRecoveryService {
           levelDebtRecovery = debtRecovery.getDebtRecoveryMethodLine().getSequence();
         }
 
+        LocalDate oldReferenceDate = debtRecovery.getReferenceDate();
         LocalDate referenceDate = this.getReferenceDate(debtRecovery);
+
+        boolean isReset = this.isInvoiceSetNew(debtRecovery, oldReferenceDate);
 
         if (referenceDate != null) {
           log.debug("reference date : {} ", referenceDate);
@@ -656,35 +659,19 @@ public class DebtRecoveryService {
               company.getName());
         }
         if (debtRecovery.getDebtRecoveryMethod() == null) {
-          DebtRecoveryMethod debtRecoveryMethod =
-              debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery);
-          if (debtRecoveryMethod != null) {
-            debtRecovery.setDebtRecoveryMethod(debtRecoveryMethod);
-            debtRecoverySessionService.debtRecoverySession(debtRecovery);
-          } else {
-            throw new AxelorException(
-                debtRecovery,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                "%s :\n"
-                            + I18n.get("Partner")
-                            + " %s, "
-                            + I18n.get("Company")
-                            + " %s : "
-                            + tradingName
-                        != null
-                    ? I18n.get("Trading name") + " %s : "
-                    : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
-                I18n.get(BaseExceptionMessage.EXCEPTION),
-                partner.getName(),
-                company.getName());
-          }
-        } else {
-          debtRecoverySessionService.debtRecoverySession(debtRecovery);
+          fetchDebtRecoveryMethod(partner, company, tradingName, debtRecovery);
         }
+        if (isReset) {
+          debtRecoverySessionService.reset(debtRecovery);
+        }
+        debtRecoverySessionService.debtRecoverySession(debtRecovery);
         if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
           // Si le niveau de relance a évolué
           if (debtRecovery.getDebtRecoveryMethodLine() != null
-              && debtRecovery.getDebtRecoveryMethodLine().getSequence() > levelDebtRecovery) {
+              && !debtRecovery
+                  .getDebtRecoveryMethodLine()
+                  .getSequence()
+                  .equals(levelDebtRecovery)) {
             debtRecoveryActionService.runAction(debtRecovery);
 
             DebtRecoveryHistory debtRecoveryHistory =
@@ -728,6 +715,36 @@ public class DebtRecoveryService {
       debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
     }
     return remindedOk;
+  }
+
+  protected void fetchDebtRecoveryMethod(
+      Partner partner, Company company, TradingName tradingName, DebtRecovery debtRecovery)
+      throws AxelorException {
+    DebtRecoveryMethod debtRecoveryMethod =
+        debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery);
+    if (debtRecoveryMethod != null) {
+      debtRecovery.setDebtRecoveryMethod(debtRecoveryMethod);
+    } else {
+      throw new AxelorException(
+          debtRecovery,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          "%s :\n" + I18n.get("Partner") + " %s, " + I18n.get("Company") + " %s : " + tradingName
+                  != null
+              ? I18n.get("Trading name") + " %s : "
+              : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          partner.getName(),
+          company.getName());
+    }
+  }
+
+  protected boolean isInvoiceSetNew(DebtRecovery debtRecovery, LocalDate oldReferenceDate) {
+
+    if (debtRecovery.getInvoiceDebtRecoverySet() != null && oldReferenceDate != null) {
+      return debtRecovery.getInvoiceDebtRecoverySet().stream()
+          .allMatch(invoice -> invoice.getDueDate().isAfter(oldReferenceDate));
+    }
+    return false;
   }
 
   public void updateInvoiceDebtRecovery(DebtRecovery debtRecovery, List<Invoice> invoiceList) {

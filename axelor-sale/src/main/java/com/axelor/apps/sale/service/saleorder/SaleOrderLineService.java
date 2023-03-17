@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
@@ -26,7 +27,6 @@ import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
@@ -119,9 +119,6 @@ public interface SaleOrderLineService {
   public Unit getSaleUnit(SaleOrderLine saleOrderLine);
 
   public SaleOrder getSaleOrder(Context context);
-
-  public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException;
 
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 

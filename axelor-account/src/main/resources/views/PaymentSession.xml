@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="payment-session-grid" title="Payment sessions" canDelete="false"
     model="com.axelor.apps.account.db.PaymentSession" orderBy="-paymentDate,-sequence">
@@ -131,7 +131,7 @@
     </panel>
     <panel name="emailPanel" sidebar="true" showIf="id &amp;&amp; sessionTotalAmount > 0">
       <button name="sendEmailsBtn" title="Send emails payment notice"
-        showIf="statusSelect == 1" readonlyIf="hasEmailsSent == true"
+        showIf="statusSelect == 2 || statusSelect == 3" readonlyIf="hasEmailsSent == true"
         onClick="save,action-payment-session-method-send-emails"/>
       <button name="viewSentEmailsBtn" title="View emails sent"
         onClick="save,action-payment-session-view-all-sent-emails" showIf="hasEmailsSent"/>
@@ -152,14 +152,16 @@
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
       readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
       <panel name="accountingMethodPanel" stacked="true">
-        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect != 3"/>
+        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect != 3"
+          readonlyIf="statusSelect == 4"/>
         <field name="accountingMethodSelect" showIf="moveAccountingDateSelect == 3"
-          selection-in="[1,2]"/>
+          selection-in="[1,2]" readonlyIf="statusSelect == 4"/>
       </panel>
       <panel name="moveAccountingDatePanel" stacked="true">
-        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"/>
+        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"
+          readonlyIf="statusSelect == 4"/>
         <field name="moveAccountingDateSelect" showIf="accountingMethodSelect == 3"
-          selection-in="[1,2]"/>
+          readonlyIf="statusSelect == 4" selection-in="[1,2]"/>
       </panel>
       <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"
         selection-in="[1,2,3,4]"/>
@@ -169,7 +171,7 @@
   </form>
 
 
-  <form name="payment-session-print-wizard-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="payment-session-print-wizard-form" model="com.axelor.utils.db.Wizard"
     title="Payment session print wizard">
     <panel name="mainPanel">
       <field name="_exportTypeSelect" type="string" title="Export format"
@@ -247,7 +249,7 @@
   </action-validate>
 
   <action-view name="action-view-account-payment-session-print-wizard"
-    title="Payment session print wizard" model="com.axelor.apps.base.db.Wizard">
+    title="Payment session print wizard" model="com.axelor.utils.db.Wizard">
     <view type="form" name="payment-session-print-wizard-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="false"/>
@@ -299,7 +301,7 @@
   </action-method>
 
   <action-method name="action-method-payment-session-search-eligible-terms">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
       method="searchEligibleTerms"/>
   </action-method>
 
@@ -403,7 +405,7 @@
   </action-view>
 
   <action-view name="action-payment-session-view-all-sent-emails" title="Emails"
-    model="com.axelor.apps.message.db.Message">
+    model="com.axelor.message.db.Message">
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
     <domain>self.mediaTypeSelect = 2 AND self.id IN (SELECT message.id FROM MultiRelated as related

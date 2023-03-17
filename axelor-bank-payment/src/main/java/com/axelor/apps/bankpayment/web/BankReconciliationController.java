@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,13 +35,13 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -74,7 +74,7 @@ public class BankReconciliationController {
               .filter(line -> line.getIsSelectedBankReconciliation())
               .collect(Collectors.toList());
       if (bankReconciliationLines.isEmpty()) {
-        response.setFlash(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
+        response.setInfo(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
       } else {
         BankReconciliationService bankReconciliationService =
             Beans.get(BankReconciliationService.class);
@@ -550,6 +550,22 @@ public class BankReconciliationController {
       Beans.get(BankReconciliationService.class).correct(bankReconciliation, request.getUser());
       response.setAttr("correctBtn", "hidden", true);
       response.setValues(bankReconciliation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeSelections(ActionRequest request, ActionResponse response) {
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      BankReconciliationService bankReconcialiationService =
+          Beans.get(BankReconciliationService.class);
+      response.setValue(
+          "$selectionUnreconciledMoveLines",
+          bankReconcialiationService.computeUnreconciledMoveLinesSelection(bankReconciliation));
+      response.setValue(
+          "$selectionBankReconciliationLines",
+          bankReconcialiationService.computeBankReconciliationLinesSelection(bankReconciliation));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

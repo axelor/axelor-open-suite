@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="accounting-batch-form" id="supplychain-accounting-batch-form"
     title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch" extension="true">
@@ -46,6 +46,7 @@
   <action-group name="action-accounting-batch-group-accounting-cut-off"
     id="supplychain-action-accounting-batch-group-accounting-cut-off">
     <action name="save"/>
+    <action name="action-accounting-batch-validate-cut-off-move-status"/>
     <action name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
       if="previewRecordsToProcess &amp;&amp; [1,2].contains(accountingCutOffTypeSelect)"/>
     <action name="action-accounting-batch-view-preview-move-lines-to-process"

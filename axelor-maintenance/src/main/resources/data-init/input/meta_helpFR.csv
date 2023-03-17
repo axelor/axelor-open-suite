@@ -1,0 +1,5 @@
+"module";"object";"view";"field";"help"
+"axelor-maintenance";"Machine";"maintenance-machine-form";"startingDuration";"Temps que met la machine à démarrer avant de pouvoir être utilisée."
+"axelor-maintenance";"Machine";"maintenance-machine-form";"setupDuration";"Temps entre deux cycles. Il s'agit du temps qu'il faut attendre après la fin d'un cycle pour pouvoir en commencer un nouveau."
+"axelor-maintenance";"Machine";"maintenance-machine-form";"endingDuration";"Temps de clôture de la machine."
+"axelor-maintenance";"Machine";"maintenance-machine-form";"weeklyPlanning";"Permet de sélectionner un planning général de disponibilité de la machine (mi-temps ou pleins-temps) ."

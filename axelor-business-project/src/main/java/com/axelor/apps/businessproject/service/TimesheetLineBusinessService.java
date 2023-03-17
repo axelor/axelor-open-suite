@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,17 +17,19 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.tool.QueryBuilder;
-import com.axelor.exception.AxelorException;
+import com.axelor.db.Query;
+import com.axelor.utils.QueryBuilder;
 import com.google.inject.persist.Transactional;
 
 public interface TimesheetLineBusinessService {
 
   TimesheetLine getDefaultToInvoice(TimesheetLine timesheetLine);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine);
 
   public TimesheetLine setTimesheet(TimesheetLine timesheetLine) throws AxelorException;
@@ -35,4 +37,6 @@ public interface TimesheetLineBusinessService {
   public QueryBuilder<TimesheetLine> getTimesheetLineInvoicingFilter();
 
   public void timsheetLineInvoicing(Project project);
+
+  Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine);
 }

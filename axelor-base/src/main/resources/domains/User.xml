@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="auth" package="com.axelor.auth.db"/>
 
-  <entity name="User" sequential="true" lang="java">
+  <entity name="User" sequential="true">
 
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"
       title="Company"/>
@@ -41,8 +41,7 @@
       title="Use signature for sales quotations"/>
     <boolean name="useSignatureForPurchaseQuotations"
       title="Use signature for purchase quotations"/>
-    <many-to-one name="group" ref="com.axelor.auth.db.Group" column="group_id"
-      massUpdate="true"/>
+    <many-to-one name="group" ref="Group" column="group_id" massUpdate="true"/>
     <string name="language" selection="select.language" massUpdate="true"/>
     <boolean name="singleTab" help="Whether to use tabbed ui." massUpdate="true"/>
     <boolean name="noHelp" help="Whether to show help messages." massUpdate="true"/>
@@ -54,8 +53,8 @@
       help="Allow notifications to be sent by email" default="true"/>
     <many-to-many name="followedMetaModelSet"
       title="Entities you wish to follow by email" ref="com.axelor.meta.db.MetaModel"/>
-    <one-to-many name="emailAccountList" ref="com.axelor.apps.message.db.EmailAccount"
-      title="Email accounts"/>
+    <one-to-many name="emailAccountList" ref="com.axelor.message.db.EmailAccount"
+      title="Email accounts" mappedBy="user"/>
 
     <string name="transientPassword" transient="true"/>
 

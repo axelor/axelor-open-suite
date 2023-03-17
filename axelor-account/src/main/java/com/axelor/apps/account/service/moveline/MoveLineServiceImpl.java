@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,17 +31,18 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -62,9 +63,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected int jpaLimit = 20;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
@@ -173,7 +176,7 @@ public class MoveLineServiceImpl implements MoveLineService {
         log.debug(e.getMessage());
       } finally {
         i++;
-        if (i % 20 == 0) {
+        if (i % jpaLimit == 0) {
           JPA.clear();
         }
       }
@@ -234,19 +237,19 @@ public class MoveLineServiceImpl implements MoveLineService {
         companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
   }
 
-  private void populateCredit(
+  protected void populateCredit(
       Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList) {
     populateMoveLineMap(moveLineMap, reconciliableMoveLineList, true);
   }
 
-  private void populateDebit(
+  protected void populateDebit(
       Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList) {
     populateMoveLineMap(moveLineMap, reconciliableMoveLineList, false);
   }
 
-  private void populateMoveLineMap(
+  protected void populateMoveLineMap(
       Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList,
       boolean isCredit) {
@@ -275,7 +278,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
     if (moveLine.getIsSelectedBankReconciliation() != null) {
       moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
@@ -286,7 +289,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
     String posted = moveLine.getPostedNbr();
     List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));

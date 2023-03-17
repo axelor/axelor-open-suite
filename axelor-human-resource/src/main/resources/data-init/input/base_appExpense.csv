@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Expense Management";"expense";15;"Expense Management";"app-expense.png";"axelor-human-resource";"account,project,employee";19

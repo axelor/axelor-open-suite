@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,24 +45,24 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -144,7 +144,7 @@ public class MoveController {
       Move newMove = Beans.get(MoveReverseService.class).generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
-            ActionView.define(I18n.get("Account move"))
+            ActionView.define(I18n.get("Account moves"))
                 .model("com.axelor.apps.account.db.Move")
                 .add("grid", "move-grid")
                 .add("form", "move-form")
@@ -185,7 +185,7 @@ public class MoveController {
                   .collect(Collectors.joining(","));
 
           response.setView(
-              ActionView.define(I18n.get("Account move"))
+              ActionView.define(I18n.get("Account moves"))
                   .model("com.axelor.apps.account.db.Move")
                   .add("grid", "move-grid")
                   .add("form", "move-form")
@@ -212,15 +212,15 @@ public class MoveController {
       if (moveIds != null && !moveIds.isEmpty()) {
         String error = Beans.get(MoveValidateService.class).accountingMultiple(moveIds);
         if (error.length() > 0) {
-          response.setFlash(
+          response.setInfo(
               String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
         } else {
-          response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
+          response.setInfo(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
         }
 
         response.setReload(true);
       } else {
-        response.setFlash(I18n.get(AccountExceptionMessage.NO_MOVES_SELECTED));
+        response.setInfo(I18n.get(AccountExceptionMessage.NO_MOVES_SELECTED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -257,13 +257,13 @@ public class MoveController {
             }
           }
           Beans.get(MoveSimulateService.class).simulateMultiple(moveList);
-          response.setFlash(I18n.get(AccountExceptionMessage.MOVE_SIMULATION_OK));
+          response.setInfo(I18n.get(AccountExceptionMessage.MOVE_SIMULATION_OK));
           response.setReload(true);
         } else {
-          response.setFlash(I18n.get(AccountExceptionMessage.NO_NEW_MOVES_SELECTED));
+          response.setInfo(I18n.get(AccountExceptionMessage.NO_NEW_MOVES_SELECTED));
         }
       } else {
-        response.setFlash(I18n.get(AccountExceptionMessage.NO_NEW_MOVES_SELECTED));
+        response.setInfo(I18n.get(AccountExceptionMessage.NO_NEW_MOVES_SELECTED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -306,13 +306,13 @@ public class MoveController {
     if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
         || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
       moveRemoveService.deleteMove(move);
-      response.setFlash(I18n.get(AccountExceptionMessage.MOVE_REMOVED_OK));
+      response.setInfo(I18n.get(AccountExceptionMessage.MOVE_REMOVED_OK));
     } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
       moveRemoveService.archiveDaybookMove(move);
-      response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_OK));
+      response.setInfo(I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_OK));
     } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
       moveRemoveService.archiveMove(move);
-      response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_OK));
+      response.setInfo(I18n.get(AccountExceptionMessage.MOVE_ARCHIVE_OK));
     }
   }
 
@@ -347,7 +347,7 @@ public class MoveController {
         }
       }
 
-      response.setFlash(flashMessage);
+      response.setInfo(flashMessage);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -447,7 +447,9 @@ public class MoveController {
     Move move = request.getContext().asType(Move.class);
     if (move != null) {
       try {
-        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(move.getCompany(), move.getJournal());
         response.setAttr("partner", "domain", domain);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -565,10 +567,20 @@ public class MoveController {
     }
   }
 
-  public void setOriginAndDescriptionOnLines(ActionRequest request, ActionResponse response) {
+  public void setOriginOnLines(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveToolService.class).setOriginAndDescriptionOnMoveLineList(move);
+      Beans.get(MoveToolService.class).setOriginOnMoveLineList(move);
+      response.setValue("moveLineList", move.getMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDescriptionOnLines(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MoveToolService.class).setDescriptionOnMoveLineList(move);
       response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -586,11 +598,22 @@ public class MoveController {
     }
   }
 
-  public void validateOriginDescription(ActionRequest request, ActionResponse response) {
+  public void validateOrigin(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      if (move.getOrigin() == null && move.getDescription() == null) {
-        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN_AND_DESCRIPTION));
+      if (move.getOrigin() == null) {
+        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void validateDescription(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move.getDescription() == null) {
+        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_DESCRIPTION));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -626,7 +649,7 @@ public class MoveController {
 
         response.setValue("moveLineList", move.getMoveLineList());
       } else {
-        response.setFlash(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
+        response.setInfo(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -754,7 +777,7 @@ public class MoveController {
         boolean isAllUpdated = moveInvoiceTermService.updateInvoiceTerms(move);
 
         if (!isAllUpdated) {
-          response.setFlash(I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE));
+          response.setInfo(I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE));
         }
       }
 
@@ -812,7 +835,7 @@ public class MoveController {
     }
   }
 
-  private LocalDate extractDueDate(ActionRequest request) {
+  protected LocalDate extractDueDate(ActionRequest request) {
     if (!request.getContext().containsKey("dueDate")
         || request.getContext().get("dueDate") == null) {
       return null;

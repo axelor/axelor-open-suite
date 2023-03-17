@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,11 +19,11 @@ package com.axelor.apps.production.web;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -62,7 +62,7 @@ public class CostSheetController {
     }
   }
 
-  private String getTimezone(CostSheet costSheet) {
+  protected String getTimezone(CostSheet costSheet) {
     if (costSheet.getManufOrder() == null || costSheet.getManufOrder().getCompany() == null) {
       return null;
     }

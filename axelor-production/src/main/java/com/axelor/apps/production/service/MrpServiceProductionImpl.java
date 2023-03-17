@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,15 +17,16 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -60,11 +61,10 @@ import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineTypeService;
 import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.service.MailMessageService;
+import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -213,11 +213,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     StockLocation stockLocation = manufOrder.getProdProcess().getStockLocation();
 
-    LocalDate maturityDate;
+    LocalDate maturityDate = null;
 
     if (manufOrder.getPlannedEndDateT() != null) {
       maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
-    } else {
+    } else if (manufOrder.getPlannedStartDateT() != null) {
       maturityDate = manufOrder.getPlannedStartDateT().toLocalDate();
     }
 
@@ -265,7 +265,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
             if (operationOrder.getPlannedEndDateT() != null) {
               maturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
-            } else {
+            } else if (operationOrder.getPlannedStartDateT() != null) {
               maturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
             }
 

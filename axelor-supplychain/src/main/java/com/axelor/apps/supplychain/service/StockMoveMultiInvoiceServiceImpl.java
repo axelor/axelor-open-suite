@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,8 +28,10 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -40,13 +42,11 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -572,9 +572,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     Invoice refund = new RefundInvoice(invoice).generate();
     if (refund.getInvoiceLineList() != null) {
       for (InvoiceLine invoiceLine : refund.getInvoiceLineList()) {
-        invoiceLine.setPrice(invoiceLine.getPrice().negate());
-        invoiceLine.setPriceDiscounted(invoiceLine.getPriceDiscounted().negate());
-        invoiceLine.setInTaxPrice(invoiceLine.getInTaxPrice().negate());
+        invoiceLine.setQty(invoiceLine.getQty().negate());
+        invoiceLine.setOldQty(invoiceLine.getOldQty().negate());
         invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
         invoiceLine.setInTaxTotal(invoiceLine.getInTaxTotal().negate());
         invoiceLine.setCompanyExTaxTotal(invoiceLine.getCompanyExTaxTotal().negate());
@@ -891,11 +890,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    * @param invoiceLine
    */
   protected void negateInvoiceLinePrice(InvoiceLine invoiceLine) {
-    // price
-    invoiceLine.setPrice(invoiceLine.getPrice().negate());
-    invoiceLine.setPriceDiscounted(invoiceLine.getPriceDiscounted().negate());
-    invoiceLine.setInTaxPrice(invoiceLine.getInTaxPrice().negate());
-    invoiceLine.setDiscountAmount(invoiceLine.getDiscountAmount().negate());
+
+    invoiceLine.setQty(invoiceLine.getQty().negate());
+    invoiceLine.setOldQty(invoiceLine.getOldQty().negate());
 
     // totals
     invoiceLine.setInTaxTotal(invoiceLine.getInTaxTotal().negate());

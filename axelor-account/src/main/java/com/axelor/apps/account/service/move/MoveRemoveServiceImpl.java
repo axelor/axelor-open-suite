@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,12 +26,12 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.tool.service.ArchivingToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.service.ArchivingToolService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -189,7 +189,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Move archiveMove(Move move) {
     move.setArchived(true);
     for (MoveLine moveLine : move.getMoveLineList()) {
@@ -226,8 +226,8 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void deleteMove(Move move) throws Exception {
+  @Transactional
+  public void deleteMove(Move move) {
     moveRepo.remove(move);
   }
 }

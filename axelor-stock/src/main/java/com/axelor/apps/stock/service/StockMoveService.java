@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,9 +17,20 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.*;
-import com.axelor.apps.stock.db.*;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.stock.db.FreightCarrierMode;
+import com.axelor.apps.stock.db.Incoterm;
+import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -238,4 +249,8 @@ public interface StockMoveService {
       StockLocation toStockLocation,
       int initialStatus)
       throws AxelorException;
+
+  StockLocation getFromStockLocation(StockMove stockMove) throws AxelorException;
+
+  StockLocation getToStockLocation(StockMove stockMove) throws AxelorException;
 }

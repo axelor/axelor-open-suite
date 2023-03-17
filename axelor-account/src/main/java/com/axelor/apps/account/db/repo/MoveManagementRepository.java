@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,13 +28,13 @@ import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
@@ -85,7 +85,7 @@ public class MoveManagementRepository extends MoveRepository {
         InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
 
         for (MoveLine moveLine : moveLineList) {
-          resetMoveLine(moveLine, copy.getDate(), invoiceTermService);
+          resetMoveLine(moveLine, copy.getDate(), invoiceTermService, copy);
           moveLineInvoiceTermService.updateInvoiceTermsParentFields(moveLine);
         }
       }
@@ -98,7 +98,7 @@ public class MoveManagementRepository extends MoveRepository {
   }
 
   public void resetMoveLine(
-      MoveLine moveLine, LocalDate date, InvoiceTermService invoiceTermService)
+      MoveLine moveLine, LocalDate date, InvoiceTermService invoiceTermService, Move move)
       throws AxelorException {
     moveLine.setInvoiceReject(null);
     moveLine.setDate(date);
@@ -111,6 +111,8 @@ public class MoveManagementRepository extends MoveRepository {
     moveLine.setTaxPaymentMoveLineList(null);
     moveLine.setTaxAmount(BigDecimal.ZERO);
     moveLine.setPostedNbr(null);
+    moveLine.setOrigin(move.getOrigin());
+    moveLine.setOriginDate(move.getOriginDate());
 
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
 
@@ -131,6 +133,9 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setIsSelectedOnPaymentSession(false);
     invoiceTerm.setDebtRecoveryBlockingOk(false);
     invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
+    invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getCompanyAmount());
+    invoiceTerm.setAmountRemainingAfterFinDiscount(
+        invoiceTerm.getRemainingAmountAfterFinDiscount());
     invoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
     invoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
@@ -182,8 +187,11 @@ public class MoveManagementRepository extends MoveRepository {
 
           if (!moveLine.getAccount().getHasInvoiceTerm()
               && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-            if (moveLine.getInvoiceTermList().stream()
-                .allMatch(invoiceTermService::isNotReadonly)) {
+            if (moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)
+                && moveLine.getInvoiceTermList().stream()
+                        .filter(invoiceTerm -> invoiceTerm.getIsHoldBack())
+                        .count()
+                    == 0) {
               moveLine.clearInvoiceTermList();
             } else {
               throw new AxelorException(

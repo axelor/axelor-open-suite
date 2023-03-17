@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,9 +23,9 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.PaymentSessionCancelService;
-import com.axelor.apps.account.service.PaymentSessionValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -48,17 +48,17 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.repo.MailFollowerRepository;
@@ -261,7 +261,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrderLineService.checkPreconditions(bankOrderLine);
       totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
       bankOrderLineService.checkBankDetails(
-          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder());
+          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder(), bankOrderLine);
     }
     if (!totalAmount.equals(arithmeticTotal)) {
       throw new AxelorException(
@@ -316,21 +316,22 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   protected BankOrder generateMoves(BankOrder bankOrder) throws AxelorException {
-    switch (bankOrder.getFunctionalOriginSelect()) {
-      case BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION:
-        PaymentSession paymentSession =
-            paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
-        if (paymentSession != null) {
-          Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
-          break;
-        }
-        // TODO other cases
-      default:
-        bankOrderMoveService.generateMoves(bankOrder);
-        bankOrder.setAreMovesGenerated(true);
-        validatePayment(bankOrder);
+    if (bankOrder
+        .getFunctionalOriginSelect()
+        .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION)) {
+      PaymentSession paymentSession =
+          paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
+
+      if (paymentSession != null) {
+        Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
+        return bankOrderRepo.find(bankOrder.getId());
+      }
     }
+
+    bankOrderMoveService.generateMoves(bankOrder);
+    bankOrder.setAreMovesGenerated(true);
+    validatePayment(bankOrder);
 
     return bankOrderRepo.find(bankOrder.getId());
   }
@@ -444,7 +445,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     markAsSent(bankOrder);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void markAsSent(BankOrder bankOrder) {
     bankOrder.setHasBeenSentToBank(true);
   }
@@ -507,7 +508,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
   }
 
-  private void setNbOfLines(BankOrder bankOrder) {
+  protected void setNbOfLines(BankOrder bankOrder) {
 
     if (bankOrder.getBankOrderLineList() == null) {
       return;
@@ -818,7 +819,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     resetBankDetails(bankOrder);
   }
 
-  private void resetPartners(BankOrder bankOrder) {
+  protected void resetPartners(BankOrder bankOrder) {
     if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
       for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
         bankOrderLine.setPartner(null);
@@ -857,7 +858,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
   }
 
-  private void resetBankDetails(BankOrder bankOrder) {
+  protected void resetBankDetails(BankOrder bankOrder) {
     for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
       if (bankOrderLine.getReceiverBankDetails() == null) {
         continue;

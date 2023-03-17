@@ -2534,7 +2534,6 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <property name="width">1.375in</property>
                         </column>
                         <column id="4754">
-                            <property name="suppressDuplicates">true</property>
                             <property name="width">3.5in</property>
                         </column>
                         <column id="4755">

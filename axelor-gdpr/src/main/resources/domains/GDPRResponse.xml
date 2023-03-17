@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
+
+  <entity name="GDPRResponse">
+    <integer name="typeSelect" title="Type" selection="gdpr.request.type.select"/>
+    <datetime name="sendingDateT" title="Sending date"/>
+    <string name="responseEmailAddress" title="Response email address"/>
+    <many-to-one ref="com.axelor.message.db.Message" name="responseMessage"
+      title="Response message"/>
+    <many-to-one name="dataFile" ref="com.axelor.meta.db.MetaFile" title="Data file"/>
+    <one-to-many name="responseErasureLogList"
+      ref="com.axelor.apps.gdpr.db.GDPRErasureLog" mappedBy="gdprResponse" title="GDPR erasure logs"/>
+    <finder-method name="findByRequest" using="gdprRequest"/>
+  </entity>
+
+</domain-models>

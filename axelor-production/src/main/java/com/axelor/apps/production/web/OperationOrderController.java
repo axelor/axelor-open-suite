@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -28,7 +29,6 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -217,14 +217,14 @@ public class OperationOrderController {
 
         response.setView(ActionView.define(name).add("html", fileLink).map());
       } else {
-        response.setFlash(I18n.get(ProductionExceptionMessage.OPERATION_ORDER_1));
+        response.setInfo(I18n.get(ProductionExceptionMessage.OPERATION_ORDER_1));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  private String getTimezone(OperationOrder operationOrder) {
+  protected String getTimezone(OperationOrder operationOrder) {
     if (operationOrder.getManufOrder() == null
         || operationOrder.getManufOrder().getCompany() == null) {
       return null;

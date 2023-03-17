@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -51,6 +51,7 @@ public class BankOrderLineController {
     BankDetails bankDetails =
         Beans.get(BankOrderLineService.class).getDefaultBankDetails(bankOrderLine, bankOrder);
     response.setValue("receiverBankDetails", bankDetails);
+    response.setAttr("bankOrderDate", "hidden", !bankOrder.getIsMultiDate());
   }
 
   public void computeCompanyCurrencyAmount(ActionRequest request, ActionResponse response) {

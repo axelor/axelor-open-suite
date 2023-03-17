@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
     orderBy="-sentDate">
@@ -166,8 +166,8 @@
       <field name="refusedBy" canEdit="false" hidden="true" form-view="user-form"
         grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
       <field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
-      <field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12"
-        readonly="true"/>
+      <field name="groundForRefusal" hidden="true"
+        showIf="statusSelect == 5 || groundForRefusal != null" colSpan="12" readonly="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList"
@@ -180,7 +180,7 @@
         form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
         onChange="action-expense-group-expense-line-on-change"/>
       <panel-related name="employeeAdvanceUsageListPanel"
-        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length"
+        showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length > 0"
         field="employeeAdvanceUsageList" title="Employee advance list" readonly="false"
         canNew="false" canSelect="false" canEdit="true" editable="true"
         form-view="employee-advance-usage-expense-form"
@@ -211,11 +211,13 @@
 
   <form name="popup-expense-refusal-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.Expense">
-    <field name="groundForRefusal" showTitle="false"/>
+    <panel name="mainPanel">
+      <field name="groundForRefusal" showTitle="false"/>
+    </panel>
   </form>
 
   <form name="popup-expense-form" title="Select the expense you want to edit"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
+    model="com.axelor.utils.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
     <panel name="mainPanel">
       <field name="$expenseSelect" title="Select Expense" type="many-to-one"
         target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
@@ -375,7 +377,8 @@
   </action-attrs>
 
   <action-validate name="action-expense-validate-period">
-    <error message="Period is closed" if="period?.statusSelect == 2"/>
+    <error message="Period is closed"
+      if="period?.statusSelect == 2 || period?.statusSelect == 5"/>
   </action-validate>
 
   <action-view name="action-expense-refusal-popup-form" title="Ground for refusal"

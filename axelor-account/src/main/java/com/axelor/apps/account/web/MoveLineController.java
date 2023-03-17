@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -46,25 +47,25 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.tool.ContextTool;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.ContextTool;
+import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -220,7 +221,7 @@ public class MoveLineController {
         finalBalance = totalDebit.subtract(totalCredit);
 
         response.setView(
-            ActionView.define("Calculation")
+            ActionView.define(I18n.get("Calculation"))
                 .model(Wizard.class.getName())
                 .add("form", "account-move-line-calculation-wizard-form")
                 .param("popup", "true")
@@ -255,7 +256,9 @@ public class MoveLineController {
     Move move = request.getContext().getParent().asType(Move.class);
     try {
       if (move != null) {
-        String domain = Beans.get(MoveViewHelperService.class).filterPartner(move);
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(move.getCompany(), move.getJournal());
         response.setAttr("partner", "domain", domain);
       }
     } catch (Exception e) {
@@ -361,21 +364,23 @@ public class MoveLineController {
       if (parentContext != null) {
         Move move = parentContext.asType(Move.class);
         Account accountingAccount = moveLine.getAccount();
-        TaxLine taxLine =
-            Beans.get(MoveLoadDefaultConfigService.class)
-                .getTaxLine(move, moveLine, accountingAccount);
-        TaxEquiv taxEquiv = null;
-        FiscalPosition fiscalPosition = move.getFiscalPosition();
-        if (taxLine != null) {
-          if (fiscalPosition != null) {
-            taxEquiv =
-                Beans.get(FiscalPositionService.class)
-                    .getTaxEquiv(fiscalPosition, taxLine.getTax());
-          }
+        if (accountingAccount != null && accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
+          TaxLine taxLine =
+              Beans.get(MoveLoadDefaultConfigService.class)
+                  .getTaxLine(move, moveLine, accountingAccount);
+          TaxEquiv taxEquiv = null;
+          FiscalPosition fiscalPosition = move.getFiscalPosition();
+          if (taxLine != null) {
+            if (fiscalPosition != null) {
+              taxEquiv =
+                  Beans.get(FiscalPositionService.class)
+                      .getTaxEquiv(fiscalPosition, taxLine.getTax());
+            }
 
-          response.setValue("taxLine", taxLine);
-          if (taxEquiv != null) {
-            response.setValue("taxEquiv", taxEquiv);
+            response.setValue("taxLine", taxLine);
+            if (taxEquiv != null) {
+              response.setValue("taxEquiv", taxEquiv);
+            }
           }
         }
       }
@@ -478,7 +483,12 @@ public class MoveLineController {
   public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+
+      Move move = moveLine.getMove();
+      if (move == null) {
+        move = request.getContext().getParent().asType(Move.class);
+      }
+
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
         response.setAttr(
@@ -711,7 +721,7 @@ public class MoveLineController {
             I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
       } else {
         Batch batch = Beans.get(MoveLineService.class).validateCutOffBatch(ids, id);
-        response.setFlash(batch.getComments());
+        response.setInfo(batch.getComments());
       }
 
       response.setReload(true);
@@ -723,6 +733,11 @@ public class MoveLineController {
   public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      if (moveLine.getMove() == null) {
+        moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
+      }
+
       Beans.get(MoveLineInvoiceTermService.class).updateInvoiceTermsParentFields(moveLine);
       response.setValues(moveLine);
     } catch (Exception e) {
@@ -766,7 +781,7 @@ public class MoveLineController {
     }
   }
 
-  private LocalDate extractDueDate(ActionRequest request) {
+  protected LocalDate extractDueDate(ActionRequest request) {
     Context parentContext = request.getContext().getParent();
 
     if (parentContext == null) {
@@ -809,6 +824,32 @@ public class MoveLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
+    try {
+      AccountService accountService = Beans.get(AccountService.class);
+
+      if (Move.class.equals(request.getContext().getContextClass())) {
+        Move move = request.getContext().asType(Move.class);
+        if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+          for (MoveLine moveLine : move.getMoveLineList()) {
+            if (moveLine != null && moveLine.getAccount() != null) {
+              accountService.checkAnalyticAxis(
+                  moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+            }
+          }
+        }
+      } else {
+        MoveLine moveLine = request.getContext().asType(MoveLine.class);
+        if (moveLine != null && moveLine.getAccount() != null) {
+          accountService.checkAnalyticAxis(
+              moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

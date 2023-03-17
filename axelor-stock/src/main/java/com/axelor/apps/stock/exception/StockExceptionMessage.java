@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -93,7 +93,7 @@ public final class StockExceptionMessage {
   public static final String STOCK_MOVE_6 = /*$$(*/
       "There's no destination stock location selected for the stock's movement %s" /*)*/;
   public static final String STOCK_MOVE_7 = /*$$(*/ "Partial stock move (From" /*)*/;
-  public static final String STOCK_MOVE_8 = /*$$(*/ "Reverse stock move (From" /*)*/;
+  public static final String STOCK_MOVE_8 = /*$$(*/ "%s Reverse stock move (From %s)" /*)*/;
   public static final String STOCK_MOVE_9 = /*$$(*/
       "A partial stock move has been generated (%s)" /*)*/;
   public static final String STOCK_MOVE_10 = /*$$(*/

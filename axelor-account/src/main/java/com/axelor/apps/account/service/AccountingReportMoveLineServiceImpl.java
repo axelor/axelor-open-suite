@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,16 +25,16 @@ import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.service.app.AppService;
-import com.axelor.apps.tool.file.FileTool;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.utils.file.FileTool;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -279,9 +279,6 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             "S10.G01.01.006",
             ObjectUtils.firstNonNull(
                 dasContactPartner.getFixedPhone(), dasContactPartner.getMobilePhone())));
-    if (!Strings.isNullOrEmpty(dasContactPartner.getFax())) {
-      lines.add(setN4DSLine("S10.G01.01.007", dasContactPartner.getFax()));
-    }
 
     // S10.G01.05
     lines.add(setN4DSLine("S10.G01.05.013.001", siren));

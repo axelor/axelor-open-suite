@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,13 +20,13 @@ package com.axelor.apps.base.tracking;
 import com.axelor.apps.base.db.GlobalTrackingConfigurationLine;
 import com.axelor.apps.base.db.GlobalTrackingLog;
 import com.axelor.apps.base.db.GlobalTrackingLogLine;
+import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.GlobalTrackingLogRepository;
 import com.axelor.auth.AuditInterceptor;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Role;
-import com.axelor.exception.db.TraceBack;
 import com.axelor.mail.db.MailFlags;
 import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.MailMessage;

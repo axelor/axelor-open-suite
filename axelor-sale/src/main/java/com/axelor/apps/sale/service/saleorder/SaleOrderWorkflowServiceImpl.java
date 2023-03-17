@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
@@ -25,11 +26,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -38,8 +40,6 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -55,6 +55,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   protected PartnerRepository partnerRepo;
   protected SaleOrderRepository saleOrderRepo;
   protected AppSaleService appSaleService;
+  protected AppCrmService appCrmService;
   protected UserService userService;
   protected SaleOrderLineService saleOrderLineService;
 
@@ -64,6 +65,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
+      AppCrmService appCrmService,
       UserService userService,
       SaleOrderLineService saleOrderLineService) {
 
@@ -71,6 +73,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     this.partnerRepo = partnerRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
+    this.appCrmService = appCrmService;
     this.userService = userService;
     this.saleOrderLineService = saleOrderLineService;
   }
@@ -180,6 +183,12 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
       this.saveSaleOrderPDFAsAttachment(saleOrder);
     }
+
+    Opportunity opportunity = saleOrder.getOpportunity();
+    if (opportunity != null) {
+      opportunity.setOpportunityStatus(appCrmService.getSalesPropositionStatus());
+    }
+
     saleOrderRepo.save(saleOrder);
   }
 
@@ -204,9 +213,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
     if (appSaleService.getAppSale().getCloseOpportunityUponSaleOrderConfirmation()) {
       Opportunity opportunity = saleOrder.getOpportunity();
-
       if (opportunity != null) {
-        opportunity.setSalesStageSelect(OpportunityRepository.SALES_STAGE_CLOSED_WON);
+        opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
       }
     }
 

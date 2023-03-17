@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -174,6 +174,12 @@ public final class SupplychainExceptionMessage {
       "Could not find MRP with sequence %s." /*)*/;
 
   public static final String MRP_SCHEDULER_SEQ_MISSING = /*$$(*/ "MRP sequence is missing." /*)*/;
+
+  public static final String MRP_GENERATE_PROPOSAL_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least one line to generate a proposal." /*)*/;
+
+  public static final String MRP_GENERATE_PROPOSAL_NO_POSSIBLE_LINE = /*$$(*/
+      "No proposal can be generated from these lines." /*)*/;
 
   //  Mrp Forecast
   public static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
@@ -352,4 +358,21 @@ public final class SupplychainExceptionMessage {
 
   public static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
+
+  public static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
+      "You must select at least one line to validate" /*)*/;
+
+  public static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
+      "No partner account was found for company %s." /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER = /*$$(*/
+      "The invoiced partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER = /*$$(*/
+      "The delivered partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders" /*)*/;
+
+  public static final String MISSING_FORECASTED_INV_CUST_ACCOUNT = /*$$(*/
+      "Please select a forecasted invoice customer account in the accounting batch" /*)*/;
+  public static final String MISSING_FORECASTED_INV_SUPP_ACCOUNT = /*$$(*/
+      "Please select a forecasted invoice supplier account in the accounting batch" /*)*/;
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity sequential="true" name="Invoice" lang="java"
+  <entity sequential="true" name="Invoice"
     implements="com.axelor.apps.base.interfaces.PricedOrder">
 
     <!-- NOT DISPLAY -->
@@ -141,6 +141,7 @@
     <string name="specificNotes" title="Specific notes" large="true"/>
     <many-to-one name="printedPDF" ref="com.axelor.meta.db.MetaFile"/>
     <boolean name="groupProductsOnPrintings" title="Group products on printings"/>
+    <string name="invoiceProductStatement" title="Print statement for products"/>
 
     <!-- Totals & Status -->
 
@@ -179,11 +180,11 @@
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"
       default="false"/>
     <many-to-one name="invoiceMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
     <boolean name="invoiceAutomaticMailOnValidate" title="Send email on invoice validate"
       default="false"/>
     <many-to-one name="invoiceMessageTemplateOnValidate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
 
     <many-to-many name="advancePaymentInvoiceSet"
       ref="com.axelor.apps.account.db.Invoice" title="Advance payments"/>
