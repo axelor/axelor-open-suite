@@ -74,7 +74,8 @@
 
     <many-to-one ref="com.axelor.apps.account.db.FECImport" name="fecImport"
       title="FEC Import"/>
-    <boolean name="isMassEntry" title="Mass entry" default="false"/>
+    <integer name="massEntryStatusSelect" title="Mass entry status" default="0"
+      selection="iaccount.move.mass.entry.status.select"/>
     <string name="massEntryErrors"/>
     <unique-constraint columns="reference,company"/>
 
@@ -111,6 +112,11 @@
 		public static final int FUNCTIONAL_ORIGIN_FIXED_ASSET = 7;
 		public static final int FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER = 8;
 		public static final int FUNCTIONAL_ORIGIN_IRRECOVERABLE = 9;
+
+		// MASS ENTRY STATUS
+		public static final int MASS_ENTRY_STATUS_NULL = 0;
+		public static final int MASS_ENTRY_STATUS_ON_GOING = 1;
+		public static final int MASS_ENTRY_STATUS_CLOSED = 2;
 	]]></extra-code>
 
     <track>

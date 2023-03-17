@@ -28,12 +28,15 @@ import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MassEntryMoveController {
@@ -135,9 +138,17 @@ public class MassEntryMoveController {
           response.setAttr("validateMassEntryMoves", "hidden", true);
           response.setAttr("showMassEntryMoves", "hidden", false);
         } else {
-          // Return idMoveList
-          System.out.println(idMoveList);
           response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
+          if (!CollectionUtils.isEmpty(idMoveList)) {
+            response.setView(
+                ActionView.define(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_3))
+                    .model("com.axelor.apps.account.db.Move")
+                    .add("grid", "move-grid")
+                    .add("form", "move-form")
+                    .param("forceEdit", "true")
+                    .domain("self.id in (" + Joiner.on(",").join(idMoveList) + ")")
+                    .map());
+          }
         }
       }
     } catch (Exception e) {

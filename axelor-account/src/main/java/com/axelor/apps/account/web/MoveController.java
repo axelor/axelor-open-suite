@@ -910,11 +910,11 @@ public class MoveController {
     }
   }
 
-  public void verifyIsMassEntryMove(ActionRequest request, ActionResponse response) {
+  public void verifyMassEntryStatusSelect(ActionRequest request, ActionResponse response) {
     try {
       String viewName = request.getContext().get("_viewName").toString();
       if ("move-mass-entry-form".equals(viewName)) {
-        response.setValue("isMassEntry", true);
+        response.setValue("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -925,7 +925,7 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       if (move != null
-          && move.getIsMassEntry()
+          && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
           && move.getCompanyBankDetails() == null
           && move.getJournal() != null
           && (move.getJournal().getJournalType().getTechnicalTypeSelect()

@@ -65,6 +65,7 @@
     <field name="tradingName"
       if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
       form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
+    <field name="massEntryStatusSelect" title="Mass entry status"/>
     <field name="createdOn" title="Created on"/>
     <field name="createdBy" title="Created by"/>
   </grid>
@@ -643,9 +644,10 @@
     <action name="default-move-record"/>
     <action name="default-move-record-currency"/>
     <action name="action-move-record-journal"/>
-    <action name="action-move-method-verify-is-mass-entry"/>
+    <action name="action-move-method-verify-mass-entry-status-select"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
-    <action name="action-move-attrs-set-hidden-and-required-fields" if="isMassEntry"/>
+    <action name="action-move-attrs-set-hidden-and-required-fields"
+      if="massEntryStatusSelect != 0"/>
     <action name="action-move-method-get-period"/>
     <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
@@ -668,7 +670,8 @@
     <action name="action-move-attrs-set-company-currency-code-iso"/>
     <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
-    <action name="action-move-attrs-set-hidden-and-required-fields" if="isMassEntry"/>
+    <action name="action-move-attrs-set-hidden-and-required-fields"
+      if="massEntryStatusSelect != 0"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-account-move-method-compute-totals"/>
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
@@ -747,7 +750,8 @@
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="default-move-record-currency"/>
     <action name="action-move-method-verify-company-bank-details"/>
-    <action name="action-move-attrs-set-hidden-mass-entry-buttons" if="isMassEntry"/>
+    <action name="action-move-attrs-set-hidden-mass-entry-buttons"
+      if="massEntryStatusSelect != 0"/>
   </action-group>
 
   <action-group name="action-group-move-date-onchange">
@@ -772,14 +776,16 @@
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-attrs-set-functional-origin-select-domain"/>
     <action name="action-move-attrs-set-functional-origin-select"/>
-    <action name="action-move-attrs-set-hidden-and-required-fields" if="isMassEntry"/>
+    <action name="action-move-attrs-set-hidden-and-required-fields"
+      if="massEntryStatusSelect != 0"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-move-method-journal-on-change"/>
     <action name="action-move-record-set-payment-mode"/>
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
     <action name="action-move-method-verify-company-bank-details"/>
-    <action name="action-move-attrs-set-hidden-mass-entry-buttons" if="isMassEntry"/>
+    <action name="action-move-attrs-set-hidden-mass-entry-buttons"
+      if="massEntryStatusSelect != 0"/>
   </action-group>
 
   <action-group name="action-move-group-partner-onchange">
@@ -798,7 +804,7 @@
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action
       name="action-move-line-mass-entry-method-verify-fields-and-generate-taxline-and-counterpart"
-      if="isMassEntry"/>
+      if="massEntryStatusSelect != 0"/>
   </action-group>
 
   <action-group name="action-move-group-payment-condition-onchange">
@@ -1286,8 +1292,9 @@
     <attribute for="moveLineList.partner" name="hidden" expr="partner != null"/>
   </action-attrs>
 
-  <action-method name="action-move-method-verify-is-mass-entry">
-    <call class="com.axelor.apps.account.web.MoveController" method="verifyIsMassEntryMove"/>
+  <action-method name="action-move-method-verify-mass-entry-status-select">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="verifyMassEntryStatusSelect"/>
   </action-method>
 
   <action-method name="action-move-method-verify-company-bank-details">
