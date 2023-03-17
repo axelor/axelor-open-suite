@@ -1,0 +1,3 @@
+---
+title: "FEC import: fix error occurring when dates were empty in the import file"
+type: fix
