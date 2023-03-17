@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.gdpr.web;
 
+import com.axelor.apps.gdpr.db.GDPRRequest;
 import com.axelor.apps.gdpr.service.GdprSearchEngineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -81,12 +82,19 @@ public class GdprSearchEngineController {
   public void fillReferenceWithData(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
+
+      // in case of duplicate
+      GDPRRequest gdprRequest = context.asType(GDPRRequest.class);
+      if (gdprRequest != null && gdprRequest.getModelId() != 0) {
+        return;
+      }
       List<Map<String, Object>> resultList =
           (List<Map<String, Object>>) context.get("__searchResults");
       Map<String, Object> selectedObject =
           Beans.get(GdprSearchEngineService.class).checkSelectedObject(resultList);
       response.setValue("modelSelect", selectedObject.get("typeClass").toString());
       response.setValue("modelId", selectedObject.get("objectId"));
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
