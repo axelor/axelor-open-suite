@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+
+  <grid name="research-parameter-config-grid" title="Search configurations"
+    model="com.axelor.apps.base.db.ResearchParameterConfig">
+    <field name="model"/>
+  </grid>
+
+  <form name="research-parameter-config-form" title="Search configuration"
+    model="com.axelor.apps.base.db.ResearchParameterConfig">
+    <panel name="mainPanel">
+      <field name="model"/>
+      <field name="metaModel" hidden="true" readonly="true"/>
+      <help>
+        <![CDATA[
+          <br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>
+        ]]>
+      </help>
+
+      <field name="researchParameterList" colSpan="12" showTitle="false">
+        <editor colSpan="12">
+          <field name="researchPrimaryKey" colSpan="4"/>
+          <field name="query" colSpan="4"/>
+          <field name="mapping" colSpan="4"/>
+        </editor>
+      </field>
+    </panel>
+  </form>
+
+</object-views>

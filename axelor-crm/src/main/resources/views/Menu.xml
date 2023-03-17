@@ -442,4 +442,33 @@
     <view type="form" name="agency-form"/>
   </action-view>
 
+  <menuitem name="crm-search" parent="crm-root" title="Search" order="60" icon="fa-search"/>
+
+  <menuitem name="crm-search-request" parent="crm-search" title="Request"
+    action="crm.root.crm.search.request" order="1"/>
+  <action-view name="crm.root.crm.search.request" title="Requests"
+    model="com.axelor.apps.base.db.ResearchRequest">
+    <view type="grid" name="research-request-grid"/>
+    <view type="form" name="research-request-form"/>
+  </action-view>
+
+  <menuitem name="crm-search-config" parent="crm-search" title="Config" order="2"/>
+
+  <menuitem name="crm-search-primary-key" parent="crm-search-config" title="Primary key"
+    action="crm.root.crm.search.config.primary.key" order="1"/>
+  <action-view name="crm.root.crm.search.config.primary.key" title="Primary keys"
+    model="com.axelor.apps.base.db.ResearchPrimaryKey">
+    <view type="grid" name="research-primary-key-grid"/>
+    <view type="form" name="research-primary-key-from"/>
+  </action-view>
+
+  <menuitem name="crm-search-mapping" parent="crm-search-config" title="Mapping"
+    action="crm.root.crm.search.config.mapping" order="2"/>
+  <action-view name="crm.root.crm.search.config.mapping" title="Mappings"
+    model="com.axelor.apps.base.db.ResearchParameterConfig">
+    <view type="grid" name="research-parameter-config-grid"/>
+    <view type="form" name="research-parameter-config-form"/>
+  </action-view>
+
+
 </object-views>

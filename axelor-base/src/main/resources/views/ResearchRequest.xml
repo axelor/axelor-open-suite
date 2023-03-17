@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="research-request-grid" title="Requests" canNew="true"
+    model="com.axelor.apps.base.db.ResearchRequest">
+    <field name="name" title="Name"/>
+    <field name="searchDate" title="Date"/>
+    <field name="models" title="Models to search"/>
+  </grid>
+
+  <form name="research-request-form" title="Request" canNew="true"
+    model="com.axelor.apps.base.db.ResearchRequest">
+    <panel name="requestPanel" title="Request" colSpan="12">
+      <field name="name" colSpan="3" required="true"/>
+      <field name="models" required="true" widget="MultiSelect" colSpan="3"/>
+      <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12">
+        <field name="research1" canEdit="false" canNew="false" title="Research 1" colSpan="2"/>
+        <field name="research1Value" title="Value 1" colSpan="4"/>
+        <field name="research2" canEdit="false" canNew="false" title="Research 2" colSpan="2"/>
+        <field name="research2Value" title="Value 2" colSpan="4"/>
+        <field name="research3" canEdit="false" canNew="false" title="Research 3" colSpan="2"/>
+        <field name="research3Value" title="Value 3" colSpan="4"/>
+        <field name="research4" canEdit="false" canNew="false" title="Research 4" colSpan="2"/>
+        <field name="research4Value" title="Value 4" colSpan="4"/>
+        <button name="searchBtn" title="Search" icon="fa-search" onClick="action-base-search"
+          colOffset="8" colSpan="4"/>
+        <panel-related name="researchResultsPanel" title="Results"
+          field="researchResultLineList" colSpan="12" grid-view="research-result-line-grid"
+          form-view="research-result-line-form" canNew="false" canView="false" canRemove="false"
+          canEdit="false">
+        </panel-related>
+      </panel>
+    </panel>
+    <panel name="datePanel" sidebar="true">
+      <field name="searchDate" readonly="true" colSpan="6"/>
+    </panel>
+
+  </form>
+
+  <action-method name="action-base-search">
+    <call class="com.axelor.apps.base.web.SearchRequestController" method="searchObject"/>
+  </action-method>
+
+</object-views>

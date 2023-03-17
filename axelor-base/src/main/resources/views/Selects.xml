@@ -718,4 +718,8 @@
     <option value="5">EXPORT</option>
   </selection>
 
+  <selection name="research-model-selection">
+    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+  </selection>
+
 </object-views>

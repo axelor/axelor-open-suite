@@ -1,1 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ResearchParameter" lang="java">
+
+    <many-to-one name="researchParameterConfig"
+      ref="com.axelor.apps.base.db.ResearchParameterConfig" required="true"
+      title="Search configuration"/>
+    <many-to-one name="researchPrimaryKey"
+      ref="com.axelor.apps.base.db.ResearchPrimaryKey"/>
+    <string name="query" required="true" help="JPQL filter to add to the query" title="Query"/>
+    <string name="mapping" required="true"
+      help="Field displayed in the result of the research" title="Mapping"/>
+    <unique-constraint columns="researchPrimaryKey,researchParameterConfig"/>
+
+  </entity>
+
+
+</domain-models>
