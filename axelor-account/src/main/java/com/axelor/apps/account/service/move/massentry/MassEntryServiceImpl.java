@@ -40,6 +40,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -111,26 +112,30 @@ public class MassEntryServiceImpl implements MassEntryService {
 
   public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
       List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry) {
-    for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
-      if (moveLine.getTemporaryMoveNumber().equals(moveLineMassEntry.getTemporaryMoveNumber())) {
-        moveLineMassEntry.setPartner(moveLine.getPartner());
-        moveLineMassEntry.setPartnerId(moveLine.getPartnerId());
-        moveLineMassEntry.setPartnerSeq(moveLine.getPartnerSeq());
-        moveLineMassEntry.setPartnerFullName(moveLine.getPartnerFullName());
-        moveLineMassEntry.setDate(moveLine.getDate());
-        moveLineMassEntry.setDueDate(moveLine.getDueDate());
-        moveLineMassEntry.setOriginDate(moveLine.getOriginDate());
-        moveLineMassEntry.setOrigin(moveLine.getOrigin());
-        moveLineMassEntry.setMoveStatusSelect(moveLine.getMoveStatusSelect());
-        moveLineMassEntry.setInterbankCodeLine(moveLine.getInterbankCodeLine());
-        moveLineMassEntry.setMoveDescription(moveLine.getMoveDescription());
-        moveLineMassEntry.setDescription(moveLine.getMoveDescription());
-        moveLineMassEntry.setExportedDirectDebitOk(moveLine.getExportedDirectDebitOk());
-        moveLineMassEntry.setMovePaymentCondition(moveLine.getMovePaymentCondition());
-        moveLineMassEntry.setMovePaymentMode(moveLine.getMovePaymentMode());
-        moveLineMassEntry.setMovePartnerBankDetails(moveLine.getMovePartnerBankDetails());
-        break;
+    if (ObjectUtils.notEmpty(moveLineMassEntryList)) {
+      for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
+        if (moveLine.getTemporaryMoveNumber().equals(moveLineMassEntry.getTemporaryMoveNumber())) {
+          moveLineMassEntry.setPartner(moveLine.getPartner());
+          moveLineMassEntry.setPartnerId(moveLine.getPartnerId());
+          moveLineMassEntry.setPartnerSeq(moveLine.getPartnerSeq());
+          moveLineMassEntry.setPartnerFullName(moveLine.getPartnerFullName());
+          moveLineMassEntry.setDate(moveLine.getDate());
+          moveLineMassEntry.setDueDate(moveLine.getDueDate());
+          moveLineMassEntry.setOriginDate(moveLine.getOriginDate());
+          moveLineMassEntry.setOrigin(moveLine.getOrigin());
+          moveLineMassEntry.setMoveStatusSelect(moveLine.getMoveStatusSelect());
+          moveLineMassEntry.setInterbankCodeLine(moveLine.getInterbankCodeLine());
+          moveLineMassEntry.setMoveDescription(moveLine.getMoveDescription());
+          moveLineMassEntry.setDescription(moveLine.getMoveDescription());
+          moveLineMassEntry.setExportedDirectDebitOk(moveLine.getExportedDirectDebitOk());
+          moveLineMassEntry.setMovePaymentCondition(moveLine.getMovePaymentCondition());
+          moveLineMassEntry.setMovePaymentMode(moveLine.getMovePaymentMode());
+          moveLineMassEntry.setMovePartnerBankDetails(moveLine.getMovePartnerBankDetails());
+          break;
+        }
       }
+    } else {
+      moveLineMassEntry.setDate(LocalDate.now());
     }
     return moveLineMassEntry;
   }

@@ -41,12 +41,6 @@
       requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
-    <field name="debit"
-      onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
-      width="90"/>
-    <field name="credit"
-      onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
-      width="90"/>
     <field name="currencyRate"
       onChange="action-move-line-group-currency-amount-rate-onchange,action-move-line-mass-entry-record-set-is-edited"
       readonlyIf="!isOtherCurrency">
@@ -55,6 +49,12 @@
     </field>
     <field name="currencyAmount"
       onChange="action-move-line-group-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"/>
+    <field name="debit"
+      onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
+      width="90"/>
+    <field name="credit"
+      onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
+      width="90"/>
     <field name="description"
       requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
     <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
