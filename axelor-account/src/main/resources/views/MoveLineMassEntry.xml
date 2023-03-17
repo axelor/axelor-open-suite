@@ -51,10 +51,10 @@
       onChange="action-move-line-group-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"/>
     <field name="debit"
       onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
-      width="90"/>
+      width="90" readonlyIf="isOtherCurrency"/>
     <field name="credit"
       onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
-      width="90"/>
+      width="90" readonlyIf="isOtherCurrency"/>
     <field name="description"
       requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
     <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"

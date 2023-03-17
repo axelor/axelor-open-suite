@@ -136,6 +136,7 @@ public class MassEntryServiceImpl implements MassEntryService {
       }
     } else {
       moveLineMassEntry.setDate(LocalDate.now());
+      moveLineMassEntry.setOriginDate(LocalDate.now());
     }
     return moveLineMassEntry;
   }
