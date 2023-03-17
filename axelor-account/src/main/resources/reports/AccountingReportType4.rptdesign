@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1797,7 +1797,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["&lt;30days"] + dataSetRow["120&lt;days&lt;150"] + dataSetRow["150&lt;days&lt;180"] +dataSetRow["180&lt;days"] +dataSetRow["30&lt;days&lt;60"] +dataSetRow["60&lt;days&lt;90"] +dataSetRow["90&lt;days&lt;120"]</expression>
+                                        <expression name="value" type="javascript">dataSetRow["nonDue"]+dataSetRow["&lt;30days"] + dataSetRow["120&lt;days&lt;150"] + dataSetRow["150&lt;days&lt;180"] +dataSetRow["180&lt;days"] +dataSetRow["30&lt;days&lt;60"] +dataSetRow["60&lt;days&lt;90"] +dataSetRow["90&lt;days&lt;120"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -3205,7 +3205,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <data id="6450">
                                             <property name="fontSize">8pt</property>
                                             <structure name="numberFormat">
-                                                <property name="category">Unformatted</property>
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">###,##0.00</property>
                                             </structure>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">SumNonDueByInvoiceName</property>
@@ -3220,6 +3221,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightWidth">thin</property>
                                         <data id="6435">
                                             <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">###,##0.00</property>
+                                            </structure>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">Sum&lt;30daysByInvoiceName</property>
                                         </data>
@@ -3231,8 +3236,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6436">
+                                        <data id="6452">
                                             <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">###,##0.00</property>
+                                            </structure>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">Sum30&lt;days&lt;60ByInvoiceName</property>
                                         </data>
@@ -3246,6 +3255,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightWidth">thin</property>
                                         <data id="6437">
                                             <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">###,##0.00</property>
+                                            </structure>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">Sum60&lt;days&lt;90ByInvoiceName</property>
                                         </data>
@@ -3257,8 +3270,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6438">
+                                        <data id="6453">
                                             <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">###,##0.00</property>
+                                            </structure>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">Sum90&lt;days&lt;120ByInvoiceName</property>
                                         </data>
@@ -3270,8 +3287,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6439">
+                                        <data id="6454">
                                             <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">###,##0.00</property>
+                                            </structure>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">Sum120&lt;days&lt;150ByInvoiceName</property>
                                         </data>
@@ -3285,6 +3306,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightWidth">thin</property>
                                         <data id="6440">
                                             <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">###,##0.00</property>
+                                            </structure>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">Sum150&lt;days&lt;180ByInvoiceName</property>
                                         </data>
@@ -3298,6 +3323,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightWidth">thin</property>
                                         <data id="6441">
                                             <property name="fontSize">8pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">###,##0.00</property>
+                                            </structure>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">Sum180&lt;daysByInvoiceName</property>
                                         </data>
@@ -3414,6 +3443,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <data id="6451">
                                         <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">SumNonDue</property>
                                     </data>
