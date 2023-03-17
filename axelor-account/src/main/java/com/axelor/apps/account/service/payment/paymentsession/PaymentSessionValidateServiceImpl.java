@@ -297,7 +297,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return false;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected InvoicePayment generatePendingPaymentFromInvoiceTerm(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getInvoice() == null) {
@@ -637,7 +637,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         isGlobal);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected InvoiceTerm releaseInvoiceTerm(InvoiceTerm invoiceTerm) {
     invoiceTerm.setPaymentSession(null);
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
@@ -645,7 +645,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return invoiceTermRepo.save(invoiceTerm);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updateStatus(PaymentSession paymentSession) {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
@@ -712,7 +712,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return null;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updatePaymentDescription(Move move) {
     for (InvoicePayment invoicePayment :
         invoicePaymentRepo.all().filter("self.move = ?", move).fetch()) {

@@ -188,7 +188,7 @@ public class BankReconciliationValidateService {
     bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void validateMultipleBankReconciles(
       BankReconciliation bankReconciliation,
       BankReconciliationLine bankReconciliationLine,

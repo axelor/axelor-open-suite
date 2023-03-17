@@ -366,7 +366,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void setAmountRemainingReconciliableMoveLines(Context context) {
     Long accountId = Long.valueOf(context.get("_accountId").toString());
     String startDate = (String) context.get("startDate");
