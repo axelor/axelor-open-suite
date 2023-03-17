@@ -2,7 +2,7 @@
 name: Timesheet Management
 code: timesheet
 typeSelect: standard
-installOrder: 14
+installOrder: 2150
 description: |
    Timesheet Management
 image: app-timesheet.png
