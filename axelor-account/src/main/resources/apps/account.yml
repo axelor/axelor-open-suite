@@ -2,7 +2,7 @@
 name: Accounting
 code: account
 typeSelect: standard
-installOrder: 8
+installOrder: 2090
 description: |
    Accounting configuration
 image: app-account.png

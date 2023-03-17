@@ -28,6 +28,7 @@ import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppPurchase;
 import com.axelor.studio.db.repo.AppPurchaseRepository;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -48,10 +49,11 @@ public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPur
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService,
       AppPurchaseRepository appPurchaseRepo,
       CompanyRepository companyRepo,
       PurchaseConfigRepository purchaseConfigRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.appPurchaseRepo = appPurchaseRepo;
     this.companyRepo = companyRepo;
     this.purchaseConfigRepo = purchaseConfigRepo;

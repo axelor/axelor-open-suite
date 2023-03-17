@@ -36,6 +36,7 @@ import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.AppSettingsMessageService;
 import com.axelor.message.service.MessageServiceImpl;
 import com.axelor.message.service.SendMailQueueService;
 import com.axelor.meta.db.MetaFile;
@@ -75,9 +76,14 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
       SendMailQueueService sendMailQueueService,
+      AppSettingsMessageService appSettingsMessageService,
       UserService userService,
       AppBaseService appBaseService) {
-    super(metaAttachmentRepository, messageRepository, sendMailQueueService);
+    super(
+        metaAttachmentRepository,
+        messageRepository,
+        sendMailQueueService,
+        appSettingsMessageService);
     this.userService = userService;
     this.appBaseService = appBaseService;
   }
