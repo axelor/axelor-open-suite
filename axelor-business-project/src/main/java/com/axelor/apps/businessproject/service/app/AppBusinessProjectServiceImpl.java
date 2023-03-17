@@ -24,6 +24,7 @@ import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -39,8 +40,9 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService,
       AppBusinessProjectRepository appBusinessProjectRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.appBusinessProjectRepo = appBusinessProjectRepo;
   }
 
