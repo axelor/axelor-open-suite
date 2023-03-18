@@ -355,9 +355,15 @@ public class MassEntryServiceImpl implements MassEntryService {
       }
 
       // Pass the move in STATUS_DAYBOOK
-      moveValidateService.accounting(newMove);
+      if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)
+          && newMove.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+        moveValidateService.accounting(newMove);
+      }
+
       // Pass the move in STATUS_ACCOUNTED
-      moveValidateService.accounting(newMove);
+      if (newMove.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
+        moveValidateService.accounting(newMove);
+      }
     }
 
     return newMove.getId();

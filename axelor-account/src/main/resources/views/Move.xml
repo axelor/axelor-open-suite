@@ -370,7 +370,7 @@
   <form name="move-mass-entry-form" title="Mass entry move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
     onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
-    onSave="action-account-move-group-onsave">
+    onSave="action-account-move-group-onsave" readonlyIf="massEntryStatusSelect == 2">
     <toolbar>
       <button name="controlMassEntryMoves" title="Control moves consistency"
         onClick="action-move-method-control-mass-entry-moves" colSpan="12" hidden="false"/>
@@ -404,6 +404,7 @@
             if="createdBy != null"/>
           <field name="updatedBy" title="Updated by" readonly="true" colSpan="3"
             if="updatedBy != null"/>
+          <field name="massEntryStatusSelect" readonly="true"/>
         </panel>
       </panel>
 
