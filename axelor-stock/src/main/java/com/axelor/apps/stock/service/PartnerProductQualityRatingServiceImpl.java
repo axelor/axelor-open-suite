@@ -77,8 +77,8 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void undoCalculation(StockMove stockMove) throws AxelorException {
+  @Transactional
+  public void undoCalculation(StockMove stockMove) {
     Partner partner = stockMove.getPartner();
 
     if (partner == null || !partner.getIsSupplier()) {
