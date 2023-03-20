@@ -28,6 +28,7 @@ import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppSaleRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -48,10 +49,11 @@ public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleSer
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsService,
       AppSaleRepository appSaleRepo,
       CompanyRepository companyRepo,
       SaleConfigRepository saleConfigRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsService);
     this.appSaleRepo = appSaleRepo;
     this.companyRepo = companyRepo;
     this.saleConfigRepo = saleConfigRepo;

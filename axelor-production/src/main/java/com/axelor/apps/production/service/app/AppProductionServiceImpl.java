@@ -29,6 +29,7 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppProduction;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -44,8 +45,9 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo);
+      MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsService) {
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsService);
   }
 
   @Override

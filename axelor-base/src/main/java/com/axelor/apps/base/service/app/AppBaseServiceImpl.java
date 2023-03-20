@@ -34,6 +34,7 @@ import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.axelor.utils.date.DateTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -55,8 +56,9 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo);
+      MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsService) {
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsService);
   }
 
   @Override
