@@ -74,7 +74,7 @@ public abstract class AccountingReportValueAbstractService {
     valuesMapByLine.get(lineCode).put(columnCode, null);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void createReportValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,

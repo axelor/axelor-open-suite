@@ -2,7 +2,7 @@
 name: Marketing Management
 code: marketing
 typeSelect: standard
-installOrder: 23
+installOrder: 2240
 description: |
    Marketing Management Configuration
 image: app-marketing.png

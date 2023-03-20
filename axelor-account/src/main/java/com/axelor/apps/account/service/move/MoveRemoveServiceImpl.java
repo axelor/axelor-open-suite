@@ -189,7 +189,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Move archiveMove(Move move) {
     move.setArchived(true);
     for (MoveLine moveLine : move.getMoveLineList()) {
@@ -226,8 +226,8 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void deleteMove(Move move) throws Exception {
+  @Transactional
+  public void deleteMove(Move move) {
     moveRepo.remove(move);
   }
 }

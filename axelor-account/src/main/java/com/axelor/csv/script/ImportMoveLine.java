@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.common.StringUtils;
@@ -50,8 +49,8 @@ public class ImportMoveLine {
     this.partnerRepository = partnerRepository;
   }
 
-  @Transactional(rollbackOn = Exception.class)
-  public Object importMoveLine(Object bean, Map<String, Object> values) throws AxelorException {
+  @Transactional
+  public Object importMoveLine(Object bean, Map<String, Object> values) {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
 

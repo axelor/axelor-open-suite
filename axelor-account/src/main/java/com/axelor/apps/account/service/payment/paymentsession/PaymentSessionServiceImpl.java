@@ -207,7 +207,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void selectAll(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, false).fetch();
     invoiceTermService.toggle(invoiceTermList, true);
@@ -215,7 +215,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, true).fetch();
     invoiceTermService.toggle(invoiceTermList, false);

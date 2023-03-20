@@ -2,7 +2,7 @@
 name: Portal
 code: portal
 typeSelect: standard
-installOrder: 27
+installOrder: 2270
 description: |
    Portal configuration
 image: app-portal.png
