@@ -325,7 +325,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
       if (paymentSession != null) {
         Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
-        return bankOrderRepo.find(bankOrder.getId());
+        bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
     }
 
