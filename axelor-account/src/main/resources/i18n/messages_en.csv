@@ -1141,6 +1141,8 @@
 "Compatible Account Types",,,
 "Compatible Accounts",,,
 "Compatible partner",,,
+"Compensation",,,
+"Compensation is not allowed on payment session accounted by invoice term, please unselect them",,,
 "Complementary export",,,
 "Computation method",,,
 "Compute amounts",,,

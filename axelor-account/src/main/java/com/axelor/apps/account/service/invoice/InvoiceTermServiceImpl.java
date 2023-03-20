@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.Tax;
@@ -38,6 +39,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -76,6 +78,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 @RequestScoped
 public class InvoiceTermServiceImpl implements InvoiceTermService {
@@ -1072,72 +1075,55 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void reconcileAndUpdateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund)
-      throws AxelorException {
-    BigDecimal reconciledAmount =
-        invoiceTermFromInvoice.getAmountRemaining().min(invoiceTermFromRefund.getAmountRemaining());
-
-    MoveLine creditMoveLine = null;
-    MoveLine debitMoveLine = null;
-    if (invoiceTermFromInvoice.getMoveLine().getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
-      creditMoveLine = invoiceTermFromRefund.getMoveLine();
-      debitMoveLine = invoiceTermFromInvoice.getMoveLine();
-    } else if (invoiceTermFromInvoice.getMoveLine().getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
-      creditMoveLine = invoiceTermFromInvoice.getMoveLine();
-      debitMoveLine = invoiceTermFromRefund.getMoveLine();
-    }
-    Reconcile invoiceTermsReconcile =
-        reconcileService.createReconcile(debitMoveLine, creditMoveLine, reconciledAmount, true);
-
-    reconcileService.confirmReconcile(invoiceTermsReconcile, false, false);
-
-    updateInvoiceTermsAmounts(
-        invoiceTermFromInvoice,
-        reconciledAmount,
-        invoiceTermsReconcile,
-        invoiceTermFromRefund.getMoveLine().getMove());
-    updateInvoiceTermsAmounts(
-        invoiceTermFromRefund,
-        reconciledAmount,
-        invoiceTermsReconcile,
-        invoiceTermFromInvoice.getMoveLine().getMove());
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
-      List<InvoiceTerm> invoiceTermList) throws AxelorException {
+      List<InvoiceTerm> invoiceTermList,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
+      throws AxelorException {
     List<Partner> partnerList = getPartnersFromInvoiceTermList(invoiceTermList);
 
     for (Partner partner : partnerList) {
 
       List<InvoiceTerm> invoiceTermFromInvoiceList =
-          getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(invoiceTermList, partner, true);
+          getInvoiceTermsInvoiceSortedByDueDateAndByPartner(invoiceTermList, partner);
       List<InvoiceTerm> invoiceTermFromRefundList =
-          getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(
-              invoiceTermList, partner, false);
+          getInvoiceTermsRefundSortedByDueDateAndByPartner(invoiceTermList, partner);
       int invoiceCounter = 0;
       int refundCounter = 0;
+      BigDecimal reconciledAmount = BigDecimal.ZERO;
+      BigDecimal availableInvoiceAmount = BigDecimal.ZERO;
+      BigDecimal availableRefundAmount = BigDecimal.ZERO;
+
       InvoiceTerm invoiceTermFromInvoice = null;
       InvoiceTerm invoiceTermFromRefund = null;
+
       while (!ObjectUtils.isEmpty(invoiceTermFromRefundList)
           && !ObjectUtils.isEmpty(invoiceTermFromInvoiceList)
           && invoiceCounter < invoiceTermFromInvoiceList.size()
           && refundCounter < invoiceTermFromRefundList.size()) {
         invoiceTermFromInvoice = invoiceTermFromInvoiceList.get(invoiceCounter);
         invoiceTermFromRefund = invoiceTermFromRefundList.get(refundCounter);
-        this.reconcileAndUpdateInvoiceTermsAmounts(invoiceTermFromInvoice, invoiceTermFromRefund);
-        if (invoiceTermFromInvoice.getAmountRemaining().signum() == 0) {
-          invoiceTermFromInvoice.setIsPaid(true);
-          invoiceCounter++;
+
+        if ((BigDecimal.ZERO).compareTo(availableInvoiceAmount) == 0) {
+          availableInvoiceAmount = invoiceTermFromInvoice.getAmountRemaining();
         }
-        if (invoiceTermFromRefund.getAmountRemaining().signum() == 0) {
+        if ((BigDecimal.ZERO).compareTo(availableRefundAmount) == 0) {
+          availableRefundAmount = invoiceTermFromRefund.getAmountRemaining();
+        }
+
+        reconciledAmount = availableInvoiceAmount.min(availableRefundAmount);
+
+        if (availableInvoiceAmount.subtract(reconciledAmount).signum() == 0) {
+          invoiceTermLinkWithRefundList.add(
+              Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
+          invoiceCounter++;
+        } else if (availableRefundAmount.subtract(reconciledAmount).signum() == 0) {
+          invoiceTermLinkWithRefundList.add(
+              Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
           invoiceTermFromRefund.setIsPaid(true);
           refundCounter++;
         }
+        availableInvoiceAmount = availableInvoiceAmount.subtract(reconciledAmount);
+        availableRefundAmount = availableRefundAmount.subtract(reconciledAmount);
       }
     }
     return invoiceTermList;
@@ -1150,20 +1136,32 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         .collect(Collectors.toList());
   }
 
-  protected List<InvoiceTerm> getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(
-      List<InvoiceTerm> invoiceTermList, Partner partner, boolean isInvoice) {
+  protected List<InvoiceTerm> getInvoiceTermsInvoiceSortedByDueDateAndByPartner(
+      List<InvoiceTerm> invoiceTermList, Partner partner) {
     return invoiceTermList.stream()
         .filter(
-            it ->
-                ((it.getAmountPaid().signum() > 0 && isInvoice)
-                        || (it.getAmountPaid().signum() < 0 && !isInvoice))
-                    && it.getMoveLine().getPartner().equals(partner))
+            it -> it.getAmountPaid().signum() > 0 && it.getMoveLine().getPartner().equals(partner))
         .sorted(Comparator.comparing(InvoiceTerm::getDueDate))
         .collect(Collectors.toList());
   }
 
-  protected InvoiceTerm updateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTerm, BigDecimal amount, Reconcile reconcile, Move move)
+  protected List<InvoiceTerm> getInvoiceTermsRefundSortedByDueDateAndByPartner(
+      List<InvoiceTerm> invoiceTermList, Partner partner) {
+    return invoiceTermList.stream()
+        .filter(
+            it -> it.getAmountPaid().signum() < 0 && it.getMoveLine().getPartner().equals(partner))
+        .sorted(Comparator.comparing(InvoiceTerm::getDueDate))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public InvoiceTerm updateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTerm,
+      BigDecimal amount,
+      Reconcile reconcile,
+      Move move,
+      PaymentSession paymentSession,
+      boolean isRefund)
       throws AxelorException {
 
     if (invoiceTerm.getInvoice() != null) {
@@ -1180,7 +1178,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
     }
 
-    invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm);
+    invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm, paymentSession, isRefund);
+
     return invoiceTerm;
   }
 
@@ -1210,16 +1209,45 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return isSignedNegative;
   }
 
-  protected InvoiceTerm updateInvoiceTermsAmountsSessiontPart(InvoiceTerm invoiceTerm) {
+  protected InvoiceTerm updateInvoiceTermsAmountsSessiontPart(
+      InvoiceTerm invoiceTerm, PaymentSession paymentSession, boolean isRefund) {
     boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
 
-    if (isSignedNegative) {
-      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
+    if ((paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
+            && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
+        || (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER
+            && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                == MoveRepository.FUNCTIONAL_ORIGIN_SALE)) {
+      isSignedNegative = !isSignedNegative;
+    }
+
+    BigDecimal paymentAmount = invoiceTerm.getPaymentAmount();
+
+    if (!isRefund) {
+      if (isSignedNegative) {
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
+        paymentAmount = paymentAmount.negate();
+
+      } else {
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+      }
+
+      this.computeAmountPaid(invoiceTerm);
+      invoiceTerm.setPaymentAmount(paymentAmount);
 
     } else {
-      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+      if (isSignedNegative) {
+        invoiceTerm.setPaymentAmount(
+            invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining()).negate());
+
+      } else {
+        invoiceTerm.setPaymentAmount(
+            invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining()));
+      }
+
+      invoiceTerm.setAmountPaid(BigDecimal.ZERO);
     }
-    this.computeAmountPaid(invoiceTerm);
 
     return invoiceTerm;
   }

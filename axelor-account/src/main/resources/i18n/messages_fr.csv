@@ -1141,6 +1141,8 @@
 "Compatible Account Types","Types de comptes compatibles",,
 "Compatible Accounts","Comptes comptables compatibles",,
 "Compatible partner","Tiers compatibles",,
+"Compensation",,,
+"Compensation is not allowed on payment session accounted by invoice term, please unselect them","La compensation n'est pas autorisée sur les sessions de paiement qui comptabilisent par échéances",,
 "Complementary export","Export complémentaire",,
 "Computation method","Méthode de calcul",,
 "Compute amounts","Calculer les montants",,
