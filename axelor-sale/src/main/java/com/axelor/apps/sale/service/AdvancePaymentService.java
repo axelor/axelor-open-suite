@@ -18,10 +18,8 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.sale.db.AdvancePayment;
-import com.google.inject.persist.Transactional;
 
 public interface AdvancePaymentService {
 
-  @Transactional
-  public void cancelAdvancePayment(AdvancePayment advancePayment);
+  void cancelAdvancePayment(AdvancePayment advancePayment);
 }
