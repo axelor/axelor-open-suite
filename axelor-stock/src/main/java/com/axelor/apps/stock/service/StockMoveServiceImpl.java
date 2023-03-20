@@ -1326,7 +1326,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional
-  public void updateProductNetMass(StockMove stockMove) throws AxelorException {
+  public void updateProductNetMass(StockMove stockMove) {
     if (stockMove.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
         if (stockMoveLine.getProduct() != null) {

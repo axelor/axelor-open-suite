@@ -24,14 +24,12 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface StockLocationLineService {
 
-  @Transactional(rollbackOn = {Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
@@ -44,7 +42,6 @@ public interface StockLocationLineService {
       TrackingNumber trackingNumber)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
@@ -64,7 +61,6 @@ public interface StockLocationLineService {
       boolean future)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void updateDetailLocation(
       StockLocation stockLocation,
       Product product,
@@ -102,7 +98,6 @@ public interface StockLocationLineService {
       LocalDate lastFutureStockMoveDate)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
       throws AxelorException;
 
