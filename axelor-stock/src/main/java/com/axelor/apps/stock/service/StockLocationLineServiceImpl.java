@@ -182,18 +182,18 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       } else {
         maxStockRules(product, qty, stockLocationLine, current, future);
       }
-
-      stockLocationLine =
-          this.updateLocation(
-              stockLocationLine,
-              stockMoveLineUnit,
-              product,
-              qty,
-              current,
-              future,
-              isIncrement,
-              lastFutureStockMoveDate);
     }
+
+    stockLocationLine =
+        this.updateLocation(
+            stockLocationLine,
+            stockMoveLineUnit,
+            product,
+            qty,
+            current,
+            future,
+            isIncrement,
+            lastFutureStockMoveDate);
 
     this.checkStockMin(stockLocationLine, false);
 
