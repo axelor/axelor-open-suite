@@ -527,7 +527,8 @@
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-attrs-bank-details-from-partner-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"
-        requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"/>
+        requiredIf="[2,3,9,10].includes(paymentMode.typeSelect)"
+        onChange="action-invoice-method-update-invoice-term-bank-details"/>
       <field name="partnerTaxNbr" readonlyIf="statusSelect != 1"
         hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
@@ -2327,6 +2328,11 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-update-invoice-term-payment-mode">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateInvoiceTermPaymentMode"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-update-invoice-term-bank-details">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateInvoiceTermBankDetails"/>
   </action-method>
 
   <action-method name="action-invoice-method-check-multi-currency">
