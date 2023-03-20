@@ -34,7 +34,6 @@ task buildFront(type: YarnTask) {
     group = 'axelor'
     description = 'Build Front-end'
 
-    outputs.dir('src/main/axelor-react-timesheet/dist')
     inputs.files('src/main/axelor-react-timesheet/package.json', 'src/main/axelor-react-timesheet/yarn.lock')
     inputs.dir('src/main/axelor-react-timesheet/src')
     inputs.dir('src/main/axelor-react-timesheet/public')
@@ -55,16 +54,10 @@ task installFrontDeps(type: YarnTask) {
 task copyWebapp(type: Copy) {
 	destinationDir = file(rootProject.buildDir)
 	into("webapp/hr/timesheet") {
-		from "build/webapp/hr/timesheet"
+		from "src/main/axelor-react-timesheet/build"
 	}
 }
 
-task copyReactWebapp(type: Copy) {
-	from file("src/main/axelor-react-timesheet/build")
-	into file("build/webapp/hr/timesheet")
-	
-	dependsOn buildFront
-}
 
 clean {
     delete "src/main/axelor-react-timesheet/.yarn/cache",
@@ -75,5 +68,13 @@ clean {
         "src/main/axelor-react-timesheet/build"
 }
 
+jar {
+  dependsOn 'buildFront'
+  into('webapp') {
+    from "src/main/axelor-react-timesheet/build"
+    duplicatesStrategy 'exclude'
+  }
+}
+
+
 build.dependsOn copyWebapp
-copyWebapp.dependsOn copyReactWebapp
