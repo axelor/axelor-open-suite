@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -33,7 +32,6 @@ public interface PurchaseOrderService {
 
   PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
   /**
@@ -82,7 +80,6 @@ public interface PurchaseOrderService {
 
   public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  @Transactional
   public Partner validateSupplier(PurchaseOrder purchaseOrder);
 
   public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException;

@@ -50,9 +50,8 @@ public class QualityControlServiceImpl implements QualityControlService {
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void preFillOperations(QualityControl qualityControl, QualityProcess process)
-      throws AxelorException {
+  @Transactional
+  public void preFillOperations(QualityControl qualityControl, QualityProcess process) {
 
     List<ControlPointModel> controlPointModelList = process.getControlPointModelList();
     List<ControlPointModel> optionalControlPointModelList =

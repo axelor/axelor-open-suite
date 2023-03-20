@@ -138,6 +138,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
+  @Transactional
   public Message createMessage(
       String model,
       long id,
@@ -313,7 +314,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Message sendToUser(Message message) {
 
     if (message.getRecipientUser() == null) {
@@ -330,7 +331,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Message sendByMail(Message message) {
 
     log.debug("Sent mail");

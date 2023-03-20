@@ -34,7 +34,6 @@ import wslite.json.JSONException;
 
 public interface MessageService {
 
-  @Transactional
   public Message createMessage(
       String model,
       long id,
@@ -51,7 +50,6 @@ public interface MessageService {
       EmailAccount emailAccount,
       String signature);
 
-  @Transactional(rollbackOn = {Exception.class})
   /**
    * Function is used to create temporary {@link Message}, which will only be send but not be saved.
    * <br>
@@ -91,7 +89,6 @@ public interface MessageService {
       String signature,
       Boolean isTemporaryMessage);
 
-  @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles);
 
   public Set<MetaAttachment> getMetaAttachments(Message message);
@@ -148,13 +145,10 @@ public interface MessageService {
   public Message sendByEmail(Message message, Boolean isTemporaryEmail)
       throws MessagingException, AxelorException;
 
-  @Transactional
   public Message sendToUser(Message message);
 
-  @Transactional(rollbackOn = {Exception.class})
   public Message sendByMail(Message message);
 
-  @Transactional(rollbackOn = {Exception.class})
   public Message sendSMS(Message message) throws AxelorException, IOException, JSONException;
 
   public String printMessage(Message message) throws AxelorException;
