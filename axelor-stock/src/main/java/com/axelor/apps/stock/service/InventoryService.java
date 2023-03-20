@@ -509,7 +509,8 @@ public class InventoryService {
     }
 
     checkMissingStockLocation(inventory.getInventoryLineList());
-    inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
+    inventory.setValidatedOn(
+        appBaseService.getTodayDateTime(inventory.getCompany()).toLocalDateTime());
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
     generateStockMoves(inventory, true);
@@ -592,7 +593,7 @@ public class InventoryService {
         if (realQty != null) {
           stockLocationLine.setLastInventoryRealQty(realQty);
           stockLocationLine.setLastInventoryDateT(
-              inventory.getValidatedOn().atStartOfDay().atZone(ZoneOffset.UTC));
+              inventory.getValidatedOn().atZone(ZoneOffset.UTC));
         }
 
         String rack = realRacks.get(product);
@@ -613,7 +614,7 @@ public class InventoryService {
         if (realQty != null) {
           detailsStockLocationLine.setLastInventoryRealQty(realQty);
           detailsStockLocationLine.setLastInventoryDateT(
-              inventory.getValidatedOn().atStartOfDay().atZone(ZoneOffset.UTC));
+              inventory.getValidatedOn().atZone(ZoneOffset.UTC));
         }
 
         String rack = realRacks.get(product);
@@ -680,7 +681,7 @@ public class InventoryService {
     String inventorySeq = inventory.getInventorySeq();
 
     LocalDate inventoryDate = inventory.getPlannedStartDateT().toLocalDate();
-    LocalDate realDate = inventory.getValidatedOn();
+    LocalDate realDate = inventory.getValidatedOn().toLocalDate();
     StockMove stockMove =
         stockMoveService.createStockMove(
             null,
