@@ -50,7 +50,7 @@ public class ProductCategoryServiceSaleImpl extends ProductCategoryServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateSaleOrderLines(ProductCategory productCategory) throws AxelorException {
     List<ProductCategory> impactedProductCategories =
         fetchImpactedChildrenProductCategories(productCategory);

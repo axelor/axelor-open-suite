@@ -345,7 +345,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void setNewManualId(SaleOrderLine saleOrderLine) {
     saleOrderLine.setManualId(JpaSequence.nextValue("sale.order.line.idSeq"));
   }
