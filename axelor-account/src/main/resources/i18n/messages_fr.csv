@@ -177,7 +177,7 @@
 "%s records(s) updated on %s record(s) selected(s).","%s enregistrement(s) validé(s) sur %s enregistrement(s) sélectionné(s).",,
 "(Debit %s account %s amount %s - Credit %s account %s amount %s)","(Débit %s compte %s montant %s - Crédit %s compte %s montant %s)",,
 "* %s Account(s) situation(s) treated","* %s Compte(s) de situation(s) traité(s)",,
-"* %s Invoice(s) treated","* %s Facture(s) traitée(s)",,
+"* %s Invoice(s)/Move(s) treated","* %s Facture(s)/Écriture(s) traitée(s)",,
 ", to separate multiple expressions with an ""OR"" logic",", pour séparer plusieurs expressions avec une logique ""OR""",,
 "0",,,
 "1",,,
