@@ -108,8 +108,8 @@ public class FECImportServiceImpl implements FECImportService {
     }
   }
 
-  @Transactional(rollbackOn = Exception.class)
-  protected void letterReconcileGroup(ReconcileGroup reconcileGroup) throws AxelorException {
+  @Transactional
+  protected void letterReconcileGroup(ReconcileGroup reconcileGroup) {
     try {
       reconcileGroupService.letter(reconcileGroup);
       reconcileGroup = reconcileGroupRepo.find(reconcileGroup.getId());

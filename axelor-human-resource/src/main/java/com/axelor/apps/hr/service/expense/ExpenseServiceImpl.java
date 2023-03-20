@@ -739,7 +739,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void resetExpensePaymentAfterCancellation(Expense expense) {
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);

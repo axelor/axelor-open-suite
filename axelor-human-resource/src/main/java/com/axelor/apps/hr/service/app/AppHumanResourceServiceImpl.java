@@ -34,6 +34,7 @@ import com.axelor.studio.db.repo.AppExpenseRepository;
 import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppTimesheetRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -59,12 +60,13 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService,
       AppTimesheetRepository appTimesheetRepo,
       AppLeaveRepository appLeaveRepo,
       AppExpenseRepository appExpenseRepo,
       CompanyRepository companyRepo,
       HRConfigRepository hrConfigRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.appTimesheetRepo = appTimesheetRepo;
     this.appLeaveRepo = appLeaveRepo;
     this.appExpenseRepo = appExpenseRepo;

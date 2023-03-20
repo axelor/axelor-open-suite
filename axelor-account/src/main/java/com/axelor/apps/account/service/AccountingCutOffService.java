@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.Query;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,7 +31,6 @@ public interface AccountingCutOffService {
   Query<Move> getMoves(
       Company company, Journal researchJournal, LocalDate moveDate, int accountingCutOffTypeSelect);
 
-  @Transactional(rollbackOn = {Exception.class})
   List<Move> generateCutOffMovesFromMove(
       Move move,
       Journal journal,

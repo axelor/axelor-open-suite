@@ -90,10 +90,6 @@
     <date name="orderDate" title="Order Date"/>
     <string name="orderNumber" title="Order Number"/>
 
-    <!-- Onglet scheduler -->
-    <date name="invoicedFirstDate" title="Invoiced first date"/>
-    <date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
-
     <many-to-one name="confirmedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Confirmed by"/>
 

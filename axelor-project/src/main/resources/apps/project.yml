@@ -2,7 +2,7 @@
 name: Projects
 code: project
 typeSelect: standard
-installOrder: 7
+installOrder: 2080
 description: |
    Project management
 image: app-project.png

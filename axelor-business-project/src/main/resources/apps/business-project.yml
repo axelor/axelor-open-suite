@@ -2,7 +2,7 @@
 name: Job costing
 code: business-project
 typeSelect: standard
-installOrder: 17
+installOrder: 2180
 description: |
    Job costing
 image: app-business-project.png

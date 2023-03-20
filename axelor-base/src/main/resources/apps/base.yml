@@ -3,7 +3,7 @@ importId: 1
 name: Base
 code: base
 typeSelect: standard
-installOrder: 1
+installOrder: 2010
 description: |
    Basic configuration
 image: app-base.png

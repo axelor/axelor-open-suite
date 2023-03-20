@@ -47,7 +47,7 @@
       expr="eval: trainingSession.statusSelect != 1" if="trainingSession != null"/>
   </action-attrs>
 
-  <form model="com.axelor.message.db.Wizard" title="Mass training register"
+  <form model="com.axelor.utils.db.Wizard" title="Mass training register"
     name="mass-training-register-wizard-form">
     <panel name="mainPanel">
       <field name="employeeList" grid-view="employee-lite-grid"

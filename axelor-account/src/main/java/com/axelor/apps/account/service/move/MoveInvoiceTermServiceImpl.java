@@ -180,7 +180,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void updateSingleInvoiceTermDueDate(Move move, LocalDate dueDate) {
     if (CollectionUtils.isEmpty(move.getMoveLineList()) || dueDate == null) {
       return;

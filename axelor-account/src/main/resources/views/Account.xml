@@ -47,8 +47,7 @@
   </tree>
 
   <form name="account-form" title="Accounting.Account"
-    model="com.axelor.apps.account.db.Account" width="large"
-    onNew="action-account-record-new,action-method-account-hide-analytic,action-attrs-account-account-readonly-if-account-in-move-line"
+    model="com.axelor.apps.account.db.Account" width="large" onNew="action-group-account-onnew"
     onLoad="action-group-account-account-onload" onSave="action-account-group-onsave"
     canDelete="!isRegulatoryAccount">
     <panel name="statusPanel">
@@ -120,8 +119,7 @@
           <field name="vatSystemSelect" colSpan="4"
             showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
         </panel>
-        <panel name="analyticSettingsPanel" title="Analytic" colSpan="12"
-          hideIf="!accountType || accountType.technicalTypeSelect == 'view'">
+        <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
             onChange="action-account-group-on-change-analytic-distribution-authorized"/>
           <field name="analyticDistributionRequiredOnInvoiceLines"
@@ -216,7 +214,7 @@
   </form>
 
   <form name="mass-update-status-wizard-form" title="Mass update status"
-    model="com.axelor.message.db.Wizard" width="large">
+    model="com.axelor.utils.db.Wizard" width="large">
     <panel name="mainPanel">
       <field name="statusSelect" type="integer" title="Status"
         selection="iaccount.status.select.selection"
@@ -256,6 +254,12 @@
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
+  <action-group name="action-group-account-onnew">
+    <action name="action-account-record-new"/>
+    <action name="action-method-account-hide-analytic"/>
+    <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
+  </action-group>
+
   <action-group name="action-account-group-onsave">
     <action name="action-account-method-check-if-code-already-exist-for-company"/>
     <action name="action-on-change-distribution-template-account"/>
@@ -271,10 +275,11 @@
   <action-group name="action-group-account-type-on-change">
     <action name="action-method-account-fill-account-code"
       if="company?.accountConfig?.hasAccountCodeFixedNbrChar"/>
+    <action name="action-method-account-hide-analytic"/>
   </action-group>
 
   <action-view name="action-mass-update-status-wizard" title="Mass update status"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="mass-update-status-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>

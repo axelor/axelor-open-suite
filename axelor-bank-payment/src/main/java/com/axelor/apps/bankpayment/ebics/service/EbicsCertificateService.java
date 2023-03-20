@@ -218,7 +218,7 @@ public class EbicsCertificateService {
     return cert;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public EbicsCertificate createCertificate(
       X509Certificate certificate, EbicsBank bank, String type)
       throws CertificateEncodingException, IOException {
