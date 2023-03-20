@@ -296,6 +296,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     Preconditions.checkNotNull(message, "mail message can't be null");
 
     final Model related = findEntity(message);
+    if (related == null) {
+      return;
+    }
+
     final MailSender sender = getMailSender(emailAccount);
 
     final Set<String> recipients = recipients(message, related);
