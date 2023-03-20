@@ -208,6 +208,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void isValid(Contract contract) throws AxelorException {
     if (contract.getId() == null) {
       return;
@@ -301,6 +302,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void checkCanTerminateContract(Contract contract) throws AxelorException {
     if (contract.getTerminatedDate() == null) {
       throw new AxelorException(
@@ -370,7 +372,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void close(Contract contract, LocalDate terminationDate) throws AxelorException {
     LocalDate today = appBaseService.getTodayDate(contract.getCompany());
 
