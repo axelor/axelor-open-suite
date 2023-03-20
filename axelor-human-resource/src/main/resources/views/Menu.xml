@@ -655,7 +655,7 @@
     title="My leave request" action="edit.leave.request" top="true"
     if="__config__.app.isApp('leave')"/>
 
-  <menuitem name="top-menu-hr--my-extra-hours" parent="top-menu-hr" title="My extra hours"
+  <menuitem name="top-menu-hr-my-extra-hours" parent="top-menu-hr" title="My extra hours"
     action="edit.extra.hours" top="true" if="__config__.app.isApp('exthrs')"/>
 
 </object-views>
