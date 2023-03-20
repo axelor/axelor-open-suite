@@ -50,8 +50,8 @@
         <field name="subject" colSpan="12" height="2"/>
         <field name="content" colSpan="12" showTitle="false" widget="html"
           showIf="mediaTypeSelect != 5"/>
-        <field name="content" colSpan="12" showTitle="false" showIf="mediaTypeSelect == 5"
-          hidden="true"/>
+        <field name="content" colSpan="12" showTitle="false" widget="html" x-lite="true"
+          showIf="mediaTypeSelect == 5"/>
       </panel>
       <panel-dashlet name="templateMessagePanel"
         action="template.messages.by.template" title="Messages"/>
