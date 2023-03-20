@@ -26,7 +26,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.Team;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -125,12 +124,10 @@ public interface SaleOrderCreateService {
       Team team)
       throws AxelorException;
 
-  @Transactional
-  public SaleOrder createTemplate(SaleOrder context);
+  SaleOrder createTemplate(SaleOrder context);
 
-  @Transactional(rollbackOn = {Exception.class})
-  public SaleOrder createSaleOrder(
-      SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList) throws AxelorException;
+  SaleOrder createSaleOrder(SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)
+      throws AxelorException;
 
-  public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
+  void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
 }
