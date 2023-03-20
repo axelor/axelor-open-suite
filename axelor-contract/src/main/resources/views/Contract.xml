@@ -468,8 +468,7 @@
     model="com.axelor.apps.account.db.Invoice" title="Invoices">
     <view type="grid" name="invoice-lite-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.contract.id = :contractId</domain>
-    <context name="contractId" expr="eval: id"/>
+    <domain>:id MEMBER OF self.contractSet</domain>
   </action-view>
 
   <action-attrs name="action-contract-attrs-domains-template">

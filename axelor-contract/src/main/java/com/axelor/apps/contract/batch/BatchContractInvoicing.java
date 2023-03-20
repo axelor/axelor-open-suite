@@ -5,7 +5,9 @@ import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
+import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.translation.ITranslation;
@@ -26,29 +28,35 @@ public class BatchContractInvoicing extends AbstractBatch {
 
   protected ContractRepository contractRepository;
   protected ContractService contractService;
+  protected ContractBatchRepository contractBatchRepository;
 
   @Inject
   public BatchContractInvoicing(
-      ContractRepository contractRepository, ContractService contractService) {
+      ContractRepository contractRepository,
+      ContractService contractService,
+      ContractBatchRepository contractBatchRepository) {
     this.contractRepository = contractRepository;
     this.contractService = contractService;
+    this.contractBatchRepository = contractBatchRepository;
   }
 
   public List<List<Contract>> getIdsGroupedBy() {
+    ContractBatch contractBatch = batch.getContractBatch();
+    contractBatch = contractBatchRepository.find(contractBatch.getId());
     String query =
         "SELECT array_agg(self.id) as list "
             + "FROM contract_contract as self "
             + "WHERE self.is_invoicing_management IS TRUE "
             + "AND self.invoicing_date "
             + "<= '"
-            + batch.getContractBatch().getInvoicingDate().toString()
+            + contractBatch.getInvoicingDate().toString()
             + "'::date "
             + "AND self.status_select != "
             + AbstractContractRepository.CLOSED_CONTRACT
-            + " AND (SELECT automatic_invoicing FROM contract_contract_version WHERE contract_contract_version.id = self.id) IS TRUE"
-            + " AND self.id NOT IN (SELECT DISTINCT contract FROM account_invoice_contract)"
+            + " AND (SELECT automatic_invoicing FROM contract_contract_version WHERE contract_contract_version.id = self.current_contract_version) IS TRUE"
+            + " AND self.id NOT IN (SELECT DISTINCT contract_set FROM account_invoice_contract_set)"
             + " GROUP BY self.invoiced_partner, self.invoicing_date, self.invoice_period_end_date, self.invoice_period_start_date, self.is_grouped_invoicing;";
-    Array array = null;
+    Array array;
     List<List<Contract>> contractListsList = new ArrayList<>();
     try {
       try (Connection connection = DBHelper.getConnection()) {
