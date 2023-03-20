@@ -844,6 +844,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return Optional.of(
             invoiceTerm.getApplyFinancialDiscount()
                     && invoiceTerm.getFinancialDiscountDeadlineDate() != null
+                    && date != null
                     && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
                 ? invoiceTerm.getAmountRemainingAfterFinDiscount()
                 : invoiceTerm.getAmountRemaining())
