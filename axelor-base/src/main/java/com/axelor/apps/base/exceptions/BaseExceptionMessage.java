@@ -182,13 +182,6 @@ public final class BaseExceptionMessage {
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
 
-  /** Querie Service and controller */
-  public static final String QUERIE_1 = /*$$(*/
-      "Error : There is no query set for the querie %s" /*)*/;
-
-  public static final String QUERIE_2 = /*$$(*/ "Error : Incorrect query for the querie %s" /*)*/;
-  public static final String QUERIE_3 = /*$$(*/ "Valid query." /*)*/;
-
   /** Tax service */
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
 
