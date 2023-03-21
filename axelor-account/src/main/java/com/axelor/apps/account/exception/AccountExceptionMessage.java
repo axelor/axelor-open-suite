@@ -464,7 +464,7 @@ public final class AccountExceptionMessage {
   public static final String BATCH_DOUBTFUL_1 = /*$$(*/
       "Doubtful account's determination's reporting" /*)*/;
 
-  public static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s) treated" /*)*/;
+  public static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s)/Move(s) treated" /*)*/;
 
   /** Batch move line export */
   public static final String BATCH_MOVELINE_EXPORT_1 = /*$$(*/

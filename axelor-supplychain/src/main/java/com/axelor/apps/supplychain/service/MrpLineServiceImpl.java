@@ -160,8 +160,11 @@ public class MrpLineServiceImpl implements MrpLineService {
     PurchaseOrder purchaseOrder = null;
 
     if (isProposalsPerSupplier) {
-      if (purchaseOrdersPerSupplier != null) {
+      if (purchaseOrdersPerSupplier != null && !purchaseOrdersPerSupplier.isEmpty()) {
         purchaseOrder = purchaseOrdersPerSupplier.get(supplierPartner);
+        if (purchaseOrder != null) {
+          purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+        }
       }
     } else {
       if (purchaseOrders != null) {
