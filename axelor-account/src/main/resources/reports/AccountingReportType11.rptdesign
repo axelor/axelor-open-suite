@@ -1812,9 +1812,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <expression name="expressionValue" type="javascript">row["MoveLineDate"]</expression>
                 </structure>
                 <property name="hideDetail">false</property>
-                <property name="pageBreakAfter">avoid</property>
+                <property name="pageBreakAfter">auto</property>
                 <property name="pageBreakBefore">auto</property>
-                <property name="pageBreakInside">avoid</property>
+                <property name="pageBreakInside">auto</property>
                 <header>
                     <row id="4290">
                         <property name="borderBottomStyle">solid</property>
