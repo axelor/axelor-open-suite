@@ -120,8 +120,8 @@ public class BatchUpdateTaskService extends AbstractBatch {
     QueryBuilder<ProjectTask> taskQueryBuilder =
         projectTaskBusinessProjectService.getTaskInvoicingFilter();
 
-    if (!Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())) {
-      String filter = "NOT (" + appBusinessProject.getExculdeTaskInvoicing() + ")";
+    if (!Strings.isNullOrEmpty(appBusinessProject.getExcludeTaskInvoicing())) {
+      String filter = "NOT (" + appBusinessProject.getExcludeTaskInvoicing() + ")";
       taskQueryBuilder = taskQueryBuilder.add(filter);
     }
     Query<ProjectTask> taskQuery = taskQueryBuilder.build().order("id");
