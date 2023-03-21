@@ -87,7 +87,7 @@
             <field name="originDate" onChange="action-move-group-origin-date-onchange"
               readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
             <field name="$dueDate" type="date" title="Due date" hidden="true"
-              onChange="action-account-move-group-onsave" readonlyIf="!paymentCondition.isFree"
+              readonlyIf="!paymentCondition.isFree"
               help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."/>
           </panel>
           <field name="tradingName"
