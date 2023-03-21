@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppPurchase">
+  <entity name="AppPurchase" cacheable="true">
     <boolean name="supplierRequestMgt" title="Manage supplier consultations"/>
 
     <track>
