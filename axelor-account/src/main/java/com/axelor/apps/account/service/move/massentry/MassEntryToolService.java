@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface MassEntryToolService {
 
-  void clearMoveLineMassEntryListAndAddNewLines(Move move, Integer temporaryMoveNumber);
+  void clearMoveLineMassEntryListAndAddNewLines(
+      Move massEntryMove, Move move, Integer temporaryMoveNumber);
 
   void sortMoveLinesMassEntryByTemporaryNumber(Move move);
 

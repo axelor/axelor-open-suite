@@ -113,6 +113,7 @@ public class MoveLineMassEntryController {
                 Beans.get(MassEntryToolService.class)
                         .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList())
                     + 1);
+            moveLineMassEntry.setCounter(1);
             response.setValues(moveLineMassEntry);
             break;
           default:

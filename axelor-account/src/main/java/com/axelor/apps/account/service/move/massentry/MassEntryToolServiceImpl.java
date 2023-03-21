@@ -29,35 +29,38 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
   }
 
   @Override
-  public void clearMoveLineMassEntryListAndAddNewLines(Move move, Integer temporaryMoveNumber) {
+  public void clearMoveLineMassEntryListAndAddNewLines(
+      Move massEntryMove, Move move, Integer temporaryMoveNumber) {
     List<MoveLineMassEntry> moveLineMassEntryList =
-        new ArrayList<>(move.getMoveLineMassEntryList());
+        new ArrayList<>(massEntryMove.getMoveLineMassEntryList());
     for (MoveLineMassEntry moveLineMassEntry : moveLineMassEntryList) {
       if (Objects.equals(moveLineMassEntry.getTemporaryMoveNumber(), temporaryMoveNumber)) {
-        move.getMoveLineMassEntryList().remove(moveLineMassEntry);
+        massEntryMove.removeMoveLineMassEntryListItem(moveLineMassEntry);
       }
     }
+    this.sortMoveLinesMassEntryByTemporaryNumber(massEntryMove);
 
     moveLineMassEntryList =
         convertMoveLinesIntoMoveLineMassEntry(move, move.getMoveLineList(), temporaryMoveNumber);
     if (moveLineMassEntryList.size() > 0) {
       for (MoveLineMassEntry moveLineMassEntry : moveLineMassEntryList) {
-        move.getMoveLineMassEntryList().add(moveLineMassEntry);
+        massEntryMove.addMoveLineMassEntryListItem(moveLineMassEntry);
       }
     }
-    sortMoveLinesMassEntryByTemporaryNumber(move);
   }
 
   @Override
   public void sortMoveLinesMassEntryByTemporaryNumber(Move move) {
-    move.getMoveLineMassEntryList()
-        .sort(
-            new Comparator<MoveLineMassEntry>() {
-              @Override
-              public int compare(MoveLineMassEntry o1, MoveLineMassEntry o2) {
-                return o1.getTemporaryMoveNumber() - o2.getTemporaryMoveNumber();
-              }
-            });
+    if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
+      move.getMoveLineMassEntryList()
+          .sort(
+              new Comparator<MoveLineMassEntry>() {
+                @Override
+                public int compare(MoveLineMassEntry o1, MoveLineMassEntry o2) {
+                  return o1.getTemporaryMoveNumber() - o2.getTemporaryMoveNumber();
+                }
+              });
+    }
   }
 
   @Override
@@ -82,13 +85,10 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineMassEntry.setMovePaymentMode(move.getPaymentMode());
       moveLineMassEntry.setMovePaymentCondition(move.getPaymentCondition());
       moveLineMassEntry.setTemporaryMoveNumber(tempMoveNumber);
-      moveLineMassEntry.setMoveMassEntry(move);
       moveLineMassEntry.setMoveDescription(move.getDescription());
       moveLineMassEntry.setMovePartnerBankDetails(move.getPartnerBankDetails());
       moveLineMassEntry.setMoveStatusSelect(move.getStatusSelect());
 
-      moveLineMassEntry.setMove(move);
-      moveLineMassEntry.setCounter(moveLine.getCounter());
       moveLineMassEntry.setPartner(moveLine.getPartner());
       moveLineMassEntry.setAccount(moveLine.getAccount());
       moveLineMassEntry.setDate(moveLine.getDate());
@@ -106,9 +106,6 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineMassEntry.setCurrencyAmount(moveLine.getCurrencyAmount());
       moveLineMassEntry.setCurrencyRate(moveLine.getCurrencyRate());
       moveLineMassEntry.setSourceTaxLine(moveLine.getSourceTaxLine());
-
-      // TODO Add new fields added on MoveLineMassEntry
-      // TODO Add nedded fields from MoveLine
     }
 
     return moveLineMassEntry;

@@ -82,32 +82,38 @@ public class MassEntryServiceImpl implements MassEntryService {
     this.moveValidateService = moveValidateService;
   }
 
-  public void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
+  public Move fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
     List<MoveLine> moveLineList = new ArrayList<>();
     boolean firstLine = true;
+    Move moveToFill = new Move();
 
     for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
       if (Objects.equals(moveLineMassEntry.getTemporaryMoveNumber(), temporaryMoveNumber)
           && moveLineMassEntry.getInputAction() == 1) {
         if (firstLine) {
-          move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
-          move.setPaymentCondition(moveLineMassEntry.getMovePaymentCondition());
-          move.setDate(moveLineMassEntry.getDate());
-          move.setDescription(moveLineMassEntry.getMoveDescription());
-          move.setPartnerBankDetails(moveLineMassEntry.getMovePartnerBankDetails());
-          move.setOrigin(moveLineMassEntry.getOrigin());
-          move.setOriginDate(moveLineMassEntry.getOriginDate());
+          moveToFill.setCompany(move.getCompany());
+          moveToFill.setJournal(move.getJournal());
+          moveToFill.setPeriod(move.getPeriod());
+          moveToFill.setCurrency(move.getCurrency());
+
+          moveToFill.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
+          moveToFill.setPaymentCondition(moveLineMassEntry.getMovePaymentCondition());
+          moveToFill.setDate(moveLineMassEntry.getDate());
+          moveToFill.setDescription(moveLineMassEntry.getMoveDescription());
+          moveToFill.setPartnerBankDetails(moveLineMassEntry.getMovePartnerBankDetails());
+          moveToFill.setOrigin(moveLineMassEntry.getOrigin());
+          moveToFill.setOriginDate(moveLineMassEntry.getOriginDate());
 
           // TODO Need to be seen, to enable multiPartners in a Move and remove this line
-          move.setPartner(moveLineMassEntry.getPartner());
+          moveToFill.setPartner(moveLineMassEntry.getPartner());
           firstLine = false;
         }
-        moveLineMassEntry.setMove(move);
+        moveLineMassEntry.setMove(moveToFill);
         moveLineList.add(moveLineMassEntry);
       }
     }
-    move.setMoveLineList(moveLineList);
-    massEntryToolService.clearMoveLineMassEntryListAndAddNewLines(move, temporaryMoveNumber);
+    moveToFill.setMoveLineList(moveLineList);
+    return moveToFill;
   }
 
   public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
@@ -367,5 +373,11 @@ public class MassEntryServiceImpl implements MassEntryService {
     }
 
     return newMove.getId();
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void addGeneratedMovesIntoMassEntryMove(Move move, List<Long> idMoveList) {
+    int numberOfMoves =
+        massEntryToolService.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList());
   }
 }

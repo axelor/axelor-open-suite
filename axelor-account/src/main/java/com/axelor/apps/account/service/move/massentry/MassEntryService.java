@@ -25,7 +25,7 @@ import java.util.Map;
 
 public interface MassEntryService {
 
-  void fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber);
+  Move fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber);
 
   MoveLineMassEntry getFirstMoveLineMassEntryInformations(
       List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry);
@@ -39,4 +39,6 @@ public interface MassEntryService {
   Map<List<Long>, String> validateMassEntryMove(Move move);
 
   Long generateMassEntryMove(Move move) throws AxelorException;
+
+  void addGeneratedMovesIntoMassEntryMove(Move move, List<Long> idMoveList);
 }

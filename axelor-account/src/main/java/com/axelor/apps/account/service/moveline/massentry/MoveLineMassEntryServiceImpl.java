@@ -52,14 +52,16 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   }
 
   public void generateTaxLineAndCounterpart(
-      Move move, LocalDate dueDate, Integer temporaryMoveNumber) throws AxelorException {
+      Move massEntryMove, Move move, LocalDate dueDate, Integer temporaryMoveNumber)
+      throws AxelorException {
     if (ObjectUtils.notEmpty(move.getMoveLineList())) {
       if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
           || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
         moveLineTaxService.autoTaxLineGenerate(move);
         moveCounterPartService.generateCounterpartMoveLine(move, dueDate);
       }
-      massEntryToolService.clearMoveLineMassEntryListAndAddNewLines(move, temporaryMoveNumber);
+      massEntryToolService.clearMoveLineMassEntryListAndAddNewLines(
+          massEntryMove, move, temporaryMoveNumber);
     }
   }
 

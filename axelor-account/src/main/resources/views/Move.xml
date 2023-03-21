@@ -417,7 +417,7 @@
     <panel>
       <panel-related name="moveLineMassEntryListPanel" field="moveLineMassEntryList"
         editable="true" colSpan="12" height="20" canNew="true" canRemove="true"
-        grid-view="move-line-mass-entry-move-grid" form-view="move-line-move-form"
+        grid-view="move-line-mass-entry-move-grid"
         onChange="action-move-group-move-line-list-onchange"/>
     </panel>
 

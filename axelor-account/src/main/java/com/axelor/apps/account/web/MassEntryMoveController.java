@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
@@ -69,17 +70,21 @@ public class MassEntryMoveController {
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
         if (lastMoveLineMassEntry.getInputAction() != null
             && lastMoveLineMassEntry.getInputAction() == 2) {
-          massEntryService.fillMoveLineListWithMoveLineMassEntryList(
-              move, lastMoveLineMassEntry.getTemporaryMoveNumber());
+          Move moveToGenerateTaxLineAndCounterpart =
+              massEntryService.fillMoveLineListWithMoveLineMassEntryList(
+                  move, lastMoveLineMassEntry.getTemporaryMoveNumber());
           response.setValues(move);
 
-          Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
+          Beans.get(MoveToolService.class)
+              .exceptionOnGenerateCounterpart(moveToGenerateTaxLineAndCounterpart);
           Beans.get(MoveLineMassEntryService.class)
               .generateTaxLineAndCounterpart(
                   move,
+                  moveToGenerateTaxLineAndCounterpart,
                   this.extractDueDate(request),
                   lastMoveLineMassEntry.getTemporaryMoveNumber());
         }
+        Beans.get(MassEntryToolService.class).sortMoveLinesMassEntryByTemporaryNumber(move);
         response.setValues(move);
         response.setAttr("controlMassEntryMoves", "hidden", false);
         response.setAttr("validateMassEntryMoves", "hidden", true);
@@ -140,6 +145,8 @@ public class MassEntryMoveController {
           response.setAttr("showMassEntryMoves", "hidden", false);
         } else {
           // TODO if OK then remove all lines add add them to moLineList, save.
+          Beans.get(MassEntryService.class).addGeneratedMovesIntoMassEntryMove(move, idMoveList);
+          // TODO return move in setValues
           response.setValue("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_CLOSED);
           response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
           if (!CollectionUtils.isEmpty(idMoveList)) {

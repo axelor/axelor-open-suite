@@ -32,7 +32,6 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -68,7 +67,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  // @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void generateCounterpartMoveLine(Move move, LocalDate singleTermDueDate)
       throws AxelorException {
     MoveLine counterPartMoveLine = createCounterpartMoveLine(move);

@@ -10,7 +10,8 @@ import java.util.Map;
 
 public interface MoveLineMassEntryService {
 
-  void generateTaxLineAndCounterpart(Move move, LocalDate dueDate, Integer temporaryMoveNumber)
+  void generateTaxLineAndCounterpart(
+      Move massEntryMove, Move move, LocalDate dueDate, Integer temporaryMoveNumber)
       throws AxelorException;
 
   void loadAccountInformation(Move move, MoveLineMassEntry moveLineMassEntry)
