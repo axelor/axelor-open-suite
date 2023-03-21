@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <menuitem name="menu-products-dashboard-1" parent="referential-report"
@@ -209,7 +209,7 @@
     action="stock.root.stock.details.by.product"/>
 
   <action-view name="stock.root.stock.details.by.product"
-    title="Stock details by product" model="com.axelor.message.db.Wizard">
+    title="Stock details by product" model="com.axelor.utils.db.Wizard">
     <view type="form" name="supplychain-stock-details-by-product-form"/>
     <context name="_isFromMenu" expr="eval: true"/>
   </action-view>

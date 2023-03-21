@@ -96,7 +96,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void clearReportValues(AccountingReport accountingReport) {
     accountingReportValueRepo.findByAccountingReport(accountingReport).remove();
   }

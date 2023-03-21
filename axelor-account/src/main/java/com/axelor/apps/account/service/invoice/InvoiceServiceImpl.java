@@ -1004,7 +1004,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
 
@@ -1115,8 +1115,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 invoiceTermService.getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void validatePfp(Long invoiceId) throws AxelorException {
+  @Transactional
+  public void validatePfp(Long invoiceId) {
     Invoice invoice = invoiceRepo.find(invoiceId);
     User currentUser = AuthUtils.getUser();
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="forecast-root" title="Cash management" order="-86"
     if="__config__.app.isApp('cash-management')" icon="fa-money" icon-background="#e0a83c"/>
@@ -65,7 +65,7 @@
     title="Cash Management Dashboard" action="cash.management.dashboard.1.view"/>
 
   <action-view name="cash.management.dashboard.1.view" title="Cash Management Dashboard"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="forecast-dashboard-form"/>
     <context name="_userId" expr="eval: 0"/>
   </action-view>

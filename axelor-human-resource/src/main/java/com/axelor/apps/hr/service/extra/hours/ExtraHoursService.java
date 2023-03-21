@@ -20,31 +20,26 @@ package com.axelor.apps.hr.service.extra.hours;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.message.db.Message;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import wslite.json.JSONException;
 
 public interface ExtraHoursService {
 
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(ExtraHours extraHours) throws AxelorException;
 
   public Message sendCancellationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void confirm(ExtraHours extraHours) throws AxelorException;
 
   public Message sendConfirmationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void validate(ExtraHours extraHours) throws AxelorException;
 
   public Message sendValidationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void refuse(ExtraHours extraHours) throws AxelorException;
 
   public Message sendRefusalEmail(ExtraHours extraHours)

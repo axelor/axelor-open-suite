@@ -252,7 +252,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected InvoicePayment generatePendingPaymentFromInvoiceTerm(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     InvoicePayment invoicePayment =
